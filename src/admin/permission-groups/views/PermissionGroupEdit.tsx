@@ -296,8 +296,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 							icon="delete"
 							onClick={() => deletePermission(rowData.id)}
 							size="small"
-							ariaLabel={t('Verwijder deze permissie groep')}
-							title={t('Verwijder deze permissie groep')}
+							ariaLabel={t(
+								'admin/permission-groups/views/permission-group-edit___verwijder-deze-permissie-groep'
+							)}
+							title={t(
+								'admin/permission-groups/views/permission-group-edit___verwijder-deze-permissie-groep'
+							)}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -391,7 +395,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 														'admin/permission-groups/views/permission-group-edit___kies-eerst-een-permissie-uit-de-lijst'
 												  )
 												: t(
-														'Voeg de geselecteerde permissie toe aan de permissie groep'
+														'admin/permission-groups/views/permission-group-edit___voeg-de-geselecteerde-permissie-toe-aan-de-permissie-groep'
 												  )
 										}
 									/>
@@ -427,7 +431,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			showBackButton
 			pageTitle={
 				isCreatePage
-					? t('Permissie groep aanmaken')
+					? t(
+							'admin/permission-groups/views/permission-group-edit___permissie-groep-aanmaken'
+					  )
 					: t(
 							'admin/permission-groups/views/permission-group-edit___permissie-groep-aanpassen'
 					  )

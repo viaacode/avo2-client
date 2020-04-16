@@ -204,8 +204,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 				ToastService.success(
 					newContentPage.is_public
-						? t('De content pagina is nu publiek')
-						: t('De content pagina is nu niet meer publiek'),
+						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
+						: t(
+								'admin/content/views/content-detail___de-content-pagina-is-nu-niet-meer-publiek'
+						  ),
 					false
 				);
 			}
@@ -215,7 +217,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				contentPage,
 			});
 			ToastService.danger(
-				t('Het opslaan van de publiek status van de content pagina is mislukt'),
+				t(
+					'admin/content/views/content-detail___het-opslaan-van-de-publiek-status-van-de-content-pagina-is-mislukt'
+				),
 				false
 			);
 		}
@@ -263,7 +267,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												src={(contentPage as any).thumbnail_path}
 											/>
 										</div>,
-										t('Cover afbeelding')
+										t('admin/content/views/content-detail___cover-afbeelding')
 									)}
 									{renderSimpleDetailRows(contentPage, [
 										['title', t('admin/content/views/content-detail___titel')],
@@ -356,21 +360,27 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<Button
 						type="secondary"
 						icon="lock"
-						label={t('Delen')}
-						title={t('Maak de content pagina publiek / niet publiek')}
-						ariaLabel={t('Maak de content pagina publiek / niet publiek')}
+						label={t('admin/content/views/content-detail___delen')}
+						title={t(
+							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+						)}
+						ariaLabel={t(
+							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+						)}
 						onClick={() => setIsShareModalOpen(true)}
 					/>
 					<Button
 						label={t('admin/content/views/content-detail___bewerken')}
-						title={t('Bewerk deze content pagina')}
+						title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
 						onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 					/>
 					{/* TODO: also check permissions */}
 					{(!isContentProtected || (isContentProtected && isAdminUser)) && (
 						<Button
 							label={t('admin/content/views/content-detail___verwijderen')}
-							title={t('Verwijder deze content pagina')}
+							title={t(
+								'admin/content/views/content-detail___verwijder-deze-content-pagina'
+							)}
 							onClick={() => setIsConfirmModalOpen(true)}
 							type="danger-hover"
 						/>

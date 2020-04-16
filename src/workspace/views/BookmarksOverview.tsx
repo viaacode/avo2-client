@@ -276,7 +276,9 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 					type="primary"
 					icon="search"
 					label={t('workspace/views/bookmarks___zoek-een-item')}
-					title={t('Zoek een item en maak er een bladwijzer van')}
+					title={t(
+						'workspace/views/bookmarks-overview___zoek-een-item-en-maak-er-een-bladwijzer-van'
+					)}
 					onClick={() => history.push(APP_PATH.SEARCH.route)}
 				/>
 			</Spacer>

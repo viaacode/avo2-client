@@ -125,7 +125,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 									image={get(storedProfile, 'profile.avatar')}
 									size="large"
 								/>,
-								t('Avatar')
+								t('admin/users/views/user-detail___avatar')
 							)}
 							{renderSimpleDetailRows(storedProfile, [
 								['user.first_name', t('admin/users/views/user-detail___voornaam')],
@@ -167,8 +167,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 						<Button
 							type="danger"
 							label={t('admin/users/views/user-detail___bannen')}
-							title={t('Ban deze gebruiker van het AvO platform')}
-							ariaLabel={t('Ban deze gebruiker van het AvO platform')}
+							title={t(
+								'admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform'
+							)}
+							ariaLabel={t(
+								'admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform'
+							)}
 							onClick={() =>
 								ToastService.info(
 									t('settings/components/profile___nog-niet-geimplementeerd'),
@@ -180,13 +184,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 					<Button
 						label={t('admin/users/views/user-detail___beheer-in-account-manager')}
 						ariaLabel={t(
-							'Open deze gebruiker in het account beheer dashboard van meemoo'
+							'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
 						)}
 						disabled={!getLdapDashboardUrl()}
 						title={
 							getLdapDashboardUrl()
 								? t(
-										'Open deze gebruiker in het account beheer dashboard van meemoo'
+										'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
 								  )
 								: t(
 										'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'

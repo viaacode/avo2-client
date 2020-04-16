@@ -64,7 +64,7 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	},
 	{
 		value: 'PROJECTS',
-		label: i18n.t('Projecten'),
+		label: i18n.t('admin/shared/components/content-picker/content-picker___projecten'),
 		disabled: false,
 		fetch: retrieveProjectContentPages,
 		picker: 'SELECT',

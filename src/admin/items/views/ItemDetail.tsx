@@ -241,13 +241,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								}
 								ariaLabel={
 									item.is_published
-										? t('Depubliceer dit item')
-										: t('Publiceer dit item')
+										? t('admin/items/views/item-detail___depubliceer-dit-item')
+										: t('admin/items/views/item-detail___publiceer-dit-item')
 								}
 								title={
 									item.is_published
-										? t('Depubliceer dit item')
-										: t('Publiceer dit item')
+										? t('admin/items/views/item-detail___depubliceer-dit-item')
+										: t('admin/items/views/item-detail___publiceer-dit-item')
 								}
 								onClick={() => setIsConfirmPublishModalOpen(true)}
 							/>

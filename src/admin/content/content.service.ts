@@ -67,7 +67,9 @@ export class ContentService {
 			query,
 			CONTENT_RESULT_PATH.GET,
 			'Failed to retrieve project content items.',
-			i18n.t("Er ging iets mis tijdens het ophalen van de project pagina's")
+			i18n.t(
+				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-project-paginas'
+			)
 		);
 	}
 
@@ -111,7 +113,9 @@ export class ContentService {
 			query,
 			CONTENT_RESULT_PATH.GET,
 			'Failed to retrieve content items by title.',
-			i18n.t("Er ging iets mis tijdens het ophalen van de project pagina's")
+			i18n.t(
+				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-project-paginas'
+			)
 		);
 	}
 

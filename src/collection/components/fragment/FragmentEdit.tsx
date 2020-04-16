@@ -215,8 +215,16 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		<Button
 			type="secondary"
 			icon={`chevron-${direction}` as IconName}
-			ariaLabel={direction === 'up' ? t('Verplaats naar boven') : t('Verplaats naar onder')}
-			title={direction === 'up' ? t('Verplaats naar boven') : t('Verplaats naar onder')}
+			ariaLabel={
+				direction === 'up'
+					? t('collection/components/fragment/fragment-edit___verplaats-naar-boven')
+					: t('collection/components/fragment/fragment-edit___verplaats-naar-onder')
+			}
+			title={
+				direction === 'up'
+					? t('collection/components/fragment/fragment-edit___verplaats-naar-boven')
+					: t('collection/components/fragment/fragment-edit___verplaats-naar-onder')
+			}
 			onClick={() => {
 				changeCollectionState({
 					index,
@@ -318,7 +326,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 												'collection/components/fragment/fragment-edit___knippen'
 											)}
 											title={t(
-												'Knip een fragment uit dit video/audio fragment'
+												'collection/components/fragment/fragment-edit___knip-een-fragment-uit-dit-video-audio-fragment'
 											)}
 											type="secondary"
 											onClick={() => setIsCutModalOpen(true)}

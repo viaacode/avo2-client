@@ -734,8 +734,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 							  )
 							: isCollection
-							? t('Maak deze collectie publiek / niet publiek')
-							: t('Maak deze bundel publiek / niet publiek')
+							? t(
+									'collection/components/collection-or-bundle-edit___maak-deze-collectie-publiek-niet-publiek'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___maak-deze-bundel-publiek-niet-publiek'
+							  )
 					}
 					onClick={() => executeAction('openShareModal')}
 				/>
@@ -755,8 +759,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				/>
 				<Button
 					type="secondary"
-					label={t('Herorden fragmenten')}
-					title={t('Herorden de fragmenten via drag-and-drop')}
+					label={t(
+						'collection/components/collection-or-bundle-edit___herorden-fragmenten'
+					)}
+					title={t(
+						'collection/components/collection-or-bundle-edit___herorden-de-fragmenten-via-drag-and-drop'
+					)}
 					onClick={() => setIsReorderModalOpen(true)}
 				/>
 				<ControlledDropdown
@@ -770,8 +778,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 						<Button
 							type="secondary"
 							icon="more-horizontal"
-							ariaLabel={t('Meer opties')}
-							title={t('Meer opties')}
+							ariaLabel={t(
+								'collection/components/collection-or-bundle-edit___meer-opties'
+							)}
+							title={t(
+								'collection/components/collection-or-bundle-edit___meer-opties'
+							)}
 						/>
 					</DropdownButton>
 					<DropdownContent>
@@ -823,7 +835,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button type="secondary" icon="more-horizontal" title={t('Meer opties')} />
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							title={t(
+								'collection/components/collection-or-bundle-edit___meer-opties'
+							)}
+						/>
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent

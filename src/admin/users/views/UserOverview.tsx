@@ -101,8 +101,12 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 						type="secondary"
 						icon="eye"
 						onClick={() => navigateToUserDetail(id)}
-						title={t('Bekijk de details van deze gebruiker')}
-						ariaLabel={t('Bekijk de details van deze gebruiker')}
+						title={t(
+							'admin/users/views/user-overview___bekijk-de-details-van-deze-gebruiker'
+						)}
+						ariaLabel={t(
+							'admin/users/views/user-overview___bekijk-de-details-van-deze-gebruiker'
+						)}
 					/>
 				);
 

@@ -432,8 +432,16 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		<Button
 			type="secondary"
 			icon={`chevron-${direction}` as IconName}
-			title={direction === 'up' ? t('Verplaats naar boven') : t('Verplaats naar onder')}
-			ariaLabel={direction === 'up' ? t('Verplaats naar boven') : t('Verplaats naar onder')}
+			title={
+				direction === 'up'
+					? t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-boven')
+					: t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-onder')
+			}
+			ariaLabel={
+				direction === 'up'
+					? t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-boven')
+					: t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-onder')
+			}
 			onClick={() => {
 				changeInteractiveTourState({
 					direction,

@@ -158,6 +158,12 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 						);
 					}
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
+					if (
+						formattedTranslation.includes('___') &&
+						!(oldTranslations as keyMap)[formattedKey]
+					) {
+						console.error('Failed to find old translation for key: ', formattedKey);
+					}
 					newTranslations[formattedKey] =
 						(formattedTranslation.includes('___')
 							? getFormattedTranslation((oldTranslations as keyMap)[formattedKey])

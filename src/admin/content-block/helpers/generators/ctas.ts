@@ -60,9 +60,13 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			headingColor: FOREGROUND_COLOR_FIELD(i18n.t('Titel kleur')),
+			headingColor: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/ctas___titel-kleur')
+			),
 			content: TEXT_FIELD(),
-			contentColor: FOREGROUND_COLOR_FIELD(i18n.t('Tekst kleur')),
+			contentColor: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/ctas___tekst-kleur')
+			),
 			buttonType: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
 				editorType: ContentBlockEditor.Select,
@@ -89,7 +93,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 			backgroundColor: BACKGROUND_COLOR_FIELD(
-				i18n.t('Achtergrond kleur'),
+				i18n.t('admin/content-block/helpers/generators/ctas___achtergrond-kleur'),
 				GET_BACKGROUND_COLOR_OPTIONS()[1]
 			),
 		},

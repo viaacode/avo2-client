@@ -44,8 +44,12 @@ export const TopBarComponent: FunctionComponent<TopbarProps> = ({
 										<Button
 											className="c-top-bar__back"
 											icon="chevron-left"
-											ariaLabel={t('Ga terug naar het vorig scherm')}
-											title={t('Ga terug naar het vorig scherm')}
+											ariaLabel={t(
+												'admin/shared/components/top-bar/top-bar___ga-terug-naar-het-vorig-scherm'
+											)}
+											title={t(
+												'admin/shared/components/top-bar/top-bar___ga-terug-naar-het-vorig-scherm'
+											)}
 											onClick={history.goBack}
 											type="borderless"
 										/>

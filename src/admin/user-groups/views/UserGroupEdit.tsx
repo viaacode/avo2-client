@@ -223,7 +223,10 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			permissionGroups: [...userGroup.permissionGroups, selectedPermission],
 		});
 		setSelectedPermissionGroupId(null);
-		ToastService.success(t('Permissie groep tegevoegd'), false);
+		ToastService.success(
+			t('admin/user-groups/views/user-group-edit___permissie-groep-tegevoegd'),
+			false
+		);
 	};
 
 	const handleSave = async () => {
@@ -352,8 +355,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							icon="delete"
 							onClick={() => openConfirmDeleteModal(rowData)}
 							size="small"
-							ariaLabel={t('Verwijder deze gebruikersgroep')}
-							title={t('Verwijder deze gebruikersgroep')}
+							ariaLabel={t(
+								'admin/user-groups/views/user-group-edit___verwijder-deze-gebruikersgroep'
+							)}
+							title={t(
+								'admin/user-groups/views/user-group-edit___verwijder-deze-gebruikersgroep'
+							)}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -439,10 +446,10 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 											'admin/user-groups/views/user-group-edit___toevoegen'
 										)}
 										title={t(
-											'Voeg de geselecteerde permissie groep toe aan deze gebruikersgroep'
+											'admin/user-groups/views/user-group-edit___voeg-de-geselecteerde-permissie-groep-toe-aan-deze-gebruikersgroep'
 										)}
 										ariaLabel={t(
-											'Voeg de geselecteerde permissie groep toe aan deze gebruikersgroep'
+											'admin/user-groups/views/user-group-edit___voeg-de-geselecteerde-permissie-groep-toe-aan-deze-gebruikersgroep'
 										)}
 										onClick={handleAddPermissionGroup}
 										type="primary"
