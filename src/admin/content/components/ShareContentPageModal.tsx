@@ -5,6 +5,8 @@ import {
 	BlockHeading,
 	Button,
 	ButtonToolbar,
+	DatePicker,
+	Form,
 	FormGroup,
 	Modal,
 	ModalBody,
@@ -15,10 +17,11 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { ToastService } from '../../../shared/services';
 import { DbContent } from '../content.types';
+
+type publishOption = 'private' | 'public' | 'timebound';
 
 interface ShareContentPageModalProps {
 	isOpen: boolean;
@@ -34,35 +37,24 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 	const [t] = useTranslation();
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
-	const [isContentPublic, setIsContentPublic] = useState(contentPage.is_public);
+	const [selectedOption, setSelectedOption] = useState<publishOption>(
+		contentPage.is_public
+			? contentPage.publish_at || contentPage.depublish_at
+				? 'timebound'
+				: 'public'
+			: 'private'
+	);
+	const [publishAt, setPublishAt] = useState<string | null>(contentPage.publish_at);
+	const [depublishAt, setDepublishAt] = useState<string | null>(contentPage.depublish_at);
 
 	const onSave = async () => {
 		try {
-			const isPublished = isContentPublic && !contentPage.is_public;
-			const isDepublished = !isContentPublic && contentPage.is_public;
-
-			// Close modal when isPublic doesn't change
-			if (!isPublished && !isDepublished) {
-				onClose();
-				return;
-			}
-
-			// Validate if user wants to publish
-			if (isPublished) {
-				// TODO see if any validation rules are needed
-				// const validationErrors: string[] = getValidationErrorsForPublish(Content);
-				//
-				// if (validationErrors && validationErrors.length) {
-				// 	setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-				// 	ToastService.danger(validationErrors);
-				// 	return;
-				// }
-			}
-
-			const newContent: DbContent = {
-				is_public: isContentPublic,
-				// published_at: new Date().toISOString(), // Wait for https://meemoo.atlassian.net/browse/DEV-778
-			} as DbContent;
+			const newContent: Partial<DbContent> = {
+				is_public: selectedOption === 'public',
+				published_at: selectedOption === 'public' ? new Date().toISOString() : null,
+				publish_at: selectedOption === 'timebound' ? publishAt : null,
+				depublish_at: selectedOption === 'timebound' ? depublishAt : null,
+			} as Partial<DbContent>;
 			setValidationError(undefined);
 			closeModal(newContent);
 		} catch (err) {
@@ -74,7 +66,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 		}
 	};
 
-	const closeModal = (newContent?: Avo.Content.Content) => {
+	const closeModal = (newContent?: Partial<DbContent>) => {
 		setValidationError(undefined);
 		onClose(newContent);
 	};
@@ -87,7 +79,6 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 			)}
 			size="large"
 			onClose={onClose}
-			scrollable
 		>
 			<ModalBody>
 				<p>
@@ -107,20 +98,62 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 							name="private"
 							label={t('admin/content/components/share-content-page-modal___prive')}
 							value="private"
-							checked={!isContentPublic}
+							checked={selectedOption === 'private'}
+							onChange={checked => {
+								if (checked) {
+									setSelectedOption('private');
+								}
+							}}
 						/>
 						<RadioButton
 							key="public"
-							name="private"
+							name="public"
 							label={t(
 								'admin/content/components/share-content-page-modal___openbaar'
 							)}
 							value="public"
-							onChange={setIsContentPublic}
-							checked={isContentPublic}
+							checked={selectedOption === 'public'}
+							onChange={checked => {
+								if (checked) {
+									setSelectedOption('public');
+								}
+							}}
+						/>
+						<RadioButton
+							key="timebound"
+							name="timebound"
+							label={t('Tijdsgebonden')}
+							value="timebound"
+							checked={selectedOption === 'timebound'}
+							onChange={checked => {
+								if (checked) {
+									setSelectedOption('timebound');
+								}
+							}}
 						/>
 					</RadioButtonGroup>
 				</FormGroup>
+				<Spacer margin="left-large">
+					<Form>
+						<FormGroup label={t('Publiceren op')}>
+							<DatePicker
+								value={publishAt ? new Date(publishAt) : null}
+								onChange={date => setPublishAt(date ? date.toISOString() : null)}
+								showTimeInput={true}
+								disabled={selectedOption !== 'timebound'}
+							/>
+						</FormGroup>
+						<FormGroup label={t('Depubliceren op')}>
+							<DatePicker
+								value={depublishAt ? new Date(depublishAt) : null}
+								onChange={date => setDepublishAt(date ? date.toISOString() : null)}
+								showTimeInput={true}
+								disabled={selectedOption !== 'timebound'}
+							/>
+						</FormGroup>
+					</Form>
+				</Spacer>
+
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>
