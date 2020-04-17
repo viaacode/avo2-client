@@ -315,7 +315,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
 			case 'views':
-				return get(rowData, 'view_counts[0].count', '-');
+				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':

@@ -24,5 +24,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	author_role: (order: Avo.Search.OrderDirection) => ({
 		profile: { usersByuserId: { role: { label: order } } },
 	}),
-	views: (order: Avo.Search.OrderDirection) => ({ view_counts_aggregate: { count: order } }),
+	views: (order: Avo.Search.OrderDirection) => ({
+		view_counts_aggregate: {
+			sum: {
+				count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+			},
+		},
+	}),
 };
