@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { useTranslation } from 'react-i18next';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ContentBlockService } from '../services/content-block.service';

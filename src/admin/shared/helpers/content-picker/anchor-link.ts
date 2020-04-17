@@ -1,4 +1,5 @@
 import { LinkTarget } from '@viaa/avo2-components';
+
 import { PickerSelectItem } from '../../types';
 
 /**
