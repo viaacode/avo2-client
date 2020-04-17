@@ -1,8 +1,17 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { get, sortBy } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { Avatar, Button, ButtonToolbar, Container, Table } from '@viaa/avo2-components';
+import {
+	Accordion,
+	Avatar,
+	Button,
+	ButtonToolbar,
+	Container,
+	Spacer,
+	Table,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -12,8 +21,9 @@ import {
 } from '../../../authentication/helpers/permission-service';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { CustomError, getEnv } from '../../../shared/helpers';
+import { buildLink, CustomError, getEnv } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -22,6 +32,11 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
+import {
+	RawPermissionLink,
+	RawUserGroupLink,
+	RawUserGroupPermissionGroupLink,
+} from '../user.types';
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -106,6 +121,92 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
 	};
 
+	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
+		return (
+			<Table horizontal variant="invisible" className="c-table_detail-page">
+				<tbody>
+					{list.map(item => {
+						return (
+							<tr key={`user-group-row-${item.id}`}>
+								<td>
+									{!!path ? (
+										<Link
+											to={buildLink(path, {
+												id: item.id,
+											})}
+										>
+											{item.label}
+										</Link>
+									) : (
+										item.label
+									)}
+								</td>
+							</tr>
+						);
+					})}
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderPermissionLists = () => {
+		const userGroups: { id: number; label: string }[] = [];
+		const permissionGroups: { id: number; label: string }[] = [];
+		const permissions: { id: number; label: string }[] = [];
+
+		const rawUserGroups: RawUserGroupLink[] = get(storedProfile, 'profile_user_groups', []);
+
+		rawUserGroups.forEach(profileUserGroup => {
+			profileUserGroup.groups.forEach(group => {
+				userGroups.push({
+					id: group.id,
+					label: group.label,
+				});
+				const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
+					group,
+					'group_user_permission_groups',
+					[]
+				);
+				rawPermissionGroups.forEach(permissionGroup => {
+					permissionGroups.push({
+						id: permissionGroup.permission_group.id,
+						label: permissionGroup.permission_group.label,
+					});
+					const rawPermissions: RawPermissionLink[] = get(
+						permissionGroup.permission_group,
+						'permission_group_user_permissions'
+					);
+					rawPermissions.map(permission =>
+						permissions.push({
+							id: permission.permission.id,
+							label: permission.permission.label,
+						})
+					);
+				});
+			});
+		});
+
+		return (
+			<>
+				<Spacer margin="top-extra-large">
+					<Accordion title={t('Gebruikersgroepen')} isOpen={false}>
+						{renderList(sortBy(userGroups, 'label'), ADMIN_PATH.USER_GROUP_DETAIL)}
+					</Accordion>
+				</Spacer>
+
+				<Accordion title={t('Permissiegroepen')} isOpen={false}>
+					{renderList(
+						sortBy(permissionGroups, 'label'),
+						ADMIN_PATH.PERMISSION_GROUP_DETAIL
+					)}
+				</Accordion>
+				<Accordion title={t('Permissies')} isOpen={false}>
+					{renderList(sortBy(permissions, 'label'))}
+				</Accordion>
+			</>
+		);
+	};
+
 	const renderUserDetail = () => {
 		if (!storedProfile) {
 			console.error(
@@ -151,6 +252,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 							])}
 						</tbody>
 					</Table>
+					{renderPermissionLists()}
 				</Container>
 			</Container>
 		);
