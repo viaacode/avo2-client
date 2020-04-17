@@ -10,22 +10,29 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	CheckboxOption,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
+	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-import {
-	COLLECTIONS_OR_BUNDLES_PATH,
-	GET_USER_OVERVIEW_TABLE_COLS,
-} from '../collections-or-bundles.const';
+import { UserService } from '../../users/user.service';
+import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
 	CollectionsOrBundlesOverviewTableCols,
@@ -44,6 +51,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionCount, setCollectionCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
+	const [userRoles, setUserRoles] = useState<Avo.User.Role[]>([]);
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -74,6 +82,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				])
 			);
 			andFilters.push(...getBooleanFilters(filters, ['is_public']));
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['author_role'],
+					['profile.usersByuserId.role.id']
+				)
+			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 			andFilters.push({
 				type_id: {
@@ -112,9 +127,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, t]);
 
+	const fetchUserRoles = useCallback(async () => {
+		try {
+			setUserRoles(await UserService.getUserRoles());
+		} catch (err) {
+			console.error(new CustomError('Failed to get users roles from the database', err));
+			ToastService.danger(t('Het ophalen dan de gebruiker rollen is mislukt'));
+		}
+	}, [setUserRoles, t]);
+
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-	}, [fetchCollectionsOrBundles]);
+		fetchUserRoles();
+	}, [fetchCollectionsOrBundles, fetchUserRoles]);
 
 	useEffect(() => {
 		if (collections) {
@@ -123,6 +148,67 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			});
 		}
 	}, [setLoadingInfo, collections]);
+
+	const userRoleOptions = userRoles.map(
+		(option): CheckboxOption => ({
+			id: String(option.id),
+			label: option.label,
+			checked: get(tableState, 'author_role', [] as string[]).includes(String(option.id)),
+		})
+	);
+
+	const getUserOverviewTableCols = (): FilterableColumn[] => [
+		{
+			id: 'title',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
+			sortable: true,
+		},
+		{
+			id: 'author',
+			label: i18n.t('Auteur'),
+			sortable: true,
+		},
+		{
+			id: 'created_at',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
+			sortable: true,
+			filterType: 'DateRangeDropdown',
+			filterProps: {},
+		},
+		{
+			id: 'updated_at',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
+			sortable: true,
+			filterType: 'DateRangeDropdown',
+			filterProps: {},
+		},
+		{
+			id: 'is_public',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___publiek'),
+			sortable: true,
+			filterType: 'BooleanCheckboxDropdown',
+		},
+		{
+			id: 'author_role',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
+			sortable: true,
+			filterType: 'CheckboxDropdownModal',
+			filterProps: {
+				options: userRoleOptions,
+			},
+		},
+		{
+			id: 'views',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+			sortable: true,
+		},
+		// { id: 'bookmarks', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___gebookmarkt'), sortable: true },
+		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
+		// { id: 'subjects', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'), sortable: true },
+		// { id: 'education_levels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'), sortable: true },
+		// { id: 'labels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___labels'), sortable: true },
+		{ id: 'actions', label: '' },
+	];
 
 	const navigateToCollectionDetail = (id: string | undefined) => {
 		if (!id) {
@@ -267,7 +353,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		return (
 			<>
 				<FilterTable
-					columns={GET_USER_OVERVIEW_TABLE_COLS()}
+					columns={getUserOverviewTableCols()}
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
