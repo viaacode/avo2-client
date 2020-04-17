@@ -101,18 +101,20 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
+		const hasNoCut = startTime === 0 && endTime === fragmentDuration;
+
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'start_oc',
-			fragmentPropValue: startTime,
+			fragmentPropValue: hasNoCut ? null : startTime,
 		});
 
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'end_oc',
-			fragmentPropValue: endTime,
+			fragmentPropValue: hasNoCut ? null : endTime,
 		});
 
 		if (videoStills && videoStills.length) {
