@@ -34,6 +34,10 @@ export const GET_COLLECTIONS = gql`
 			}
 			lom_context
 			lom_classification
+			collection_labels {
+				id
+				label
+			}
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {

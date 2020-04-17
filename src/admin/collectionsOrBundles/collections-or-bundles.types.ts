@@ -13,6 +13,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'in_bundles'
 	| 'subjects'
 	| 'education_levels'
+	| 'collection_labels'
 	| 'actions';
 
 export interface CollectionsOrBundlesTableState extends FilterableTableState {
@@ -28,4 +29,5 @@ export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	in_bundles: boolean;
 	subjects: string[];
 	education_levels: string[];
+	collection_labels: string[];
 }
