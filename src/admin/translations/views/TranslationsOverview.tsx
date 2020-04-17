@@ -130,11 +130,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						{!!translations.length && (
-							<KeyValueEditor
-								initialData={translations}
-								data={translations}
-								onChange={onChangeTranslations}
-							/>
+							<KeyValueEditor data={translations} onChange={onChangeTranslations} />
 						)}
 					</Container>
 				</Container>
