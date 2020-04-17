@@ -171,11 +171,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		columnId: CollectionsOrBundlesOverviewTableCols
 	) => {
 		switch (columnId) {
-			case 'author_first_name':
-				return get(rowData, 'profile.usersByuserId.first_name', '-');
-
-			case 'author_last_name':
-				return get(rowData, 'profile.usersByuserId.last_name', '-');
+			case 'author':
+				const user: Avo.User.User | undefined = get(rowData, 'profile.usersByuserId');
+				return user ? `${user.first_name} ${user.last_name}` : '-';
 
 			case 'author_role':
 				return get(rowData, 'profile.usersByuserId.role.label', '-');

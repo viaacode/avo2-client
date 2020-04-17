@@ -18,14 +18,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		) => any;
 	}
 > = {
-	author_first_name: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { first_name: order } },
-	}),
-	author_last_name: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { first_name: order } },
+	author: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { last_name: order } },
 	}),
 	author_role: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { first_name: order } },
+		profile: { usersByuserId: { role: { label: order } } },
 	}),
 	views: (order: Avo.Search.OrderDirection) => ({ view_counts_aggregate: { count: order } }),
 };
@@ -37,13 +34,8 @@ export const GET_USER_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 		sortable: true,
 	},
 	{
-		id: 'author_first_name',
-		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-voornaam'),
-		sortable: true,
-	},
-	{
-		id: 'author_last_name',
-		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-achternaam'),
+		id: 'author',
+		label: i18n.t('Auteur'),
 		sortable: true,
 	},
 	{

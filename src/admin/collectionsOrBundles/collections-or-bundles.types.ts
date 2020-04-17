@@ -2,8 +2,7 @@ import { FilterableTableState } from '../shared/components/FilterTable/FilterTab
 
 export type CollectionsOrBundlesOverviewTableCols =
 	| 'title'
-	| 'author_first_name'
-	| 'author_last_name'
+	| 'author'
 	| 'author_role'
 	| 'created_at'
 	| 'updated_at'
@@ -18,8 +17,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 
 export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	title: string;
-	author_first_name: string;
-	author_last_name: string;
+	author: string;
 	author_role: string;
 	created_at: string;
 	updated_at: string;
