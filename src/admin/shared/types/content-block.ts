@@ -83,6 +83,7 @@ export interface ContentBlockConfig {
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
 	type: ContentBlockType;
+	anchor?: string;
 }
 
 export interface ContentBlockComponentsConfig {
@@ -147,6 +148,7 @@ export interface DefaultContentBlockState {
 	padding: PaddingFieldState;
 	userGroupIds: number[];
 	fullWidth?: boolean;
+	anchor?: string; // Contains an id that the user can enter, so they can link to this block using the anchor-block buttons
 }
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -296,4 +298,5 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 
 export interface AnchorLinksBlockState extends DefaultContentBlockState {
 	align: AlignOption;
+	hasDividers: boolean;
 }

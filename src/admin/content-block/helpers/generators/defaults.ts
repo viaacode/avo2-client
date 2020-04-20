@@ -53,6 +53,11 @@ export const BLOCK_FIELD_DEFAULTS = () => ({
 	),
 	padding: PADDING_FIELD(),
 	userGroupIds: USER_GROUP_SELECT(),
+
+	// Used to link to this block from inside the same page using the anchors-block
+	anchor: INPUT_FIELD({
+		label: i18n.t('Anchor id'),
+	}),
 });
 
 // Recurring fields
@@ -134,6 +139,12 @@ export const TEXT_FIELD = (
 			},
 		},
 	} as Partial<WYSIWYGProps>,
+	...propOverride,
+});
+
+export const INPUT_FIELD = (propOverride?: Partial<ContentBlockField>): ContentBlockField => ({
+	label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
+	editorType: ContentBlockEditor.TextInput,
 	...propOverride,
 });
 

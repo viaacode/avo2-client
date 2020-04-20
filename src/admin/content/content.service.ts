@@ -5,10 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError, performQuery } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
-import {
-	insertContentBlocks,
-	updateContentBlocks,
-} from '../content-block/services/content-block.service';
+import { ContentBlockService } from '../content-block/services/content-block.service';
 import { ContentBlockConfig } from '../shared/types';
 
 import {
@@ -371,7 +368,10 @@ export class ContentService {
 			if (id) {
 				// Insert content-blocks
 				if (contentBlockConfigs && contentBlockConfigs.length) {
-					const contentBlocks = await insertContentBlocks(id, contentBlockConfigs);
+					const contentBlocks = await ContentBlockService.insertContentBlocks(
+						id,
+						contentBlockConfigs
+					);
 
 					if (!contentBlocks) {
 						// return null to prevent triggering success toast
@@ -418,7 +418,7 @@ export class ContentService {
 			const updatedContent = get(response, 'data', null);
 
 			if (contentBlockConfigs && contentBlockConfigs.length && initialContentBlocks) {
-				await updateContentBlocks(
+				await ContentBlockService.updateContentBlocks(
 					contentPage.id as number,
 					initialContentBlocks,
 					contentBlockConfigs
