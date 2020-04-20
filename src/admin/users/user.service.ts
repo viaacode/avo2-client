@@ -13,13 +13,14 @@ export class UserService {
 		page: number,
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection,
-		queryText: string
+		queryText: string,
+		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[Avo.User.Profile[], number]> {
 		let variables: any;
 		try {
 			variables = {
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
+				offset: itemsPerPage * page,
+				limit: itemsPerPage,
 				orderBy: [{ [sortColumn]: sortOrder }],
 				queryText: `%${queryText}%`,
 			};
