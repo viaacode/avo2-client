@@ -18,6 +18,7 @@ export interface AppContentNavElement {
 	description: string;
 	created_at: string;
 	content_id: any;
+	tooltip: string;
 }
 
 export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };

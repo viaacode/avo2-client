@@ -14,6 +14,7 @@ export type NavigationItemInfo = {
 	component?: ReactElement;
 	icon?: IconName;
 	subLinks?: NavigationItemInfo[];
+	tooltip?: string;
 };
 
 export type ReactSelectOption<T = any> = {

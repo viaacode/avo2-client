@@ -255,7 +255,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 													)}
 												</ButtonGroup>
 											</td>
-											<td>{item.label}</td>
+											<td>
+												{item.label ||
+													(item as any).tooltip ||
+													item.content_path // TODO: remove as any in next typings update
+												}
+											</td>
 											<td>
 												<ButtonToolbar>
 													<Button

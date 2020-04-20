@@ -48,6 +48,7 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					className={className}
 					activeClassName={showActive ? 'c-nav__item--active' : undefined}
 					exact={exact}
+					title={item.tooltip}
 				>
 					{item.icon && !isMobile && <Icon name={item.icon} />}
 					{item.label}

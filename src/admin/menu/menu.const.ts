@@ -28,6 +28,7 @@ export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => 
 	content_path: null,
 	link_target: '_self',
 	user_group_ids: [],
+	tooltip: '',
 });
 
 export const GET_PAGE_TYPES_LANG = () => ({

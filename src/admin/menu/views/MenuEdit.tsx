@@ -50,6 +50,7 @@ export interface MenuSchema {
 	placement: string;
 	created_at: string;
 	updated_at: string;
+	tooltip: string;
 }
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
@@ -113,6 +114,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							link_target: menuItem.link_target || '_self',
 							user_group_ids: menuItem.user_group_ids || [],
 							placement: menuItem.placement,
+							tooltip: (menuItem as any).tooltip, // TODO: Ditch 'as any' at typing 2.16.
 						});
 					}
 				})
@@ -245,7 +247,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				return acc;
 			}
 
-			return [...acc, { label: startCase(placement), value: placement }];
+			return [
+				...acc,
+				{
+					label: startCase(placement),
+					value: placement,
+				},
+			];
 		},
 		[]
 	);
@@ -282,7 +290,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				return;
 			}
 
-			const menuItem: Partial<MenuSchema> = {
+			const menuItem: Partial<any> = {
+				// TODO: Replace any by Avo.Menu.Menu at typing 2.16.
 				icon_name: menuForm.icon,
 				label: menuForm.label,
 				content_path: menuForm.content_path,
@@ -290,6 +299,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				link_target: menuForm.link_target,
 				user_group_ids: menuForm.user_group_ids,
 				placement: menuForm.placement,
+				tooltip: menuForm.tooltip,
 			};
 
 			if (pageType === 'create') {
@@ -298,7 +308,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					// Get description from existing items or use form description field
 					description: get(menuItems, '[0].description', menuForm.description),
 					position: menuItems.length,
-				} as Avo.Menu.Menu);
+				} as any); // TODO: Replace any by Avo.Menu.Menu at next typings.
 				ToastService.success(
 					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
 					false
@@ -323,7 +333,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				);
 			}
 		} catch (err) {
-			console.error(new CustomError('Failed to save menu item', err, { menuForm }));
+			console.error(
+				new CustomError('Failed to save menu item', err, {
+					menuForm,
+				})
+			);
 			ToastService.danger(
 				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
 				false
@@ -339,10 +353,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
 		}
 
-		if (!menuForm.label) {
-			errors.label = t('admin/menu/views/menu-edit___label-is-verplicht');
-		}
-
 		if (!menuForm.content_path) {
 			errors.content_path = t('admin/menu/views/menu-edit___link-is-verplicht');
 		}
@@ -354,7 +364,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	const navigateBack = (): void => {
 		if (menuParentId) {
-			navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+			navigate(history, MENU_PATH.MENU_DETAIL, {
+				menu: menuParentId,
+			});
 		} else {
 			navigate(history, MENU_PATH.MENU);
 		}

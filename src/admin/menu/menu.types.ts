@@ -15,11 +15,12 @@ export interface MenuEditFormState {
 	description?: string;
 	placement?: string;
 	icon: IconName | '';
-	label: string;
+	label?: string;
 	content_path: string | null;
 	content_type: ContentPickerType | null;
 	link_target: '_blank' | '_self';
 	user_group_ids: number[];
+	tooltip?: string;
 }
 
 export interface MenuEditFormErrorState {
@@ -31,4 +32,5 @@ export interface MenuEditFormErrorState {
 	content_type?: string;
 	link_target?: string;
 	user_group_ids?: string;
+	tooltip?: string;
 }
