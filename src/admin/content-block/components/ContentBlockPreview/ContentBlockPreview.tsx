@@ -75,21 +75,29 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 						}}
 					/>
 				)}
-				<Spacer
-					className={classnames('c-content-block-preview', {
-						'c-content-block-preview--dark': hasDarkBg,
-						'u-color-white': hasDarkBg,
-					})}
-					margin={[]}
-					padding={[blockState.padding.top, blockState.padding.bottom]}
-				>
-					<Container
-						mode="horizontal"
-						size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
+				{blockState.fullWidth ? (
+					<PreviewComponent {...componentStateProps} {...blockStateProps} />
+				) : (
+					<Spacer
+						className={classnames('c-content-block-preview', {
+							'c-content-block-preview--dark': hasDarkBg,
+							'u-color-white': hasDarkBg,
+						})}
+						margin={[]}
+						padding={[blockState.padding.top, blockState.padding.bottom]}
 					>
-						<PreviewComponent {...componentStateProps} {...blockStateProps} />
-					</Container>
-				</Spacer>
+						<Container
+							mode="horizontal"
+							size={
+								containerSize === ContentWidthMap.REGULAR
+									? undefined
+									: containerSize
+							}
+						>
+							<PreviewComponent {...componentStateProps} {...blockStateProps} />
+						</Container>
+					</Spacer>
+				)}
 			</div>
 		</div>
 	);

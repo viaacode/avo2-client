@@ -2,6 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
 import { getProfileId } from './get-profile-info';
 import {
@@ -140,8 +141,17 @@ export class PermissionService {
 		// Special checks on top of name being in the permission list
 		switch (permissionName) {
 			case PermissionName.EDIT_OWN_COLLECTIONS:
-				const ownerId = get(obj, 'owner_profile_id');
-				return profileId && ownerId && profileId === ownerId;
+				const collection = await CollectionService.fetchCollectionOrBundleById(
+					obj,
+					'collection'
+				);
+				const collectionOwnerId = get(collection, 'owner_profile_id');
+				return !!profileId && !!collectionOwnerId && profileId === collectionOwnerId;
+
+			case PermissionName.EDIT_OWN_BUNDLES:
+				const bundle = await CollectionService.fetchCollectionOrBundleById(obj, 'bundle');
+				const bundleOwnerId = get(bundle, 'owner_profile_id');
+				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;
 
 			case PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT:
 				return this.checkViewItemsLinkedToAssignment(user, obj, 'ITEM');

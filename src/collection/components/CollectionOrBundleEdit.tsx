@@ -34,6 +34,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -142,6 +143,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
+	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -592,6 +594,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				);
 				break;
 
+			case 'addItemById':
+				setEnterItemIdModalOpen(true);
+				break;
+
 			default:
 				return null;
 		}
@@ -646,6 +652,90 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			});
 		}
 		setIsReorderModalOpen(false);
+	};
+
+	const handleAddItemById = async (id: string) => {
+		try {
+			if (isCollection) {
+				// We're adding an item to the collection
+				const item = await ItemsService.fetchItemByExternalId(id);
+				const collectionId = get(collectionState.currentCollection, 'id');
+				if (!collectionId) {
+					throw new CustomError('Collection id could not be found', null, {
+						collectionState,
+					});
+				}
+				const fragment: Partial<Avo.Collection.Fragment> = {
+					use_custom_fields: false,
+					start_oc: null,
+					position: getFragmentsFromCollection(collectionState.currentCollection).length,
+					external_id: id,
+					end_oc: null,
+					custom_title: null,
+					custom_description: null,
+					collection_uuid: collectionId,
+					item_meta: item,
+					type: 'ITEM',
+				};
+				changeCollectionState({
+					type: 'INSERT_FRAGMENT',
+					fragment: fragment as Avo.Collection.Fragment,
+					index: getFragmentsFromCollection(collectionState.currentCollection).length,
+				});
+				ToastService.success(t('Het item is toegevoegd aan de collectie'));
+			} else {
+				// We're adding a collection to the bundle
+				const collection:
+					| Avo.Collection.Collection
+					| undefined = await CollectionService.fetchCollectionOrBundleById(
+					id,
+					'collection'
+				);
+				if (!collection) {
+					ToastService.danger(t('De collectie met dit id kon niet worden gevonden'));
+					return;
+				}
+				const bundleId = get(collectionState.currentCollection, 'id');
+				if (!bundleId) {
+					throw new CustomError('Bundle id could not be found', null, {
+						collectionState,
+					});
+				}
+				const fragment: Partial<Avo.Collection.Fragment> = {
+					use_custom_fields: false,
+					start_oc: null,
+					position: getFragmentsFromCollection(collectionState.currentCollection).length,
+					external_id: id,
+					end_oc: null,
+					custom_title: null,
+					custom_description: null,
+					collection_uuid: bundleId,
+					item_meta: collection,
+					type: 'COLLECTION',
+				};
+				changeCollectionState({
+					type: 'INSERT_FRAGMENT',
+					fragment: fragment as Avo.Collection.Fragment,
+					index: getFragmentsFromCollection(collectionState.currentCollection).length,
+				});
+				ToastService.success(t('De collectie is toegevoegd aan de bundel'));
+			}
+		} catch (err) {
+			console.error(
+				new CustomError(
+					isCollection
+						? 'Failed to add item to collection'
+						: 'Failed to add collection to bundle',
+					err,
+					{ id, isCollection }
+				)
+			);
+			ToastService.danger(
+				isCollection
+					? t('Er ging iets mis bij het toevoegen van het item')
+					: t('Er ging iets mis bij het toevoegen van de collectie')
+			);
+		}
 	};
 
 	const renderDraggableFragment = (fragment: Avo.Collection.Fragment): ReactNode => {
@@ -722,6 +812,20 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			),
 			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
 		];
+		if (
+			PermissionService.hasPerm(
+				user,
+				isCollection ? PermissionName.EDIT_ANY_COLLECTIONS : PermissionName.EDIT_ANY_BUNDLES
+			)
+		) {
+			COLLECTION_DROPDOWN_ITEMS.push(
+				createDropdownMenuItem(
+					'addItemById',
+					isCollection ? t('Voeg item toe') : t('Voeg collectie toe'),
+					'plus'
+				)
+			);
+		}
 		return (
 			<ButtonToolbar>
 				<Button
@@ -963,6 +1067,20 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
 							  )
 					}
+				/>
+				<InputModal
+					title={
+						isCollection ? t('Voeg item toe via PID') : t('Voeg collectie toe via ID')
+					}
+					inputLabel={t('id')}
+					inputPlaceholder={
+						isCollection
+							? t('Bijvoorbeeld: zg6g181x5j')
+							: t('Bijvoorbeeld: c8a48b7e-d27d-4b9a-a793-9ba79fff41df')
+					}
+					isOpen={isEnterItemIdModalOpen}
+					onClose={() => setEnterItemIdModalOpen(false)}
+					inputCallback={handleAddItemById}
 				/>
 				<DraggableListModal
 					items={getFragmentsFromCollection(collectionState.currentCollection)}

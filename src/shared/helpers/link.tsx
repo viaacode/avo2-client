@@ -74,7 +74,7 @@ export const navigate = (
 	history.push(builtLink);
 };
 
-function navigateToAbsoluteOrRelativeUrl(
+export function navigateToAbsoluteOrRelativeUrl(
 	url: string,
 	history: History,
 	target: LinkTarget = LinkTarget.Self

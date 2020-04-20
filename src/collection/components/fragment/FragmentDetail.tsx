@@ -71,6 +71,10 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 			)}
 			onTitleClicked={getTitleClickedHandler()}
 			history={history}
+			cuePoints={{
+				start: collectionFragment.start_oc,
+				end: collectionFragment.end_oc,
+			}}
 			{...rest}
 		/>
 	) : (

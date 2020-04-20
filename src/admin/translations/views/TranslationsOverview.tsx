@@ -1,5 +1,5 @@
 import { flatten, fromPairs, get, groupBy, map } from 'lodash-es';
-import React, { FunctionComponent, Reducer, useEffect, useReducer } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Container, KeyValueEditor } from '@viaa/avo2-components';
@@ -9,34 +9,24 @@ import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { translationsReducer } from '../translations.reducers';
 import { fetchTranslations, updateTranslations } from '../translations.service';
-import {
-	Translation,
-	TranslationsAction,
-	TranslationsActionType,
-	TranslationsState,
-} from '../translations.types';
+import { Translation, TranslationsState } from '../translations.types';
 
 interface TranslationsOverviewProps extends DefaultSecureRouteProps {}
 
 const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () => {
 	const [t] = useTranslation();
 
-	const [translations, dispatch] = useReducer<Reducer<Translation[], TranslationsAction>>(
-		translationsReducer,
-		[]
-	);
+	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
+	const [translations, setTranslations] = useState<Translation[]>([]);
 
 	useEffect(() => {
-		// retrieve translations
 		fetchTranslations()
-			.then((translations: TranslationsState[]) =>
-				dispatch({
-					type: TranslationsActionType.SET_TRANSLATIONS,
-					payload: convertTranslationsToData(translations),
-				})
-			)
+			.then((translationsState: TranslationsState[]) => {
+				const translationRows = convertTranslationsToData(translationsState);
+				setInitialTranslations(translationRows);
+				setTranslations(translationRows);
+			})
 			.catch(err => {
 				console.error(new CustomError('Failed to fetch translations', err));
 				ToastService.danger(
@@ -49,11 +39,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 	}, [t]);
 
 	const onChangeTranslations = (updatedTranslations: Translation[]) => {
-		// update translations state
-		dispatch({
-			type: TranslationsActionType.SET_TRANSLATIONS,
-			payload: updatedTranslations,
-		});
+		setTranslations(updatedTranslations);
 	};
 
 	const onSaveTranslations = async () => {
@@ -66,6 +52,8 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 
 		try {
 			await Promise.all(promises);
+
+			setInitialTranslations(translations);
 
 			ToastService.success(
 				t(
@@ -84,7 +72,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		}
 	};
 
-	const convertTranslationsToData = (translations: TranslationsState[]) => {
+	const convertTranslationsToData = (translations: TranslationsState[]): [string, string][] => {
 		// convert translations to state format
 		return flatten(
 			translations.map((context: TranslationsState) => {
@@ -130,7 +118,11 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						{!!translations.length && (
-							<KeyValueEditor data={translations} onChange={onChangeTranslations} />
+							<KeyValueEditor
+								initialData={initialTranslations}
+								data={translations}
+								onChange={onChangeTranslations}
+							/>
 						)}
 					</Container>
 				</Container>

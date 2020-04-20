@@ -31,6 +31,11 @@ import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
 import './ItemVideoDescription.scss';
 
+interface CuePoints {
+	start: number | null;
+	end: number | null;
+}
+
 interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
@@ -38,6 +43,7 @@ interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	showTitle?: boolean;
 	title?: string;
 	description?: string;
+	cuePoints?: CuePoints;
 	onTitleClicked?: () => void;
 }
 
@@ -51,6 +57,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	title = itemMetaData.title,
 	description = itemMetaData.description,
 	onTitleClicked,
+	cuePoints,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -182,6 +189,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
+				{...cuePoints}
 				autoplay
 				itemUuid={itemMetaData.uid}
 			/>

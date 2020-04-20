@@ -6,7 +6,7 @@ import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
-import { GET_ITEM_BY_ID, GET_ITEMS, UPDATE_ITEM } from './items.gql';
+import { GET_ITEM_BY_EXTERNAL_ID, GET_ITEM_BY_ID, GET_ITEMS, UPDATE_ITEM } from './items.gql';
 import { ItemsOverviewTableCols } from './items.types';
 
 export class ItemsService {
@@ -81,6 +81,33 @@ export class ItemsService {
 			throw new CustomError('Failed to get the item from the database', err, {
 				variables,
 				query: 'GET_ITEM_BY_ID',
+			});
+		}
+	}
+
+	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item> {
+		let variables: any;
+		try {
+			variables = {
+				externalId,
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_ITEM_BY_EXTERNAL_ID,
+			});
+			const item = get(response, 'data.app_item_meta[0]');
+
+			if (!item) {
+				throw new CustomError('Response does not contain an item', null, {
+					response,
+				});
+			}
+
+			return item;
+		} catch (err) {
+			throw new CustomError('Failed to get the item from the database', err, {
+				variables,
+				query: 'GET_ITEM_BY_EXTERNAL_ID',
 			});
 		}
 	}
