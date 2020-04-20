@@ -26,6 +26,7 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import i18n from '../../../shared/translations/i18n';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
+import { CollectionService } from '../../collection.service';
 
 interface ShareCollectionModalProps extends DefaultSecureRouteProps {
 	isOpen: boolean;
@@ -82,6 +83,30 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
 					ToastService.danger(validationErrors);
+					return;
+				}
+
+				// Check if title and description is,'t the same as an existing published collection
+				const duplicates = await CollectionService.getCollectionByTitleOrDescription(
+					collection.title,
+					collection.description
+				);
+
+				if (duplicates.byTitle) {
+					ToastService.danger(
+						isCollection()
+							? t('Een publieke collectie met deze titel bestaat reeds.')
+							: t('Een publieke bundel met deze titel bestaat reeds.')
+					);
+					return;
+				}
+
+				if (duplicates.byTitle) {
+					ToastService.danger(
+						isCollection()
+							? t('Een publieke collectie met deze beschrijving bestaat reeds.')
+							: t('Een publieke bundel met deze beschrijving bestaat reeds.')
+					);
 					return;
 				}
 			}
