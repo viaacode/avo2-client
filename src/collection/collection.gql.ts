@@ -305,3 +305,26 @@ export const GET_QUALITY_LABELS = gql`
 		}
 	}
 `;
+
+export const GET_COLLECTIONS_BY_ITEM_EXTERNAL_ID = gql`
+	query getCollectionsByItemUuid($itemExternalId: String!) {
+		app_collections(
+			where: { collection_fragments: { external_id: { _eq: $itemExternalId } } }
+		) {
+			id
+			title
+			profile {
+				usersByuserId {
+					first_name
+					last_name
+					id
+				}
+				id
+				profile_organizations {
+					organization_id
+					unit_id
+				}
+			}
+		}
+	}
+`;

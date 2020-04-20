@@ -22,6 +22,7 @@ import {
 	GET_COLLECTION_ID_BY_AVO1_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_COLLECTIONS_BY_ITEM_EXTERNAL_ID,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
@@ -1024,6 +1025,26 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to get collection labels', err, {
 				query: 'GET_COLLECTION_LABELS',
+			});
+		}
+	}
+
+	static async fetchCollectionsByItemExternalId(
+		itemExternalId: string
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			// retrieve collections
+			const response = await dataService.query({
+				query: GET_COLLECTIONS_BY_ITEM_EXTERNAL_ID,
+				variables: { itemExternalId },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError('Fetch collections by item external id failed', err, {
+				query: 'GET_COLLECTIONS_BY_ITEM_EXTERNAL_ID',
+				variables: { itemExternalId },
 			});
 		}
 	}
