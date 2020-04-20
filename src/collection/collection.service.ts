@@ -1051,7 +1051,7 @@ export class CollectionService {
 
 			const collectionWithSameDescriptionExists: boolean = !!get(
 				response,
-				'data.collectionByTitle',
+				'data.collectionByDescription',
 				[]
 			).length;
 

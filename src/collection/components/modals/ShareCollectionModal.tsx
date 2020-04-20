@@ -101,7 +101,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					return;
 				}
 
-				if (duplicates.byTitle) {
+				if (duplicates.byDescription) {
 					ToastService.danger(
 						isCollection()
 							? t('Een publieke collectie met deze beschrijving bestaat reeds.')
