@@ -11,6 +11,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { ContentBlockType } from '../../../shared/types';
+import { BlockKlaar } from '../BlockKlaar/BlockKlaar';
 import {
 	BlockGridWrapper,
 	MediaGridWrapper,
@@ -31,6 +32,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.MediaGrid]: MediaGridWrapper,
+	[ContentBlockType.KLAAR]: BlockKlaar,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
@@ -53,6 +55,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.Spotlight,
+	ContentBlockType.KLAAR,
 ];
 
 export const NAVIGABLE_CONTENT_BLOCKS = [

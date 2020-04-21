@@ -3,6 +3,7 @@ import {
 	Checkbox,
 	ContentItemStyle,
 	ContentTabStyle,
+	DatePicker,
 	MultiRange,
 	Select,
 	SelectOption,
@@ -55,6 +56,8 @@ import {
 	INITIAL_IMAGE_GRID_COMPONENTS_STATE,
 	INITIAL_INTRO_BLOCK_STATE,
 	INITIAL_INTRO_COMPONENTS_STATE,
+	INITIAL_KLAAR_BLOCK_STATE,
+	INITIAL_KLAAR_COMPONENTS_STATE,
 	INITIAL_MEDIA_GRID_BLOCK_STATE,
 	INITIAL_MEDIA_GRID_COMPONENTS_STATE,
 	INITIAL_MEDIA_PLAYER_BLOCK_STATE,
@@ -74,6 +77,7 @@ import {
 	INITIAL_SPOTLIGHT_BLOCK_STATE,
 	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	INTRO_BLOCK_CONFIG,
+	KLAAR_BLOCK_CONFIG,
 	MEDIA_GRID_BLOCK_CONFIG,
 	MEDIA_PLAYER_BLOCK_CONFIG,
 	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
@@ -123,6 +127,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___i-frame'),
 		value: ContentBlockType.IFrame,
+	},
+	{
+		label: i18n.t('KLAAR'),
+		value: ContentBlockType.KLAAR,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
@@ -181,6 +189,7 @@ export const EDITOR_TYPES_MAP = {
 	TextInput,
 	WYSIWYG,
 	UserGroupSelect,
+	DatePicker,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -192,6 +201,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
+	[ContentBlockType.KLAAR]: KLAAR_BLOCK_CONFIG,
 	[ContentBlockType.MediaGrid]: MEDIA_GRID_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
@@ -212,6 +222,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_COMPONENTS_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_COMPONENTS_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_COMPONENTS_STATE,
+	[ContentBlockType.KLAAR]: INITIAL_KLAAR_COMPONENTS_STATE,
 	[ContentBlockType.MediaGrid]: INITIAL_MEDIA_GRID_COMPONENTS_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_COMPONENTS_STATE,
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
@@ -232,6 +243,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
+	[ContentBlockType.KLAAR]: INITIAL_KLAAR_BLOCK_STATE,
 	[ContentBlockType.MediaGrid]: INITIAL_MEDIA_GRID_BLOCK_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_STATE,
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,

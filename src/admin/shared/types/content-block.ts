@@ -123,6 +123,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
+	KLAAR = 'KLAAR',
 	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -166,6 +167,7 @@ export enum ContentBlockEditor {
 	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
 	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',
+	DatePicker = 'DatePicker',
 	MultiRange = 'MultiRange',
 	PaddingSelect = 'PaddingSelect',
 	Select = 'Select',
@@ -184,6 +186,7 @@ export type ContentBlockComponentState =
 	| ImageBlockComponentState
 	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
+	| KLAARBlockComponentState
 	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
 	| PageOverviewBlockComponentStateFields
@@ -242,6 +245,10 @@ export interface AnchorLinksBlockComponentState {
 	icon?: IconName;
 	type?: ButtonType;
 	navigate?: () => void;
+}
+
+export interface KLAARBlockComponentState {
+	title: string;
 }
 
 export interface IntroBlockComponentState {
