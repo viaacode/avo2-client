@@ -21,6 +21,7 @@ import {
 	UPDATE_ASSIGNMENT,
 } from './assignment.gql';
 import { AssignmentLabel, AssignmentLayout } from './assignment.types';
+import { CONTENT_LABEL_TO_QUERY } from './assignment.const';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -391,5 +392,27 @@ export class AssignmentService {
 				query: 'GET_ASSIGNMENT_BY_ID',
 			});
 		}
+	}
+
+	public static async getAssignmentContent(
+		assignment: Avo.Assignment.Assignment
+	): Promise<Avo.Assignment.Content | null> {
+		if (assignment.content_id && assignment.content_label) {
+			const queryInfo = CONTENT_LABEL_TO_QUERY[assignment.content_label];
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+				query: queryInfo.query,
+				variables: queryInfo.getVariables(assignment.content_id),
+			});
+
+			const newAssignmentContent = get(response, `data.${queryInfo.resultPath}`);
+
+			if (!newAssignmentContent) {
+				throw new CustomError('NOT_FOUND');
+			}
+
+			return newAssignmentContent;
+		}
+
+		return null;
 	}
 }
