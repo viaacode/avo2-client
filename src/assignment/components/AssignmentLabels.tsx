@@ -11,6 +11,7 @@ import { ColorOption } from '../../admin/content-block/components/fields/ColorSe
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 
 import { AssignmentLabel } from '../assignment.types';
+import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 interface AssignmentLabelsProps {
@@ -125,6 +126,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 						ariaLabel="Beheer je vakken en projecten"
 						type="borderless"
 						size="large"
+						className="c-button__labels"
 						onClick={() => setIsManageLabelsModalOpen(true)}
 					/>
 				</FlexItem>
