@@ -1,9 +1,8 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
+import { get, isEmpty, isNil } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ValueType } from 'react-select';
 
 import {
 	Alert,
@@ -26,8 +25,6 @@ import {
 	RadioButton,
 	RadioButtonGroup,
 	Spacer,
-	TagList,
-	TagOption,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -58,12 +55,10 @@ import { AssignmentLabelsService, dataService, ToastService } from '../../shared
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import { ColorSelect } from '../../admin/content-block/components/fields';
-import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
 import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLabel, AssignmentLayout } from '../assignment.types';
-import ManageAssignmentLabels from '../components/modals/ManageAssignmentLabels';
+import AssignmentLabels from '../components/AssignmentLabels';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
@@ -76,12 +71,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignmentLabels, setAssignmentLabels] = useState<AssignmentLabel[]>([]);
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<AssignmentLabel[]>([]);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
 		{}
 	);
@@ -93,15 +86,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
+			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(assignment));
 		},
-		[setCurrentAssignment, setInitialAssignment]
+		[setCurrentAssignment, setInitialAssignment, setAssignmentLabels]
 	);
-
-	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch labels every time the manage labels modal closes and once at startup
-		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
-		setAllAssignmentLabels(labels);
-	}, [user, setAllAssignmentLabels]);
 
 	/**
 	 *  Get query string variables and store them into the assignment state object
@@ -122,16 +110,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				// Fetch the content if the assignment has content
 				const tempAssignmentContent = await fetchAssignmentContent(tempAssignment);
 
-				await fetchAssignmentLabels();
-
 				setAssignmentContent(tempAssignmentContent);
 				setBothAssignments({
 					...tempAssignment,
 					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
 				});
-				setAssignmentLabels(
-					AssignmentLabelsService.getLabelsFromAssignment(tempAssignment)
-				);
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
@@ -219,16 +202,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 			)
 		);
-	}, [
-		location,
-		match.params,
-		setLoadingInfo,
-		setAssignmentContent,
-		t,
-		user,
-		setBothAssignments,
-		fetchAssignmentLabels,
-	]);
+	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 
 	useEffect(() => {
 		if (
@@ -399,7 +373,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			await AssignmentService.updateAssignment(
 				assignment,
 				AssignmentLabelsService.getLabelsFromAssignment(initialAssignment),
-				assignmentLabels
+				AssignmentLabelsService.getLabelsFromAssignment(currentAssignment)
 			);
 			setBothAssignments(assignment);
 			ToastService.success(
@@ -419,107 +393,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		return (
 			!!currentAssignment.deadline_at &&
 			new Date(currentAssignment.deadline_at) < new Date(Date.now())
-		);
-	};
-
-	const handleManageAssignmentLabelsModalClosed = () => {
-		fetchAssignmentLabels();
-		setIsManageLabelsModalOpen(false);
-	};
-
-	const getTagOptions = (labels: AssignmentLabel[]): TagOption[] => {
-		return labels.map(labelObj => ({
-			label: labelObj.label || '',
-			id: labelObj.id,
-			// labelObj.enum_color.label contains hex code (graphql enum quirk)
-			// The value of the enum has to be uppercase text, so the value contains the color name
-			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
-		}));
-	};
-
-	const getColorOptions = (labels: AssignmentLabel[]): ColorOption[] => {
-		return labels.map(labelObj => ({
-			label: labelObj.label || '',
-			value: String(labelObj.id),
-			// labelObj.enum_color.label contains hex code (graphql enum quirk)
-			// The value of the enum has to be uppercase text, so the value contains the color name
-			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
-		}));
-	};
-
-	const addAssignmentLabel = (labelOption: ValueType<ColorOption>) => {
-		if (!labelOption) {
-			ToastService.danger(
-				t(
-					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
-				)
-			);
-			return;
-		}
-		const assignmentLabel = allAssignmentLabels.find(
-			labelObj => String(labelObj.id) === (labelOption as ColorOption).value
-		);
-		if (!assignmentLabel) {
-			ToastService.danger(
-				t(
-					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
-				)
-			);
-			return;
-		}
-		setAssignmentLabels([...assignmentLabels, assignmentLabel]);
-	};
-
-	const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
-		evt.stopPropagation();
-		setAssignmentLabels(
-			assignmentLabels.filter((labelObj: AssignmentLabel) => labelObj.id !== labelId)
-		);
-	};
-
-	const renderLabelControls = () => {
-		const assignmentLabelIds = assignmentLabels.map(labelObj => labelObj.id);
-		const unselectedLabels = cloneDeep(
-			allAssignmentLabels.filter(labelObj => !assignmentLabelIds.includes(labelObj.id))
-		);
-
-		return (
-			<>
-				<TagList
-					closable={true}
-					tags={getTagOptions(assignmentLabels)}
-					onTagClosed={deleteAssignmentLabel}
-				/>
-				<Flex>
-					<FlexItem>
-						<Spacer margin="right-small">
-							<ColorSelect
-								options={getColorOptions(unselectedLabels)}
-								value={null}
-								onChange={addAssignmentLabel}
-								placeholder={t(
-									'assignment/views/assignment-edit___voeg-een-vak-of-project-toe'
-								)}
-								noOptionsMessage={() =>
-									t(
-										'assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'
-									)
-								}
-							/>
-						</Spacer>
-					</FlexItem>
-					<FlexItem shrink>
-						<Button
-							icon="settings"
-							title="Beheer je vakken en projecten"
-							ariaLabel="Beheer je vakken en projecten"
-							type="borderless"
-							size="large"
-							onClick={() => setIsManageLabelsModalOpen(true)}
-						/>
-					</FlexItem>
-				</Flex>
-			</>
 		);
 	};
 
@@ -799,7 +672,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							<FormGroup
 								label={t('assignment/views/assignment-edit___vak-of-project')}
 							>
-								{renderLabelControls()}
+								<AssignmentLabels
+									labels={assignmentLabels}
+									user={user}
+									onChange={setAssignmentLabels}
+								/>
 							</FormGroup>
 							<FormGroup
 								label={t('assignment/views/assignment-edit___antwoorden-op')}
@@ -967,12 +844,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					emptyMessage={t(
 						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
 					)}
-				/>
-
-				<ManageAssignmentLabels
-					onClose={handleManageAssignmentLabelsModalClosed}
-					isOpen={isManageLabelsModalOpen}
-					user={user}
 				/>
 			</>
 		);

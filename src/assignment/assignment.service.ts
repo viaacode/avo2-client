@@ -172,7 +172,8 @@ export class AssignmentService {
 	}
 
 	public static async insertAssignment(
-		assignment: Partial<Avo.Assignment.Assignment>
+		assignment: Partial<Avo.Assignment.Assignment>,
+		addedLabels?: AssignmentLabel[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const [validationErrors, assignmentToSave] = AssignmentService.validateAssignment({
@@ -198,16 +199,29 @@ export class AssignmentService {
 
 			const id = get(response, 'data.insert_app_assignments.returning[0].id');
 
-			if (typeof id !== undefined) {
-				return {
-					...assignment, // Do not copy the auto modified fields from the validation back into the input controls
-					id,
-				} as Avo.Assignment.Assignment;
+			if (isNil(id)) {
+				throw new CustomError(
+					'Saving the assignment failed, response id was undefined',
+					null,
+					{
+						response,
+					}
+				);
 			}
 
-			throw new CustomError('Saving the assignment failed, response id was undefined', null, {
-				response,
-			});
+			if (addedLabels) {
+				// Update labels
+				const addedLabelIds = addedLabels.map(labelObj => labelObj.id);
+
+				await Promise.all([
+					AssignmentLabelsService.linkLabelsFromAssignment(id, addedLabelIds),
+				]);
+			}
+
+			return {
+				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
+				id,
+			} as Avo.Assignment.Assignment;
 		} catch (err) {
 			console.error(err);
 			throw err;
