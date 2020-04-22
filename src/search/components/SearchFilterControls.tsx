@@ -1,4 +1,4 @@
-import { capitalize, get } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,7 @@ import { SearchFilterControlsProps } from '../search.types';
 import './SearchFilterControls.scss';
 
 const languageCodeToLabel = (code: string): string => {
-	return capitalize(LANGUAGES.nl[code]) || code;
+	return LANGUAGES.nl[code] || code;
 };
 
 const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
