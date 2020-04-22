@@ -186,7 +186,7 @@ export type ContentBlockComponentState =
 	| ImageBlockComponentState
 	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
-	| KLAARBlockComponentState
+	| KlaarBlockComponentState
 	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
 	| PageOverviewBlockComponentStateFields
@@ -247,7 +247,7 @@ export interface AnchorLinksBlockComponentState {
 	navigate?: () => void;
 }
 
-export interface KLAARBlockComponentState {
+export interface KlaarBlockComponentState {
 	title: string;
 }
 

@@ -61,7 +61,6 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 			};
 			break;
 		case ContentBlockEditor.DatePicker:
-			console.log((state as any)[fieldKey]);
 			editorProps = {
 				onChange: (date: any) =>
 					handleChange(type, fieldKey, date.toISOString(), stateIndex),

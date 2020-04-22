@@ -1,7 +1,6 @@
-import React, { CSSProperties, FunctionComponent } from 'react';
-
 import classnames from 'classnames';
 import moment from 'moment';
+import React, { FunctionComponent } from 'react';
 
 import './BlockKlaar.scss';
 
@@ -11,7 +10,6 @@ export interface KlaarElement {
 
 export interface BlockKlaarProps {
 	className?: string;
-	style?: CSSProperties;
 	date: string;
 	elements: KlaarElement[];
 }
@@ -22,11 +20,6 @@ export const BlockKlaar: FunctionComponent<BlockKlaarProps> = ({ className, date
 			<span>KLAAR</span>
 		</div>
 		<div className="klaar-header__date">{moment(date).format('LL')}</div>
-		<div className="klaar-header__titles">
-			{elements.map(
-				(element: KlaarElement, index: number) =>
-					`${element.title.toUpperCase()} ${index === elements.length - 1 ? '' : ' • '}`
-			)}
-		</div>
+		<div className="klaar-header__titles">{elements.map(elem => elem.title).join(' • ')}</div>
 	</div>
 );

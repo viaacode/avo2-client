@@ -5,11 +5,11 @@ import {
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-	KLAARBlockComponentState,
+	KlaarBlockComponentState,
 } from '../../../shared/types';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_KLAAR_COMPONENTS_STATE = (): KLAARBlockComponentState[] => [
+export const INITIAL_KLAAR_COMPONENTS_STATE = (): KlaarBlockComponentState[] => [
 	{
 		title: '',
 	},
