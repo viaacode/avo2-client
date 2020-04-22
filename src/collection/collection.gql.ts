@@ -306,11 +306,9 @@ export const GET_QUALITY_LABELS = gql`
 	}
 `;
 
-export const GET_COLLECTIONS_BY_ITEM_EXTERNAL_ID = gql`
-	query getCollectionsByItemUuid($itemExternalId: String!) {
-		app_collections(
-			where: { collection_fragments: { external_id: { _eq: $itemExternalId } } }
-		) {
+export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
+	query getCollectionsByItemUuid($fragmentId: String!) {
+		app_collections(where: { collection_fragments: { external_id: { _eq: $fragmentId } } }) {
 			id
 			title
 			profile {

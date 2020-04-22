@@ -85,9 +85,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item) {
 				return;
 			}
-			const colls = await CollectionService.fetchCollectionsByItemExternalId(
-				item.external_id
-			);
+			const colls = await CollectionService.fetchCollectionsByFragmentId(item.external_id);
 			setCollectionsContainingItem(colls);
 		} catch (err) {
 			console.error(
