@@ -21,6 +21,24 @@ export const GET_USER_BY_ID = gql`
 			created_at
 			bio
 			alternative_email
+			profile_user_groups {
+				groups {
+					id
+					label
+					group_user_permission_groups {
+						permission_group {
+							permission_group_user_permissions {
+								permission {
+									label
+									id
+								}
+							}
+							id
+							label
+						}
+					}
+				}
+			}
 		}
 	}
 `;

@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 
 import { CustomError } from '../../shared/helpers';
-import { dataService } from '../../shared/services/data-service';
+import { dataService } from '../../shared/services';
 
 import { GET_TRANSLATIONS, UPDATE_TRANSLATIONS } from './translations.gql';
 

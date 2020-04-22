@@ -7,7 +7,7 @@ import {
 	DefaultContentBlockState,
 	ImageBlockComponentState,
 } from '../../../shared/types';
-import { GET_WIDTH_OPTIONS } from '../../content-block.const';
+import { GET_ALIGN_OPTIONS, GET_WIDTH_OPTIONS } from '../../content-block.const';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD } from './defaults';
 
@@ -53,6 +53,13 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_WIDTH_OPTIONS(),
+				},
+			},
+			align: {
+				label: i18n.t('Alignatie'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: GET_ALIGN_OPTIONS(),
 				},
 			},
 		},

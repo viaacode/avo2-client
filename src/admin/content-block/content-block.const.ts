@@ -380,15 +380,27 @@ export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 
 export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___paginabreedte'),
+		label: i18n.t('Schermbreedte (header)'),
+		value: 'page-header',
+	},
+	{
+		label: i18n.t('Schermbreedte'),
 		value: 'full-width',
 	},
 	{
+		label: i18n.t('admin/content-block/content-block___paginabreedte'),
+		value: '100%',
+	},
+	{
 		label: i18n.t('admin/content-block/content-block___groot'),
+		value: '700px',
+	},
+	{
+		label: i18n.t('Medium'),
 		value: '500px',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___middelgroot'),
+		label: i18n.t('Klein'),
 		value: '400px',
 	},
 ];
