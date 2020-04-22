@@ -308,7 +308,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					// Get description from existing items or use form description field
 					description: get(menuItems, '[0].description', menuForm.description),
 					position: menuItems.length,
-				} as any); // TODO: Replace any by Avo.Menu.Menu at next typings.
+				} as any); // TODO: Replace any by Avo.Menu.Menu at typings 2.16.
 				ToastService.success(
 					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
 					false

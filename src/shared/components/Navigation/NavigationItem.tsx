@@ -51,7 +51,7 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					title={item.tooltip}
 				>
 					{item.icon && !isMobile && <Icon name={item.icon} />}
-					{item.label}
+					{item.label && <span>{item.label}</span>}
 					{item.icon && isMobile && <Icon name={item.icon} />}
 				</NavLink>
 			)}

@@ -258,7 +258,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 											<td>
 												{item.label ||
 													(item as any).tooltip ||
-													item.content_path // TODO: remove as any in next typings update
+													item.content_path // TODO: remove as any in next typings update 2.16
 												}
 											</td>
 											<td>
