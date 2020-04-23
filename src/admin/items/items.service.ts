@@ -6,7 +6,13 @@ import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
-import { GET_ITEM_BY_EXTERNAL_ID, GET_ITEM_BY_ID, GET_ITEMS, UPDATE_ITEM } from './items.gql';
+import {
+	GET_ITEM_BY_EXTERNAL_ID,
+	GET_ITEM_BY_ID,
+	GET_ITEMS,
+	UPDATE_ITEM_NOTES,
+	UPDATE_ITEM_PUBLISH_STATE,
+} from './items.gql';
 import { ItemsOverviewTableCols } from './items.types';
 
 export class ItemsService {
@@ -121,7 +127,7 @@ export class ItemsService {
 			};
 			const response = await dataService.mutate({
 				variables,
-				mutation: UPDATE_ITEM,
+				mutation: UPDATE_ITEM_PUBLISH_STATE,
 			});
 
 			if (response.errors) {
@@ -135,9 +141,34 @@ export class ItemsService {
 				err,
 				{
 					variables,
-					query: 'UPDATE_ITEM',
+					query: 'UPDATE_ITEM_PUBLISH_STATE',
 				}
 			);
+		}
+	}
+
+	static async setItemNotes(id: string, note: string | null): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				id,
+				note,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: UPDATE_ITEM_NOTES,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update note field for item in the database', err, {
+				variables,
+				query: 'UPDATE_ITEM_NOTES',
+			});
 		}
 	}
 }
