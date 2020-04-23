@@ -37,7 +37,7 @@ export const useContentBlocksByContentId = (id?: string): UseContentBlocksByCont
 					setIsLoading(false);
 				});
 		}
-	}, [id]);
+	}, [id, t]);
 
 	return [contentBlocks, isLoading];
 };

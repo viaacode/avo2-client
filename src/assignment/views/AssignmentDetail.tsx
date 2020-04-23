@@ -54,7 +54,7 @@ import {
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../assignment.gql';
-import { getAssignmentContent } from '../assignment.helpers';
+import { AssignmentService } from '../assignment.service';
 import { AssignmentLabel, AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
@@ -191,7 +191,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					await createAssignmentResponseObject(tempAssignment);
 
 					// Load content (collection, item or search query) according to assignment
-					getAssignmentContent(tempAssignment)
+					AssignmentService.getAssignmentContent(tempAssignment)
 						.then((response: Avo.Assignment.Content | null) => {
 							setAssignmentContent(response);
 							setAssignment(tempAssignment);
