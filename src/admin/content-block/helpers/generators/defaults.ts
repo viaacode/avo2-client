@@ -44,13 +44,6 @@ export const BLOCK_STATE_DEFAULTS = (
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
-	headerBackgroundColor: BACKGROUND_COLOR_FIELD(
-		i18n.t('admin/content-block/helpers/generators/defaults___titelbalk-achtergrondkleur'),
-		{
-			label: i18n.t('admin/content-block/helpers/generators/defaults___transparant'),
-			value: Color.Transparent,
-		}
-	),
 	padding: PADDING_FIELD(),
 	userGroupIds: USER_GROUP_SELECT(),
 
