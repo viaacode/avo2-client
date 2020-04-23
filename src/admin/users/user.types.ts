@@ -15,3 +15,32 @@ export interface UserTableState extends FilterableTableState {
 	stamboek: string;
 	created_at: string;
 }
+
+export interface RawUserGroupLink {
+	groups: RawUserGroup[];
+}
+
+export interface RawUserGroup {
+	id: number;
+	label: string;
+	group_user_permission_groups: RawUserGroupPermissionGroupLink[];
+}
+
+export interface RawUserGroupPermissionGroupLink {
+	permission_group: RawPermissionGroupLink;
+}
+
+export interface RawPermissionGroupLink {
+	id: number;
+	label: string;
+	permission_group_user_permissions: RawPermissionLink[];
+}
+
+export interface RawPermissionLink {
+	permission: RawPermission;
+}
+
+export interface RawPermission {
+	id: number;
+	label: string;
+}

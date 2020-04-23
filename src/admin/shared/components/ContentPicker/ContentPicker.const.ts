@@ -9,6 +9,8 @@ import {
 } from '../../helpers/content-picker/content-page';
 import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
 import { retrieveItems } from '../../helpers/content-picker/item';
+import { retrieveProfiles } from '../../helpers/content-picker/profile';
+import { retrieveAnchorBlocks } from '../../helpers/content-picker/anchor-link';
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{
@@ -67,6 +69,20 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 		label: i18n.t('admin/shared/components/content-picker/content-picker___projecten'),
 		disabled: false,
 		fetch: retrieveProjectContentPages,
+		picker: 'SELECT',
+	},
+	{
+		value: 'PROFILE',
+		label: i18n.t('Gebruiker'),
+		disabled: false,
+		fetch: retrieveProfiles,
+		picker: 'SELECT',
+	},
+	{
+		value: 'ANCHOR_LINK',
+		label: i18n.t('Anchors'),
+		disabled: false,
+		fetch: retrieveAnchorBlocks,
 		picker: 'SELECT',
 	},
 ];

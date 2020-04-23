@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { fetchContentBlocksByContentId } from '../services/content-block.service';
+import { CustomError } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
+import { ContentBlockService } from '../services/content-block.service';
 
 type UseContentBlocksByContentIdTuple = [Avo.ContentBlocks.ContentBlocks[], boolean];
 
 export const useContentBlocksByContentId = (id?: string): UseContentBlocksByContentIdTuple => {
+	const [t] = useTranslation();
+
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [contentBlocks, setContentBlocks] = useState<Avo.ContentBlocks.ContentBlocks[]>([]);
 
@@ -14,17 +19,25 @@ export const useContentBlocksByContentId = (id?: string): UseContentBlocksByCont
 		if (id) {
 			setIsLoading(true);
 
-			fetchContentBlocksByContentId(Number(id))
+			ContentBlockService.fetchContentBlocksByContentId(Number(id))
 				.then(contentBlockResponse => {
 					if (contentBlockResponse && contentBlockResponse.length) {
 						setContentBlocks(contentBlockResponse);
 					}
 				})
+				.catch(err => {
+					console.error(
+						new CustomError('Failed to load content blocks from content page', err, {
+							id,
+						})
+					);
+					ToastService.danger(t('Het ophalen van de content blokken is mislukt'));
+				})
 				.finally(() => {
 					setIsLoading(false);
 				});
 		}
-	}, [id]);
+	}, [id, t]);
 
 	return [contentBlocks, isLoading];
 };

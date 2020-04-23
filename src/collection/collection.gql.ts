@@ -305,3 +305,24 @@ export const GET_QUALITY_LABELS = gql`
 		}
 	}
 `;
+
+export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
+	query getCollectionByTitleOrDescription($title: String!, $description: String!) {
+		collectionByTitle: app_collections(
+			where: { title: { _eq: $title }, is_deleted: { _eq: false }, is_public: { _eq: true } }
+			limit: 1
+		) {
+			id
+		}
+		collectionByDescription: app_collections(
+			where: {
+				description: { _eq: $description }
+				is_deleted: { _eq: false }
+				is_public: { _eq: true }
+			}
+			limit: 1
+		) {
+			id
+		}
+	}
+`;
