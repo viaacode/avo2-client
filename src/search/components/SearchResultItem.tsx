@@ -7,9 +7,9 @@ import {
 	SearchResultSubtitle,
 	SearchResultThumbnail,
 	SearchResultTitle,
+	TagOption,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { TagOption } from '@viaa/avo2-components/src/components/TagList/TagList';
 import { Avo } from '@viaa/avo2-types';
 
 import { toEnglishContentType } from '../../collection/collection.types';

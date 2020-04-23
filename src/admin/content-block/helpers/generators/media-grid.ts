@@ -1,5 +1,4 @@
-import { ContentPickerType } from '@viaa/avo2-components';
-import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
+import { ContentPickerType, MultiRangeProps } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
 
