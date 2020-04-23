@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
@@ -42,7 +42,34 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
+	const blockRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+
 	const blockStateProps: { [key: string]: any } = omit(blockState, IGNORE_BLOCK_LEVEL_PROPS);
+
+	const [headerHeight, setHeaderHeight] = useState<string>('0');
+
+	const updateHeaderHeight = () => {
+		if (!blockRef.current) {
+			setHeaderHeight('0');
+			return;
+		}
+		const header = blockRef.current.querySelector('.c-content-page-overview-block__header');
+		if (!header) {
+			setHeaderHeight('0');
+			return;
+		}
+		const height = header.getBoundingClientRect().height || 0;
+		setHeaderHeight(`${height + 16}px`);
+	};
+
+	useEffect(() => {
+		if (blockState.headerBackgroundColor) {
+			// Header background color div has to be resized when the window resizes
+			window.addEventListener('resize', updateHeaderHeight);
+		}
+	}, [blockState.headerBackgroundColor]);
+
+	useEffect(updateHeaderHeight, [blockRef.current]);
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
 		// Pass the navigate function to each element (deprecated) => prefer passing the navigate function once to the block
@@ -64,6 +91,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			style={{ backgroundColor: blockState.backgroundColor }}
 			id={blockState.anchor}
 			data-anchor={blockState.anchor}
+			ref={blockRef}
 		>
 			<div>
 				{blockState.headerBackgroundColor !== Color.Transparent && (
@@ -71,7 +99,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 						className="c-content-block__header-bg-color"
 						style={{
 							backgroundColor: blockState.headerBackgroundColor,
-							height: blockState.headerHeight,
+							height: headerHeight,
 						}}
 					/>
 				)}
