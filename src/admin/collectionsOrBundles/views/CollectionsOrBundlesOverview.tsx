@@ -1,13 +1,14 @@
-import { get, truncate } from 'lodash-es';
+import { compact, get, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { ContentTypeNumber } from '../../../collection/collection.types';
+import { CollectionService } from '../../../collection/collection.service';
+import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -30,8 +31,8 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-
 import { UserService } from '../../users/user.service';
+
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -52,6 +53,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [userRoles, setUserRoles] = useState<Avo.User.Role[]>([]);
+	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -87,6 +89,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					filters,
 					['author_role'],
 					['profile.usersByuserId.role.id']
+				)
+			);
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['collection_labels'],
+					['collection_labels.label']
 				)
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
@@ -132,13 +141,23 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setUserRoles(await UserService.getUserRoles());
 		} catch (err) {
 			console.error(new CustomError('Failed to get users roles from the database', err));
-			ToastService.danger(t('Het ophalen dan de gebruiker rollen is mislukt'));
+			ToastService.danger(t('Het ophalen van de gebruiker rollen is mislukt'));
 		}
 	}, [setUserRoles, t]);
+
+	const fetchCollectionLabels = useCallback(async () => {
+		try {
+			setCollectionLabels(await CollectionService.fetchQualityLabels());
+		} catch (err) {
+			console.error(new CustomError('Failed to get quality labels from the database', err));
+			ToastService.danger(t('Het ophalen van de labels is mislukt'));
+		}
+	}, [setCollectionLabels, t]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
 		fetchUserRoles();
+		fetchCollectionLabels();
 	}, [fetchCollectionsOrBundles, fetchUserRoles]);
 
 	useEffect(() => {
@@ -154,6 +173,16 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: String(option.id),
 			label: option.label,
 			checked: get(tableState, 'author_role', [] as string[]).includes(String(option.id)),
+		})
+	);
+
+	const collectionLabelOptions = collectionLabels.map(
+		(option): CheckboxOption => ({
+			id: String(option.value),
+			label: option.description,
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(
+				String(option.value)
+			),
 		})
 	);
 
@@ -198,9 +227,25 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			},
 		},
 		{
+			id: 'collection_labels',
+			label: i18n.t('Labels'),
+			sortable: false,
+			filterType: 'CheckboxDropdownModal',
+			filterProps: {
+				options: collectionLabelOptions,
+			},
+		},
+		{
 			id: 'views',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+			tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+			icon: 'eye',
 			sortable: true,
+		},
+		{
+			id: 'bookmarks',
+			tooltip: i18n.t('Aantal keer opgenomen in een bladwijzer'),
+			icon: 'bookmark',
+			sortable: false,
 		},
 		// { id: 'bookmarks', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___gebookmarkt'), sortable: true },
 		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
@@ -269,9 +314,32 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					? t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
 					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
+			case 'views':
+				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
+
 			case 'created_at':
 			case 'updated_at':
 				return formatDate(rowData[columnId]) || '-';
+
+			case 'collection_labels':
+				const labels: { id: number; label: string }[] =
+					get(rowData, 'collection_labels') || [];
+				const tags: TagOption[] = compact(
+					labels.map((labelObj: any): TagOption | null => {
+						const prettyLabel = collectionLabels.find(
+							collectionLabel => collectionLabel.value === labelObj.label
+						);
+						if (!prettyLabel) {
+							return null;
+						}
+						return { label: prettyLabel.description, id: labelObj.id };
+					})
+				);
+				if (tags.length) {
+					return <TagList tags={tags} swatches={false} />;
+				}
+
+				return '-';
 
 			case 'actions':
 				return (
