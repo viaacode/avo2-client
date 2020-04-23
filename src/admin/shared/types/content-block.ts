@@ -289,9 +289,12 @@ export interface MediaGridBlockComponentState {
 
 export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaTitle?: string;
+	ctaTitleColor?: string;
 	ctaContent?: string;
+	ctaContentColor?: string;
 	ctaButtonLabel?: string;
 	ctaButtonAction?: ButtonAction;
+	ctaBackgroundColor?: string;
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 }
