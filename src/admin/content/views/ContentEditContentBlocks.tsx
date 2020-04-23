@@ -106,7 +106,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
 					hasSubmitted={hasSubmitted}
-					setIsAccordionOpen={() =>
+					toggleIsAccordionOpen={() =>
 						setAccordionsOpenState({
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
 						})
