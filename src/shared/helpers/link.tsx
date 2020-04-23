@@ -107,7 +107,7 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 		const { type, value, target } = action;
 
 		switch (
-			type as Avo.Core.ContentPickerType | 'PROJECTS' // TODO remove after update to typings 2.16.0
+			type as Avo.Core.ContentPickerType | 'PROJECTS' | 'ANCHOR_LINK' // TODO remove after update to typings 2.16.0
 		) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
@@ -142,6 +142,15 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 					getEnv('PROXY_URL') || ''
 				);
 				navigateToAbsoluteOrRelativeUrl(externalUrl, history, target);
+				break;
+
+			case 'ANCHOR_LINK':
+				const urlWithoutQueryOrAnchor = window.location.href.split('?')[0].split('#')[0];
+				navigateToAbsoluteOrRelativeUrl(
+					`${urlWithoutQueryOrAnchor}#${value}`,
+					history,
+					target
+				);
 				break;
 
 			default:

@@ -1,5 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
+import { ContentPickerProps } from '../../../shared/components/ContentPicker/ContentPicker';
 import {
 	AnchorLinksBlockComponentState,
 	AnchorLinksBlockState,
@@ -13,13 +14,14 @@ import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } f
 export const INITIAL_ANCHOR_LINKS_COMPONENTS_STATE = (): AnchorLinksBlockComponentState[] => [
 	{
 		label: '',
-		type: 'link',
+		type: 'underlined-link',
 	},
 ];
 
 export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): AnchorLinksBlockState => ({
 	...BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks, position),
 	align: 'center',
+	hasDividers: true,
 });
 
 export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
@@ -39,6 +41,11 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: ['ANCHOR_LINK'],
+					hideTargetSwitch: true,
+					hideTypeDropdown: true,
+				} as ContentPickerProps,
 			},
 		},
 	},

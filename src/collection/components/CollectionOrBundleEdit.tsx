@@ -793,6 +793,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 						<CollectionOrBundleEditAdmin
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
+							history={history}
 						/>
 					);
 				default:

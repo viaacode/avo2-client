@@ -10,6 +10,7 @@ import {
 	AccordionTitle,
 	BlockHeading,
 	Button,
+	ButtonGroup,
 	ButtonToolbar,
 	Flex,
 	FlexItem,
@@ -46,7 +47,7 @@ interface ContentBlockFormProps {
 	onError: (configIndex: number, newErrors: ContentBlockErrors) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
-	setIsAccordionOpen: () => void;
+	toggleIsAccordionOpen: () => void;
 	addComponentToState: () => void;
 	removeComponentFromState: (stateIndex: number) => void;
 }
@@ -61,7 +62,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	onError,
 	onRemove,
 	onReorder,
-	setIsAccordionOpen,
+	toggleIsAccordionOpen,
 	addComponentToState,
 	removeComponentFromState,
 }) => {
@@ -208,48 +209,39 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					'has-error': hasSubmitted && Object.keys(configErrors).length > 0,
 				})}
 				isOpen={isAccordionOpen}
+				onToggle={toggleIsAccordionOpen}
 			>
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
-						<Button
-							disabled={blockIndex === 0}
-							icon="chevron-up"
-							onClick={() => onReorder(blockIndex, -1)}
-							size="small"
-							title={t(
-								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
-							)}
-							ariaLabel={t(
-								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
-							)}
-							type="tertiary"
-						/>
-						<Button
-							disabled={blockIndex + 1 === length}
-							icon="chevron-down"
-							onClick={() => onReorder(blockIndex, 1)}
-							size="small"
-							title={t(
-								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
-							)}
-							ariaLabel={t(
-								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
-							)}
-							type="tertiary"
-						/>
-						<Button
-							icon="edit"
-							onClick={setIsAccordionOpen}
-							size="small"
-							title={t(
-								'admin/content-block/components/content-block-form/content-block-form___bewerk-content-block'
-							)}
-							ariaLabel={t(
-								'admin/content-block/components/content-block-form/content-block-form___bewerk-content-block'
-							)}
-							type="tertiary"
-						/>
+						<ButtonGroup>
+							<Button
+								disabled={blockIndex === 0}
+								icon="chevron-up"
+								onClick={() => onReorder(blockIndex, -1)}
+								size="small"
+								title={t(
+									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
+								)}
+								ariaLabel={t(
+									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
+								)}
+								type="tertiary"
+							/>
+							<Button
+								disabled={blockIndex + 1 === length}
+								icon="chevron-down"
+								onClick={() => onReorder(blockIndex, 1)}
+								size="small"
+								title={t(
+									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
+								)}
+								ariaLabel={t(
+									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
+								)}
+								type="tertiary"
+							/>
+						</ButtonGroup>
 						<Button
 							icon="delete"
 							onClick={() => onRemove(blockIndex)}

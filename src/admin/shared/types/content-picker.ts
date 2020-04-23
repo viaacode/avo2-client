@@ -9,7 +9,9 @@ export type ContentPickerType =
 	| 'EXTERNAL_LINK'
 	| 'BUNDLE'
 	| 'SEARCH_QUERY'
-	| 'PROJECTS'; // TODO replace with type from typings repo after update to 2.16.0
+	| 'PROJECTS'
+	| 'PROFILE'
+	| 'ANCHOR_LINK'; // TODO replace with type from typings repo after update to 2.16.0
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 

@@ -8,7 +8,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { toEnglishContentType } from '../../../../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
-import { formatDate, navigateToContentType } from '../../../../../shared/helpers';
+import { CustomError, formatDate, navigateToContentType } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { MediaGridBlockState } from '../../../../shared/types';
@@ -22,9 +22,12 @@ interface MediaGridWrapperProps extends MediaGridBlockState, RouteComponentProps
 
 const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	ctaTitle,
+	ctaTitleColor,
 	ctaContent,
+	ctaContentColor,
 	ctaButtonAction = { type: 'COLLECTION', value: '' },
 	ctaButtonLabel,
+	ctaBackgroundColor,
 	searchQuery,
 	searchQueryLimit,
 	elements,
@@ -125,18 +128,33 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		};
 	};
 
+	const handleCtaButtonClick = () => {
+		if (!ctaButtonAction) {
+			console.error(
+				new CustomError(
+					'Trying to navigate to cta button action, but button action is undefined',
+					null,
+					{ ctaButtonAction }
+				)
+			);
+			return;
+		}
+		if (ctaButtonAction.value) {
+			navigateToContentType(ctaButtonAction as any, history);
+		}
+	};
+
 	// Render
 	const renderMediaGridBlock = () => {
 		return (
 			<BlockMediaList
-				ctaButtonLabel={ctaButtonLabel}
-				ctaContent={ctaContent}
-				ctaNavigate={
-					ctaButtonAction.value
-						? () => navigateToContentType(ctaButtonAction as any, history)
-						: () => {}
-				}
 				ctaTitle={ctaTitle}
+				ctaTitleColor={ctaTitleColor}
+				ctaContent={ctaContent}
+				ctaContentColor={ctaContentColor}
+				ctaButtonLabel={ctaButtonLabel}
+				ctaBackgroundColor={ctaBackgroundColor}
+				ctaNavigate={handleCtaButtonClick}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
 			/>
 		);

@@ -21,6 +21,24 @@ export const GET_USER_BY_ID = gql`
 			created_at
 			bio
 			alternative_email
+			profile_user_groups {
+				groups {
+					id
+					label
+					group_user_permission_groups {
+						permission_group {
+							permission_group_user_permissions {
+								permission {
+									label
+									id
+								}
+							}
+							id
+							label
+						}
+					}
+				}
+			}
 		}
 	}
 `;
@@ -95,6 +113,15 @@ export const GET_USERS = gql`
 			aggregate {
 				count
 			}
+		}
+	}
+`;
+
+export const GET_USER_ROLES = gql`
+	query getUserRoles {
+		shared_user_roles {
+			label
+			id
 		}
 	}
 `;

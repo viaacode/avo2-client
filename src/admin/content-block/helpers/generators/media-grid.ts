@@ -1,5 +1,4 @@
-import { ContentPickerType } from '@viaa/avo2-components';
-import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
+import { ContentPickerType, MultiRangeProps } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
 
@@ -10,7 +9,14 @@ import {
 	MediaGridBlockComponentState,
 	MediaGridBlockState,
 } from '../../../shared/types';
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { GET_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+import {
+	BACKGROUND_COLOR_FIELD,
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
+	FOREGROUND_COLOR_FIELD,
+	TEXT_FIELD,
+} from './defaults';
 
 export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [{}];
 
@@ -72,6 +78,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
+			ctaTitleColor: FOREGROUND_COLOR_FIELD(i18n.t('CTA titel kleur')),
 			ctaContent: TEXT_FIELD('', {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-grid___cta-omschrijving'
@@ -79,6 +86,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextArea,
 				validator: undefined,
 			}),
+			ctaContentColor: FOREGROUND_COLOR_FIELD(i18n.t('CTA omschrijving kleur')),
 			ctaButtonLabel: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
@@ -88,6 +96,10 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
+			ctaBackgroundColor: BACKGROUND_COLOR_FIELD(
+				i18n.t('CTA achtergrond kleur'),
+				GET_BACKGROUND_COLOR_OPTIONS()[1]
+			),
 			...BLOCK_FIELD_DEFAULTS(),
 		},
 	},

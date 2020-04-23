@@ -70,10 +70,10 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			editorProps = {
-				onChange: (option: SelectOption) =>
+				onChange: (option: SelectOption<string>) =>
 					handleChange(type, fieldKey, get(option, 'value', ''), stateIndex),
 				value: defaultProps.options.find(
-					(opt: SelectOption) => opt.value === (state as any)[fieldKey]
+					(opt: SelectOption<string>) => opt.value === (state as any)[fieldKey]
 				),
 			};
 			break;
