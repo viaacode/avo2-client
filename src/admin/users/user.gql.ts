@@ -98,3 +98,12 @@ export const GET_USERS = gql`
 		}
 	}
 `;
+
+export const GET_USER_ROLES = gql`
+	query getUserRoles {
+		shared_user_roles {
+			label
+			id
+		}
+	}
+`;
