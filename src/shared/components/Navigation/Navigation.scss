@@ -27,12 +27,12 @@
 }
 
 .c-nav__item--i {
-	color: #FFF;
+	color: #fff;
 
 	&:hover,
 	&:focus {
 		background: lighten($color-night-blue, 5%);
-		color: #FFF;
+		color: #fff;
 	}
 }
 
@@ -48,7 +48,7 @@
 
 .c-nav__item--i.c-nav__item--active {
 	background: darken($color-night-blue, 10%);
-	color: #FFF;
+	color: #fff;
 
 	&:hover,
 	&:focus {
@@ -61,7 +61,18 @@
 	height: 1.8rem;
 	position: relative;
 	bottom: 0.2rem;
-	margin-right: 0.75rem;
+
+	* {
+		fill: $color-gray-400;
+	}
+}
+
+.c-nav.c-nav .o-svg-icon + span {
+	width: 1.8rem;
+	height: 1.8rem;
+	position: relative;
+	margin-left: 0.75rem;
+	bottom: 0.2rem;
 
 	* {
 		fill: $color-gray-400;
@@ -109,7 +120,7 @@
 	}
 
 	.o-svg-icon {
-		opacity: .5;
+		opacity: 0.5;
 		width: 1.8rem;
 		height: 1.8rem;
 	}
@@ -119,7 +130,6 @@
 	font-weight: 500;
 	color: $color-gray-700;
 }
-
 
 /* profile dropdown */
 

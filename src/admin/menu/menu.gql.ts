@@ -6,6 +6,7 @@ export const GET_MENUS = gql`
 			id
 			description
 			placement
+			tooltip
 		}
 	}
 `;
@@ -28,6 +29,7 @@ export const GET_MENU_ITEMS_BY_PLACEMENT = gql`
 			updated_at
 			content_type
 			content_path
+			tooltip
 		}
 	}
 `;
@@ -47,6 +49,7 @@ export const GET_MENU_ITEM_BY_ID = gql`
 			updated_at
 			content_type
 			content_path
+			tooltip
 		}
 	}
 `;

@@ -94,11 +94,16 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			<FormGroup
 				error={formErrors.label}
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___label')}
-				required
 			>
 				<TextInput
 					onChange={(value: string) => onChange('label', value)}
 					value={formState.label}
+				/>
+			</FormGroup>
+			<FormGroup error={formErrors.tooltip} label={t('Tooltip')}>
+				<TextInput
+					onChange={(value: string) => onChange('tooltip', value)}
+					value={formState.tooltip}
 				/>
 			</FormGroup>
 			<FormGroup
