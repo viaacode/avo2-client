@@ -1,4 +1,4 @@
-import { get, truncate, compact } from 'lodash-es';
+import { compact, get, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -237,8 +237,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'views',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+			tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+			icon: 'eye',
 			sortable: true,
+		},
+		{
+			id: 'bookmarks',
+			tooltip: i18n.t('Aantal keer opgenomen in een bladwijzer'),
+			icon: 'bookmark',
+			sortable: false,
 		},
 		// { id: 'bookmarks', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___gebookmarkt'), sortable: true },
 		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
@@ -306,6 +313,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return rowData[columnId]
 					? t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
 					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
+
+			case 'views':
+				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':
