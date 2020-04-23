@@ -18,6 +18,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
+import { PickerItem } from '../../admin/shared/types';
 import { buildLink, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
@@ -179,6 +181,14 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		}
 	};
 
+	const owner: PickerItem | undefined = collection.profile
+		? {
+				label: `${collection.profile.user.first_name} ${collection.profile.user.last_name} (${collection.profile.user.mail})`,
+				type: 'PROFILE',
+				value: collection.profile.id,
+		  }
+		: undefined;
+
 	return (
 		<>
 			<Container mode="vertical">
@@ -204,6 +214,24 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 												}
 											/>
 										)}
+									</FormGroup>
+									<FormGroup label={t('Eigenaar')}>
+										<ContentPicker
+											initialValue={owner}
+											hideTargetSwitch
+											hideTypeDropdown
+											allowedTypes={['PROFILE']}
+											onSelect={(value: PickerItem | null) => {
+												if (!value) {
+													return;
+												}
+												changeCollectionState({
+													type: 'UPDATE_COLLECTION_PROP',
+													collectionProp: 'owner_profile_id',
+													collectionPropValue: value.value,
+												});
+											}}
+										/>
 									</FormGroup>
 									<FormGroup
 										label={t(
