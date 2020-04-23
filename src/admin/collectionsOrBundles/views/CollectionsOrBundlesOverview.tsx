@@ -158,7 +158,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		fetchCollectionsOrBundles();
 		fetchUserRoles();
 		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchUserRoles]);
+	}, [fetchCollectionsOrBundles, fetchUserRoles, fetchCollectionLabels]);
 
 	useEffect(() => {
 		if (collections) {
