@@ -201,10 +201,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	/**
 	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
 	 */
-	const getPageOptions = useCallback((): SelectOption[] => {
+	const getPageOptions = useCallback((): SelectOption<string>[] => {
 		return orderBy(
 			compact(
-				map(APP_PATH, (routeInfo, routeId): SelectOption | null => {
+				map(APP_PATH, (routeInfo, routeId): SelectOption<string> | null => {
 					if (routeInfo.showForInteractiveTour) {
 						return {
 							label: routeInfo.route,
