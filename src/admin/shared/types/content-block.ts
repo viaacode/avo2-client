@@ -17,7 +17,7 @@ export type FillOption = 'cover' | 'contain' | 'auto';
 
 export type BlockGridFormatOption = 'squareSmall' | 'squareLarge' | '4:3' | '2:1' | '6:9';
 
-export type WidthOption = 'full-width' | '500px' | '400px';
+export type WidthOption = 'full-width' | 'page-header' | string; // CSS width string: eg: 100%; 400px, 500px
 
 export type HeadingTypeOption = 'h1' | 'h2' | 'h3' | 'h4';
 
@@ -83,6 +83,7 @@ export interface ContentBlockConfig {
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
 	type: ContentBlockType;
+	anchor?: string;
 }
 
 export interface ContentBlockComponentsConfig {
@@ -146,6 +147,8 @@ export interface DefaultContentBlockState {
 	position: number;
 	padding: PaddingFieldState;
 	userGroupIds: number[];
+	fullWidth?: boolean;
+	anchor?: string; // Contains an id that the user can enter, so they can link to this block using the anchor-block buttons
 }
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -295,4 +298,5 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 
 export interface AnchorLinksBlockState extends DefaultContentBlockState {
 	align: AlignOption;
+	hasDividers: boolean;
 }

@@ -1,4 +1,4 @@
-import { compact, isNil } from 'lodash-es';
+import { compact, isNil, set } from 'lodash-es';
 
 export function getQueryFilter(
 	query: string | undefined,
@@ -43,12 +43,21 @@ export function getBooleanFilters(filters: any, booleanProps: string[]): any[] {
 	);
 }
 
-export function getMultiOptionFilters(filters: any, multiOptionProps: string[]): any[] {
+export function getMultiOptionFilters(
+	filters: any,
+	multiOptionProps: string[],
+	nestedOptionProps?: string[]
+): any[] {
 	return compact(
-		multiOptionProps.map((multiOptionProp: string) => {
+		multiOptionProps.map((multiOptionProp: string, index: number) => {
 			const multiOptionValue = (filters as any)[multiOptionProp];
 			if (multiOptionValue && multiOptionValue.length) {
-				return { [multiOptionProp]: { _in: multiOptionValue } };
+				const response = {};
+				return set(
+					response,
+					nestedOptionProps ? nestedOptionProps[index] : multiOptionProp,
+					{ _in: multiOptionValue }
+				);
 			}
 			return null;
 		})
