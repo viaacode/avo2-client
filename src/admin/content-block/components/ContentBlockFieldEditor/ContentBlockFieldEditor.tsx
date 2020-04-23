@@ -60,6 +60,13 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 				initialValue: get(state as any, fieldKey),
 			};
 			break;
+		case ContentBlockEditor.DatePicker:
+			editorProps = {
+				onChange: (date: any) =>
+					handleChange(type, fieldKey, date.toISOString(), stateIndex),
+				value: (state as any)[fieldKey] ? new Date((state as any)[fieldKey]) : null,
+			};
+			break;
 		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			editorProps = {
