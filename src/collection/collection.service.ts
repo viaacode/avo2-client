@@ -23,6 +23,7 @@ import {
 	GET_COLLECTION_ID_BY_AVO1_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
@@ -1069,6 +1070,26 @@ export class CollectionService {
 					query: 'GET_COLLECTION_BY_TITLE_OR_DESCRIPTION',
 				}
 			);
+		}
+	}
+
+	static async fetchCollectionsByFragmentId(
+		fragmentId: string
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			// retrieve collections
+			const response = await dataService.query({
+				query: GET_COLLECTIONS_BY_FRAGMENT_ID,
+				variables: { fragmentId },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError('Fetch collections by fragment id failed', err, {
+				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
+				variables: { fragmentId },
+			});
 		}
 	}
 }
