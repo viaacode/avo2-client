@@ -9,17 +9,17 @@ $admin-actions-bar-height: 8.4rem;
 
 	.c-top-bar {
 		background: $color-gray-50;
+
+		h1 {
+			font-size: 2.4rem;
+			line-height: 2.4rem;
+			margin: 0;
+		}
 	}
 
 	.m-admin-layout-content {
 		overflow-y: auto;
 		height: calc(100vh - 64px);
-	}
-
-	h1 {
-		font-size: 2.4rem;
-		line-height: 2.4rem;
-		margin: 0;
 	}
 }
 
@@ -28,7 +28,7 @@ $admin-actions-bar-height: 8.4rem;
 	padding-bottom: $admin-actions-bar-height;
 }
 
-.c-table.c-table_detail-page  {
+.c-table.c-table_detail-page {
 	tr {
 		&:nth-child(even) {
 			background-color: #eee;
