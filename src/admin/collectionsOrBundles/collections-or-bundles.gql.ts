@@ -28,12 +28,19 @@ export const GET_COLLECTIONS = gql`
 					}
 				}
 			}
-			view_counts {
-				id
-				count
+			view_counts_aggregate {
+				aggregate {
+					sum {
+						count
+					}
+				}
 			}
 			lom_context
 			lom_classification
+			collection_labels {
+				id
+				label
+			}
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {
