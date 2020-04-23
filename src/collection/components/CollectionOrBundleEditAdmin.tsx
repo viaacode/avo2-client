@@ -270,29 +270,38 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											{t('Bundels die deze collectie bevatten')}
 										</BlockHeading>
 									</Spacer>
-									<Table
-										columns={[
-											{ label: t('Titel'), id: 'title', sortable: true },
-											{ label: t('Auteur'), id: 'author', sortable: true },
-											{
-												label: 'Organisatie',
-												id: 'organization',
-												sortable: false,
-											},
-											{ label: '', id: 'actions', sortable: false },
-										]}
-										data={bundlesContainingCollection}
-										emptyStateMessage={t(
-											'Deze collectie is in geen enkele bundel opgenomen'
-										)}
-										onColumnClick={handleBundleColumnClick as any}
-										onRowClick={coll => navigateToBundleDetail(coll.id)}
-										renderCell={renderBundleCell as any}
-										sortColumn={bundleSortColumn}
-										sortOrder={bundleSortOrder}
-										variant="bordered"
-										rowKey="id"
-									/>
+									{!!bundlesContainingCollection &&
+									!!bundlesContainingCollection.length ? (
+										<Table
+											columns={[
+												{ label: t('Titel'), id: 'title', sortable: true },
+												{
+													label: t('Auteur'),
+													id: 'author',
+													sortable: true,
+												},
+												{
+													label: 'Organisatie',
+													id: 'organization',
+													sortable: false,
+												},
+												{ label: '', id: 'actions', sortable: false },
+											]}
+											data={bundlesContainingCollection}
+											emptyStateMessage={t(
+												'Deze collectie is in geen enkele bundel opgenomen'
+											)}
+											onColumnClick={handleBundleColumnClick as any}
+											onRowClick={coll => navigateToBundleDetail(coll.id)}
+											renderCell={renderBundleCell as any}
+											sortColumn={bundleSortColumn}
+											sortOrder={bundleSortOrder}
+											variant="bordered"
+											rowKey="id"
+										/>
+									) : (
+										t('Deze collectie is in geen enkele bundel opgenomen')
+									)}
 								</>
 							)}
 						</Spacer>

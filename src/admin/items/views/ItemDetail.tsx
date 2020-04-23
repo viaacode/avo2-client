@@ -295,23 +295,27 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							{t('Collecties die dit item bevatten')}
 						</BlockHeading>
 					</Spacer>
-					<Table
-						columns={[
-							{ label: t('Titel'), id: 'title', sortable: true },
-							{ label: t('Auteur'), id: 'author', sortable: true },
-							{ label: 'Organisatie', id: 'organization', sortable: false },
-							{ label: '', id: 'actions', sortable: false },
-						]}
-						data={collectionsContainingItem}
-						emptyStateMessage={t('Dit item is in geen enkele collectie opgenomen')}
-						onColumnClick={handleCollectionColumnClick as any}
-						onRowClick={coll => navigateToCollectionDetail(coll.id)}
-						renderCell={renderCollectionCell as any}
-						sortColumn={collectionSortColumn}
-						sortOrder={collectionSortOrder}
-						variant="bordered"
-						rowKey="id"
-					/>
+					{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
+						<Table
+							columns={[
+								{ label: t('Titel'), id: 'title', sortable: true },
+								{ label: t('Auteur'), id: 'author', sortable: true },
+								{ label: 'Organisatie', id: 'organization', sortable: false },
+								{ label: '', id: 'actions', sortable: false },
+							]}
+							data={collectionsContainingItem}
+							emptyStateMessage={t('Dit item is in geen enkele collectie opgenomen')}
+							onColumnClick={handleCollectionColumnClick as any}
+							onRowClick={coll => navigateToCollectionDetail(coll.id)}
+							renderCell={renderCollectionCell as any}
+							sortColumn={collectionSortColumn}
+							sortOrder={collectionSortOrder}
+							variant="bordered"
+							rowKey="id"
+						/>
+					) : (
+						t('Dit item is in geen enkele collectie opgenomen')
+					)}
 					<DeleteObjectModal
 						title={
 							item.is_published
