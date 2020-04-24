@@ -19,9 +19,11 @@ import {
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
+	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_ID_BY_AVO1_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
@@ -1024,6 +1026,69 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to get collection labels', err, {
 				query: 'GET_COLLECTION_LABELS',
+			});
+		}
+	}
+
+	static async getCollectionByTitleOrDescription(
+		title: string,
+		description: string | null
+	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
+				variables: { title, description },
+			});
+
+			if (response.errors) {
+				throw new CustomError('response contains graphql errors', null, { response });
+			}
+
+			const collectionWithSameTitleExists: boolean = !!get(
+				response,
+				'data.collectionByTitle',
+				[]
+			).length;
+
+			const collectionWithSameDescriptionExists: boolean = !!get(
+				response,
+				'data.collectionByDescription',
+				[]
+			).length;
+
+			return {
+				byTitle: collectionWithSameTitleExists,
+				byDescription: collectionWithSameDescriptionExists,
+			};
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get duplicate collections by title or description',
+				err,
+				{
+					title,
+					description,
+					query: 'GET_COLLECTION_BY_TITLE_OR_DESCRIPTION',
+				}
+			);
+		}
+	}
+
+	static async fetchCollectionsByFragmentId(
+		fragmentId: string
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			// retrieve collections
+			const response = await dataService.query({
+				query: GET_COLLECTIONS_BY_FRAGMENT_ID,
+				variables: { fragmentId },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError('Fetch collections by fragment id failed', err, {
+				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
+				variables: { fragmentId },
 			});
 		}
 	}

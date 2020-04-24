@@ -78,13 +78,10 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
-			buttonLabel: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/ctas___knoptekst-is-verplicht'),
-				{
-					label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
-					editorType: ContentBlockEditor.TextInput,
-				}
-			),
+			buttonLabel: {
+				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
+				editorType: ContentBlockEditor.TextInput,
+			},
 			buttonIcon: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,

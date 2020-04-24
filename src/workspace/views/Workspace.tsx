@@ -267,7 +267,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		return (
 			<Select
 				options={getNavTabs().map(
-					(navTab): SelectOption => ({ label: navTab.label, value: navTab.id.toString() })
+					(navTab): SelectOption<string> => ({
+						label: navTab.label,
+						value: navTab.id.toString(),
+					})
 				)}
 				value={tabId || Object.keys(tabs)[0]}
 				onChange={goToTab}

@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { get, isEmpty, isNil, remove } from 'lodash-es';
+import { get, isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -12,9 +12,6 @@ import {
 	ButtonToolbar,
 	Container,
 	DatePicker,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	DutchContentType,
 	Flex,
 	FlexItem,
@@ -25,7 +22,6 @@ import {
 	RadioButton,
 	RadioButtonGroup,
 	Spacer,
-	TagOption,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -48,12 +44,11 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
-	renderDropdownButton,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
-import { dataService, ToastService } from '../../shared/services';
+import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
@@ -64,6 +59,7 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
+import AssignmentLabels from '../components/AssignmentLabels';
 import './AssignmentEdit.scss';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
@@ -76,7 +72,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -91,8 +87,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
+			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(assignment));
 		},
-		[setCurrentAssignment, setInitialAssignment]
+		[setCurrentAssignment, setInitialAssignment, setAssignmentLabels]
 	);
 
 	/**
@@ -359,7 +356,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				...assignment,
 				owner_profile_id: getProfileId(user),
 			} as Avo.Assignment.Assignment;
-			const insertedAssignment = await AssignmentService.insertAssignment(newAssignment);
+			const insertedAssignment = await AssignmentService.insertAssignment(
+				newAssignment,
+				assignmentLabels
+			);
 
 			if (insertedAssignment) {
 				setBothAssignments(insertedAssignment);
@@ -383,74 +383,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		return (
 			!!currentAssignment.deadline_at &&
 			new Date(currentAssignment.deadline_at) < new Date(Date.now())
-		);
-	};
-
-	const getTagOptions = (): TagOption[] => {
-		return get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []).map(
-			(assignmentTag: Avo.Assignment.Tag) => {
-				return {
-					label: assignmentTag.label,
-					id: assignmentTag.id,
-					// assignmentTag.enum_color.label contains hex code (graphql enum quirk)
-					// The value of the enum has to be uppercase text, so the value contains the color name
-					color: assignmentTag.color_override || assignmentTag.enum_color.label,
-				};
-			}
-		);
-	};
-
-	const removeTag = (tagId: string | number, evt: MouseEvent) => {
-		evt.stopPropagation();
-		const tags: Avo.Assignment.Tag[] = [
-			...get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []),
-		];
-		remove(tags, (tag: Avo.Assignment.Tag) => tag.id === tagId);
-		setCurrentAssignment({
-			...currentAssignment,
-			assignment_assignment_tags: {
-				assignment_tag: tags,
-			},
-		});
-	};
-
-	const renderTagsDropdown = () => {
-		const tags = getTagOptions();
-
-		return (
-			<Dropdown
-				isOpen={tagsDropdownOpen}
-				menuWidth="fit-content"
-				onOpen={() => setTagsDropdownOpen(true)}
-				onClose={() => setTagsDropdownOpen(false)}
-			>
-				<DropdownButton>
-					{renderDropdownButton(
-						tags.length ? '' : t('assignment/views/assignment-edit___geen'),
-						false,
-						tags,
-						removeTag
-					)}
-				</DropdownButton>
-				<DropdownContent>
-					<Spacer>
-						<Form>
-							<Button
-								type="borderless"
-								block
-								label={t('assignment/views/assignment-edit___geen')}
-							/>
-							<Button
-								type="borderless"
-								block
-								label={t(
-									'assignment/views/assignment-edit___beheer-vakken-en-projecten'
-								)}
-							/>
-						</Form>
-					</Spacer>
-				</DropdownContent>
-			</Dropdown>
 		);
 	};
 
@@ -683,7 +615,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 							<FormGroup
 								label={t('assignment/views/assignment-edit___vak-of-project')}
 							>
-								{renderTagsDropdown()}
+								<AssignmentLabels
+									labels={assignmentLabels}
+									user={user}
+									onChange={setAssignmentLabels}
+								/>
 							</FormGroup>
 							<FormGroup
 								label={t('assignment/views/assignment-edit___antwoorden-op')}

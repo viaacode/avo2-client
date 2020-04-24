@@ -17,7 +17,7 @@ export type FillOption = 'cover' | 'contain' | 'auto';
 
 export type BlockGridFormatOption = 'squareSmall' | 'squareLarge' | '4:3' | '2:1' | '6:9';
 
-export type WidthOption = 'full-width' | '500px' | '400px';
+export type WidthOption = 'full-width' | 'page-header' | string; // CSS width string: eg: 100%; 400px, 500px
 
 export type HeadingTypeOption = 'h1' | 'h2' | 'h3' | 'h4';
 
@@ -45,7 +45,7 @@ export enum Color {
 	Error200 = '#EE8176',
 	Green = '#46D46E',
 	Blue = '#4D76F3',
-	SoftBlue = '#7CAACF',
+	SoftBlue = '#8AC1CE',
 	OceanGreen = '#57C2A0',
 	Silver = '#DBDBDB',
 	Tapestry = '#B75B99',
@@ -83,6 +83,7 @@ export interface ContentBlockConfig {
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
 	type: ContentBlockType;
+	anchor?: string;
 }
 
 export interface ContentBlockComponentsConfig {
@@ -123,6 +124,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
+	KLAAR = 'KLAAR',
 	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -146,6 +148,8 @@ export interface DefaultContentBlockState {
 	position: number;
 	padding: PaddingFieldState;
 	userGroupIds: number[];
+	fullWidth?: boolean;
+	anchor?: string; // Contains an id that the user can enter, so they can link to this block using the anchor-block buttons
 }
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -166,6 +170,7 @@ export enum ContentBlockEditor {
 	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
 	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',
+	DatePicker = 'DatePicker',
 	MultiRange = 'MultiRange',
 	PaddingSelect = 'PaddingSelect',
 	Select = 'Select',
@@ -184,6 +189,7 @@ export type ContentBlockComponentState =
 	| ImageBlockComponentState
 	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
+	| KlaarBlockComponentState
 	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
 	| PageOverviewBlockComponentStateFields
@@ -244,6 +250,10 @@ export interface AnchorLinksBlockComponentState {
 	navigate?: () => void;
 }
 
+export interface KlaarBlockComponentState {
+	title: string;
+}
+
 export interface IntroBlockComponentState {
 	title: string;
 	content: string;
@@ -286,13 +296,17 @@ export interface MediaGridBlockComponentState {
 
 export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaTitle?: string;
+	ctaTitleColor?: string;
 	ctaContent?: string;
+	ctaContentColor?: string;
 	ctaButtonLabel?: string;
 	ctaButtonAction?: ButtonAction;
+	ctaBackgroundColor?: string;
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 }
 
 export interface AnchorLinksBlockState extends DefaultContentBlockState {
 	align: AlignOption;
+	hasDividers: boolean;
 }

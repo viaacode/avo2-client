@@ -6,69 +6,62 @@
  ========================================================================== */
 
 $color-gray-1000: #000000;
-$color-gray-900: #0F171D;
-$color-gray-800: #1D2B35;
-$color-gray-700: #2B414F;
+$color-gray-900: #0f171d;
+$color-gray-800: #1d2b35;
+$color-gray-700: #2b414f;
 $color-gray-600: #385265;
-$color-gray-500: #45647B;
+$color-gray-500: #45647b;
 $color-gray-400: #557891;
-$color-gray-300: #7894A7;
-$color-gray-200: #9CAFBD;
-$color-gray-150: #BAC7D1;
-$color-gray-100: #D6DEE3;
-$color-gray-50: #EDEFF2;
+$color-gray-300: #7894a7;
+$color-gray-200: #9cafbd;
+$color-gray-150: #bac7d1;
+$color-gray-100: #d6dee3;
+$color-gray-50: #edeff2;
 
 /* Primary colors
    ========================================================================== */
 
-$color-night-blue: #3A586F;
-$color-dark-night-blue: #182F42;
-$color-teal-bright: #25A4CF;
-$color-teal: #1D637A;
+$color-night-blue: #3a586f;
+$color-dark-night-blue: #182f42;
+$color-teal-bright: #25a4cf;
+$color-teal: #1d637a;
 $color-teal-dark: #124455;
 
 /* Secondary colors
    ========================================================================== */
 
-$color-error-200: #EE8176;
-$color-green: #46D46E;
-$color-blue: #4D76F3;
-$color-soft-blue: #7CAACF;
-
-/* Secondary colors
-   ========================================================================== */
-
-$color-ocean-green: #57C2A0;
-$color-silver: #DBDBDB;
-$color-tapestry: #B75B99;
-$color-wine-red: #98485C;
-$color-night-blue: #3A586F;
-$color-yellow: #F3AA2E;
-$color-green: #9DB410;
-$color-dark-orange: #D03F06;
-$color-soft-blue: #8AC1CE;
-$color-french-rose: #F33F67;
+$color-error-200: #ee8176;
+$color-blue: #4d76f3;
+$color-ocean-green: #57c2a0;
+$color-silver: #dbdbdb;
+$color-tapestry: #b75b99;
+$color-wine-red: #98485c;
+$color-yellow: #f3aa2e;
+$color-green: #9db410;
+$color-dark-orange: #d03f06;
+$color-soft-blue: #8ac1ce;
+$color-french-rose: #f33f67;
 
 /* Semantic mapping
    ========================================================================== */
 
 $color-primary: $color-teal-bright;
-$color-success: #57C2A0;
-$color-error: #DA3F34;
+$color-success: $color-ocean-green;
+$color-error: #da3f34;
 
 /* Filter alert message colors
    ========================================================================== */
 
-$color-alert-background: #FFFFCC;
-$color-alert-accent: #E9E994;
+$color-alert-background: #ffffcc;
+$color-alert-accent: #e9e994;
 
 /* To refactor
    ========================================================================== */
 
-$color-teal-bright-200: #CFE3E9;
+$color-teal-bright-200: #cfe3e9;
 
 /* Brands
    ========================================================================== */
 
-$color-smartschool: #F05A1A;
+$color-smartschool: #f05a1a;
 $color-klascement: #f7931b;

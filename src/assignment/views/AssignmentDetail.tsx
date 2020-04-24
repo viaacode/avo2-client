@@ -54,8 +54,8 @@ import {
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../assignment.gql';
-import { getAssignmentContent } from '../assignment.helpers';
-import { AssignmentLabel, AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
+import { AssignmentService } from '../assignment.service';
+import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
@@ -191,7 +191,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					await createAssignmentResponseObject(tempAssignment);
 
 					// Load content (collection, item or search query) according to assignment
-					getAssignmentContent(tempAssignment)
+					AssignmentService.getAssignmentContent(tempAssignment)
 						.then((response: Avo.Assignment.Content | null) => {
 							setAssignmentContent(response);
 							setAssignment(tempAssignment);
@@ -467,7 +467,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		const { answer_url, description, profile, title } = assignment;
 
 		const tags: TagOption[] = AssignmentLabelsService.getLabelsFromAssignment(assignment).map(
-			({ id, label, color_override, enum_color }: AssignmentLabel) => ({
+			({ id, label, color_override, enum_color }: Avo.Assignment.Label) => ({
 				id,
 				label: label || '',
 				color: color_override || get(enum_color, 'label'),

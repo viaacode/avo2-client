@@ -1,5 +1,4 @@
-import { CheckboxProps } from '@viaa/avo2-components/dist/components/Checkbox/Checkbox';
-import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
+import { CheckboxProps, MultiRangeProps } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
 import { ContentPageType } from '../../../content/content.types';
@@ -17,6 +16,7 @@ import {
 } from '../../content-block.const';
 
 import {
+	BACKGROUND_COLOR_FIELD,
 	BLOCK_FIELD_DEFAULTS,
 	BLOCK_STATE_DEFAULTS,
 	CONTENT_TYPE_AND_LABELS_INPUT,
@@ -142,6 +142,17 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 		block: {
 			state: INITIAL_PAGE_OVERVIEW_BLOCK_STATE(position),
 			fields: {
+				headerBackgroundColor: BACKGROUND_COLOR_FIELD(
+					i18n.t(
+						'admin/content-block/helpers/generators/defaults___titelbalk-achtergrondkleur'
+					),
+					{
+						label: i18n.t(
+							'admin/content-block/helpers/generators/defaults___transparant'
+						),
+						value: Color.Transparent,
+					}
+				),
 				...BLOCK_FIELD_DEFAULTS(),
 			},
 		},

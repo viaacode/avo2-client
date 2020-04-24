@@ -8,6 +8,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	LinkTarget,
 	Navbar,
 	Spacer,
 	Table,
@@ -26,7 +27,13 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { CustomError, navigate, sanitize, sanitizePresets } from '../../../shared/helpers';
+import {
+	CustomError,
+	navigate,
+	navigateToAbsoluteOrRelativeUrl,
+	sanitize,
+	sanitizePresets,
+} from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
@@ -194,6 +201,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			});
 	};
 
+	function handlePreviewClicked() {
+		if (contentPage && contentPage.path) {
+			navigateToAbsoluteOrRelativeUrl(contentPage.path, history, LinkTarget.Blank);
+		} else {
+			ToastService.danger(
+				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+			);
+		}
+	}
+
 	const handleShareModalClose = async (newContentPage?: Partial<DbContent>) => {
 		try {
 			if (newContentPage) {
@@ -360,7 +377,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<Button
 						type="secondary"
 						icon="lock"
-						label={t('admin/content/views/content-detail___delen')}
+						label={t('admin/content/views/content-detail___publiceren')}
 						title={t(
 							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
 						)}
@@ -368,6 +385,18 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
 						)}
 						onClick={() => setIsShareModalOpen(true)}
+					/>
+					<Button
+						type="secondary"
+						icon="eye"
+						label={t('admin/content/views/content-detail___preview')}
+						title={t(
+							'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+						)}
+						ariaLabel={t(
+							'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+						)}
+						onClick={handlePreviewClicked}
 					/>
 					<Button
 						label={t('admin/content/views/content-detail___bewerken')}

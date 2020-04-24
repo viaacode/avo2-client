@@ -6,7 +6,6 @@ import {
 	Checkbox,
 	Column,
 	Container,
-	DatePicker,
 	Form,
 	FormGroup,
 	Grid,
@@ -46,8 +45,6 @@ interface ContentEditFormProps {
 	) => void;
 	user: Avo.User.User;
 }
-
-type DateFormKeys = 'publishAt' | 'depublishAt';
 
 const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypes = [],
@@ -111,14 +108,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	];
 
 	// Methods
-	const handleDateChange = (key: DateFormKeys, value: Date | null) => {
-		onChange(key, value ? value.toISOString() : '');
-	};
-
-	const handleDateValue = (key: DateFormKeys) => {
-		return formState[key] ? new Date(formState[key] as string) : null;
-	};
-
 	const handleContentTypeChange = (value: string) => {
 		onChange('contentType', value);
 		onChange('labels', []);
@@ -328,34 +317,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										onChange('userGroupIds', userGroupIds)
 									}
 								/>
-							</Column>
-							<Column size="3-6">
-								<FormGroup
-									error={formErrors.publishAt}
-									label={t(
-										'admin/content/components/content-edit-form/content-edit-form___publiceren-op'
-									)}
-								>
-									<DatePicker
-										onChange={value => handleDateChange('publishAt', value)}
-										showTimeInput
-										value={handleDateValue('publishAt')}
-									/>
-								</FormGroup>
-							</Column>
-							<Column size="3-6">
-								<FormGroup
-									error={formErrors.depublishAt}
-									label={t(
-										'admin/content/components/content-edit-form/content-edit-form___depubliceren-op'
-									)}
-								>
-									<DatePicker
-										onChange={value => handleDateChange('depublishAt', value)}
-										showTimeInput
-										value={handleDateValue('depublishAt')}
-									/>
-								</FormGroup>
 							</Column>
 						</Grid>
 					</Form>

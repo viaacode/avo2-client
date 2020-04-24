@@ -367,6 +367,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									match={match}
 									showTitle
 									showDescription
+									canPlay={isOpen}
 								/>
 								<Grid>
 									<Column size="2-7">

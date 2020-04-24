@@ -101,18 +101,20 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
+		const hasNoCut = startTime === 0 && endTime === fragmentDuration;
+
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'start_oc',
-			fragmentPropValue: start,
+			fragmentPropValue: hasNoCut ? null : startTime,
 		});
 
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'end_oc',
-			fragmentPropValue: endTime,
+			fragmentPropValue: hasNoCut ? null : endTime,
 		});
 
 		if (videoStills && videoStills.length) {
@@ -203,8 +205,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					poster={itemMetaData.thumbnail_path}
 					title={itemMetaData.title}
 					onInit={initFlowPlayer}
-					// TODO: Replace publisher, published_at by real publisher
-					subtitles={['30-12-2011', 'VRT']}
+					subtitles={[itemMetaData.issued, get(itemMetaData, 'organisation.name', '')]}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 					logo={get(itemMetaData, 'organisation.logo_url')}

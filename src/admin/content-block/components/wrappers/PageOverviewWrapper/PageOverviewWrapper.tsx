@@ -31,7 +31,6 @@ interface PageOverviewWrapperProps {
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
 	centerHeader?: boolean;
-	headerBackgroundColor?: string;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;
@@ -49,7 +48,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	tabStyle = 'MENU_BAR',
 	allowMultiple = false,
 	centerHeader = false,
-	headerBackgroundColor = 'transparent',
 	itemStyle = 'LIST',
 	showTitle = true,
 	showDescription = true,
@@ -184,7 +182,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			itemStyle={itemStyle}
 			allowMultiple={allowMultiple}
 			centerHeader={centerHeader}
-			headerBackgroundColor={headerBackgroundColor}
 			showTitle={showTitle}
 			showDescription={showDescription}
 			showDate={showDate}

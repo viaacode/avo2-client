@@ -31,6 +31,11 @@ import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
 import './ItemVideoDescription.scss';
 
+interface CuePoints {
+	start: number | null;
+	end: number | null;
+}
+
 interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
@@ -38,6 +43,8 @@ interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	showTitle?: boolean;
 	title?: string;
 	description?: string;
+	cuePoints?: CuePoints;
+	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	onTitleClicked?: () => void;
 }
 
@@ -51,6 +58,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	title = itemMetaData.title,
 	description = itemMetaData.description,
 	onTitleClicked,
+	cuePoints,
+	canPlay = true,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -182,7 +191,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
+				{...cuePoints}
 				autoplay
+				canPlay={canPlay}
 				itemUuid={itemMetaData.uid}
 			/>
 		</div>

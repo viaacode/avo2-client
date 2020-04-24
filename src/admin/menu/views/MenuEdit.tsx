@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, get, isNil, startCase, uniq, without } from 'lodash-es';
+import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -10,7 +10,6 @@ import {
 	Container,
 	Flex,
 	IconName,
-	SelectOption,
 	Spacer,
 	Spinner,
 	TagInfo,
@@ -23,34 +22,14 @@ import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { ContentPickerType, PickerItem } from '../../shared/types';
+import { PickerItem } from '../../shared/types';
 
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const';
 import { MenuService } from '../menu.service';
-import {
-	MenuEditFormErrorState,
-	MenuEditFormState,
-	MenuEditPageType,
-	MenuEditParams,
-} from '../menu.types';
-
-export interface MenuSchema {
-	id: number;
-	label: string;
-	icon_name: string;
-	description: string | null;
-	user_group_ids: number[];
-	content_type: ContentPickerType | null;
-	content_path: string | null;
-	link_target: '_blank' | '_self' | null;
-	position: number;
-	placement: string;
-	created_at: string;
-	updated_at: string;
-}
+import { MenuEditFormErrorState, MenuEditPageType, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
@@ -61,7 +40,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const menuName = startCase(menuParentId);
 
 	// Hooks
-	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
+	const [menuForm, setMenuForm] = useState<Avo.Menu.Menu>(
+		INITIAL_MENU_FORM(menuParentId ? String(menuParentId) : '0') as Avo.Menu.Menu
+	);
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 	const [formErrors, setFormErrors] = useState<MenuEditFormErrorState>({});
@@ -106,14 +87,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						setInitialMenuItem(menuItem);
 						setMenuForm({
 							description: menuItem.description || '',
-							icon: menuItem.icon_name as IconName,
+							icon_name: menuItem.icon_name as IconName,
 							label: menuItem.label,
 							content_type: menuItem.content_type || 'COLLECTION',
 							content_path: String(menuItem.content_path || ''),
 							link_target: menuItem.link_target || '_self',
 							user_group_ids: menuItem.user_group_ids || [],
-							placement: menuItem.placement,
-						});
+							placement: menuItem.placement || null,
+							tooltip: menuItem.tooltip,
+						} as Avo.Menu.Menu);
 					}
 				})
 				.finally(() => {
@@ -146,7 +128,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				'data.app_content[0].user_group_ids',
 				[]
 			);
-			const navItemUserGroupIds: number[] = menuForm.user_group_ids;
+			const navItemUserGroupIds: number[] = menuForm.user_group_ids || [];
 			const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
 
 			// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
@@ -238,28 +220,31 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const pageTitle = menuParentId
 		? `${menuName}: item ${GET_PAGE_TYPES_LANG()[pageType]}`
 		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
-	const menuParentOptions = menuItems.reduce(
-		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
-			// Don't add duplicates to the options
-			if (acc.find(opt => opt.value === placement)) {
-				return acc;
-			}
-
-			return [...acc, { label: startCase(placement), value: placement }];
-		},
-		[]
+	const menuParentOptions = uniqBy(
+		compact(
+			menuItems.map(menuItem => {
+				if (!menuItem.placement) {
+					return null;
+				}
+				return {
+					label: startCase(menuItem.placement || ''),
+					value: menuItem.placement,
+				};
+			})
+		),
+		'value'
 	);
 
 	// Methods
 	const handleChange = (
-		key: keyof MenuEditFormState | 'content',
-		value: ValueOf<MenuEditFormState> | PickerItem | null
+		key: keyof Avo.Menu.Menu | 'content',
+		value: ValueOf<Avo.Menu.Menu> | PickerItem | null
 	): void => {
 		if (key === 'content') {
 			setMenuForm({
 				...menuForm,
-				content_type: get(value as PickerItem, 'type'),
-				content_path: get(value as PickerItem, 'value'),
+				content_type: get(value, 'type'),
+				content_path: get(value, 'value'),
 			});
 		} else {
 			setMenuForm({
@@ -282,14 +267,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				return;
 			}
 
-			const menuItem: Partial<MenuSchema> = {
-				icon_name: menuForm.icon,
+			const menuItem: Partial<Avo.Menu.Menu> = {
+				icon_name: menuForm.icon_name,
 				label: menuForm.label,
 				content_path: menuForm.content_path,
 				content_type: menuForm.content_type,
 				link_target: menuForm.link_target,
 				user_group_ids: menuForm.user_group_ids,
 				placement: menuForm.placement,
+				tooltip: menuForm.tooltip,
 			};
 
 			if (pageType === 'create') {
@@ -298,7 +284,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					// Get description from existing items or use form description field
 					description: get(menuItems, '[0].description', menuForm.description),
 					position: menuItems.length,
-				} as Avo.Menu.Menu);
+				} as any); // TODO: Replace any by Avo.Menu.Menu at typings 2.16.
 				ToastService.success(
 					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
 					false
@@ -323,7 +309,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				);
 			}
 		} catch (err) {
-			console.error(new CustomError('Failed to save menu item', err, { menuForm }));
+			console.error(
+				new CustomError('Failed to save menu item', err, {
+					menuForm,
+				})
+			);
 			ToastService.danger(
 				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
 				false
@@ -339,10 +329,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
 		}
 
-		if (!menuForm.label) {
-			errors.label = t('admin/menu/views/menu-edit___label-is-verplicht');
-		}
-
 		if (!menuForm.content_path) {
 			errors.content_path = t('admin/menu/views/menu-edit___link-is-verplicht');
 		}
@@ -354,7 +340,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	const navigateBack = (): void => {
 		if (menuParentId) {
-			navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+			navigate(history, MENU_PATH.MENU_DETAIL, {
+				menu: menuParentId,
+			});
 		} else {
 			navigate(history, MENU_PATH.MENU);
 		}

@@ -24,19 +24,23 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const [menus, setMenus] = useState<any>([]);
 
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
-		const { placement: menu } = rowData;
+		const placement = rowData.placement || undefined;
 
 		switch (columnId) {
 			case 'placement':
 				return (
-					<Link to={buildLink(MENU_PATH.MENU_DETAIL, { menu })}>{startCase(menu)}</Link>
+					<Link to={buildLink(MENU_PATH.MENU_DETAIL, { menu: placement })}>
+						{startCase(placement || '')}
+					</Link>
 				);
 			case 'actions':
 				return (
 					<ButtonToolbar>
 						<Button
 							icon="eye"
-							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
+							onClick={() =>
+								navigate(history, MENU_PATH.MENU_DETAIL, { menu: placement })
+							}
 							size="small"
 							title={t(
 								'admin/menu/views/menu-overview___bekijk-de-navigatie-items-voor-deze-navigatie-balk'
@@ -48,7 +52,9 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 						/>
 						<Button
 							icon="plus"
-							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
+							onClick={() =>
+								navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu: placement })
+							}
 							size="small"
 							title={t(
 								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe-aan-deze-navigatie-balk'

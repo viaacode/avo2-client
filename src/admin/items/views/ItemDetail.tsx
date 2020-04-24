@@ -1,12 +1,24 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { get, orderBy } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
-import { Button, ButtonToolbar, Container, Table, Thumbnail } from '@viaa/avo2-components';
+import {
+	BlockHeading,
+	Button,
+	ButtonToolbar,
+	Container,
+	Spacer,
+	Table,
+	Thumbnail,
+	Toolbar,
+	ToolbarRight,
+	WYSIWYG,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { CollectionService } from '../../../collection/collection.service';
 import { APP_PATH } from '../../../constants';
 import {
 	DeleteObjectModal,
@@ -17,12 +29,22 @@ import { buildLink, CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
+	renderDetailRow,
 	renderMultiOptionDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { ItemsService } from '../items.service';
+
+type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
+
+const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
+	title: 'title',
+	author: 'profile.usersByuserId.last_name',
+	organization: 'profile.profile_organizations[0].organization_id',
+	actions: '',
+};
 
 interface ItemDetailProps extends RouteComponentProps<{ id: string }> {}
 
@@ -31,6 +53,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmPublishModalOpen, setIsConfirmPublishModalOpen] = useState<boolean>(false);
+	const [collectionsContainingItem, setCollectionsContainingItem] = useState<
+		Avo.Collection.Collection[] | undefined
+	>(undefined);
+	const [collectionSortColumn, setCollectionSortColumn] = useState<string>('title');
+	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
+		'asc'
+	);
 
 	const [t] = useTranslation();
 
@@ -55,17 +84,39 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 	}, [setItem, setLoadingInfo, t, match.params.id]);
 
+	const fetchCollectionsByItemExternalId = useCallback(async () => {
+		try {
+			if (!item) {
+				return;
+			}
+			const colls = await CollectionService.fetchCollectionsByFragmentId(item.external_id);
+			setCollectionsContainingItem(colls);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get collections containing item', err, {
+					item,
+				})
+			);
+			ToastService.danger(
+				t(
+					'admin/items/views/item-detail___het-ophalen-van-de-collecties-die-dit-item-bevatten-is-mislukt'
+				)
+			);
+		}
+	}, [setCollectionsContainingItem, t, item]);
+
 	useEffect(() => {
 		fetchItemById();
 	}, [fetchItemById]);
 
 	useEffect(() => {
 		if (item) {
+			fetchCollectionsByItemExternalId();
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [item, setLoadingInfo]);
+	}, [item, setLoadingInfo, fetchCollectionsByItemExternalId]);
 
 	const toggleItemPublishedState = async () => {
 		try {
@@ -75,8 +126,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			await ItemsService.setItemPublishedState(item.uid, !item.is_published);
 			ToastService.success(
 				item.is_published
-					? t('admin/items/views/item-detail___het-item-is-gepubliceerd')
-					: t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
+					? t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
+					: t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
+				false
 			);
 			setItem({
 				...item,
@@ -87,7 +139,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				new CustomError('Failed to toggle is_published state for item', err, { item })
 			);
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
+				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt'),
+				false
 			);
 		}
 	};
@@ -102,6 +155,81 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: item.external_id });
 		redirectToClientPage(link, history);
+	};
+
+	const navigateToCollectionDetail = (id: string) => {
+		const link = buildLink(APP_PATH.COLLECTION_DETAIL.route, { id });
+		redirectToClientPage(link, history);
+	};
+
+	const handleCollectionColumnClick = (columnId: CollectionColumnId) => {
+		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		setCollectionSortColumn(columnId);
+		setCollectionSortOrder(sortOrder);
+		setCollectionsContainingItem(
+			orderBy(
+				collectionsContainingItem,
+				[coll => get(coll, columnIdToCollectionPath[columnId])],
+				[sortOrder]
+			)
+		);
+	};
+
+	const saveNotes = async () => {
+		try {
+			if (!item) {
+				return;
+			}
+			await ItemsService.setItemNotes(item.uid, (item as any).note || null);
+			ToastService.success(
+				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
+				false
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to save item notes', err, { item }));
+			ToastService.danger(
+				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt'),
+				false
+			);
+		}
+	};
+
+	const renderCollectionCell = (
+		rowData: Partial<Avo.Collection.Collection>,
+		columnId: CollectionColumnId
+	): ReactNode => {
+		switch (columnId) {
+			case 'author':
+				const user = get(rowData, 'profile.usersByuserId');
+				if (!user) {
+					return '-';
+				}
+				return `${user.first_name} ${user.last_name}`;
+
+			case 'organization':
+				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
+
+			case 'actions':
+				return (
+					<Button
+						type="borderless"
+						icon="eye"
+						title={t(
+							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
+						)}
+						ariaLabel={t(
+							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
+						)}
+						onClick={evt => {
+							evt.stopPropagation();
+							navigateToCollectionDetail(rowData.id as string);
+						}}
+					/>
+				);
+
+			default:
+				return rowData[columnId];
+		}
 	};
 
 	const renderItemDetail = () => {
@@ -189,8 +317,73 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									t('admin/items/views/item-detail___views'),
 								],
 							])}
+							{renderDetailRow(
+								<>
+									{/* TODO remove any cast after update to typings 2.16.0 */}
+									<div style={{ backgroundColor: '#FFF' }}>
+										<WYSIWYG
+											id="note"
+											data={(item as any).note}
+											onChange={(note: string | null) =>
+												setItem({ ...item, note } as Avo.Item.Item)
+											}
+										/>
+									</div>
+									<Spacer margin="top-small">
+										<Toolbar>
+											<ToolbarRight>
+												<Button
+													label={t(
+														'admin/items/views/item-detail___opmerkingen-opslaan'
+													)}
+													onClick={saveNotes}
+												/>
+											</ToolbarRight>
+										</Toolbar>
+									</Spacer>
+								</>,
+								t('admin/items/views/item-detail___opmerkingen')
+							)}
 						</tbody>
 					</Table>
+					<Spacer margin="top-extra-large">
+						<BlockHeading type="h2">
+							{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
+						</BlockHeading>
+					</Spacer>
+					{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
+						<Table
+							columns={[
+								{
+									label: t('admin/items/views/item-detail___titel'),
+									id: 'title',
+									sortable: true,
+								},
+								{
+									label: t('admin/items/views/item-detail___auteur'),
+									id: 'author',
+									sortable: true,
+								},
+								{ label: 'Organisatie', id: 'organization', sortable: false },
+								{ label: '', id: 'actions', sortable: false },
+							]}
+							data={collectionsContainingItem}
+							emptyStateMessage={t(
+								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+							)}
+							onColumnClick={handleCollectionColumnClick as any}
+							onRowClick={coll => navigateToCollectionDetail(coll.id)}
+							renderCell={renderCollectionCell as any}
+							sortColumn={collectionSortColumn}
+							sortOrder={collectionSortOrder}
+							variant="bordered"
+							rowKey="id"
+						/>
+					) : (
+						t(
+							'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+						)
+					)}
 					<DeleteObjectModal
 						title={
 							item.is_published
@@ -233,7 +426,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					{!!item && (
 						<ButtonToolbar>
 							<Button
-								type="danger"
+								type={item.is_published ? 'danger' : 'primary'}
 								label={
 									item.is_published
 										? t('admin/items/views/item-detail___depubliceren')
@@ -249,7 +442,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 										? t('admin/items/views/item-detail___depubliceer-dit-item')
 										: t('admin/items/views/item-detail___publiceer-dit-item')
 								}
-								onClick={() => setIsConfirmPublishModalOpen(true)}
+								onClick={() => {
+									if (item.is_published) {
+										setIsConfirmPublishModalOpen(true);
+									} else {
+										toggleItemPublishedState();
+									}
+								}}
 							/>
 							<Button
 								label={t(

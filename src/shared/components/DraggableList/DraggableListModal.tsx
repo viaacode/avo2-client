@@ -21,7 +21,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [reorderedElements, setReorderedElements] = useState<any[]>(items);
+	const [reorderedElements, setReorderedElements] = useState<any[] | null>(null);
 
 	return (
 		<Modal
@@ -33,7 +33,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 		>
 			<ModalBody>
 				<DraggableList
-					items={reorderedElements}
+					items={reorderedElements || items}
 					renderItem={renderItem}
 					onListChange={setReorderedElements}
 				/>
@@ -50,7 +50,10 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 					<Button
 						label={t('shared/components/draggable-list/draggable-list-modal___opslaan')}
 						type="primary"
-						onClick={() => onClose(reorderedElements)}
+						onClick={() => {
+							onClose(reorderedElements || items);
+							setReorderedElements(null);
+						}}
 					/>
 				</ButtonToolbar>
 			</ModalFooterRight>

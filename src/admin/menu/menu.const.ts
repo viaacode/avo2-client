@@ -1,9 +1,9 @@
 import { TableColumn } from '@viaa/avo2-components';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-
-import { MenuEditFormState } from './menu.types';
 
 export const MENU_PATH = {
 	MENU: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}`,
@@ -19,15 +19,16 @@ export const GET_MENU_OVERVIEW_TABLE_COLS: () => TableColumn[] = () => [
 	{ id: 'actions', label: '' },
 ];
 
-export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => ({
+export const INITIAL_MENU_FORM = (placement: string = ''): Partial<Avo.Menu.Menu> => ({
 	placement,
 	description: '',
-	icon: '',
+	icon_name: '',
 	label: '',
 	content_type: null,
 	content_path: null,
 	link_target: '_self',
 	user_group_ids: [],
+	tooltip: '',
 });
 
 export const GET_PAGE_TYPES_LANG = () => ({
