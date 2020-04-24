@@ -129,7 +129,7 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.IFrame,
 	},
 	{
-		label: i18n.t('KLAAR'),
+		label: i18n.t('admin/content-block/content-block___klaar'),
 		value: ContentBlockType.KLAAR,
 	},
 	{
@@ -392,11 +392,11 @@ export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 
 export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
-		label: i18n.t('Schermbreedte (header)'),
+		label: i18n.t('admin/content-block/content-block___schermbreedte-header'),
 		value: 'page-header',
 	},
 	{
-		label: i18n.t('Schermbreedte'),
+		label: i18n.t('admin/content-block/content-block___schermbreedte'),
 		value: 'full-width',
 	},
 	{
@@ -408,11 +408,11 @@ export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 		value: '700px',
 	},
 	{
-		label: i18n.t('Medium'),
+		label: i18n.t('admin/content-block/content-block___medium'),
 		value: '500px',
 	},
 	{
-		label: i18n.t('Klein'),
+		label: i18n.t('admin/content-block/content-block___klein'),
 		value: '400px',
 	},
 ];

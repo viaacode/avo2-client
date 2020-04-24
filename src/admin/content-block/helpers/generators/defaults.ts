@@ -49,7 +49,7 @@ export const BLOCK_FIELD_DEFAULTS = () => ({
 
 	// Used to link to this block from inside the same page using the anchors-block
 	anchor: INPUT_FIELD({
-		label: i18n.t('Anchor id'),
+		label: i18n.t('admin/content-block/helpers/generators/defaults___anchor-id'),
 	}),
 });
 

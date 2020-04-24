@@ -98,7 +98,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t('Het ophalen van de collecties die dit item bevatten is mislukt')
+				t(
+					'admin/items/views/item-detail___het-ophalen-van-de-collecties-die-dit-item-bevatten-is-mislukt'
+				)
 			);
 		}
 	}, [setCollectionsContainingItem, t, item]);
@@ -179,10 +181,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return;
 			}
 			await ItemsService.setItemNotes(item.uid, (item as any).note || null);
-			ToastService.success(t('Opmerkingen opgeslagen'), false);
+			ToastService.success(
+				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
+				false
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save item notes', err, { item }));
-			ToastService.danger(t('Het opslaan van de opmerkingen is mislukt'), false);
+			ToastService.danger(
+				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt'),
+				false
+			);
 		}
 	};
 
@@ -206,8 +214,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					<Button
 						type="borderless"
 						icon="eye"
-						title={t('Ga naar de collectie detail pagina')}
-						ariaLabel={t('Ga naar de collectie detail pagina')}
+						title={t(
+							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
+						)}
+						ariaLabel={t(
+							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
+						)}
 						onClick={evt => {
 							evt.stopPropagation();
 							navigateToCollectionDetail(rowData.id as string);
@@ -321,32 +333,44 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 										<Toolbar>
 											<ToolbarRight>
 												<Button
-													label={t('Opmerkingen opslaan')}
+													label={t(
+														'admin/items/views/item-detail___opmerkingen-opslaan'
+													)}
 													onClick={saveNotes}
 												/>
 											</ToolbarRight>
 										</Toolbar>
 									</Spacer>
 								</>,
-								t('Opmerkingen')
+								t('admin/items/views/item-detail___opmerkingen')
 							)}
 						</tbody>
 					</Table>
 					<Spacer margin="top-extra-large">
 						<BlockHeading type="h2">
-							{t('Collecties die dit item bevatten')}
+							{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
 						</BlockHeading>
 					</Spacer>
 					{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
 						<Table
 							columns={[
-								{ label: t('Titel'), id: 'title', sortable: true },
-								{ label: t('Auteur'), id: 'author', sortable: true },
+								{
+									label: t('admin/items/views/item-detail___titel'),
+									id: 'title',
+									sortable: true,
+								},
+								{
+									label: t('admin/items/views/item-detail___auteur'),
+									id: 'author',
+									sortable: true,
+								},
 								{ label: 'Organisatie', id: 'organization', sortable: false },
 								{ label: '', id: 'actions', sortable: false },
 							]}
 							data={collectionsContainingItem}
-							emptyStateMessage={t('Dit item is in geen enkele collectie opgenomen')}
+							emptyStateMessage={t(
+								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+							)}
 							onColumnClick={handleCollectionColumnClick as any}
 							onRowClick={coll => navigateToCollectionDetail(coll.id)}
 							renderCell={renderCollectionCell as any}
@@ -356,7 +380,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							rowKey="id"
 						/>
 					) : (
-						t('Dit item is in geen enkele collectie opgenomen')
+						t(
+							'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+						)
 					)}
 					<DeleteObjectModal
 						title={

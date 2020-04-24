@@ -95,8 +95,12 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				if (duplicates.byTitle) {
 					ToastService.danger(
 						isCollection()
-							? t('Een publieke collectie met deze titel bestaat reeds.')
-							: t('Een publieke bundel met deze titel bestaat reeds.')
+							? t(
+									'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-titel-bestaat-reeds'
+							  )
+							: t(
+									'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-titel-bestaat-reeds'
+							  )
 					);
 					return;
 				}
@@ -104,8 +108,12 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				if (duplicates.byDescription) {
 					ToastService.danger(
 						isCollection()
-							? t('Een publieke collectie met deze beschrijving bestaat reeds.')
-							: t('Een publieke bundel met deze beschrijving bestaat reeds.')
+							? t(
+									'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-beschrijving-bestaat-reeds'
+							  )
+							: t(
+									'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-beschrijving-bestaat-reeds'
+							  )
 					);
 					return;
 				}

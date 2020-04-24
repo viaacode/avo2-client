@@ -1,6 +1,7 @@
 import { compact, get, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ValueType } from 'react-select';
 
 import {
 	Button,
@@ -16,6 +17,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ColorSelect } from '../../../admin/content-block/components/fields';
 import { CustomError } from '../../../shared/helpers';
@@ -24,9 +26,7 @@ import { UserProps } from '../../../shared/hocs/withUser';
 import { AssignmentLabelsService, ToastService } from '../../../shared/services';
 import { AssignmentLabelColor } from '../../assignment.types';
 
-import { ValueType } from 'react-select';
 import './ManageAssignmentLabels.scss';
-import { Avo } from '@viaa/avo2-types';
 
 interface ManageAssignmentLabelsProps extends UserProps {
 	onClose: () => void;

@@ -31,7 +31,11 @@ export const useContentBlocksByContentId = (id?: string): UseContentBlocksByCont
 							id,
 						})
 					);
-					ToastService.danger(t('Het ophalen van de content blokken is mislukt'));
+					ToastService.danger(
+						t(
+							'admin/content-block/hooks/use-content-blocks-by-content-id___het-ophalen-van-de-content-blokken-is-mislukt'
+						)
+					);
 				})
 				.finally(() => {
 					setIsLoading(false);
