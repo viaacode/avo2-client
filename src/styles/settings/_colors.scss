@@ -31,13 +31,11 @@ $color-teal-dark: #124455;
    ========================================================================== */
 
 $color-error-200: #ee8176;
-$color-green: #46d46e;
 $color-blue: #4d76f3;
 $color-ocean-green: #57c2a0;
 $color-silver: #dbdbdb;
 $color-tapestry: #b75b99;
 $color-wine-red: #98485c;
-$color-night-blue: #3a586f;
 $color-yellow: #f3aa2e;
 $color-green: #9db410;
 $color-dark-orange: #d03f06;
@@ -48,7 +46,7 @@ $color-french-rose: #f33f67;
    ========================================================================== */
 
 $color-primary: $color-teal-bright;
-$color-success: #57c2a0;
+$color-success: $color-ocean-green;
 $color-error: #da3f34;
 
 /* Filter alert message colors
