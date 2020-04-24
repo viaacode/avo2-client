@@ -414,6 +414,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							location={location}
 							match={match}
 							user={user}
+							canPlay={
+								!isOpenAddToCollectionModal &&
+								!isShareThroughEmailModalOpen &&
+								!isReportItemModalOpen
+							}
 							{...rest}
 						/>
 						<Grid>
