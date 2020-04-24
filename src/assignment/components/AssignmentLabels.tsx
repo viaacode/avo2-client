@@ -10,20 +10,19 @@ import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 
-import { AssignmentLabel } from '../assignment.types';
 import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 interface AssignmentLabelsProps {
-	labels: AssignmentLabel[];
+	labels: Avo.Assignment.Label[];
 	user: Avo.User.User;
-	onChange: (newLabels: AssignmentLabel[]) => void;
+	onChange: (newLabels: Avo.Assignment.Label[]) => void;
 }
 
 const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, user, onChange }) => {
 	const [t] = useTranslation();
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<AssignmentLabel[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
@@ -36,7 +35,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: AssignmentLabel[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label[]): TagOption[] => {
 		return labels.map(labelObj => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -51,7 +50,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: AssignmentLabel[]): ColorOption[] => {
+	const getColorOptions = (labels: Avo.Assignment.Label[]): ColorOption[] => {
 		return labels.map(labelObj => ({
 			label: labelObj.label || '',
 			value: String(labelObj.id),
@@ -86,7 +85,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 
 	const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
 		evt.stopPropagation();
-		onChange(labels.filter((labelObj: AssignmentLabel) => labelObj.id !== labelId));
+		onChange(labels.filter((labelObj: Avo.Assignment.Label) => labelObj.id !== labelId));
 	};
 
 	const assignmentLabelIds = labels.map(labelObj => labelObj.id);

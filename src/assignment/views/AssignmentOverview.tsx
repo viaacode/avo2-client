@@ -397,11 +397,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				return `${capitalize(cellData)}`;
 
 			case 'assignment_assignment_tags':
-				const assignmentTags: Avo.Assignment.Tag[] = get(cellData, 'assignment_tag', []);
-				const tagOptions = assignmentTags.map((tag: Avo.Assignment.Tag) => ({
-					id: tag.id,
-					label: tag.label,
-					color: tag.color_override || tag.enum_color.label,
+				const assignmentTags: Avo.Assignment.Label[] = get(cellData, 'assignment_tag', []);
+				const tagOptions = assignmentTags.map((labelObj: Avo.Assignment.Label) => ({
+					id: labelObj.id,
+					label: labelObj.label || '',
+					color: labelObj.color_override || get(labelObj, 'enum_color.label', ''),
 				}));
 				return <TagList tags={tagOptions} swatches closable={false} bordered={false} />;
 

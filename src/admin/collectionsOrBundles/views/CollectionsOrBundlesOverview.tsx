@@ -424,9 +424,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					columns={getUserOverviewTableCols()}
 					data={collections}
 					dataCount={collectionCount}
-					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
-						renderTableCell(rowData, columnId as CollectionsOrBundlesOverviewTableCols)
-					}
+					renderCell={renderTableCell as any}
 					searchTextPlaceholder={t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-auteur-rol'
 					)}
