@@ -496,13 +496,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						type="secondary"
 						title={
 							collection && collection.is_public
-								? t('Maak deze collectie privé')
-								: t('Maak deze collectie openbaar')
+								? t(
+										'collection/views/collection-detail___maak-deze-collectie-prive'
+								  )
+								: t(
+										'collection/views/collection-detail___maak-deze-collectie-openbaar'
+								  )
 						}
 						ariaLabel={
 							collection && collection.is_public
-								? t('Maak deze collectie privé')
-								: t('Maak deze collectie openbaar')
+								? t(
+										'collection/views/collection-detail___maak-deze-collectie-prive'
+								  )
+								: t(
+										'collection/views/collection-detail___maak-deze-collectie-openbaar'
+								  )
 						}
 						icon={collection && collection.is_public ? 'unlock2' : 'lock'}
 						onClick={() => executeAction('openShareCollectionModal')}

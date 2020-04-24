@@ -122,7 +122,9 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 						<RadioButton
 							key="timebound"
 							name="timebound"
-							label={t('Tijdsgebonden')}
+							label={t(
+								'admin/content/components/share-content-page-modal___tijdsgebonden'
+							)}
 							value="timebound"
 							checked={selectedOption === 'timebound'}
 							onChange={checked => {
@@ -135,7 +137,11 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 				</FormGroup>
 				<Spacer margin="left-large">
 					<Form>
-						<FormGroup label={t('Publiceren op')}>
+						<FormGroup
+							label={t(
+								'admin/content/components/share-content-page-modal___publiceren-op'
+							)}
+						>
 							<DatePicker
 								value={publishAt ? new Date(publishAt) : null}
 								onChange={date => setPublishAt(date ? date.toISOString() : null)}
@@ -143,7 +149,11 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 								disabled={selectedOption !== 'timebound'}
 							/>
 						</FormGroup>
-						<FormGroup label={t('Depubliceren op')}>
+						<FormGroup
+							label={t(
+								'admin/content/components/share-content-page-modal___depubliceren-op'
+							)}
+						>
 							<DatePicker
 								value={depublishAt ? new Date(depublishAt) : null}
 								onChange={date => setDepublishAt(date ? date.toISOString() : null)}

@@ -141,7 +141,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setUserRoles(await UserService.getUserRoles());
 		} catch (err) {
 			console.error(new CustomError('Failed to get users roles from the database', err));
-			ToastService.danger(t('Het ophalen van de gebruiker rollen is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-gebruiker-rollen-is-mislukt'
+				)
+			);
 		}
 	}, [setUserRoles, t]);
 
@@ -150,7 +154,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setCollectionLabels(await CollectionService.fetchQualityLabels());
 		} catch (err) {
 			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(t('Het ophalen van de labels is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
+				)
+			);
 		}
 	}, [setCollectionLabels, t]);
 
@@ -194,7 +202,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'author',
-			label: i18n.t('Auteur'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
+			),
 			sortable: true,
 		},
 		{
@@ -228,7 +238,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'collection_labels',
-			label: i18n.t('Labels'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels'
+			),
 			sortable: false,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
@@ -243,7 +255,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'bookmarks',
-			tooltip: i18n.t('Aantal keer opgenomen in een bladwijzer'),
+			tooltip: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
+			),
 			icon: 'bookmark',
 			sortable: false,
 		},

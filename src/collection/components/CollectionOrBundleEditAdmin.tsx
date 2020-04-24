@@ -77,7 +77,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				})
 			);
 			ToastService.danger(
-				t('Het ophalen van de bundles die deze collectie bevatten is mislukt')
+				t(
+					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-bundles-die-deze-collectie-bevatten-is-mislukt'
+				)
 			);
 		}
 	}, [setBundlesContainingCollection, t, collection]);
@@ -167,8 +169,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 					<Button
 						type="borderless"
 						icon="eye"
-						title={t('Ga naar de bundel detail pagina')}
-						ariaLabel={t('Ga naar de bundel detail pagina')}
+						title={t(
+							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina'
+						)}
+						ariaLabel={t(
+							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina'
+						)}
 						onClick={evt => {
 							evt.stopPropagation();
 							navigateToBundleDetail(rowData.id as string);
@@ -215,7 +221,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											/>
 										)}
 									</FormGroup>
-									<FormGroup label={t('Eigenaar')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-admin___eigenaar'
+										)}
+									>
 										<ContentPicker
 											initialValue={owner}
 											hideTargetSwitch
@@ -267,16 +277,26 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 								<>
 									<Spacer margin="top-extra-large">
 										<BlockHeading type="h2">
-											{t('Bundels die deze collectie bevatten')}
+											{t(
+												'collection/components/collection-or-bundle-edit-admin___bundels-die-deze-collectie-bevatten'
+											)}
 										</BlockHeading>
 									</Spacer>
 									{!!bundlesContainingCollection &&
 									!!bundlesContainingCollection.length ? (
 										<Table
 											columns={[
-												{ label: t('Titel'), id: 'title', sortable: true },
 												{
-													label: t('Auteur'),
+													label: t(
+														'collection/components/collection-or-bundle-edit-admin___titel'
+													),
+													id: 'title',
+													sortable: true,
+												},
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-admin___auteur'
+													),
 													id: 'author',
 													sortable: true,
 												},
@@ -289,7 +309,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											]}
 											data={bundlesContainingCollection}
 											emptyStateMessage={t(
-												'Deze collectie is in geen enkele bundel opgenomen'
+												'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
 											)}
 											onColumnClick={handleBundleColumnClick as any}
 											onRowClick={coll => navigateToBundleDetail(coll.id)}
@@ -300,7 +320,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											rowKey="id"
 										/>
 									) : (
-										t('Deze collectie is in geen enkele bundel opgenomen')
+										t(
+											'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
+										)
 									)}
 								</>
 							)}

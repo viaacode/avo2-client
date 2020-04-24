@@ -682,7 +682,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					fragment: fragment as Avo.Collection.Fragment,
 					index: getFragmentsFromCollection(collectionState.currentCollection).length,
 				});
-				ToastService.success(t('Het item is toegevoegd aan de collectie'));
+				ToastService.success(
+					t(
+						'collection/components/collection-or-bundle-edit___het-item-is-toegevoegd-aan-de-collectie'
+					)
+				);
 			} else {
 				// We're adding a collection to the bundle
 				const collection:
@@ -692,7 +696,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					'collection'
 				);
 				if (!collection) {
-					ToastService.danger(t('De collectie met dit id kon niet worden gevonden'));
+					ToastService.danger(
+						t(
+							'collection/components/collection-or-bundle-edit___de-collectie-met-dit-id-kon-niet-worden-gevonden'
+						)
+					);
 					return;
 				}
 				const bundleId = get(collectionState.currentCollection, 'id');
@@ -718,7 +726,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					fragment: fragment as Avo.Collection.Fragment,
 					index: getFragmentsFromCollection(collectionState.currentCollection).length,
 				});
-				ToastService.success(t('De collectie is toegevoegd aan de bundel'));
+				ToastService.success(
+					t(
+						'collection/components/collection-or-bundle-edit___de-collectie-is-toegevoegd-aan-de-bundel'
+					)
+				);
 			}
 		} catch (err) {
 			console.error(
@@ -732,8 +744,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			);
 			ToastService.danger(
 				isCollection
-					? t('Er ging iets mis bij het toevoegen van het item')
-					: t('Er ging iets mis bij het toevoegen van de collectie')
+					? t(
+							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-bij-het-toevoegen-van-het-item'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-bij-het-toevoegen-van-de-collectie'
+					  )
 			);
 		}
 	};
@@ -822,7 +838,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			COLLECTION_DROPDOWN_ITEMS.push(
 				createDropdownMenuItem(
 					'addItemById',
-					isCollection ? t('Voeg item toe') : t('Voeg collectie toe'),
+					isCollection
+						? t('collection/components/collection-or-bundle-edit___voeg-item-toe')
+						: t('collection/components/collection-or-bundle-edit___voeg-collectie-toe'),
 					'plus'
 				)
 			);
@@ -1071,13 +1089,23 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				/>
 				<InputModal
 					title={
-						isCollection ? t('Voeg item toe via PID') : t('Voeg collectie toe via ID')
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
+							  )
 					}
-					inputLabel={t('id')}
+					inputLabel={t('collection/components/collection-or-bundle-edit___id')}
 					inputPlaceholder={
 						isCollection
-							? t('Bijvoorbeeld: zg6g181x5j')
-							: t('Bijvoorbeeld: c8a48b7e-d27d-4b9a-a793-9ba79fff41df')
+							? t(
+									'collection/components/collection-or-bundle-edit___bijvoorbeeld-zg-6-g-181-x-5-j'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___bijvoorbeeld-c-8-a-48-b-7-e-d-27-d-4-b-9-a-a-793-9-ba-79-fff-41-df'
+							  )
 					}
 					isOpen={isEnterItemIdModalOpen}
 					onClose={() => setEnterItemIdModalOpen(false)}

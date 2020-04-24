@@ -19,19 +19,22 @@ export const INITIAL_KLAAR_BLOCK_STATE = (position: number): DefaultContentBlock
 	BLOCK_STATE_DEFAULTS(ContentBlockType.KLAAR, position);
 
 export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('KLAAR'),
+	name: i18n.t('admin/content-block/helpers/generators/klaar___klaar'),
 	type: ContentBlockType.KLAAR,
 	components: {
-		name: i18n.t('KLAAR Titel'),
+		name: i18n.t('admin/content-block/helpers/generators/klaar___klaar-titel'),
 		limits: {
 			max: 3,
 		},
 		state: INITIAL_KLAAR_COMPONENTS_STATE(),
 		fields: {
-			title: TEXT_FIELD(i18n.t('Titel is verplicht.'), {
-				label: i18n.t('Titel'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
+			title: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/klaar___titel-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/klaar___titel'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
 		},
 	},
 	block: {
