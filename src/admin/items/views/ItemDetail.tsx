@@ -11,6 +11,9 @@ import {
 	Spacer,
 	Table,
 	Thumbnail,
+	Toolbar,
+	ToolbarRight,
+	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -26,6 +29,7 @@ import { buildLink, CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
+	renderDetailRow,
 	renderMultiOptionDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
@@ -169,6 +173,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		);
 	};
 
+	const saveNotes = async () => {
+		try {
+			if (!item) {
+				return;
+			}
+			await ItemsService.setItemNotes(item.uid, (item as any).note || null);
+			ToastService.success(t('Opmerkingen opgeslagen'), false);
+		} catch (err) {
+			console.error(new CustomError('Failed to save item notes', err, { item }));
+			ToastService.danger(t('Het opslaan van de opmerkingen is mislukt'), false);
+		}
+	};
+
 	const renderCollectionCell = (
 		rowData: Partial<Avo.Collection.Collection>,
 		columnId: CollectionColumnId
@@ -288,6 +305,31 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									t('admin/items/views/item-detail___views'),
 								],
 							])}
+							{renderDetailRow(
+								<>
+									{/* TODO remove any cast after update to typings 2.16.0 */}
+									<div style={{ backgroundColor: '#FFF' }}>
+										<WYSIWYG
+											id="note"
+											data={(item as any).note}
+											onChange={(note: string | null) =>
+												setItem({ ...item, note } as Avo.Item.Item)
+											}
+										/>
+									</div>
+									<Spacer margin="top-small">
+										<Toolbar>
+											<ToolbarRight>
+												<Button
+													label={t('Opmerkingen opslaan')}
+													onClick={saveNotes}
+												/>
+											</ToolbarRight>
+										</Toolbar>
+									</Spacer>
+								</>,
+								t('Opmerkingen')
+							)}
 						</tbody>
 					</Table>
 					<Spacer margin="top-extra-large">

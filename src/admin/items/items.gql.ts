@@ -38,6 +38,7 @@ export const GET_ITEMS = gql`
 				label
 			}
 			updated_at
+			note
 			view_counts_aggregate {
 				aggregate {
 					count
@@ -81,6 +82,7 @@ export const GET_ITEM_BY_ID = gql`
 				label
 			}
 			updated_at
+			note
 			view_counts_aggregate {
 				aggregate {
 					count
@@ -124,6 +126,7 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 				label
 			}
 			updated_at
+			note
 			view_counts_aggregate {
 				aggregate {
 					count
@@ -133,9 +136,17 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 	}
 `;
 
-export const UPDATE_ITEM = gql`
+export const UPDATE_ITEM_PUBLISH_STATE = gql`
 	mutation updateItemPublishedState($id: uuid!, $isPublished: Boolean!) {
 		update_app_item_meta(where: { uid: { _eq: $id } }, _set: { is_published: $isPublished }) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_ITEM_NOTES = gql`
+	mutation updateItemPublishedState($id: uuid!, $note: String) {
+		update_app_item_meta(where: { uid: { _eq: $id } }, _set: { note: $note }) {
 			affected_rows
 		}
 	}
