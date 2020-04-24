@@ -204,8 +204,8 @@ export class AssignmentLabelsService {
 	public static getLabelsFromAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>
 	): Avo.Assignment.Label[] {
-		return (get(assignment, 'assignment_assignment_tags', []) as Array<{
+		return (get(assignment, 'assignment_assignment_tags', []) as {
 			assignment_tag: Avo.Assignment.Label;
-		}>).map(assignmentLabelLink => assignmentLabelLink.assignment_tag);
+		}[]).map(assignmentLabelLink => assignmentLabelLink.assignment_tag);
 	}
 }

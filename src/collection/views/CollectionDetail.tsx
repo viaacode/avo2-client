@@ -512,7 +512,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={collection && collection.is_public ? 'unlock2' : 'lock'}
+						icon={collection && collection.is_public ? 'unlock-2' : 'lock'}
 						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}

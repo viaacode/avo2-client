@@ -101,6 +101,11 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 						// new Trans without a key
 						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
 					}
+
+					if (!formattedKey) {
+						return match; // Do not modify the translations, since we cannot generate a key
+					}
+
 					newTranslations[formattedKey] = formattedTranslation;
 					return `<Trans i18nKey="${formattedKey}">${formattedTranslation}</Trans>`;
 				}
@@ -127,7 +132,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 				tFuncEnd,
 			].join('');
 			const regex = new RegExp(combinedRegex, 'gim');
-			content = content.replace(
+			const newContent = content.replace(
 				// Match char before t function to make sure it isn't part of a bigger function name, eg: sent()
 				regex,
 				(
@@ -143,6 +148,11 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					} else {
 						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
 					}
+
+					if (!formattedKey) {
+						return match; // Do not modify the translations, since we cannot generate a key
+					}
+
 					if ((translationParams || '').includes('(')) {
 						console.warn(
 							'WARNING: Translation params should not contain any function calls, ' +
@@ -158,21 +168,26 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 						);
 					}
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
-					if (
-						formattedTranslation.includes('___') &&
-						!(oldTranslations as keyMap)[formattedKey]
-					) {
+					const hasKeyAlready = formattedTranslation.includes('___');
+					if (hasKeyAlready && !(oldTranslations as keyMap)[formattedKey]) {
 						console.error('Failed to find old translation for key: ', formattedKey);
 					}
 					newTranslations[formattedKey] =
-						(formattedTranslation.includes('___')
+						(hasKeyAlready
 							? getFormattedTranslation((oldTranslations as keyMap)[formattedKey])
 							: formattedTranslation) || '';
-					return `${prefix}t('${formattedKey}'${translationParams || ''})`;
+
+					if (hasKeyAlready) {
+						return match;
+					} else {
+						return `${prefix}t('${formattedKey}'${translationParams || ''})`;
+					}
 				}
 			);
 
-			fs.writeFileSync(absoluteFilePath, content);
+			if (content !== newContent) {
+				fs.writeFileSync(absoluteFilePath, content);
+			}
 		} catch (err) {
 			console.error(`Failed to find translations in file: ${relativeFilePath}`, err);
 		}
