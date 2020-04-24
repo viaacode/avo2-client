@@ -45,7 +45,7 @@ export enum Color {
 	Error200 = '#EE8176',
 	Green = '#46D46E',
 	Blue = '#4D76F3',
-	SoftBlue = '#7CAACF',
+	SoftBlue = '#8AC1CE',
 	OceanGreen = '#57C2A0',
 	Silver = '#DBDBDB',
 	Tapestry = '#B75B99',
