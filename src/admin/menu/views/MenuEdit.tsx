@@ -266,8 +266,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (key === 'content') {
 			setMenuForm({
 				...menuForm,
-				content_type: get(value as PickerItem, 'type'),
-				content_path: get(value as PickerItem, 'value'),
+				content_type: get(value, 'type'),
+				content_path: get(value, 'value'),
 			});
 		} else {
 			setMenuForm({
