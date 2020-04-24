@@ -57,7 +57,12 @@ const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 					key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)}
 					margin="bottom"
 				>
-					<FormGroup label={formGroup.fields[key].label} error={error}>
+					<FormGroup
+						label={
+							!formGroup.fields[key].repeat ? formGroup.fields[key].label : undefined
+						}
+						error={error}
+					>
 						<ContentBlockFieldEditor
 							block={{ config, index: blockIndex }}
 							fieldKey={stateKey}

@@ -45,7 +45,7 @@ export enum Color {
 	Error200 = '#EE8176',
 	Green = '#46D46E',
 	Blue = '#4D76F3',
-	SoftBlue = '#7CAACF',
+	SoftBlue = '#8AC1CE',
 	OceanGreen = '#57C2A0',
 	Silver = '#DBDBDB',
 	Tapestry = '#B75B99',
@@ -112,6 +112,7 @@ export interface ContentBlockField {
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
+	repeat?: boolean;
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
@@ -124,7 +125,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
-	KLAAR = 'KLAAR',
+	Klaar = 'KLAAR',
 	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -251,7 +252,8 @@ export interface AnchorLinksBlockComponentState {
 }
 
 export interface KlaarBlockComponentState {
-	title: string;
+	titles: string[];
+	date: string;
 }
 
 export interface IntroBlockComponentState {

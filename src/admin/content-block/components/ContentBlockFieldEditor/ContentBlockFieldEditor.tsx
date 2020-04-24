@@ -1,19 +1,18 @@
-import { debounce, get, isArray, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-
-import { SelectOption } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers';
 import {
 	ContentBlockComponentState,
-	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockMeta,
 	ContentBlockState,
 	ContentBlockStateType,
-	PickerItem,
 } from '../../../shared/types';
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
+
+import { generateFieldAttributes } from '../../helpers/field-attributes';
+
+import { FieldRepeater } from '../FieldRepeater/FieldRepeater';
 
 interface ContentBlockFieldProps {
 	block: ContentBlockMeta; // Block metadata
@@ -49,101 +48,27 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 		editorId,
 		name: editorId,
 	};
-	let editorProps;
 
-	switch (field.editorType) {
-		case ContentBlockEditor.ContentPicker:
-			editorProps = {
-				onSelect: (picked: PickerItem) => {
-					handleChange(type, fieldKey, { value: picked }, stateIndex);
-				},
-				initialValue: get(state as any, fieldKey),
-			};
-			break;
-		case ContentBlockEditor.DatePicker:
-			editorProps = {
-				onChange: (date: any) =>
-					handleChange(type, fieldKey, date.toISOString(), stateIndex),
-				value: (state as any)[fieldKey] ? new Date((state as any)[fieldKey]) : null,
-			};
-			break;
-		case ContentBlockEditor.IconPicker:
-		case ContentBlockEditor.ColorSelect:
-			editorProps = {
-				onChange: (option: SelectOption<string>) =>
-					handleChange(type, fieldKey, get(option, 'value', ''), stateIndex),
-				value: defaultProps.options.find(
-					(opt: SelectOption<string>) => opt.value === (state as any)[fieldKey]
-				),
-			};
-			break;
-		case ContentBlockEditor.WYSIWYG:
-			editorProps = {
-				id: editorId,
-				data: (state as any)[fieldKey],
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-			};
-			break;
-		case ContentBlockEditor.FileUpload:
-			const urlOrUrls: string[] | undefined = (state as any)[fieldKey];
-			editorProps = {
-				// If the component wants a single value, take the first image from the array, otherwise pass the array
-				onChange: (value: null | undefined | string[]) =>
-					handleChange(
-						type,
-						fieldKey,
-						field.editorProps.allowMulti || !value ? value : value[0],
-						stateIndex
-					),
-				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
-			};
-			break;
-		case ContentBlockEditor.MultiRange:
-			const num = (state as any)[fieldKey];
-			editorProps = {
-				onChange: (value: any) => {
-					handleChange(
-						type,
-						fieldKey,
-						isArray(value) ? value[0] || 0 : value,
-						stateIndex
-					);
-				},
-				values: [num || 0], // TODO default to min value of input field instead of 0
-			};
-			break;
-		case ContentBlockEditor.Checkbox:
-			editorProps = {
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-				checked: (state as any)[fieldKey],
-			};
-			break;
-		case ContentBlockEditor.TextArea:
-		case ContentBlockEditor.TextInput:
-			editorProps = {
-				onChange: debounce(
-					(value: any) => handleChange(type, fieldKey, value, stateIndex),
-					150,
-					{ leading: true }
-				),
-				value: (state as any)[fieldKey],
-			};
-			break;
-		case ContentBlockEditor.UserGroupSelect:
-			editorProps = {
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-				values: (state as any)[fieldKey],
-			};
-			break;
-		default:
-			editorProps = {
-				onChange: (value: any) => {
-					handleChange(type, fieldKey, value, stateIndex);
-				},
-				value: (state as any)[fieldKey],
-			};
-			break;
+	if (field.repeat) {
+		return (
+			<FieldRepeater
+				fieldKey={fieldKey}
+				field={field}
+				state={(state as any)[fieldKey]}
+				EditorComponent={EditorComponent}
+				handleChange={handleChange}
+				type={type}
+				stateIndex={stateIndex}
+			/>
+		);
 	}
+
+	const editorProps: any = generateFieldAttributes(
+		field,
+		(value: any) => handleChange(type, fieldKey, value, stateIndex),
+		(state as any)[fieldKey],
+		editorId
+	);
 
 	return <EditorComponent {...defaultProps} {...editorProps} />;
 };
