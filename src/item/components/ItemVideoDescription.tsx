@@ -44,6 +44,7 @@ interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	title?: string;
 	description?: string;
 	cuePoints?: CuePoints;
+	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	onTitleClicked?: () => void;
 }
 
@@ -58,6 +59,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	description = itemMetaData.description,
 	onTitleClicked,
 	cuePoints,
+	canPlay = true,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -191,6 +193,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				logo={get(itemMetaData, 'organisation.logo_url')}
 				{...cuePoints}
 				autoplay
+				canPlay={canPlay}
 				itemUuid={itemMetaData.uid}
 			/>
 		</div>
