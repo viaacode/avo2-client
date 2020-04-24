@@ -57,7 +57,7 @@ import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
 import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentLabel, AssignmentLayout } from '../assignment.types';
+import { AssignmentLayout } from '../assignment.types';
 import AssignmentLabels from '../components/AssignmentLabels';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
@@ -70,7 +70,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<AssignmentLabel[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);

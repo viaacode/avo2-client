@@ -58,7 +58,7 @@ import {
 	CONTENT_LABEL_TO_ROUTE_PARTS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentLabel, AssignmentLayout } from '../assignment.types';
+import { AssignmentLayout } from '../assignment.types';
 import AssignmentLabels from '../components/AssignmentLabels';
 import './AssignmentEdit.scss';
 
@@ -72,7 +72,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<AssignmentLabel[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);

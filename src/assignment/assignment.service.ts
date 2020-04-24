@@ -14,14 +14,14 @@ import {
 import i18n from '../shared/translations/i18n';
 
 import { CollectionService } from '../collection/collection.service';
+import { CONTENT_LABEL_TO_QUERY } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from './assignment.gql';
-import { AssignmentLabel, AssignmentLayout } from './assignment.types';
-import { CONTENT_LABEL_TO_QUERY } from './assignment.const';
+import { AssignmentLayout } from './assignment.types';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -109,8 +109,8 @@ export class AssignmentService {
 
 	public static async updateAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		initialLabels?: AssignmentLabel[],
-		updatedLabels?: AssignmentLabel[]
+		initialLabels?: Avo.Assignment.Label[],
+		updatedLabels?: Avo.Assignment.Label[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			if (isNil(assignment.id)) {
@@ -174,7 +174,7 @@ export class AssignmentService {
 
 	public static async insertAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		addedLabels?: AssignmentLabel[]
+		addedLabels?: Avo.Assignment.Label[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const [validationErrors, assignmentToSave] = AssignmentService.validateAssignment({

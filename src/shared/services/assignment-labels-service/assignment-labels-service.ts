@@ -2,7 +2,7 @@ import { get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { AssignmentLabel, AssignmentLabelColor } from '../../../assignment/assignment.types';
+import { AssignmentLabelColor } from '../../../assignment/assignment.types';
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
 import {
@@ -17,7 +17,7 @@ import {
 
 export class AssignmentLabelsService {
 	// TODO replace with typings type: Avo.Assignments.Label after update to v2.16.0
-	public static async getLabelsForProfile(profileId: string): Promise<AssignmentLabel[]> {
+	public static async getLabelsForProfile(profileId: string): Promise<Avo.Assignment.Label[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
@@ -39,7 +39,7 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async insertLabels(labels: AssignmentLabel[]): Promise<number[]> {
+	public static async insertLabels(labels: Avo.Assignment.Label[]): Promise<number[]> {
 		let variables;
 		try {
 			variables = {
@@ -203,10 +203,9 @@ export class AssignmentLabelsService {
 
 	public static getLabelsFromAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>
-	): AssignmentLabel[] {
-		// TODO remove cast after update typings 2.16.0
-		return (get(assignment, 'assignment_assignment_tags', []) as any[]).map(
-			(assignmentLabelLink: any): AssignmentLabel => assignmentLabelLink.assignment_tag
-		);
+	): Avo.Assignment.Label[] {
+		return (get(assignment, 'assignment_assignment_tags', []) as Array<{
+			assignment_tag: Avo.Assignment.Label;
+		}>).map(assignmentLabelLink => assignmentLabelLink.assignment_tag);
 	}
 }
