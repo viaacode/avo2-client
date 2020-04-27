@@ -50,6 +50,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 					<Sidebar
 						headerLink={ADMIN_PATH.DASHBOARD}
 						navItems={GET_NAV_ITEMS(userPermissions)}
+						className="o-app--admin__sidebar"
 					/>
 					<Flex
 						className="o-app--admin__main u-flex-auto u-scroll"
