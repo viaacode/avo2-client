@@ -35,6 +35,11 @@ export const GET_COLLECTIONS = gql`
 					}
 				}
 			}
+			collection_bookmarks_aggregate {
+				aggregate {
+					count(distinct: false)
+				}
+			}
 			lom_context
 			lom_classification
 			collection_labels {
