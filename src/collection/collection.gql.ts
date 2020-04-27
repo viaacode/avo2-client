@@ -237,8 +237,25 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 `;
 
 export const GET_COLLECTIONS = gql`
-	query getCollections($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
+	query getCollections($limit: Int!, $typeId: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: $typeId } }
+			limit: $limit
+		) {
+			id
+			title
+		}
+	}
+`;
+
+export const GET_COLLECTIONS_BY_ID = gql`
+	query getCollections($id: uuid!, $typeId: Int!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: $typeId }, id: { _eq: $id } }
+			limit: $limit
+		) {
 			id
 			title
 		}
@@ -246,10 +263,10 @@ export const GET_COLLECTIONS = gql`
 `;
 
 export const GET_COLLECTIONS_BY_TITLE = gql`
-	query getCollections($title: String!, $limit: Int!) {
+	query getCollections($title: String!, $typeId: Int!, $limit: Int!) {
 		app_collections(
 			order_by: { title: asc }
-			where: { type_id: { _eq: 3 }, title: { _ilike: $title } }
+			where: { type_id: { _eq: $typeId }, title: { _ilike: $title } }
 			limit: $limit
 		) {
 			id

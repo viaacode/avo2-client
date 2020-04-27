@@ -59,7 +59,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				await ContentPageService.resolveMediaItems(
 					get(searchQuery, 'value') as string | undefined,
 					parseIntOrDefault<undefined>(searchQueryLimit, undefined),
-					elements.filter(element => !isEmpty(element))
+					elements.filter(element => !isEmpty(element) && element.mediaItem)
 				)
 			);
 		} catch (err) {

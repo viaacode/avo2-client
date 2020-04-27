@@ -1,26 +1,27 @@
 import { get } from 'lodash-es';
 
-import { dataService, ToastService } from '../services';
+import { dataService } from '../services';
+import { CustomError } from './custom-error';
 
 interface Query {
 	query: any;
 	variables?: any;
 }
 
-export const performQuery = async (
-	query: Query,
-	subResponse: string,
-	error: string,
-	feedback: string
-) => {
+export const performQuery = async (query: Query, subResponse: string | null, error: string) => {
 	try {
 		const response = await dataService.query(query);
 
-		return get(response, subResponse, null);
-	} catch (err) {
-		console.error(error);
-		ToastService.danger(feedback, false);
+		if (response.errors) {
+			throw new CustomError('GraphQL response contains errors');
+		}
 
-		return null;
+		if (subResponse) {
+			return get(response, subResponse, null);
+		} else {
+			return subResponse;
+		}
+	} catch (err) {
+		throw new CustomError(error, err);
 	}
 };
