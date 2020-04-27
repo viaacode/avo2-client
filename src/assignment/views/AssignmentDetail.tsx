@@ -191,7 +191,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					await createAssignmentResponseObject(tempAssignment);
 
 					// Load content (collection, item or search query) according to assignment
-					AssignmentService.getAssignmentContent(tempAssignment)
+					AssignmentService.fetchAssignmentContent(tempAssignment)
 						.then((response: Avo.Assignment.Content | null) => {
 							setAssignmentContent(response);
 							setAssignment(tempAssignment);

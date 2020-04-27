@@ -130,7 +130,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			id: string | number
 		): Promise<Avo.Assignment.Assignment | null> => {
 			try {
-				return await AssignmentService.getAssignmentById(id);
+				return await AssignmentService.fetchAssignmentById(id);
 			} catch (err) {
 				console.error(err);
 				setLoadingInfo({
