@@ -306,6 +306,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						history
 					);
 					setCollection(duplicateCollection);
+					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						t(
 							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
