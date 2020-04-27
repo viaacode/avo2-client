@@ -31,4 +31,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			},
 		},
 	}),
+	bookmarks: (order: Avo.Search.OrderDirection) => ({
+		collection_bookmarks_aggregate: {
+			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+		},
+	}),
 };

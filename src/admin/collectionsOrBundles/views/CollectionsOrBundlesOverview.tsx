@@ -259,9 +259,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 			),
 			icon: 'bookmark',
-			sortable: false,
+			sortable: true,
 		},
-		// { id: 'bookmarks', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___gebookmarkt'), sortable: true },
 		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
 		// { id: 'subjects', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'), sortable: true },
 		// { id: 'education_levels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'), sortable: true },
@@ -330,6 +329,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'views':
 				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
+
+			case 'bookmarks':
+				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':
