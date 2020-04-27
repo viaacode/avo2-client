@@ -1,5 +1,5 @@
 import { find, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -30,6 +30,7 @@ import { ToastService } from '../../shared/services';
 import { AppState } from '../../store';
 
 import './Home.scss';
+import { KeyCode } from '../../shared/types';
 
 interface HomeProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;
@@ -122,6 +123,12 @@ const Home: FunctionComponent<HomeProps> = ({
 		setAutocompleteSearchOpen(true);
 	};
 
+	const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
+		if (evt.keyCode === KeyCode.Enter) {
+			gotoSearchPage();
+		}
+	};
+
 	return (
 		<div className="m-home-page">
 			<Container mode="vertical" background="alt">
@@ -149,6 +156,7 @@ const Home: FunctionComponent<HomeProps> = ({
 											onChange={searchTerm =>
 												handleSearchTermChanged(searchTerm)
 											}
+											onKeyUp={handleSearchFieldKeyUp}
 										/>
 									</DropdownButton>
 									<DropdownContent>
