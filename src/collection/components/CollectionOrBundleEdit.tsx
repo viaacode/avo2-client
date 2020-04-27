@@ -403,10 +403,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
 
+		const updatedCollection = ({
+			...collectionState.currentCollection,
+			updated_by_profile_id: get(user, 'profile.id', null),
+		} as unknown) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
+
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
 				collectionState.initialCollection,
-				collectionState.currentCollection
+				updatedCollection
 			);
 
 			if (newCollection) {
