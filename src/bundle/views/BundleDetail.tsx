@@ -72,7 +72,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [t] = useTranslation();
 
 	// State
-	const [bundleId] = useState(match.params.id);
+	const [bundleId, setBundleId] = useState(match.params.id);
 	const [bundle, setBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -277,6 +277,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				history
 			);
 			setBundle(duplicateCollection);
+			setBundleId(duplicateCollection.id);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
 			);
