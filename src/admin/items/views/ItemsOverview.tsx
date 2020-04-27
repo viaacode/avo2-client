@@ -229,7 +229,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
+					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent
 							loadingInfo={loadingInfo}
 							dataObject={items}
