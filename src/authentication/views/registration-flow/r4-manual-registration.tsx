@@ -2,7 +2,7 @@ import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+import { sanitize } from '../../../shared/helpers';
 
 import {
 	BlockHeading,
@@ -24,6 +24,7 @@ import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
+import sanitizePresets from '../../../shared/helpers/sanitize/presets';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 
@@ -62,13 +63,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___email-is-geen-geldig-email-adres'
 				)
-			);
-		}
-		if (!organization) {
-			errors.push(
-				`${t(
-					'authentication/views/registration-flow/r-4-manual-registration___organisatie'
-				)} ${requiredError}`
 			);
 		}
 		if (!profession) {
@@ -139,86 +133,39 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		}
 	};
 
+	const links = {
+		linkToStudentTeacher: APP_PATH.STUDENT_TEACHER.route,
+		linkToPupilAccessVersionTeachers: '/leerlingen-toegang-versie-leerkrachten',
+		linkForPupilAccess: APP_PATH.FOR_PUPILS.route,
+		linkToStamboek: APP_PATH.STAMBOEK.route,
+	};
+
 	const renderForm = () => {
 		return (
 			<>
 				<Button
 					type="secondary"
 					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
-					title={t(
-						'authentication/views/registration-flow/r-4-manual-registration___terug'
-					)}
-					ariaLabel={t(
-						'authentication/views/registration-flow/r-4-manual-registration___terug'
-					)}
+					icon="arrow-left"
+					title={t('Ga terug naar de stamboek pagina')}
+					ariaLabel={t('Ga terug naar de stamboek pagina')}
 				/>
 				<BlockHeading type="h2">
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
 						Vraag een account aan op het Archief voor Onderwijs
 					</Trans>
 				</BlockHeading>
-				<p>
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
-						TODO: link naar FAQ BP toegang zonder lerarenkaartnummer
-						<br />
-						<br />
-						Het Archief voor Onderwijs biedt op een eenvoudige manier toegang tot Vlaams
-						audiovisueel materiaal van meer dan 30 partners. Dit materiaal is
-						beschikbaar voor:
-						<ul>
-							<li>leerkrachten aan een Vlaamse erkende onderwijsinstelling</li>
-							<li>studenten aan een Vlaamse lerarenopleiding</li>
-							<li>leerlingen van een Vlaamse erkende secundaire school</li>
-						</ul>
-						<strong>Hoe krijg je toegang?</strong>
-						<ol>
-							<li>
-								<strong>Je bent student aan een Vlaamse lerarenopleiding?</strong>
-								<br />
-								Dan krijg je via je docent of hogeschool toegang tot onze beeldbank.
-								Hoe? Ontdek het op{' '}
-								<Link to={APP_PATH.STUDENT_TEACHER.route}>deze pagina</Link>.<br />
-								<br />
-							</li>
-							<li>
-								<strong>
-									Je bent leerling in een Vlaamse erkende secundaire school?
-								</strong>
-								<br />
-								Vraag een account via een van je leerkrachten. Lees meer over Het
-								Archief voor Onderwijs voor leerlingen op{' '}
-								<Link to={APP_PATH.FOR_PUPILS.route}>deze pagina</Link>.
-								<br />
-								Wil je als leerkracht je leerlingen toegang geven? Alle info vind je{' '}
-								<Link to={'/leerlingen-toegang-versie-leerkrachten'}>hier</Link>.
-								<br />
-								<br />
-							</li>
-							<li>
-								<strong>
-									Je bent lesgever in een Vlaamse erkende onderwijsinstelling?
-								</strong>
-								<br />
-
-								<ul>
-									<li>
-										Je hebt een lerarenkaart- of stamboeknummer? Maak dan{' '}
-										<Link to={APP_PATH.STAMBOEK.route}>hier</Link> je gratis een
-										account aan.
-									</li>
-
-									<li>
-										Je hebt geen lerarenkaart- of stamboeknummer? Of je vraagt
-										je af of je als lesgever zonder nummer in aanmerking komt
-										voor een account? Vraag je toegang aan via onderstaand
-										formulier. We verwerken je aanvraag binnen de vijf werkdagen
-										na ontvangst.
-									</li>
-								</ul>
-							</li>
-						</ol>
-					</Trans>{' '}
-				</p>
+				<p
+					dangerouslySetInnerHTML={{
+						__html: sanitize(
+							t(
+								'authentication/views/registration-flow/r-4-manual-registration___intro',
+								links
+							),
+							sanitizePresets.link
+						),
+					}}
+				/>
 				<BlockHeading type="h3">
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
 						Aanvraagformulier
@@ -231,6 +178,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___voornaam'
 							)}
 							labelFor="firstName"
+							required
 						>
 							<TextInput id="firstName" value={firstName} onChange={setFirstName} />
 						</FormGroup>
@@ -239,6 +187,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___achternaam'
 							)}
 							labelFor="lastName"
+							required
 						>
 							<TextInput id="lastName" value={lastName} onChange={setLastName} />
 						</FormGroup>
@@ -247,6 +196,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres'
 							)}
 							labelFor="email"
+							required
 						>
 							<TextInput id="email *" value={email} onChange={setEmail} />
 							<Tooltip position="bottom" contentClassName="m-email-tooltip">
@@ -284,6 +234,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
 							)}
 							labelFor="function"
+							required
 						>
 							<TextInput id="function" value={profession} onChange={setProfession} />
 						</FormGroup>
@@ -292,6 +243,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
 							)}
 							labelFor="reason"
+							required
 						>
 							<TextArea
 								height="small"

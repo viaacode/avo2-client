@@ -251,7 +251,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (
 		<>
-			<FormGroup label={t('settings/components/profile___vakken')} labelFor="subjects">
+			<FormGroup
+				label={t('settings/components/profile___vakken')}
+				labelFor="subjects"
+				required
+			>
 				<TagsInput
 					id="subjects"
 					placeholder={t('settings/components/profile___selecteer-de-vakken-die-u-geeft')}
@@ -266,6 +270,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			<FormGroup
 				label={t('settings/components/profile___onderwijsniveau')}
 				labelFor="educationLevel"
+				required
 			>
 				<TagsInput
 					id="educationLevel"
@@ -281,6 +286,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			<FormGroup
 				label={t('settings/components/profile___school-organisatie')}
 				labelFor="organization"
+				required
 			>
 				<TagList
 					closable

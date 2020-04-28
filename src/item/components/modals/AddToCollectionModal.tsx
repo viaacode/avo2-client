@@ -405,6 +405,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											label={t(
 												'item/components/modals/add-to-collection-modal___collectie'
 											)}
+											required
 										>
 											<Spacer margin="bottom">
 												<RadioButton
