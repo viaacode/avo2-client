@@ -266,18 +266,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				);
 				return;
 			}
-			const duplicateCollection = await CollectionService.duplicateCollection(
+			const duplicateBundle = await CollectionService.duplicateCollection(
 				bundle,
 				user,
 				COLLECTION_COPY,
 				COLLECTION_COPY_REGEX
 			);
 			redirectToClientPage(
-				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
+				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateBundle.id }),
 				history
 			);
-			setBundle(duplicateCollection);
-			setBundleId(duplicateCollection.id);
+			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
 			);

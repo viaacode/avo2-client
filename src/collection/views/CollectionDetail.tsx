@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -118,134 +118,134 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	});
 
-	useEffect(() => {
-		const checkPermissionsAndGetCollection = async () => {
-			try {
-				const uuid = await CollectionService.getCollectionIdByAvo1Id(collectionId);
+	const checkPermissionsAndGetCollection = useCallback(async () => {
+		try {
+			const uuid = await CollectionService.getCollectionIdByAvo1Id(collectionId);
 
-				if (!uuid) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-						),
-						icon: 'alert-triangle',
-					});
-					return;
-				}
-
-				if (collectionId !== uuid) {
-					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
-					// and continue loading the collection
-					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
-						history
-					);
-				}
-
-				const rawPermissions = await Promise.all([
-					PermissionService.hasPermissions(
-						[
-							{ name: PermissionName.VIEW_COLLECTIONS },
-							{
-								name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
-								obj: collectionId,
-							},
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
-							{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionName.EDIT_ANY_COLLECTIONS },
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
-							{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionName.DELETE_ANY_COLLECTIONS },
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[{ name: PermissionName.CREATE_COLLECTIONS }],
-						user
-					),
-					PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
-				]);
-				const permissionObj = {
-					canViewCollections: rawPermissions[0],
-					canEditCollections: rawPermissions[1],
-					canDeleteCollections: rawPermissions[2],
-					canCreateCollections: rawPermissions[3],
-					canViewItems: rawPermissions[4],
-				};
-				const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
-					uuid,
-					'collection'
-				);
-
-				if (!collectionObj) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-						),
-						icon: 'search',
-					});
-					return;
-				}
-
-				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
-				try {
-					setBookmarkViewPlayCounts(
-						await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
-					);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getCollectionCounts', err, {
-							uuid: collectionObj.id,
-						})
-					);
-					ToastService.danger(
-						t(
-							'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-						)
-					);
-				}
-
-				// Get published bundles that contain this collection
-				const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
-					collectionObj.id
-				);
-
-				setCollectionId(uuid);
-				setPermissions(permissionObj);
-				setCollection(collectionObj || null);
-				setPublishedBundles(publishedBundlesList);
-			} catch (err) {
-				console.error(
-					new CustomError(
-						'Failed to check permissions or get collection from the database',
-						err,
-						{
-							collectionId,
-						}
-					)
-				);
+			if (!uuid) {
 				setLoadingInfo({
 					state: 'error',
 					message: t(
-						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
+						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 					),
 					icon: 'alert-triangle',
 				});
+				return;
 			}
-		};
 
-		checkPermissionsAndGetCollection();
+			if (collectionId !== uuid) {
+				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
+				// and continue loading the collection
+				redirectToClientPage(
+					buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
+					history
+				);
+			}
+
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.VIEW_COLLECTIONS },
+						{
+							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
+							obj: collectionId,
+						},
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
+						{ name: PermissionName.EDIT_ANY_COLLECTIONS },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
+						{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.CREATE_COLLECTIONS }],
+					user
+				),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
+			]);
+			const permissionObj = {
+				canViewCollections: rawPermissions[0],
+				canEditCollections: rawPermissions[1],
+				canDeleteCollections: rawPermissions[2],
+				canCreateCollections: rawPermissions[3],
+				canViewItems: rawPermissions[4],
+			};
+			const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+				uuid,
+				'collection'
+			);
+
+			if (!collectionObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+					),
+					icon: 'search',
+				});
+				return;
+			}
+
+			BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts', err, {
+						uuid: collectionObj.id,
+					})
+				);
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
+			}
+
+			// Get published bundles that contain this collection
+			const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
+				collectionObj.id
+			);
+
+			setCollectionId(uuid);
+			setPermissions(permissionObj);
+			setCollection(collectionObj || null);
+			setPublishedBundles(publishedBundlesList);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to check permissions or get collection from the database',
+					err,
+					{
+						collectionId,
+					}
+				)
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t(
+					'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
+				),
+				icon: 'alert-triangle',
+			});
+		}
 	}, [collectionId, t, user, history]);
+
+	useEffect(() => {
+		checkPermissionsAndGetCollection();
+	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
 		getRelatedItems(collectionId, 'collections', 4)
@@ -305,7 +305,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
-					setCollection(duplicateCollection);
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						t(
