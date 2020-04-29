@@ -24,11 +24,19 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	author_role: (order: Avo.Search.OrderDirection) => ({
 		profile: { usersByuserId: { role: { label: order } } },
 	}),
+	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
+		updated_by: { usersByuserId: { last_name: order } },
+	}),
 	views: (order: Avo.Search.OrderDirection) => ({
 		view_counts_aggregate: {
 			sum: {
 				count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
 			},
+		},
+	}),
+	bookmarks: (order: Avo.Search.OrderDirection) => ({
+		collection_bookmarks_aggregate: {
+			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
 		},
 	}),
 };
