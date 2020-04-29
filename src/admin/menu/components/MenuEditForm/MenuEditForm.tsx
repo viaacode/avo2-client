@@ -5,6 +5,7 @@ import CreatableSelect from 'react-select/creatable';
 import { ValueType } from 'react-select/src/types';
 
 import { Alert, Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
@@ -12,18 +13,18 @@ import { ContentPicker } from '../../../shared/components/ContentPicker/ContentP
 import { IconPicker } from '../../../shared/components/IconPicker/IconPicker';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { PickerItem } from '../../../shared/types';
-import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
+import { MenuEditFormErrorState } from '../../menu.types';
 
 import './MenuEditForm.scss';
 
 interface MenuEditFormProps {
 	formErrors: MenuEditFormErrorState;
-	formState: MenuEditFormState;
+	formState: Avo.Menu.Menu;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
 	onChange: (
-		key: keyof MenuEditFormState | 'content',
-		value: ValueOf<MenuEditFormState> | PickerItem | null
+		key: keyof Avo.Menu.Menu | 'content',
+		value: ValueOf<Avo.Menu.Menu> | PickerItem | null
 	) => void;
 	permissionWarning: ReactNode | null;
 }
@@ -76,7 +77,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				>
 					<TextArea
 						onChange={(value: string) => onChange('description', value)}
-						value={formState.description}
+						value={formState.description || undefined}
 					/>
 				</FormGroup>
 			)}
@@ -84,10 +85,10 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				<IconPicker
 					options={GET_ADMIN_ICON_OPTIONS()}
 					onChange={(option: ValueType<ReactSelectOption<string>>) =>
-						onChange('icon', get(option, 'value', ''))
+						onChange('icon_name', get(option, 'value', ''))
 					}
 					value={GET_ADMIN_ICON_OPTIONS().find(
-						(option: ReactSelectOption<string>) => option.value === formState.icon
+						(option: ReactSelectOption<string>) => option.value === formState.icon_name
 					)}
 				/>
 			</FormGroup>
@@ -97,13 +98,16 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			>
 				<TextInput
 					onChange={(value: string) => onChange('label', value)}
-					value={formState.label}
+					value={formState.label || undefined}
 				/>
 			</FormGroup>
-			<FormGroup error={formErrors.tooltip} label={t('Tooltip')}>
+			<FormGroup
+				error={formErrors.tooltip}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___tooltip')}
+			>
 				<TextInput
 					onChange={(value: string) => onChange('tooltip', value)}
-					value={formState.tooltip}
+					value={formState.tooltip || undefined}
 				/>
 			</FormGroup>
 			<FormGroup
@@ -120,8 +124,8 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 						formState.content_type && formState.content_path
 							? {
 									type: formState.content_type,
-									label: formState.content_path,
-									value: formState.content_path,
+									label: formState.content_path.toString(),
+									value: formState.content_path.toString(),
 							  }
 							: undefined
 					}
@@ -155,7 +159,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor')}
 				error={formErrors.user_group_ids}
 				placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
-				values={formState.user_group_ids}
+				values={formState.user_group_ids || []}
 				required={false}
 				onChange={(userGroupIds: number[]) => onChange('user_group_ids', userGroupIds)}
 			/>

@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, get, isNil, startCase, uniq, without } from 'lodash-es';
+import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -10,7 +10,6 @@ import {
 	Container,
 	Flex,
 	IconName,
-	SelectOption,
 	Spacer,
 	Spinner,
 	TagInfo,
@@ -23,35 +22,14 @@ import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { ContentPickerType, PickerItem } from '../../shared/types';
+import { PickerItem } from '../../shared/types';
 
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const';
 import { MenuService } from '../menu.service';
-import {
-	MenuEditFormErrorState,
-	MenuEditFormState,
-	MenuEditPageType,
-	MenuEditParams,
-} from '../menu.types';
-
-export interface MenuSchema {
-	id: number;
-	label: string;
-	icon_name: string;
-	description: string | null;
-	user_group_ids: number[];
-	content_type: ContentPickerType | null;
-	content_path: string | null;
-	link_target: '_blank' | '_self' | null;
-	position: number;
-	placement: string;
-	created_at: string;
-	updated_at: string;
-	tooltip: string;
-}
+import { MenuEditFormErrorState, MenuEditPageType, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
@@ -62,7 +40,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const menuName = startCase(menuParentId);
 
 	// Hooks
-	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
+	const [menuForm, setMenuForm] = useState<Avo.Menu.Menu>(
+		INITIAL_MENU_FORM(menuParentId ? String(menuParentId) : '0') as Avo.Menu.Menu
+	);
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 	const [formErrors, setFormErrors] = useState<MenuEditFormErrorState>({});
@@ -107,15 +87,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						setInitialMenuItem(menuItem);
 						setMenuForm({
 							description: menuItem.description || '',
-							icon: menuItem.icon_name as IconName,
+							icon_name: menuItem.icon_name as IconName,
 							label: menuItem.label,
 							content_type: menuItem.content_type || 'COLLECTION',
 							content_path: String(menuItem.content_path || ''),
 							link_target: menuItem.link_target || '_self',
 							user_group_ids: menuItem.user_group_ids || [],
-							placement: menuItem.placement,
-							tooltip: (menuItem as any).tooltip, // TODO: Ditch 'as any' at typing 2.16.
-						});
+							placement: menuItem.placement || null,
+							tooltip: menuItem.tooltip,
+						} as Avo.Menu.Menu);
 					}
 				})
 				.finally(() => {
@@ -148,7 +128,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				'data.app_content[0].user_group_ids',
 				[]
 			);
-			const navItemUserGroupIds: number[] = menuForm.user_group_ids;
+			const navItemUserGroupIds: number[] = menuForm.user_group_ids || [];
 			const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
 
 			// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
@@ -240,28 +220,25 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const pageTitle = menuParentId
 		? `${menuName}: item ${GET_PAGE_TYPES_LANG()[pageType]}`
 		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
-	const menuParentOptions = menuItems.reduce(
-		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
-			// Don't add duplicates to the options
-			if (acc.find(opt => opt.value === placement)) {
-				return acc;
-			}
-
-			return [
-				...acc,
-				{
-					label: startCase(placement),
-					value: placement,
-				},
-			];
-		},
-		[]
+	const menuParentOptions = uniqBy(
+		compact(
+			menuItems.map(menuItem => {
+				if (!menuItem.placement) {
+					return null;
+				}
+				return {
+					label: startCase(menuItem.placement || ''),
+					value: menuItem.placement,
+				};
+			})
+		),
+		'value'
 	);
 
 	// Methods
 	const handleChange = (
-		key: keyof MenuEditFormState | 'content',
-		value: ValueOf<MenuEditFormState> | PickerItem | null
+		key: keyof Avo.Menu.Menu | 'content',
+		value: ValueOf<Avo.Menu.Menu> | PickerItem | null
 	): void => {
 		if (key === 'content') {
 			setMenuForm({
@@ -290,9 +267,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				return;
 			}
 
-			const menuItem: Partial<any> = {
-				// TODO: Replace any by Avo.Menu.Menu at typing 2.16.
-				icon_name: menuForm.icon,
+			const menuItem: Partial<Avo.Menu.Menu> = {
+				icon_name: menuForm.icon_name,
 				label: menuForm.label,
 				content_path: menuForm.content_path,
 				content_type: menuForm.content_type,

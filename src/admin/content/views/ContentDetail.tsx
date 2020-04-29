@@ -205,7 +205,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		if (contentPage && contentPage.path) {
 			navigateToAbsoluteOrRelativeUrl(contentPage.path, history, LinkTarget.Blank);
 		} else {
-			ToastService.danger(t('De preview kon niet worden geopend'));
+			ToastService.danger(
+				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+			);
 		}
 	}
 
@@ -375,7 +377,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<Button
 						type="secondary"
 						icon="lock"
-						label={t('Publiceren')}
+						label={t('admin/content/views/content-detail___publiceren')}
 						title={t(
 							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
 						)}
@@ -387,9 +389,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<Button
 						type="secondary"
 						icon="eye"
-						label={t('Preview')}
-						title={t('Bekijk deze pagina in de website')}
-						ariaLabel={t('Bekijk deze pagina in de website')}
+						label={t('admin/content/views/content-detail___preview')}
+						title={t(
+							'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+						)}
+						ariaLabel={t(
+							'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+						)}
 						onClick={handlePreviewClicked}
 					/>
 					<Button

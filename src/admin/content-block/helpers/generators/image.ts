@@ -56,7 +56,7 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				},
 			},
 			align: {
-				label: i18n.t('Alignatie'),
+				label: i18n.t('admin/content-block/helpers/generators/image___alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_ALIGN_OPTIONS(),

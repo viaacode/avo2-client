@@ -1,7 +1,3 @@
-import { IconName } from '@viaa/avo2-components';
-
-import { ContentPickerType } from '../shared/types';
-
 export type MenuOverviewTableCols = 'placement' | 'description' | 'actions';
 
 export interface MenuEditParams {
@@ -10,18 +6,6 @@ export interface MenuEditParams {
 }
 
 export type MenuEditPageType = 'edit' | 'create';
-
-export interface MenuEditFormState {
-	description?: string;
-	placement?: string;
-	icon: IconName | '';
-	label?: string;
-	content_path: string | null;
-	content_type: ContentPickerType | null;
-	link_target: '_blank' | '_self';
-	user_group_ids: number[];
-	tooltip?: string;
-}
 
 export interface MenuEditFormErrorState {
 	description?: string;

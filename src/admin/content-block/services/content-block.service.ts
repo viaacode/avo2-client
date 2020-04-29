@@ -104,13 +104,17 @@ export class ContentBlockService {
 				config => has(config, 'id') && initialContentBlockIds.includes(config.id as number)
 			);
 
-			updatedConfigs.forEach(config => updatePromises.push(ContentBlockService.updateContentBlock(config)));
+			updatedConfigs.forEach(config =>
+				updatePromises.push(ContentBlockService.updateContentBlock(config))
+			);
 
 			// Deleted content-blocks
 			const deletePromises: Promise<any>[] = [];
 			const deletedIds = without(initialContentBlockIds, ...currentContentBlockIds);
 
-			deletedIds.forEach(id => deletePromises.push(ContentBlockService.deleteContentBlock(id)));
+			deletedIds.forEach(id =>
+				deletePromises.push(ContentBlockService.deleteContentBlock(id))
+			);
 
 			// Run requests in parallel
 			await Promise.all([

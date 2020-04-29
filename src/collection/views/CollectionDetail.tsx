@@ -494,10 +494,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
-						label={t('collection/views/collection-detail___delen')}
-						title={t(
-							'collection/views/collection-detail___maak-deze-collectie-publiek-niet-publiek'
-						)}
+						title={
+							collection && collection.is_public
+								? t(
+										'collection/views/collection-detail___maak-deze-collectie-prive'
+								  )
+								: t(
+										'collection/views/collection-detail___maak-deze-collectie-openbaar'
+								  )
+						}
+						ariaLabel={
+							collection && collection.is_public
+								? t(
+										'collection/views/collection-detail___maak-deze-collectie-prive'
+								  )
+								: t(
+										'collection/views/collection-detail___maak-deze-collectie-openbaar'
+								  )
+						}
+						icon={collection && collection.is_public ? 'unlock-2' : 'lock'}
 						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}

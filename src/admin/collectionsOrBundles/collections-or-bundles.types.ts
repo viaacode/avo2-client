@@ -4,6 +4,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'title'
 	| 'author'
 	| 'author_role'
+	| 'last_updated_by_profile'
 	| 'created_at'
 	| 'updated_at'
 	| 'is_public'
@@ -20,6 +21,7 @@ export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	title: string;
 	author: string;
 	author_role: string;
+	last_updated_by_profile: string;
 	created_at: string;
 	updated_at: string;
 	is_public: boolean;

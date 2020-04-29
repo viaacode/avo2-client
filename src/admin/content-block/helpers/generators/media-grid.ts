@@ -78,7 +78,9 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			ctaTitleColor: FOREGROUND_COLOR_FIELD(i18n.t('CTA titel kleur')),
+			ctaTitleColor: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/media-grid___cta-titel-kleur')
+			),
 			ctaContent: TEXT_FIELD('', {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-grid___cta-omschrijving'
@@ -86,7 +88,9 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextArea,
 				validator: undefined,
 			}),
-			ctaContentColor: FOREGROUND_COLOR_FIELD(i18n.t('CTA omschrijving kleur')),
+			ctaContentColor: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/media-grid___cta-omschrijving-kleur')
+			),
 			ctaButtonLabel: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
@@ -97,7 +101,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 			ctaBackgroundColor: BACKGROUND_COLOR_FIELD(
-				i18n.t('CTA achtergrond kleur'),
+				i18n.t('admin/content-block/helpers/generators/media-grid___cta-achtergrond-kleur'),
 				GET_BACKGROUND_COLOR_OPTIONS()[1]
 			),
 			...BLOCK_FIELD_DEFAULTS(),

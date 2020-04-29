@@ -78,6 +78,18 @@ export const GET_COLLECTION_BY_ID = gql`
 			lom_keywords
 			lom_languages
 			lom_typicalagerange
+			updated_by {
+				id
+				usersByuserId {
+					id
+					first_name
+					last_name
+					role {
+						id
+						label
+					}
+				}
+			}
 			collection_labels {
 				label
 				id

@@ -81,6 +81,16 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							usersByuserId: { role: { label: { _ilike: queryWordWildcard } } },
 						},
 					},
+					{
+						updated_by: {
+							usersByuserId: { first_name: { _ilike: queryWordWildcard } },
+						},
+					},
+					{
+						updated_by: {
+							usersByuserId: { last_name: { _ilike: queryWordWildcard } },
+						},
+					},
 				])
 			);
 			andFilters.push(...getBooleanFilters(filters, ['is_public']));
@@ -141,7 +151,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setUserRoles(await UserService.getUserRoles());
 		} catch (err) {
 			console.error(new CustomError('Failed to get users roles from the database', err));
-			ToastService.danger(t('Het ophalen van de gebruiker rollen is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-gebruiker-rollen-is-mislukt'
+				)
+			);
 		}
 	}, [setUserRoles, t]);
 
@@ -150,7 +164,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setCollectionLabels(await CollectionService.fetchQualityLabels());
 		} catch (err) {
 			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(t('Het ophalen van de labels is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
+				)
+			);
 		}
 	}, [setCollectionLabels, t]);
 
@@ -194,7 +212,23 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'author',
-			label: i18n.t('Auteur'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
+			),
+			sortable: true,
+		},
+		{
+			id: 'author_role',
+			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
+			sortable: true,
+			filterType: 'CheckboxDropdownModal',
+			filterProps: {
+				options: userRoleOptions,
+			},
+		},
+		{
+			id: 'last_updated_by_profile',
+			label: i18n.t('Laatste bewerkt door'),
 			sortable: true,
 		},
 		{
@@ -218,17 +252,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterType: 'BooleanCheckboxDropdown',
 		},
 		{
-			id: 'author_role',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
-			sortable: true,
-			filterType: 'CheckboxDropdownModal',
-			filterProps: {
-				options: userRoleOptions,
-			},
-		},
-		{
 			id: 'collection_labels',
-			label: i18n.t('Labels'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels'
+			),
 			sortable: false,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
@@ -243,11 +270,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'bookmarks',
-			tooltip: i18n.t('Aantal keer opgenomen in een bladwijzer'),
+			tooltip: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
+			),
 			icon: 'bookmark',
-			sortable: false,
+			sortable: true,
 		},
-		// { id: 'bookmarks', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___gebookmarkt'), sortable: true },
 		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
 		// { id: 'subjects', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'), sortable: true },
 		// { id: 'education_levels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'), sortable: true },
@@ -309,6 +337,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			case 'author_role':
 				return get(rowData, 'profile.usersByuserId.role.label', '-');
 
+			case 'last_updated_by_profile':
+				const lastEditUser: Avo.User.User | undefined = get(
+					rowData,
+					'updated_by.usersByuserId'
+				);
+				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
+
 			case 'is_public':
 				return rowData[columnId]
 					? t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
@@ -316,6 +351,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'views':
 				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
+
+			case 'bookmarks':
+				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':
@@ -424,9 +462,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					columns={getUserOverviewTableCols()}
 					data={collections}
 					dataCount={collectionCount}
-					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
-						renderTableCell(rowData, columnId as CollectionsOrBundlesOverviewTableCols)
-					}
+					renderCell={renderTableCell as any}
 					searchTextPlaceholder={t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-auteur-rol'
 					)}
@@ -461,7 +497,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
+					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent
 							loadingInfo={loadingInfo}
 							dataObject={collections}

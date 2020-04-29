@@ -1,11 +1,9 @@
 import { useMutation } from '@apollo/react-hooks';
-import { compact } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
-	AvatarList,
 	Button,
 	ButtonToolbar,
 	Dropdown,
@@ -35,7 +33,6 @@ import {
 	formatTimestamp,
 	fromNow,
 	generateAssignmentCreateLink,
-	getAvatarProps,
 	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
@@ -273,7 +270,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	};
 
 	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
-		const { id, profile } = collection;
+		const { id } = collection;
 
 		switch (colKey) {
 			case 'thumbnail':
@@ -297,19 +294,20 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								  )
 						}
 					>
-						<Icon name={collection.is_public ? 'eye' : 'lock'} />
+						<Icon name={collection.is_public ? 'unlock-2' : 'lock'} />
 					</div>
 				);
 
-			case 'access':
-				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
-				const avatarProps = userProfiles.map(userProfile => {
-					const props = getAvatarProps(userProfile);
-					(props as any).subtitle = 'mag bewerken'; // TODO: Check permissions for all users
-					return props;
-				});
-
-				return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
+			// TODO re-enable once users can give share collection view/edit rights with other users
+			// case 'access':
+			// 	const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
+			// 	const avatarProps = userProfiles.map(userProfile => {
+			// 		const props = getAvatarProps(userProfile);
+			// 		(props as any).subtitle = 'mag bewerken'; // TODO: Check permissions for all users
+			// 		return props;
+			// 	});
+			//
+			// 	return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
 
 			case 'actions':
 				return renderActions(id);
@@ -366,11 +364,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						},
 				  ]
 				: []),
-			{
-				id: 'access',
-				label: t('collection/views/collection-overview___toegang'),
-				col: '2',
-			},
+			// TODO re-enable once users can give share collection view/edit rights with other users
+			// {
+			// 	id: 'access',
+			// 	label: t('collection/views/collection-overview___toegang'),
+			// 	col: '2',
+			// },
 			{ id: 'actions', label: '', col: '1' },
 		];
 	};

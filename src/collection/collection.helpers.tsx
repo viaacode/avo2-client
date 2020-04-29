@@ -262,6 +262,7 @@ export const cleanCollectionBeforeSave = (
 		'__typename',
 		'type',
 		'profile',
+		'updated_by',
 		'collection_labels',
 	];
 

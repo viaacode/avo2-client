@@ -35,8 +35,25 @@ export const GET_COLLECTIONS = gql`
 					}
 				}
 			}
+			collection_bookmarks_aggregate {
+				aggregate {
+					count(distinct: false)
+				}
+			}
 			lom_context
 			lom_classification
+			updated_by {
+				id
+				usersByuserId {
+					id
+					first_name
+					last_name
+					role {
+						id
+						label
+					}
+				}
+			}
 			collection_labels {
 				id
 				label

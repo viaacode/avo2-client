@@ -189,18 +189,24 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		return (
 			<>
 				<Spacer margin="top-extra-large">
-					<Accordion title={t('Gebruikersgroepen')} isOpen={false}>
+					<Accordion
+						title={t('admin/users/views/user-detail___gebruikersgroepen')}
+						isOpen={false}
+					>
 						{renderList(sortBy(userGroups, 'label'), ADMIN_PATH.USER_GROUP_DETAIL)}
 					</Accordion>
 				</Spacer>
 
-				<Accordion title={t('Permissiegroepen')} isOpen={false}>
+				<Accordion
+					title={t('admin/users/views/user-detail___permissiegroepen')}
+					isOpen={false}
+				>
 					{renderList(
 						sortBy(permissionGroups, 'label'),
 						ADMIN_PATH.PERMISSION_GROUP_DETAIL
 					)}
 				</Accordion>
-				<Accordion title={t('Permissies')} isOpen={false}>
+				<Accordion title={t('admin/users/views/user-detail___permissies')} isOpen={false}>
 					{renderList(sortBy(permissions, 'label'))}
 				</Accordion>
 			</>
