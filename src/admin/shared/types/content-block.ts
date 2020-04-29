@@ -91,7 +91,7 @@ export interface ContentBlockComponentsConfig {
 	limits?: ContentBlockComponentsLimits;
 	state: ContentBlockComponentState | ContentBlockComponentState[];
 	fields: {
-		[key: string]: ContentBlockField;
+		[key: string]: any;
 	};
 }
 
@@ -205,6 +205,7 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+	buttons: ButtonsBlockComponentState[];
 }
 
 export interface ImageBlockComponentState {

@@ -49,28 +49,48 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 		name: editorId,
 	};
 
-	if (field.repeat) {
-		return (
-			<FieldRepeater
-				fieldKey={fieldKey}
-				field={field}
-				state={(state as any)[fieldKey]}
-				EditorComponent={EditorComponent}
-				handleChange={handleChange}
-				type={type}
-				stateIndex={stateIndex}
-			/>
+	if ((field as any).type === 'fieldGroup') {
+		if (field.repeat) {
+			return (
+				<FieldRepeater
+					fieldKey={fieldKey}
+					fieldType="fieldGroup"
+					field={field}
+					state={(state as any)[fieldKey]}
+					EditorComponent={EditorComponent}
+					handleChange={handleChange}
+					type={type}
+					stateIndex={stateIndex}
+				/>
+			);
+		}
+	} else {
+		if (field.repeat) {
+			return (
+				<FieldRepeater
+					fieldKey={fieldKey}
+					fieldType="field"
+					field={field}
+					state={(state as any)[fieldKey]}
+					EditorComponent={EditorComponent}
+					handleChange={handleChange}
+					type={type}
+					stateIndex={stateIndex}
+				/>
+			);
+		}
+
+		const editorProps: any = generateFieldAttributes(
+			field,
+			(value: any) => handleChange(type, fieldKey, value, stateIndex),
+			(state as any)[fieldKey],
+			editorId
 		);
+
+		return <EditorComponent {...defaultProps} {...editorProps} />;
 	}
 
-	const editorProps: any = generateFieldAttributes(
-		field,
-		(value: any) => handleChange(type, fieldKey, value, stateIndex),
-		(state as any)[fieldKey],
-		editorId
-	);
-
-	return <EditorComponent {...defaultProps} {...editorProps} />;
+	return null;
 };
 
 export default React.memo(ContentBlockFieldEditor);

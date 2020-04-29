@@ -6,12 +6,12 @@ import {
 	BlockImage,
 	BlockIntro,
 	BlockQuote,
-	BlockRichText,
 	BlockSpotlight,
 } from '@viaa/avo2-components';
 
 import { ContentBlockType } from '../../../shared/types';
 import { BlockKlaar } from '../BlockKlaar/BlockKlaar';
+import { BlockRichText } from '../BlockRichText/BlockRichText';
 import {
 	BlockGridWrapper,
 	MediaGridWrapper,

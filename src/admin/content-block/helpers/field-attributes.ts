@@ -12,6 +12,7 @@ export const generateFieldAttributes = (
 ) => {
 	switch (field.editorType) {
 		case ContentBlockEditor.TextInput:
+			console.log(value);
 			return {
 				value,
 				onChange: debounce((value: any) => onChange(value), 150, { leading: true }),
