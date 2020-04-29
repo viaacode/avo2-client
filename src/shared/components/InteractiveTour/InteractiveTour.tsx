@@ -8,6 +8,7 @@ import { compose } from 'redux';
 import { Button } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
@@ -169,7 +170,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 					showSkipButton
 					styles={{
 						options: {
-							primaryColor: '#25A4CF',
+							primaryColor: Color.TealBright,
 						},
 					}}
 				/>
