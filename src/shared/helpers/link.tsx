@@ -1,5 +1,5 @@
 import { History } from 'history';
-import { get, isArray, isEmpty, isNil, noop } from 'lodash-es';
+import { fromPairs, get, isArray, isEmpty, isNil, map, noop } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
@@ -148,6 +148,26 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 				const urlWithoutQueryOrAnchor = window.location.href.split('?')[0].split('#')[0];
 				navigateToAbsoluteOrRelativeUrl(
 					`${urlWithoutQueryOrAnchor}#${value}`,
+					history,
+					target
+				);
+				break;
+
+			case 'SEARCH_QUERY':
+				const queryParams = JSON.parse(value as string);
+				navigateToAbsoluteOrRelativeUrl(
+					buildLink(
+						APP_PATH.SEARCH.route,
+						{},
+						queryString.stringify(
+							fromPairs(
+								map(queryParams, (queryParamValue, queryParam) => [
+									queryParam,
+									JSON.stringify(queryParamValue),
+								])
+							)
+						)
+					),
 					history,
 					target
 				);
