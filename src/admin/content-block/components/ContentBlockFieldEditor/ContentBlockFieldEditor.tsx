@@ -12,7 +12,7 @@ import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 import { generateFieldAttributes } from '../../helpers/field-attributes';
 
-import { FieldRepeater } from '../FieldRepeater/FieldRepeater';
+import { Repeater } from '../Repeater/Repeater';
 
 interface ContentBlockFieldProps {
 	block: ContentBlockMeta; // Block metadata
@@ -52,7 +52,7 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 	if ((field as any).type === 'fieldGroup') {
 		if (field.repeat) {
 			return (
-				<FieldRepeater
+				<Repeater
 					fieldKey={fieldKey}
 					fieldType="fieldGroup"
 					field={field}
@@ -67,7 +67,7 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 	} else {
 		if (field.repeat) {
 			return (
-				<FieldRepeater
+				<Repeater
 					fieldKey={fieldKey}
 					fieldType="field"
 					field={field}

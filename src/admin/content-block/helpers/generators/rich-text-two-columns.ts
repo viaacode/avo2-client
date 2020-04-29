@@ -20,10 +20,6 @@ export const INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE = (): RichTextBlockC
 				label: '',
 				type: 'primary',
 			},
-			{
-				label: '',
-				type: 'primary',
-			},
 		],
 	},
 	{
@@ -93,6 +89,8 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 					},
 				},
 				type: 'fieldGroup',
+				min: 0,
+				max: 10,
 				repeat: true,
 			},
 		},

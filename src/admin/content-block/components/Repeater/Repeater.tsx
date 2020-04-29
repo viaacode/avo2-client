@@ -13,7 +13,7 @@ import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 import { generateFieldAttributes } from '../../helpers/field-attributes';
 
-interface FieldRepeaterProps {
+interface RepeaterProps {
 	field: ContentBlockField;
 	state: any;
 	fieldType: 'field' | 'fieldGroup';
@@ -24,7 +24,7 @@ interface FieldRepeaterProps {
 	stateIndex?: number; // Index of state object (within state array).
 }
 
-export const FieldRepeater: FunctionComponent<FieldRepeaterProps> = ({
+export const Repeater: FunctionComponent<RepeaterProps> = ({
 	field,
 	state,
 	fieldKey,
@@ -109,21 +109,38 @@ export const FieldRepeater: FunctionComponent<FieldRepeaterProps> = ({
 									</Spacer>
 								);
 							})}
-							{state.length > 1 && (
-								<Spacer margin="left">
-									<Button
-										icon="delete"
-										onClick={() => handleFieldDelete(stateIndex)}
-										size="small"
-										title={t('Verwijder veld')}
-										ariaLabel={t('Verwijder veld')}
-										type="danger"
-									/>
+							{state.length >
+								((field as any).min !== null ? (field as any).min : 1) && (
+								<Spacer margin="top">
+									<Flex center>
+										<Button
+											icon="delete"
+											onClick={() => handleFieldDelete(stateIndex)}
+											size="small"
+											title={t('Verwijder veld')}
+											ariaLabel={t('Verwijder veld')}
+											type="danger"
+										/>
+									</Flex>
 								</Spacer>
 							)}
 						</>
 					);
 				})}
+				{state.length < ((field as any).max || 0) && (
+					<Spacer margin="top">
+						<Flex center>
+							<Button
+								icon="add"
+								onClick={handleFieldAdd}
+								size="small"
+								title={t('Voeg veld toe')}
+								ariaLabel={t('Voeg veld toe')}
+								type="secondary"
+							/>
+						</Flex>
+					</Spacer>
+				)}
 			</>
 		);
 	}
