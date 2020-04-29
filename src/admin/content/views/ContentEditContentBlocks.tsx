@@ -137,6 +137,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				panelsSize={[60, 40]}
 				sizeUnitMeasure="%"
 				resizerSize="15px"
+				onResize={() => {
+					window.dispatchEvent(new Event('resize'));
+				}}
 			>
 				<div className="c-content-edit-view__preview" ref={previewScrollable}>
 					<ContentPage
