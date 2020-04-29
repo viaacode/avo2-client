@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import { capitalize, get } from 'lodash-es';
+import { capitalize, get, truncate } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -386,7 +386,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link to={canEditAssignments ? editLink : detailLink}>
-									{rowData.title}
+									{truncate(rowData.title, { length: 60, omission: '...' })}
 								</Link>
 							</h3>
 						</div>

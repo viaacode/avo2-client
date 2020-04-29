@@ -479,10 +479,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
-							<Toolbar
-								size="huge"
-								className="c-toolbar--drop-columns-low-mq c-toolbar__justified"
-							>
+							<Toolbar justify size="huge" className="c-toolbar--drop-columns-low-mq">
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
