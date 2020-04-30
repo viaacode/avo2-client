@@ -244,6 +244,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				...menuForm,
 				content_type: get(value, 'type'),
 				content_path: get(value, 'value'),
+				link_target: get(value, 'target', '_self'),
 			});
 		} else {
 			setMenuForm({
