@@ -3,7 +3,6 @@ import { capitalize, get, sortBy } from 'lodash-es';
 import { TagInfo } from '@viaa/avo2-components';
 
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
-
 import { CustomError } from '../helpers';
 import { GET_USER_GROUPS } from '../queries/user-groups.gql';
 import i18n from '../translations/i18n';

@@ -1,4 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
+
 import { CustomError, getEnv } from '../shared/helpers';
 
 interface UpdateProfileValues {

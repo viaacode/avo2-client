@@ -42,11 +42,11 @@ import {
 } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import {
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -62,11 +62,11 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import ReportItemModal from '../components/modals/ReportItemModal';
-
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
+import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
+
 import './ItemDetail.scss';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}

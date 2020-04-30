@@ -46,11 +46,9 @@ import {
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
+import { InteractiveTour } from '../../shared/components';
 import { copyToClipboard, CustomError } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { AppState } from '../../store';
-
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
@@ -59,6 +57,7 @@ import {
 	BookmarkRequestInfo,
 	BookmarkStatusLookup,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { AppState } from '../../store';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FILTER_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {

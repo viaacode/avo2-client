@@ -1,8 +1,10 @@
+import { get } from 'lodash-es';
 import queryString from 'query-string';
-import { getEnv } from '../shared/helpers';
 
 import { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+
+import { getEnv } from '../shared/helpers';
+
 import { SpecialPermissionGroups } from './authentication.types';
 
 const stamboekValidationCache: {

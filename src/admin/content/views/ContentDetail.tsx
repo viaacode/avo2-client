@@ -48,12 +48,12 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
-
 import ShareContentPageModal from '../components/ShareContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';
+
 import './ContentDetail.scss';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}

@@ -36,10 +36,10 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import {
 	checkPermissions,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import {
 	ApolloCacheManager,
@@ -48,7 +48,6 @@ import {
 	ToastService,
 } from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -479,10 +478,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
-							<Toolbar
-								size="huge"
-								className="c-toolbar--drop-columns-low-mq c-toolbar__justified"
-							>
+							<Toolbar justify size="huge" className="c-toolbar--drop-columns-low-mq">
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}

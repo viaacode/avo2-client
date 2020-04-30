@@ -23,7 +23,6 @@ import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
-
 import { DEFAULT_PAGES_WIDTH, GET_CONTENT_WIDTH_OPTIONS } from '../../content.const';
 import { ContentService } from '../../content.service';
 import {
@@ -32,6 +31,7 @@ import {
 	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
+
 import './ContentEditForm.scss';
 
 interface ContentEditFormProps {

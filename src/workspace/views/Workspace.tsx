@@ -29,13 +29,12 @@ import CollectionOrBundleOverview from '../../collection/components/CollectionOr
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
-
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -45,6 +44,7 @@ import {
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
+
 import BookmarksOverview from './BookmarksOverview';
 import './Workspace.scss';
 

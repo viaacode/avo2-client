@@ -16,10 +16,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ToastType } from '../../shared/services';
-
 import { verifyStamboekNumber } from '../authentication.service';
 import { redirectToClientPage } from '../helpers/redirects';
 import { StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
+
 import './StamboekInput.scss';
 
 export interface StamboekInputProps extends RouteComponentProps {

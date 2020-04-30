@@ -22,9 +22,9 @@ import { CustomError } from '../../shared/helpers';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { dataService } from '../../shared/services';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
-
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
+
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMetaDataProps {

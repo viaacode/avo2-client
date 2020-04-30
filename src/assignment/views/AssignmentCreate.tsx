@@ -42,16 +42,15 @@ import {
 	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-
 import {
 	CONTENT_LABEL_TO_EVENT_OBJECT_TYPE,
 	CONTENT_LABEL_TO_QUERY,
@@ -60,6 +59,7 @@ import {
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import AssignmentLabels from '../components/AssignmentLabels';
+
 import './AssignmentEdit.scss';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
@@ -569,8 +569,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 										name="content_layout"
 										value={String(AssignmentLayout.PlayerAndText)}
 										checked={
+											isNil(currentAssignment.content_layout) ||
 											currentAssignment.content_layout ===
-											AssignmentLayout.PlayerAndText
+												AssignmentLayout.PlayerAndText
 										}
 										onChange={isChecked =>
 											isChecked &&
