@@ -59,9 +59,15 @@ import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentOverviewProps extends DefaultSecureRouteProps {}
+interface AssignmentOverviewProps extends DefaultSecureRouteProps {
+	onUpdate: () => void | Promise<void>;
+}
 
-const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ history, user }) => {
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
+	onUpdate = () => {},
+	history,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -165,6 +171,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			}
 			await AssignmentService.duplicateAssignment(newTitle, assignment, user);
 
+			onUpdate();
 			fetchAssignments();
 
 			ToastService.success(
@@ -191,6 +198,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				};
 
 				if (await AssignmentService.updateAssignment(archivedAssignment)) {
+					onUpdate();
 					if (assignments && assignments.length === 1) {
 						// Switch to other tab, so user doesn't see empty list (https://meemoo.atlassian.net/browse/AVO-638)
 						setActiveView(
@@ -237,7 +245,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				return;
 			}
 			await AssignmentService.deleteAssignment(assignmentId);
-			fetchAssignments();
+			await fetchAssignments();
+			onUpdate();
 			ToastService.success(
 				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')
 			);

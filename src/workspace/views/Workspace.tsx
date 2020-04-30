@@ -83,6 +83,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					<CollectionOrBundleOverview
 						numberOfItems={tabCounts[COLLECTIONS_ID]}
 						type="collection"
+						onUpdate={updatePermissionsAndCounts}
 						history={history}
 						location={location}
 						match={match}
@@ -105,6 +106,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					<CollectionOrBundleOverview
 						numberOfItems={tabCounts[BUNDLES_ID]}
 						type="bundle"
+						onUpdate={updatePermissionsAndCounts}
 						history={history}
 						location={location}
 						match={match}
@@ -120,6 +122,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
 				component: () => (
 					<AssignmentOverview
+						onUpdate={updatePermissionsAndCounts}
 						history={history}
 						location={location}
 						match={match}
@@ -130,6 +133,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			...addTabIfUserHasPerm(BOOKMARKS_ID, {
 				component: () => (
 					<BookmarksOverview
+						onUpdate={updatePermissionsAndCounts}
 						history={history}
 						location={location}
 						match={match}
@@ -151,10 +155,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		return tabs[tabId || Object.keys(tabs)[0]];
 	}, [tabs, tabId]);
 
-	useEffect(() => {
-		if (!isEmpty(permissions)) {
-			return;
-		}
+	const updatePermissionsAndCounts = useCallback(() => {
 		Promise.all([
 			dataService.query({
 				query: GET_WORKSPACE_TAB_COUNTS,
@@ -194,7 +195,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					),
 				});
 			});
-	}, [user, t, setPermissions, permissions]);
+	}, [user, t, setPermissions]);
+
+	useEffect(() => {
+		updatePermissionsAndCounts();
+	}, [updatePermissionsAndCounts]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && !isEmpty(tabs)) {
