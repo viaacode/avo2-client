@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { capitalize, get, isNil } from 'lodash-es';
+import { capitalize, compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -36,6 +36,8 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
+	CheckboxDropdownModal,
+	CheckboxOption,
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
@@ -51,7 +53,7 @@ import {
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
-import { ToastService } from '../../shared/services';
+import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
@@ -74,6 +76,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [selectedAssignmentLabelsIds, setSelectedAssignmentLabelsIds] = useState<string[]>([]);
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
@@ -120,7 +124,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				sortColumn,
 				sortOrder,
 				page,
-				filterString
+				filterString,
+				selectedAssignmentLabelsIds
 			);
 			setAssignments(response.assignments);
 			setAssigmentCount(response.count);
@@ -136,11 +141,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		canEditAssignments,
 		setLoadingInfo,
 		filterString,
+		selectedAssignmentLabelsIds,
 		page,
 		sortColumn,
 		sortOrder,
 		user,
 	]);
+
+	const fetchAssignmentLabels = useCallback(async () => {
+		// Fetch all labels for th current user
+		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
+		setAllAssignmentLabels(labels);
+	}, [user, setAllAssignmentLabels]);
 
 	useEffect(() => {
 		checkPermissions();
@@ -149,8 +161,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	useEffect(() => {
 		if (!isNil(canEditAssignments)) {
 			fetchAssignments();
+			fetchAssignmentLabels();
 		}
-	}, [canEditAssignments, fetchAssignments]);
+	}, [canEditAssignments, fetchAssignments, fetchAssignmentLabels]);
 
 	useEffect(() => {
 		if (!isNil(assignments) && !isNil(assignmentCount)) {
@@ -420,14 +433,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'assignment_type':
 				return `${capitalize(cellData)}`;
 
-			case 'assignment_assignment_tags':
-				const assignmentTags: Avo.Assignment.Label[] = get(cellData, 'assignment_tag', []);
-				const tagOptions = assignmentTags.map((labelObj: Avo.Assignment.Label) => ({
+			case 'labels':
+				const labels: Avo.Assignment.Label[] = (get(
+					rowData,
+					'assignment_assignment_tags',
+					[]
+				) as any[]).map((labelLink: any) => labelLink.assignment_tag);
+				const tagOptions = labels.map((labelObj: Avo.Assignment.Label) => ({
 					id: labelObj.id,
 					label: labelObj.label || '',
 					color: labelObj.color_override || get(labelObj, 'enum_color.label', ''),
 				}));
-				return <TagList tags={tagOptions} swatches closable={false} bordered={false} />;
+				return <TagList tags={tagOptions} swatches closable={false} />;
 
 			case 'class_room':
 				return cellData;
@@ -457,7 +474,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			? []
 			: [
 					{
-						id: 'assignment_assignment_tags',
+						id: 'labels',
 						label: t('assignment/views/assignment-overview___vak-of-project'),
 					},
 			  ]),
@@ -479,6 +496,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		{ id: 'actions', label: '' },
 	] as AssignmentColumn[];
 
+	const getLabelOptions = (): CheckboxOption[] => {
+		return compact(
+			allAssignmentLabels.map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
+				if (!labelObj.label) {
+					return null;
+				}
+				return {
+					label: labelObj.label,
+					id: String(labelObj.id),
+					checked: selectedAssignmentLabelsIds.includes(String(labelObj.id)),
+				};
+			})
+		);
+	};
+
 	const renderHeader = () => {
 		return (
 			<Toolbar
@@ -488,52 +520,62 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			>
 				<ToolbarLeft>
 					<ToolbarItem>
-						{isMobileWidth() ? (
-							<Select
-								options={[
-									{
-										label: t(
+						<ButtonToolbar>
+							{isMobileWidth() ? (
+								<Select
+									options={[
+										{
+											label: t(
+												'assignment/views/assignment-overview___opdrachten'
+											),
+											value: 'assignments',
+										},
+										{
+											label: t(
+												'assignment/views/assignment-overview___gearchiveerde-opdrachten'
+											),
+											value: 'archived_assignments',
+										},
+									]}
+									value={activeView}
+									onChange={activeViewId =>
+										setActiveView(activeViewId as Avo.Assignment.View)
+									}
+									className="c-assignment-overview__archive-select"
+								/>
+							) : (
+								<ButtonGroup>
+									<Button
+										type="secondary"
+										label={t(
 											'assignment/views/assignment-overview___opdrachten'
-										),
-										value: 'assignments',
-									},
-									{
-										label: t(
+										)}
+										title={t(
+											'assignment/views/assignment-overview___filter-op-niet-gearchiveerde-opdrachten'
+										)}
+										active={activeView === 'assignments'}
+										onClick={() => setActiveView('assignments')}
+									/>
+									<Button
+										type="secondary"
+										label={t(
 											'assignment/views/assignment-overview___gearchiveerde-opdrachten'
-										),
-										value: 'archived_assignments',
-									},
-								]}
-								value={activeView}
-								onChange={activeViewId =>
-									setActiveView(activeViewId as Avo.Assignment.View)
-								}
-								className="c-assignment-overview__archive-select"
+										)}
+										title={t(
+											'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
+										)}
+										active={activeView === 'archived_assignments'}
+										onClick={() => setActiveView('archived_assignments')}
+									/>
+								</ButtonGroup>
+							)}
+							<CheckboxDropdownModal
+								label={t('Vakken of projecten')}
+								id="labels"
+								options={getLabelOptions()}
+								onChange={setSelectedAssignmentLabelsIds}
 							/>
-						) : (
-							<ButtonGroup>
-								<Button
-									type="secondary"
-									label={t('assignment/views/assignment-overview___opdrachten')}
-									title={t(
-										'assignment/views/assignment-overview___filter-op-niet-gearchiveerde-opdrachten'
-									)}
-									active={activeView === 'assignments'}
-									onClick={() => setActiveView('assignments')}
-								/>
-								<Button
-									type="secondary"
-									label={t(
-										'assignment/views/assignment-overview___gearchiveerde-opdrachten'
-									)}
-									title={t(
-										'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
-									)}
-									active={activeView === 'archived_assignments'}
-									onClick={() => setActiveView('archived_assignments')}
-								/>
-							</ButtonGroup>
-						)}
+						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarLeft>
 				<ToolbarRight>

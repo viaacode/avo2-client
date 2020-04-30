@@ -63,7 +63,8 @@ export class AssignmentService {
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection,
 		page: number,
-		filterString?: string
+		filterString: string | undefined,
+		labelIds: string[] | undefined
 	): Promise<{
 		assignments: Avo.Assignment.Assignment[];
 		count: number;
@@ -71,8 +72,10 @@ export class AssignmentService {
 		let variables: any;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
-			const filterObject = trimmedFilterString
-				? [
+			const filterArray: any[] = [];
+			if (trimmedFilterString) {
+				filterArray.push({
+					_or: [
 						{ title: { _ilike: `%${trimmedFilterString}%` } },
 						{
 							assignment_assignment_tags: {
@@ -81,15 +84,21 @@ export class AssignmentService {
 						},
 						{ class_room: { _ilike: `%${trimmedFilterString}%` } },
 						{ assignment_type: { _ilike: `%${trimmedFilterString}%` } },
-				  ]
-				: {};
+					],
+				});
+			}
+			if (labelIds && labelIds.length) {
+				filterArray.push({
+					assignment_assignment_tags: { assignment_tag_id: { _in: labelIds } },
+				});
+			}
 			variables = {
 				archived,
 				owner_profile_id: getProfileId(user),
 				order: { [sortColumn]: sortOrder },
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
-				filter: filterObject,
+				filter: filterArray.length ? filterArray : {},
 			};
 			const assignmentQuery = {
 				variables,
