@@ -1,4 +1,4 @@
-import { isNil, truncate } from 'lodash-es';
+import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

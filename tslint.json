@@ -1,5 +1,5 @@
 {
-	"extends": ["tslint-config-airbnb", "tslint-plugin-prettier", "tslint-config-prettier", "tslint-import-group-ordering"],
+	"extends": ["tslint-config-airbnb", "tslint-plugin-prettier", "tslint-config-prettier"],
 	"rules": {
 		"ordered-imports": [true,
 			{

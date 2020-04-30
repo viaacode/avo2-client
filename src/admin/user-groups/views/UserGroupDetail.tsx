@@ -1,4 +1,4 @@
-import { flatten, get, truncate } from 'lodash-es';
+import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';

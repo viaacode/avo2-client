@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, truncate } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
