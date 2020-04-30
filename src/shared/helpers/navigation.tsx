@@ -10,6 +10,7 @@ import PupilOrTeacherDropdown from '../../authentication/components/PupilOrTeach
 import { APP_PATH } from '../../constants';
 import { AppContentNavElement } from '../services/navigation-items-service';
 import { NavigationItemInfo } from '../types';
+
 import { buildLink } from './link';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: FunctionComponent<any> } = {

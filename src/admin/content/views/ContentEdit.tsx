@@ -42,7 +42,6 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
-
 import { ContentEditForm } from '../components';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { ContentService } from '../content.service';
@@ -55,6 +54,7 @@ import {
 } from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
 import { useContentPage, useContentTypes } from '../hooks';
+
 import './ContentEdit.scss';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 

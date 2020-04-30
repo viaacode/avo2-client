@@ -1,9 +1,10 @@
-import { Avo } from '@viaa/avo2-types';
 import { Action, Dispatch } from 'redux';
 
-import { CustomError } from '../../shared/helpers';
+import { Avo } from '@viaa/avo2-types';
 
+import { CustomError } from '../../shared/helpers';
 import { fetchSearchResults } from '../search.service';
+
 import {
 	SearchActionTypes,
 	SetSearchResultsErrorAction,

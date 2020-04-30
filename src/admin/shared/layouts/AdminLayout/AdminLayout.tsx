@@ -4,6 +4,8 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { Container, useSlot } from '@viaa/avo2-components';
 
 import { ActionsBar, TopBar } from '../../components';
+
+import './AdminLayout.scss';
 import {
 	AdminLayoutActions,
 	AdminLayoutBody,
@@ -11,8 +13,6 @@ import {
 	AdminLayoutTopBarCenter,
 	AdminLayoutTopBarRight,
 } from './AdminLayout.slots';
-
-import './AdminLayout.scss';
 
 interface AdminLayoutProps {
 	children?: ReactNode;

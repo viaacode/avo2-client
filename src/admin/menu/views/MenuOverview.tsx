@@ -10,7 +10,6 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
-
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';

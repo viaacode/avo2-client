@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 
 import { dataService } from '../services';
+
 import { CustomError } from './custom-error';
 
 interface Query {
@@ -18,9 +19,9 @@ export const performQuery = async (query: Query, subResponse: string | null, err
 
 		if (subResponse) {
 			return get(response, subResponse, null);
-		} else {
-			return subResponse;
 		}
+
+		return subResponse;
 	} catch (err) {
 		throw new CustomError(error, err);
 	}

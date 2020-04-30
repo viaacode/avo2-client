@@ -8,7 +8,6 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ReactAction } from '../../../shared/types';
-
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentPageEditFormState, ContentWidth, DbContent } from '../content.types';

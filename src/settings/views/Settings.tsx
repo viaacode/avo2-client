@@ -17,7 +17,6 @@ import { APP_PATH } from '../../constants';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
-
 import { Account, Email, Notifications, Profile } from '../components';
 import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from '../settings.const';
 

@@ -1,8 +1,8 @@
 import { compact, sortBy } from 'lodash-es';
 
 import { APP_PATH } from '../../../../constants';
-
 import { PickerSelectItem } from '../../types';
+
 import { parsePickerItem } from './parse-picker';
 
 // Return InternalLinkItems items from APP_PATH

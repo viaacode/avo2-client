@@ -29,7 +29,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 

@@ -6,4 +6,20 @@
 	.react-datepicker {
 		display: flex; // Avoids time selector to be below date selector in popper content
 	}
+
+	.c-toolbar {
+		height: auto;
+		justify-content: space-between;
+
+		h2 {
+			max-width: 800px;
+			overflow: hidden;
+			text-overflow: ellipsis
+		}
+	}
+
+	.c-toolbar__left,
+	.c-toolbar__right {
+		flex: initial;
+	}
 }
