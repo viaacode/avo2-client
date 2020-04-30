@@ -5,6 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelColor } from '../../../assignment/assignment.types';
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
+
 import {
 	DELETE_ASSIGNMENT_LABELS,
 	GET_ALL_ASSIGNMENT_LABEL_COLORS,

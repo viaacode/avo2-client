@@ -25,7 +25,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { GET_PERMISSION_GROUP_BY_ID } from '../permission-group.gql';
 import { PermissionGroupService } from '../permission-group.service';

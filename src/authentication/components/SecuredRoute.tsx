@@ -13,7 +13,6 @@ import { APP_PATH } from '../../constants';
 import { Profile } from '../../settings/components';
 import { buildLink } from '../../shared/helpers';
 import { AppState } from '../../store';
-
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { redirectToClientPage } from '../helpers/redirects';

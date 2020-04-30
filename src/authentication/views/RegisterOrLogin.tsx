@@ -16,9 +16,9 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-
 import LoginOptions from '../components/LoginOptions';
 import { getFromPath, redirectToClientPage } from '../helpers/redirects';
+
 import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}

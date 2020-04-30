@@ -58,11 +58,11 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';

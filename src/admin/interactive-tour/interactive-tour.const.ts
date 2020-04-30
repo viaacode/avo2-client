@@ -3,7 +3,6 @@ import { Avo } from '@viaa/avo2-types';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { generateRandomId } from '../../shared/helpers/uuid';
 import i18n from '../../shared/translations/i18n';
-
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 export const INTERACTIVE_TOUR_PATH = {

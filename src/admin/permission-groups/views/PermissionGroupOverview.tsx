@@ -12,12 +12,12 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { formatDate, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import {
 	GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
@@ -29,8 +29,8 @@ import {
 	PermissionGroupOverviewTableCols,
 	PermissionGroupTableState,
 } from '../permission-group.types';
+
 import './PermissionGroupOverview.scss';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 

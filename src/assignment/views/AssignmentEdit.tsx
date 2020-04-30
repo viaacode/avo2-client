@@ -54,7 +54,6 @@ import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-
 import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';

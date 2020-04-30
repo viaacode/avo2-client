@@ -22,6 +22,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
@@ -32,7 +33,6 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import {
@@ -42,7 +42,6 @@ import {
 } from '../user-group.types';
 
 import './UserGroupDetail.scss';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 

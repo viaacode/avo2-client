@@ -28,12 +28,12 @@ import {
 } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { PermissionGroupService } from '../../permission-groups/permission-group.service';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import {
@@ -42,7 +42,6 @@ import {
 	UserGroupEditFormErrorState,
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 

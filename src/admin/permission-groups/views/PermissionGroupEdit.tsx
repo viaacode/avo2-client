@@ -24,12 +24,12 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-
 import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { PermissionGroupService } from '../permission-group.service';
 import {
@@ -38,7 +38,6 @@ import {
 	PermissionGroupEditFormErrorState,
 	PermissionsTableCols,
 } from '../permission-group.types';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface PermissionGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 

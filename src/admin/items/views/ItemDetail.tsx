@@ -26,6 +26,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
@@ -34,9 +35,7 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { ItemsService } from '../items.service';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
 

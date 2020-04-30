@@ -1,8 +1,7 @@
 import { setSearchResultsError, setSearchResultsLoading, setSearchResultsSuccess } from './actions';
 import initialState from './initial-state';
-import { SearchActionTypes } from './types';
-
 import searchReducer from './reducer';
+import { SearchActionTypes } from './types';
 
 describe('search > store > reducer', () => {
 	it(`Correctly handle ${SearchActionTypes.SET_RESULTS_ERROR}`, () => {

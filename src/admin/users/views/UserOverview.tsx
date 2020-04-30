@@ -10,15 +10,14 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
 import { UserService } from '../user.service';
 import { UserOverviewTableCols, UserTableState } from '../user.types';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserOverviewProps extends DefaultSecureRouteProps {}
 

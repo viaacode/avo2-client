@@ -19,7 +19,6 @@ import {
 	generateContentLinkString,
 	generateSearchLink,
 } from '../../shared/helpers';
-
 import { SearchResultItemProps } from '../search.types';
 
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({

@@ -13,12 +13,12 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
 	GET_USER_GROUP_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
@@ -26,7 +26,6 @@ import {
 } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
 

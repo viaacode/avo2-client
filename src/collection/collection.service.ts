@@ -2,6 +2,7 @@ import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
@@ -11,7 +12,6 @@ import { ApolloCacheManager, dataService, ToastService } from '../shared/service
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
