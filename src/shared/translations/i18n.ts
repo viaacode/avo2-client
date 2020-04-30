@@ -1,7 +1,6 @@
 import I18n from 'i18next';
 import XHR from 'i18next-xhr-backend';
 import { get, lowerCase, upperFirst } from 'lodash-es';
-
 import { initReactI18next } from 'react-i18next';
 
 import { getEnv } from '../helpers';

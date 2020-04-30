@@ -39,10 +39,10 @@ import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-
 import { CONTENT_LABEL_TO_EVENT_OBJECT_TYPE } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
+
 import './AssignmentEdit.scss';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({

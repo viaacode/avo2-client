@@ -3,6 +3,7 @@ import React, {
 	FunctionComponent,
 	ReactNode,
 	ReactText,
+	useCallback,
 	useEffect,
 	useReducer,
 	useState,
@@ -62,7 +63,6 @@ import { ApolloCacheManager, dataService, ToastService } from '../../shared/serv
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-
 import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import {
@@ -73,6 +73,7 @@ import {
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
+
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
@@ -269,8 +270,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		return () => window.removeEventListener('beforeunload', onUnload);
 	});
 
-	useEffect(() => {
-		const checkPermissionsAndGetBundle = async () => {
+	const checkPermissionsAndGetBundle = useCallback(async () => {
+		try {
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
 				PermissionService.hasPermissions(
@@ -346,9 +347,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				type: 'UPDATE_COLLECTION',
 				newCollection: collectionObj || null,
 			});
-		};
-
-		checkPermissionsAndGetBundle().catch(err => {
+		} catch (err) {
 			console.error(
 				new CustomError(
 					`Failed to check permissions or get ${type} from the database`,
@@ -369,8 +368,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					  ),
 				icon: 'alert-triangle',
 			});
-		});
+		}
 	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
+
+	useEffect(() => {
+		checkPermissionsAndGetBundle();
+	}, [checkPermissionsAndGetBundle]);
 
 	useEffect(() => {
 		if (
@@ -415,10 +418,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			);
 
 			if (newCollection) {
-				changeCollectionState({
-					newCollection,
-					type: 'UPDATE_COLLECTION',
-				});
+				checkPermissionsAndGetBundle();
 				ToastService.success(
 					isCollection
 						? t(

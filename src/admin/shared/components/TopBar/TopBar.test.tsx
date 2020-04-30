@@ -1,8 +1,9 @@
 import { mount } from 'enzyme';
 import React from 'react';
-
 import { MemoryRouter } from 'react-router';
+
 import { getMockRouterProps } from '../../../../shared/mocks/route-components-props-mock';
+
 import { TopBar } from './TopBar';
 
 describe('<TopBar />', () => {

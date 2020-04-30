@@ -4,6 +4,7 @@ import { cloneDeep, get, isNil, isString, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
 import {
 	ApolloCacheManager,
@@ -13,7 +14,6 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { CollectionService } from '../collection/collection.service';
 import { CONTENT_LABEL_TO_QUERY } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,

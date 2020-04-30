@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-
 import { retrieveAnchorBlocks } from '../../helpers/content-picker/anchor-link';
 import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
 import {

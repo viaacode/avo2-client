@@ -3,8 +3,8 @@ import { Action, Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../../shared/helpers';
-
 import { LoginMessage } from '../authentication.types';
+
 import {
 	LoginActionTypes,
 	SetLoginErrorAction,

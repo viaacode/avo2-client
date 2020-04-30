@@ -1,4 +1,5 @@
 import H from 'history';
+import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,14 +21,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
-import { buildLink, CustomError } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-
-import { get, orderBy } from 'lodash-es';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
+import { buildLink, CustomError } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { ToastService } from '../../shared/services';
 import { CollectionService } from '../collection.service';
 import { QualityLabel } from '../collection.types';
+
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 type BundleColumnId = 'title' | 'author' | 'organization' | 'actions';
@@ -159,7 +160,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				if (!user) {
 					return '-';
 				}
-				return `${user.first_name} ${user.last_name}`;
+				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
 				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');

@@ -72,7 +72,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [t] = useTranslation();
 
 	// State
-	const [bundleId] = useState(match.params.id);
+	const [bundleId, setBundleId] = useState(match.params.id);
 	const [bundle, setBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -266,17 +266,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				);
 				return;
 			}
-			const duplicateCollection = await CollectionService.duplicateCollection(
+			const duplicateBundle = await CollectionService.duplicateCollection(
 				bundle,
 				user,
 				COLLECTION_COPY,
 				COLLECTION_COPY_REGEX
 			);
 			redirectToClientPage(
-				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
+				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateBundle.id }),
 				history
 			);
-			setBundle(duplicateCollection);
+			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
 			);

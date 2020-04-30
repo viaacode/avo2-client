@@ -4,7 +4,6 @@ import { get, isNil } from 'lodash-es';
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import i18n from '../shared/translations/i18n';
 
 import {
 	Alert,
@@ -31,6 +30,7 @@ import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
 import { CustomError, navigate } from '../shared/helpers';
 import { dataService, ToastService } from '../shared/services';
+import i18n from '../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../workspace/workspace.const';
 
 import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from './assignment.const';

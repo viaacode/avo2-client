@@ -42,7 +42,6 @@ import { buildLink, copyToClipboard } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 
@@ -271,7 +270,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderAssignmentEditForm = () => {
 		return (
-			<>
+			<div className="c-assignment-edit">
 				<Navbar autoHeight>
 					<Container mode="vertical" background="alt">
 						<Container mode="horizontal">
@@ -326,74 +325,72 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								<ToolbarRight>
 									<ToolbarItem>
 										<ButtonToolbar>
-											<Spacer margin="right-small">
-												<Button
-													type="secondary"
-													onClick={viewAsStudent}
-													label={t(
-														'assignment/views/assignment-edit___bekijk-als-leerling'
-													)}
-													title={t(
-														'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-													)}
-												/>
-												<Dropdown
-													isOpen={isExtraOptionsMenuOpen}
-													menuWidth="fit-content"
-													onOpen={() => setExtraOptionsMenuOpen(true)}
-													onClose={() => setExtraOptionsMenuOpen(false)}
-													placement="bottom-end"
-												>
-													<DropdownButton>
-														<Button
-															type="secondary"
-															icon="more-horizontal"
-															ariaLabel={t(
-																'assignment/views/assignment-edit___meer-opties'
-															)}
-															title={t(
-																'assignment/views/assignment-edit___meer-opties'
-															)}
-														/>
-													</DropdownButton>
-													<DropdownContent>
-														<MenuContent
-															menuItems={[
-																{
-																	icon: 'copy',
-																	id: 'duplicate',
-																	label: t(
-																		'assignment/views/assignment-edit___dupliceer'
-																	),
-																},
-																{
-																	icon: 'archive',
-																	id: 'archive',
-																	label: initialAssignment.is_archived
-																		? t(
-																				'assignment/views/assignment-edit___dearchiveer'
-																		  )
-																		: t(
-																				'assignment/views/assignment-edit___archiveer'
-																		  ),
-																},
-																{
-																	icon: 'delete',
-																	id: 'delete',
-																	label: t(
-																		'assignment/views/assignment-edit___verwijder'
-																	),
-																},
-															]}
-															onClick={id =>
-																handleExtraOptionClicked(
-																	id.toString() as any
-																)
-															}
-														/>
-													</DropdownContent>
-												</Dropdown>
-											</Spacer>
+											<Button
+												type="secondary"
+												onClick={viewAsStudent}
+												label={t(
+													'assignment/views/assignment-edit___bekijk-als-leerling'
+												)}
+												title={t(
+													'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+												)}
+											/>
+											<Dropdown
+												isOpen={isExtraOptionsMenuOpen}
+												menuWidth="fit-content"
+												onOpen={() => setExtraOptionsMenuOpen(true)}
+												onClose={() => setExtraOptionsMenuOpen(false)}
+												placement="bottom-end"
+											>
+												<DropdownButton>
+													<Button
+														type="secondary"
+														icon="more-horizontal"
+														ariaLabel={t(
+															'assignment/views/assignment-edit___meer-opties'
+														)}
+														title={t(
+															'assignment/views/assignment-edit___meer-opties'
+														)}
+													/>
+												</DropdownButton>
+												<DropdownContent>
+													<MenuContent
+														menuItems={[
+															{
+																icon: 'copy',
+																id: 'duplicate',
+																label: t(
+																	'assignment/views/assignment-edit___dupliceer'
+																),
+															},
+															{
+																icon: 'archive',
+																id: 'archive',
+																label: initialAssignment.is_archived
+																	? t(
+																			'assignment/views/assignment-edit___dearchiveer'
+																	  )
+																	: t(
+																			'assignment/views/assignment-edit___archiveer'
+																	  ),
+															},
+															{
+																icon: 'delete',
+																id: 'delete',
+																label: t(
+																	'assignment/views/assignment-edit___verwijder'
+																),
+															},
+														]}
+														onClick={id =>
+															handleExtraOptionClicked(
+																id.toString() as any
+															)
+														}
+													/>
+												</DropdownContent>
+											</Dropdown>
 											<Button
 												type="primary"
 												label={t(
@@ -405,9 +402,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
-											<Spacer margin="left-small">
-												<InteractiveTour showButton />
-											</Spacer>
+											<InteractiveTour showButton />
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>
@@ -484,7 +479,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
 					)}
 				/>
-			</>
+			</div>
 		);
 	};
 
