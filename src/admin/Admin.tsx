@@ -1,12 +1,11 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ResizablePanels from 'resizable-panels-react';
 
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../shared/components';
+import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
 import withUser from '../shared/hocs/withUser';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
@@ -50,6 +49,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 					<Sidebar
 						headerLink={ADMIN_PATH.DASHBOARD}
 						navItems={GET_NAV_ITEMS(userPermissions)}
+						className="o-app--admin__sidebar"
 					/>
 					<Flex
 						className="o-app--admin__main u-flex-auto u-scroll"

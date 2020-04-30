@@ -4,7 +4,6 @@ import { LinkTarget } from '@viaa/avo2-components';
 
 import { ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
-
 import { ContentPickerType, PickerItem } from '../../types';
 
 export const parseSearchQuery = (input: string): string => {

@@ -1,3 +1,26 @@
-.c-assignment-detail .c-navbar {
-	height: auto;
+.c-assignment-detail {
+	.c-navbar {
+		height: auto;
+
+		h2,
+		.c-content > p {
+			max-width: 800px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.c-content > p {
+			max-width: 100%;
+		}
+	}
+
+	.c-toolbar {
+		height: auto;
+		justify-content: space-between;
+	}
+
+	.c-toolbar__left,
+	.c-toolbar__right {
+		flex: initial;
+	}
 }

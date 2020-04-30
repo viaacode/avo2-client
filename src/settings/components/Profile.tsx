@@ -23,6 +23,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import {
 	getProfile,
@@ -41,7 +42,6 @@ import {
 } from '../../shared/services/education-organizations-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
-
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {

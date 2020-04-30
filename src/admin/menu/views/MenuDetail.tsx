@@ -23,9 +23,9 @@ import {
 import { CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { MENU_PATH } from '../menu.const';
 import { MenuService } from '../menu.service';
+
 import './MenuDetail.scss';
 
 interface MenuDetailProps extends DefaultSecureRouteProps<{ menu: string }> {}

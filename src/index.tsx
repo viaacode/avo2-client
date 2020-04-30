@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import pkg from '../package.json';
+
 import App from './App';
 
 // Expose app info through the window object

@@ -30,7 +30,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { GET_USER_BY_ID } from '../user.gql';
 import {
 	RawPermissionLink,

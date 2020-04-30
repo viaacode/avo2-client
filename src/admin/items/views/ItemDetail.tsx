@@ -26,6 +26,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
@@ -34,6 +35,7 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { Color } from '../../shared/types';
 
 import { ItemsService } from '../items.service';
 
@@ -204,7 +206,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				if (!user) {
 					return '-';
 				}
-				return `${user.first_name} ${user.last_name}`;
+				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
 				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
@@ -319,13 +321,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderDetailRow(
 								<>
-									{/* TODO remove any cast after update to typings 2.16.0 */}
-									<div style={{ backgroundColor: '#FFF' }}>
+									<div style={{ backgroundColor: Color.White }}>
 										<WYSIWYG
 											id="note"
-											data={(item as any).note}
+											data={item.note || undefined}
 											onChange={(note: string | null) =>
-												setItem({ ...item, note } as Avo.Item.Item)
+												setItem({ ...item, note })
 											}
 										/>
 									</div>
