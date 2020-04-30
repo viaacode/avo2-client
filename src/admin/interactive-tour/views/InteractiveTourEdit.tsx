@@ -40,9 +40,8 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import { getInitialInteractiveTour, INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
@@ -52,6 +51,7 @@ import {
 	InteractiveTourEditFormErrorState,
 	InteractiveTourPageType,
 } from '../interactive-tour.types';
+
 import './InteractiveTourEdit.scss';
 
 type StepPropUpdateAction = {

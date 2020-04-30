@@ -1,6 +1,7 @@
 import { createBrowserHistory } from 'history';
 
 import { ROUTE_PARTS } from '../constants';
+
 import { buildLink, navigate } from './link';
 
 const route = `/${ROUTE_PARTS.search}`;

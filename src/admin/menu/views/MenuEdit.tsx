@@ -20,12 +20,11 @@ import { SpecialPermissionGroups } from '../../../authentication/authentication.
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
+import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ValueOf } from '../../../shared/types';
+import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
-
-import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
-import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const';
 import { MenuService } from '../menu.service';

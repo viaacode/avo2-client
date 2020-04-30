@@ -26,6 +26,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
@@ -205,7 +206,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				if (!user) {
 					return '-';
 				}
-				return `${user.first_name} ${user.last_name}`;
+				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
 				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');

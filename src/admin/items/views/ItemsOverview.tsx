@@ -11,6 +11,7 @@ import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
@@ -20,7 +21,6 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
@@ -140,7 +140,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				return !isNil(rowData[columnId]) ? formatDate(rowData[columnId] as any) : '-';
 
 			case 'organisation':
-				return get(rowData, 'organisation.name', '-');
+				return truncateTableValue(get(rowData, 'organisation.name'));
 
 			case 'type':
 				return get(rowData, 'type.label', '-');
@@ -181,7 +181,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				);
 
 			default:
-				return truncate((rowData as any)[columnId] || '-', { length: 50 });
+				return truncate((rowData as any)[columnId] || '-', { length: 60 });
 		}
 	};
 

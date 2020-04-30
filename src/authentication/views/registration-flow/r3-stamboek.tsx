@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	Alert,
@@ -12,7 +13,6 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../../constants';
 import { ToastService } from '../../../shared/services';
 import { StamboekInput } from '../../components/StamboekInput';

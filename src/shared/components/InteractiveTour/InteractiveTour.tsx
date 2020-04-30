@@ -152,7 +152,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	// Render
 	if (tour) {
 		return (
-			<>
+			<div className="c-interactive-tour">
 				<Joyride
 					steps={mapSteps(tour.steps)}
 					callback={handleJoyrideCallback}
@@ -191,7 +191,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 						className="c-interactive-tour__button"
 					/>
 				)}
-			</>
+			</div>
 		);
 	}
 	return null;

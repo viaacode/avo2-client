@@ -8,8 +8,8 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { ToastService } from '../../shared/services';
-
 import { FragmentAdd, FragmentEdit } from '../components';
+
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditContentProps extends DefaultSecureRouteProps {

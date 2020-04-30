@@ -1,8 +1,8 @@
+import { shallow } from 'enzyme';
 import React from 'react';
 
-import { shallow } from 'enzyme';
-
 import { DropdownButton, DropdownContent } from '@viaa/avo2-components';
+
 import ControlledDropdown from './ControlledDropdown';
 
 describe('<ControlledDropdown />', () => {

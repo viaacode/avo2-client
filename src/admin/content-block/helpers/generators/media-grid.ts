@@ -1,7 +1,6 @@
 import { ContentPickerType, MultiRangeProps } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
-
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -10,6 +9,7 @@ import {
 	MediaGridBlockState,
 } from '../../../shared/types';
 import { GET_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+
 import {
 	BACKGROUND_COLOR_FIELD,
 	BLOCK_FIELD_DEFAULTS,

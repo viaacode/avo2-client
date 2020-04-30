@@ -19,7 +19,6 @@ import { ToastService } from '../../../shared/services';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import {
 	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
 	INTERACTIVE_TOUR_PATH,
