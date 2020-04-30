@@ -1,8 +1,7 @@
 import { ContentPickerType, MultiRangeProps } from '@viaa/avo2-components';
 
-import i18n from '../../../../shared/translations/i18n';
-
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ContentBlockConfig,
@@ -16,6 +15,7 @@ import {
 	GET_BUTTON_TYPE_OPTIONS,
 	GET_FULL_HEADING_TYPE_OPTIONS,
 } from '../../content-block.const';
+
 import {
 	BACKGROUND_COLOR_FIELD,
 	BLOCK_FIELD_DEFAULTS,

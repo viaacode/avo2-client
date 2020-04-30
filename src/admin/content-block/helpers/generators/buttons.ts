@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ButtonsBlockComponentState,

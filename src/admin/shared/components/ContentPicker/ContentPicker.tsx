@@ -9,10 +9,9 @@ import { Button, Flex, FlexItem, FormGroup, LinkTarget, TextInput } from '@viaa/
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
-
+import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
 import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
-import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
 import {
 	DEFAULT_ALLOWED_TYPES,
 	GET_CONTENT_TYPES,

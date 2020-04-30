@@ -21,6 +21,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { Color } from '../../admin/shared/types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { FlowPlayerWrapper } from '../../shared/components';
@@ -214,6 +215,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 						type="h3"
 						className={onTitleClicked ? 'u-clickable' : ''}
 						onClick={onTitleClicked || (() => {})}
+						color={onTitleClicked ? Color.TealBright : undefined}
 					>
 						{title}
 					</BlockHeading>

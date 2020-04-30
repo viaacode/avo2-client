@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import { Switch } from 'react-router';
 
 import { renderErrorRoutes } from '../error/error.routes';
+
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
 import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';

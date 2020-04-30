@@ -3,7 +3,6 @@ import React from 'react';
 import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 
 import { APP_PATH } from '../../../constants';
-
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
 import mockUser from '../../mocks/user-mock';
 

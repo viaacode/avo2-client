@@ -35,7 +35,6 @@ import {
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
-
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -45,6 +44,7 @@ import {
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
+
 import BookmarksOverview from './BookmarksOverview';
 import './Workspace.scss';
 

@@ -11,7 +11,6 @@ import { Avo } from '@viaa/avo2-types';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { AppState } from '../../store';
-
 import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';

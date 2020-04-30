@@ -12,3 +12,4 @@ export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/Shar
 export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';
 export { default as BooleanCheckboxDropdown } from './BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 export { default as CookieDeclaration } from './CookieDeclaration/CookieDeclaration';
+export { default as ResizablePanels } from './ResizablePanels/ResizablePanels';

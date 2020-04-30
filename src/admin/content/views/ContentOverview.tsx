@@ -27,6 +27,7 @@ import {
 	getRole,
 	navigate,
 } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import FilterTable, {
@@ -40,12 +41,12 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentTableState } from '../content.types';
 import { useContentTypes } from '../hooks';
+
 import './ContentOverview.scss';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
@@ -263,7 +264,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 		switch (columnId) {
 			case 'title':
-				return <Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>{title}</Link>;
+				return (
+					<Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>
+						{truncateTableValue(title)}
+					</Link>
+				);
 			case 'author':
 				return getFullName(profile) || '-';
 			case 'role':

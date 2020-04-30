@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { LoginMessage } from '../authentication.types';
+
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
 import initialState from './initial-state';
 import loginReducer from './reducer';
