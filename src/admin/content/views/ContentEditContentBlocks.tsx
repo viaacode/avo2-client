@@ -1,6 +1,5 @@
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ResizablePanels from 'resizable-panels-react';
 
 import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -20,6 +19,7 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
+import { ResizablePanels } from '../../../shared/components';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
