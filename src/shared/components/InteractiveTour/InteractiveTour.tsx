@@ -168,6 +168,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 					continuous
 					run={!tour.seen}
 					showSkipButton
+					floaterProps={{ disableAnimation: true }}
 					styles={{
 						options: {
 							primaryColor: Color.TealBright,
