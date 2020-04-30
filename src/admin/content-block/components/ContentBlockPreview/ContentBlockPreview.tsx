@@ -69,7 +69,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	}, [blockState.headerBackgroundColor]);
 
-	useEffect(updateHeaderHeight, [blockRef.current]);
+	useEffect(updateHeaderHeight, [blockRef.current, blockState, componentState]);
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
 		// Pass the navigate function to each element (deprecated) => prefer passing the navigate function once to the block

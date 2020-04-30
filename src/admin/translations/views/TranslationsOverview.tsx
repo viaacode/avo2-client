@@ -116,7 +116,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
+					<Container mode="horizontal" size="full-width">
 						{!!translations.length && (
 							<KeyValueEditor
 								initialData={initialTranslations}
