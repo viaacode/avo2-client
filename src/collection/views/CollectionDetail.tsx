@@ -679,7 +679,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			<>
 				<Header
 					title={title}
-					onClickTitle={() => null}
 					category="collection"
 					showMetaData
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount)}
