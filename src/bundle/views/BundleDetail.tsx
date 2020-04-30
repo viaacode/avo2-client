@@ -517,12 +517,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
 				: []),
 		];
-
 		return (
 			<ButtonToolbar>
 				<Button
-					label={t('bundle/views/bundle-detail___delen')}
-					title={t('bundle/views/bundle-detail___maak-de-bundel-publiek-niet-publiek')}
+					title={isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')}
+					ariaLabel={
+						isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')
+					}
+					icon={isPublic ? 'unlock-2' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
 					type="secondary"
 				/>

@@ -850,25 +850,24 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				)
 			);
 		}
+		const isPublic =
+			collectionState.currentCollection && collectionState.currentCollection.is_public;
 		return (
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
-						hasUnsavedChanged()
-							? t(
-									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
-							  )
-							: isCollection
-							? t(
-									'collection/components/collection-or-bundle-edit___maak-deze-collectie-publiek-niet-publiek'
-							  )
-							: t(
-									'collection/components/collection-or-bundle-edit___maak-deze-bundel-publiek-niet-publiek'
-							  )
+						isPublic
+							? t('collection/views/collection-detail___maak-deze-collectie-prive')
+							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
 					}
+					ariaLabel={
+						isPublic
+							? t('collection/views/collection-detail___maak-deze-collectie-prive')
+							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
+					}
+					icon={isPublic ? 'unlock-2' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
 				/>
 				<Button
