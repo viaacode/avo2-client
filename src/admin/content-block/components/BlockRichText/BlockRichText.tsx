@@ -1,11 +1,19 @@
 import React, { FunctionComponent } from 'react';
 
-import { Button, Column, convertToHtml, DefaultProps, Grid, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonProps,
+	Column,
+	convertToHtml,
+	DefaultProps,
+	Grid,
+	Spacer,
+} from '@viaa/avo2-components';
 import { GridSizeSchema } from '@viaa/avo2-components/src/components/Grid/Column/Column';
 
 interface BlockRichTextElement {
 	content: string;
-	buttons: any[];
+	buttons?: ButtonProps[];
 	color?: string;
 }
 
@@ -18,37 +26,44 @@ export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
 	elements = [
 		{
 			content: '',
-			buttons: {},
 		},
 	],
 }) => {
-	const renderContent = (contentElem: BlockRichTextElement) => (
-		<>
-			<div
-				className="c-content"
-				dangerouslySetInnerHTML={{ __html: convertToHtml(contentElem.content) }}
-				style={contentElem.color ? { color: contentElem.color } : {}}
-			/>
-			{contentElem.buttons.map((buttons: any) => (
-				<Spacer margin="top">
-					<Button {...buttons} />
-				</Spacer>
-			))}
-		</>
-	);
+	const renderButtons = (buttons: ButtonProps[]) => {
+		return buttons.map((buttons: any) => (
+			<Spacer margin="top">
+				<Button {...buttons} />
+			</Spacer>
+		));
+	};
 
-	return Array.isArray(elements) ? (
+	const renderContent = (contentElem: BlockRichTextElement) => {
+		const { content, color, buttons } = contentElem;
+
+		return (
+			<>
+				<div
+					className="c-content"
+					dangerouslySetInnerHTML={{ __html: convertToHtml(content) }}
+					style={color ? { color } : {}}
+				/>
+				{buttons && !!buttons.length && renderButtons(buttons)}
+			</>
+		);
+	};
+
+	const renderElements = (elements: BlockRichTextElement[]) => (
 		<Grid className={className}>
-			{(elements as BlockRichTextElement[]).map((column, index) => (
+			{elements.map((column, columnIndex) => (
 				<Column
 					size={(12 / elements.length).toString() as GridSizeSchema}
-					key={`rich-text-column-${index}`}
+					key={`rich-text-column-${columnIndex}`}
 				>
 					{renderContent(column)}
 				</Column>
 			))}
 		</Grid>
-	) : (
-		renderContent(elements)
 	);
+
+	return Array.isArray(elements) ? renderElements(elements) : renderContent(elements);
 };

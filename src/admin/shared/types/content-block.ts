@@ -205,7 +205,7 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
-	buttons: ButtonsBlockComponentState[];
+	buttons?: ButtonsBlockComponentState[];
 }
 
 export interface ImageBlockComponentState {

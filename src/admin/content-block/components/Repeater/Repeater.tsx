@@ -120,6 +120,7 @@ export const Repeater: FunctionComponent<RepeaterProps> = ({
 											title={t('Verwijder veld')}
 											ariaLabel={t('Verwijder veld')}
 											type="danger"
+											label={`Verwijder ${(field as any).label.toLowerCase()}`}
 										/>
 									</Flex>
 								</Spacer>
@@ -137,6 +138,7 @@ export const Repeater: FunctionComponent<RepeaterProps> = ({
 								title={t('Voeg veld toe')}
 								ariaLabel={t('Voeg veld toe')}
 								type="secondary"
+								label={`Voeg ${(field as any).label.toLowerCase()} toe`}
 							/>
 						</Flex>
 					</Spacer>
