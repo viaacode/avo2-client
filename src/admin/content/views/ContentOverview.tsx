@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
+import { get, truncate } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -47,6 +47,7 @@ import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentTableState } from '../content.types';
 import { useContentTypes } from '../hooks';
 import './ContentOverview.scss';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
@@ -263,7 +264,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 		switch (columnId) {
 			case 'title':
-				return <Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>{title}</Link>;
+				return (
+					<Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>
+						{truncateTableValue(title)}
+					</Link>
+				);
 			case 'author':
 				return getFullName(profile) || '-';
 			case 'role':

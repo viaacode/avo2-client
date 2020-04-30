@@ -17,6 +17,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
@@ -32,7 +33,6 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { UserService } from '../../users/user.service';
-
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -332,7 +332,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'author':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.usersByuserId');
-				return user ? `${user.first_name} ${user.last_name}` : '-';
+				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
 
 			case 'author_role':
 				return get(rowData, 'profile.usersByuserId.role.label', '-');

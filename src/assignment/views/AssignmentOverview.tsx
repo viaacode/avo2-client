@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import { capitalize, get, truncate } from 'lodash-es';
+import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -35,6 +35,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import {
 	buildLink,
@@ -44,11 +45,10 @@ import {
 	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-
-import { ErrorView } from '../../error/views';
 import {
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
@@ -56,6 +56,7 @@ import {
 } from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
+
 import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
@@ -386,7 +387,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link to={canEditAssignments ? editLink : detailLink}>
-									{truncate(rowData.title, { length: 60, omission: '...' })}
+									{truncateTableValue(rowData.title)}
 								</Link>
 							</h3>
 						</div>

@@ -24,6 +24,7 @@ import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface ItemsOverviewProps extends DefaultSecureRouteProps {}
 
@@ -140,7 +141,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				return !isNil(rowData[columnId]) ? formatDate(rowData[columnId] as any) : '-';
 
 			case 'organisation':
-				return get(rowData, 'organisation.name', '-');
+				return truncateTableValue(get(rowData, 'organisation.name'));
 
 			case 'type':
 				return get(rowData, 'type.label', '-');
@@ -181,7 +182,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				);
 
 			default:
-				return truncate((rowData as any)[columnId] || '-', { length: 50 });
+				return truncate((rowData as any)[columnId] || '-', { length: 60 });
 		}
 	};
 

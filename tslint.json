@@ -1,7 +1,19 @@
 {
-	"extends": ["tslint-config-airbnb", "tslint-plugin-prettier", "tslint-config-prettier"],
+	"extends": ["tslint-config-airbnb", "tslint-plugin-prettier", "tslint-config-prettier", "tslint-import-group-ordering"],
 	"rules": {
-		"ordered-imports": true,
+		"ordered-imports": [true,
+			{
+				"import-sources-order": "case-insensitive",
+				"grouped-imports": true,
+				"groups": [
+					{ "name": "meemoo repos", "match": "^@viaa", "order": 20 },
+					{ "name": "parent directories", "match": "^\\.\\.", "order": 30 },
+					{ "name": "current directory", "match": "^\\.", "order": 40 },
+					{ "name": "libraries", "match": ".*", "order": 10 }
+				],
+				"named-imports-order": "case-insensitive"
+			}
+		],
 		"variable-name": [true, "check-format", "allow-pascal-case"],
 		"import-name": false,
 		"prettier": true,

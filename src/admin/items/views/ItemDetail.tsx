@@ -1,4 +1,4 @@
-import { get, orderBy } from 'lodash-es';
+import { get, orderBy, truncate } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
@@ -36,6 +36,7 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { ItemsService } from '../items.service';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
 
@@ -204,7 +205,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				if (!user) {
 					return '-';
 				}
-				return `${user.first_name} ${user.last_name}`;
+				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
 				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');

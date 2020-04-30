@@ -1,4 +1,4 @@
-import { compact, flatten, get, without } from 'lodash-es';
+import { compact, flatten, get, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -42,6 +42,7 @@ import {
 	UserGroupEditFormErrorState,
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -334,7 +335,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
 							return (
 								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
-									{permission.description}
+									{truncateTableValue(permission.description)}
 								</div>
 							);
 						})}

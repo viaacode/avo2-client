@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -26,6 +26,7 @@ import {
 } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
 
@@ -134,10 +135,6 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 
 	const renderTableCell = (rowData: Partial<UserGroup>, columnId: UserGroupOverviewTableCols) => {
 		switch (columnId) {
-			case 'label':
-			case 'description':
-				return rowData[columnId] || '-';
-
 			case 'created_at':
 			case 'updated_at':
 				return formatDate(rowData[columnId]) || '-';
@@ -192,7 +189,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 

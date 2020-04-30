@@ -1,4 +1,4 @@
-import { get, isNil, without } from 'lodash-es';
+import { get, isNil, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,6 +38,7 @@ import {
 	PermissionGroupEditFormErrorState,
 	PermissionsTableCols,
 } from '../permission-group.types';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface PermissionGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -308,7 +309,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 

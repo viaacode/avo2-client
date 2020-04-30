@@ -1,4 +1,4 @@
-import { flatten, get } from 'lodash-es';
+import { flatten, get, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
@@ -42,6 +42,7 @@ import {
 } from '../user-group.types';
 
 import './UserGroupDetail.scss';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
@@ -153,15 +154,12 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
 							return (
 								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
-									{permission.description}
+									{truncateTableValue(permission.description)}
 								</div>
 							);
 						})}
 					</div>
 				);
-
-			case 'description':
-				return rowData[columnId];
 
 			case 'created_at':
 			case 'updated_at':
@@ -192,7 +190,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 

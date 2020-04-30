@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -18,6 +18,7 @@ import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
 import { UserService } from '../user.service';
 import { UserOverviewTableCols, UserTableState } from '../user.types';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 interface UserOverviewProps extends DefaultSecureRouteProps {}
 
@@ -87,7 +88,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			case 'first_name':
 			case 'last_name':
 			case 'mail':
-				return get(user, columnId, '-');
+				return truncateTableValue(get(user, columnId));
 
 			case 'stamboek':
 				return stamboek || '-';
@@ -111,7 +112,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 
