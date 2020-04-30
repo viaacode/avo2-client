@@ -1,4 +1,5 @@
 import ApolloClient from 'apollo-boost';
+
 import { getEnv } from '../helpers';
 
 export const dataService = new ApolloClient({

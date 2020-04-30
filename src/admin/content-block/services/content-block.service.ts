@@ -6,7 +6,6 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
-
 import { ContentBlockConfig } from '../../shared/types';
 import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
 import {

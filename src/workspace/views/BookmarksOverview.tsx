@@ -30,6 +30,7 @@ import {
 	fromNow,
 	isMobileWidth,
 } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkInfo,
@@ -189,7 +190,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
 				<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
-					{contentTitle}
+					{truncateTableValue(contentTitle)}
 				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">

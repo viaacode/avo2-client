@@ -7,9 +7,9 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionService } from '../../collection/collection.service';
 import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
-
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
 import { SearchResultsProps } from '../search.types';
+
 import SearchResultItem from './SearchResultItem';
 
 const SearchResults: FunctionComponent<SearchResultsProps> = ({

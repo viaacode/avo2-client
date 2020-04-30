@@ -35,7 +35,6 @@ import {
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
-
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -45,6 +44,7 @@ import {
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
+
 import BookmarksOverview from './BookmarksOverview';
 import './Workspace.scss';
 
@@ -68,6 +68,48 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	useEffect(() => {
 		setTabId(match.params.tabId);
 	}, [match.params.tabId]);
+
+	const updatePermissionsAndCounts = useCallback(() => {
+		Promise.all([
+			dataService.query({
+				query: GET_WORKSPACE_TAB_COUNTS,
+				variables: { owner_profile_id: getProfileId(user) },
+			}),
+			PermissionService.hasPermission(PermissionName.CREATE_COLLECTIONS, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_BUNDLES, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
+		])
+			.then(response => {
+				setTabCounts({
+					[COLLECTIONS_ID]: get(response[0], 'data.collection_counts.aggregate.count', 0),
+					[BUNDLES_ID]: get(response[0], 'data.bundle_counts.aggregate.count', 0),
+					[ASSIGNMENTS_ID]: get(response[0], 'data.assignment_counts.aggregate.count', 0),
+					[BOOKMARKS_ID]:
+						get(response[0], 'data.item_bookmark_counts.aggregate.count', 0) +
+						get(response[0], 'data.collection_bookmark_counts.aggregate.count', 0),
+				});
+				setPermissions({
+					[COLLECTIONS_ID]: response[1],
+					[BUNDLES_ID]: response[2],
+					[ASSIGNMENTS_ID]: response[3],
+					[BOOKMARKS_ID]: response[4],
+				});
+			})
+			.catch(err => {
+				console.error(
+					'Failed to check permissions or get tab counts for workspace overview page',
+					err,
+					{ user }
+				);
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
+					),
+				});
+			});
+	}, [user, t, setPermissions]);
 
 	// Make map for available tab views
 	useEffect(() => {
@@ -143,7 +185,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				),
 			}),
 		});
-	}, [tabCounts, permissions, t, history, location, match, user]);
+	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
 
 	const goToTab = (id: ReactText) => {
 		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
@@ -154,48 +196,6 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const getActiveTab = useCallback(() => {
 		return tabs[tabId || Object.keys(tabs)[0]];
 	}, [tabs, tabId]);
-
-	const updatePermissionsAndCounts = useCallback(() => {
-		Promise.all([
-			dataService.query({
-				query: GET_WORKSPACE_TAB_COUNTS,
-				variables: { owner_profile_id: getProfileId(user) },
-			}),
-			PermissionService.hasPermission(PermissionName.CREATE_COLLECTIONS, null, user),
-			PermissionService.hasPermission(PermissionName.CREATE_BUNDLES, null, user),
-			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
-			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
-		])
-			.then(response => {
-				setTabCounts({
-					[COLLECTIONS_ID]: get(response[0], 'data.collection_counts.aggregate.count', 0),
-					[BUNDLES_ID]: get(response[0], 'data.bundle_counts.aggregate.count', 0),
-					[ASSIGNMENTS_ID]: get(response[0], 'data.assignment_counts.aggregate.count', 0),
-					[BOOKMARKS_ID]:
-						get(response[0], 'data.item_bookmark_counts.aggregate.count', 0) +
-						get(response[0], 'data.collection_bookmark_counts.aggregate.count', 0),
-				});
-				setPermissions({
-					[COLLECTIONS_ID]: response[1],
-					[BUNDLES_ID]: response[2],
-					[ASSIGNMENTS_ID]: response[3],
-					[BOOKMARKS_ID]: response[4],
-				});
-			})
-			.catch(err => {
-				console.error(
-					'Failed to check permissions or get tab counts for workspace overview page',
-					err,
-					{ user }
-				);
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
-					),
-				});
-			});
-	}, [user, t, setPermissions]);
 
 	useEffect(() => {
 		updatePermissionsAndCounts();

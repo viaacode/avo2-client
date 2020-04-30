@@ -9,7 +9,6 @@ import {
 	DefaultContentBlockState,
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
-
 import { BlockGridWrapperProps } from '../../components/wrappers/ImageGridWrapper/ImageGridWrapper';
 import {
 	GET_ALIGN_OPTIONS,
@@ -17,6 +16,7 @@ import {
 	GET_FILL_OPTIONS,
 	GET_IMAGE_GRID_FORMAT_OPTIONS,
 } from '../../content-block.const';
+
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
 export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [

@@ -1,8 +1,8 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { getItems, getItemsByTitle } from '../../../../item/item.service';
-
 import { PickerSelectItem } from '../../types';
+
 import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL

@@ -34,6 +34,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
 import {
 	DeleteObjectModal,
 	InputModal,
@@ -48,13 +49,13 @@ import {
 	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-
-import { ErrorView } from '../../error/views';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
+
 import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
@@ -409,7 +410,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link to={canEditAssignments ? editLink : detailLink}>
-									{rowData.title}
+									{truncateTableValue(rowData.title)}
 								</Link>
 							</h3>
 						</div>

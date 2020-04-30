@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../helpers';
+
 import { dataService } from './data-service';
 import {
 	INSERT_COLLECTION_BOOKMARK,

@@ -1,5 +1,6 @@
-import { IconName } from '@viaa/avo2-components';
 import { ReactElement } from 'react';
+
+import { IconName } from '@viaa/avo2-components';
 
 export enum KeyCode {
 	Enter = 13,

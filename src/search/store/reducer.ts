@@ -1,5 +1,4 @@
 import { createReducer } from './../../shared/helpers';
-
 import initialState from './initial-state';
 import {
 	SearchActionTypes,

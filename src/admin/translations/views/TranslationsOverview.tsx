@@ -7,7 +7,6 @@ import { Button, Container, KeyValueEditor } from '@viaa/avo2-components';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';

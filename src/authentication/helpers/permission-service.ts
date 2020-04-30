@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
+
 import { getProfileId } from './get-profile-info';
 import {
 	GET_LINKED_COLLECTIONS,

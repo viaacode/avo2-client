@@ -3,8 +3,6 @@ import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Avo } from '@viaa/avo2-types';
-
 import {
 	Blankslate,
 	Box,
@@ -16,6 +14,8 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
 import { deleteFile, uploadFile } from '../../services/file-upload-service';

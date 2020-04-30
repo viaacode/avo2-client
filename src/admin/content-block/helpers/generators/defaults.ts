@@ -13,7 +13,6 @@ import {
 	DefaultContentBlockState,
 	PaddingFieldState,
 } from '../../../shared/types';
-
 import {
 	GET_ALIGN_OPTIONS,
 	GET_BACKGROUND_COLOR_OPTIONS,
