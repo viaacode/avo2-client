@@ -14,7 +14,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { JsonParam, StringParam, useQueryParams } from 'use-query-params';
+import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import {
 	Button,
@@ -88,15 +88,16 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		FilterState,
-		(FilterState: FilterState) => void
+		(FilterState: FilterState, updateType?: UrlUpdateType) => void
 	];
 
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
-	// const [queryParamsAnalysed, setQueryParamsAnalysed] = useState(false);
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
+
+	const urlUpdateType: UrlUpdateType = 'push';
 
 	/**
 	 * Update the search results when the filterState or the currentPage changes
@@ -209,7 +210,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				},
 			};
 		}
-		setFilterState(cleanupFilterState(newFilterState));
+		setFilterState(cleanupFilterState(newFilterState), urlUpdateType);
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
@@ -217,11 +218,14 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const handleOrderChanged = async (value: string = 'relevance_desc') => {
 		const valueParts: string[] = value.split('_');
-		setFilterState({
-			...filterState,
-			orderProperty: valueParts[0] as Avo.Search.OrderProperty,
-			orderDirection: valueParts[1] as Avo.Search.OrderDirection,
-		});
+		setFilterState(
+			{
+				...filterState,
+				orderProperty: valueParts[0] as Avo.Search.OrderProperty,
+				orderDirection: valueParts[1] as Avo.Search.OrderDirection,
+			},
+			urlUpdateType
+		);
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
@@ -252,12 +256,15 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const deleteAllFilters = () => {
-		setFilterState({
-			...filterState,
-			filters: {
-				...DEFAULT_FILTER_STATE,
+		setFilterState(
+			{
+				...filterState,
+				filters: {
+					...DEFAULT_FILTER_STATE,
+				},
 			},
-		});
+			urlUpdateType
+		);
 	};
 
 	const setPage = async (pageIndex: number): Promise<void> => {
@@ -306,13 +313,16 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const handleTagClicked = (tagId: string) => {
-		setFilterState({
-			...filterState,
-			filters: {
-				...DEFAULT_FILTER_STATE,
-				collectionLabel: [tagId],
+		setFilterState(
+			{
+				...filterState,
+				filters: {
+					...DEFAULT_FILTER_STATE,
+					collectionLabel: [tagId],
+				},
 			},
-		});
+			urlUpdateType
+		);
 	};
 
 	// @ts-ignore
@@ -333,13 +343,16 @@ const Search: FunctionComponent<SearchProps> = ({
 	 * Otherwise we would trigger a search for every letter that is typed
 	 */
 	const copySearchTermsToFormState = async () => {
-		setFilterState({
-			...filterState,
-			filters: {
-				...filterState.filters,
-				query: searchTerms,
+		setFilterState(
+			{
+				...filterState,
+				filters: {
+					...filterState.filters,
+					query: searchTerms,
+				},
 			},
-		});
+			urlUpdateType
+		);
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
