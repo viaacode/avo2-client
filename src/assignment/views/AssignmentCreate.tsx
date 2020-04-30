@@ -569,8 +569,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 										name="content_layout"
 										value={String(AssignmentLayout.PlayerAndText)}
 										checked={
+											isNil(currentAssignment.content_layout) ||
 											currentAssignment.content_layout ===
-											AssignmentLayout.PlayerAndText
+												AssignmentLayout.PlayerAndText
 										}
 										onChange={isChecked =>
 											isChecked &&
