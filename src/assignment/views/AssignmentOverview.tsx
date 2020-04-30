@@ -196,8 +196,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						setActiveView(
 							activeView === 'assignments' ? 'archived_assignments' : 'assignments'
 						);
+					} else {
+						fetchAssignments();
 					}
-					fetchAssignments();
 					ToastService.success(
 						archivedAssignment.is_archived
 							? t(
