@@ -2,7 +2,6 @@ import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { sanitize } from '../../../shared/helpers';
 
 import {
 	BlockHeading,
@@ -20,11 +19,12 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
+import { sanitize } from '../../../shared/helpers';
+import sanitizePresets from '../../../shared/helpers/sanitize/presets';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
-import sanitizePresets from '../../../shared/helpers/sanitize/presets';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 

@@ -36,7 +36,6 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { Color } from '../../shared/types';
-
 import { ItemsService } from '../items.service';
 
 type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';

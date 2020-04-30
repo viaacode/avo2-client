@@ -5,9 +5,9 @@ import { RouteComponentProps } from 'react-router';
 import { BlockHeading, Button, Container } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import { redirectToClientPage } from '../../helpers/redirects';
 import { sanitize } from '../../../shared/helpers/sanitize';
 import sanitizePresets from '../../../shared/helpers/sanitize/presets';
+import { redirectToClientPage } from '../../helpers/redirects';
 
 export interface StudentTeacherProps extends RouteComponentProps {}
 
