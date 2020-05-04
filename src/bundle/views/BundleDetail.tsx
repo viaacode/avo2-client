@@ -524,7 +524,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					ariaLabel={
 						isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')
 					}
-					icon={isPublic ? 'unlock-2' : 'lock'}
+					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
 					type="secondary"
 				/>

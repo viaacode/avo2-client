@@ -867,7 +867,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							? t('collection/views/collection-detail___maak-deze-collectie-prive')
 							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
 					}
-					icon={isPublic ? 'unlock-2' : 'lock'}
+					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
 				/>
 				<Button
