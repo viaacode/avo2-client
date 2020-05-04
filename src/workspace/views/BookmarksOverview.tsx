@@ -183,6 +183,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		contentType,
 		contentTitle,
 		contentCreatedAt,
+		contentViews,
 	}: BookmarkInfo) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
@@ -197,8 +198,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 							{fromNow(contentCreatedAt)}
 						</span>
 					</MetaDataItem>
-					{/* TODO: Views from GQL */}
-					<MetaDataItem icon="eye" label="0" />
+					<MetaDataItem icon="eye" label={String(contentViews)} />
 				</MetaData>
 			</div>
 		</div>
@@ -254,11 +254,13 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
-			<Pagination
-				pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-				currentPage={page}
-				onPageChange={setPage}
-			/>
+			<Spacer margin="top">
+				<Pagination
+					pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
+					currentPage={page}
+					onPageChange={setPage}
+				/>
+			</Spacer>
 		</>
 	);
 
