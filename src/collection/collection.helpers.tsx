@@ -272,7 +272,9 @@ export const cleanCollectionBeforeSave = (
 export const getFragmentIdsFromCollection = (
 	collection: Partial<Avo.Collection.Collection> | null
 ): number[] => {
-	return getFragmentsFromCollection(collection).map(
-		(fragment: Avo.Collection.Fragment) => fragment.id
+	return compact(
+		getFragmentsFromCollection(collection).map(
+			(fragment: Avo.Collection.Fragment) => fragment.id
+		)
 	);
 };
