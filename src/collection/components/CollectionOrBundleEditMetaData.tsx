@@ -168,6 +168,35 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											)}
 										</label>
 									</FormGroup>
+									{!isCollection && (
+										<FormGroup
+											label={t('Lange omschrijving')}
+											labelFor="longDescriptionId"
+											error={getValidationFeedbackForShortDescription(
+												(collection as any).description_long,
+												true
+											)} // TODO: Remove as any when typings update releases, 2.17.0
+										>
+											<TextArea
+												name="longDescriptionId"
+												value={(collection as any).description_long || ''} // TODO: Remove as any when typings update releases, 2.17.0
+												id="longDescriptionId"
+												height="medium"
+												onChange={(value: string) =>
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'description_long',
+														collectionPropValue: value,
+													})
+												}
+											/>
+											<label>
+												{getValidationFeedbackForShortDescription(
+													(collection as any).description_long
+												) /* TODO: Remove as any when typings update releases, 2.17. */}
+											</label>
+										</FormGroup>
+									)}
 								</Column>
 								<Column size="3-5">
 									<FormGroup
