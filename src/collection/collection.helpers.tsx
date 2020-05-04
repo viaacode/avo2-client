@@ -10,11 +10,12 @@ import { ContentTypeNumber } from './collection.types';
 
 export const getValidationFeedbackForShortDescription = (
 	description: string | null,
+	maxLength: number,
 	isError?: boolean | null
 ): string => {
-	const count: string = `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+	const count: string = `${(description || '').length}/${maxLength}`;
 
-	const exceedsSize: boolean = (description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
+	const exceedsSize: boolean = (description || '').length > maxLength;
 
 	if (isError) {
 		return exceedsSize
@@ -24,7 +25,7 @@ export const getValidationFeedbackForShortDescription = (
 			: '';
 	}
 
-	return exceedsSize ? '' : `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+	return exceedsSize ? '' : `${(description || '').length}/${maxLength}`;
 };
 
 // Validation

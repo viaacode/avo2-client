@@ -22,6 +22,7 @@ import { CustomError } from '../../shared/helpers';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { dataService } from '../../shared/services';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
+import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
 
@@ -146,6 +147,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										labelFor="shortDescriptionId"
 										error={getValidationFeedbackForShortDescription(
 											collection.description,
+											MAX_SEARCH_DESCRIPTION_LENGTH,
 											true
 										)}
 									>
@@ -164,16 +166,18 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										/>
 										<label>
 											{getValidationFeedbackForShortDescription(
-												collection.description
+												collection.description,
+												MAX_SEARCH_DESCRIPTION_LENGTH
 											)}
 										</label>
 									</FormGroup>
 									{!isCollection && (
 										<FormGroup
-											label={t('Lange omschrijving')}
+											label={t('Beschrijving')}
 											labelFor="longDescriptionId"
 											error={getValidationFeedbackForShortDescription(
 												(collection as any).description_long,
+												MAX_LONG_DESCRIPTION_LENGTH,
 												true
 											)} // TODO: Remove as any when typings update releases, 2.17.0
 										>
@@ -192,7 +196,8 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											/>
 											<label>
 												{getValidationFeedbackForShortDescription(
-													(collection as any).description_long
+													(collection as any).description_long,
+													MAX_LONG_DESCRIPTION_LENGTH
 												) /* TODO: Remove as any when typings update releases, 2.17. */}
 											</label>
 										</FormGroup>
