@@ -295,7 +295,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								  )
 						}
 					>
-						<Icon name={collection.is_public ? 'unlock-2' : 'lock'} />
+						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
 					</div>
 				);
 
