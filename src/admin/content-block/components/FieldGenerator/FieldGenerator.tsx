@@ -54,7 +54,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 		);
 	};
 
-	const renderDeleteButton = (stateCopy: any, index: number, label: string) => {
+	const renderDeleteButton = (stateCopy: any, index?: number) => {
 		const handleFieldDelete = (index: any) => {
 			const newState = [...stateCopy];
 
@@ -71,7 +71,6 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 				title={t('Verwijder veld')}
 				ariaLabel={t('Verwijder veld')}
 				type="danger"
-				label={label}
 			/>
 		);
 	};
@@ -151,8 +150,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 												<Flex center>
 													{renderDeleteButton(
 														currentState,
-														singleStateIndex,
-														`Verwijder ${(fieldInstance as any).label.toLowerCase()}`
+														singleStateIndex
 													)}
 												</Flex>
 											</Spacer>
@@ -220,13 +218,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 								? (fieldInstance as any).min
 								: 1) && (
 							<Spacer margin="top">
-								<Flex center>
-									{renderDeleteButton(
-										currentState,
-										stateIndex || 0, // TODO remove 0
-										`Verwijder ${(fieldInstance as any).label.toLowerCase()}`
-									)}
-								</Flex>
+								<Flex center>{renderDeleteButton(currentState, stateIndex)}</Flex>
 							</Spacer>
 						)}
 						{currentState.length < ((fieldInstance as any).max || 0) && (
@@ -250,7 +242,6 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 
 					newState[index] = value;
 
-					// console.log(newState);
 					handleChange(type, fieldKey, newState, stateIndex);
 				};
 
@@ -276,13 +267,9 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 													</Spacer>
 												</FormGroup>
 											</FlexItem>
-											{state.length > 1 && (
+											{currentState.length > 1 && (
 												<Spacer margin="left">
-													{renderDeleteButton(
-														currentState,
-														index,
-														'Verwijder veld'
-													)}
+													{renderDeleteButton(currentState, index)}
 												</Spacer>
 											)}
 										</Flex>
