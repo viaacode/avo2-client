@@ -327,6 +327,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 										'admin/permission-groups/views/permission-group-edit___label'
 									)}
 									error={formErrors.label}
+									required
 								>
 									<TextInput
 										value={permissionGroup.label || ''}

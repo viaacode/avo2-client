@@ -75,7 +75,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
 			<ModalBody>
 				<Spacer margin="bottom-large">
-					<FormGroup label={inputLabel} labelFor="collectionNameId">
+					<FormGroup label={inputLabel} labelFor="collectionNameId" required>
 						<TextInput
 							type="text"
 							value={input}
