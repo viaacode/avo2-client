@@ -5,6 +5,7 @@ import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPage } from '../../../content-page/views';
+import { ResizablePanels } from '../../../shared/components';
 import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
@@ -19,7 +20,6 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
-import { ResizablePanels } from '../../../shared/components';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];

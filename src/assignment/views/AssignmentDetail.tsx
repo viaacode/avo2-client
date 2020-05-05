@@ -36,10 +36,10 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import {
 	checkPermissions,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import {
 	ApolloCacheManager,
@@ -190,7 +190,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					await createAssignmentResponseObject(tempAssignment);
 
 					// Load content (collection, item or search query) according to assignment
-					AssignmentService.getAssignmentContent(tempAssignment)
+					AssignmentService.fetchAssignmentContent(tempAssignment)
 						.then((response: Avo.Assignment.Content | null) => {
 							setAssignmentContent(response);
 							setAssignment(tempAssignment);
