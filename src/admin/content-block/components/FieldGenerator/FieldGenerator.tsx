@@ -95,87 +95,9 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 					handleChange(type, fieldKey, newState, stateIndex);
 				};
 
-				if (field.repeat) {
-					return (
-						<>
-							{currentState.map((singleState: any, singleStateIndex: number) => {
-								return (
-									<Fragment key={singleStateIndex}>
-										<span>{`${fieldInstance.label} ${singleStateIndex +
-											1}`}</span>
-										{Object.entries((field as any).fields).map(
-											(innerState: any, innerStateIndex: number) => {
-												// generateFields(innerField)
-												const editorProps: any = {
-													...innerState[1].editorProps,
-													...generateFieldAttributes(
-														innerState[1],
-														(value: any) =>
-															handleFieldGroupStateChange(
-																currentState,
-																innerState[0],
-																singleStateIndex,
-																value
-															),
-														singleState[innerState[0]] as any,
-														`${fieldKey}-${innerState[0]}-${innerStateIndex}`
-													),
-												};
-
-												const EditorComponents = (EDITOR_TYPES_MAP as any)[
-													innerState[1].editorType
-												];
-
-												return (
-													<Spacer
-														margin="top"
-														key={`${fieldKey}-${innerState[0]}-${innerStateIndex}`}
-													>
-														<FormGroup label={`${innerState[1].label}`}>
-															<Spacer margin="top-small">
-																<EditorComponents
-																	{...editorProps}
-																/>
-															</Spacer>
-														</FormGroup>
-													</Spacer>
-												);
-											}
-										)}
-										{currentState.length >
-											((fieldInstance as any).min !== null
-												? (fieldInstance as any).min
-												: 1) && (
-											<Spacer margin="top">
-												<Flex center>
-													{renderDeleteButton(
-														currentState,
-														singleStateIndex
-													)}
-												</Flex>
-											</Spacer>
-										)}
-									</Fragment>
-								);
-							})}
-							{currentState.length < ((fieldInstance as any).max || 0) && (
-								<Spacer margin="top">
-									<Flex center>
-										{renderAddButton(
-											currentState,
-											`Voeg ${(fieldInstance as any).label.toLowerCase()} toe`
-										)}
-									</Flex>
-								</Spacer>
-							)}
-						</>
-					);
-				}
-
-				// FIELDGROUP
-				return (
-					<Fragment key={stateIndex}>
-						<span>{`${fieldInstance.label} ${stateIndex || 0 + 1}`}</span>
+				const renderFieldGroup = (singleState: any, singleStateIndex: number = 0) => (
+					<Fragment key={singleStateIndex}>
+						<span>{`${fieldInstance.label} ${singleStateIndex + 1}`}</span>
 						{Object.entries((field as any).fields).map(
 							(innerState: any, innerStateIndex: number) => {
 								// generateFields(innerField)
@@ -187,10 +109,10 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 											handleFieldGroupStateChange(
 												currentState,
 												innerState[0],
-												stateIndex,
+												singleStateIndex,
 												value
 											),
-										currentState[innerState[0]] as any,
+										singleState[innerState[0]] as any,
 										`${fieldKey}-${innerState[0]}-${innerStateIndex}`
 									),
 								};
@@ -218,9 +140,38 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 								? (fieldInstance as any).min
 								: 1) && (
 							<Spacer margin="top">
-								<Flex center>{renderDeleteButton(currentState, stateIndex)}</Flex>
+								<Flex center>
+									{renderDeleteButton(currentState, singleStateIndex)}
+								</Flex>
 							</Spacer>
 						)}
+					</Fragment>
+				);
+
+				if (field.repeat) {
+					return (
+						<>
+							{currentState.map((singleState: any, singleStateIndex: number) =>
+								renderFieldGroup(singleState, singleStateIndex)
+							)}
+							{currentState.length < ((fieldInstance as any).max || 0) && (
+								<Spacer margin="top">
+									<Flex center>
+										{renderAddButton(
+											currentState,
+											`Voeg ${(fieldInstance as any).label.toLowerCase()} toe`
+										)}
+									</Flex>
+								</Spacer>
+							)}
+						</>
+					);
+				}
+
+				// FIELDGROUP
+				return (
+					<Fragment key={stateIndex}>
+						{renderFieldGroup(currentState, stateIndex)}
 						{currentState.length < ((fieldInstance as any).max || 0) && (
 							<Spacer margin="top">
 								<Flex center>
