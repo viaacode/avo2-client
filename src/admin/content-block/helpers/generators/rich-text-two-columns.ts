@@ -15,7 +15,12 @@ import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaul
 export const INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE = (): RichTextBlockComponentState[] => [
 	{
 		content: '',
-		buttons: [],
+		buttons: [
+			{
+				label: '',
+				type: 'primary',
+			},
+		],
 	},
 	{
 		content: '',
