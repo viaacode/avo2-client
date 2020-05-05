@@ -45,10 +45,10 @@ import {
 	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';

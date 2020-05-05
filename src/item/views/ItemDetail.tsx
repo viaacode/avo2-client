@@ -42,11 +42,11 @@ import {
 } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import {
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,

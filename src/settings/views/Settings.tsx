@@ -14,7 +14,7 @@ import {
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../shared/components';
 import { buildLink } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { Account, Email, Notifications, Profile } from '../components';

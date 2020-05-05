@@ -156,9 +156,9 @@ export default class ResizablePanels extends Component<ResizablePanelsProps, Res
 
 			this.setState({
 				...this.state,
+				displacement,
 				initialPos: currentMousePosition,
 				panelsSize: nextPanelsSize,
-				displacement,
 			});
 			if (this.props.onResize) {
 				this.props.onResize(displacement);
@@ -194,8 +194,10 @@ export default class ResizablePanels extends Component<ResizablePanelsProps, Res
 		const resizeSize = usePercentage ? this.convertToPercentage(displacement) : displacement;
 
 		return currentPanelsSize.map((panelSize, index) => {
-			if (index === this.state.currentPanel) return panelSize + resizeSize;
-			else if (index === (this.state.currentPanel || 1) - 1) {
+			if (index === this.state.currentPanel) {
+				return panelSize + resizeSize;
+			}
+			if (index === (this.state.currentPanel || 1) - 1) {
 				return panelSize - resizeSize;
 			}
 

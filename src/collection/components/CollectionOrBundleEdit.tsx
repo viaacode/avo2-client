@@ -44,12 +44,12 @@ import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
+	DraggableListModal,
 	InputModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	buildLink,
 	createDropdownMenuItem,

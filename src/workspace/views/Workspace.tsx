@@ -29,10 +29,10 @@ import CollectionOrBundleOverview from '../../collection/components/CollectionOr
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 import {

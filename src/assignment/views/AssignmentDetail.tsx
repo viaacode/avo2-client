@@ -36,10 +36,10 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import {
 	checkPermissions,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import {
 	ApolloCacheManager,

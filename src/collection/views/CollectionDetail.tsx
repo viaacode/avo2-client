@@ -36,11 +36,11 @@ import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
