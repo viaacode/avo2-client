@@ -86,3 +86,8 @@ export type InsertFragmentResponse = {
 	newId: number;
 	oldId: number;
 };
+
+export enum RelationType {
+	IS_COPY_OF = 'IS_COPY_OF',
+	IS_REPLACED_BY = 'IS_REPLACED_BY',
+}

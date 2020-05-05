@@ -359,3 +359,19 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 		}
 	}
 `;
+
+export const INSERT_COLLECTION_RELATION = gql`
+	mutation insertCollectionRelation(
+		$originalId: uuid!
+		$otherId: uuid!
+		$relationType: lookup_enum_relation_types_enum!
+	) {
+		insert_app_collection_relations(
+			objects: [{ object: $originalId, subject: $otherId, predicate: $relationType }]
+		) {
+			returning {
+				id
+			}
+		}
+	}
+`;
