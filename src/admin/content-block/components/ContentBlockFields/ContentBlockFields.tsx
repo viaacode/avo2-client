@@ -8,7 +8,6 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../../shared/types';
-
 import { FieldGenerator } from '../FieldGenerator/FieldGenerator';
 
 interface ContentBlockFieldProps {
