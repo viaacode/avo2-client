@@ -69,92 +69,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		setTabId(match.params.tabId);
 	}, [match.params.tabId]);
 
-	// Make map for available tab views
-	useEffect(() => {
-		const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
-			if (permissions[tabId]) {
-				return { [tabId]: obj };
-			}
-			return {};
-		};
-		setTabs({
-			...addTabIfUserHasPerm(COLLECTIONS_ID, {
-				component: () => (
-					<CollectionOrBundleOverview
-						numberOfItems={tabCounts[COLLECTIONS_ID]}
-						type="collection"
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
-				),
-				// TODO: DISABLED_FEATURE filter
-				// filter: {
-				// 	label: t('workspace/views/workspace___auteur'),
-				// 	options: [
-				// 		{ id: 'all', label: t('workspace/views/workspace___alles') },
-				// 		{ id: 'owner', label: t('workspace/views/workspace___enkel-waar-ik-eigenaar-ben') },
-				// 		{ id: 'sharedWith', label: t('workspace/views/workspace___enkel-gedeeld-met-mij') },
-				// 		{ id: 'sharedBy', label: t('workspace/views/workspace___enkel-gedeeld-door-mij') },
-				// 	],
-				// },
-			}),
-			...addTabIfUserHasPerm(BUNDLES_ID, {
-				component: () => (
-					<CollectionOrBundleOverview
-						numberOfItems={tabCounts[BUNDLES_ID]}
-						type="bundle"
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
-				),
-				// TODO enable filtering by label
-				// filter: {
-				// 	label: t('workspace/views/workspace___filter-op-label'),
-				// 	options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
-				// },
-			}),
-			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
-				component: () => (
-					<AssignmentOverview
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
-				),
-			}),
-			...addTabIfUserHasPerm(BOOKMARKS_ID, {
-				component: () => (
-					<BookmarksOverview
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-						numberOfItems={tabCounts[BOOKMARKS_ID]}
-					/>
-				),
-			}),
-		});
-	}, [tabCounts, permissions, t, history, location, match, user]);
-
-	const goToTab = (id: ReactText) => {
-		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
-		setTabId(String(id));
-	};
-
-	// Get active tab based on above map with tabId
-	const getActiveTab = useCallback(() => {
-		return tabs[tabId || Object.keys(tabs)[0]];
-	}, [tabs, tabId]);
-
-	useEffect(() => {
-		if (!isEmpty(permissions)) {
-			return;
-		}
+	const updatePermissionsAndCounts = useCallback(() => {
 		Promise.all([
 			dataService.query({
 				query: GET_WORKSPACE_TAB_COUNTS,
@@ -194,7 +109,97 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					),
 				});
 			});
-	}, [user, t, setPermissions, permissions]);
+	}, [user, t, setPermissions]);
+
+	// Make map for available tab views
+	useEffect(() => {
+		const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
+			if (permissions[tabId]) {
+				return { [tabId]: obj };
+			}
+			return {};
+		};
+		setTabs({
+			...addTabIfUserHasPerm(COLLECTIONS_ID, {
+				component: () => (
+					<CollectionOrBundleOverview
+						numberOfItems={tabCounts[COLLECTIONS_ID]}
+						type="collection"
+						onUpdate={updatePermissionsAndCounts}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
+				),
+				// TODO: DISABLED_FEATURE filter
+				// filter: {
+				// 	label: t('workspace/views/workspace___auteur'),
+				// 	options: [
+				// 		{ id: 'all', label: t('workspace/views/workspace___alles') },
+				// 		{ id: 'owner', label: t('workspace/views/workspace___enkel-waar-ik-eigenaar-ben') },
+				// 		{ id: 'sharedWith', label: t('workspace/views/workspace___enkel-gedeeld-met-mij') },
+				// 		{ id: 'sharedBy', label: t('workspace/views/workspace___enkel-gedeeld-door-mij') },
+				// 	],
+				// },
+			}),
+			...addTabIfUserHasPerm(BUNDLES_ID, {
+				component: () => (
+					<CollectionOrBundleOverview
+						numberOfItems={tabCounts[BUNDLES_ID]}
+						type="bundle"
+						onUpdate={updatePermissionsAndCounts}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
+				),
+				// TODO enable filtering by label
+				// filter: {
+				// 	label: t('workspace/views/workspace___filter-op-label'),
+				// 	options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
+				// },
+			}),
+			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
+				component: () => (
+					<AssignmentOverview
+						onUpdate={updatePermissionsAndCounts}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
+				),
+			}),
+			...addTabIfUserHasPerm(BOOKMARKS_ID, {
+				component: () => (
+					<BookmarksOverview
+						onUpdate={updatePermissionsAndCounts}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						numberOfItems={tabCounts[BOOKMARKS_ID]}
+					/>
+				),
+			}),
+		});
+	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
+
+	const goToTab = (id: ReactText) => {
+		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
+		setTabId(String(id));
+	};
+
+	// Get active tab based on above map with tabId
+	const getActiveTab = useCallback(() => {
+		return tabs[tabId || Object.keys(tabs)[0]];
+	}, [tabs, tabId]);
+
+	useEffect(() => {
+		updatePermissionsAndCounts();
+	}, [updatePermissionsAndCounts]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && !isEmpty(tabs)) {

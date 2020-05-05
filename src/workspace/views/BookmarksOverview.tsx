@@ -41,10 +41,12 @@ const ITEMS_PER_PAGE = 5;
 
 interface BookmarksOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
+	onUpdate: () => void | Promise<void>;
 }
 
 const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	numberOfItems,
+	onUpdate = () => {},
 	history,
 	user,
 }) => {
@@ -126,6 +128,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			);
 
 			await fetchBookmarks();
+			onUpdate();
 			ToastService.success(t('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'));
 		} catch (err) {
 			console.error(
