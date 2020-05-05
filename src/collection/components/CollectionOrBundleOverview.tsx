@@ -48,11 +48,13 @@ import './CollectionOrBundleOverview.scss';
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
 	type: 'collection' | 'bundle';
+	onUpdate: () => void | Promise<void>;
 }
 
 const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewProps> = ({
 	numberOfItems,
 	type,
+	onUpdate = () => {},
 	history,
 	user,
 }) => {
@@ -96,6 +98,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 							'collection/components/collection-or-bundle-overview___bundel-is-verwijderd'
 					  )
 			);
+			onUpdate();
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
@@ -295,7 +298,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								  )
 						}
 					>
-						<Icon name={collection.is_public ? 'unlock-2' : 'lock'} />
+						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
 					</div>
 				);
 

@@ -36,11 +36,11 @@ import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -512,7 +512,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={collection && collection.is_public ? 'unlock-2' : 'lock'}
+						icon={collection && collection.is_public ? 'unlock-3' : 'lock'}
 						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}

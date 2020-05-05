@@ -72,11 +72,12 @@ export class ApolloCacheManager {
 	private static deleteFromCache(cache: ApolloCache, substring: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
 			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache
-			if (key.match(new RegExp(substring, 'gi'))) {
+			if (
+				key.match(new RegExp(substring, 'gi')) ||
+				key.match(new RegExp('ROOT_QUERY', 'gi'))
+			) {
 				cache.data.delete(key);
 			}
 		});
-		// Always delete the cache items that are stored under the miscellaneous label (ROOT_QUERY)
-		cache.data.delete('ROOT_QUERY');
 	}
 }

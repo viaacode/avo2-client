@@ -8,7 +8,7 @@ import { ContentBlockPreview } from '../../admin/content-block/components';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
 import { ContentBlockConfig, ContentBlockType } from '../../admin/shared/types';
 import { getUserGroupIds } from '../../authentication/authentication.service';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../shared/components';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 import './ContentPage.scss';

@@ -226,6 +226,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 										label={t(
 											'collection/components/collection-or-bundle-edit-admin___eigenaar'
 										)}
+										required
 									>
 										<ContentPicker
 											initialValue={owner}
