@@ -1,3 +1,5 @@
+import { isEmpty, isNil } from 'lodash-es';
+
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -38,6 +40,15 @@ export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 			date: {
 				label: 'Datum',
 				editorType: ContentBlockEditor.DatePicker,
+				validator: (value: string) => {
+					const errorArray: string[] = [];
+
+					if (isNil(value) || isEmpty(value)) {
+						errorArray.push(i18n.t('Datum is verplicht'));
+					}
+
+					return errorArray;
+				},
 			},
 		},
 	},

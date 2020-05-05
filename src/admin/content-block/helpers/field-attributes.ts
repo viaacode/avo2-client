@@ -18,9 +18,7 @@ export const generateFieldAttributes = (
 			};
 		case ContentBlockEditor.ContentPicker:
 			return {
-				onSelect: (picked: PickerItem) => {
-					onChange({ value: picked });
-				},
+				onSelect: (picked: PickerItem) => onChange({ value: picked }),
 				initialValue: get(value, 'value'),
 			};
 		case ContentBlockEditor.DatePicker:
