@@ -35,6 +35,8 @@ export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					label: i18n.t('admin/content-block/helpers/generators/klaar___titel'),
 					editorType: ContentBlockEditor.TextInput,
 					repeat: true,
+					repeatAddButtonLabel: i18n.t('Voeg titel toe'),
+					repeatDeleteButtonLabel: i18n.t('Verwijder titel'),
 				}
 			),
 			date: {

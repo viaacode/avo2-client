@@ -183,7 +183,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 													{renderDeleteButton(
 														currentState,
 														(field as ContentBlockField)
-															.repeatAddButtonLabel,
+															.repeatDeleteButtonLabel,
 														index
 													)}
 												</Spacer>
@@ -193,7 +193,12 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 								);
 							})}
 							<Spacer margin="top">
-								<Flex center>{renderAddButton(currentState, 'Voeg veld toe')}</Flex>
+								<Flex center>
+									{renderAddButton(
+										currentState,
+										(field as ContentBlockField).repeatAddButtonLabel
+									)}
+								</Flex>
 							</Spacer>
 						</>
 					);

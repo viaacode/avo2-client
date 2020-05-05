@@ -29,14 +29,14 @@ export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
 		},
 	],
 }) => {
-	const renderButtons = (buttons: ButtonProps[]) =>
-		buttons.map((buttons: any) => (
-			<Spacer margin="top">
-				<Button {...buttons} />
+	const renderButtons = (columnIndex: number, buttons: ButtonProps[]) =>
+		buttons.map((buttonProps: ButtonProps, buttonIndex: number) => (
+			<Spacer key={`rich-text-column-${columnIndex}-button-${buttonIndex}`} margin="top">
+				<Button {...buttonProps} />
 			</Spacer>
 		));
 
-	const renderContent = (contentElem: BlockRichTextElement) => {
+	const renderContent = (contentElem: BlockRichTextElement, columnIndex: number = 0) => {
 		const { content, color, buttons } = contentElem;
 
 		return (
@@ -46,7 +46,7 @@ export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
 					dangerouslySetInnerHTML={{ __html: convertToHtml(content) }}
 					style={color ? { color } : {}}
 				/>
-				{buttons && !!buttons.length && renderButtons(buttons)}
+				{buttons && !!buttons.length && renderButtons(columnIndex, buttons)}
 			</>
 		);
 	};
@@ -58,7 +58,7 @@ export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
 					size={(12 / elements.length).toString() as GridSizeSchema}
 					key={`rich-text-column-${columnIndex}`}
 				>
-					{renderContent(column)}
+					{renderContent(column, columnIndex)}
 				</Column>
 			))}
 		</Grid>
