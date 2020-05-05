@@ -1,4 +1,4 @@
-import React, { FunctionComponent, Fragment } from 'react';
+import React, { Fragment, FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
@@ -11,6 +11,7 @@ import {
 } from '../../../shared/types';
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import { generateFieldAttributes } from '../../helpers/field-attributes';
+import { FieldGroup } from '../FieldGroup/FieldGroup';
 
 interface FieldGeneratorProps {
 	fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState;
@@ -79,80 +80,36 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 		switch (fieldInstance.type) {
 			case 'fieldGroup':
 				// REPEATED FIELDGROUP
-				const handleFieldGroupStateChange = (
-					stateCopy: any,
-					key: string,
-					index: any,
-					value: any
-				) => {
-					const newState = [...stateCopy];
-
-					newState[index] = {
-						...newState[index],
-						[key]: value,
-					};
-
-					handleChange(type, fieldKey, newState, stateIndex);
-				};
-
 				const renderFieldGroup = (singleState: any, singleStateIndex: number = 0) => (
-					<Fragment key={singleStateIndex}>
-						<span>{`${fieldInstance.label} ${singleStateIndex + 1}`}</span>
-						{Object.entries((field as any).fields).map(
-							(innerState: any, innerStateIndex: number) => {
-								// generateFields(innerField)
-								const editorProps: any = {
-									...innerState[1].editorProps,
-									...generateFieldAttributes(
-										innerState[1],
-										(value: any) =>
-											handleFieldGroupStateChange(
-												currentState,
-												innerState[0],
-												singleStateIndex,
-												value
-											),
-										singleState[innerState[0]] as any,
-										`${fieldKey}-${innerState[0]}-${innerStateIndex}`
-									),
-								};
-
-								const EditorComponents = (EDITOR_TYPES_MAP as any)[
-									innerState[1].editorType
-								];
-
-								return (
-									<Spacer
-										margin="top"
-										key={`${fieldKey}-${innerState[0]}-${innerStateIndex}`}
-									>
-										<FormGroup label={`${innerState[1].label}`}>
-											<Spacer margin="top-small">
-												<EditorComponents {...editorProps} />
-											</Spacer>
-										</FormGroup>
-									</Spacer>
-								);
-							}
-						)}
-						{currentState.length >
-							((fieldInstance as any).min !== null
-								? (fieldInstance as any).min
-								: 1) && (
-							<Spacer margin="top">
-								<Flex center>
-									{renderDeleteButton(currentState, singleStateIndex)}
-								</Flex>
-							</Spacer>
-						)}
-					</Fragment>
+					<Spacer key={`${fieldInstance.label}-${singleStateIndex}`} margin="top-large">
+						<Flex>
+							<FlexItem>{`${fieldInstance.label} ${singleStateIndex + 1}`}</FlexItem>
+							<FlexItem shrink>
+								{currentState.length >
+									((fieldInstance as any).min !== null
+										? (fieldInstance as any).min
+										: 1) && renderDeleteButton(currentState, singleStateIndex)}
+							</FlexItem>
+						</Flex>
+						<FieldGroup
+							globalState={currentState}
+							globalStateIndex={stateIndex || 0}
+							fieldKey={fieldKey}
+							fieldGroup={fieldInstance}
+							fieldGroupState={singleState}
+							fieldGroupStateIndex={singleStateIndex}
+							type={type}
+							handleChange={handleChange}
+						/>
+					</Spacer>
 				);
 
 				if (field.repeat) {
 					return (
 						<>
-							{currentState.map((singleState: any, singleStateIndex: number) =>
-								renderFieldGroup(singleState, singleStateIndex)
+							{currentState.map(
+								(fieldGroupState: any, fieldGroupStateIndex: number) =>
+									renderFieldGroup(fieldGroupState, fieldGroupStateIndex)
 							)}
 							{currentState.length < ((fieldInstance as any).max || 0) && (
 								<Spacer margin="top">
@@ -240,6 +197,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 					editorId: fieldId,
 					name: fieldId,
 				};
+
 				const editorProps: any = generateFieldAttributes(
 					field,
 					(value: any) => handleChange(type, fieldKey, value, stateIndex),

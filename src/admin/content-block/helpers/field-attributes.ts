@@ -17,11 +17,12 @@ export const generateFieldAttributes = (
 				onChange: debounce((value: any) => onChange(value), 150, { leading: true }),
 			};
 		case ContentBlockEditor.ContentPicker:
+			console.log('VALUE', value);
 			return {
 				onSelect: (picked: PickerItem) => {
 					onChange({ value: picked });
 				},
-				initialValue: value,
+				initialValue: get(value, 'value'),
 			};
 		case ContentBlockEditor.DatePicker:
 			return {

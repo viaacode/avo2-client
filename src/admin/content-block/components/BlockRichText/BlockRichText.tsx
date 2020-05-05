@@ -29,13 +29,12 @@ export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
 		},
 	],
 }) => {
-	const renderButtons = (buttons: ButtonProps[]) => {
-		return buttons.map((buttons: any) => (
+	const renderButtons = (buttons: ButtonProps[]) =>
+		buttons.map((buttons: any) => (
 			<Spacer margin="top">
 				<Button {...buttons} />
 			</Spacer>
 		));
-	};
 
 	const renderContent = (contentElem: BlockRichTextElement) => {
 		const { content, color, buttons } = contentElem;

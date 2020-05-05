@@ -115,6 +115,19 @@ export interface ContentBlockField {
 	repeat?: boolean;
 }
 
+export type ContentBlockEditorType = 'field' | 'fieldGroup';
+
+export interface ContentBlockFieldGroup {
+	label?: string; // Optional for checkboxes, who have their own label
+	fields: {
+		[key: string]: ContentBlockField;
+	};
+	type?: ContentBlockEditorType;
+	min?: number;
+	max?: number;
+	repeat?: boolean;
+}
+
 // must match the lookup enumeration `content_block_types` on GraphQL.
 export enum ContentBlockType {
 	AnchorLinks = 'ANCHOR_LINKS',
