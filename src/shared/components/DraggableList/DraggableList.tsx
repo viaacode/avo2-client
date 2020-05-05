@@ -1,7 +1,7 @@
+import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
-import classNames from 'classnames';
 
 import './DraggableList.scss';
 

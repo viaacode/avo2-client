@@ -5,7 +5,6 @@ import {
 	ContentBlockConfig,
 	ContentBlockErrors,
 } from '../../../shared/types';
-
 import { ContentEditAction, ContentEditActionType, ContentEditState } from '../../content.types';
 
 type ReorderConfigPayload = { configIndex: number; indexUpdate: number };

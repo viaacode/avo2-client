@@ -13,7 +13,6 @@ import {
 } from '@viaa/avo2-components';
 
 import { navigateToContentType } from '../../../../../shared/helpers';
-
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
 import { MediaPlayerWrapper } from '../MediaPlayerWrapper/MediaPlayerWrapper';
 

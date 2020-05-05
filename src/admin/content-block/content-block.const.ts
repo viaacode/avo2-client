@@ -14,7 +14,6 @@ import {
 
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
-
 import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
 // More info on the bug that occurs:
@@ -31,6 +30,7 @@ import {
 	HeadingTypeOption,
 	WidthOption,
 } from '../shared/types';
+
 import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ANCHOR_LINKS_BLOCK_CONFIG,

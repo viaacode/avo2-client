@@ -1,6 +1,5 @@
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ResizablePanels from 'resizable-panels-react';
 
 import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -20,6 +19,7 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
+import { ResizablePanels } from '../../../shared/components';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -137,6 +137,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				panelsSize={[60, 40]}
 				sizeUnitMeasure="%"
 				resizerSize="15px"
+				onResize={() => {
+					window.dispatchEvent(new Event('resize'));
+				}}
 			>
 				<div className="c-content-edit-view__preview" ref={previewScrollable}>
 					<ContentPage

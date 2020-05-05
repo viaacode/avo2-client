@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { SecuredRoute } from '../../authentication/components';
+
 import { DASHBOARD_PATH } from './dashboard.const';
 import { Dashboard } from './views';
 

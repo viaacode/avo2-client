@@ -1,6 +1,5 @@
-import { SearchActionTypes } from './types';
-
 import { setSearchResultsError, setSearchResultsLoading, setSearchResultsSuccess } from './actions';
+import { SearchActionTypes } from './types';
 
 describe('search > store > actions', () => {
 	it('Should create an action to set the search results', () => {

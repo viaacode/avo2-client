@@ -4,7 +4,6 @@ import { ImageInfo } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
-
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,

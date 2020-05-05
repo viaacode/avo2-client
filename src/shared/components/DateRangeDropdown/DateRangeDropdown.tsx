@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { FunctionComponent, MouseEvent, ReactText, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +18,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { reorderDate } from '../../helpers/formatters';
+import { ToastService } from '../../services';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface DateRangeDropdownProps {
@@ -71,17 +73,37 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		onChange(DEFAULT_DATE_RANGE, id);
 	};
 
-	const handleDateChange = async (date: string | null, rangeId: string) => {
+	const handleDateChange = async (date: Date | null, rangeId: string) => {
 		if (date) {
 			setRangeState({
 				...rangeState,
-				[rangeId]: date,
+				[rangeId]: moment(date).format('YYYY-MM-DD'),
 			});
 		} else {
 			setRangeState({
 				...rangeState,
 				[rangeId]: '',
 			});
+		}
+	};
+
+	const handleYearInputChange = async (value: string, rangeId: 'gte' | 'lte') => {
+		try {
+			rangeId === 'gte' ? setYearInputGte(value) : setYearInputLte(value);
+			if (value.match(/^[0-9]{4}$/g)) {
+				await handleDateChange(
+					new Date(
+						parseInt(value, 10),
+						rangeId === 'gte' ? 0 : 11,
+						rangeId === 'gte' ? 1 : 31
+					),
+					rangeId
+				);
+			} else {
+				await handleDateChange(null, rangeId);
+			}
+		} catch (err) {
+			ToastService.danger(`Ongeldig jaar: ${value}`);
 		}
 	};
 
@@ -94,10 +116,13 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 
 		if (type === 'year') {
 			// Round selected dates to the larger year
-			setRangeState({
-				gte: `${rangeState.gte.split('-')[0]}-01-01`,
-				lte: `${rangeState.lte.split('-')[0]}-12-31`,
-			});
+			const newRangeState = {
+				gte: rangeState.gte ? `${rangeState.gte.split('-')[0]}-01-01` : '',
+				lte: rangeState.lte ? `${rangeState.lte.split('-')[0]}-12-31` : '',
+			};
+			setRangeState(newRangeState);
+			setYearInputGte(rangeState.gte ? rangeState.gte.split('-')[0] : '');
+			setYearInputLte(rangeState.lte ? rangeState.lte.split('-')[0] : '');
 		}
 	};
 
@@ -222,15 +247,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 													'shared/components/date-range-dropdown/date-range-dropdown___jjjj'
 												)}
 												value={fromYear}
-												onChange={async (value: string) => {
-													setYearInputGte(value);
-													if (value.length === 4) {
-														await handleDateChange(
-															`${value}-01-01`,
-															'gte'
-														);
-													}
-												}}
+												onChange={(value: string) =>
+													handleYearInputChange(value, 'gte')
+												}
 											/>
 										</FormGroup>
 									</Column>
@@ -246,15 +265,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 													'shared/components/date-range-dropdown/date-range-dropdown___jjjj'
 												)}
 												value={tillYear}
-												onChange={async (value: string) => {
-													setYearInputLte(value);
-													if (value.length === 4) {
-														await handleDateChange(
-															`${value}-12-31`,
-															'lte'
-														);
-													}
-												}}
+												onChange={(value: string) =>
+													handleYearInputChange(value, 'lte')
+												}
 											/>
 										</FormGroup>
 									</Column>
@@ -270,15 +283,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										>
 											<DatePicker
 												value={fromDate}
-												onChange={value =>
-													handleDateChange(
-														value &&
-															value
-																.toISOString()
-																.substring(0, '2000-01-01'.length),
-														'gte'
-													)
-												}
+												onChange={value => handleDateChange(value, 'gte')}
 											/>
 										</FormGroup>
 									</Column>
@@ -290,15 +295,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										>
 											<DatePicker
 												value={tillDate}
-												onChange={value =>
-													handleDateChange(
-														value &&
-															value
-																.toISOString()
-																.substring(0, '2000-01-01'.length),
-														'lte'
-													)
-												}
+												onChange={value => handleDateChange(value, 'lte')}
 											/>
 										</FormGroup>
 									</Column>

@@ -12,7 +12,6 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../../shared/types';
-
 import ContentBlockFields from '../ContentBlockFields/ContentBlockFields';
 
 interface ContentBlockFormGroupProps {

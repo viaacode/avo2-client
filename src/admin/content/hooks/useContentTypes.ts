@@ -2,6 +2,7 @@ import { compact } from 'lodash-es';
 import { useEffect, useState } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
+
 import { ContentService } from '../content.service';
 import { ContentPageType } from '../content.types';
 

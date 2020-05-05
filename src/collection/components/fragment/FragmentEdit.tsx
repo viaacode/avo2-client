@@ -37,9 +37,9 @@ import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
+
 import FragmentAdd from './FragmentAdd';
 
 interface FragmentEditProps {
