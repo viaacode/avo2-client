@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
@@ -100,7 +100,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 						<>
 							{currentState.map((singleState: any, singleStateIndex: number) => {
 								return (
-									<span key={singleStateIndex}>
+									<Fragment key={singleStateIndex}>
 										<span>{`${fieldInstance.label} ${singleStateIndex +
 											1}`}</span>
 										{Object.entries((field as any).fields).map(
@@ -155,7 +155,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 												</Flex>
 											</Spacer>
 										)}
-									</span>
+									</Fragment>
 								);
 							})}
 							{currentState.length < ((fieldInstance as any).max || 0) && (
@@ -174,7 +174,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 
 				// FIELDGROUP
 				return (
-					<span key={stateIndex}>
+					<Fragment key={stateIndex}>
 						<span>{`${fieldInstance.label} ${stateIndex || 0 + 1}`}</span>
 						{Object.entries((field as any).fields).map(
 							(innerState: any, innerStateIndex: number) => {
@@ -231,7 +231,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 								</Flex>
 							</Spacer>
 						)}
-					</span>
+					</Fragment>
 				);
 			case 'field':
 			default:
