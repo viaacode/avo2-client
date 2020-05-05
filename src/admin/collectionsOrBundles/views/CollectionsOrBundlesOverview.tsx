@@ -194,15 +194,22 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		})
 	);
 
-	const collectionLabelOptions = collectionLabels.map(
-		(option): CheckboxOption => ({
-			id: String(option.value),
-			label: option.description,
-			checked: get(tableState, 'collection_labels', [] as string[]).includes(
-				String(option.value)
-			),
-		})
-	);
+	const collectionLabelOptions = [
+		{
+			id: -1,
+			label: t('Geen label'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes('-1'),
+		},
+		...collectionLabels.map(
+			(option): CheckboxOption => ({
+				id: String(option.value),
+				label: option.description,
+				checked: get(tableState, 'collection_labels', [] as string[]).includes(
+					String(option.value)
+				),
+			})
+		),
+	];
 
 	const getUserOverviewTableCols = (): FilterableColumn[] => [
 		{
