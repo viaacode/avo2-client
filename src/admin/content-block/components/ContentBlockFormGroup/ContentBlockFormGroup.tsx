@@ -65,7 +65,7 @@ const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 						<ContentBlockFields
 							block={{ config, index: blockIndex }}
 							fieldKey={stateKey}
-							field={formGroup.fields[key]}
+							fieldOrFieldGroup={formGroup.fields[key]}
 							state={formGroupState}
 							type={formGroupType}
 							formGroupIndex={formGroupIndex}

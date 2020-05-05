@@ -81,6 +81,8 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 				min: 0,
 				max: 10,
 				repeat: true,
+				repeatAddButtonLabel: i18n.t('Voeg knop toe'),
+				repeatDeleteButtonLabel: i18n.t('Verwijder knop'),
 			},
 		},
 	},

@@ -4,6 +4,7 @@ import { createKey } from '../../../shared/helpers';
 import {
 	ContentBlockComponentState,
 	ContentBlockField,
+	ContentBlockFieldGroup,
 	ContentBlockMeta,
 	ContentBlockState,
 	ContentBlockStateType,
@@ -13,7 +14,7 @@ import { FieldGenerator } from '../FieldGenerator/FieldGenerator';
 interface ContentBlockFieldProps {
 	block: ContentBlockMeta; // Block metadata
 	fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState;
-	field: ContentBlockField; // Field options
+	fieldOrFieldGroup: ContentBlockField | ContentBlockFieldGroup; // Field options
 	type: ContentBlockStateType; // State type
 	state: ContentBlockComponentState | ContentBlockState; // State object (within state array).
 	formGroupIndex?: number; // Index of form group.
@@ -29,7 +30,7 @@ interface ContentBlockFieldProps {
 const ContentBlockFields: FunctionComponent<ContentBlockFieldProps> = ({
 	block,
 	fieldKey,
-	field,
+	fieldOrFieldGroup,
 	stateIndex,
 	state,
 	formGroupIndex,
@@ -45,7 +46,7 @@ const ContentBlockFields: FunctionComponent<ContentBlockFieldProps> = ({
 		<FieldGenerator
 			fieldKey={fieldKey}
 			fieldId={fieldId}
-			field={field}
+			fieldOrFieldGroup={fieldOrFieldGroup}
 			stateIndex={stateIndex}
 			state={state}
 			type={type}

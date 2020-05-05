@@ -113,6 +113,8 @@ export interface ContentBlockField {
 	editorProps?: any;
 	validator?: (value: any) => string[];
 	repeat?: boolean;
+	repeatAddButtonLabel?: string;
+	repeatDeleteButtonLabel?: string;
 }
 
 export type ContentBlockEditorType = 'field' | 'fieldGroup';
@@ -126,6 +128,8 @@ export interface ContentBlockFieldGroup {
 	min?: number;
 	max?: number;
 	repeat?: boolean;
+	repeatAddButtonLabel?: string;
+	repeatDeleteButtonLabel?: string;
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
