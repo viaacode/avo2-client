@@ -76,7 +76,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 		);
 	};
 
-	const generateFields = (fieldInstance: any, currentState: any) => {
+	const generateFields = (fieldInstance: any, currentState: any = []) => {
 		switch (fieldInstance.type) {
 			case 'fieldGroup':
 				// REPEATED FIELDGROUP
