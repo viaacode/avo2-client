@@ -178,6 +178,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 							'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
 						)}
 						labelFor="description"
+						required
 					>
 						<TextArea
 							id="description"

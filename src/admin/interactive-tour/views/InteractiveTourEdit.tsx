@@ -507,6 +507,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								label={t(
 									'admin/interactive-tour/views/interactive-tour-edit___titel'
 								)}
+								required
 							>
 								<TextInput
 									value={(step.title || '').toString()}
@@ -611,6 +612,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										'admin/interactive-tour/views/interactive-tour-edit___naam'
 									)}
 									error={formErrors.name}
+									required
 								>
 									<TextInput
 										value={
@@ -630,6 +632,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										'admin/interactive-tour/views/interactive-tour-edit___pagina'
 									)}
 									error={formErrors.page_id}
+									required
 								>
 									<Flex>
 										<FlexItem>

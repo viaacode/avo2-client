@@ -6,6 +6,8 @@ import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { ROUTE_PARTS } from '../shared/constants';
 
+export const ITEMS_PER_PAGE = 20;
+
 export const CONTENT_LABEL_TO_QUERY: {
 	[contentType in Avo.Assignment.ContentLabel]: {
 		query: DocumentNode;

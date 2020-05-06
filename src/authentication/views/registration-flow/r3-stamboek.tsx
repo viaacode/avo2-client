@@ -3,15 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import {
-	Alert,
-	BlockHeading,
-	Button,
-	Checkbox,
-	Container,
-	FormGroup,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
 import { ToastService } from '../../../shared/services';
@@ -38,7 +30,6 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
 	return (
@@ -82,6 +73,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 							'authentication/views/registration-flow/r-3-stamboek___lerarenkaart-of-stamboeknummer'
 						)}
 						labelFor="stamboekInput"
+						required
 					>
 						<StamboekInput
 							onChange={setValidStamboekNumber}
@@ -91,24 +83,13 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						/>
 					</FormGroup>
 				</Spacer>
-				<Spacer margin={['bottom-large', 'top-large']}>
-					<FormGroup>
-						<Checkbox
-							label={t(
-								'authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-gebruiksvoorwaarden-en-privacyverklaring'
-							)}
-							checked={hasAcceptedConditions}
-							onChange={setHasAcceptedConditions}
-						/>
-					</FormGroup>
-				</Spacer>
 				<FormGroup>
 					<Button
 						label={t(
 							'authentication/views/registration-flow/r-3-stamboek___account-aanmaken'
 						)}
 						type="primary"
-						disabled={!validStamboekNumber || !hasAcceptedConditions}
+						disabled={!validStamboekNumber}
 						onClick={() =>
 							redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
 						}

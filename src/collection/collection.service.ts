@@ -40,7 +40,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, InsertFragmentResponse, QualityLabel } from './collection.types';
+import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -149,7 +149,7 @@ export class CollectionService {
 				return null;
 			}
 
-			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
+			const newCollection: Avo.Collection.Collection = cloneDeep(updatedCollection);
 
 			// remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach(
@@ -163,15 +163,12 @@ export class CollectionService {
 
 			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
 			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
-			const currentFragmentIds: number[] = getFragmentIdsFromCollection(updatedCollection);
-			const currentFragments: Avo.Collection.Fragment[] = get(
-				updatedCollection,
-				'collection_fragments',
-				[]
-			);
+			const currentFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
 
-			// insert fragments that were added to collection
-			const insertFragmentIds = without(currentFragmentIds, ...initialFragmentIds);
+			// Fragments to insert do not have an id yet
+			const newFragments = getFragmentsFromCollection(newCollection).filter(fragment =>
+				isNil(fragment.id)
+			);
 
 			// delete fragments that were removed from collection
 			const deleteFragmentIds = without(initialFragmentIds, ...currentFragmentIds);
@@ -181,13 +178,11 @@ export class CollectionService {
 				initialFragmentIds.includes(fragmentId)
 			);
 
-			// insert fragments
-			const insertPromises: Promise<InsertFragmentResponse | null>[] = insertFragmentIds.map(
-				tempId => this.insertFragment(updatedCollection, tempId, currentFragments)
-			);
+			// insert fragments. New fragments do not have a fragment id yet
+			const insertPromise = this.insertFragments(newCollection.id, newFragments);
 
 			// delete fragments
-			const deletePromises: Promise<any>[] = deleteFragmentIds.map((id: number) =>
+			const deletePromises = deleteFragmentIds.map((id: number) =>
 				dataService.mutate({
 					mutation: DELETE_COLLECTION_FRAGMENT,
 					variables: { id },
@@ -195,11 +190,11 @@ export class CollectionService {
 			);
 
 			// update fragments
-			const updatePromises: Promise<any>[] = compact(
+			const updatePromises = compact(
 				updateFragmentIds.map((id: number) => {
 					let fragmentToUpdate:
 						| Avo.Collection.Fragment
-						| undefined = getFragmentsFromCollection(updatedCollection).find(
+						| undefined = getFragmentsFromCollection(newCollection).find(
 						(fragment: Avo.Collection.Fragment) => {
 							return Number(id) === fragment.id;
 						}
@@ -231,23 +226,11 @@ export class CollectionService {
 			);
 
 			// perform crud requests in parallel
-			const crudPromises: Promise<any[]>[] = [
-				Promise.all(insertPromises),
-				Promise.all(deletePromises),
-				Promise.all(updatePromises),
-			];
-
-			const crudResponses = await Promise.all(crudPromises);
-
-			// Replace ids in local fragment array with ids of newly inserted fragments
-			compact(crudResponses[0]).forEach((insertResponse: InsertFragmentResponse) => {
-				const insertedFragment = (newCollection.collection_fragments || []).find(
-					fragment => fragment.id === insertResponse.oldId
-				);
-				if (insertedFragment) {
-					insertedFragment.id = insertResponse.newId;
-				}
-			});
+			await Promise.all([
+				insertPromise as Promise<any>,
+				...(deletePromises as Promise<any>[]),
+				...(updatePromises as Promise<any>[]),
+			]);
 
 			if (newCollection.type_id === ContentTypeNumber.collection) {
 				// determine new thumbnail path since videos could have changed order / been deleted
@@ -274,7 +257,7 @@ export class CollectionService {
 			const initialLabels: string[] = this.getLabels(initialCollection).map(
 				(labelObj: any) => labelObj.label
 			);
-			const updatedLabels: string[] = this.getLabels(updatedCollection).map(
+			const updatedLabels: string[] = this.getLabels(newCollection).map(
 				(labelObj: any) => labelObj.label
 			);
 
@@ -758,7 +741,7 @@ export class CollectionService {
 		fragments: Avo.Collection.Fragment[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
+			fragments.forEach(fragment => (fragment.collection_uuid = collectionId));
 
 			const cleanedFragments = cloneDeep(fragments).map(fragment => {
 				delete fragment.id;
@@ -800,53 +783,6 @@ export class CollectionService {
 				query: 'INSERT_COLLECTION_FRAGMENTS',
 			});
 		}
-	}
-
-	private static async insertFragment(
-		collection: Partial<Avo.Collection.Collection>,
-		tempId: number,
-		currentFragments: Avo.Collection.Fragment[]
-	): Promise<InsertFragmentResponse | null> {
-		if (!collection) {
-			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
-			return null;
-		}
-
-		const tempFragment = currentFragments.find(
-			(fragment: Avo.Collection.Fragment) => fragment.id === tempId
-		);
-
-		if (!tempFragment) {
-			ToastService.info(
-				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
-					id: tempId,
-				})
-			);
-			return null;
-		}
-
-		const fragmentToAdd: Avo.Collection.Fragment = { ...tempFragment };
-		const oldId = fragmentToAdd.id;
-
-		delete fragmentToAdd.id;
-		delete (fragmentToAdd as any).__typename;
-		delete fragmentToAdd.item_meta;
-
-		const response = await dataService.mutate({
-			mutation: INSERT_COLLECTION_FRAGMENTS,
-			variables: {
-				id: collection.id,
-				fragments: fragmentToAdd,
-			},
-			update: ApolloCacheManager.clearCollectionCache,
-		});
-
-		const newId = get(response, 'data.insert_app_collection_fragments.returning[0].id');
-
-		return {
-			newId,
-			oldId,
-		};
 	}
 
 	private static async getThumbnailPathForCollection(
