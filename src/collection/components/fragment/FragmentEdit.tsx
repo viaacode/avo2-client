@@ -73,7 +73,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const [cuePoints, setCuePoints] = useState({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
-	});
+	}); // TODO: Add type
 
 	const isCollection = type === 'collection';
 

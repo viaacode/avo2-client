@@ -197,6 +197,7 @@ export default class ResizablePanels extends Component<ResizablePanelsProps, Res
 			if (index === this.state.currentPanel) {
 				return panelSize + resizeSize;
 			}
+
 			if (index === (this.state.currentPanel || 1) - 1) {
 				return panelSize - resizeSize;
 			}
