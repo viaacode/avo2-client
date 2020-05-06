@@ -167,10 +167,14 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 											}
 										/>
 									))}
+									{!options.length && (
+										<span>Er zijn geen zoekfilters in deze categorie.</span>
+									)}
 								</CheckboxGroup>
 							</FormGroup>
 							<FormGroup>
 								<Button
+									disabled={!options.length}
 									label={t(
 										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
 									)}
