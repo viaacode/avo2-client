@@ -19,6 +19,7 @@ interface BlockRichTextElement {
 
 export interface BlockRichTextProps extends DefaultProps {
 	elements: BlockRichTextElement | BlockRichTextElement[];
+	navigate: (buttonAction: any) => void;
 }
 
 export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
@@ -28,11 +29,12 @@ export const BlockRichText: FunctionComponent<BlockRichTextProps> = ({
 			content: '',
 		},
 	],
+	navigate,
 }) => {
-	const renderButtons = (columnIndex: number, buttons: ButtonProps[]) =>
-		buttons.map((buttonProps: ButtonProps, buttonIndex: number) => (
+	const renderButtons = (columnIndex: number, buttons: any[]) =>
+		buttons.map((buttonProps: any, buttonIndex: number) => (
 			<Spacer key={`rich-text-column-${columnIndex}-button-${buttonIndex}`} margin="top">
-				<Button {...buttonProps} />
+				<Button {...buttonProps} onClick={() => navigate(buttonProps.buttonAction)} />
 			</Spacer>
 		));
 
