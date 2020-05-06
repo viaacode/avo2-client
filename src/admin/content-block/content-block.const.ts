@@ -9,7 +9,7 @@ import {
 	SelectOption,
 	TextArea,
 	TextInput,
-	WYSIWYG,
+	WYSIWYG2,
 } from '@viaa/avo2-components';
 
 import { FileUpload } from '../../shared/components';
@@ -187,7 +187,7 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextArea,
 	TextInput,
-	WYSIWYG,
+	WYSIWYG: WYSIWYG2,
 	UserGroupSelect,
 	DatePicker,
 };

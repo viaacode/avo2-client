@@ -1,8 +1,9 @@
 import { debounce, get, isArray, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { SelectOption } from '@viaa/avo2-components';
+import { SelectOption, WYSIWYG2Props } from '@viaa/avo2-components';
 
+import { RichEditorStateKey } from '../../../content/content.const';
 import { createKey } from '../../../shared/helpers';
 import {
 	ContentBlockComponentState,
@@ -80,9 +81,18 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 		case ContentBlockEditor.WYSIWYG:
 			editorProps = {
 				id: editorId,
-				data: (state as any)[fieldKey],
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-			};
+				initialHtml: (state as any)[fieldKey] || '',
+				state: (state as any)[`${fieldKey}${RichEditorStateKey}`],
+				onChange: (editorState: any) => {
+					handleChange(
+						type,
+						`${fieldKey}${RichEditorStateKey}` as any,
+						editorState,
+						stateIndex
+					);
+					handleChange(type, fieldKey, editorState.toHTML(), stateIndex);
+				},
+			} as Partial<WYSIWYG2Props>;
 			break;
 		case ContentBlockEditor.FileUpload:
 			const urlOrUrls: string[] | undefined = (state as any)[fieldKey];

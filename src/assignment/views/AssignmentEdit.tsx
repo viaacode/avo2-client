@@ -24,6 +24,7 @@ import {
 	Navbar,
 	RadioButton,
 	RadioButtonGroup,
+	RichEditorState,
 	Spacer,
 	TextInput,
 	Thumbnail,
@@ -32,7 +33,7 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-	WYSIWYG,
+	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -50,6 +51,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { WYSIWYG2_OPTIONS_FULL } from '../../shared/constants/wysiwyg2';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -80,6 +82,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
 		{}
 	);
+	const [descriptionEditorState, setDescriptionEditorState] = useState<RichEditorState>();
 
 	const setBothAssignments = useCallback(
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
@@ -368,6 +371,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
+
+			// copy description to assignment
+			assignment.description = descriptionEditorState ? descriptionEditorState.toHTML() : '';
+
 			// edit => update graphql
 			await AssignmentService.updateAssignment(
 				assignment,
@@ -595,13 +602,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								label={t('assignment/views/assignment-edit___opdracht')}
 								required
 							>
-								<WYSIWYG
+								<WYSIWYG2
 									id="assignmentDescription"
-									autogrow
-									data={currentAssignment.description}
-									onChange={description =>
-										setAssignmentProp('description', description)
-									}
+									controls={WYSIWYG2_OPTIONS_FULL}
+									initialHtml={currentAssignment.description}
+									state={descriptionEditorState}
+									onChange={setDescriptionEditorState}
 								/>
 							</FormGroup>
 							{assignmentContent && currentAssignment.content_label && (

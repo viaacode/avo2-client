@@ -1,4 +1,4 @@
-import { get, has, isNil, kebabCase, without } from 'lodash-es';
+import { cloneDeep, get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +28,7 @@ import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-blo
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { validateContentBlockField } from '../../shared/helpers';
+import { omitByDeep } from '../../shared/helpers/omitByDeep';
 import {
 	AdminLayout,
 	AdminLayoutBody,
@@ -43,7 +44,7 @@ import {
 	ContentBlockType,
 } from '../../shared/types';
 import { ContentEditForm } from '../components';
-import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
+import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, RichEditorStateKey } from '../content.const';
 import { ContentService } from '../content.service';
 import {
 	ContentEditAction,
@@ -153,8 +154,16 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			if (!hasSubmitted) {
 				setHasSubmitted(true);
 			}
+
+			// Remove rich text editor states, since they are also saved as html,
+			// and we don't want those states to end up in the database
+			const blockConfigs: ContentBlockConfig[] = omitByDeep(
+				cloneDeep(contentBlockConfigs),
+				key => String(key).endsWith(RichEditorStateKey)
+			);
+
 			// Run validators on to check untouched inputs
-			contentBlockConfigs.forEach((config, configIndex) => {
+			blockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;
 				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
 				let newErrors: ContentBlockErrors = {};
@@ -212,7 +221,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			const contentItem: Partial<Avo.Content.Content> | any = {
 				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
-				description: contentForm.description || null,
+				description: contentForm.descriptionState
+					? contentForm.descriptionState.toHTML()
+					: contentForm.descriptionHtml || null,
 				is_protected: contentForm.isProtected,
 				path: getPathOrDefault(),
 				content_type: contentForm.contentType,
@@ -227,7 +238,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					contentBlockConfigs
+					blockConfigs
 				);
 			} else {
 				if (!isNil(id)) {
@@ -239,7 +250,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
 						contentBlocks,
-						contentBlockConfigs
+						blockConfigs
 					);
 				} else {
 					throw new CustomError(

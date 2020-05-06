@@ -49,6 +49,7 @@ export class ContentService {
 			)
 		);
 	}
+
 	public static async getProjectContentItems(
 		limit: number
 	): Promise<Avo.Content.Content[] | null> {
@@ -417,7 +418,7 @@ export class ContentService {
 
 			const updatedContent = get(response, 'data', null);
 
-			if (contentBlockConfigs && contentBlockConfigs.length && initialContentBlocks) {
+			if (contentBlockConfigs && initialContentBlocks) {
 				await ContentBlockService.updateContentBlocks(
 					contentPage.id as number,
 					initialContentBlocks,

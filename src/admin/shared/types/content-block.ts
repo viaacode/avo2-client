@@ -5,6 +5,7 @@ import {
 	ContentTabStyle,
 	CTAProps,
 	IconName,
+	RichEditorState,
 	SpacerOption,
 } from '@viaa/avo2-components';
 
@@ -204,6 +205,9 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+	// Each rich text editor state prop has to and with 'RichEditorStateKey'
+	// So this can be removed before saving the page to the database in ContentService.removeRichEditorStateRecursively
+	contentRichEditorState: RichEditorState | undefined;
 }
 
 export interface ImageBlockComponentState {

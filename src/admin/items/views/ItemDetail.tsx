@@ -8,12 +8,13 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	RichEditorState,
 	Spacer,
 	Table,
 	Thumbnail,
 	Toolbar,
 	ToolbarRight,
-	WYSIWYG,
+	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -37,6 +38,7 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { Color } from '../../shared/types';
 import { ItemsService } from '../items.service';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants/wysiwyg2';
 
 type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
 
@@ -61,6 +63,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
 		'asc'
 	);
+	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const [t] = useTranslation();
 
@@ -181,7 +184,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item) {
 				return;
 			}
-			await ItemsService.setItemNotes(item.uid, (item as any).note || null);
+			await ItemsService.setItemNotes(
+				item.uid,
+				noteEditorState ? noteEditorState.toHTML() : (item as any).note || null
+			);
 			ToastService.success(
 				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
 				false
@@ -320,16 +326,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderDetailRow(
 								<>
-									<div style={{ backgroundColor: Color.White }}>
-										<WYSIWYG
-											id="note"
-											data={item.note || undefined}
-											onChange={(note: string | null) =>
-												setItem({ ...item, note })
-											}
-										/>
-									</div>
-									<Spacer margin="top-small">
+									<Spacer margin="right-small">
+										<Spacer margin={['top']}>
+											<div style={{ backgroundColor: Color.White }}>
+												<WYSIWYG2
+													id="note"
+													controls={WYSIWYG2_OPTIONS_FULL}
+													initialHtml={item.note || undefined}
+													state={noteEditorState}
+													onChange={setNoteEditorState}
+												/>
+											</div>
+										</Spacer>
 										<Toolbar>
 											<ToolbarRight>
 												<Button

@@ -1,4 +1,4 @@
-import { get, isEqual, isNil } from 'lodash-es';
+import { get, isEqual, isNil, isString } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -21,6 +21,7 @@ import {
 	Grid,
 	IconName,
 	MenuContent,
+	RichEditorState,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -28,12 +29,15 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-	WYSIWYG,
+	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
-import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
+import {
+	WYSIWYG2_OPTIONS_AUTHOR,
+	WYSIWYG2_OPTIONS_DEFAULT,
+} from '../../../shared/constants/wysiwyg2';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
@@ -74,6 +78,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
 	});
+	const [descriptionEditorState, setDescriptionEditorState] = useState<RichEditorState>();
 
 	const isCollection = type === 'collection';
 
@@ -119,13 +124,16 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	};
 
 	const getDescription = () => {
-		let description: string | undefined;
+		let description: string | RichEditorState | undefined | null;
 		if (fragment.use_custom_fields) {
-			description = fragment.custom_description || '';
+			description = fragment.custom_description;
 		} else {
-			description = get(fragment, 'item_meta.description', '');
+			description = get(fragment, 'item_meta.description');
 		}
-		return convertToHtml(description);
+		if (!description || isString(description)) {
+			return convertToHtml(description || '');
+		}
+		return description;
 	};
 
 	const initFlowPlayer = () =>
@@ -237,6 +245,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const renderForm = () => {
 		const disableVideoFields: boolean = !fragment.use_custom_fields && fragment.type !== 'TEXT';
+		const description: string | RichEditorState = getDescription();
 
 		return (
 			<Form>
@@ -286,19 +295,21 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
-							<WYSIWYG
+							<WYSIWYG2
 								id={`description_${fragment.id}`}
-								btns={
+								controls={
 									allowedToAddLinks
-										? WYSIWYG_OPTIONS_AUTHOR
-										: WYSIWYG_OPTIONS_DEFAULT
+										? WYSIWYG2_OPTIONS_AUTHOR
+										: WYSIWYG2_OPTIONS_DEFAULT
 								}
 								placeholder={t(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
-								data={getDescription()}
-								onChange={(newDescription: string) =>
-									handleChangedValue('custom_description', newDescription)
+								initialHtml={isString(description) ? description : undefined}
+								state={descriptionEditorState}
+								onChange={setDescriptionEditorState}
+								onBlur={() =>
+									handleChangedValue('custom_description', descriptionEditorState)
 								}
 								disabled={disableVideoFields}
 							/>
