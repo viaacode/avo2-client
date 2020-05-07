@@ -25,10 +25,10 @@ interface UpdateProfileValues {
 	stamboek: string | null;
 }
 
-export async function updateProfileInfo(
+export const updateProfileInfo = async (
 	profile: Avo.User.Profile,
 	variables: Partial<UpdateProfileValues>
-): Promise<void> {
+): Promise<void> => {
 	try {
 		const response = await fetch(`${getEnv('PROXY_URL')}/profile`, {
 			method: 'POST',
@@ -49,4 +49,32 @@ export async function updateProfileInfo(
 		console.error('Failed to update profile information', err, { profile, variables });
 		throw err;
 	}
-}
+};
+
+export const fetchMailPreferences = async (email: string) => {
+	const response = await fetch(
+		`${getEnv('PROXY_URL')}/campaign-monitor/preferences?email=${email}`,
+		{
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+		}
+	);
+
+	return response.json();
+};
+
+export const updateMailPreferences = async (email: string, preferences: string) => {
+	const response = await fetch(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+		body: JSON.stringify({ email, preferences }),
+	});
+
+	return response.json();
+};
