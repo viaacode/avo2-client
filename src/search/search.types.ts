@@ -33,8 +33,14 @@ export interface SearchResults {
 	items: Avo.Search.ResultItem[];
 }
 
+export interface FilterState {
+	filters: Partial<Avo.Search.Filters>;
+	orderProperty: Avo.Search.OrderProperty;
+	orderDirection: Avo.Search.OrderDirection;
+}
+
 export interface SearchFilterControlsProps {
-	formState: Avo.Search.Filters;
+	filterState: Partial<Avo.Search.Filters>;
 	handleFilterFieldChange: (
 		values: SearchFilterFieldValues,
 		propertyName: Avo.Search.FilterProp

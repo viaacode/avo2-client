@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import CreatableSelect from 'react-select/creatable';
 import { ValueType } from 'react-select/src/types';
 
-import { Alert, Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
+import { Alert, Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
@@ -129,30 +129,6 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 							  }
 							: undefined
 					}
-				/>
-			</FormGroup>
-			<FormGroup
-				error={formErrors.link_target}
-				label={t('admin/menu/components/menu-edit-form/menu-edit-form___openen-in')}
-				required
-			>
-				<Select
-					options={[
-						{
-							label: t(
-								'admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'
-							),
-							value: '_blank',
-						},
-						{
-							label: t(
-								'admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'
-							),
-							value: '_self',
-						},
-					]}
-					onChange={(value: string) => onChange('link_target', value)}
-					value={formState.link_target || '_self'}
 				/>
 			</FormGroup>
 			<UserGroupSelect

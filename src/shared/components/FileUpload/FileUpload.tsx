@@ -26,7 +26,7 @@ import './FileUpload.scss';
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 export function isPhoto(url: string): boolean {
-	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']);
+	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[(url.split('.').pop() || '').toLowerCase()]);
 }
 
 export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
