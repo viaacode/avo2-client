@@ -20,6 +20,7 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
+import { ContentService } from '../content.service';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -143,7 +144,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 			>
 				<div className="c-content-edit-view__preview" ref={previewScrollable}>
 					<ContentPage
-						contentBlockConfigs={contentBlockConfigs}
+						contentBlockConfigs={ContentService.convertRichTextEditorStatesToHtml(
+							contentBlockConfigs
+						)}
 						contentWidth={contentWidth}
 					/>
 				</div>
