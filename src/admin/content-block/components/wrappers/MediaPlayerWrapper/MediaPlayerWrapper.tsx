@@ -14,40 +14,45 @@ import './BlockMediaPlayerWrapper.scss';
 
 interface MediaPlayerProps {
 	title: string;
-	item: ButtonAction;
+	item?: ButtonAction;
+	src?: string;
+	poster?: string;
 	width?: 'full-width' | '500px' | '400px';
 }
 
-export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width }) => {
+export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, src, poster, title, width }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
 
 	const retrieveStill = useCallback(async () => {
+		if (poster) {
+			setVideoStill(poster);
+			return;
+		}
 		const videoStills = await getVideoStills([
 			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
 		]);
 
 		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
-	}, [item]);
+	}, [item, poster]);
 
 	useEffect(() => {
 		retrieveStill();
 	}, [retrieveStill]);
 
-	const initFlowPlayer = () => {
-		if (!playerTicket) {
-			fetchPlayerTicket(item.value.toString())
-				.then((data: string) => {
-					setPlayerTicket(data);
-				})
-				.catch((err: any) => {
-					console.error(new CustomError('Player ticket kon niet worden opgehaald', err));
-					ToastService.danger(
-						i18n.t(
-							'admin/content-block/helpers/wrappers/block-media-player-wrapper___het-ophalen-van-het-player-ticket-is-mislukt'
-						)
-					);
-				});
+	const initFlowPlayer = async () => {
+		try {
+			if (!playerTicket && item) {
+				const data: string = await fetchPlayerTicket(item.value.toString());
+				setPlayerTicket(data);
+			}
+		} catch (err) {
+			console.error(new CustomError('Player ticket kon niet worden opgehaald', err));
+			ToastService.danger(
+				i18n.t(
+					'admin/content-block/helpers/wrappers/block-media-player-wrapper___het-ophalen-van-het-player-ticket-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -62,7 +67,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width })
 			{!!videoStill && (
 				<BlockFlowPlayer
 					title={title}
-					src={playerTicket ? playerTicket.toString() : null}
+					src={src || (playerTicket ? playerTicket.toString() : null)}
 					poster={videoStill}
 					onInit={get(item, 'value') ? initFlowPlayer : () => {}}
 					token={getEnv('FLOW_PLAYER_TOKEN')}

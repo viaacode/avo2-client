@@ -2,6 +2,7 @@ import { isEmpty, isNil, without } from 'lodash-es';
 
 import { SelectOption, WYSIWYGProps } from '@viaa/avo2-components';
 
+import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { UserGroupSelectProps } from '../../../shared/components';
@@ -157,7 +158,7 @@ export const FILE_FIELD = (
 
 		return errorArray;
 	},
-	editorProps: { type: 'CONTENT_PAGE_IMAGE' },
+	editorProps: { assetType: 'CONTENT_PAGE_IMAGE' } as FileUploadProps,
 	...propOverride,
 });
 
