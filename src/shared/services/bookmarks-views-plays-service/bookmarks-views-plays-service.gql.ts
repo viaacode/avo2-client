@@ -178,6 +178,9 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 				item {
 					external_id
 				}
+				view_counts {
+					count
+				}
 			}
 			item_id
 			created_at
@@ -188,6 +191,9 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 				thumbnail_path
 				created_at
 				type_id
+				view_counts {
+					count
+				}
 			}
 			collection_uuid
 			created_at
