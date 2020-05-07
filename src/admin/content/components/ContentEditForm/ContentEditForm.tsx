@@ -19,7 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DeleteObjectModal, FileUpload } from '../../../../shared/components';
-import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYG/WYSIWYG';
+import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';

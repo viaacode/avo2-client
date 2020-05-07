@@ -58,7 +58,7 @@ import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignm
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import AssignmentLabels from '../components/AssignmentLabels';
-import WYSIWYG2Wrapper from '../../shared/components/WYSIWYG/WYSIWYG';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,

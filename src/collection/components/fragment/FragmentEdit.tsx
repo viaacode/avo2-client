@@ -33,7 +33,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
-import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYG/WYSIWYG';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_AUTHOR, WYSIWYG2_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';

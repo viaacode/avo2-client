@@ -25,7 +25,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYG/WYSIWYG';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';

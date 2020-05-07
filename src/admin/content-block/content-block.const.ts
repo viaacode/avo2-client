@@ -87,7 +87,7 @@ import {
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers';
-import WYSIWYG2Wrapper from '../../shared/components/WYSIWYG/WYSIWYG';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',

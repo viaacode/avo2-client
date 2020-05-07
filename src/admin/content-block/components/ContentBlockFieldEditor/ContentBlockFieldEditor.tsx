@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
 
-import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYG/WYSIWYG';
+import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { RichEditorStateKey } from '../../../content/content.const';
 import { createKey } from '../../../shared/helpers';
 import {

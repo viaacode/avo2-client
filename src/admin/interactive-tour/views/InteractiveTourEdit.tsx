@@ -36,7 +36,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYG/WYSIWYG';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';

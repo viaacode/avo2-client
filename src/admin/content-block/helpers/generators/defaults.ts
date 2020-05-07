@@ -2,7 +2,7 @@ import { isEmpty, isNil } from 'lodash-es';
 
 import { SelectOption } from '@viaa/avo2-components';
 
-import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYG/WYSIWYG';
+import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { UserGroupSelectProps } from '../../../shared/components';
