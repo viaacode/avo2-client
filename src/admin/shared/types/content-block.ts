@@ -4,6 +4,7 @@ import {
 	ContentItemStyle,
 	ContentTabStyle,
 	CTAProps,
+	HeadingType,
 	IconName,
 	SpacerOption,
 } from '@viaa/avo2-components';
@@ -91,7 +92,7 @@ export interface ContentBlockComponentsConfig {
 	limits?: ContentBlockComponentsLimits;
 	state: ContentBlockComponentState | ContentBlockComponentState[];
 	fields: {
-		[key: string]: ContentBlockField;
+		[key: string]: any;
 	};
 }
 
@@ -112,6 +113,24 @@ export interface ContentBlockField {
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
+	repeat?: boolean;
+	repeatAddButtonLabel?: string;
+	repeatDeleteButtonLabel?: string;
+}
+
+export type ContentBlockEditorType = 'field' | 'fieldGroup';
+
+export interface ContentBlockFieldGroup {
+	label?: string; // Optional for checkboxes, who have their own label
+	fields: {
+		[key: string]: ContentBlockField;
+	};
+	type?: ContentBlockEditorType;
+	min?: number;
+	max?: number;
+	repeat?: boolean;
+	repeatAddButtonLabel?: string;
+	repeatDeleteButtonLabel?: string;
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
@@ -124,7 +143,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
-	KLAAR = 'KLAAR',
+	Klaar = 'KLAAR',
 	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -204,6 +223,7 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+	buttons?: ButtonsBlockComponentState[];
 }
 
 export interface ImageBlockComponentState {
@@ -251,7 +271,8 @@ export interface AnchorLinksBlockComponentState {
 }
 
 export interface KlaarBlockComponentState {
-	title: string;
+	titles: string[];
+	date: string;
 }
 
 export interface IntroBlockComponentState {
@@ -292,16 +313,29 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 
 export interface MediaGridBlockComponentState {
 	mediaItem?: ButtonAction;
+	buttonLabel?: string;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
 }
 
 export interface MediaGridBlockState extends DefaultContentBlockState {
+	title?: string;
+	buttonLabel?: string;
+	buttonAction?: ButtonAction;
 	ctaTitle?: string;
 	ctaTitleColor?: string;
+	ctaTitleSize?: HeadingType;
 	ctaContent?: string;
 	ctaContentColor?: string;
 	ctaButtonLabel?: string;
-	ctaButtonAction?: ButtonAction;
+	ctaButtonType?: ButtonType;
+	ctaButtonIcon?: IconName;
 	ctaBackgroundColor?: string;
+	ctaBackgroundImage?: string;
+	ctaWidth?: string;
+	ctaButtonAction?: ButtonAction;
+	navigate?: (buttonAction?: ButtonAction) => void;
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 }

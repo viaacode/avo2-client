@@ -12,7 +12,7 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../../shared/types';
-import ContentBlockFieldEditor from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
+import ContentBlockFields from '../ContentBlockFields/ContentBlockFields';
 
 interface ContentBlockFormGroupProps {
 	config: ContentBlockConfig;
@@ -56,11 +56,16 @@ const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 					key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)}
 					margin="bottom"
 				>
-					<FormGroup label={formGroup.fields[key].label} error={error}>
-						<ContentBlockFieldEditor
+					<FormGroup
+						label={
+							formGroup.fields[key].repeat ? undefined : formGroup.fields[key].label
+						}
+						error={error}
+					>
+						<ContentBlockFields
 							block={{ config, index: blockIndex }}
 							fieldKey={stateKey}
-							field={formGroup.fields[key]}
+							fieldOrFieldGroup={formGroup.fields[key]}
 							state={formGroupState}
 							type={formGroupType}
 							formGroupIndex={formGroupIndex}

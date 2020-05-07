@@ -40,6 +40,9 @@ export interface AppItemBookmark {
 		item: {
 			external_id: string;
 		};
+		view_counts: {
+			count: number;
+		}[];
 	};
 	item_id: string;
 	created_at: string;
@@ -51,6 +54,9 @@ export interface AppCollectionBookmark {
 		thumbnail_path?: string;
 		created_at: string;
 		type_id: number;
+		view_counts: {
+			count: number;
+		}[];
 	};
 	collection_uuid: string;
 	created_at: string;
