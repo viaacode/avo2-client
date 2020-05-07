@@ -51,30 +51,42 @@ export const updateProfileInfo = async (
 	}
 };
 
-export const fetchMailPreferences = async (email: string) => {
-	const response = await fetch(
-		`${getEnv('PROXY_URL')}/campaign-monitor/preferences?email=${email}`,
-		{
-			method: 'GET',
+export const fetchNewsletterPreferences = async (email: string) => {
+	try {
+		const response = await fetch(
+			`${getEnv('PROXY_URL')}/campaign-monitor/preferences?email=${email}`,
+			{
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			}
+		);
+
+		return response.json();
+	} catch (err) {
+		console.error('Failed to fetch newsletter preferences', err, { email });
+		throw err;
+	}
+};
+
+export const updateNewsletterPreferences = async (
+	name: string,
+	email: string,
+	preferences: string
+) => {
+	try {
+		await fetch(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			credentials: 'include',
-		}
-	);
-
-	return response.json();
-};
-
-export const updateMailPreferences = async (email: string, preferences: string) => {
-	const response = await fetch(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		credentials: 'include',
-		body: JSON.stringify({ email, preferences }),
-	});
-
-	return response.json();
+			body: JSON.stringify({ name, email, preferences }),
+		});
+	} catch (err) {
+		console.error('Failed to update newsletter preferences', err, { email, preferences });
+		throw err;
+	}
 };

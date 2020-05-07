@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState, useReducer, Reducer } from 'react';
+import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -15,7 +15,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { convertToNewsletterPreferenceUpdate } from '../../shared/helpers';
 import { NewsletterPreferences, ReactAction } from '../../shared/types';
-import { fetchMailPreferences } from '../settings.service';
+import { fetchNewsletterPreferences, updateNewsletterPreferences } from '../settings.service';
 
 export interface EmailProps {}
 
@@ -62,7 +62,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
 	useEffect(() => {
-		fetchMailPreferences(user.mail).then((preferences: NewsletterPreferences) => {
+		fetchNewsletterPreferences(user.mail).then((preferences: NewsletterPreferences) => {
 			setInitialNewsletterPreferences(preferences);
 			changeNewsletterPreferences({
 				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
@@ -79,10 +79,23 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 	};
 
 	const onSavePreferences = () => {
-		// TODO: Save preferences
-		console.log(
-			convertToNewsletterPreferenceUpdate(initialNewsletterPreferences, newsletterPreferences)
+		const convertedNewsletterPreferenceUpdate = convertToNewsletterPreferenceUpdate(
+			initialNewsletterPreferences,
+			newsletterPreferences
 		);
+
+		// Only perform update request if there are changes
+		if (convertedNewsletterPreferenceUpdate) {
+			updateNewsletterPreferences(
+				`${user.first_name} ${user.last_name}`,
+				user.mail,
+				convertedNewsletterPreferenceUpdate
+			);
+			setInitialNewsletterPreferences({
+				...initialNewsletterPreferences,
+				...newsletterPreferences,
+			});
+		}
 	};
 
 	return (
