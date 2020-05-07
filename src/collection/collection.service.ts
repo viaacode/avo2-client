@@ -41,12 +41,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import {
-	ContentTypeNumber,
-	InsertFragmentResponse,
-	QualityLabel,
-	RelationType,
-} from './collection.types';
+import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -1064,7 +1059,10 @@ export class CollectionService {
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
 			}
-			const relationId = get(response, 'data.returning[0].id');
+			const relationId = get(
+				response,
+				'data.insert_app_collection_relations.returning[0].id'
+			);
 			if (!relationId) {
 				throw new CustomError('Response does not contain a relation id', null, {
 					response,
