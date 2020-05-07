@@ -30,7 +30,6 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -47,8 +46,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import { ROUTE_PARTS } from '../../shared/constants';
-import { WYSIWYG2_OPTIONS_FULL } from '../../shared/constants/wysiwyg2';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYG/WYSIWYG';
+import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -549,7 +548,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 								label={t('assignment/views/assignment-edit___opdracht')}
 								required
 							>
-								<WYSIWYG2
+								<WYSIWYG2Wrapper
 									id="assignmentDescription"
 									controls={WYSIWYG2_OPTIONS_FULL}
 									initialHtml={currentAssignment.description}

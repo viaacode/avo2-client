@@ -15,11 +15,11 @@ import {
 	TagInfo,
 	TagsInput,
 	TextInput,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DeleteObjectModal, FileUpload } from '../../../../shared/components';
+import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYG/WYSIWYG';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
@@ -211,7 +211,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
 									)}
 								>
-									<WYSIWYG2
+									<WYSIWYG2Wrapper
 										initialHtml={formState.descriptionHtml}
 										state={formState.descriptionState}
 										onChange={(state: RichEditorState) =>

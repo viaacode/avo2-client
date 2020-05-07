@@ -29,7 +29,6 @@ import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -37,7 +36,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { ROUTE_PARTS } from '../../../shared/constants';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYG/WYSIWYG';
+import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
@@ -54,7 +54,6 @@ import {
 } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
-import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants/wysiwyg2';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
@@ -549,7 +548,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								)}
 								required
 							>
-								<WYSIWYG2
+								<WYSIWYG2Wrapper
 									initialHtml={(step.content || '').toString()}
 									state={step.contentState}
 									onChange={newContentState => {

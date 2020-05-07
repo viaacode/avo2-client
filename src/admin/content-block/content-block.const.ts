@@ -9,7 +9,6 @@ import {
 	SelectOption,
 	TextArea,
 	TextInput,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 
 import { FileUpload } from '../../shared/components';
@@ -88,6 +87,7 @@ import {
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYG/WYSIWYG';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -187,7 +187,7 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextArea,
 	TextInput,
-	WYSIWYG: WYSIWYG2,
+	WYSIWYG: WYSIWYG2Wrapper,
 	UserGroupSelect,
 	DatePicker,
 };
