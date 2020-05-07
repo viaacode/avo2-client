@@ -77,8 +77,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const [cuePoints, setCuePoints] = useState({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
-	});
-	const [descriptionEditorState, setDescriptionEditorState] = useState<RichEditorState>();
+	}); // TODO: Add type
+	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<RichEditorState>();
 
 	const isCollection = type === 'collection';
 
@@ -306,10 +306,13 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
 								initialHtml={isString(description) ? description : undefined}
-								state={descriptionEditorState}
-								onChange={setDescriptionEditorState}
+								state={descriptionRichEditorState}
+								onChange={setDescriptionRichEditorState}
 								onBlur={() =>
-									handleChangedValue('custom_description', descriptionEditorState)
+									handleChangedValue(
+										'custom_description',
+										descriptionRichEditorState
+									)
 								}
 								disabled={disableVideoFields}
 							/>

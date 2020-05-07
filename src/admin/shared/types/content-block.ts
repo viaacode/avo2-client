@@ -92,7 +92,7 @@ export interface ContentBlockComponentsConfig {
 	limits?: ContentBlockComponentsLimits;
 	state: ContentBlockComponentState | ContentBlockComponentState[];
 	fields: {
-		[key: string]: ContentBlockField;
+		[key: string]: any;
 	};
 }
 
@@ -113,6 +113,24 @@ export interface ContentBlockField {
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
+	repeat?: boolean;
+	repeatAddButtonLabel?: string;
+	repeatDeleteButtonLabel?: string;
+}
+
+export type ContentBlockEditorType = 'field' | 'fieldGroup';
+
+export interface ContentBlockFieldGroup {
+	label?: string; // Optional for checkboxes, who have their own label
+	fields: {
+		[key: string]: ContentBlockField;
+	};
+	type?: ContentBlockEditorType;
+	min?: number;
+	max?: number;
+	repeat?: boolean;
+	repeatAddButtonLabel?: string;
+	repeatDeleteButtonLabel?: string;
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
@@ -125,7 +143,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
-	KLAAR = 'KLAAR',
+	Klaar = 'KLAAR',
 	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -208,6 +226,7 @@ export interface RichTextBlockComponentState {
 	// Each rich text editor state prop has to and with 'RichEditorStateKey'
 	// So this can be removed before saving the page to the database in ContentService.removeRichEditorStateRecursively
 	contentRichEditorState: RichEditorState | undefined;
+	buttons?: ButtonsBlockComponentState[];
 }
 
 export interface ImageBlockComponentState {
@@ -255,7 +274,8 @@ export interface AnchorLinksBlockComponentState {
 }
 
 export interface KlaarBlockComponentState {
-	title: string;
+	titles: string[];
+	date: string;
 }
 
 export interface IntroBlockComponentState {
