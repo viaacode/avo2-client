@@ -384,6 +384,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 								<FormGroup
 									label={t('admin/user-groups/views/user-group-edit___label')}
 									error={formErrors.label}
+									required
 								>
 									<TextInput
 										value={userGroup.label || ''}

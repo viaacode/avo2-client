@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +9,7 @@ import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../
 import { LANGUAGES } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
-import { SearchFilterControlsProps } from '../search.types';
+import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
 import './SearchFilterControls.scss';
 
@@ -18,7 +18,7 @@ const languageCodeToLabel = (code: string): string => {
 };
 
 const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
-	formState,
+	filterState,
 	handleFilterFieldChange,
 	multiOptions,
 }) => {
@@ -39,13 +39,30 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			});
 	}, [setCollectionLabels, t]);
 
+	const getCombinedMultiOptions = () => {
+		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
+		const arrayFilters = omit(filterState, ['query', 'broadcastDate']) as {
+			[filterName: string]: string[];
+		};
+		forEach(arrayFilters, (values: string[], filterName: string) => {
+			combinedMultiOptions[filterName] = uniqBy(
+				[
+					...(combinedMultiOptions[filterName] || []),
+					...(values || []).map(val => ({ option_name: val, option_count: 0 })),
+				],
+				'option_name'
+			);
+		});
+		return combinedMultiOptions;
+	};
+
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
 		disabled: boolean = false,
 		labelsMapping?: { [id: string]: string }
 	): ReactNode => {
-		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
+		const checkboxMultiOptions = (getCombinedMultiOptions()[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
 				let checkboxLabel = option_name;
 
@@ -61,7 +78,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					label: checkboxLabel,
 					optionCount: option_count,
 					id: option_name,
-					checked: ((formState[propertyName] as string[]) || []).includes(option_name),
+					checked: (get(filterState, propertyName, []) as string[]).includes(option_name),
 				};
 			}
 		);
@@ -85,7 +102,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
-		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || {
+		const range: Avo.Search.DateRange = get(filterState, 'broadcastDate') || {
 			gte: '',
 			lte: '',
 		};

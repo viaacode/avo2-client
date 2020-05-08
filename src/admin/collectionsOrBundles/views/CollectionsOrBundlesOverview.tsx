@@ -1,4 +1,4 @@
-import { compact, get, truncate } from 'lodash-es';
+import { compact, get, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -101,13 +101,22 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					['profile.usersByuserId.role.id']
 				)
 			);
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['collection_labels'],
-					['collection_labels.label']
-				)
-			);
+			if (filters.collection_labels && filters.collection_labels.length) {
+				andFilters.push({
+					_or: [
+						...getMultiOptionFilters(
+							{
+								collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+							},
+							['collection_labels'],
+							['collection_labels.label']
+						),
+						...(filters.collection_labels.includes('NO_LABEL')
+							? [{ _not: { collection_labels: {} } }]
+							: []),
+					],
+				});
+			}
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 			andFilters.push({
 				type_id: {
@@ -194,15 +203,22 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		})
 	);
 
-	const collectionLabelOptions = collectionLabels.map(
-		(option): CheckboxOption => ({
-			id: String(option.value),
-			label: option.description,
-			checked: get(tableState, 'collection_labels', [] as string[]).includes(
-				String(option.value)
-			),
-		})
-	);
+	const collectionLabelOptions = [
+		{
+			id: 'NO_LABEL',
+			label: t('Geen label'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+		},
+		...collectionLabels.map(
+			(option): CheckboxOption => ({
+				id: String(option.value),
+				label: option.description,
+				checked: get(tableState, 'collection_labels', [] as string[]).includes(
+					String(option.value)
+				),
+			})
+		),
+	];
 
 	const getUserOverviewTableCols = (): FilterableColumn[] => [
 		{
