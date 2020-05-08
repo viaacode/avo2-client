@@ -6,8 +6,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { WYSIWYG2_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
-import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services';
+import { FileUploadService } from '../../services/file-upload-service';
 
 export type WYSIWYG2WrapperProps = WYSIWYG2Props & {
 	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload
