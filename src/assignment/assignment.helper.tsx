@@ -217,9 +217,8 @@ export class AssignmentHelper {
 					{linkContent}
 				</Link>
 			);
-		} else {
-			return linkContent;
 		}
+		return linkContent;
 	}
 
 	private static isDeadlineInThePast(assignment: Partial<Avo.Assignment.Assignment>): boolean {

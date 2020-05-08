@@ -24,6 +24,7 @@ import i18n from '../../translations/i18n';
 import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+export const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
 
 export function isPhoto(url: string): boolean {
 	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[(url.split('.').pop() || '').toLowerCase()]);
