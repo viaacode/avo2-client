@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -26,7 +27,6 @@ import { buildLink, CustomError, generateSearchLinkString } from '../../shared/h
 import { dataService } from '../../shared/services';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
-import MetaTags from 'react-meta-tags';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
 

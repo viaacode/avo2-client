@@ -23,6 +23,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { toEnglishContentType } from '../../collection/collection.types';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
@@ -32,7 +33,6 @@ import { KeyCode } from '../../shared/types';
 import { AppState } from '../../store';
 
 import './Home.scss';
-import { GENERATE_SITE_TITLE } from '../../constants';
 
 interface HomeProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;

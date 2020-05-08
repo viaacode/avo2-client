@@ -1,6 +1,7 @@
 import { cloneDeep, compact, get, map, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -54,7 +55,6 @@ import {
 } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
-import MetaTags from 'react-meta-tags';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
