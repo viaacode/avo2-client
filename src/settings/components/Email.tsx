@@ -127,13 +127,14 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 					...initialNewsletterPreferences,
 					...newsletterPreferences,
 				});
-				setIsLoading(false);
 				ToastService.success(t('Je voorkeuren zijn opgeslagen'));
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to update newsletter preferences', err));
 			ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden geüpdatet.'));
 		}
+
+		setIsLoading(false);
 	};
 
 	return (
