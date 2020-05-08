@@ -40,14 +40,7 @@ export class ContentService {
 			},
 		};
 
-		return performQuery(
-			query,
-			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve content items.',
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-items'
-			)
-		);
+		return performQuery(query, CONTENT_RESULT_PATH.GET, 'Failed to retrieve content items.');
 	}
 	public static async getProjectContentItems(
 		limit: number
@@ -63,10 +56,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve project content items.',
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-project-paginas'
-			)
+			'Failed to retrieve project content items.'
 		);
 	}
 
@@ -86,10 +76,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve content items by title.',
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-items'
-			)
+			'Failed to retrieve content items by title.'
 		);
 	}
 
@@ -109,10 +96,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve content items by title.',
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-project-paginas'
-			)
+			'Failed to retrieve content items by title.'
 		);
 	}
 
@@ -127,10 +111,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			`${CONTENT_RESULT_PATH.GET}[0]`,
-			`Failed to retrieve content item by id: ${id}.`,
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'
-			)
+			`Failed to retrieve content item by id: ${id}.`
 		);
 	}
 
