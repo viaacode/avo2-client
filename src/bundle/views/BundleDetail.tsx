@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 
 import {
@@ -39,7 +40,7 @@ import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import { ShareCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
@@ -769,12 +770,20 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			render={renderBundle}
-			dataObject={permissions}
-			loadingInfo={loadingInfo}
-			showSpinner={true}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(get(bundle, 'title', t('Bundel detail titel fallback')))}
+				</title>
+				<meta name="description" content={get(bundle, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				render={renderBundle}
+				dataObject={permissions}
+				loadingInfo={loadingInfo}
+				showSpinner={true}
+			/>
+		</>
 	);
 };
 

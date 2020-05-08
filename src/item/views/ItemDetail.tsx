@@ -2,6 +2,7 @@ import { get } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -40,7 +41,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -698,12 +699,22 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={item}
-			render={renderItem}
-			notFoundError={t('item/views/item___dit-item-werd-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(item, 'title', t('Item detail pagina titel fallback'))
+					)}
+				</title>
+				<meta name="description" content={get(item, 'description', '')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={item}
+				render={renderItem}
+				notFoundError={t('item/views/item___dit-item-werd-niet-gevonden')}
+			/>
+		</>
 	);
 };
 

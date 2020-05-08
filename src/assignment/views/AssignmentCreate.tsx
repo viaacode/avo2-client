@@ -2,6 +2,7 @@ import { isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
@@ -25,7 +26,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
@@ -404,12 +405,18 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			dataObject={currentAssignment}
-			render={renderAssignmentEditForm}
-			loadingInfo={loadingInfo}
-			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Maak opdracht pagina titel'))}</title>
+				<meta name="description" content={t('Maak opdracht pagina beschrijving')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				dataObject={currentAssignment}
+				render={renderAssignmentEditForm}
+				loadingInfo={loadingInfo}
+				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
+			/>
+		</>
 	);
 };
 

@@ -12,6 +12,7 @@ import {
 } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
@@ -45,6 +46,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { copyToClipboard, CustomError } from '../../shared/helpers';
@@ -538,18 +540,24 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 
 	return (
-		<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
-			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
-			<PermissionGuardFail>
-				<ErrorView
-					message={t(
-						'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
-					)}
-					icon={'lock'}
-					actionButtons={['home']}
-				/>
-			</PermissionGuardFail>
-		</PermissionGuard>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Zoeken pagina titel'))}</title>
+				<meta name="description" content={t('Zoeken pagina beschrijving')} />
+			</MetaTags>
+			<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
+				<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
+				<PermissionGuardFail>
+					<ErrorView
+						message={t(
+							'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
+						)}
+						icon={'lock'}
+						actionButtons={['home']}
+					/>
+				</PermissionGuardFail>
+			</PermissionGuard>
+		</>
 	);
 };
 

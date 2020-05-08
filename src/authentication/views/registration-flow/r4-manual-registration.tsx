@@ -1,6 +1,7 @@
 import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -18,7 +19,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { sanitize } from '../../../shared/helpers';
 import sanitizePresets from '../../../shared/helpers/sanitize/presets';
 import { ToastService, ZendeskService } from '../../../shared/services';
@@ -277,6 +278,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Manuele account aanvraag pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('manuele account aanvraag pagina beschrijving')}
+					/>
+				</MetaTags>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>
 			</Container>
 		</Container>

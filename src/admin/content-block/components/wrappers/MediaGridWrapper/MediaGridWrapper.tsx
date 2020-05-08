@@ -133,7 +133,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				meta: isItem ? itemDuration : `${collectionItems} items`,
 				src: itemOrCollection.thumbnail_path || '',
 			},
-		};
+		} as any; // Remove cast after update to components 1.40.0
 	};
 
 	// Render

@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -22,6 +23,7 @@ import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../constants';
 
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
@@ -85,6 +87,10 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 
 	return (
 		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Account instellingen pagina titel'))}</title>
+				<meta name="description" content={t('Account pagina beschrijving')} />
+			</MetaTags>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Spacer margin="bottom">

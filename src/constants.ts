@@ -1,6 +1,9 @@
+import { compact } from 'lodash-es';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from './shared/constants';
+import i18n from './shared/translations/i18n';
 
 export interface RouteInfo {
 	route: string;
@@ -192,3 +195,6 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 	bundel: APP_PATH.BUNDLE_DETAIL.route,
 	map: APP_PATH.BUNDLE_DETAIL.route, // TODO remove once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
 } as any; // TODO remove cast once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
+
+export const GENERATE_SITE_TITLE = (...pageTitleParts: (string | null | undefined)[]) =>
+	compact([...pageTitleParts, i18n.t('Het Archief voor Onderwijs')]).join(' | ');

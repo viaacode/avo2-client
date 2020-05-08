@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -15,7 +16,7 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import LoginOptions from '../components/LoginOptions';
 import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 
@@ -33,6 +34,13 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Registratie of login pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Registratie of login pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Modal className="c-register-login-view__modal" isOpen size="medium">
 					<ModalBody>
 						<Grid>

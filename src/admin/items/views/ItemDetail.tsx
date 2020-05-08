@@ -2,6 +2,7 @@ import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -19,7 +20,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -465,11 +466,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={item}
-			render={renderItemDetailPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(get(item, 'title'), t('Item beheer detail pagina titel'))}
+				</title>
+				<meta name="description" content={get(item, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={item}
+				render={renderItemDetailPage}
+			/>
+		</>
 	);
 };
 

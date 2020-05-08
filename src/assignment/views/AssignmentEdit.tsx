@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
@@ -28,7 +29,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
@@ -484,12 +485,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			dataObject={currentAssignment}
-			render={renderAssignmentEditForm}
-			loadingInfo={loadingInfo}
-			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(
+							currentAssignment,
+							'title',
+							t('Collectie bewerken pagina titel fallback')
+						)
+					)}
+				</title>
+				<meta name="description" content={get(currentAssignment, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				dataObject={currentAssignment}
+				render={renderAssignmentEditForm}
+				loadingInfo={loadingInfo}
+				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
+			/>
+		</>
 	);
 };
 
