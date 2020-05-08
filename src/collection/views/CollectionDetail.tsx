@@ -1,6 +1,7 @@
-import { isEmpty } from 'lodash-es';
+import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -32,7 +33,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
@@ -852,11 +853,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			render={renderCollection}
-			dataObject={permissions}
-			loadingInfo={loadingInfo}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(collection, 'title', t('Collectie detail titel fallback'))
+					)}
+				</title>
+				<meta name="description" content={get(collection, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				render={renderCollection}
+				dataObject={permissions}
+				loadingInfo={loadingInfo}
+			/>
+		</>
 	);
 };
 

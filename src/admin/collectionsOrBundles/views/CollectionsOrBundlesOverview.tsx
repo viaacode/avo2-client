@@ -1,6 +1,7 @@
 import { compact, get, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -9,7 +10,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.types';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	CheckboxOption,
@@ -512,6 +513,23 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 		>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							isCollection
+								? t('Collectie beheer overview pagina titel')
+								: t('Bundel beheer overview pagina titel')
+						)}
+					</title>
+					<meta
+						name="description"
+						content={
+							isCollection
+								? t('Collectie beheer overview pagina beschrijving')
+								: t('Bundel beheer overview pagina beschrijving')
+						}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent

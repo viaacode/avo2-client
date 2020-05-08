@@ -1,6 +1,7 @@
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -31,6 +32,7 @@ import { KeyCode } from '../../shared/types';
 import { AppState } from '../../store';
 
 import './Home.scss';
+import { GENERATE_SITE_TITLE } from '../../constants';
 
 interface HomeProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;
@@ -131,6 +133,10 @@ const Home: FunctionComponent<HomeProps> = ({
 
 	return (
 		<div className="m-home-page">
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Startpagina pagina titel'))}</title>
+				<meta name="description" content={t('Startpagina pagina beschrijving')} />
+			</MetaTags>
 			<Container mode="vertical" background="alt">
 				<Container mode="horizontal" size="medium">
 					<Spacer>

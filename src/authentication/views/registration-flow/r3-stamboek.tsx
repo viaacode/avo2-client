@@ -1,11 +1,12 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ToastService } from '../../../shared/services';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
@@ -35,6 +36,10 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Stamboek pagina titel'))}</title>
+					<meta name="description" content={t('Stamboek pagina beschrijving')} />
+				</MetaTags>
 				<div className="c-content">
 					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">

@@ -3,6 +3,7 @@ import { Tickets } from 'node-zendesk';
 import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -18,6 +19,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
 import { ToastService, ZendeskService } from '../../shared/services';
@@ -244,6 +246,13 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Gebruikersaanvraag pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Gebruikersaanvraag pagina beschrijving')}
+					/>
+				</MetaTags>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>
 			</Container>
 		</Container>

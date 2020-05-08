@@ -1,6 +1,7 @@
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	Alert,
@@ -32,7 +33,7 @@ import {
 } from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
@@ -482,11 +483,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	};
 
 	return (
-		<DataQueryComponent
-			query={GET_CLASSIFICATIONS_AND_SUBJECTS}
-			renderData={renderProfile}
-			actionButtons={['home']}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Profiel instellingen pagina titel'))}</title>
+				<meta name="description" content={t('Profiel instellingen pagina beschrijving')} />
+			</MetaTags>
+			<DataQueryComponent
+				query={GET_CLASSIFICATIONS_AND_SUBJECTS}
+				renderData={renderProfile}
+				actionButtons={['home']}
+			/>
+		</>
 	);
 };
 

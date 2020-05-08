@@ -2,6 +2,7 @@ import { omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -22,7 +23,7 @@ import {
 	redirectToClientPage,
 	redirectToServerLogoutPage,
 } from '../../authentication/helpers/redirects';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
 
@@ -101,6 +102,10 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	return (
 		<Container mode="vertical" background="alt">
 			<Container size="medium" mode="horizontal">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Error pagina titel'))}</title>
+					<meta name="description" content={t('Error pagina beschrijving')} />
+				</MetaTags>
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}
 					<Toolbar>

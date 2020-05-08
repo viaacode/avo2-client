@@ -1,6 +1,7 @@
 import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -16,6 +17,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -31,8 +33,7 @@ import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import {
@@ -322,11 +323,22 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	);
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={userGroup}
-			render={renderUserDetailPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(userGroup, 'label'),
+						t('Gebruikersgroep beheer detail pagina titel')
+					)}
+				</title>
+				<meta name="description" content={get(userGroup, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={userGroup}
+				render={renderUserDetailPage}
+			/>
+		</>
 	);
 };
 

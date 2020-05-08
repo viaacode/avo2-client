@@ -1,6 +1,7 @@
 import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	Button,
@@ -19,6 +20,7 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
@@ -462,6 +464,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(contentForm, 'title'),
+							pageType === PageType.Create
+								? t('Content beheer aanmaak pagina titel')
+								: t('Content beheer bewerk pagina titel')
+						)}
+					</title>
+					<meta name="description" content={get(contentForm, 'description')} />
+				</MetaTags>
 				{renderTabContent()}
 				<DeleteObjectModal
 					deleteObjectCallback={removeContentBlockConfig}

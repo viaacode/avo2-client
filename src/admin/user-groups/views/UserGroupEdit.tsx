@@ -1,6 +1,7 @@
 import { compact, flatten, get, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -21,6 +22,7 @@ import {
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -525,11 +527,24 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={userGroup}
-			render={renderPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(userGroup, 'label'),
+						isCreatePage
+							? t('Gebruikersgroep beheer aanmaak pagina titel')
+							: t('Gebruikersgroep beheer bewerk pagina titel')
+					)}
+				</title>
+				<meta name="description" content={get(userGroup, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={userGroup}
+				render={renderPage}
+			/>
+		</>
 	);
 };
 

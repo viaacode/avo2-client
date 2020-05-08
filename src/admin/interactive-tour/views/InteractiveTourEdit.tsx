@@ -34,7 +34,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
@@ -54,6 +54,7 @@ import {
 } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
+import MetaTags from 'react-meta-tags';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
@@ -755,11 +756,31 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	);
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={interactiveTourState.currentInteractiveTour}
-			render={renderPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(interactiveTourState.currentInteractiveTour, 'name'),
+						isCreatePage
+							? t('Interactieve rondleiding beheer aanmaak pagina titel')
+							: t('Interactieve rondleiding beheer bewerk pagina titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={
+						isCreatePage
+							? t('Interactieve rondleiding beheer aanmaak pagina beschrijving')
+							: t('Interactieve rondleiding beheer bewerk pagina beschrijving')
+					}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={interactiveTourState.currentInteractiveTour}
+				render={renderPage}
+			/>
+		</>
 	);
 };
 

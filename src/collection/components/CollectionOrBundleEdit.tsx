@@ -9,6 +9,7 @@ import React, {
 	useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Prompt, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -40,7 +41,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
@@ -1142,11 +1143,30 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={collectionState.currentCollection}
-			render={renderCollectionOrBundleEdit}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(
+							collectionState.currentCollection,
+							'title',
+							isCollection
+								? t('Collectie bewerken titel fallback')
+								: t('Bundel bewerken titel fallback')
+						)
+					)}
+				</title>
+				<meta
+					name="description"
+					content={get(collectionState.currentCollection, 'description') || ''}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={collectionState.currentCollection}
+				render={renderCollectionOrBundleEdit}
+			/>
+		</>
 	);
 };
 
