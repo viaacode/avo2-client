@@ -107,14 +107,14 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 	};
 
 	const onSavePreferences = async () => {
-		const convertedNewsletterPreferenceUpdate = convertToNewsletterPreferenceUpdate(
-			initialNewsletterPreferences,
-			newsletterPreferences
-		);
+		try {
+			const convertedNewsletterPreferenceUpdate = convertToNewsletterPreferenceUpdate(
+				initialNewsletterPreferences,
+				newsletterPreferences
+			);
 
-		// Only perform update request if there are changes
-		if (convertedNewsletterPreferenceUpdate) {
-			try {
+			// Only perform update request if there are changes
+			if (convertedNewsletterPreferenceUpdate) {
 				setIsLoading(true);
 
 				await updateNewsletterPreferences(
@@ -127,13 +127,12 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 					...initialNewsletterPreferences,
 					...newsletterPreferences,
 				});
-			} catch (err) {
-				console.error(new CustomError('Failed to update newsletter preferences', err));
-				ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden geüpdatet.'));
+				setIsLoading(false);
+				ToastService.success(t('Je voorkeuren zijn opgeslagen'));
 			}
-
-			setIsLoading(false);
-			ToastService.success(t('Je voorkeuren zijn opgeslagen'));
+		} catch (err) {
+			console.error(new CustomError('Failed to update newsletter preferences', err));
+			ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden geüpdatet.'));
 		}
 	};
 
