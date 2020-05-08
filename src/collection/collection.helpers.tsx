@@ -5,7 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 import { stripHtml } from '../shared/helpers/formatters';
 import i18n from '../shared/translations/i18n';
 
-import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
+import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
 import { ContentTypeNumber } from './collection.types';
 
 export const getValidationFeedbackForShortDescription = (
@@ -45,6 +45,15 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.description ||
 			collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
+	},
+	{
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('De lange beschrijving van deze collectie is te lang.')
+				: i18n.t('De lange beschrijving van deze bundel is te lang.'),
+		isValid: (collection: Partial<Avo.Collection.Collection>) =>
+			!(collection as any).description_long ||
+			(collection as any).description_long.length <= MAX_LONG_DESCRIPTION_LENGTH,
 	},
 ];
 
