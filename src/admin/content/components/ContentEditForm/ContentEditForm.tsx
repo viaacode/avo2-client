@@ -194,6 +194,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___titel'
 									)}
+									required
 								>
 									<TextInput
 										onChange={value => onChange('title', value)}
@@ -234,6 +235,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___url'
 									)}
+									required
 								>
 									<TextInput
 										onChange={value => onChange('path', value)}
@@ -249,6 +251,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___content-type'
 									)}
+									required
 								>
 									<Select
 										onChange={handleContentTypeChange}
