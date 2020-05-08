@@ -6,6 +6,14 @@ export enum KeyCode {
 	Enter = 13,
 }
 
+export interface NewsletterPreferences {
+	newsletter: boolean;
+	workshop: boolean;
+	ambassador: boolean;
+}
+
+export type NewsletterList = keyof NewsletterPreferences;
+
 export type NavigationItemInfo = {
 	label: string | ReactElement;
 	key: string;
@@ -27,8 +35,6 @@ export type ReactAction<T, P = any> = {
 	type: T;
 	payload: P;
 };
-
-// Helpers
 
 // Get all possible values from object
 export type ValueOf<T> = T[keyof T];
