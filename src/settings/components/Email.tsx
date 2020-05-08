@@ -8,6 +8,7 @@ import React, {
 	useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -23,6 +24,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { convertToNewsletterPreferenceUpdate, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { NewsletterList, NewsletterPreferences, ReactAction } from '../../shared/types';
@@ -137,6 +139,13 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Nieuwsbrief voorkeuren pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Nieuwsbrief voorkeuren pagina beschrijving')}
+					/>
+				</MetaTags>
 				<BlockHeading type="h3">E-mail nieuwsbrief voorkeuren</BlockHeading>
 				<p>
 					Tips en inspiratie voor je lessen, uitnodigingen voor workshops, vacatures,

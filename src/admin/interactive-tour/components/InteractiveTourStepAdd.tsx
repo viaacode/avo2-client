@@ -3,14 +3,17 @@ import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import { InteractiveTourAction } from '../views/InteractiveTourEdit';
+import {
+	EditableInteractiveTour,
+	EditableStep,
+	InteractiveTourAction,
+} from '../views/InteractiveTourEdit';
 
 interface InteractiveTourAddProps {
 	index: number;
-	interactiveTour: Avo.InteractiveTour.InteractiveTour;
+	interactiveTour: EditableInteractiveTour;
 	changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
@@ -21,12 +24,13 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const getStepsAfterInsertNewStep = (): Avo.InteractiveTour.Step[] => {
+	const getStepsAfterInsertNewStep = (): EditableStep[] => {
 		const steps = cloneDeep(interactiveTour.steps || []);
 
 		steps.splice(index, 0, {
 			title: '',
 			content: '',
+			contentState: undefined,
 			target: '',
 			id: generateRandomId(),
 		});

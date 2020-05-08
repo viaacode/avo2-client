@@ -1,13 +1,14 @@
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
@@ -228,6 +229,13 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 	return (
 		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Item beheer overview pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Item beheer overview pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent

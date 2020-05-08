@@ -10,11 +10,12 @@ import {
 	pickBy,
 	set,
 } from 'lodash-es';
-import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import {
 	Button,
@@ -45,10 +46,10 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
+import { InteractiveTour } from '../../shared/components';
+import { copyToClipboard, CustomError } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -60,12 +61,12 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { AppState } from '../../store';
 import { SearchFilterControls, SearchResults } from '../components';
-import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
+import { DEFAULT_FILTER_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
+	FilterState,
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
 	SearchProps,
-	SortOrder,
 } from '../search.types';
 import { getSearchResults } from '../store/actions';
 import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
@@ -77,97 +78,74 @@ const Search: FunctionComponent<SearchProps> = ({
 	searchResultsLoading,
 	searchResultsError,
 	search,
-	history,
-	location,
 	user,
 }) => {
 	const [t] = useTranslation();
 
-	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
-	const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
+	const queryParamConfig = {
+		filters: JsonParam,
+		orderProperty: StringParam,
+		orderDirection: StringParam,
+	};
+	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
+		FilterState,
+		(FilterState: FilterState, updateType?: UrlUpdateType) => void
+	];
+
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
-	const [queryParamsAnalysed, setQueryParamsAnalysed] = useState(false);
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
-	/**
-	 * Update the search results when the formState, sortOrder or the currentPage changes
-	 */
-	useEffect(() => {
-		// Only do initial search after query params have been analysed and have been added to the state
-		if (queryParamsAnalysed) {
-			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
-				cloneDeep(formState)
-			);
+	const urlUpdateType: UrlUpdateType = 'push';
 
-			// TODO: do the search by dispatching a redux action
-			search(
-				sortOrder.orderProperty,
-				sortOrder.orderDirection,
-				currentPage * ITEMS_PER_PAGE,
-				ITEMS_PER_PAGE,
-				filterOptions,
-				{}
-			);
+	/**
+	 * Update the search results when the filterState or the currentPage changes
+	 */
+	const onFilterStateChanged = useCallback(() => {
+		const orderProperty: Avo.Search.OrderProperty =
+			(filterState.orderProperty as Avo.Search.OrderProperty | undefined) ||
+			DEFAULT_SORT_ORDER.orderProperty;
+
+		const orderDirection: Avo.Search.OrderDirection =
+			(filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
+			DEFAULT_SORT_ORDER.orderDirection;
+
+		search(
+			orderProperty,
+			orderDirection,
+			currentPage * ITEMS_PER_PAGE,
+			ITEMS_PER_PAGE,
+			cleanupFilterState(filterState).filters,
+			{}
+		);
+	}, [filterState, currentPage, search]);
+
+	const updateSearchTerms = useCallback(() => {
+		const query = get(filterState, 'filters.query', '');
+		if (query) {
+			setSearchTerms(query);
 		}
-	}, [formState, sortOrder, currentPage, history, search, queryParamsAnalysed]);
+	}, [setSearchTerms, filterState]);
+
+	useEffect(() => {
+		onFilterStateChanged();
+		updateSearchTerms();
+	}, [onFilterStateChanged, updateSearchTerms]);
 
 	/**
-	 * display the search results on the page and in the url when the results change
+	 * Update the filter values and scroll to the top
 	 */
 	useEffect(() => {
-		if (searchResults && queryParamsAnalysed) {
-			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
-				cloneDeep(formState)
-			);
-
-			// Copy the searchterm to the search input field
-			setSearchTerms(formState.query);
-
+		if (searchResults) {
 			// Update the checkbox items and counts
 			setMultiOptions(searchResults.aggregations);
-
-			// Remember this search by adding it to the query params in the url
-			const queryParams: any = {};
-			if (!isEmpty(filterOptions)) {
-				queryParams.filters = JSON.stringify(filterOptions);
-			}
-			if (sortOrder.orderProperty !== 'relevance') {
-				queryParams.orderProperty = sortOrder.orderProperty;
-			}
-			if (sortOrder.orderDirection !== 'desc') {
-				queryParams.orderDirection = sortOrder.orderDirection;
-			}
-			if (currentPage !== 0) {
-				queryParams.page = currentPage + 1;
-			}
-			const queryParamString = queryString.stringify(queryParams);
-
-			// Only update the url if the query params differ
-			if (queryParamString !== location.search.substring(1)) {
-				navigate(
-					history,
-					APP_PATH.SEARCH.route,
-					{},
-					queryParamString.length ? queryParamString : ''
-				);
-			}
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [
-		searchResults,
-		currentPage,
-		formState,
-		history,
-		sortOrder,
-		queryParamsAnalysed,
-		location.search,
-	]);
+	}, [searchResults]);
 
 	const getBookmarkStatuses = useCallback(async () => {
 		try {
@@ -209,72 +187,31 @@ const Search: FunctionComponent<SearchProps> = ({
 		getBookmarkStatuses();
 	}, [getBookmarkStatuses]);
 
-	const getFiltersFromQueryParams = () => {
-		// Check if current url already has a query param set
-		const queryParams = queryString.parse(location.search);
-		let newFormState: Avo.Search.Filters = cloneDeep(formState);
-		let newSortOrder: SortOrder = cloneDeep(sortOrder);
-		let newCurrentPage: number = currentPage;
-		try {
-			if (
-				queryParams.filters ||
-				queryParams.orderProperty ||
-				queryParams.orderDirection ||
-				queryParams.page
-			) {
-				// Extract info from filter query params
-				if (queryParams.filters) {
-					newFormState = JSON.parse(queryParams.filters as string);
-				}
-				newSortOrder.orderProperty = (queryParams.orderProperty ||
-					'relevance') as Avo.Search.OrderProperty;
-				newSortOrder.orderDirection = (queryParams.orderDirection ||
-					'desc') as Avo.Search.OrderDirection;
-				newCurrentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
-			} else {
-				// No filter query params present => reset state
-				newFormState = DEFAULT_FORM_STATE;
-				newSortOrder = DEFAULT_SORT_ORDER;
-				newCurrentPage = 0;
-			}
-
-			if (
-				!isEqual(newFormState, formState) ||
-				!isEqual(newSortOrder, sortOrder) ||
-				!isEqual(newCurrentPage, currentPage)
-			) {
-				// Only rerender if query params actually changed
-				setFormState(newFormState);
-				setSortOrder(newSortOrder);
-				setCurrentPage(newCurrentPage);
-			}
-		} catch (err) {
-			ToastService.danger(t('search/views/search___ongeldige-zoek-query'));
-			console.error(err);
-		}
-		setQueryParamsAnalysed(true);
-	};
-
-	// Analyse the search query params every time the url changes
-	useEffect(getFiltersFromQueryParams, [location.search]);
-
 	const handleFilterFieldChange = async (
 		value: SearchFilterFieldValues,
 		id: Avo.Search.FilterProp
 	) => {
+		let newFilterState: any;
 		if (value) {
-			setFormState({
-				...formState,
-				[id]: value,
-				query: searchTerms,
-			});
+			newFilterState = {
+				...filterState,
+				filters: {
+					...filterState.filters,
+					[id]: value,
+					query: searchTerms,
+				},
+			};
 		} else {
-			setFormState({
-				...formState,
-				[id]: DEFAULT_FORM_STATE[id],
-				query: searchTerms,
-			});
+			newFilterState = {
+				...filterState,
+				filters: {
+					...filterState.filters,
+					[id]: DEFAULT_FILTER_STATE[id],
+					query: searchTerms,
+				},
+			};
 		}
+		setFilterState(cleanupFilterState(newFilterState), urlUpdateType);
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
@@ -282,39 +219,53 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const handleOrderChanged = async (value: string = 'relevance_desc') => {
 		const valueParts: string[] = value.split('_');
-		const orderProperty = valueParts[0] as Avo.Search.OrderProperty;
-		const orderDirection = valueParts[1] as Avo.Search.OrderDirection;
-		setSortOrder({ orderProperty, orderDirection });
+		setFilterState(
+			{
+				...filterState,
+				orderProperty: valueParts[0] as Avo.Search.OrderProperty,
+				orderDirection: valueParts[1] as Avo.Search.OrderDirection,
+			},
+			urlUpdateType
+		);
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
 	};
 
-	const cleanupFilterObject = (obj: any): any => {
-		return pickBy(obj, (value: string) => {
-			const isEmptyString: boolean = value === '';
-			const isUndefinedOrNull: boolean = isNil(value);
-			const isEmptyObjectOrArray: boolean =
-				(isPlainObject(value) || isArray(value)) && isEmpty(value);
-			const isArrayWithEmptyValues: boolean =
-				isArray(value) && every(value, arrayValue => arrayValue === '');
-			const isEmptyRangeObject: boolean =
-				isPlainObject(value) && !(value as any).gte && !(value as any).lte;
+	const cleanupFilterState = (filterState: FilterState): FilterState => {
+		return {
+			...filterState,
+			filters: pickBy(filterState.filters, (value: string) => {
+				const isEmptyString: boolean = value === '';
+				const isUndefinedOrNull: boolean = isNil(value);
+				const isEmptyObjectOrArray: boolean =
+					(isPlainObject(value) || isArray(value)) && isEmpty(value);
+				const isArrayWithEmptyValues: boolean =
+					isArray(value) && every(value, arrayValue => arrayValue === '');
+				const isEmptyRangeObject: boolean =
+					isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 
-			return (
-				!isEmptyString &&
-				!isUndefinedOrNull &&
-				!isEmptyObjectOrArray &&
-				!isArrayWithEmptyValues &&
-				!isEmptyRangeObject
-			);
-		});
+				return (
+					!isEmptyString &&
+					!isUndefinedOrNull &&
+					!isEmptyObjectOrArray &&
+					!isArrayWithEmptyValues &&
+					!isEmptyRangeObject
+				);
+			}),
+		};
 	};
 
 	const deleteAllFilters = () => {
-		setFormState({
-			...DEFAULT_FORM_STATE,
-		});
+		setFilterState(
+			{
+				...filterState,
+				filters: {
+					...DEFAULT_FILTER_STATE,
+				},
+			},
+			urlUpdateType
+		);
 	};
 
 	const setPage = async (pageIndex: number): Promise<void> => {
@@ -363,18 +314,27 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const handleTagClicked = (tagId: string) => {
-		setFormState({
-			...DEFAULT_FORM_STATE,
-			collectionLabel: [tagId],
-		});
+		setFilterState(
+			{
+				...filterState,
+				filters: {
+					...DEFAULT_FILTER_STATE,
+					collectionLabel: [tagId],
+				},
+			},
+			urlUpdateType
+		);
 	};
 
 	// @ts-ignore
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
-			setFormState({
-				...DEFAULT_FORM_STATE,
-				provider: [originalCp],
+			setFilterState({
+				...filterState,
+				filters: {
+					...DEFAULT_FILTER_STATE,
+					provider: [originalCp],
+				},
 			});
 		}
 	};
@@ -384,10 +344,16 @@ const Search: FunctionComponent<SearchProps> = ({
 	 * Otherwise we would trigger a search for every letter that is typed
 	 */
 	const copySearchTermsToFormState = async () => {
-		setFormState({
-			...formState,
-			query: searchTerms,
-		});
+		setFilterState(
+			{
+				...filterState,
+				filters: {
+					...filterState.filters,
+					query: searchTerms,
+				},
+			},
+			urlUpdateType
+		);
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
@@ -415,9 +381,9 @@ const Search: FunctionComponent<SearchProps> = ({
 		},
 		{ label: t('search/views/search___laatst-gewijzigd'), value: 'updatedAt_desc' },
 	];
-	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
-		'desc'}`;
-	const hasFilters = !isEqual(formState, DEFAULT_FORM_STATE);
+	const defaultOrder = `${filterState.orderProperty ||
+		'relevance'}_${filterState.orderDirection || 'desc'}`;
+	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
 	const resultsCount = get(searchResults, 'count', 0);
 	// elasticsearch can only handle 10000 results efficiently
 	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
@@ -543,7 +509,7 @@ const Search: FunctionComponent<SearchProps> = ({
 							</div>
 						</Spacer>
 						<SearchFilterControls
-							formState={formState}
+							filterState={filterState.filters}
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
 						/>
@@ -574,18 +540,24 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 
 	return (
-		<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
-			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
-			<PermissionGuardFail>
-				<ErrorView
-					message={t(
-						'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
-					)}
-					icon={'lock'}
-					actionButtons={['home']}
-				/>
-			</PermissionGuardFail>
-		</PermissionGuard>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Zoeken pagina titel'))}</title>
+				<meta name="description" content={t('Zoeken pagina beschrijving')} />
+			</MetaTags>
+			<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
+				<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
+				<PermissionGuardFail>
+					<ErrorView
+						message={t(
+							'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
+						)}
+						icon={'lock'}
+						actionButtons={['home']}
+					/>
+				</PermissionGuardFail>
+			</PermissionGuard>
+		</>
 	);
 };
 

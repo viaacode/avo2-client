@@ -3,6 +3,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import { cloneDeep, eq, get, isNil, omit, set } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
@@ -31,15 +32,15 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import {
 	checkPermissions,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import {
 	ApolloCacheManager,
@@ -190,7 +191,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					await createAssignmentResponseObject(tempAssignment);
 
 					// Load content (collection, item or search query) according to assignment
-					AssignmentService.getAssignmentContent(tempAssignment)
+					AssignmentService.fetchAssignmentContent(tempAssignment)
 						.then((response: Avo.Assignment.Content | null) => {
 							setAssignmentContent(response);
 							setAssignment(tempAssignment);
@@ -576,14 +577,24 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			notFoundError={t(
-				'assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'
-			)}
-			dataObject={assignment}
-			render={renderAssignment}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(assignment, 'title', t('Opdracht detail pagina titel fallback'))
+					)}
+				</title>
+				<meta name="description" content={get(assignment, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				notFoundError={t(
+					'assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'
+				)}
+				dataObject={assignment}
+				render={renderAssignment}
+			/>
+		</>
 	);
 };
 

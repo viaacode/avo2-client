@@ -1,6 +1,7 @@
-import { compact, get, truncate } from 'lodash-es';
+import { compact, get, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -9,7 +10,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.types';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	CheckboxOption,
@@ -101,13 +102,22 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					['profile.usersByuserId.role.id']
 				)
 			);
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['collection_labels'],
-					['collection_labels.label']
-				)
-			);
+			if (filters.collection_labels && filters.collection_labels.length) {
+				andFilters.push({
+					_or: [
+						...getMultiOptionFilters(
+							{
+								collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+							},
+							['collection_labels'],
+							['collection_labels.label']
+						),
+						...(filters.collection_labels.includes('NO_LABEL')
+							? [{ _not: { collection_labels: {} } }]
+							: []),
+					],
+				});
+			}
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 			andFilters.push({
 				type_id: {
@@ -194,15 +204,22 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		})
 	);
 
-	const collectionLabelOptions = collectionLabels.map(
-		(option): CheckboxOption => ({
-			id: String(option.value),
-			label: option.description,
-			checked: get(tableState, 'collection_labels', [] as string[]).includes(
-				String(option.value)
-			),
-		})
-	);
+	const collectionLabelOptions = [
+		{
+			id: 'NO_LABEL',
+			label: t('Geen label'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+		},
+		...collectionLabels.map(
+			(option): CheckboxOption => ({
+				id: String(option.value),
+				label: option.description,
+				checked: get(tableState, 'collection_labels', [] as string[]).includes(
+					String(option.value)
+				),
+			})
+		),
+	];
 
 	const getUserOverviewTableCols = (): FilterableColumn[] => [
 		{
@@ -496,6 +513,23 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 		>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							isCollection
+								? t('Collectie beheer overview pagina titel')
+								: t('Bundel beheer overview pagina titel')
+						)}
+					</title>
+					<meta
+						name="description"
+						content={
+							isCollection
+								? t('Collectie beheer overview pagina beschrijving')
+								: t('Bundel beheer overview pagina beschrijving')
+						}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent

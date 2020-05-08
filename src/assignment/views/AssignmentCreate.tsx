@@ -1,64 +1,49 @@
-import { ApolloQueryResult } from 'apollo-boost';
-import { get, isEmpty, isNil } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
-	Alert,
 	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
-	DatePicker,
-	DutchContentType,
-	Flex,
-	FlexItem,
 	Form,
 	FormGroup,
 	Icon,
 	Navbar,
-	RadioButton,
-	RadioButtonGroup,
+	RichEditorState,
 	Spacer,
 	TextInput,
-	Thumbnail,
-	Toggle,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { toEnglishContentType } from '../../collection/collection.types';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
-import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
+import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import {
-	CONTENT_LABEL_TO_EVENT_OBJECT_TYPE,
-	CONTENT_LABEL_TO_QUERY,
-	CONTENT_LABEL_TO_ROUTE_PARTS,
-} from '../assignment.const';
+import { CONTENT_LABEL_TO_EVENT_OBJECT_TYPE } from '../assignment.const';
+import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentLayout } from '../assignment.types';
-import AssignmentLabels from '../components/AssignmentLabels';
 
 import './AssignmentEdit.scss';
 
@@ -99,7 +84,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		const initAssignmentData = async () => {
 			try {
 				const tempAssignment = initAssignmentsByQueryParams();
-				await fetchAssignmentContent(tempAssignment);
+				setAssignmentContent(await AssignmentHelper.fetchAssignmentContent(tempAssignment));
 				setBothAssignments(tempAssignment);
 			} catch (err) {
 				setLoadingInfo({
@@ -146,59 +131,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			return newAssignment;
 		};
 
-		/**
-		 * Load the content if they are not loaded yet
-		 */
-		const fetchAssignmentContent = async (assignment: Partial<Avo.Assignment.Assignment>) => {
-			try {
-				if (!assignment.assignment_type) {
-					// Only fetch assignment content if not set yet
-					return;
-				}
-
-				let assignmentContentResponse: Avo.Assignment.Content | undefined = undefined;
-				if (assignment.content_id && assignment.content_label) {
-					// The assignment doesn't have content linked to it
-					// Fetch the content from the network
-					const queryInfo =
-						CONTENT_LABEL_TO_QUERY[
-							assignment.content_label as Avo.Assignment.ContentLabel
-						];
-					const queryParams = {
-						query: queryInfo.query,
-						variables: queryInfo.getVariables(assignment.content_id),
-					};
-					const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
-						queryParams
-					);
-
-					assignmentContentResponse = get(response, `data.${queryInfo.resultPath}`);
-					if (!assignmentContentResponse) {
-						console.error('Failed to fetch the assignment content', {
-							response,
-							...queryParams,
-						});
-						setLoadingInfo({
-							state: 'error',
-							message: t(
-								'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
-							),
-							icon: 'search',
-						});
-					}
-				}
-
-				setAssignmentContent(assignmentContentResponse);
-			} catch (err) {
-				console.error(err);
-				ToastService.danger(
-					t(
-						'assignment/views/assignment-create___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
-					)
-				);
-			}
-		};
-
 		checkPermissions(
 			PermissionName.CREATE_ASSIGNMENTS,
 			user,
@@ -219,27 +151,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			});
 		}
 	}, [initialAssignment, currentAssignment, assignmentContent]);
-
-	const deleteCurrentAssignment = async () => {
-		try {
-			if (typeof currentAssignment.id === 'undefined') {
-				ToastService.danger(
-					t(
-						'assignment/views/assignment-edit___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
-					)
-				);
-				return;
-			}
-			await AssignmentService.deleteAssignment(currentAssignment.id);
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
-			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt')
-			);
-		}
-	};
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
 		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
@@ -268,47 +179,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	};
 
-	const attemptDuplicateAssignment = async (
-		newTitle: string,
-		assignment: Partial<Avo.Assignment.Assignment>
+	const setAssignmentProp = (
+		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+		value: any
 	) => {
-		try {
-			if (isNil(assignment.id)) {
-				ToastService.danger(
-					'Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.'
-				);
-				return;
-			}
-			if (!user) {
-				ToastService.danger(
-					'De opdracht kan niet gedupliceerd worden omdat je niet meer bent ingelogd.'
-				);
-				return;
-			}
-			const duplicatedAssignment = await AssignmentService.duplicateAssignment(
-				newTitle,
-				assignment,
-				user
-			);
-
-			setCurrentAssignment({});
-			setLoadingInfo({ state: 'loading' });
-
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id });
-			ToastService.success(
-				t(
-					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
-				)
-			);
-		} catch (err) {
-			console.error('Failed to copy the assignment', err);
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
-			);
-		}
-	};
-
-	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
 		const newAssignment = {
 			...currentAssignment,
 			[property]: value,
@@ -336,6 +210,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
+
+			// Convert description editor state to html and store it in the assignment
+			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
+				'descriptionRichEditorState'
+			];
+			assignment.description = descriptionRichEditorState
+				? descriptionRichEditorState.toHTML()
+				: assignment.description || '';
 
 			// Copy content if it's a collection collection if not owned by logged in user
 			// so your assignment can work after the other user deletes his collection
@@ -379,72 +261,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	};
 
-	const isDeadlineInThePast = (): boolean => {
-		return (
-			!!currentAssignment.deadline_at &&
-			new Date(currentAssignment.deadline_at) < new Date(Date.now())
-		);
-	};
-
-	const renderContentLink = (content: Avo.Assignment.Content) => {
-		const dutchLabel = get(
-			content,
-			'type.label',
-			(currentAssignment.content_label || '').toLowerCase()
-		) as DutchContentType;
-		const linkContent = (
-			<div className="c-box c-box--padding-small">
-				<Flex orientation="vertical" center>
-					<Spacer margin="right">
-						<Thumbnail
-							className="m-content-thumbnail"
-							category={toEnglishContentType(dutchLabel)}
-							src={content.thumbnail_path || undefined}
-						/>
-					</Spacer>
-					<FlexItem>
-						<div className="c-overline-plus-p">
-							<p className="c-overline">{dutchLabel}</p>
-							<p>{content.title || content.description}</p>
-						</div>
-					</FlexItem>
-				</Flex>
-			</div>
-		);
-
-		if (
-			currentAssignment.content_label === 'COLLECTIE' &&
-			getProfileId(user) !== (content as Avo.Collection.Collection).owner_profile_id
-		) {
-			// During create we do not allow linking to the collection if you do not own the collection,
-			// since we still need to make a copy when the user clicks on "save assignment" button
-			return (
-				<div
-					title={t(
-						'assignment/views/assignment-edit___u-kan-pas-doorklikken-naar-de-collectie-nadat-u-de-opdracht-hebt-aangemaakt'
-					)}
-				>
-					{linkContent}
-				</div>
-			);
-		}
-
-		return (
-			<Link
-				to={`/${
-					CONTENT_LABEL_TO_ROUTE_PARTS[
-						currentAssignment.content_label as Avo.Assignment.ContentLabel
-					]
-				}/${currentAssignment.content_id}`}
-			>
-				{linkContent}
-			</Link>
-		);
-	};
-
 	const renderAssignmentEditForm = () => {
-		const now = new Date(Date.now());
-
 		return (
 			<>
 				<Navbar autoHeight>
@@ -526,217 +343,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						</Container>
 					</Container>
 				</Navbar>
-				<Container mode="horizontal" size="small" className="c-assignment-edit">
-					<Container mode="vertical" size="large">
-						<Form>
-							<FormGroup
-								required
-								label={t('assignment/views/assignment-edit___titel')}
-							>
-								<TextInput
-									id="title"
-									value={currentAssignment.title}
-									onChange={title => setAssignmentProp('title', title)}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={t('assignment/views/assignment-edit___opdracht')}
-								required
-							>
-								<WYSIWYG
-									id="assignmentDescription"
-									autogrow
-									data={currentAssignment.description}
-									onChange={description =>
-										setAssignmentProp('description', description)
-									}
-								/>
-							</FormGroup>
-							{assignmentContent && currentAssignment.content_label && (
-								<FormGroup label={t('assignment/views/assignment-edit___inhoud')}>
-									{renderContentLink(assignmentContent)}
-								</FormGroup>
-							)}
-							<FormGroup
-								label={t('assignment/views/assignment-edit___weergave')}
-								labelFor="only_player"
-							>
-								<RadioButtonGroup>
-									<RadioButton
-										label={t(
-											'assignment/views/assignment-edit___mediaspeler-met-beschrijving'
-										)}
-										name="content_layout"
-										value={String(AssignmentLayout.PlayerAndText)}
-										checked={
-											isNil(currentAssignment.content_layout) ||
-											currentAssignment.content_layout ===
-												AssignmentLayout.PlayerAndText
-										}
-										onChange={isChecked =>
-											isChecked &&
-											setAssignmentProp(
-												'content_layout',
-												AssignmentLayout.PlayerAndText
-											)
-										}
-									/>
-									<RadioButton
-										label={t(
-											'assignment/views/assignment-edit___enkel-mediaspeler'
-										)}
-										name="content_layout"
-										value={String(AssignmentLayout.OnlyPlayer)}
-										checked={
-											currentAssignment.content_layout ===
-											AssignmentLayout.OnlyPlayer
-										}
-										onChange={isChecked =>
-											isChecked &&
-											setAssignmentProp(
-												'content_layout',
-												AssignmentLayout.OnlyPlayer
-											)
-										}
-									/>
-								</RadioButtonGroup>
-							</FormGroup>
-							<FormGroup
-								label={t('assignment/views/assignment-edit___klas-of-groep')}
-								required
-							>
-								<TextInput
-									id="class_room"
-									value={currentAssignment.class_room || ''}
-									onChange={classRoom =>
-										setAssignmentProp('class_room', classRoom)
-									}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={t('assignment/views/assignment-edit___vak-of-project')}
-							>
-								<AssignmentLabels
-									labels={assignmentLabels}
-									user={user}
-									onChange={setAssignmentLabels}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={t('assignment/views/assignment-edit___antwoorden-op')}
-								labelFor="answer_url"
-							>
-								<TextInput
-									id="answer_url"
-									type="text"
-									placeholder={t('assignment/views/assignment-edit___http')}
-									value={currentAssignment.answer_url || ''}
-									onChange={value => setAssignmentProp('answer_url', value)}
-								/>
-								<p className="c-form-help-text">
-									<Trans i18nKey="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">
-										Waar geeft de leerling de antwoorden in? Voeg een optionele
-										URL naar een ander platform toe.
-									</Trans>
-								</p>
-							</FormGroup>
-							<FormGroup
-								label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}
-							>
-								<Flex>
-									<DatePicker
-										value={
-											currentAssignment.available_at
-												? new Date(currentAssignment.available_at)
-												: now
-										}
-										onChange={(value: Date | null) =>
-											setAssignmentProp(
-												'available_at',
-												value ? value.toISOString() : null
-											)
-										}
-										showTimeInput
-									/>
-								</Flex>
-							</FormGroup>
-							<FormGroup
-								label={t('assignment/views/assignment-edit___deadline')}
-								required
-							>
-								<Flex>
-									<Spacer margin="right-small">
-										<DatePicker
-											value={
-												currentAssignment.deadline_at
-													? new Date(currentAssignment.deadline_at)
-													: null
-											}
-											onChange={value =>
-												setAssignmentProp('deadline_at', value)
-											}
-											showTimeInput
-										/>
-									</Spacer>
-								</Flex>
-								{isDeadlineInThePast() ? (
-									<div className="c-form-help-text c-form-help-text--error">
-										<Trans i18nKey="assignment/views/assignment-edit___de-deadline-ligt-in-het-verleden">
-											De deadline ligt in het verleden.
-										</Trans>
-										<br />
-										<Trans i18nKey="assignment/views/assignment-edit___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht">
-											De leerlingen zullen dus geen toegang hebben tot deze
-											opdracht
-										</Trans>
-									</div>
-								) : (
-									<p className="c-form-help-text">
-										<Trans i18nKey="assignment/views/assignment-edit___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen">
-											Na deze datum kan de leerling de opdracht niet meer
-											invullen.
-										</Trans>
-									</p>
-								)}
-							</FormGroup>
-							{currentAssignment.assignment_type === 'BOUW' && (
-								<FormGroup
-									label={t('assignment/views/assignment-edit___groepswerk')}
-									labelFor="only_player"
-								>
-									<Toggle
-										checked={currentAssignment.is_collaborative}
-										onChange={checked =>
-											setAssignmentProp('is_collaborative', checked)
-										}
-									/>
-								</FormGroup>
-							)}
-							<hr className="c-hr" />
-							<Alert type="info">
-								<div className="c-content c-content--no-m">
-									<p>
-										<Trans i18nKey="assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten">
-											Hulp nodig bij het maken van opdrachten?
-										</Trans>
-										<br />
-										Bekijk onze{' '}
-										<a
-											href="http://google.com"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											<Trans i18nKey="assignment/views/assignment-edit___screencast">
-												screencast
-											</Trans>
-										</a>
-										.
-									</p>
-								</div>
-							</Alert>
-						</Form>
-					</Container>
-				</Container>
+				{AssignmentHelper.renderAssignmentForm(
+					currentAssignment,
+					assignmentContent,
+					assignmentLabels,
+					user,
+					setAssignmentProp,
+					setAssignmentLabels
+				)}
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
@@ -768,7 +382,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
-					deleteObjectCallback={deleteCurrentAssignment}
+					deleteObjectCallback={() =>
+						AssignmentHelper.deleteCurrentAssignment(currentAssignment, history)
+					}
 				/>
 
 				<InputModal
@@ -783,7 +399,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) =>
-						attemptDuplicateAssignment(newTitle, currentAssignment)
+						AssignmentHelper.attemptDuplicateAssignment(
+							newTitle,
+							currentAssignment,
+							setCurrentAssignment,
+							setLoadingInfo,
+							user,
+							history
+						)
 					}
 					emptyMessage={t(
 						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
@@ -794,12 +417,18 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			dataObject={currentAssignment}
-			render={renderAssignmentEditForm}
-			loadingInfo={loadingInfo}
-			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Maak opdracht pagina titel'))}</title>
+				<meta name="description" content={t('Maak opdracht pagina beschrijving')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				dataObject={currentAssignment}
+				render={renderAssignmentEditForm}
+				loadingInfo={loadingInfo}
+				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
+			/>
+		</>
 	);
 };
 

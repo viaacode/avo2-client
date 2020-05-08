@@ -1,19 +1,12 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import {
-	Alert,
-	BlockHeading,
-	Button,
-	Checkbox,
-	Container,
-	FormGroup,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ToastService } from '../../../shared/services';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
@@ -38,12 +31,15 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Stamboek pagina titel'))}</title>
+					<meta name="description" content={t('Stamboek pagina beschrijving')} />
+				</MetaTags>
 				<div className="c-content">
 					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
@@ -82,6 +78,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 							'authentication/views/registration-flow/r-3-stamboek___lerarenkaart-of-stamboeknummer'
 						)}
 						labelFor="stamboekInput"
+						required
 					>
 						<StamboekInput
 							onChange={setValidStamboekNumber}
@@ -91,24 +88,13 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						/>
 					</FormGroup>
 				</Spacer>
-				<Spacer margin={['bottom-large', 'top-large']}>
-					<FormGroup>
-						<Checkbox
-							label={t(
-								'authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-gebruiksvoorwaarden-en-privacyverklaring'
-							)}
-							checked={hasAcceptedConditions}
-							onChange={setHasAcceptedConditions}
-						/>
-					</FormGroup>
-				</Spacer>
 				<FormGroup>
 					<Button
 						label={t(
 							'authentication/views/registration-flow/r-3-stamboek___account-aanmaken'
 						)}
 						type="primary"
-						disabled={!validStamboekNumber || !hasAcceptedConditions}
+						disabled={!validStamboekNumber}
 						onClick={() =>
 							redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
 						}

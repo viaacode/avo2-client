@@ -125,7 +125,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				<ModalBody>
 					<div>
 						<Spacer>
-							<FormGroup>
+							<FormGroup label={t('Reden')} required>
 								<RadioButtonGroup>
 									<RadioButton
 										label={GET_RADIO_BUTTON_LABELS()['broken']}

@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -64,7 +64,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 						// If the parent is a collection then the fragment is an ITEM or TEXT
 						// If the parent is a bundle then the fragment is a COLLECTION
 						type={isCollection ? 'itemOrText' : 'collection'}
-						key={`fragment_${fragment.id}`}
+						key={`fragment_${fragment.id}-${get(fragment, 'item_meta.external_id')}`}
 						index={index}
 						collectionId={collectionId}
 						numberOfFragments={collectionFragments.length}

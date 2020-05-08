@@ -2,6 +2,7 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	Badge,
@@ -18,6 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
@@ -244,6 +246,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				...menuForm,
 				content_type: get(value, 'type'),
 				content_path: get(value, 'value'),
+				link_target: get(value, 'target', '_self'),
 			});
 		} else {
 			setMenuForm({
@@ -369,6 +372,17 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(menuForm, 'label'),
+							menuItemId
+								? t('Menu item beheer bewerk pagina titel')
+								: t('Menu item beheer aanmaak pagina titel')
+						)}
+					</title>
+					<meta name="description" content={get(menuForm, 'description') || ''} />
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<MenuEditForm

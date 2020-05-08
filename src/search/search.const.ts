@@ -4,7 +4,7 @@ import { SortOrder } from './search.types';
 
 export const ITEMS_PER_PAGE = 10;
 
-export const DEFAULT_FORM_STATE: Avo.Search.Filters = {
+export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
 	query: '',
 	type: [],
 	educationLevel: [],

@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -8,6 +9,7 @@ import { Dispatch } from 'redux';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
@@ -151,11 +153,17 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={pages[0]}
-			render={renderAcceptConditionsPage}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('voorwaarden pagina titel'))}</title>
+				<meta name="description" content={t('voorwaarden pagina beschrijving')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={pages[0]}
+				render={renderAcceptConditionsPage}
+			/>
+		</>
 	);
 };
 

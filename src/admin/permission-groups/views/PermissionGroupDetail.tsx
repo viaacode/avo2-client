@@ -1,6 +1,7 @@
 import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -16,6 +17,7 @@ import {
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
@@ -219,11 +221,20 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={permissionGroup}
-			render={renderPage}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Permissiegroep beheer detail pagina titel'))}</title>
+				<meta
+					name="description"
+					content={t('Permissiegroep beheer detail pagina beschrijving')}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={permissionGroup}
+				render={renderPage}
+			/>
+		</>
 	);
 };
 

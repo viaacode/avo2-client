@@ -26,6 +26,8 @@ import {
 } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
+import MetaTags from 'react-meta-tags';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 
 interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
 
@@ -264,6 +266,15 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(t('Gebruikersgroepen beheer overzicht pagina titel'))}
+					</title>
+					<meta
+						name="description"
+						content={t('Gebruikersgroepen beheer overzicht pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<LoadingErrorLoadedComponent

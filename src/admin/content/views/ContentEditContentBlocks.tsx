@@ -5,6 +5,7 @@ import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPage } from '../../../content-page/views';
+import { ResizablePanels } from '../../../shared/components';
 import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
@@ -19,7 +20,7 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
-import { ResizablePanels } from '../../../shared/components';
+import { ContentService } from '../content.service';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -143,7 +144,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 			>
 				<div className="c-content-edit-view__preview" ref={previewScrollable}>
 					<ContentPage
-						contentBlockConfigs={contentBlockConfigs}
+						contentBlockConfigs={ContentService.convertRichTextEditorStatesToHtml(
+							contentBlockConfigs
+						)}
 						contentWidth={contentWidth}
 					/>
 				</div>

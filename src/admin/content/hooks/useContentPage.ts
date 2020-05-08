@@ -84,7 +84,8 @@ export const useContentPage = (history: History, id?: string): UseContentPageTup
 					payload: {
 						thumbnail_path: (dbContentPage as any).thumbnail_path, // Remove cast after update to typings 2.15.0
 						title: dbContentPage.title,
-						description: dbContentPage.description || '',
+						descriptionHtml: dbContentPage.description || '',
+						descriptionState: null,
 						isProtected: dbContentPage.is_protected,
 						path: dbContentPage.path,
 						contentType: dbContentPage.content_type,

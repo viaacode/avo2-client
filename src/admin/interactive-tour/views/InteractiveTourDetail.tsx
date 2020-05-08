@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -14,7 +15,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -225,11 +226,25 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 	);
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={interactiveTour}
-			render={renderUserDetailPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(interactiveTour, 'name'),
+						t('Interactieve rondleiding beheer detail pagina titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t('Interactieve rondleiding beheer detail pagina beschrijving')}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={interactiveTour}
+				render={renderUserDetailPage}
+			/>
+		</>
 	);
 };
 

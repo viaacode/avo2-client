@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 
 import {
@@ -39,15 +40,15 @@ import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import { ShareCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -517,12 +518,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
 				: []),
 		];
-
 		return (
 			<ButtonToolbar>
 				<Button
-					label={t('bundle/views/bundle-detail___delen')}
-					title={t('bundle/views/bundle-detail___maak-de-bundel-publiek-niet-publiek')}
+					title={isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')}
+					ariaLabel={
+						isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')
+					}
+					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
 					type="secondary"
 				/>
@@ -652,12 +655,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	const renderBundle = () => {
-		const {
-			is_public,
-			thumbnail_path,
-			title,
-			description,
-		} = bundle as Avo.Collection.Collection;
+		const { is_public, thumbnail_path, title, description_long } = bundle as any; // TODO: Replace any by Avo.Collection.Collection when typings update releases, 2.17.0
 
 		if (!isFirstRender) {
 			setIsPublic(is_public);
@@ -706,7 +704,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<ToolbarItem>{renderActions()}</ToolbarItem>
 									</ToolbarRight>
 								</Toolbar>
-								<p className="c-body-1">{description}</p>
+								<p className="c-body-1">{description_long}</p>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
 										<Avatar
@@ -767,12 +765,20 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			render={renderBundle}
-			dataObject={permissions}
-			loadingInfo={loadingInfo}
-			showSpinner={true}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(get(bundle, 'title', t('Bundel detail titel fallback')))}
+				</title>
+				<meta name="description" content={get(bundle, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				render={renderBundle}
+				dataObject={permissions}
+				loadingInfo={loadingInfo}
+				showSpinner={true}
+			/>
+		</>
 	);
 };
 

@@ -2,6 +2,7 @@ import { get } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -12,6 +13,10 @@ import {
 	EnglishContentType,
 	Flex,
 	Grid,
+	Header,
+	HeaderAvatar,
+	HeaderButtons,
+	HeaderContentType,
 	Icon,
 	IconName,
 	MediaCard,
@@ -24,10 +29,6 @@ import {
 	TagList,
 	Thumbnail,
 	ToggleButton,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -40,13 +41,13 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -327,85 +328,71 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 
 		return (
 			<>
-				<Container
-					className="c-item-view__header"
-					mode="vertical"
-					size="small"
-					background="alt"
+				<Header
+					title={item.title}
+					category={toEnglishContentType(item.type.label)}
+					showMetaData={true}
+					containerSize="large"
+					className="c-item-detail__header"
 				>
-					<Container mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<Spacer margin="bottom">
-										<div className="c-content-type c-content-type--video">
-											<Icon
-												name={
-													(get(item, 'type.id') ===
-													ContentTypeNumber.audio
-														? 'headphone'
-														: get(item, 'type.label')) as IconName
-												}
-											/>
-											<p>{get(item, 'type.label')}</p>
-										</div>
-									</Spacer>
-									<h1 className="c-h2 u-m-0">{item.title}</h1>
-									<MetaData
-										category={toEnglishContentType(get(item, 'type.label'))}
-										spaced
-									>
-										{!!get(item, 'organisation.name') && (
-											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													{generateSearchLink(
-														'provider',
-														item.organisation.name
-													)}
-												</p>
-											</MetaDataItem>
-										)}
-										{!!item.issued && (
-											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													Gepubliceerd op{' '}
-													{reorderDate(item.issued || null, '/')}
-												</p>
-											</MetaDataItem>
-										)}
-										{!!item.series && (
-											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													Uit reeks:{' '}
-													{generateSearchLink('serie', item.series)}
-												</p>
-											</MetaDataItem>
-										)}
-									</MetaData>
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<div className="u-mq-switch-main-nav-authentication">
-										<MetaData category={englishContentType}>
-											<MetaDataItem
-												label={String(bookmarkViewPlayCounts.viewCount)}
-												icon="eye"
-											/>
-											<MetaDataItem
-												label={String(bookmarkViewPlayCounts.bookmarkCount)}
-												icon="bookmark"
-											/>
-										</MetaData>
-									</div>
-									<Spacer margin="left-small">
-										<InteractiveTour showButton />
-									</Spacer>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</Container>
-				</Container>
+					<HeaderContentType
+						category={toEnglishContentType(item.type.label)}
+						label={item.type.label}
+					>
+						<Spacer margin="bottom">
+							<div className="c-content-type c-content-type--video">
+								<Icon
+									name={
+										(get(item, 'type.id') === ContentTypeNumber.audio
+											? 'headphone'
+											: get(item, 'type.label')) as IconName
+									}
+								/>
+								<p>{get(item, 'type.label')}</p>
+							</div>
+						</Spacer>
+					</HeaderContentType>
+					<HeaderButtons>
+						<ButtonToolbar>
+							<MetaData category={englishContentType}>
+								<MetaDataItem
+									label={String(bookmarkViewPlayCounts.viewCount)}
+									icon="eye"
+								/>
+								<MetaDataItem
+									label={String(bookmarkViewPlayCounts.bookmarkCount)}
+									icon="bookmark"
+								/>
+							</MetaData>
+							<InteractiveTour showButton />
+						</ButtonToolbar>
+					</HeaderButtons>
+					<HeaderAvatar>
+						<MetaData category={toEnglishContentType(item.type.label)}>
+							{!!get(item, 'organisation.name') && (
+								<MetaDataItem>
+									<p className="c-body-2 u-text-muted">
+										{generateSearchLink('provider', item.organisation.name)}
+									</p>
+								</MetaDataItem>
+							)}
+							{!!item.issued && (
+								<MetaDataItem>
+									<p className="c-body-2 u-text-muted">
+										Gepubliceerd op {reorderDate(item.issued || null, '/')}
+									</p>
+								</MetaDataItem>
+							)}
+							{!!item.series && (
+								<MetaDataItem>
+									<p className="c-body-2 u-text-muted">
+										Uit reeks: {generateSearchLink('serie', item.series)}
+									</p>
+								</MetaDataItem>
+							)}
+						</MetaData>
+					</HeaderAvatar>
+				</Header>
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
 						<ItemVideoDescription
@@ -712,12 +699,22 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={item}
-			render={renderItem}
-			notFoundError={t('item/views/item___dit-item-werd-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(item, 'title', t('Item detail pagina titel fallback'))
+					)}
+				</title>
+				<meta name="description" content={get(item, 'description', '')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={item}
+				render={renderItem}
+				notFoundError={t('item/views/item___dit-item-werd-niet-gevonden')}
+			/>
+		</>
 	);
 };
 

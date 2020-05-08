@@ -405,6 +405,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											label={t(
 												'item/components/modals/add-to-collection-modal___collectie'
 											)}
+											required
 										>
 											<Spacer margin="bottom">
 												<RadioButton
@@ -515,7 +516,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												  )
 												: !createNewCollection && !selectedCollection
 												? t(
-														'item/components/modals/add-to-collection-modal___bezig-met-collectie-detail-op-te-halen'
+														'Je moet een collectie kiezen om dit item aan toe te voegen'
 												  )
 												: ''
 										}
