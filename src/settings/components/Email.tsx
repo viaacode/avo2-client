@@ -133,6 +133,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 			}
 
 			setIsLoading(false);
+			ToastService.success(t('Je voorkeuren zijn opgeslagen'));
 		}
 	};
 
