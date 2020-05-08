@@ -1,4 +1,4 @@
-import { uniq } from 'lodash-es';
+import { omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +9,19 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Flex,
 	IconName,
+	Spacer,
+	Spinner,
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import {
+	redirectToClientPage,
+	redirectToServerLogoutPage,
+} from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
@@ -49,6 +55,22 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	const [t] = useTranslation();
 
 	const queryParams = queryString.parse((location.search || '').substring(1));
+
+	if (queryParams.logout) {
+		// redirect to logout route and afterwards redirect back to the error page
+		redirectToServerLogoutPage(
+			location,
+			`/error?${queryString.stringify(omit(queryParams, 'logout'))}`
+		);
+		return (
+			<Spacer margin={['top-large', 'bottom-large']}>
+				<Flex center>
+					<Spinner size="large" />
+				</Flex>
+			</Spacer>
+		);
+	}
+
 	const errorMessage: string =
 		(queryParams.message as string) ||
 		message ||
