@@ -155,8 +155,15 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			if (!hasSubmitted) {
 				setHasSubmitted(true);
 			}
+
+			// Remove rich text editor states, since they are also saved as html,
+			// and we don't want those states to end up in the database
+			const blockConfigs: ContentBlockConfig[] = ContentService.convertRichTextEditorStatesToHtml(
+				contentBlockConfigs
+			);
+
 			// Run validators on to check untouched inputs
-			contentBlockConfigs.forEach((config, configIndex) => {
+			blockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;
 				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
 				let newErrors: ContentBlockErrors = {};
@@ -214,7 +221,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			const contentItem: Partial<Avo.Content.Content> | any = {
 				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
-				description: contentForm.description || null,
+				description: contentForm.descriptionState
+					? contentForm.descriptionState.toHTML()
+					: contentForm.descriptionHtml || null,
 				is_protected: contentForm.isProtected,
 				path: getPathOrDefault(),
 				content_type: contentForm.contentType,
@@ -229,7 +238,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					contentBlockConfigs
+					blockConfigs
 				);
 			} else {
 				if (!isNil(id)) {
@@ -241,7 +250,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
 						contentBlocks,
-						contentBlockConfigs
+						blockConfigs
 					);
 				} else {
 					throw new CustomError(

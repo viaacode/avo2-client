@@ -12,6 +12,8 @@ import {
 	ContentWidth,
 } from './content.types';
 
+export const RichEditorStateKey = 'RichEditorState';
+
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
 	GET: 'data.app_content',
@@ -68,7 +70,8 @@ export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
 export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
 	thumbnail_path: null,
 	title: '',
-	description: '',
+	descriptionHtml: '',
+	descriptionState: undefined,
 	isProtected: false,
 	path: '',
 	contentType: '',

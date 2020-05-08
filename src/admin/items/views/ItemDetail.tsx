@@ -9,12 +9,12 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	RichEditorState,
 	Spacer,
 	Table,
 	Thumbnail,
 	Toolbar,
 	ToolbarRight,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -26,6 +26,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
@@ -62,6 +64,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
 		'asc'
 	);
+	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const [t] = useTranslation();
 
@@ -182,7 +185,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item) {
 				return;
 			}
-			await ItemsService.setItemNotes(item.uid, (item as any).note || null);
+			await ItemsService.setItemNotes(
+				item.uid,
+				noteEditorState ? noteEditorState.toHTML() : (item as any).note || null
+			);
 			ToastService.success(
 				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
 				false
@@ -321,16 +327,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderDetailRow(
 								<>
-									<div style={{ backgroundColor: Color.White }}>
-										<WYSIWYG
-											id="note"
-											data={item.note || undefined}
-											onChange={(note: string | null) =>
-												setItem({ ...item, note })
-											}
-										/>
-									</div>
-									<Spacer margin="top-small">
+									<Spacer margin="right-small">
+										<Spacer margin={['top']}>
+											<div style={{ backgroundColor: Color.White }}>
+												<WYSIWYG2Wrapper
+													id="note"
+													controls={WYSIWYG2_OPTIONS_FULL}
+													initialHtml={item.note || undefined}
+													state={noteEditorState}
+													onChange={setNoteEditorState}
+												/>
+											</div>
+										</Spacer>
 										<Toolbar>
 											<ToolbarRight>
 												<Button

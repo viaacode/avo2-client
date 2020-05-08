@@ -14,6 +14,7 @@ import {
 	FormGroup,
 	Icon,
 	Navbar,
+	RichEditorState,
 	Spacer,
 	TextInput,
 	Toolbar,
@@ -178,7 +179,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	};
 
-	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
+	const setAssignmentProp = (
+		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+		value: any
+	) => {
 		const newAssignment = {
 			...currentAssignment,
 			[property]: value,
@@ -206,6 +210,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
+
+			// Convert description editor state to html and store it in the assignment
+			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
+				'descriptionRichEditorState'
+			];
+			assignment.description = descriptionRichEditorState
+				? descriptionRichEditorState.toHTML()
+				: assignment.description || '';
 
 			// Copy content if it's a collection collection if not owned by logged in user
 			// so your assignment can work after the other user deletes his collection

@@ -66,9 +66,9 @@ export function redirectToServerLoginPage(location: Location) {
 	})}`;
 }
 
-export function redirectToServerLogoutPage(location: Location) {
+export function redirectToServerLogoutPage(location: Location, routeAfterLogout: string) {
 	// Url to return to after logout is completed
-	const returnToUrl = `${getBaseUrl(location)}`;
+	const returnToUrl = `${getBaseUrl(location)}${routeAfterLogout}`;
 	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
 		returnToUrl,
 	})}`;

@@ -399,18 +399,34 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		active: currentTab === tab.id,
 	}));
 
+	const convertFragmentDescriptionsToHtml = (
+		collection: Avo.Collection.Collection | null
+	): Avo.Collection.Collection | null => {
+		if (!collection) {
+			return collection;
+		}
+		const clonedCollection = cloneDeep(collection);
+		getFragmentsFromCollection(clonedCollection).forEach(fragment => {
+			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
+				fragment.custom_description = (fragment.custom_description as any).toHTML();
+			}
+		});
+		return clonedCollection;
+	};
+
 	const hasUnsavedChanged = () =>
-		JSON.stringify(collectionState.currentCollection) !==
-		JSON.stringify(collectionState.initialCollection);
+		JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.currentCollection)) !==
+		JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.initialCollection));
 
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
 
-		const updatedCollection = ({
+		// Convert fragment description editor states to html strings
+		const updatedCollection = convertFragmentDescriptionsToHtml(({
 			...collectionState.currentCollection,
 			updated_by_profile_id: get(user, 'profile.id', null),
-		} as unknown) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
+		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
 
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(

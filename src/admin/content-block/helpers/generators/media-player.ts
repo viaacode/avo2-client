@@ -1,3 +1,8 @@
+import {
+	FileUploadProps,
+	PHOTO_TYPES,
+	VIDEO_TYPES,
+} from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -8,7 +13,13 @@ import {
 } from '../../../shared/types';
 import { GET_WIDTH_OPTIONS } from '../../content-block.const';
 
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD, VIDEO_FIELD } from './defaults';
+import {
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
+	FILE_FIELD,
+	TEXT_FIELD,
+	VIDEO_FIELD,
+} from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
 	title: '',
@@ -32,7 +43,29 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			item: VIDEO_FIELD(),
+			item: VIDEO_FIELD(undefined, {
+				validator: () => [],
+			}),
+			src: FILE_FIELD(undefined, {
+				label: i18n.t('Eigen video uploaden (optioneel)'),
+				validator: () => [],
+				editorProps: {
+					allowMulti: false,
+					allowedTypes: VIDEO_TYPES,
+					assetType: 'CONTENT_PAGE_IMAGE',
+					ownerId: '',
+				} as FileUploadProps,
+			}),
+			poster: FILE_FIELD(undefined, {
+				label: i18n.t('Eigen poster uploaden (optioneel)'),
+				validator: () => [],
+				editorProps: {
+					allowMulti: false,
+					allowedTypes: PHOTO_TYPES,
+					assetType: 'CONTENT_PAGE_IMAGE',
+					ownerId: '',
+				} as FileUploadProps,
+			}),
 			width: {
 				label: i18n.t('admin/content-block/helpers/generators/media-player___breedte'),
 				editorType: ContentBlockEditor.Select,
