@@ -4,6 +4,7 @@ import {
 	ContentItemStyle,
 	ContentTabStyle,
 	CTAProps,
+	HeadingType,
 	IconName,
 	RichEditorState,
 	SpacerOption,
@@ -316,16 +317,29 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 
 export interface MediaGridBlockComponentState {
 	mediaItem?: ButtonAction;
+	buttonLabel?: string;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
 }
 
 export interface MediaGridBlockState extends DefaultContentBlockState {
+	title?: string;
+	buttonLabel?: string;
+	buttonAction?: ButtonAction;
 	ctaTitle?: string;
 	ctaTitleColor?: string;
+	ctaTitleSize?: HeadingType;
 	ctaContent?: string;
 	ctaContentColor?: string;
 	ctaButtonLabel?: string;
-	ctaButtonAction?: ButtonAction;
+	ctaButtonType?: ButtonType;
+	ctaButtonIcon?: IconName;
 	ctaBackgroundColor?: string;
+	ctaBackgroundImage?: string;
+	ctaWidth?: string;
+	ctaButtonAction?: ButtonAction;
+	navigate?: (buttonAction?: ButtonAction) => void;
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 }
