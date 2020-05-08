@@ -20,7 +20,6 @@ import {
 	TextInput,
 	Thumbnail,
 	Toggle,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -28,6 +27,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
+import WYSIWYG2Wrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../shared/constants';
 import { CustomError, navigate } from '../shared/helpers';
 import { dataService, ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
@@ -37,7 +38,6 @@ import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from './assignme
 import { AssignmentService } from './assignment.service';
 import { AssignmentLayout } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
-import { WYSIWYG2_OPTIONS_FULL } from '../shared/constants';
 
 export class AssignmentHelper {
 	/**
@@ -257,11 +257,11 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___opdracht')}
 							required
 						>
-							<WYSIWYG2
+							<WYSIWYG2Wrapper
 								id="assignmentDescription"
 								initialHtml={assignment.description}
 								state={(assignment as any)['descriptionRichEditorState']}
-								controls={WYSIWYG2_OPTIONS_FULL}
+								controls={[...WYSIWYG2_OPTIONS_FULL, 'media']}
 								onChange={newState =>
 									setAssignmentProp('descriptionRichEditorState', newState)
 								}

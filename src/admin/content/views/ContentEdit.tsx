@@ -1,4 +1,4 @@
-import { cloneDeep, get, has, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,6 @@ import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-blo
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { validateContentBlockField } from '../../shared/helpers';
-import { omitByDeep } from '../../shared/helpers/omitByDeep';
 import {
 	AdminLayout,
 	AdminLayoutBody,
@@ -44,7 +43,7 @@ import {
 	ContentBlockType,
 } from '../../shared/types';
 import { ContentEditForm } from '../components';
-import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, RichEditorStateKey } from '../content.const';
+import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { ContentService } from '../content.service';
 import {
 	ContentEditAction,
@@ -157,9 +156,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 			// Remove rich text editor states, since they are also saved as html,
 			// and we don't want those states to end up in the database
-			const blockConfigs: ContentBlockConfig[] = omitByDeep(
-				cloneDeep(contentBlockConfigs),
-				key => String(key).endsWith(RichEditorStateKey)
+			const blockConfigs: ContentBlockConfig[] = ContentService.convertRichTextEditorStatesToHtml(
+				contentBlockConfigs
 			);
 
 			// Run validators on to check untouched inputs

@@ -29,15 +29,12 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
-import {
-	WYSIWYG2_OPTIONS_AUTHOR,
-	WYSIWYG2_OPTIONS_DEFAULT,
-} from '../../../shared/constants/wysiwyg2';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_AUTHOR, WYSIWYG2_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
@@ -295,7 +292,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
-							<WYSIWYG2
+							<WYSIWYG2Wrapper
 								id={`description_${fragment.id}`}
 								controls={
 									allowedToAddLinks

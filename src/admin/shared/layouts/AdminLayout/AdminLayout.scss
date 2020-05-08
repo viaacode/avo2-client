@@ -20,6 +20,10 @@ $admin-actions-bar-height: 8.4rem;
 	.m-admin-layout-content {
 		overflow-y: auto;
 		height: calc(100vh - 64px);
+
+		> .o-container-vertical {
+			padding-bottom: 400px; // Leave space for the dropdown to open without having to scroll again
+		}
 	}
 }
 

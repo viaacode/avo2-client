@@ -14,7 +14,6 @@ import {
 	Thumbnail,
 	Toolbar,
 	ToolbarRight,
-	WYSIWYG2,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -26,6 +25,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
@@ -38,7 +39,6 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { Color } from '../../shared/types';
 import { ItemsService } from '../items.service';
-import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants/wysiwyg2';
 
 type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
 
@@ -329,7 +329,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									<Spacer margin="right-small">
 										<Spacer margin={['top']}>
 											<div style={{ backgroundColor: Color.White }}>
-												<WYSIWYG2
+												<WYSIWYG2Wrapper
 													id="note"
 													controls={WYSIWYG2_OPTIONS_FULL}
 													initialHtml={item.note || undefined}
