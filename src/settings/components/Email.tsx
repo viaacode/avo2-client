@@ -1,5 +1,12 @@
 import { keys } from 'lodash-es';
-import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
+import React, {
+	FunctionComponent,
+	Reducer,
+	useCallback,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
@@ -19,6 +26,7 @@ import { Avo } from '@viaa/avo2-types';
 import { convertToNewsletterPreferenceUpdate, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { NewsletterList, NewsletterPreferences, ReactAction } from '../../shared/types';
+import { GET_NEWSLETTER_LABELS } from '../settings.const';
 import { fetchNewsletterPreferences, updateNewsletterPreferences } from '../settings.service';
 
 export interface EmailProps {}
@@ -68,33 +76,26 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 		Reducer<NewsletterPreferences, NewsletterPreferencesAction>
 	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
-	const GET_NEWSLETTER_LABELS = () => ({
-		newsletter: t(
-			'Ik ontvang graag tips en inspiratie voor mijn lessen en nieuws van partners.'
-		),
-		workshop: t('Ik wil berichten over workshops en events ontvangen.'),
-		ambassador: t(
-			'Ik krijg graag berichten om actief mee te werken aan Het Archief voor Onderwijs.'
-		),
-	});
-
 	const newsletterLabels = GET_NEWSLETTER_LABELS();
 
-	useEffect(() => {
+	const fetchEmailPreferences = useCallback(async () => {
 		try {
-			fetchNewsletterPreferences(user.mail).then((preferences: NewsletterPreferences) => {
-				setInitialNewsletterPreferences(preferences);
-				changeNewsletterPreferences({
-					type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
-					payload: preferences,
-				});
-				setIsLoading(false);
+			const preferences: NewsletterPreferences = await fetchNewsletterPreferences(user.mail);
+			setInitialNewsletterPreferences(preferences);
+			changeNewsletterPreferences({
+				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
+				payload: preferences,
 			});
 		} catch (err) {
 			console.error(new CustomError('Failed to retrieve newsletter preferences', err));
 			ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden opgevraagd.'));
 		}
+		setIsLoading(false);
 	}, [user.mail, t]);
+
+	useEffect(() => {
+		fetchEmailPreferences();
+	}, [fetchEmailPreferences]);
 
 	const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
 		changeNewsletterPreferences({
