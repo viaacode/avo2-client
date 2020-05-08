@@ -1,4 +1,6 @@
+import { keys } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -10,11 +12,13 @@ import {
 	Form,
 	FormGroup,
 	Spacer,
+	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { convertToNewsletterPreferenceUpdate } from '../../shared/helpers';
-import { NewsletterPreferences, ReactAction } from '../../shared/types';
+import { convertToNewsletterPreferenceUpdate, CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
+import { NewsletterList, NewsletterPreferences, ReactAction } from '../../shared/types';
 import { fetchNewsletterPreferences, updateNewsletterPreferences } from '../settings.service';
 
 export interface EmailProps {}
@@ -54,6 +58,9 @@ const newsletterPreferencesReducer = (
 };
 
 const Email: FunctionComponent<EmailProps> = ({ user }) => {
+	const [t] = useTranslation();
+
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [initialNewsletterPreferences, setInitialNewsletterPreferences] = useState<
 		NewsletterPreferences
 	>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
@@ -61,15 +68,33 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 		Reducer<NewsletterPreferences, NewsletterPreferencesAction>
 	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
+	const GET_NEWSLETTER_LABELS = () => ({
+		newsletter: t(
+			'Ik ontvang graag tips en inspiratie voor mijn lessen en nieuws van partners.'
+		),
+		workshop: t('Ik wil berichten over workshops en events ontvangen.'),
+		ambassador: t(
+			'Ik krijg graag berichten om actief mee te werken aan Het Archief voor Onderwijs.'
+		),
+	});
+
+	const newsletterLabels = GET_NEWSLETTER_LABELS();
+
 	useEffect(() => {
-		fetchNewsletterPreferences(user.mail).then((preferences: NewsletterPreferences) => {
-			setInitialNewsletterPreferences(preferences);
-			changeNewsletterPreferences({
-				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
-				payload: preferences,
+		try {
+			fetchNewsletterPreferences(user.mail).then((preferences: NewsletterPreferences) => {
+				setInitialNewsletterPreferences(preferences);
+				changeNewsletterPreferences({
+					type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
+					payload: preferences,
+				});
+				setIsLoading(false);
 			});
-		});
-	}, [user.mail]);
+		} catch (err) {
+			console.error(new CustomError('Failed to retrieve newsletter preferences', err));
+			ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden opgevraagd.'));
+		}
+	}, [user.mail, t]);
 
 	const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
 		changeNewsletterPreferences({
@@ -78,7 +103,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 		});
 	};
 
-	const onSavePreferences = () => {
+	const onSavePreferences = async () => {
 		const convertedNewsletterPreferenceUpdate = convertToNewsletterPreferenceUpdate(
 			initialNewsletterPreferences,
 			newsletterPreferences
@@ -86,15 +111,25 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 
 		// Only perform update request if there are changes
 		if (convertedNewsletterPreferenceUpdate) {
-			updateNewsletterPreferences(
-				`${user.first_name} ${user.last_name}`,
-				user.mail,
-				convertedNewsletterPreferenceUpdate
-			);
-			setInitialNewsletterPreferences({
-				...initialNewsletterPreferences,
-				...newsletterPreferences,
-			});
+			try {
+				setIsLoading(true);
+
+				await updateNewsletterPreferences(
+					`${user.first_name} ${user.last_name}`,
+					user.mail,
+					convertedNewsletterPreferenceUpdate
+				);
+
+				setInitialNewsletterPreferences({
+					...initialNewsletterPreferences,
+					...newsletterPreferences,
+				});
+			} catch (err) {
+				console.error(new CustomError('Failed to update newsletter preferences', err));
+				ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden geüpdatet.'));
+			}
+
+			setIsLoading(false);
 		}
 	};
 
@@ -112,39 +147,32 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 					<Form>
 						<FormGroup labelFor="newsletter" required>
 							<CheckboxGroup>
-								<Checkbox
-									label="Ik ontvang graag tips en inspiratie voor mijn lessen en nieuws van partners."
-									checked={newsletterPreferences.newsletter}
-									onChange={() =>
-										onChangePreference({
-											newsletter: !newsletterPreferences.newsletter,
-										})
-									}
-								/>
-								<Checkbox
-									label="Ik wil berichten over workshops en events ontvangen."
-									checked={newsletterPreferences.workshop}
-									onChange={() => {
-										onChangePreference({
-											workshop: !newsletterPreferences.workshop,
-										});
-									}}
-								/>
-								<Checkbox
-									label="Ik krijg graag berichten om actief mee te werken aan Het Archief voor Onderwijs."
-									checked={newsletterPreferences.ambassador}
-									onChange={() => {
-										onChangePreference({
-											ambassador: !newsletterPreferences.ambassador,
-										});
-									}}
-								/>
+								{(keys(newsletterLabels) as any).map(
+									(newsletterKey: NewsletterList) => (
+										<Checkbox
+											key={`newsletter_${newsletterKey}`}
+											label={newsletterLabels[newsletterKey]}
+											checked={newsletterPreferences[newsletterKey]}
+											onChange={() => {
+												onChangePreference({
+													[newsletterKey]: !newsletterPreferences[
+														newsletterKey
+													],
+												});
+											}}
+										/>
+									)
+								)}
 							</CheckboxGroup>
 						</FormGroup>
 					</Form>
 				</Spacer>
 				<Spacer margin="top">
-					<Button label="Opslaan" type="primary" onClick={onSavePreferences} />
+					{isLoading ? (
+						<Spinner />
+					) : (
+						<Button label="Opslaan" type="primary" onClick={onSavePreferences} />
+					)}
 				</Spacer>
 			</Container>
 		</Container>

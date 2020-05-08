@@ -1,33 +1,20 @@
-import { isEqual } from 'lodash-es';
+import { isEmpty, isNil, keys } from 'lodash-es';
 
-import { NewsletterPreferences } from '../../shared/types';
+import { NewsletterList, NewsletterPreferences } from '../../shared/types';
 
 export const convertToNewsletterPreferenceUpdate = (
 	oldPreferences: NewsletterPreferences,
 	newPreferences: Partial<NewsletterPreferences>
 ) => {
 	// Convert to update object for newsletter preferences.
+	const uniqKeys = keys(oldPreferences) as NewsletterList[];
 
-	const convertedPreferences: any = {};
-
-	Object.entries(oldPreferences).forEach(oldPreference => {
-		const oldPreferenceKey = oldPreference[0];
-		const oldPreferenceValue = oldPreference[1];
-
-		if ((newPreferences as any)[oldPreferenceKey] === oldPreferenceValue) {
-			return;
-		}
-
-		if ((newPreferences as any)[oldPreferenceKey] === false && oldPreferenceValue === true) {
-			convertedPreferences[oldPreferenceKey] = false;
-			return;
-		}
-
-		if ((newPreferences as any)[oldPreferenceKey] === true && oldPreferenceValue === false) {
-			convertedPreferences[oldPreferenceKey] = true;
-			return;
+	const convertedPreferences: Partial<NewsletterPreferences> = {};
+	uniqKeys.forEach(key => {
+		if (!isNil(newPreferences[key]) && oldPreferences[key] !== newPreferences[key]) {
+			convertedPreferences[key] = newPreferences[key];
 		}
 	});
 
-	return isEqual(convertedPreferences, {}) ? null : convertedPreferences;
+	return isEmpty(convertedPreferences) ? null : convertedPreferences;
 };

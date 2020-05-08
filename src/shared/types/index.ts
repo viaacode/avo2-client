@@ -12,6 +12,8 @@ export interface NewsletterPreferences {
 	ambassador: boolean;
 }
 
+export type NewsletterList = keyof NewsletterPreferences;
+
 export type NavigationItemInfo = {
 	label: string | ReactElement;
 	key: string;

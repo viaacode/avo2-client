@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../shared/helpers';
+import { NewsletterPreferences } from '../shared/types';
 
 interface UpdateProfileValues {
 	educationLevels: {
@@ -46,8 +47,10 @@ export const updateProfileInfo = async (
 			);
 		}
 	} catch (err) {
-		console.error('Failed to update profile information', err, { profile, variables });
-		throw err;
+		throw new CustomError('Failed to update profile information', err, {
+			profile,
+			variables,
+		});
 	}
 };
 
@@ -66,15 +69,16 @@ export const fetchNewsletterPreferences = async (email: string) => {
 
 		return response.json();
 	} catch (err) {
-		console.error('Failed to fetch newsletter preferences', err, { email });
-		throw err;
+		throw new CustomError('Failed to fetch newsletter preferences', err, {
+			email,
+		});
 	}
 };
 
 export const updateNewsletterPreferences = async (
 	name: string,
 	email: string,
-	preferences: string
+	preferences: Partial<NewsletterPreferences>
 ) => {
 	try {
 		await fetch(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
@@ -86,7 +90,10 @@ export const updateNewsletterPreferences = async (
 			body: JSON.stringify({ name, email, preferences }),
 		});
 	} catch (err) {
-		console.error('Failed to update newsletter preferences', err, { email, preferences });
-		throw err;
+		throw new CustomError('Failed to update newsletter preferences', err, {
+			name,
+			email,
+			preferences,
+		});
 	}
 };
