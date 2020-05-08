@@ -12,6 +12,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { FileUpload } from '../../shared/components';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import i18n from '../../shared/translations/i18n';
 import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
@@ -87,7 +88,6 @@ import {
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers';
-import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -180,6 +180,7 @@ export const EDITOR_TYPES_MAP = {
 	ColorSelect,
 	ContentPicker,
 	ContentTypeAndLabelsPicker,
+	DatePicker,
 	FileUpload,
 	IconPicker,
 	MultiRange,
@@ -187,9 +188,8 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextArea,
 	TextInput,
-	WYSIWYG: WYSIWYG2Wrapper,
 	UserGroupSelect,
-	DatePicker,
+	WYSIWYG: WYSIWYG2Wrapper,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {

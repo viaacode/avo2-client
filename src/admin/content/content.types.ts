@@ -1,9 +1,9 @@
+import { RichEditorState } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
-import { RichEditorState } from '@viaa/avo2-components';
 
 // Pages
 export enum PageType {

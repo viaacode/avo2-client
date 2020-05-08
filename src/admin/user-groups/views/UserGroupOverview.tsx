@@ -1,11 +1,13 @@
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
@@ -26,8 +28,6 @@ import {
 } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
-import MetaTags from 'react-meta-tags';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 
 interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
 
