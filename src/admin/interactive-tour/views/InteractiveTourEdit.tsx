@@ -17,6 +17,7 @@ import {
 	Panel,
 	PanelBody,
 	PanelHeader,
+	RichEditorState,
 	Select,
 	SelectOption,
 	Spacer,
@@ -28,7 +29,6 @@ import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -36,7 +36,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { ROUTE_PARTS } from '../../../shared/constants';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
@@ -57,8 +58,8 @@ import './InteractiveTourEdit.scss';
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
 	stepIndex: number;
-	stepProp: keyof Avo.InteractiveTour.Step;
-	stepPropValue: ValueOf<Avo.InteractiveTour.Step>;
+	stepProp: keyof Avo.InteractiveTour.Step | 'contentState';
+	stepPropValue: ValueOf<Avo.InteractiveTour.Step> | RichEditorState;
 };
 
 type StepSwapAction = {
@@ -74,14 +75,14 @@ type StepRemoveAction = {
 
 type InteractiveTourUpdateAction = {
 	type: 'UPDATE_INTERACTIVE_TOUR';
-	newInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
+	newInteractiveTour: EditableInteractiveTour | null;
 	updateInitialInteractiveTour?: boolean;
 };
 
 type InteractiveTourPropUpdateAction = {
 	type: 'UPDATE_INTERACTIVE_TOUR_PROP';
-	interactiveTourProp: keyof Avo.InteractiveTour.InteractiveTour;
-	interactiveTourPropValue: ValueOf<Avo.InteractiveTour.InteractiveTour>;
+	interactiveTourProp: keyof EditableInteractiveTour;
+	interactiveTourPropValue: ValueOf<EditableInteractiveTour>;
 	updateInitialInteractiveTour?: boolean;
 };
 
@@ -93,8 +94,16 @@ export type InteractiveTourAction =
 	| InteractiveTourPropUpdateAction;
 
 interface InteractiveTourState {
-	currentInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
-	initialInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
+	currentInteractiveTour: EditableInteractiveTour | null;
+	initialInteractiveTour: EditableInteractiveTour | null;
+}
+
+export interface EditableInteractiveTour extends Avo.InteractiveTour.InteractiveTour {
+	steps: EditableStep[];
+}
+
+export interface EditableStep extends Avo.InteractiveTour.Step {
+	contentState: RichEditorState | undefined;
 }
 
 interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -126,10 +135,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			};
 		}
 
-		const newCurrentInteractiveTour: Avo.InteractiveTour.InteractiveTour | null = cloneDeep(
+		const newCurrentInteractiveTour: EditableInteractiveTour | null = cloneDeep(
 			interactiveTourState.currentInteractiveTour
 		);
-		const newInitialInteractiveTour: Avo.InteractiveTour.InteractiveTour | null = cloneDeep(
+		const newInitialInteractiveTour: EditableInteractiveTour | null = cloneDeep(
 			interactiveTourState.initialInteractiveTour
 		);
 
@@ -241,7 +250,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					variables: { id: match.params.id },
 				});
 
-				const interactiveTourObj: Avo.InteractiveTour.InteractiveTour | undefined = get(
+				const interactiveTourObj: EditableInteractiveTour | undefined = get(
 					response,
 					'data.app_interactive_tour[0]'
 				);
@@ -324,6 +333,19 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		return null;
 	};
 
+	const convertTourContentToHtml = (
+		tour: EditableInteractiveTour
+	): Avo.InteractiveTour.InteractiveTour => {
+		const clonedTour = cloneDeep(tour);
+		clonedTour.steps.forEach((step: EditableStep) => {
+			if (step.contentState) {
+				step.content = step.contentState.toHTML();
+				delete step.contentState;
+			}
+		});
+		return clonedTour;
+	};
+
 	const handleSave = async () => {
 		try {
 			const errors = getFormErrors();
@@ -351,17 +373,16 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 			setIsSaving(true);
 
+			// Convert rich text editor state back to html before we save to database
+			const tour = convertTourContentToHtml(interactiveTourState.currentInteractiveTour);
+
 			let interactiveTourId: number | string;
 			if (isCreatePage) {
 				// insert the interactive tour
-				interactiveTourId = await InteractiveTourService.insertInteractiveTour(
-					interactiveTourState.currentInteractiveTour
-				);
+				interactiveTourId = await InteractiveTourService.insertInteractiveTour(tour);
 			} else {
 				// Update existing interactive tour
-				await InteractiveTourService.updateInteractiveTour(
-					interactiveTourState.currentInteractiveTour
-				);
+				await InteractiveTourService.updateInteractiveTour(tour);
 				interactiveTourId = match.params.id;
 			}
 
@@ -453,7 +474,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		/>
 	);
 
-	const renderStep = (step: Avo.InteractiveTour.Step, index: number) => {
+	const renderStep = (step: EditableStep, index: number) => {
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
@@ -527,16 +548,18 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								)}
 								required
 							>
-								<WYSIWYG
-									data={(step.content || '').toString()}
-									onChange={newContent => {
+								<WYSIWYG2Wrapper
+									initialHtml={(step.content || '').toString()}
+									state={step.contentState}
+									onChange={newContentState => {
 										changeInteractiveTourState({
 											type: 'UPDATE_STEP_PROP',
 											stepIndex: index,
-											stepProp: 'content',
-											stepPropValue: newContent,
+											stepProp: 'contentState',
+											stepPropValue: newContentState,
 										});
 									}}
+									controls={WYSIWYG2_OPTIONS_FULL}
 									id={`content_editor_${index}`}
 									placeholder={t(
 										'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'

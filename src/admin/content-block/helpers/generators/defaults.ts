@@ -1,8 +1,9 @@
-import { isEmpty, isNil, without } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 
-import { SelectOption, WYSIWYGProps } from '@viaa/avo2-components';
+import { SelectOption } from '@viaa/avo2-components';
 
-import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
+import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { UserGroupSelectProps } from '../../../shared/components';
 import {
@@ -124,13 +125,9 @@ export const TEXT_FIELD = (
 		return errorArray;
 	},
 	editorProps: {
-		btns: without(WYSIWYG_OPTIONS_FULL, WYSIWYG_OPTIONS_ALIGN),
-		plugins: {
-			table: {
-				styler: 'c-table--styled',
-			},
-		},
-	} as Partial<WYSIWYGProps>,
+		controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
+		fileType: 'CONTENT_PAGE_IMAGE',
+	} as Partial<WYSIWYG2WrapperProps>,
 	...propOverride,
 });
 

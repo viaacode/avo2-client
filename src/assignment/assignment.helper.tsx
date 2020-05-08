@@ -20,7 +20,6 @@ import {
 	TextInput,
 	Thumbnail,
 	Toggle,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -28,6 +27,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
+import WYSIWYG2Wrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../shared/constants';
 import { CustomError, navigate } from '../shared/helpers';
 import { dataService, ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
@@ -230,7 +231,10 @@ export class AssignmentHelper {
 		assignmentContent: Avo.Assignment.Content | undefined,
 		assignmentLabels: Avo.Assignment.Label[],
 		user: Avo.User.User,
-		setAssignmentProp: (property: keyof Avo.Assignment.Assignment, value: any) => void,
+		setAssignmentProp: (
+			property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+			value: any
+		) => void,
 		setAssignmentLabels: (labels: Avo.Assignment.Label[]) => void
 	) {
 		const now = new Date(Date.now());
@@ -253,12 +257,13 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___opdracht')}
 							required
 						>
-							<WYSIWYG
+							<WYSIWYG2Wrapper
 								id="assignmentDescription"
-								autogrow
-								data={assignment.description}
-								onChange={description =>
-									setAssignmentProp('description', description)
+								initialHtml={assignment.description}
+								state={(assignment as any)['descriptionRichEditorState']}
+								controls={[...WYSIWYG2_OPTIONS_FULL, 'media']}
+								onChange={newState =>
+									setAssignmentProp('descriptionRichEditorState', newState)
 								}
 							/>
 						</FormGroup>

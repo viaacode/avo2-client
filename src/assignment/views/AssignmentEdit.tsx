@@ -16,6 +16,7 @@ import {
 	Icon,
 	MenuContent,
 	Navbar,
+	RichEditorState,
 	Spacer,
 	TextInput,
 	Toolbar,
@@ -237,7 +238,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	};
 
-	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
+	const setAssignmentProp = (
+		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+		value: any
+	) => {
 		const newAssignment = {
 			...currentAssignment,
 			[property]: value,
@@ -248,6 +252,15 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
+
+			// copy description to assignment
+			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
+				'descriptionRichEditorState'
+			];
+			assignment.description = descriptionRichEditorState
+				? descriptionRichEditorState.toHTML()
+				: assignment.description || '';
+
 			// edit => update graphql
 			await AssignmentService.updateAssignment(
 				assignment,

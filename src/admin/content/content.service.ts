@@ -1,4 +1,4 @@
-import { get, omit } from 'lodash-es';
+import { cloneDeep, get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -6,12 +6,14 @@ import { CustomError, performQuery } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 import { ContentBlockService } from '../content-block/services/content-block.service';
+import { omitByDeep } from '../shared/helpers/omitByDeep';
 import { ContentBlockConfig } from '../shared/types';
 
 import {
 	CONTENT_RESULT_PATH,
 	CONTENT_TYPES_LOOKUP_PATH,
 	ITEMS_PER_PAGE,
+	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
 import {
@@ -42,6 +44,7 @@ export class ContentService {
 
 		return performQuery(query, CONTENT_RESULT_PATH.GET, 'Failed to retrieve content items.');
 	}
+
 	public static async getProjectContentItems(
 		limit: number
 	): Promise<Avo.Content.Content[] | null> {
@@ -398,7 +401,7 @@ export class ContentService {
 
 			const updatedContent = get(response, 'data', null);
 
-			if (contentBlockConfigs && contentBlockConfigs.length && initialContentBlocks) {
+			if (contentBlockConfigs && initialContentBlocks) {
 				await ContentBlockService.updateContentBlocks(
 					contentPage.id as number,
 					initialContentBlocks,
@@ -422,5 +425,16 @@ export class ContentService {
 
 			return null;
 		}
+	}
+
+	/**
+	 * Remove rich text editor states, since they are also saved as html,
+	 * and we don't want those states to end up in the database
+	 * @param blockConfigs
+	 */
+	public static convertRichTextEditorStatesToHtml(
+		blockConfigs: ContentBlockConfig[]
+	): ContentBlockConfig[] {
+		return omitByDeep(cloneDeep(blockConfigs), key => String(key).endsWith(RichEditorStateKey));
 	}
 }

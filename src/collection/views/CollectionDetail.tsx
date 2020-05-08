@@ -88,6 +88,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
+	// TODO see if we can remove this by setting the is_public in the sharemodal onClose handler
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
@@ -117,6 +118,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			user
 		);
 	});
+
+	useEffect(() => {
+		if (!isFirstRender && collection) {
+			setIsPublic(collection.is_public);
+			setIsFirstRender(true);
+		}
+	}, [collection, isFirstRender, setIsFirstRender, setIsPublic]);
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
@@ -661,7 +669,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderCollection = () => {
 		const {
 			id,
-			is_public,
 			profile,
 			collection_fragments,
 			lom_context,
@@ -669,12 +676,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			title,
 			lom_classification,
 		} = collection as Avo.Collection.Collection;
-
-		if (!isFirstRender) {
-			setIsPublic(is_public);
-			setIsFirstRender(true);
-		}
-
 		return (
 			<>
 				<Header

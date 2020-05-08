@@ -3,6 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
+import { RichEditorState } from '@viaa/avo2-components';
 
 // Pages
 export enum PageType {
@@ -58,7 +59,8 @@ export type ContentDetailParams = { id: string };
 export interface ContentPageEditFormState {
 	thumbnail_path: string | null;
 	title: string;
-	description: string;
+	descriptionState: RichEditorState | undefined;
+	descriptionHtml: string;
 	isProtected: boolean;
 	path: string;
 	contentType: string;

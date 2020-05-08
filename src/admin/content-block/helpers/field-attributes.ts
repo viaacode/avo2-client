@@ -1,14 +1,19 @@
 import { debounce, get, isArray, isNil } from 'lodash-es';
 
-import { SelectOption } from '@viaa/avo2-components';
+import { SelectOption, WYSIWYG2Props } from '@viaa/avo2-components';
 
+import { RichEditorStateKey } from '../../content/content.const';
 import { ContentBlockEditor, ContentBlockField, PickerItem } from '../../shared/types';
 
 export const generateFieldAttributes = (
 	field: ContentBlockField,
-	onChange: any,
+	// Optional key, so we can store rich text editor state side by side of the html string
+	onChange: (newValue: any, key?: string) => void,
 	value: any,
-	id: string
+	id: string,
+	// key and state are required, so we can store rich text editor state side by side of the html string
+	key: string,
+	state: any
 ) => {
 	switch (field.editorType) {
 		case ContentBlockEditor.TextInput:
@@ -37,9 +42,13 @@ export const generateFieldAttributes = (
 		case ContentBlockEditor.WYSIWYG:
 			return {
 				id,
-				data: value,
-				onChange: (value: any) => onChange(value),
-			};
+				initialHtml: (state as any)[`${key}`] || '',
+				state: (state as any)[`${key}${RichEditorStateKey}`],
+				onChange: (editorState: any) => {
+					onChange(editorState, `${key}${RichEditorStateKey}`);
+					onChange(editorState.toHTML());
+				},
+			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:
 			const urlOrUrls: string[] | undefined = value;
 			return {
