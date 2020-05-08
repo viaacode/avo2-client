@@ -14,6 +14,7 @@ export const GET_COLLECTION_BY_ID = gql`
 		app_collections(where: { id: { _eq: $id } }) {
 			id
 			description
+			description_long
 			collection_fragments(order_by: { position: asc }) {
 				use_custom_fields
 				updated_at

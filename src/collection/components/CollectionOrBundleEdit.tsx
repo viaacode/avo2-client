@@ -110,7 +110,7 @@ type CollectionUpdateAction = {
 
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection;
+	collectionProp: keyof Avo.Collection.Collection | 'description_long'; // TODO: remove description_long when typings update releases, 2.17.0
 	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };
