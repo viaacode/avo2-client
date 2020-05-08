@@ -26,7 +26,6 @@ export const BLOCK_STATE_DEFAULTS = (
 	position: number,
 	backgroundColor: Color = Color.White,
 	headerBackgroundColor: Color = Color.Transparent,
-	headerHeight: string = '0', // Currently we only need 2 block background colors for the PageOverviewBlock component
 	padding: PaddingFieldState = {
 		top: 'top',
 		bottom: 'bottom',
@@ -37,7 +36,6 @@ export const BLOCK_STATE_DEFAULTS = (
 	position,
 	backgroundColor,
 	headerBackgroundColor,
-	headerHeight,
 	padding,
 	userGroupIds,
 });
