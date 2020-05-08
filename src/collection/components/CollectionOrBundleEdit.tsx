@@ -3,11 +3,13 @@ import React, {
 	FunctionComponent,
 	ReactNode,
 	ReactText,
+	useCallback,
 	useEffect,
 	useReducer,
 	useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Prompt, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -39,16 +41,16 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
+	DraggableListModal,
 	InputModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -62,7 +64,6 @@ import { ApolloCacheManager, dataService, ToastService } from '../../shared/serv
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-
 import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import {
@@ -73,6 +74,7 @@ import {
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
+
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
@@ -108,7 +110,7 @@ type CollectionUpdateAction = {
 
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection;
+	collectionProp: keyof Avo.Collection.Collection | 'description_long'; // TODO: remove description_long when typings update releases, 2.17.0
 	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };
@@ -269,8 +271,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		return () => window.removeEventListener('beforeunload', onUnload);
 	});
 
-	useEffect(() => {
-		const checkPermissionsAndGetBundle = async () => {
+	const checkPermissionsAndGetBundle = useCallback(async () => {
+		try {
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
 				PermissionService.hasPermissions(
@@ -346,9 +348,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				type: 'UPDATE_COLLECTION',
 				newCollection: collectionObj || null,
 			});
-		};
-
-		checkPermissionsAndGetBundle().catch(err => {
+		} catch (err) {
 			console.error(
 				new CustomError(
 					`Failed to check permissions or get ${type} from the database`,
@@ -369,8 +369,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					  ),
 				icon: 'alert-triangle',
 			});
-		});
+		}
 	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
+
+	useEffect(() => {
+		checkPermissionsAndGetBundle();
+	}, [checkPermissionsAndGetBundle]);
 
 	useEffect(() => {
 		if (
@@ -395,18 +399,34 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		active: currentTab === tab.id,
 	}));
 
+	const convertFragmentDescriptionsToHtml = (
+		collection: Avo.Collection.Collection | null
+	): Avo.Collection.Collection | null => {
+		if (!collection) {
+			return collection;
+		}
+		const clonedCollection = cloneDeep(collection);
+		getFragmentsFromCollection(clonedCollection).forEach(fragment => {
+			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
+				fragment.custom_description = (fragment.custom_description as any).toHTML();
+			}
+		});
+		return clonedCollection;
+	};
+
 	const hasUnsavedChanged = () =>
-		JSON.stringify(collectionState.currentCollection) !==
-		JSON.stringify(collectionState.initialCollection);
+		JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.currentCollection)) !==
+		JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.initialCollection));
 
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
 
-		const updatedCollection = ({
+		// Convert fragment description editor states to html strings
+		const updatedCollection = convertFragmentDescriptionsToHtml(({
 			...collectionState.currentCollection,
 			updated_by_profile_id: get(user, 'profile.id', null),
-		} as unknown) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
+		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
 
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
@@ -415,10 +435,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			);
 
 			if (newCollection) {
-				changeCollectionState({
-					newCollection,
-					type: 'UPDATE_COLLECTION',
-				});
+				checkPermissionsAndGetBundle();
 				ToastService.success(
 					isCollection
 						? t(
@@ -850,25 +867,24 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				)
 			);
 		}
+		const isPublic =
+			collectionState.currentCollection && collectionState.currentCollection.is_public;
 		return (
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
-						hasUnsavedChanged()
-							? t(
-									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
-							  )
-							: isCollection
-							? t(
-									'collection/components/collection-or-bundle-edit___maak-deze-collectie-publiek-niet-publiek'
-							  )
-							: t(
-									'collection/components/collection-or-bundle-edit___maak-deze-bundel-publiek-niet-publiek'
-							  )
+						isPublic
+							? t('collection/views/collection-detail___maak-deze-collectie-prive')
+							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
 					}
+					ariaLabel={
+						isPublic
+							? t('collection/views/collection-detail___maak-deze-collectie-prive')
+							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
+					}
+					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
 				/>
 				<Button
@@ -1127,11 +1143,30 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={collectionState.currentCollection}
-			render={renderCollectionOrBundleEdit}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(
+							collectionState.currentCollection,
+							'title',
+							isCollection
+								? t('Collectie bewerken titel fallback')
+								: t('Bundel bewerken titel fallback')
+						)
+					)}
+				</title>
+				<meta
+					name="description"
+					content={get(collectionState.currentCollection, 'description') || ''}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={collectionState.currentCollection}
+				render={renderCollectionOrBundleEdit}
+			/>
+		</>
 	);
 };
 

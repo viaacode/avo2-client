@@ -9,10 +9,9 @@ import { Button, Flex, FlexItem, FormGroup, LinkTarget, TextInput } from '@viaa/
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
-
+import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
 import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
-import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
 import {
 	DEFAULT_ALLOWED_TYPES,
 	GET_CONTENT_TYPES,
@@ -63,65 +62,57 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		(get(initialValue, 'target') || LinkTarget.Self) === LinkTarget.Self
 	);
 
-	// handle error during inflation of item picker // TODO: type
-	const handleInflationError = useCallback(
-		(error: any) => {
-			console.error('[Content Picker] - Failed to inflate.', error);
-			ToastService.danger(
-				t(
-					'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
-				),
-				false
-			);
-		},
-		[t]
-	);
+	// inflate item picker
+	const fetchPickerOptions = useCallback(
+		async (keyword: string | null): Promise<PickerSelectItem[]> => {
+			try {
+				if (!selectedType || !selectedType.fetch) {
+					return []; // Search query and external link don't have a fetch function
+				}
+				let items: PickerSelectItem[] = await selectedType.fetch(keyword, 20);
 
-	// inflate item picker // TODO: type
-	const inflatePicker = useCallback(
-		(keyword: string | null, callback: any) => {
-			if (selectedType && !!selectedType.fetch) {
-				selectedType
-					.fetch(keyword, 20)
-					.then((items: PickerSelectItem[]) => {
-						const initialItem = [
-							{
-								label: get(initialValue, 'label'),
-								value: {
-									type: get(initialValue, 'type'),
-									value: get(initialValue, 'value'),
-								},
+				if (!hasAppliedInitialItem && initialValue) {
+					items = [
+						{
+							label: get(initialValue, 'label', ''),
+							value: {
+								type: get(initialValue, 'type') as ContentPickerType,
+								value: get(initialValue, 'value', ''),
 							},
-							...items.filter(
-								(item: PickerSelectItem) =>
-									item.label !== get(initialValue, 'label')
-							),
-						];
+						},
+						...items.filter(
+							(item: PickerSelectItem) => item.label !== get(initialValue, 'label')
+						),
+					];
+				}
 
-						return callback(
-							(!hasAppliedInitialItem && initialValue ? initialItem : items) || []
-						);
-					})
-					.catch(handleInflationError);
+				setItemOptions(items);
+				if (keyword && keyword.length && get(items[0], 'value.value', null) === keyword) {
+					setSelectedItem(items[0] as any);
+				}
+				return items;
+			} catch (err) {
+				throw new CustomError('[Content Picker] - Failed to inflate.', err, {
+					keyword,
+					selectedType,
+				});
 			}
 		},
-		[selectedType, handleInflationError, hasAppliedInitialItem, initialValue]
+		[selectedType, hasAppliedInitialItem, initialValue]
 	);
 
 	// when selecting a type, reset `selectedItem` and retrieve new item options
 	useEffect(() => {
-		inflatePicker(null, setItemOptions);
-	}, [inflatePicker, setItemOptions]);
+		fetchPickerOptions(null);
+	}, [fetchPickerOptions]);
 
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
 		if (itemOptions.length && !hasAppliedInitialItem) {
 			setSelectedItem(setInitialItem(itemOptions, initialValue));
 			setHasAppliedInitialItem(true);
-
-			inflatePicker(null, setItemOptions);
 		}
-	}, [itemOptions]); // eslint-disable-line
+	}, [itemOptions, hasAppliedInitialItem, initialValue]);
 
 	// events
 	const onSelectType = async (selected: ValueType<PickerTypeOption>) => {
@@ -130,7 +121,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			setSelectedItem(null);
 			propertyChanged('selectedItem', null);
 
-			inflatePicker(null, setItemOptions);
+			fetchPickerOptions(null);
 		}
 	};
 
@@ -266,7 +257,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			aria-label={t(
 				'admin/shared/components/content-picker/content-picker___selecteer-een-item'
 			)}
-			loadOptions={inflatePicker}
+			loadOptions={fetchPickerOptions}
 			onChange={onSelectItem}
 			value={selectedItem}
 			defaultOptions={itemOptions as any} // TODO: type

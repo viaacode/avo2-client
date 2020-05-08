@@ -1,6 +1,7 @@
 import { get, isNil, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -21,15 +22,15 @@ import {
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { PermissionGroupService } from '../permission-group.service';
 import {
@@ -308,7 +309,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 
@@ -327,6 +328,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 										'admin/permission-groups/views/permission-group-edit___label'
 									)}
 									error={formErrors.label}
+									required
 								>
 									<TextInput
 										value={permissionGroup.label || ''}
@@ -462,11 +464,30 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	);
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={permissionGroup}
-			render={renderPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						isCreatePage
+							? t('Permissiegroep beheer aanmaak pagina titel')
+							: t('Permissiegroep beheer bewerk pagina titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={
+						isCreatePage
+							? t('Permissiegroep beheer aanmaak pagina beschrijving')
+							: t('Permissiegroep beheer bewerk pagina beschrijving')
+					}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={permissionGroup}
+				render={renderPage}
+			/>
+		</>
 	);
 };
 

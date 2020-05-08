@@ -1,6 +1,7 @@
 import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	Button,
@@ -19,6 +20,7 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
@@ -42,7 +44,6 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
-
 import { ContentEditForm } from '../components';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { ContentService } from '../content.service';
@@ -55,6 +56,7 @@ import {
 } from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
 import { useContentPage, useContentTypes } from '../hooks';
+
 import './ContentEdit.scss';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
@@ -153,8 +155,15 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			if (!hasSubmitted) {
 				setHasSubmitted(true);
 			}
+
+			// Remove rich text editor states, since they are also saved as html,
+			// and we don't want those states to end up in the database
+			const blockConfigs: ContentBlockConfig[] = ContentService.convertRichTextEditorStatesToHtml(
+				contentBlockConfigs
+			);
+
 			// Run validators on to check untouched inputs
-			contentBlockConfigs.forEach((config, configIndex) => {
+			blockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;
 				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
 				let newErrors: ContentBlockErrors = {};
@@ -212,7 +221,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			const contentItem: Partial<Avo.Content.Content> | any = {
 				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
-				description: contentForm.description || null,
+				description: contentForm.descriptionState
+					? contentForm.descriptionState.toHTML()
+					: contentForm.descriptionHtml || null,
 				is_protected: contentForm.isProtected,
 				path: getPathOrDefault(),
 				content_type: contentForm.contentType,
@@ -227,7 +238,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					contentBlockConfigs
+					blockConfigs
 				);
 			} else {
 				if (!isNil(id)) {
@@ -239,7 +250,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
 						contentBlocks,
-						contentBlockConfigs
+						blockConfigs
 					);
 				} else {
 					throw new CustomError(
@@ -453,6 +464,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(contentForm, 'title'),
+							pageType === PageType.Create
+								? t('Content beheer aanmaak pagina titel')
+								: t('Content beheer bewerk pagina titel')
+						)}
+					</title>
+					<meta name="description" content={get(contentForm, 'description')} />
+				</MetaTags>
 				{renderTabContent()}
 				<DeleteObjectModal
 					deleteObjectCallback={removeContentBlockConfig}

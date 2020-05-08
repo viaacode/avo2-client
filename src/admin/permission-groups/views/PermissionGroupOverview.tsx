@@ -1,10 +1,12 @@
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
@@ -12,12 +14,12 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { formatDate, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import {
 	GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
@@ -29,6 +31,7 @@ import {
 	PermissionGroupOverviewTableCols,
 	PermissionGroupTableState,
 } from '../permission-group.types';
+
 import './PermissionGroupOverview.scss';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
@@ -168,7 +171,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 
@@ -232,6 +235,15 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(t('Permissiegroep beheer overzicht pagina titel'))}
+					</title>
+					<meta
+						name="description"
+						content={t('Permissiegroep beheer overzicht pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<LoadingErrorLoadedComponent

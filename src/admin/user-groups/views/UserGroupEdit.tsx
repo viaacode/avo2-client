@@ -1,6 +1,7 @@
 import { compact, flatten, get, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -21,6 +22,7 @@ import {
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -28,12 +30,12 @@ import {
 } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { PermissionGroupService } from '../../permission-groups/permission-group.service';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import {
@@ -334,7 +336,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
 							return (
 								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
-									{permission.description}
+									{truncateTableValue(permission.description)}
 								</div>
 							);
 						})}
@@ -384,6 +386,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 								<FormGroup
 									label={t('admin/user-groups/views/user-group-edit___label')}
 									error={formErrors.label}
+									required
 								>
 									<TextInput
 										value={userGroup.label || ''}
@@ -524,11 +527,24 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={userGroup}
-			render={renderPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(userGroup, 'label'),
+						isCreatePage
+							? t('Gebruikersgroep beheer aanmaak pagina titel')
+							: t('Gebruikersgroep beheer bewerk pagina titel')
+					)}
+				</title>
+				<meta name="description" content={get(userGroup, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={userGroup}
+				render={renderPage}
+			/>
+		</>
 	);
 };
 

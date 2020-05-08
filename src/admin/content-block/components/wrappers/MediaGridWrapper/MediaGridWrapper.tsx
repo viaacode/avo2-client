@@ -11,7 +11,7 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/
 import { CustomError, formatDate, navigateToContentType } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
-import { MediaGridBlockState } from '../../../../shared/types';
+import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState, RouteComponentProps {
 	searchQuery?: ButtonAction;
@@ -21,13 +21,21 @@ interface MediaGridWrapperProps extends MediaGridBlockState, RouteComponentProps
 }
 
 const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
+	title,
+	buttonLabel,
+	buttonAction,
 	ctaTitle,
 	ctaTitleColor,
+	ctaTitleSize,
 	ctaContent,
 	ctaContentColor,
-	ctaButtonAction = { type: 'COLLECTION', value: '' },
 	ctaButtonLabel,
+	ctaButtonType,
+	ctaButtonIcon,
 	ctaBackgroundColor,
+	ctaBackgroundImage,
+	ctaWidth,
+	ctaButtonAction,
 	searchQuery,
 	searchQueryLimit,
 	elements,
@@ -59,7 +67,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				await ContentPageService.resolveMediaItems(
 					get(searchQuery, 'value') as string | undefined,
 					parseIntOrDefault<undefined>(searchQueryLimit, undefined),
-					elements.filter(element => !isEmpty(element))
+					elements.filter(element => !isEmpty(element) && element.mediaItem)
 				)
 			);
 		} catch (err) {
@@ -84,7 +92,8 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	}, [resolvedResults]);
 
 	const mapCollectionOrItemData = (
-		itemOrCollection: Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>
+		itemOrCollection: Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>,
+		index: number
 	): MediaListItem => {
 		const isItem =
 			get(itemOrCollection, 'type.label') === 'video' ||
@@ -98,64 +107,66 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		); // TODO add fragment count to elasticsearch index
 		const viewCount = get(itemOrCollection, 'view_counts_aggregate.aggregate.count', 0);
 
+		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
+
 		return {
 			category: isItem ? itemLabel : 'collection',
 			metadata: [
 				{ icon: 'eye', label: String(viewCount) },
 				{ label: formatDate(itemOrCollection.created_at) },
 			],
-			navigate: () =>
-				navigateToContentType(
-					{
-						type: (isItem
-							? 'ITEM'
-							: toEnglishContentType(
-									get(itemOrCollection, 'type.label')
-							  ).toUpperCase()) as Avo.Core.ContentPickerType,
-						value: (isItem
-							? itemOrCollection.external_id
-							: itemOrCollection.id) as string,
-						target: get(searchQuery, 'target') || LinkTarget.Self,
-					},
-					history
-				),
+			buttonLabel: element.buttonLabel,
+			buttonType: element.buttonType,
+			buttonIcon: element.buttonIcon,
+			buttonAction: element.buttonAction || {
+				type: (isItem
+					? 'ITEM'
+					: toEnglishContentType(
+							get(itemOrCollection, 'type.label')
+					  ).toUpperCase()) as Avo.Core.ContentPickerType,
+				value: (isItem ? itemOrCollection.external_id : itemOrCollection.id) as string,
+				target: get(searchQuery, 'target') || LinkTarget.Self,
+			},
 			title: itemOrCollection.title || '',
 			thumbnail: {
 				label: itemLabel,
 				meta: isItem ? itemDuration : `${collectionItems} items`,
 				src: itemOrCollection.thumbnail_path || '',
 			},
-		};
-	};
-
-	const handleCtaButtonClick = () => {
-		if (!ctaButtonAction) {
-			console.error(
-				new CustomError(
-					'Trying to navigate to cta button action, but button action is undefined',
-					null,
-					{ ctaButtonAction }
-				)
-			);
-			return;
-		}
-		if (ctaButtonAction.value) {
-			navigateToContentType(ctaButtonAction as any, history);
-		}
+		} as any; // Remove cast after update to components 1.40.0
 	};
 
 	// Render
 	const renderMediaGridBlock = () => {
 		return (
 			<BlockMediaList
+				title={title}
+				buttonLabel={buttonLabel}
+				buttonAction={buttonAction || searchQuery}
 				ctaTitle={ctaTitle}
 				ctaTitleColor={ctaTitleColor}
+				ctaTitleSize={ctaTitleSize}
 				ctaContent={ctaContent}
 				ctaContentColor={ctaContentColor}
 				ctaButtonLabel={ctaButtonLabel}
+				ctaButtonType={ctaButtonType}
+				ctaButtonIcon={ctaButtonIcon}
 				ctaBackgroundColor={ctaBackgroundColor}
-				ctaNavigate={handleCtaButtonClick}
+				ctaBackgroundImage={ctaBackgroundImage}
+				ctaWidth={ctaWidth}
+				ctaButtonAction={ctaButtonAction}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
+				navigate={buttonAction =>
+					buttonAction
+						? navigateToContentType(buttonAction, history)
+						: () => {
+								console.error(
+									new CustomError(
+										'Failed to navigate because button action is undefined'
+									)
+								);
+						  }
+				}
 			/>
 		);
 	};

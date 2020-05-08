@@ -8,6 +8,7 @@ import { compose } from 'redux';
 import { Button } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
@@ -151,7 +152,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	// Render
 	if (tour) {
 		return (
-			<>
+			<div className="c-interactive-tour">
 				<Joyride
 					steps={mapSteps(tour.steps)}
 					callback={handleJoyrideCallback}
@@ -167,9 +168,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 					continuous
 					run={!tour.seen}
 					showSkipButton
+					floaterProps={{ disableAnimation: true }}
 					styles={{
 						options: {
-							primaryColor: '#25A4CF',
+							primaryColor: Color.TealBright,
 						},
 					}}
 				/>
@@ -189,7 +191,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 						className="c-interactive-tour__button"
 					/>
 				)}
-			</>
+			</div>
 		);
 	}
 	return null;

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -48,7 +48,13 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [input, setInput] = useState<string>(inputValue || '');
+	const [input, setInput] = useState<string>('');
+
+	useEffect(() => {
+		if (isOpen) {
+			setInput(inputValue || '');
+		}
+	}, [isOpen, inputValue]);
 
 	// Listeners
 	const onClickClose = () => {
@@ -75,7 +81,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
 			<ModalBody>
 				<Spacer margin="bottom-large">
-					<FormGroup label={inputLabel} labelFor="collectionNameId">
+					<FormGroup label={inputLabel} labelFor="collectionNameId" required>
 						<TextInput
 							type="text"
 							value={input}

@@ -3,8 +3,6 @@ import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Avo } from '@viaa/avo2-types';
-
 import {
 	Blankslate,
 	Box,
@@ -16,17 +14,20 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
-import { deleteFile, uploadFile } from '../../services/file-upload-service';
+import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+export const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
 
 export function isPhoto(url: string): boolean {
-	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']);
+	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[(url.split('.').pop() || '').toLowerCase()]);
 }
 
 export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
@@ -86,7 +87,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				setIsProcessing(true);
 				const uploadedUrls: string[] = [];
 				for (let i = 0; i < (allowMulti ? files.length : 1); i += 1) {
-					uploadedUrls.push(await uploadFile(files[i], assetType, ownerId));
+					uploadedUrls.push(
+						await FileUploadService.uploadFile(files[i], assetType, ownerId)
+					);
 				}
 				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls);
 			}
@@ -123,7 +126,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				const newUrls = [...urls];
 				for (let i = 0; i < newUrls.length; i += 1) {
 					if (newUrls[i] === url) {
-						await deleteFile(url);
+						await FileUploadService.deleteFile(url);
 						newUrls.splice(i, 1);
 					}
 				}

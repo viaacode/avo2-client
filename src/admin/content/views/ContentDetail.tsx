@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { compact, flatten, get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -21,6 +22,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import {
 	DeleteObjectModal,
@@ -48,12 +50,12 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
-
 import ShareContentPageModal from '../components/ShareContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';
+
 import './ContentDetail.scss';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
@@ -424,6 +426,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(contentPage, 'title'),
+							t('Content beheer detail pagina titel')
+						)}
+					</title>
+					<meta name="description" content={get(contentPage, 'description') || ''} />
+				</MetaTags>
 				<div className="m-content-detail-preview">
 					<LoadingErrorLoadedComponent
 						loadingInfo={loadingInfo}

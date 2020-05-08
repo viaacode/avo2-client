@@ -17,7 +17,7 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 			}
 		}
 		assignment_counts: app_assignments_aggregate(
-			where: { owner_profile_id: { _eq: $owner_profile_id } }
+			where: { owner_profile_id: { _eq: $owner_profile_id }, is_archived: { _eq: false } }
 		) {
 			aggregate {
 				count

@@ -27,7 +27,6 @@ import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
 import { KeyCode } from '../../../shared/types';
-
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 

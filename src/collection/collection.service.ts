@@ -2,16 +2,16 @@ import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
-import { CustomError } from '../shared/helpers';
+import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -24,6 +24,7 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_ID,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
@@ -40,7 +41,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, InsertFragmentResponse, QualityLabel } from './collection.types';
+import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -149,7 +150,7 @@ export class CollectionService {
 				return null;
 			}
 
-			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
+			const newCollection: Avo.Collection.Collection = cloneDeep(updatedCollection);
 
 			// remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach(
@@ -163,15 +164,12 @@ export class CollectionService {
 
 			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
 			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
-			const currentFragmentIds: number[] = getFragmentIdsFromCollection(updatedCollection);
-			const currentFragments: Avo.Collection.Fragment[] = get(
-				updatedCollection,
-				'collection_fragments',
-				[]
-			);
+			const currentFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
 
-			// insert fragments that were added to collection
-			const insertFragmentIds = without(currentFragmentIds, ...initialFragmentIds);
+			// Fragments to insert do not have an id yet
+			const newFragments = getFragmentsFromCollection(newCollection).filter(fragment =>
+				isNil(fragment.id)
+			);
 
 			// delete fragments that were removed from collection
 			const deleteFragmentIds = without(initialFragmentIds, ...currentFragmentIds);
@@ -181,13 +179,11 @@ export class CollectionService {
 				initialFragmentIds.includes(fragmentId)
 			);
 
-			// insert fragments
-			const insertPromises: Promise<InsertFragmentResponse | null>[] = insertFragmentIds.map(
-				tempId => this.insertFragment(updatedCollection, tempId, currentFragments)
-			);
+			// insert fragments. New fragments do not have a fragment id yet
+			const insertPromise = this.insertFragments(newCollection.id, newFragments);
 
 			// delete fragments
-			const deletePromises: Promise<any>[] = deleteFragmentIds.map((id: number) =>
+			const deletePromises = deleteFragmentIds.map((id: number) =>
 				dataService.mutate({
 					mutation: DELETE_COLLECTION_FRAGMENT,
 					variables: { id },
@@ -195,11 +191,11 @@ export class CollectionService {
 			);
 
 			// update fragments
-			const updatePromises: Promise<any>[] = compact(
+			const updatePromises = compact(
 				updateFragmentIds.map((id: number) => {
 					let fragmentToUpdate:
 						| Avo.Collection.Fragment
-						| undefined = getFragmentsFromCollection(updatedCollection).find(
+						| undefined = getFragmentsFromCollection(newCollection).find(
 						(fragment: Avo.Collection.Fragment) => {
 							return Number(id) === fragment.id;
 						}
@@ -231,23 +227,11 @@ export class CollectionService {
 			);
 
 			// perform crud requests in parallel
-			const crudPromises: Promise<any[]>[] = [
-				Promise.all(insertPromises),
-				Promise.all(deletePromises),
-				Promise.all(updatePromises),
-			];
-
-			const crudResponses = await Promise.all(crudPromises);
-
-			// Replace ids in local fragment array with ids of newly inserted fragments
-			compact(crudResponses[0]).forEach((insertResponse: InsertFragmentResponse) => {
-				const insertedFragment = (newCollection.collection_fragments || []).find(
-					fragment => fragment.id === insertResponse.oldId
-				);
-				if (insertedFragment) {
-					insertedFragment.id = insertResponse.newId;
-				}
-			});
+			await Promise.all([
+				insertPromise as Promise<any>,
+				...(deletePromises as Promise<any>[]),
+				...(updatePromises as Promise<any>[]),
+			]);
 
 			if (newCollection.type_id === ContentTypeNumber.collection) {
 				// determine new thumbnail path since videos could have changed order / been deleted
@@ -274,7 +258,7 @@ export class CollectionService {
 			const initialLabels: string[] = this.getLabels(initialCollection).map(
 				(labelObj: any) => labelObj.label
 			);
-			const updatedLabels: string[] = this.getLabels(updatedCollection).map(
+			const updatedLabels: string[] = this.getLabels(newCollection).map(
 				(labelObj: any) => labelObj.label
 			);
 
@@ -394,18 +378,21 @@ export class CollectionService {
 	}
 
 	/**
-	 * Retrieve collections.
+	 * Retrieve collections or bundles.
 	 *
 	 * @param limit Numeric value to define the maximum amount of items in response.
-	 *
+	 * @param typeId 3 for collections, 4 for bundles
 	 * @returns Collections limited by `limit`.
 	 */
-	public static async fetchCollections(limit: number): Promise<Avo.Collection.Collection[]> {
+	public static async fetchCollectionsOrBundles(
+		limit: number,
+		typeId: ContentTypeNumber
+	): Promise<Avo.Collection.Collection[]> {
 		try {
 			// retrieve collections
 			const response = await dataService.query({
 				query: GET_COLLECTIONS,
-				variables: { limit },
+				variables: { limit, typeId },
 			});
 
 			return get(response, 'data.app_collections', []);
@@ -422,103 +409,69 @@ export class CollectionService {
 		}
 	}
 
-	/**
-	 * Retrieve bundles.
-	 *
-	 * @param limit Numeric value to define the maximum amount of items in response.
-	 *
-	 * @returns Bundles limited by `limit`.
-	 */
-	// TODO: Move to bundle.service.ts
-	public static async fetchBundles(limit?: number): Promise<Avo.Collection.Collection[]> {
+	public static async fetchCollectionsOrBundlesByTitleOrId(
+		isCollection: boolean,
+		titleOrId: string,
+		limit: number
+	): Promise<Avo.Collection.Collection[]> {
 		try {
-			// retrieve bundles
-			const response = await dataService.query({
-				query: GET_BUNDLES,
-				variables: { limit },
-			});
+			const isUuidFormat = isUuid(titleOrId);
+			const variables: any = {
+				limit,
+				typeId: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+			};
+			if (isUuidFormat) {
+				variables.id = titleOrId;
+			} else {
+				variables.title = `%${titleOrId}%`;
+			}
 
-			return get(response, 'data.app_collections', []);
+			return (
+				(await performQuery(
+					{
+						variables,
+						query: isUuidFormat ? GET_COLLECTIONS_BY_ID : GET_COLLECTIONS_BY_TITLE,
+					},
+					'data.app_collections',
+					'Failed to retrieve items by title or external id.'
+				)) || []
+			);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError('Failed to retrieve bundles', err, {
-				query: 'GET_BUNDLES',
+			throw new CustomError('Failed to fetch collections or bundles', err, {
+				query: 'GET_COLLECTIONS_BY_TITLE_OR_ID',
+				variables: { titleOrId, isCollection, limit },
 			});
-
-			console.error(customError);
-
-			throw customError;
 		}
 	}
 
 	/**
 	 * Retrieve collections by title.
 	 *
-	 * @param title Keyword to search for collection title.
+	 * @param titleOrId Keyword to search for collection title or the collection id
 	 * @param limit Numeric value to define the maximum amount of items in response.
 	 *
 	 * @returns Collections limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	public static async fetchCollectionsByTitle(
-		title: string,
+	public static async fetchCollectionsByTitleOrId(
+		titleOrId: string,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
-		try {
-			// retrieve collections by title
-			const response = await dataService.query({
-				query: GET_COLLECTIONS_BY_TITLE,
-				variables: { title, limit },
-			});
-
-			return get(response, 'data.app_collections', []);
-		} catch (err) {
-			// handle erroor
-			const customError = new CustomError('Het ophalen van de collecties is mislukt.', err, {
-				query: 'GET_COLLECTIONS_BY_TITLE',
-				variables: { title, limit },
-			});
-
-			console.error(customError);
-
-			throw customError;
-		}
+		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(true, titleOrId, limit);
 	}
 
 	/**
 	 * Retrieve bundles by title.
 	 *
-	 * @param title Keyword to search for bundle title.
+	 * @param titleOrId Keyword to search for bundle title.
 	 * @param limit Numeric value to define the maximum amount of items in response.
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	// TODO: Move to bundle.service.ts
-	public static async fetchBundlesByTitle(
-		title: string,
-		limit?: number
+	public static async fetchBundlesByTitleOrId(
+		titleOrId: string,
+		limit: number
 	): Promise<Avo.Collection.Collection[]> {
-		try {
-			// retrieve bundles by title
-			const response = await dataService.query({
-				query: GET_BUNDLES_BY_TITLE,
-				variables: { title, limit },
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collections', []);
-		} catch (err) {
-			// handle error
-			const customError = new CustomError('Failed to get bundles', err, {
-				query: 'GET_BUNDLES_BY_TITLE',
-			});
-
-			console.error(customError);
-
-			throw customError;
-		}
+		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(false, titleOrId, limit);
 	}
 
 	public static async fetchQualityLabels(): Promise<QualityLabel[]> {
@@ -534,7 +487,7 @@ export class CollectionService {
 			return get(response, 'data.lookup_enum_collection_labels', []);
 		} catch (err) {
 			throw new CustomError('Failed to get quality labels', err, {
-				query: 'GET_BUNDLES_BY_TITLE',
+				query: 'GET_QUALITY_LABELS',
 			});
 		}
 	}
@@ -758,7 +711,7 @@ export class CollectionService {
 		fragments: Avo.Collection.Fragment[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
+			fragments.forEach(fragment => (fragment.collection_uuid = collectionId));
 
 			const cleanedFragments = cloneDeep(fragments).map(fragment => {
 				delete fragment.id;
@@ -800,53 +753,6 @@ export class CollectionService {
 				query: 'INSERT_COLLECTION_FRAGMENTS',
 			});
 		}
-	}
-
-	private static async insertFragment(
-		collection: Partial<Avo.Collection.Collection>,
-		tempId: number,
-		currentFragments: Avo.Collection.Fragment[]
-	): Promise<InsertFragmentResponse | null> {
-		if (!collection) {
-			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
-			return null;
-		}
-
-		const tempFragment = currentFragments.find(
-			(fragment: Avo.Collection.Fragment) => fragment.id === tempId
-		);
-
-		if (!tempFragment) {
-			ToastService.info(
-				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
-					id: tempId,
-				})
-			);
-			return null;
-		}
-
-		const fragmentToAdd: Avo.Collection.Fragment = { ...tempFragment };
-		const oldId = fragmentToAdd.id;
-
-		delete fragmentToAdd.id;
-		delete (fragmentToAdd as any).__typename;
-		delete fragmentToAdd.item_meta;
-
-		const response = await dataService.mutate({
-			mutation: INSERT_COLLECTION_FRAGMENTS,
-			variables: {
-				id: collection.id,
-				fragments: fragmentToAdd,
-			},
-			update: ApolloCacheManager.clearCollectionCache,
-		});
-
-		const newId = get(response, 'data.insert_app_collection_fragments.returning[0].id');
-
-		return {
-			newId,
-			oldId,
-		};
 	}
 
 	private static async getThumbnailPathForCollection(

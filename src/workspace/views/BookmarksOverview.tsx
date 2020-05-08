@@ -30,6 +30,7 @@ import {
 	fromNow,
 	isMobileWidth,
 } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkInfo,
@@ -40,10 +41,12 @@ const ITEMS_PER_PAGE = 5;
 
 interface BookmarksOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
+	onUpdate: () => void | Promise<void>;
 }
 
 const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	numberOfItems,
+	onUpdate = () => {},
 	history,
 	user,
 }) => {
@@ -125,6 +128,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			);
 
 			await fetchBookmarks();
+			onUpdate();
 			ToastService.success(t('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'));
 		} catch (err) {
 			console.error(
@@ -182,11 +186,12 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		contentType,
 		contentTitle,
 		contentCreatedAt,
+		contentViews,
 	}: BookmarkInfo) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
 				<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
-					{contentTitle}
+					{truncateTableValue(contentTitle)}
 				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
@@ -196,8 +201,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 							{fromNow(contentCreatedAt)}
 						</span>
 					</MetaDataItem>
-					{/* TODO: Views from GQL */}
-					<MetaDataItem icon="eye" label="0" />
+					<MetaDataItem icon="eye" label={String(contentViews)} />
 				</MetaData>
 			</div>
 		</div>
@@ -253,11 +257,13 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
-			<Pagination
-				pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-				currentPage={page}
-				onPageChange={setPage}
-			/>
+			<Spacer margin="top">
+				<Pagination
+					pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
+					currentPage={page}
+					onPageChange={setPage}
+				/>
+			</Spacer>
 		</>
 	);
 

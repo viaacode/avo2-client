@@ -1,9 +1,18 @@
-import { IconName } from '@viaa/avo2-components';
 import { ReactElement } from 'react';
+
+import { IconName } from '@viaa/avo2-components';
 
 export enum KeyCode {
 	Enter = 13,
 }
+
+export interface NewsletterPreferences {
+	newsletter: boolean;
+	workshop: boolean;
+	ambassador: boolean;
+}
+
+export type NewsletterList = keyof NewsletterPreferences;
 
 export type NavigationItemInfo = {
 	label: string | ReactElement;
@@ -26,8 +35,6 @@ export type ReactAction<T, P = any> = {
 	type: T;
 	payload: P;
 };
-
-// Helpers
 
 // Get all possible values from object
 export type ValueOf<T> = T[keyof T];

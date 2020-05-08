@@ -9,12 +9,11 @@ import {
 	SelectOption,
 	TextArea,
 	TextInput,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 
 import { FileUpload } from '../../shared/components';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import i18n from '../../shared/translations/i18n';
-
 import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
 // More info on the bug that occurs:
@@ -31,6 +30,7 @@ import {
 	HeadingTypeOption,
 	WidthOption,
 } from '../shared/types';
+
 import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ANCHOR_LINKS_BLOCK_CONFIG,
@@ -130,7 +130,7 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___klaar'),
-		value: ContentBlockType.KLAAR,
+		value: ContentBlockType.Klaar,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
@@ -180,6 +180,7 @@ export const EDITOR_TYPES_MAP = {
 	ColorSelect,
 	ContentPicker,
 	ContentTypeAndLabelsPicker,
+	DatePicker,
 	FileUpload,
 	IconPicker,
 	MultiRange,
@@ -187,9 +188,8 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextArea,
 	TextInput,
-	WYSIWYG,
 	UserGroupSelect,
-	DatePicker,
+	WYSIWYG: WYSIWYG2Wrapper,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -201,7 +201,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
-	[ContentBlockType.KLAAR]: KLAAR_BLOCK_CONFIG,
+	[ContentBlockType.Klaar]: KLAAR_BLOCK_CONFIG,
 	[ContentBlockType.MediaGrid]: MEDIA_GRID_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
@@ -222,7 +222,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_COMPONENTS_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_COMPONENTS_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_COMPONENTS_STATE,
-	[ContentBlockType.KLAAR]: INITIAL_KLAAR_COMPONENTS_STATE,
+	[ContentBlockType.Klaar]: INITIAL_KLAAR_COMPONENTS_STATE,
 	[ContentBlockType.MediaGrid]: INITIAL_MEDIA_GRID_COMPONENTS_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_COMPONENTS_STATE,
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
@@ -243,7 +243,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
-	[ContentBlockType.KLAAR]: INITIAL_KLAAR_BLOCK_STATE,
+	[ContentBlockType.Klaar]: INITIAL_KLAAR_BLOCK_STATE,
 	[ContentBlockType.MediaGrid]: INITIAL_MEDIA_GRID_BLOCK_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_STATE,
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,

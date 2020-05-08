@@ -1,6 +1,7 @@
-import { isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { get, isEmpty } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -32,15 +33,15 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
+	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -58,11 +59,11 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
@@ -88,6 +89,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
+	// TODO see if we can remove this by setting the is_public in the sharemodal onClose handler
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
@@ -119,133 +121,140 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	});
 
 	useEffect(() => {
-		const checkPermissionsAndGetCollection = async () => {
-			try {
-				const uuid = await CollectionService.getCollectionIdByAvo1Id(collectionId);
+		if (!isFirstRender && collection) {
+			setIsPublic(collection.is_public);
+			setIsFirstRender(true);
+		}
+	}, [collection, isFirstRender, setIsFirstRender, setIsPublic]);
 
-				if (!uuid) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-						),
-						icon: 'alert-triangle',
-					});
-					return;
-				}
+	const checkPermissionsAndGetCollection = useCallback(async () => {
+		try {
+			const uuid = await CollectionService.getCollectionIdByAvo1Id(collectionId);
 
-				if (collectionId !== uuid) {
-					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
-					// and continue loading the collection
-					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
-						history
-					);
-				}
-
-				const rawPermissions = await Promise.all([
-					PermissionService.hasPermissions(
-						[
-							{ name: PermissionName.VIEW_COLLECTIONS },
-							{
-								name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
-								obj: collectionId,
-							},
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
-							{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionName.EDIT_ANY_COLLECTIONS },
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
-							{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionName.DELETE_ANY_COLLECTIONS },
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[{ name: PermissionName.CREATE_COLLECTIONS }],
-						user
-					),
-					PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
-				]);
-				const permissionObj = {
-					canViewCollections: rawPermissions[0],
-					canEditCollections: rawPermissions[1],
-					canDeleteCollections: rawPermissions[2],
-					canCreateCollections: rawPermissions[3],
-					canViewItems: rawPermissions[4],
-				};
-				const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
-					uuid,
-					'collection'
-				);
-
-				if (!collectionObj) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-						),
-						icon: 'search',
-					});
-					return;
-				}
-
-				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
-				try {
-					setBookmarkViewPlayCounts(
-						await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
-					);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getCollectionCounts', err, {
-							uuid: collectionObj.id,
-						})
-					);
-					ToastService.danger(
-						t(
-							'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-						)
-					);
-				}
-
-				// Get published bundles that contain this collection
-				const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
-					collectionObj.id
-				);
-
-				setCollectionId(uuid);
-				setPermissions(permissionObj);
-				setCollection(collectionObj || null);
-				setPublishedBundles(publishedBundlesList);
-			} catch (err) {
-				console.error(
-					new CustomError(
-						'Failed to check permissions or get collection from the database',
-						err,
-						{
-							collectionId,
-						}
-					)
-				);
+			if (!uuid) {
 				setLoadingInfo({
 					state: 'error',
 					message: t(
-						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
+						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 					),
 					icon: 'alert-triangle',
 				});
+				return;
 			}
-		};
 
-		checkPermissionsAndGetCollection();
+			if (collectionId !== uuid) {
+				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
+				// and continue loading the collection
+				redirectToClientPage(
+					buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
+					history
+				);
+			}
+
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.VIEW_COLLECTIONS },
+						{
+							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
+							obj: collectionId,
+						},
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
+						{ name: PermissionName.EDIT_ANY_COLLECTIONS },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
+						{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.CREATE_COLLECTIONS }],
+					user
+				),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
+			]);
+			const permissionObj = {
+				canViewCollections: rawPermissions[0],
+				canEditCollections: rawPermissions[1],
+				canDeleteCollections: rawPermissions[2],
+				canCreateCollections: rawPermissions[3],
+				canViewItems: rawPermissions[4],
+			};
+			const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+				uuid,
+				'collection'
+			);
+
+			if (!collectionObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+					),
+					icon: 'search',
+				});
+				return;
+			}
+
+			BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts', err, {
+						uuid: collectionObj.id,
+					})
+				);
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
+			}
+
+			// Get published bundles that contain this collection
+			const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
+				collectionObj.id
+			);
+
+			setCollectionId(uuid);
+			setPermissions(permissionObj);
+			setCollection(collectionObj || null);
+			setPublishedBundles(publishedBundlesList);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to check permissions or get collection from the database',
+					err,
+					{
+						collectionId,
+					}
+				)
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t(
+					'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
+				),
+				icon: 'alert-triangle',
+			});
+		}
 	}, [collectionId, t, user, history]);
+
+	useEffect(() => {
+		checkPermissionsAndGetCollection();
+	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
 		getRelatedItems(collectionId, 'collections', 4)
@@ -305,7 +314,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
-					setCollection(duplicateCollection);
+					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						t(
 							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
@@ -512,7 +521,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={collection && collection.is_public ? 'unlock-2' : 'lock'}
+						icon={collection && collection.is_public ? 'unlock-3' : 'lock'}
 						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}
@@ -661,7 +670,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderCollection = () => {
 		const {
 			id,
-			is_public,
 			profile,
 			collection_fragments,
 			lom_context,
@@ -669,17 +677,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			title,
 			lom_classification,
 		} = collection as Avo.Collection.Collection;
-
-		if (!isFirstRender) {
-			setIsPublic(is_public);
-			setIsFirstRender(true);
-		}
-
 		return (
 			<>
 				<Header
 					title={title}
-					onClickTitle={() => null}
 					category="collection"
 					showMetaData
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount)}
@@ -852,11 +853,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			render={renderCollection}
-			dataObject={permissions}
-			loadingInfo={loadingInfo}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(collection, 'title', t('Collectie detail titel fallback'))
+					)}
+				</title>
+				<meta name="description" content={get(collection, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				render={renderCollection}
+				dataObject={permissions}
+				loadingInfo={loadingInfo}
+			/>
+		</>
 	);
 };
 

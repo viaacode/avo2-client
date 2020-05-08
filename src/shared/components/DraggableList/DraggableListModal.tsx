@@ -1,7 +1,8 @@
 import React, { FunctionComponent, ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
-import { useTranslation } from 'react-i18next';
+
 import DraggableList from './DraggableList';
 
 export interface DraggableListModalProps {

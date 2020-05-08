@@ -1,16 +1,17 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
-
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
@@ -125,6 +126,13 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 				</AdminLayoutTopBarRight>
 			)}
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Menu overzicht beheer pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Menu overzicht beheer pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<DataQueryComponent

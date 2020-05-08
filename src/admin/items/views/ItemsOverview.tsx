@@ -1,16 +1,18 @@
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
@@ -20,7 +22,6 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
@@ -140,7 +141,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				return !isNil(rowData[columnId]) ? formatDate(rowData[columnId] as any) : '-';
 
 			case 'organisation':
-				return get(rowData, 'organisation.name', '-');
+				return truncateTableValue(get(rowData, 'organisation.name'));
 
 			case 'type':
 				return get(rowData, 'type.label', '-');
@@ -181,7 +182,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				);
 
 			default:
-				return truncate((rowData as any)[columnId] || '-', { length: 50 });
+				return truncate((rowData as any)[columnId] || '-', { length: 60 });
 		}
 	};
 
@@ -228,6 +229,13 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 	return (
 		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Item beheer overview pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Item beheer overview pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent

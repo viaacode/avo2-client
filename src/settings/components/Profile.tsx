@@ -1,6 +1,7 @@
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	Alert,
@@ -23,6 +24,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import {
 	getProfile,
@@ -31,7 +33,7 @@ import {
 } from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
@@ -41,7 +43,6 @@ import {
 } from '../../shared/services/education-organizations-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
-
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
@@ -251,7 +252,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (
 		<>
-			<FormGroup label={t('settings/components/profile___vakken')} labelFor="subjects">
+			<FormGroup
+				label={t('settings/components/profile___vakken')}
+				labelFor="subjects"
+				required
+			>
 				<TagsInput
 					id="subjects"
 					placeholder={t('settings/components/profile___selecteer-de-vakken-die-u-geeft')}
@@ -266,6 +271,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			<FormGroup
 				label={t('settings/components/profile___onderwijsniveau')}
 				labelFor="educationLevel"
+				required
 			>
 				<TagsInput
 					id="educationLevel"
@@ -281,6 +287,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			<FormGroup
 				label={t('settings/components/profile___school-organisatie')}
 				labelFor="organization"
+				required
 			>
 				<TagList
 					closable
@@ -476,11 +483,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	};
 
 	return (
-		<DataQueryComponent
-			query={GET_CLASSIFICATIONS_AND_SUBJECTS}
-			renderData={renderProfile}
-			actionButtons={['home']}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Profiel instellingen pagina titel'))}</title>
+				<meta name="description" content={t('Profiel instellingen pagina beschrijving')} />
+			</MetaTags>
+			<DataQueryComponent
+				query={GET_CLASSIFICATIONS_AND_SUBJECTS}
+				renderData={renderProfile}
+				actionButtons={['home']}
+			/>
+		</>
 	);
 };
 

@@ -1,7 +1,7 @@
 export type AssignmentOverviewTableColumns =
 	| 'title'
 	| 'assignment_type'
-	| 'assignment_assignment_tags'
+	| 'labels'
 	| 'class_room'
 	| 'deadline_at'
 	| 'assignment_responses'

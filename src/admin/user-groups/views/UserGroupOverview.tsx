@@ -1,11 +1,13 @@
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
@@ -13,12 +15,12 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
 	GET_USER_GROUP_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
@@ -134,10 +136,6 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 
 	const renderTableCell = (rowData: Partial<UserGroup>, columnId: UserGroupOverviewTableCols) => {
 		switch (columnId) {
-			case 'label':
-			case 'description':
-				return rowData[columnId] || '-';
-
 			case 'created_at':
 			case 'updated_at':
 				return formatDate(rowData[columnId]) || '-';
@@ -192,7 +190,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 
@@ -268,6 +266,15 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(t('Gebruikersgroepen beheer overzicht pagina titel'))}
+					</title>
+					<meta
+						name="description"
+						content={t('Gebruikersgroepen beheer overzicht pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<LoadingErrorLoadedComponent

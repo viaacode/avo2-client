@@ -1,6 +1,7 @@
 import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -16,6 +17,7 @@ import {
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
@@ -25,7 +27,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { GET_PERMISSION_GROUP_BY_ID } from '../permission-group.gql';
 import { PermissionGroupService } from '../permission-group.service';
@@ -220,11 +221,20 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={permissionGroup}
-			render={renderPage}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Permissiegroep beheer detail pagina titel'))}</title>
+				<meta
+					name="description"
+					content={t('Permissiegroep beheer detail pagina beschrijving')}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={permissionGroup}
+				render={renderPage}
+			/>
+		</>
 	);
 };
 

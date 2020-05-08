@@ -23,6 +23,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
@@ -36,22 +37,24 @@ import {
 	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-
-import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { ContentTypeNumber } from '../collection.types';
+
 import './CollectionOrBundleOverview.scss';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
 	type: 'collection' | 'bundle';
+	onUpdate: () => void | Promise<void>;
 }
 
 const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewProps> = ({
 	numberOfItems,
 	type,
+	onUpdate = () => {},
 	history,
 	user,
 }) => {
@@ -95,6 +98,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 							'collection/components/collection-or-bundle-overview___bundel-is-verwijderd'
 					  )
 			);
+			onUpdate();
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
@@ -157,7 +161,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link {...getLinkProps(id, title)}>{title}</Link>
+				<Link {...getLinkProps(id, title)}>{truncateTableValue(title)}</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={type}>
@@ -294,7 +298,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								  )
 						}
 					>
-						<Icon name={collection.is_public ? 'unlock-2' : 'lock'} />
+						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
 					</div>
 				);
 

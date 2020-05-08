@@ -1,6 +1,7 @@
 import { get, sortBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
@@ -20,6 +21,7 @@ import {
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, getEnv } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
@@ -30,7 +32,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import { GET_USER_BY_ID } from '../user.gql';
 import {
 	RawPermissionLink,
@@ -313,11 +314,28 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	);
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={storedProfile}
-			render={renderUserDetailPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						`${get(storedProfile, 'user.first_name')} ${get(
+							storedProfile,
+							'user.last_name'
+						)}`,
+						t('Item detail pagina titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t('Gebruikersbeheer detail pagina beschrijving')}
+				/>
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={storedProfile}
+				render={renderUserDetailPage}
+			/>
+		</>
 	);
 };
 

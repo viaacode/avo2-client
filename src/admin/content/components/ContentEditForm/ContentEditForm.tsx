@@ -9,21 +9,22 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	RichEditorState,
 	Select,
 	SelectOption,
 	TagInfo,
 	TagsInput,
 	TextInput,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DeleteObjectModal, FileUpload } from '../../../../shared/components';
+import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
-
 import { DEFAULT_PAGES_WIDTH, GET_CONTENT_WIDTH_OPTIONS } from '../../content.const';
 import { ContentService } from '../../content.service';
 import {
@@ -32,6 +33,7 @@ import {
 	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
+
 import './ContentEditForm.scss';
 
 interface ContentEditFormProps {
@@ -194,6 +196,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___titel'
 									)}
+									required
 								>
 									<TextInput
 										onChange={value => onChange('title', value)}
@@ -203,14 +206,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							</Column>
 							<Column size="12">
 								<FormGroup
-									error={formErrors.description}
+									error={formErrors.descriptionHtml}
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
 									)}
 								>
-									<WYSIWYG
-										onChange={(value: string) => onChange('description', value)}
-										data={formState.description}
+									<WYSIWYG2Wrapper
+										initialHtml={formState.descriptionHtml}
+										state={formState.descriptionState}
+										onChange={(state: RichEditorState) =>
+											onChange('descriptionState', state)
+										}
+										controls={WYSIWYG2_OPTIONS_FULL}
 										id="description"
 									/>
 								</FormGroup>
@@ -234,6 +241,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___url'
 									)}
+									required
 								>
 									<TextInput
 										onChange={value => onChange('path', value)}
@@ -249,6 +257,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___content-type'
 									)}
+									required
 								>
 									<Select
 										onChange={handleContentTypeChange}

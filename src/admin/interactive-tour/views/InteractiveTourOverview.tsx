@@ -1,13 +1,14 @@
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
@@ -19,7 +20,6 @@ import { ToastService } from '../../../shared/services';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-
 import {
 	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
 	INTERACTIVE_TOUR_PATH,
@@ -299,6 +299,17 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t('Interactieve rondleiding beheer overview pagina titel')
+						)}
+					</title>
+					<meta
+						name="description"
+						content={t('Interactieve rondleiding beheer overview pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<LoadingErrorLoadedComponent

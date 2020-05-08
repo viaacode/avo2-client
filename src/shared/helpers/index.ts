@@ -9,3 +9,4 @@ export * from './parsers/duration';
 export * from './redux/create-reducer';
 export * from './sanitize';
 export * from './media-query';
+export * from './newsletter-preferences';

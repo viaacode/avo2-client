@@ -204,14 +204,6 @@ export class BookmarksViewsPlaysService {
 			'data.app_collection_bookmarks',
 			[]
 		);
-		const itemViews = await this.getMultipleViewCounts(
-			itemBookmarks.map(b => b.item_id),
-			'item'
-		);
-		const collectionViews = await this.getMultipleViewCounts(
-			collectionBookmarks.map(b => b.collection_uuid),
-			'collection'
-		);
 		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
 			(itemBookmark): BookmarkInfo | null => {
 				if (!itemBookmark.bookmarkedItem) {
@@ -229,7 +221,7 @@ export class BookmarksViewsPlaysService {
 					contentCreatedAt: normalizeTimestamp(itemBookmark.bookmarkedItem.issued)
 						.toDate()
 						.getTime(),
-					contentViews: itemViews[itemBookmark.item_id] || 0,
+					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
 				};
 			}
 		);
@@ -256,7 +248,8 @@ export class BookmarksViewsPlaysService {
 					)
 						.toDate()
 						.getTime(),
-					contentViews: collectionViews[collectionBookmark.collection_uuid] || 0,
+					contentViews:
+						get(collectionBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
 				};
 			}
 		);

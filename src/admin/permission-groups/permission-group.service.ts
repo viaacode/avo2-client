@@ -5,8 +5,8 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
-
 import { GET_ALL_PERMISSION_GROUPS } from '../user-groups/user-group.gql';
+
 import { ITEMS_PER_PAGE } from './permission-group.const';
 import {
 	ADD_PERMISSIONS_TO_GROUP,

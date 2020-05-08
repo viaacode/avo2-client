@@ -1,20 +1,22 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
 import { UserService } from '../user.service';
 import { UserOverviewTableCols, UserTableState } from '../user.types';
@@ -87,7 +89,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			case 'first_name':
 			case 'last_name':
 			case 'mail':
-				return get(user, columnId, '-');
+				return truncateTableValue(get(user, columnId));
 
 			case 'stamboek':
 				return stamboek || '-';
@@ -111,7 +113,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId]);
 		}
 	};
 
@@ -159,6 +161,15 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	return (
 		<AdminLayout pageTitle={t('admin/users/views/user-overview___gebruikers')}>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(t('Gebruikersbeheer overzicht pagina titel'))}
+					</title>
+					<meta
+						name="description"
+						content={t('Gebruikersbeheer overzicht pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<LoadingErrorLoadedComponent
