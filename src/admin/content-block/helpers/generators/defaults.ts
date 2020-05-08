@@ -1,9 +1,10 @@
-import { isEmpty, isNil, without } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 
-import { SelectOption, WYSIWYGProps } from '@viaa/avo2-components';
+import { SelectOption } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
+import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { UserGroupSelectProps } from '../../../shared/components';
 import {
@@ -26,7 +27,6 @@ export const BLOCK_STATE_DEFAULTS = (
 	position: number,
 	backgroundColor: Color = Color.White,
 	headerBackgroundColor: Color = Color.Transparent,
-	headerHeight: string = '0', // Currently we only need 2 block background colors for the PageOverviewBlock component
 	padding: PaddingFieldState = {
 		top: 'top',
 		bottom: 'bottom',
@@ -37,7 +37,6 @@ export const BLOCK_STATE_DEFAULTS = (
 	position,
 	backgroundColor,
 	headerBackgroundColor,
-	headerHeight,
 	padding,
 	userGroupIds,
 });
@@ -125,13 +124,9 @@ export const TEXT_FIELD = (
 		return errorArray;
 	},
 	editorProps: {
-		btns: without(WYSIWYG_OPTIONS_FULL, WYSIWYG_OPTIONS_ALIGN),
-		plugins: {
-			table: {
-				styler: 'c-table--styled',
-			},
-		},
-	} as Partial<WYSIWYGProps>,
+		controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
+		fileType: 'CONTENT_PAGE_IMAGE',
+	} as Partial<WYSIWYG2WrapperProps>,
 	...propOverride,
 });
 

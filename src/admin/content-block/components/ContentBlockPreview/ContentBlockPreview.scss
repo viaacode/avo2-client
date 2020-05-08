@@ -19,6 +19,13 @@
 
 		.c-content-block-preview {
 			z-index: 1;
+
+
+			> .o-container {
+				h1, h2, h3, h4, h5, h6 { // No margins on header blocks, the block margins should handle this: https://meemoo.atlassian.net/browse/AVO-315
+					margin: 0;
+				}
+			}
 		}
 	}
 }

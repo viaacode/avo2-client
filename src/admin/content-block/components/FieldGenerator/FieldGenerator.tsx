@@ -148,12 +148,12 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 					(field as ContentBlockField).editorType
 				];
 
-				const handleStateChange = (index: any, value: any) => {
+				const handleStateChange = (index: any, value: any, key?: string) => {
 					const newState = [...currentState];
 
 					newState[index] = value;
 
-					handleChange(type, fieldKey, newState, stateIndex);
+					handleChange(type, key || fieldKey, newState, stateIndex);
 				};
 
 				// REPEATED FIELD
@@ -163,9 +163,12 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 							{currentState.map((innerState: any, index: number) => {
 								const editorProps: any = generateFieldAttributes(
 									field as ContentBlockField,
-									(value: any) => handleStateChange(index, value),
+									(value: any, key?: string) =>
+										handleStateChange(index, value, key),
 									innerState as any,
-									`${fieldKey}-${index}`
+									`${fieldKey}-${index}`,
+									fieldKey,
+									currentState
 								);
 
 								return (
@@ -213,9 +216,12 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 
 				const editorProps: any = generateFieldAttributes(
 					field,
-					(value: any) => handleChange(type, fieldKey, value, stateIndex),
+					(value: any, key?: string) =>
+						handleChange(type, key || fieldKey, value, stateIndex),
 					(state as any)[fieldKey],
-					fieldId
+					fieldId,
+					fieldKey,
+					state
 				);
 
 				return <EditorComponent {...defaultProps} {...editorProps} />;

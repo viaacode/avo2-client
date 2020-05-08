@@ -53,15 +53,17 @@ export const FieldGroup: FunctionComponent<FieldGroupProps> = ({
 					...fieldState[1].editorProps,
 					...generateFieldAttributes(
 						fieldState[1],
-						(value: any) =>
+						(value: any, key?: string) =>
 							handleFieldGroupStateChange(
 								globalState,
-								fieldState[0],
+								key || fieldState[0],
 								fieldGroupStateIndex,
 								value
 							),
 						fieldGroupState[fieldState[0]] as any,
-						`${fieldKey}-${fieldState[0]}-${fieldIndex}`
+						`${fieldKey}-${fieldState[0]}-${fieldIndex}`,
+						fieldState[0],
+						fieldGroupState
 					),
 				};
 

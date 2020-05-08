@@ -14,6 +14,7 @@ import {
 	UPDATE_INTERACTIVE_TOUR,
 } from './interactive-tour.gql';
 import { InteractiveTourOverviewTableCols } from './interactive-tour.types';
+import { EditableStep } from './views/InteractiveTourEdit';
 
 export class InteractiveTourService {
 	public static async fetchInteractiveTours(
@@ -177,10 +178,10 @@ export class InteractiveTourService {
 	}
 
 	public static swapStepPositions(
-		steps: Avo.InteractiveTour.Step[],
+		steps: EditableStep[],
 		currentStapIndex: number,
 		delta: number
-	) {
+	): EditableStep[] {
 		const currentStep = steps[currentStapIndex];
 		steps[currentStapIndex] = steps[currentStapIndex + delta];
 		steps[currentStapIndex + delta] = currentStep;

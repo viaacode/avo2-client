@@ -9,16 +9,18 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	RichEditorState,
 	Select,
 	SelectOption,
 	TagInfo,
 	TagsInput,
 	TextInput,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DeleteObjectModal, FileUpload } from '../../../../shared/components';
+import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
@@ -204,14 +206,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							</Column>
 							<Column size="12">
 								<FormGroup
-									error={formErrors.description}
+									error={formErrors.descriptionHtml}
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
 									)}
 								>
-									<WYSIWYG
-										onChange={(value: string) => onChange('description', value)}
-										data={formState.description}
+									<WYSIWYG2Wrapper
+										initialHtml={formState.descriptionHtml}
+										state={formState.descriptionState}
+										onChange={(state: RichEditorState) =>
+											onChange('descriptionState', state)
+										}
+										controls={WYSIWYG2_OPTIONS_FULL}
 										id="description"
 									/>
 								</FormGroup>
