@@ -73,9 +73,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
-			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(assignment));
 		},
-		[setCurrentAssignment, setInitialAssignment, setAssignmentLabels]
+		[setCurrentAssignment, setInitialAssignment]
 	);
 
 	/**
@@ -104,6 +103,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					...tempAssignment,
 					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
 				});
+				setAssignmentLabels(
+					AssignmentLabelsService.getLabelsFromAssignment(tempAssignment)
+				);
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
@@ -261,12 +263,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			assignment.description = descriptionRichEditorState
 				? descriptionRichEditorState.toHTML()
 				: assignment.description || '';
+			delete (assignment as any)['descriptionRichEditorState'];
 
 			// edit => update graphql
 			await AssignmentService.updateAssignment(
 				assignment,
 				AssignmentLabelsService.getLabelsFromAssignment(initialAssignment),
-				AssignmentLabelsService.getLabelsFromAssignment(currentAssignment)
+				assignmentLabels
 			);
 			setBothAssignments(assignment);
 			ToastService.success(
