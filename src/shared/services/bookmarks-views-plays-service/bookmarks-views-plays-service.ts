@@ -249,7 +249,7 @@ export class BookmarksViewsPlaysService {
 						.toDate()
 						.getTime(),
 					contentViews:
-						get(collectionBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
+						get(collectionBookmark, 'bookmarkedCollection.view_counts[0].count') || 0,
 				};
 			}
 		);
