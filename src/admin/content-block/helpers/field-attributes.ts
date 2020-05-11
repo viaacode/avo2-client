@@ -46,7 +46,7 @@ export const generateFieldAttributes = (
 				state: (state as any)[`${key}${RichEditorStateKey}`],
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
-					onChange(editorState.toHTML());
+					onChange(editorState.toHTML(), key);
 				},
 			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:
