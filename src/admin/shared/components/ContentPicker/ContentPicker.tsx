@@ -180,12 +180,12 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		if (prop === 'value') {
 			newValue = propValue as string | null;
 		} else if (prop === 'selectedItem') {
-			newValue = get(propValue, 'value.value', null);
+			newValue = get(propValue, 'value', null);
 			newLabel = get(propValue, 'label');
 		} else if (selectedType.picker === 'TEXT_INPUT') {
 			newValue = input;
 		} else if (selectedType.picker === 'SELECT' && selectedItem) {
-			newValue = get(selectedItem, 'value.value');
+			newValue = get(selectedItem, 'value');
 		} else {
 			newValue = null;
 		}

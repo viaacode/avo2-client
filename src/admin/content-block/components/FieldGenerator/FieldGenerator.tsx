@@ -163,8 +163,9 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 							{currentState.map((innerState: any, index: number) => {
 								const editorProps: any = generateFieldAttributes(
 									field as ContentBlockField,
-									(value: any, key?: string) =>
-										handleStateChange(index, value, key),
+									(value: any, key?: string) => {
+										handleStateChange(index, value, key);
+									},
 									innerState as any,
 									`${fieldKey}-${index}`,
 									fieldKey,
