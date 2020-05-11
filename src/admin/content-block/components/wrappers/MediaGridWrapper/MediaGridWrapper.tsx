@@ -117,7 +117,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			buttonLabel: element.buttonLabel,
 			buttonType: element.buttonType,
 			buttonIcon: element.buttonIcon,
-			buttonAction: element.mediaItem,
+			buttonAction: element.buttonAction || element.mediaItem, // Default link can be overridden by the user
 			title: itemOrCollection.title || '',
 			thumbnail: {
 				label: itemLabel,
