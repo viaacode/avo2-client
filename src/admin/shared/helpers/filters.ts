@@ -36,7 +36,7 @@ export function getBooleanFilters(filters: any, booleanProps: string[]): any[] {
 		booleanProps.map((booleanProp: string) => {
 			const booleanValue = (filters as any)[booleanProp];
 			if (!isNil(booleanValue)) {
-				return { is_published: { _eq: booleanValue ? 'true' : 'false' } };
+				return { [booleanProp]: { _eq: booleanValue ? 'true' : 'false' } };
 			}
 			return null;
 		})
