@@ -260,6 +260,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
+	// function handlePreviewClicked(page: Avo.Content.Content) {
+	// 	if (page && page.path) {
+	// 		navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
+	// 	} else {
+	// 		ToastService.danger(
+	// 			t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+	// 		);
+	// 	}
+	// }
+
 	// Render
 	const renderTableCell = (rowData: any, columnId: string): ReactNode => {
 		const { id, profile, title } = rowData;
@@ -284,13 +294,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="eye"
+							icon="info"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
 							title={t('admin/content/views/content-overview___bekijk-content')}
 							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
 							type="secondary"
 						/>
+						{/*<Button*/}
+						{/*	icon="eye"*/}
+						{/*	onClick={() => handlePreviewClicked(rowData)}*/}
+						{/*	size="small"*/}
+						{/*	title={t('Preview content')}*/}
+						{/*	ariaLabel={t('Preview content')}*/}
+						{/*	type="secondary"*/}
+						{/*/>*/}
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
