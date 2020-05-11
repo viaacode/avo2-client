@@ -263,6 +263,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			assignment.description = descriptionRichEditorState
 				? descriptionRichEditorState.toHTML()
 				: assignment.description || '';
+			delete (assignment as any)['descriptionRichEditorState'];
 
 			// edit => update graphql
 			await AssignmentService.updateAssignment(

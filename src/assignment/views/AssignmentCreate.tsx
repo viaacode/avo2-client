@@ -217,6 +217,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			assignment.description = descriptionRichEditorState
 				? descriptionRichEditorState.toHTML()
 				: assignment.description || '';
+			delete (assignment as any)['descriptionRichEditorState'];
 
 			// Copy content if it's a collection collection if not owned by logged in user
 			// so your assignment can work after the other user deletes his collection
