@@ -281,6 +281,7 @@ export class AssignmentHelper {
 									name="content_layout"
 									value={String(AssignmentLayout.PlayerAndText)}
 									checked={
+										isNil(assignment.content_layout) ||
 										assignment.content_layout === AssignmentLayout.PlayerAndText
 									}
 									onChange={isChecked =>

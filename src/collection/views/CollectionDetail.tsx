@@ -107,6 +107,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	);
 
 	useEffect(() => {
+		setCollectionId(match.params.id);
+	}, [match.params.id]);
+
+	useEffect(() => {
 		trackEvents(
 			{
 				object: collectionId,

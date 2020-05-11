@@ -66,6 +66,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				)
 			);
 		}
+		if (!organization) {
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
+				)} ${requiredError}`
+			);
+		}
 		if (!profession) {
 			errors.push(
 				`${t(
@@ -179,7 +186,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___voornaam'
 							)}
 							labelFor="firstName"
-							required
 						>
 							<TextInput id="firstName" value={firstName} onChange={setFirstName} />
 						</FormGroup>
@@ -188,7 +194,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___achternaam'
 							)}
 							labelFor="lastName"
-							required
 						>
 							<TextInput id="lastName" value={lastName} onChange={setLastName} />
 						</FormGroup>
@@ -197,7 +202,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres'
 							)}
 							labelFor="email"
-							required
 						>
 							<TextInput id="email *" value={email} onChange={setEmail} />
 							<Tooltip position="bottom" contentClassName="m-email-tooltip">
@@ -235,7 +239,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
 							)}
 							labelFor="function"
-							required
 						>
 							<TextInput id="function" value={profession} onChange={setProfession} />
 						</FormGroup>
@@ -244,7 +247,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
 							)}
 							labelFor="reason"
-							required
 						>
 							<TextArea
 								height="small"

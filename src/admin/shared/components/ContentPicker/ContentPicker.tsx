@@ -185,6 +185,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		} else if (selectedType.picker === 'TEXT_INPUT') {
 			newValue = input;
 		} else if (selectedType.picker === 'SELECT' && selectedItem) {
+			newLabel = get(selectedItem, 'label');
 			newValue = get(selectedItem, 'value.value');
 		} else {
 			newValue = null;

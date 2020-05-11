@@ -23,8 +23,8 @@ export const generateFieldAttributes = (
 			};
 		case ContentBlockEditor.ContentPicker:
 			return {
-				onSelect: (picked: PickerItem) => onChange({ value: picked }),
-				initialValue: get(value, 'value'),
+				onSelect: (picked: PickerItem) => onChange(picked),
+				initialValue: value,
 			};
 		case ContentBlockEditor.DatePicker:
 			return {
@@ -46,7 +46,7 @@ export const generateFieldAttributes = (
 				state: (state as any)[`${key}${RichEditorStateKey}`],
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
-					onChange(editorState.toHTML());
+					onChange(editorState.toHTML(), key);
 				},
 			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:

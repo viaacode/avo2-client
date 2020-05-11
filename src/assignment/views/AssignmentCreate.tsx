@@ -38,7 +38,7 @@ import {
 } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { CONTENT_LABEL_TO_EVENT_OBJECT_TYPE } from '../assignment.const';
@@ -72,9 +72,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
-			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(assignment));
 		},
-		[setCurrentAssignment, setInitialAssignment, setAssignmentLabels]
+		[setCurrentAssignment, setInitialAssignment]
 	);
 
 	/**
@@ -218,6 +217,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			assignment.description = descriptionRichEditorState
 				? descriptionRichEditorState.toHTML()
 				: assignment.description || '';
+			delete (assignment as any)['descriptionRichEditorState'];
 
 			// Copy content if it's a collection collection if not owned by logged in user
 			// so your assignment can work after the other user deletes his collection

@@ -167,8 +167,8 @@ export class CollectionService {
 			const currentFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
 
 			// Fragments to insert do not have an id yet
-			const newFragments = getFragmentsFromCollection(newCollection).filter(fragment =>
-				isNil(fragment.id)
+			const newFragments = getFragmentsFromCollection(newCollection).filter(
+				fragment => fragment.id < 0 || isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
