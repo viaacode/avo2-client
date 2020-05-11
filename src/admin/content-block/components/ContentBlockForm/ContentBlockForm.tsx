@@ -79,13 +79,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		value: any,
 		stateIndex?: number
 	) => {
-		const parsedValue = get(value, 'value', value);
 		const updateObject = {
-			[key]: parsedValue,
+			[key]: value,
 		};
 		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
 
-		handleValidation(key, formGroupType, parsedValue, stateIndex);
+		handleValidation(key, formGroupType, value, stateIndex);
 		onChange(formGroupType, stateUpdate, stateIndex);
 	};
 
