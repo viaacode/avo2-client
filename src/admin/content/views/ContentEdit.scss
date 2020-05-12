@@ -9,7 +9,7 @@ $content-top-bar-and-tabs-height: 113px;
 		width: 100%;
 		height: calc(100vh - #{$content-top-bar-and-tabs-height} - 68px);
 		overflow-y: auto;
-		padding: 0 1.6rem 1.6rem;
+		padding: 2rem 1.6rem 8rem;
 	}
 
 	> .o-sidebar__content > .c-navbar {

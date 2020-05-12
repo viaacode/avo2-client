@@ -44,7 +44,10 @@ export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultCont
 			position,
 			Color.White,
 			Color.Transparent,
-			'70px'
+			{
+				top: 'top-small',
+				bottom: 'bottom-extra-large',
+			}
 		),
 	};
 };

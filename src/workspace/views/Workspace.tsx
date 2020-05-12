@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -26,7 +27,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
 	InteractiveTour,
@@ -329,12 +330,18 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			render={renderTabsAndContent}
-			dataObject={permissions}
-			showSpinner
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Mijn werkruimte pagina titel'))}</title>
+				<meta name="description" content={t('Mijn werkruimte pagina beschrijving')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				render={renderTabsAndContent}
+				dataObject={permissions}
+				showSpinner
+			/>
+		</>
 	);
 };
 

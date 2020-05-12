@@ -1,6 +1,7 @@
 import { cloneDeep, isEqual, isNil, startCase } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	Button,
@@ -15,6 +16,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -328,11 +330,17 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={menuItems}
-			render={renderMenuDetail}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(menuId, t('Menu beheer detail pagina titel'))}</title>
+				<meta name="description" content={t('Menu beheer detail pagina beschrijving')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={menuItems}
+				render={renderMenuDetail}
+			/>
+		</>
 	);
 };
 

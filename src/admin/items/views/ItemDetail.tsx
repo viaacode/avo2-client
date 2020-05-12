@@ -1,6 +1,7 @@
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -8,23 +9,25 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	RichEditorState,
 	Spacer,
 	Table,
 	Thumbnail,
 	Toolbar,
 	ToolbarRight,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
@@ -61,6 +64,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
 		'asc'
 	);
+	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const [t] = useTranslation();
 
@@ -181,7 +185,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item) {
 				return;
 			}
-			await ItemsService.setItemNotes(item.uid, (item as any).note || null);
+			await ItemsService.setItemNotes(
+				item.uid,
+				noteEditorState ? noteEditorState.toHTML() : (item as any).note || null
+			);
 			ToastService.success(
 				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
 				false
@@ -320,16 +327,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderDetailRow(
 								<>
-									<div style={{ backgroundColor: Color.White }}>
-										<WYSIWYG
-											id="note"
-											data={item.note || undefined}
-											onChange={(note: string | null) =>
-												setItem({ ...item, note })
-											}
-										/>
-									</div>
-									<Spacer margin="top-small">
+									<Spacer margin="right-small">
+										<Spacer margin={['top']}>
+											<div style={{ backgroundColor: Color.White }}>
+												<WYSIWYG2Wrapper
+													id="note"
+													controls={WYSIWYG2_OPTIONS_FULL}
+													initialHtml={item.note || undefined}
+													state={noteEditorState}
+													onChange={setNoteEditorState}
+												/>
+											</div>
+										</Spacer>
 										<Toolbar>
 											<ToolbarRight>
 												<Button
@@ -465,11 +474,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={item}
-			render={renderItemDetailPage}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(get(item, 'title'), t('Item beheer detail pagina titel'))}
+				</title>
+				<meta name="description" content={get(item, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={item}
+				render={renderItemDetailPage}
+			/>
+		</>
 	);
 };
 

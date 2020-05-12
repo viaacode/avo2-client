@@ -5,8 +5,8 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
-import { CustomError } from '../shared/helpers';
+import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
@@ -24,6 +24,7 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_ID,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
@@ -167,8 +168,8 @@ export class CollectionService {
 			const currentFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
 
 			// Fragments to insert do not have an id yet
-			const newFragments = getFragmentsFromCollection(newCollection).filter(fragment =>
-				isNil(fragment.id)
+			const newFragments = getFragmentsFromCollection(newCollection).filter(
+				fragment => fragment.id < 0 || isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
@@ -388,18 +389,21 @@ export class CollectionService {
 	}
 
 	/**
-	 * Retrieve collections.
+	 * Retrieve collections or bundles.
 	 *
 	 * @param limit Numeric value to define the maximum amount of items in response.
-	 *
+	 * @param typeId 3 for collections, 4 for bundles
 	 * @returns Collections limited by `limit`.
 	 */
-	public static async fetchCollections(limit: number): Promise<Avo.Collection.Collection[]> {
+	public static async fetchCollectionsOrBundles(
+		limit: number,
+		typeId: ContentTypeNumber
+	): Promise<Avo.Collection.Collection[]> {
 		try {
 			// retrieve collections
 			const response = await dataService.query({
 				query: GET_COLLECTIONS,
-				variables: { limit },
+				variables: { limit, typeId },
 			});
 
 			return get(response, 'data.app_collections', []);
@@ -416,103 +420,69 @@ export class CollectionService {
 		}
 	}
 
-	/**
-	 * Retrieve bundles.
-	 *
-	 * @param limit Numeric value to define the maximum amount of items in response.
-	 *
-	 * @returns Bundles limited by `limit`.
-	 */
-	// TODO: Move to bundle.service.ts
-	public static async fetchBundles(limit?: number): Promise<Avo.Collection.Collection[]> {
+	public static async fetchCollectionsOrBundlesByTitleOrId(
+		isCollection: boolean,
+		titleOrId: string,
+		limit: number
+	): Promise<Avo.Collection.Collection[]> {
 		try {
-			// retrieve bundles
-			const response = await dataService.query({
-				query: GET_BUNDLES,
-				variables: { limit },
-			});
+			const isUuidFormat = isUuid(titleOrId);
+			const variables: any = {
+				limit,
+				typeId: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+			};
+			if (isUuidFormat) {
+				variables.id = titleOrId;
+			} else {
+				variables.title = `%${titleOrId}%`;
+			}
 
-			return get(response, 'data.app_collections', []);
+			return (
+				(await performQuery(
+					{
+						variables,
+						query: isUuidFormat ? GET_COLLECTIONS_BY_ID : GET_COLLECTIONS_BY_TITLE,
+					},
+					'data.app_collections',
+					'Failed to retrieve items by title or external id.'
+				)) || []
+			);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError('Failed to retrieve bundles', err, {
-				query: 'GET_BUNDLES',
+			throw new CustomError('Failed to fetch collections or bundles', err, {
+				query: 'GET_COLLECTIONS_BY_TITLE_OR_ID',
+				variables: { titleOrId, isCollection, limit },
 			});
-
-			console.error(customError);
-
-			throw customError;
 		}
 	}
 
 	/**
 	 * Retrieve collections by title.
 	 *
-	 * @param title Keyword to search for collection title.
+	 * @param titleOrId Keyword to search for collection title or the collection id
 	 * @param limit Numeric value to define the maximum amount of items in response.
 	 *
 	 * @returns Collections limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	public static async fetchCollectionsByTitle(
-		title: string,
+	public static async fetchCollectionsByTitleOrId(
+		titleOrId: string,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
-		try {
-			// retrieve collections by title
-			const response = await dataService.query({
-				query: GET_COLLECTIONS_BY_TITLE,
-				variables: { title, limit },
-			});
-
-			return get(response, 'data.app_collections', []);
-		} catch (err) {
-			// handle erroor
-			const customError = new CustomError('Het ophalen van de collecties is mislukt.', err, {
-				query: 'GET_COLLECTIONS_BY_TITLE',
-				variables: { title, limit },
-			});
-
-			console.error(customError);
-
-			throw customError;
-		}
+		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(true, titleOrId, limit);
 	}
 
 	/**
 	 * Retrieve bundles by title.
 	 *
-	 * @param title Keyword to search for bundle title.
+	 * @param titleOrId Keyword to search for bundle title.
 	 * @param limit Numeric value to define the maximum amount of items in response.
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	// TODO: Move to bundle.service.ts
-	public static async fetchBundlesByTitle(
-		title: string,
-		limit?: number
+	public static async fetchBundlesByTitleOrId(
+		titleOrId: string,
+		limit: number
 	): Promise<Avo.Collection.Collection[]> {
-		try {
-			// retrieve bundles by title
-			const response = await dataService.query({
-				query: GET_BUNDLES_BY_TITLE,
-				variables: { title, limit },
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collections', []);
-		} catch (err) {
-			// handle error
-			const customError = new CustomError('Failed to get bundles', err, {
-				query: 'GET_BUNDLES_BY_TITLE',
-			});
-
-			console.error(customError);
-
-			throw customError;
-		}
+		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(false, titleOrId, limit);
 	}
 
 	public static async fetchQualityLabels(): Promise<QualityLabel[]> {
@@ -528,7 +498,7 @@ export class CollectionService {
 			return get(response, 'data.lookup_enum_collection_labels', []);
 		} catch (err) {
 			throw new CustomError('Failed to get quality labels', err, {
-				query: 'GET_BUNDLES_BY_TITLE',
+				query: 'GET_QUALITY_LABELS',
 			});
 		}
 	}

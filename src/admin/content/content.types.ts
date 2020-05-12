@@ -1,3 +1,4 @@
+import { RichEditorState } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
@@ -58,7 +59,8 @@ export type ContentDetailParams = { id: string };
 export interface ContentPageEditFormState {
 	thumbnail_path: string | null;
 	title: string;
-	description: string;
+	descriptionState: RichEditorState | undefined;
+	descriptionHtml: string;
 	isProtected: boolean;
 	path: string;
 	contentType: string;

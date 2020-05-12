@@ -1,10 +1,12 @@
 import { flatten, fromPairs, get, groupBy, map } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { Button, Container, KeyValueEditor } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -114,6 +116,13 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				<Button label="Opslaan" onClick={onSaveTranslations} />
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Vertalingen beheer pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Vertalingen beheer pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal" size="full-width">
 						{!!translations.length && (

@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -17,7 +18,7 @@ import {
 	selectUser,
 } from '../../authentication/store/selectors';
 import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { GET_EXTERNAL_ID_BY_MEDIAMOSA_ID } from '../../item/item.gql';
@@ -168,7 +169,15 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
 			}
 
-			return <ContentPage contentPage={routeInfo.data} />;
+			return (
+				<>
+					<MetaTags>
+						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
+						<meta name="description" content={get(routeInfo.data, 'description')} />
+					</MetaTags>
+					<ContentPage contentPage={routeInfo.data} />
+				</>
+			);
 		}
 		console.error(
 			new CustomError("Route doesn't seem to be a bundle or content page", null, {

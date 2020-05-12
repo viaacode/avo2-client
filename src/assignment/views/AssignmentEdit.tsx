@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
@@ -16,6 +17,7 @@ import {
 	Icon,
 	MenuContent,
 	Navbar,
+	RichEditorState,
 	Spacer,
 	TextInput,
 	Toolbar,
@@ -28,7 +30,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
@@ -71,9 +73,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
-			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(assignment));
 		},
-		[setCurrentAssignment, setInitialAssignment, setAssignmentLabels]
+		[setCurrentAssignment, setInitialAssignment]
 	);
 
 	/**
@@ -102,6 +103,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					...tempAssignment,
 					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
 				});
+				setAssignmentLabels(
+					AssignmentLabelsService.getLabelsFromAssignment(tempAssignment)
+				);
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
@@ -237,7 +241,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	};
 
-	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
+	const setAssignmentProp = (
+		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+		value: any
+	) => {
 		const newAssignment = {
 			...currentAssignment,
 			[property]: value,
@@ -248,11 +255,21 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
+
+			// copy description to assignment
+			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
+				'descriptionRichEditorState'
+			];
+			assignment.description = descriptionRichEditorState
+				? descriptionRichEditorState.toHTML()
+				: assignment.description || '';
+			delete (assignment as any)['descriptionRichEditorState'];
+
 			// edit => update graphql
 			await AssignmentService.updateAssignment(
 				assignment,
 				AssignmentLabelsService.getLabelsFromAssignment(initialAssignment),
-				AssignmentLabelsService.getLabelsFromAssignment(currentAssignment)
+				assignmentLabels
 			);
 			setBothAssignments(assignment);
 			ToastService.success(
@@ -484,12 +501,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			dataObject={currentAssignment}
-			render={renderAssignmentEditForm}
-			loadingInfo={loadingInfo}
-			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						get(
+							currentAssignment,
+							'title',
+							t('Collectie bewerken pagina titel fallback')
+						)
+					)}
+				</title>
+				<meta name="description" content={get(currentAssignment, 'description') || ''} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				dataObject={currentAssignment}
+				render={renderAssignmentEditForm}
+				loadingInfo={loadingInfo}
+				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
+			/>
+		</>
 	);
 };
 

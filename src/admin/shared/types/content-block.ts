@@ -6,6 +6,7 @@ import {
 	CTAProps,
 	HeadingType,
 	IconName,
+	RichEditorState,
 	SpacerOption,
 } from '@viaa/avo2-components';
 
@@ -47,7 +48,7 @@ export enum Color {
 	Green = '#46D46E',
 	Blue = '#4D76F3',
 	SoftBlue = '#8AC1CE',
-	OceanGreen = '#57C2A0',
+	OceanGreen = '#00C8AA',
 	Silver = '#DBDBDB',
 	Tapestry = '#B75B99',
 	WineRed = '#98485C',
@@ -55,7 +56,7 @@ export enum Color {
 	DarkOrange = '#D03F06',
 	FrenchRose = '#F33F67',
 	Primary = '#25A4CF',
-	Success = '#57C2A0',
+	Success = '#00C8AA',
 	Error = '#DA3F34',
 	AlertBackground = '#FFFFCC',
 	AlertAccent = '#E9E994',
@@ -223,6 +224,9 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+	// Each rich text editor state prop has to and with 'RichEditorStateKey'
+	// So this can be removed before saving the page to the database in ContentService.removeRichEditorStateRecursively
+	contentRichEditorState: RichEditorState | undefined;
 	buttons?: ButtonsBlockComponentState[];
 }
 

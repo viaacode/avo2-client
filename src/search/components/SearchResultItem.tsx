@@ -1,4 +1,4 @@
-import { compact, get } from 'lodash-es';
+import { capitalize, compact, get, startCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -13,12 +13,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { toEnglishContentType } from '../../collection/collection.types';
-import {
-	CustomError,
-	formatDate,
-	generateContentLinkString,
-	generateSearchLink,
-} from '../../shared/helpers';
+import { formatDate, generateContentLinkString, generateSearchLink } from '../../shared/helpers';
 import { SearchResultItemProps } from '../search.types';
 
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
@@ -34,19 +29,10 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
 		return compact(
 			(get(result, 'collection_labels', []) as string[]).map((id: string) => {
-				if (collectionLabelLookup[id]) {
-					return {
-						id,
-						label: collectionLabelLookup[id],
-					};
-				}
-				console.error(
-					new CustomError('Failed to map collection label id to collection label', null, {
-						id,
-						collectionLabelLookup,
-					})
-				);
-				return null;
+				return {
+					id,
+					label: collectionLabelLookup[id] || capitalize(startCase(id)),
+				};
 			})
 		);
 	};

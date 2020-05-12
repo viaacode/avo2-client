@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
@@ -12,6 +13,7 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	CheckboxOption,
@@ -258,6 +260,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
+	// function handlePreviewClicked(page: Avo.Content.Content) {
+	// 	if (page && page.path) {
+	// 		navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
+	// 	} else {
+	// 		ToastService.danger(
+	// 			t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+	// 		);
+	// 	}
+	// }
+
 	// Render
 	const renderTableCell = (rowData: any, columnId: string): ReactNode => {
 		const { id, profile, title } = rowData;
@@ -282,13 +294,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="eye"
+							icon="info"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
 							title={t('admin/content/views/content-overview___bekijk-content')}
 							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
 							type="secondary"
 						/>
+						{/*<Button*/}
+						{/*	icon="eye"*/}
+						{/*	onClick={() => handlePreviewClicked(rowData)}*/}
+						{/*	size="small"*/}
+						{/*	title={t('Preview content')}*/}
+						{/*	ariaLabel={t('Preview content')}*/}
+						{/*	type="secondary"*/}
+						{/*/>*/}
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
@@ -410,6 +430,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Content beheer overview pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('Content beheer overview pagina beschrijving')}
+					/>
+				</MetaTags>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
 						<LoadingErrorLoadedComponent

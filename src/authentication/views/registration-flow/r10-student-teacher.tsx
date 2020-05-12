@@ -1,10 +1,11 @@
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import { BlockHeading, Button, Container } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { sanitize } from '../../../shared/helpers/sanitize';
 import sanitizePresets from '../../../shared/helpers/sanitize/presets';
 import { redirectToClientPage } from '../../helpers/redirects';
@@ -17,6 +18,10 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Student lesgever pagina titel'))}</title>
+					<meta name="description" content={t('Student lesgever pagina beschrijving')} />
+				</MetaTags>
 				<div className="c-content">
 					<Button
 						type="secondary"

@@ -2,6 +2,7 @@ import { isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
@@ -13,6 +14,7 @@ import {
 	FormGroup,
 	Icon,
 	Navbar,
+	RichEditorState,
 	Spacer,
 	TextInput,
 	Toolbar,
@@ -25,7 +27,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
@@ -36,7 +38,7 @@ import {
 } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { CONTENT_LABEL_TO_EVENT_OBJECT_TYPE } from '../assignment.const';
@@ -70,9 +72,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
-			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(assignment));
 		},
-		[setCurrentAssignment, setInitialAssignment, setAssignmentLabels]
+		[setCurrentAssignment, setInitialAssignment]
 	);
 
 	/**
@@ -177,7 +178,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	};
 
-	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
+	const setAssignmentProp = (
+		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+		value: any
+	) => {
 		const newAssignment = {
 			...currentAssignment,
 			[property]: value,
@@ -205,6 +209,15 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
+
+			// Convert description editor state to html and store it in the assignment
+			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
+				'descriptionRichEditorState'
+			];
+			assignment.description = descriptionRichEditorState
+				? descriptionRichEditorState.toHTML()
+				: assignment.description || '';
+			delete (assignment as any)['descriptionRichEditorState'];
 
 			// Copy content if it's a collection collection if not owned by logged in user
 			// so your assignment can work after the other user deletes his collection
@@ -404,12 +417,18 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			dataObject={currentAssignment}
-			render={renderAssignmentEditForm}
-			loadingInfo={loadingInfo}
-			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
-		/>
+		<>
+			<MetaTags>
+				<title>{GENERATE_SITE_TITLE(t('Maak opdracht pagina titel'))}</title>
+				<meta name="description" content={t('Maak opdracht pagina beschrijving')} />
+			</MetaTags>
+			<LoadingErrorLoadedComponent
+				dataObject={currentAssignment}
+				render={renderAssignmentEditForm}
+				loadingInfo={loadingInfo}
+				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
+			/>
+		</>
 	);
 };
 

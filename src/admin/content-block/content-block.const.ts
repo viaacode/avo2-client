@@ -9,10 +9,10 @@ import {
 	SelectOption,
 	TextArea,
 	TextInput,
-	WYSIWYG,
 } from '@viaa/avo2-components';
 
 import { FileUpload } from '../../shared/components';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import i18n from '../../shared/translations/i18n';
 import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
@@ -180,6 +180,7 @@ export const EDITOR_TYPES_MAP = {
 	ColorSelect,
 	ContentPicker,
 	ContentTypeAndLabelsPicker,
+	DatePicker,
 	FileUpload,
 	IconPicker,
 	MultiRange,
@@ -187,9 +188,8 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextArea,
 	TextInput,
-	WYSIWYG,
 	UserGroupSelect,
-	DatePicker,
+	WYSIWYG: WYSIWYG2Wrapper,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {

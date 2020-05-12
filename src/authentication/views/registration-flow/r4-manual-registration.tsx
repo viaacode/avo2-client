@@ -1,6 +1,7 @@
 import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -18,7 +19,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { sanitize } from '../../../shared/helpers';
 import sanitizePresets from '../../../shared/helpers/sanitize/presets';
 import { ToastService, ZendeskService } from '../../../shared/services';
@@ -63,6 +64,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___email-is-geen-geldig-email-adres'
 				)
+			);
+		}
+		if (!organization) {
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
+				)} ${requiredError}`
 			);
 		}
 		if (!profession) {
@@ -178,7 +186,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___voornaam'
 							)}
 							labelFor="firstName"
-							required
 						>
 							<TextInput id="firstName" value={firstName} onChange={setFirstName} />
 						</FormGroup>
@@ -187,7 +194,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___achternaam'
 							)}
 							labelFor="lastName"
-							required
 						>
 							<TextInput id="lastName" value={lastName} onChange={setLastName} />
 						</FormGroup>
@@ -196,7 +202,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres'
 							)}
 							labelFor="email"
-							required
 						>
 							<TextInput id="email *" value={email} onChange={setEmail} />
 							<Tooltip position="bottom" contentClassName="m-email-tooltip">
@@ -234,7 +239,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
 							)}
 							labelFor="function"
-							required
 						>
 							<TextInput id="function" value={profession} onChange={setProfession} />
 						</FormGroup>
@@ -243,7 +247,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
 							)}
 							labelFor="reason"
-							required
 						>
 							<TextArea
 								height="small"
@@ -277,6 +280,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
+				<MetaTags>
+					<title>{GENERATE_SITE_TITLE(t('Manuele account aanvraag pagina titel'))}</title>
+					<meta
+						name="description"
+						content={t('manuele account aanvraag pagina beschrijving')}
+					/>
+				</MetaTags>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>
 			</Container>
 		</Container>

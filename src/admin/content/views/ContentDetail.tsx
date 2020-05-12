@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { compact, flatten, get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
@@ -21,6 +22,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import {
 	DeleteObjectModal,
@@ -376,7 +378,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				<ButtonToolbar>
 					<Button
 						type="secondary"
-						icon="lock"
+						icon={get(contentPage, 'is_public') === true ? 'unlock-3' : 'lock'}
 						label={t('admin/content/views/content-detail___publiceren')}
 						title={t(
 							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
@@ -424,6 +426,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(contentPage, 'title'),
+							t('Content beheer detail pagina titel')
+						)}
+					</title>
+					<meta name="description" content={get(contentPage, 'description') || ''} />
+				</MetaTags>
 				<div className="m-content-detail-preview">
 					<LoadingErrorLoadedComponent
 						loadingInfo={loadingInfo}

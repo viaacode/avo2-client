@@ -7,3 +7,20 @@
 		}
 	}
 }
+
+.c-content-picker {
+	.c-select {
+		.c-select__value-container > div {
+			width: 100% !important;
+
+			.c-select__input {
+				width: 100% !important;
+			}
+		}
+
+		input {
+			text-overflow: ellipsis;
+			width: 100% !important;
+		}
+	}
+}
