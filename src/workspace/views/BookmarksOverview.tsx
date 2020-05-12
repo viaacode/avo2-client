@@ -158,7 +158,11 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	// Render functions
 	const getDetailLink = (contentType: EventContentType, contentLinkId: string) => {
 		return buildLink(
-			contentType === 'item' ? APP_PATH.ITEM_DETAIL.route : APP_PATH.COLLECTION_DETAIL.route,
+			{
+				item: APP_PATH.ITEM_DETAIL.route,
+				collection: APP_PATH.COLLECTION_DETAIL.route,
+				bundle: APP_PATH.BUNDLE_DETAIL.route,
+			}[contentType],
 			{
 				id: contentLinkId,
 			}
