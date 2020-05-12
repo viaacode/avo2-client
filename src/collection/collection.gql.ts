@@ -95,6 +95,12 @@ export const GET_COLLECTION_BY_ID = gql`
 				label
 				id
 			}
+			relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
+				object_meta {
+					id
+					title
+				}
+			}
 		}
 	}
 `;

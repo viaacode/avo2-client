@@ -750,31 +750,52 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										Ordering
 									</Trans>
 								</p>
-								{/* TODO: add links */}
-								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-										Deze collectie is een kopie van:
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-										Deze collectie is deel van een bundel:
-									</Trans>{' '}
-									{publishedBundles.map((bundle, index) => {
-										return (
-											<>
-												{index !== 0 && !!publishedBundles.length && ', '}
+								{!!get(collection, 'relations', []).length && (
+									<p className="c-body-1">
+										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+											Deze collectie is een kopie van:
+										</Trans>{' '}
+										{get(collection, 'relations', []).map((relation: any) => {
+											return (
 												<Link
-													to={buildLink(APP_PATH.BUNDLE_DETAIL.route, {
-														id: bundle.id,
-													})}
+													key={`copy-of-link-${relation.object_meta.id}`}
+													to={buildLink(
+														APP_PATH.COLLECTION_DETAIL.route,
+														{ id: relation.object_meta.id }
+													)}
 												>
-													{bundle.title}
+													{relation.object_meta.title}
 												</Link>
-											</>
-										);
-									})}
-								</p>
+											);
+										})}
+									</p>
+								)}
+								{!!publishedBundles.length && (
+									<p className="c-body-1">
+										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+											Deze collectie is deel van een bundel:
+										</Trans>{' '}
+										{publishedBundles.map((bundle, index) => {
+											return (
+												<>
+													{index !== 0 &&
+														!!publishedBundles.length &&
+														', '}
+													<Link
+														to={buildLink(
+															APP_PATH.BUNDLE_DETAIL.route,
+															{
+																id: bundle.id,
+															}
+														)}
+													>
+														{bundle.title}
+													</Link>
+												</>
+											);
+										})}
+									</p>
+								)}
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
