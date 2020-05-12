@@ -48,7 +48,6 @@ export const FieldGroup: FunctionComponent<FieldGroupProps> = ({
 	return (
 		<>
 			{Object.entries(fields).map((fieldState: any, fieldIndex: number) => {
-				// generateFields(innerField)
 				const editorProps: any = {
 					...fieldState[1].editorProps,
 					...generateFieldAttributes(
