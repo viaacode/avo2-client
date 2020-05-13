@@ -19,7 +19,7 @@ const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value 
 		[
 			{
 				label: t('Geen'),
-				value: '',
+				value: 'none',
 			},
 			{
 				label: t(
