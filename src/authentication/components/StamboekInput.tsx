@@ -104,7 +104,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					.
 				</span>
 			),
-			status: ToastType.SUCCESS,
+			status: ToastType.DANGER,
 		},
 		SERVER_ERROR: {
 			message: t(
