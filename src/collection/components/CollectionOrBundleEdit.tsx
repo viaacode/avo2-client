@@ -44,7 +44,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
-	DeleteObjectModal,
 	DraggableListModal,
 	InputModal,
 	InteractiveTour,
@@ -78,6 +77,7 @@ import { getFragmentProperty } from '../helpers';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
+import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -557,6 +557,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			);
 
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID });
+			ToastService.success(
+				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+			);
 		} catch (err) {
 			console.error(err);
 			ToastService.info(
@@ -1063,19 +1066,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					match={match}
 					user={user}
 				/>
-				<DeleteObjectModal
-					title={
-						isCollection
-							? t(
-									'collection/components/collection-or-bundle-edit___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-							  )
-							: t(
-									'collection/components/collection-or-bundle-edit___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
-							  )
+				<DeleteCollectionModal
+					collectionId={
+						(collectionState.currentCollection as Avo.Collection.Collection).id
 					}
-					body={t(
-						'collection/components/collection-or-bundle-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
