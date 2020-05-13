@@ -56,7 +56,6 @@ export const GET_COLLECTION_BY_ID = gql`
 					first_name
 					last_name
 					mail
-					role_id
 					uid
 					updated_at
 					role {
