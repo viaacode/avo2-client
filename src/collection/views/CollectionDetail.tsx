@@ -61,7 +61,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
-import { FragmentList, ShareCollectionModal } from '../components';
+import { FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 
 import './CollectionDetail.scss';
@@ -85,12 +85,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	// TODO see if we can remove this by setting the is_public in the sharemodal onClose handler
-	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -126,10 +124,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
-			setIsPublic(collection.is_public);
 			setIsFirstRender(true);
 		}
-	}, [collection, isFirstRender, setIsFirstRender, setIsPublic]);
+	}, [collection, isFirstRender, setIsFirstRender]);
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
@@ -349,7 +346,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				break;
 
 			case 'openShareCollectionModal':
-				setIsShareModalOpen(!isShareModalOpen);
+				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
 
 			case 'toggleBookmark':
@@ -806,15 +803,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						)}
 					</Container>
 				</Container>
-				{isPublic !== null && (
-					<ShareCollectionModal
-						collection={{
-							...(collection as Avo.Collection.Collection),
-							is_public: isPublic,
+				{!!collection && (
+					<PublishCollectionModal
+						collection={collection}
+						isOpen={isPublishModalOpen}
+						onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+							setIsPublishModalOpen(false);
+							if (newCollection) {
+								setCollection(newCollection);
+							}
 						}}
-						isOpen={isShareModalOpen}
-						onClose={() => setIsShareModalOpen(false)}
-						setIsPublic={setIsPublic}
 						history={history}
 						location={location}
 						match={match}

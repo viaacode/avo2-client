@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -28,10 +28,9 @@ import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 import { CollectionService } from '../../collection.service';
 
-interface ShareCollectionModalProps extends DefaultSecureRouteProps {
+interface PublishCollectionModalProps extends DefaultSecureRouteProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
-	setIsPublic: (value: any) => void;
 	collection: Avo.Collection.Collection;
 }
 
@@ -48,11 +47,10 @@ const GET_SHARE_OPTIONS = () => [
 	},
 ];
 
-const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
+const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = ({
 	onClose,
 	isOpen,
 	collection,
-	setIsPublic,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -64,6 +62,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const isCollection = () => {
 		return collection.type_id === 3;
 	};
+
+	useEffect(() => {
+		setIsCollectionPublic(collection.is_public);
+	}, [isOpen]);
 
 	const onSave = async () => {
 		try {
@@ -119,16 +121,14 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				}
 			}
 
-			setIsPublic(isCollectionPublic);
-
-			const newCollection: Avo.Collection.Collection = {
+			const newCollectionProps: Partial<Avo.Collection.Collection> = {
 				is_public: isCollectionPublic,
 				published_at: new Date().toISOString(),
-			} as Avo.Collection.Collection;
+			};
 			await triggerCollectionPropertyUpdate({
 				variables: {
 					id: collection.id,
-					collection: newCollection,
+					collection: newCollectionProps,
 				},
 			});
 			setValidationError(undefined);
@@ -149,7 +149,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
 					  )
 			);
-			closeModal(newCollection);
+			closeModal({
+				...collection,
+				...newCollectionProps,
+			});
 
 			// Public status changed => log as event
 			trackEvents(
@@ -245,4 +248,4 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	);
 };
 
-export default ShareCollectionModal;
+export default PublishCollectionModal;

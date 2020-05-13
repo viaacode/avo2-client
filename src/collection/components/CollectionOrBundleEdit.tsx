@@ -72,7 +72,7 @@ import {
 	reorderFragments,
 } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { ShareCollectionModal } from '../components';
+import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
 
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -141,7 +141,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
@@ -598,7 +598,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 						)
 					);
 				} else {
-					setIsShareModalOpen(!isShareModalOpen);
+					setIsPublishModalOpen(!isPublishModalOpen);
 				}
 				break;
 
@@ -626,7 +626,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	const onCloseShareCollectionModal = (collection?: Avo.Collection.Collection) => {
-		setIsShareModalOpen(false);
+		setIsPublishModalOpen(false);
 
 		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
 		if (collection) {
@@ -1041,28 +1041,17 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 						</Toolbar>
 					</Container>
 				</Container>
-				{/* TODO: DISABLED_FEATURE
-					<ReorderCollectionModal
-						isOpen={isReorderModalOpen}
-						onClose={() => setIsReorderModalOpen(false)}
+				{!!collectionState.currentCollection && (
+					<PublishCollectionModal
+						collection={collectionState.currentCollection}
+						isOpen={isPublishModalOpen}
+						onClose={onCloseShareCollectionModal}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
 					/>
-				*/}
-				<ShareCollectionModal
-					collection={collectionState.currentCollection as Avo.Collection.Collection}
-					isOpen={isShareModalOpen}
-					onClose={onCloseShareCollectionModal}
-					setIsPublic={(value: boolean) =>
-						changeCollectionState({
-							type: 'UPDATE_COLLECTION_PROP',
-							collectionProp: 'is_public',
-							collectionPropValue: value,
-						})
-					}
-					history={history}
-					location={location}
-					match={match}
-					user={user}
-				/>
+				)}
 				<DeleteObjectModal
 					title={
 						isCollection
