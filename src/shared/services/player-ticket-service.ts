@@ -1,4 +1,5 @@
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export type PlayerTicketResponse = {
 	url: string;
@@ -8,7 +9,7 @@ export const fetchPlayerTicket = async (externalId: string): Promise<string> => 
 	try {
 		const url = `${getEnv('PROXY_URL')}/player-ticket?externalId=${externalId}`;
 
-		const response = await fetch(url, {
+		const response = await fetchWithLogout(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

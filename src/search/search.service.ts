@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../shared/helpers';
+import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 
 export const fetchSearchResults = (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
@@ -10,7 +11,7 @@ export const fetchSearchResults = (
 	filters?: Partial<Avo.Search.Filters>,
 	filterOptionSearch?: Partial<Avo.Search.FilterOption>
 ) =>
-	fetch(`${getEnv('PROXY_URL')}/search`, {
+	fetchWithLogout(`${getEnv('PROXY_URL')}/search`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

@@ -1,10 +1,11 @@
 import { Tickets } from 'node-zendesk';
 
 import { getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export class ZendeskService {
 	public static async createTicket(ticket: Tickets.CreateModel): Promise<Tickets.ResponseModel> {
-		const response = await fetch(`${getEnv('PROXY_URL')}/zendesk`, {
+		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/zendesk`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
