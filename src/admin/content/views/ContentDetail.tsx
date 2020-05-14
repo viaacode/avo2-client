@@ -333,15 +333,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 											),
 										],
 										[
-											'publish_at',
+											'published_at',
 											t('admin/content/views/content-detail___gepubliceerd'),
+											t('Nee'),
 										],
-										[
-											'depublish_at',
-											t(
-												'admin/content/views/content-detail___gedepubliceerd'
-											),
-										],
+										['publish_at', t('Wordt gepubliceerd op')],
+										['depublish_at', t('Wordt gedepubliceerd op')],
 									])}
 									{renderDetailRow(
 										<TagList

@@ -36,6 +36,7 @@ export const GET_CONTENT_PAGES = gql`
 				}
 			}
 			publish_at
+			published_at
 			title
 			updated_at
 			user_group_ids
@@ -114,6 +115,7 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 				}
 			}
 			publish_at
+			published_at
 			title
 			updated_at
 			content_content_labels {
@@ -168,6 +170,7 @@ export const GET_CONTENT_BY_ID = gql`
 				}
 			}
 			publish_at
+			published_at
 			title
 			updated_at
 			user_group_ids
