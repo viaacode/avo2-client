@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../shared/helpers';
+import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { NewsletterPreferences } from '../shared/types';
 
 interface UpdateProfileValues {
@@ -31,7 +32,7 @@ export const updateProfileInfo = async (
 	variables: Partial<UpdateProfileValues>
 ): Promise<void> => {
 	try {
-		const response = await fetch(`${getEnv('PROXY_URL')}/profile`, {
+		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/profile`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ export const updateProfileInfo = async (
 
 export const fetchNewsletterPreferences = async (email: string) => {
 	try {
-		const response = await fetch(
+		const response = await fetchWithLogout(
 			`${getEnv('PROXY_URL')}/campaign-monitor/preferences?email=${email}`,
 			{
 				method: 'GET',
@@ -81,7 +82,7 @@ export const updateNewsletterPreferences = async (
 	preferences: Partial<NewsletterPreferences>
 ) => {
 	try {
-		await fetch(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
+		await fetchWithLogout(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

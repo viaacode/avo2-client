@@ -39,4 +39,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
 		},
 	}),
+	copies: (order: Avo.Search.OrderDirection) => ({
+		relations_aggregate: {
+			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+		},
+	}),
 };

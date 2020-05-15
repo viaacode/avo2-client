@@ -147,7 +147,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				ctaWidth={ctaWidth}
 				ctaButtonAction={ctaButtonAction}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
-				navigate={buttonAction =>
+				navigate={(buttonAction: any) =>
 					buttonAction
 						? navigateToContentType(buttonAction, history)
 						: () => {

@@ -63,25 +63,27 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 			);
 		}
 		return (
-			<Button
-				className={`c-button-${idpType.toLocaleLowerCase()}`}
-				icon={idpType.toLocaleLowerCase() as IconName}
-				label={
-					idpType === 'SMARTSCHOOL'
-						? t('settings/components/account___link-je-smartschool-account')
-						: t('settings/components/account___link-je-klascement-account')
-				}
-				title={
-					idpType === 'SMARTSCHOOL'
-						? t(
-								'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
-						  )
-						: t(
-								'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
-						  )
-				}
-				onClick={() => redirectToServerLinkAccount(location, idpType)}
-			/>
+			<Spacer margin="bottom-small">
+				<Button
+					className={`c-button-${idpType.toLocaleLowerCase()}`}
+					icon={idpType.toLocaleLowerCase() as IconName}
+					label={
+						idpType === 'SMARTSCHOOL'
+							? t('settings/components/account___link-je-smartschool-account')
+							: t('settings/components/account___link-je-klascement-account')
+					}
+					title={
+						idpType === 'SMARTSCHOOL'
+							? t(
+									'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
+							  )
+							: t(
+									'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
+							  )
+					}
+					onClick={() => redirectToServerLinkAccount(location, idpType)}
+				/>
+			</Spacer>
 		);
 	};
 
