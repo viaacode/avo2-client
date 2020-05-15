@@ -326,7 +326,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				canCreate: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				collectionId,
 				type
 			);

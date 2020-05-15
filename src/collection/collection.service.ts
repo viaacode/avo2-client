@@ -31,6 +31,7 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
+	INSERT_COLLECTION_RELATION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from './collection.gql';
@@ -41,7 +42,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel } from './collection.types';
+import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -366,7 +367,17 @@ export class CollectionService {
 			}
 
 			// insert duplicated collection
-			return await CollectionService.insertCollection(collectionToInsert);
+			const duplicatedCollection = await CollectionService.insertCollection(
+				collectionToInsert
+			);
+
+			await this.insertCollectionRelation(
+				collection.id,
+				duplicatedCollection.id,
+				RelationType.IS_COPY_OF
+			);
+
+			return duplicatedCollection;
 		} catch (err) {
 			throw new CustomError('Failed to duplicate collection', err, {
 				collection,
@@ -604,7 +615,7 @@ export class CollectionService {
 	 *
 	 * @returns Collection or bundle.
 	 */
-	public static async fetchCollectionsOrBundlesWithItemsById(
+	public static async fetchCollectionOrBundleWithItemsById(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
@@ -995,6 +1006,43 @@ export class CollectionService {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
 				variables: { fragmentId },
+			});
+		}
+	}
+
+	private static async insertCollectionRelation(
+		originalCollectionId: string,
+		otherCollectionId: string,
+		relationType: RelationType
+	): Promise<number> {
+		let variables: any;
+		try {
+			variables = {
+				relationType,
+				originalId: originalCollectionId,
+				otherId: otherCollectionId,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_COLLECTION_RELATION,
+			});
+			if (response.errors) {
+				throw new CustomError('Failed due to graphql errors', null, { response });
+			}
+			const relationId = get(
+				response,
+				'data.insert_app_collection_relations.returning[0].id'
+			);
+			if (!relationId) {
+				throw new CustomError('Response does not contain a relation id', null, {
+					response,
+				});
+			}
+			return relationId;
+		} catch (err) {
+			throw new CustomError('Failed to insert collection relation into the database', err, {
+				variables,
+				query: 'INSERT_COLLECTION_RELATION',
 			});
 		}
 	}
