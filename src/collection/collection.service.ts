@@ -139,9 +139,9 @@ export class CollectionService {
 			let validationErrors: string[];
 
 			if (updatedCollection.is_public) {
-				validationErrors = getValidationErrorsForPublish(updatedCollection);
+				validationErrors = await getValidationErrorsForPublish(updatedCollection);
 			} else {
-				validationErrors = getValidationErrorForSave(updatedCollection);
+				validationErrors = await getValidationErrorForSave(updatedCollection);
 			}
 
 			// display validation errors
@@ -938,12 +938,13 @@ export class CollectionService {
 
 	static async getCollectionByTitleOrDescription(
 		title: string,
-		description: string | null
+		description: string | null,
+		collectionId: string
 	): Promise<{ byTitle: boolean; byDescription: boolean }> {
 		try {
 			const response = await dataService.query({
 				query: GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
-				variables: { title, description },
+				variables: { title, description, collectionId },
 			});
 
 			if (response.errors) {

@@ -337,9 +337,18 @@ export const GET_QUALITY_LABELS = gql`
 `;
 
 export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
-	query getCollectionByTitleOrDescription($title: String!, $description: String!) {
+	query getCollectionByTitleOrDescription(
+		$title: String!
+		$description: String!
+		$collectionId: uuid!
+	) {
 		collectionByTitle: app_collections(
-			where: { title: { _eq: $title }, is_deleted: { _eq: false }, is_public: { _eq: true } }
+			where: {
+				title: { _eq: $title }
+				is_deleted: { _eq: false }
+				is_public: { _eq: true }
+				id: { _neq: $collectionId }
+			}
 			limit: 1
 		) {
 			id
@@ -349,6 +358,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 				description: { _eq: $description }
 				is_deleted: { _eq: false }
 				is_public: { _eq: true }
+				id: { _neq: $collectionId }
 			}
 			limit: 1
 		) {

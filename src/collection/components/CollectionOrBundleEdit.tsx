@@ -65,12 +65,8 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
-import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
-import {
-	cleanCollectionBeforeSave,
-	getFragmentsFromCollection,
-	reorderFragments,
-} from '../collection.helpers';
+import { DELETE_COLLECTION } from '../collection.gql';
+import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
@@ -479,29 +475,34 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				);
 				return;
 			}
-			// Update the name in the current and the initial collection
-			changeCollectionState({
-				type: 'UPDATE_COLLECTION_PROP',
-				collectionProp: 'title',
-				collectionPropValue: newTitle,
-				updateInitialCollection: true,
-			});
 
 			// Save the name immediately to the database
 			const collectionWithNewName = {
 				...collectionState.initialCollection,
 				title: newTitle,
 			};
-			const cleanedCollection = cleanCollectionBeforeSave(collectionWithNewName);
 
 			// Immediately store the new name, without the user having to click the save button twice
-			await dataService.mutate({
-				mutation: UPDATE_COLLECTION,
-				variables: {
-					id: cleanedCollection.id,
-					collection: cleanedCollection,
-				},
-			});
+			const newCollection = await CollectionService.updateCollection(
+				collectionState.initialCollection,
+				collectionWithNewName
+			);
+
+			if (newCollection) {
+				// Update the name in the current and the initial collection
+				changeCollectionState({
+					type: 'UPDATE_COLLECTION_PROP',
+					collectionProp: 'title',
+					collectionPropValue: newTitle,
+					updateInitialCollection: true,
+				});
+
+				ToastService.success(
+					isCollection
+						? t('De collectie naam is aangepast')
+						: t('De bundel naam is aangepast')
+				);
+			} // else collection wasn't saved because of validation errors
 		} catch (err) {
 			console.error(err);
 			ToastService.info(
@@ -590,8 +591,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				}
 				break;
 
-			case 'openShareModal':
-				if (hasUnsavedChanged()) {
+			case 'openPublishModal':
+				if (hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')) {
 					ToastService.info(
 						t(
 							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
@@ -873,9 +874,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					disabled={hasUnsavedChanged()}
+					disabled={
+						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
+					}
 					title={
-						isPublic
+						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
+							? t(
+									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+							  )
+							: isPublic
 							? t('collection/views/collection-detail___maak-deze-collectie-prive')
 							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
 					}
@@ -885,7 +892,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
 					}
 					icon={isPublic ? 'unlock-3' : 'lock'}
-					onClick={() => executeAction('openShareModal')}
+					onClick={() => executeAction('openPublishModal')}
 				/>
 				<Button
 					type="secondary"
@@ -951,7 +958,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				'download'
 			),
 			createDropdownMenuItem(
-				'openShareModal',
+				'openPublishModal',
 				t('collection/components/collection-or-bundle-edit___delen'),
 				'share-2'
 			),
