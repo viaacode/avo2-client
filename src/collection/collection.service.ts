@@ -25,6 +25,7 @@ import {
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
 	GET_COLLECTIONS_BY_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
@@ -990,7 +991,7 @@ export class CollectionService {
 		}
 	}
 
-	static async fetchCollectionsByFragmentId(
+	public static async fetchCollectionsByFragmentId(
 		fragmentId: string
 	): Promise<Avo.Collection.Collection[]> {
 		try {
@@ -1000,12 +1001,51 @@ export class CollectionService {
 				variables: { fragmentId },
 			});
 
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			// handle error
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
 				variables: { fragmentId },
+			});
+		}
+	}
+
+	public static async fetchCollectionsByOwner(
+		user: Avo.User.User,
+		offset: number,
+		limit: number,
+		order: any,
+		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle
+	) {
+		let variables: any;
+		try {
+			variables = {
+				offset,
+				limit,
+				order,
+				type_id: contentTypeId,
+				owner_profile_id: getProfileId(user),
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_COLLECTIONS_BY_OWNER,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError('Fetch collections by fragment id failed', err, {
+				variables,
+				query: 'GET_COLLECTIONS_BY_OWNER',
 			});
 		}
 	}

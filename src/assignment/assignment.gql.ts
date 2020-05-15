@@ -39,6 +39,24 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 	}
 `;
 
+export const GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE = gql`
+	query getAssignmentsByContentIdAndType(
+		$contentId: String!
+		$contentType: lookup_enum_assignment_content_labels_enum!
+	) {
+		app_assignments(
+			where: {
+				content_id: { _eq: $contentId }
+				content_label: { _eq: $contentType }
+				is_deleted: { _eq: false }
+			}
+		) {
+			id
+			title
+		}
+	}
+`;
+
 export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 	query getAssignmentsByOwner(
 		$owner_profile_id: uuid

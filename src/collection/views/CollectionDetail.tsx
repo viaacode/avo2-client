@@ -36,7 +36,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
-	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -63,6 +62,7 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
 
@@ -854,13 +854,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClose={() => setIsAddToBundleModalOpen(false)}
 					/>
 				)}
-				<DeleteObjectModal
-					title={t(
-						'collection/views/collection-detail___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-					)}
-					body={t(
-						'collection/views/collection-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
+				<DeleteCollectionModal
+					collectionId={(collection as Avo.Collection.Collection).id}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
