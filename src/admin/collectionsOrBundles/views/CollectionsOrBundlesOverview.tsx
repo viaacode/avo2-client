@@ -293,6 +293,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			icon: 'bookmark',
 			sortable: true,
 		},
+		{
+			id: 'copies',
+			tooltip: i18n.t('Aantal keer gekopieërd'),
+			icon: 'copy',
+			sortable: true,
+		},
 		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
 		// { id: 'subjects', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'), sortable: true },
 		// { id: 'education_levels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'), sortable: true },
@@ -371,6 +377,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'bookmarks':
 				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
+
+			case 'copies':
+				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':

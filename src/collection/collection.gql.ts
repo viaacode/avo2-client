@@ -95,6 +95,12 @@ export const GET_COLLECTION_BY_ID = gql`
 				label
 				id
 			}
+			relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
+				object_meta {
+					id
+					title
+				}
+			}
 		}
 	}
 `;
@@ -373,6 +379,22 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 					organization_id
 					unit_id
 				}
+			}
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_RELATION = gql`
+	mutation insertCollectionRelation(
+		$originalId: uuid!
+		$otherId: uuid!
+		$relationType: lookup_enum_relation_types_enum!
+	) {
+		insert_app_collection_relations(
+			objects: [{ object: $originalId, subject: $otherId, predicate: $relationType }]
+		) {
+			returning {
+				id
 			}
 		}
 	}

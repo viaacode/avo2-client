@@ -16,6 +16,6 @@ export const BlockKlaar: FunctionComponent<BlockKlaarProps> = ({ className, date
 			<span>KLAAR</span>
 		</div>
 		<div className="klaar-header__date">{moment(date).format('LL')}</div>
-		<div className="klaar-header__titles">{titles.join(' • ')}</div>
+		<div className="klaar-header__titles">{(titles || []).join(' • ')}</div>
 	</div>
 );
