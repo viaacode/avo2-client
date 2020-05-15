@@ -4,6 +4,7 @@ import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export class ContentPageService {
 	/**
@@ -12,7 +13,7 @@ export class ContentPageService {
 	 */
 	public static async getContentPageByPath(path: string): Promise<Avo.Content.Content | null> {
 		try {
-			const response = await fetch(
+			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/content-pages?${queryString.stringify({
 					path,
 				})}`,
@@ -57,7 +58,7 @@ export class ContentPageService {
 				searchQueryLimit,
 				mediaItems,
 			};
-			const response = await fetch(url, {
+			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				body: JSON.stringify(body),
 				headers: {

@@ -94,7 +94,14 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			data-anchor={blockState.anchor}
 			ref={blockRef}
 		>
-			<div>
+			<Spacer
+				className={classnames('c-content-block-preview', {
+					'c-content-block-preview--dark': hasDarkBg,
+					'u-color-white': hasDarkBg,
+				})}
+				margin={[blockState.margin.top, blockState.margin.bottom]}
+				padding={[blockState.padding.top, blockState.padding.bottom]}
+			>
 				{blockState.headerBackgroundColor !== Color.Transparent && (
 					<div
 						className="c-content-block__header-bg-color"
@@ -107,27 +114,14 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				{blockState.fullWidth ? (
 					<PreviewComponent {...componentStateProps} {...blockStateProps} />
 				) : (
-					<Spacer
-						className={classnames('c-content-block-preview', {
-							'c-content-block-preview--dark': hasDarkBg,
-							'u-color-white': hasDarkBg,
-						})}
-						margin={[]}
-						padding={[blockState.padding.top, blockState.padding.bottom]}
+					<Container
+						mode="horizontal"
+						size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
 					>
-						<Container
-							mode="horizontal"
-							size={
-								containerSize === ContentWidthMap.REGULAR
-									? undefined
-									: containerSize
-							}
-						>
-							<PreviewComponent {...componentStateProps} {...blockStateProps} />
-						</Container>
-					</Spacer>
+						<PreviewComponent {...componentStateProps} {...blockStateProps} />
+					</Container>
 				)}
-			</div>
+			</Spacer>
 		</div>
 	);
 };

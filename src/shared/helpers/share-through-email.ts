@@ -2,6 +2,7 @@ import { EmailTemplateType } from '../components/ShareThroughEmailModal/share-th
 
 import { CustomError } from './custom-error';
 import { getEnv } from './env';
+import { fetchWithLogout } from './fetch-with-logout';
 
 export async function shareThroughEmail(
 	email: string,
@@ -22,7 +23,7 @@ export async function shareThroughEmail(
 			},
 		};
 
-		const response = await fetch(url, {
+		const response = await fetchWithLogout(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

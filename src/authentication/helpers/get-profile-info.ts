@@ -92,7 +92,7 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 	const profile = get(user, 'profile');
 
 	// Only teachers have to fill in their profile for now
-	if (user.role_id !== 2) {
+	if (get(user, 'role.name') !== 'lesgever') {
 		return true;
 	}
 

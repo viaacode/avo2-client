@@ -91,7 +91,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		null
 	);
 	const [page, setPage] = useState<number>(0);
-	const [canEditAssignments, setCanEditAssignments] = useState<boolean>(false);
+	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
 	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<
 		AssignmentOverviewTableColumns | 'created_at'
@@ -99,9 +99,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const checkPermissions = useCallback(async () => {
 		try {
-			setCanEditAssignments(
-				await PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
-			);
+			if (user) {
+				setCanEditAssignments(
+					await PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
+				);
+			}
 		} catch (err) {
 			console.error('Failed to check permissions', err, {
 				user,
@@ -117,6 +119,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const fetchAssignments = useCallback(async () => {
 		try {
+			if (isNil(canEditAssignments)) {
+				return;
+			}
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
 				user,

@@ -25,12 +25,14 @@ import {
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
 	GET_COLLECTIONS_BY_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
+	INSERT_COLLECTION_RELATION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from './collection.gql';
@@ -41,7 +43,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel } from './collection.types';
+import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -366,7 +368,17 @@ export class CollectionService {
 			}
 
 			// insert duplicated collection
-			return await CollectionService.insertCollection(collectionToInsert);
+			const duplicatedCollection = await CollectionService.insertCollection(
+				collectionToInsert
+			);
+
+			await this.insertCollectionRelation(
+				collection.id,
+				duplicatedCollection.id,
+				RelationType.IS_COPY_OF
+			);
+
+			return duplicatedCollection;
 		} catch (err) {
 			throw new CustomError('Failed to duplicate collection', err, {
 				collection,
@@ -604,7 +616,7 @@ export class CollectionService {
 	 *
 	 * @returns Collection or bundle.
 	 */
-	public static async fetchCollectionsOrBundlesWithItemsById(
+	public static async fetchCollectionOrBundleWithItemsById(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
@@ -980,7 +992,7 @@ export class CollectionService {
 		}
 	}
 
-	static async fetchCollectionsByFragmentId(
+	public static async fetchCollectionsByFragmentId(
 		fragmentId: string
 	): Promise<Avo.Collection.Collection[]> {
 		try {
@@ -990,12 +1002,88 @@ export class CollectionService {
 				variables: { fragmentId },
 			});
 
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			// handle error
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
 				variables: { fragmentId },
+			});
+		}
+	}
+
+	public static async fetchCollectionsByOwner(
+		user: Avo.User.User,
+		offset: number,
+		limit: number,
+		order: any,
+		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle
+	) {
+		let variables: any;
+		try {
+			variables = {
+				offset,
+				limit,
+				order,
+				type_id: contentTypeId,
+				owner_profile_id: getProfileId(user),
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_COLLECTIONS_BY_OWNER,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError('Fetch collections by fragment id failed', err, {
+				variables,
+				query: 'GET_COLLECTIONS_BY_OWNER',
+			});
+		}
+	}
+
+	private static async insertCollectionRelation(
+		originalCollectionId: string,
+		otherCollectionId: string,
+		relationType: RelationType
+	): Promise<number> {
+		let variables: any;
+		try {
+			variables = {
+				relationType,
+				originalId: originalCollectionId,
+				otherId: otherCollectionId,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_COLLECTION_RELATION,
+			});
+			if (response.errors) {
+				throw new CustomError('Failed due to graphql errors', null, { response });
+			}
+			const relationId = get(
+				response,
+				'data.insert_app_collection_relations.returning[0].id'
+			);
+			if (!relationId) {
+				throw new CustomError('Response does not contain a relation id', null, {
+					response,
+				});
+			}
+			return relationId;
+		} catch (err) {
+			throw new CustomError('Failed to insert collection relation into the database', err, {
+				variables,
+				query: 'INSERT_COLLECTION_RELATION',
 			});
 		}
 	}

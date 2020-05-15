@@ -9,7 +9,7 @@ import { Dispatch } from 'redux';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
@@ -21,6 +21,7 @@ import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { getLoginStateAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
+import { isProfileComplete } from '../../helpers/get-profile-info';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
@@ -105,7 +106,11 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				true
 			);
 
-			getLoginState();
+			if (isProfileComplete(user)) {
+				getLoginState();
+			} else {
+				redirectToClientPage(APP_PATH.COMPLETE_PROFILE.route, history);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to set accept conditions notification in the database')

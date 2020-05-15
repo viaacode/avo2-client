@@ -1,11 +1,23 @@
-import ApolloClient from 'apollo-boost';
+import { HttpLink, InMemoryCache } from 'apollo-boost';
+import { ApolloClient } from 'apollo-client';
+import { onError } from 'apollo-link-error';
+import { get } from 'lodash-es';
 
 import { getEnv } from '../helpers';
 
-export const dataService = new ApolloClient({
-	uri: `${getEnv('PROXY_URL')}/data`,
-	credentials: 'include',
+const cache = new InMemoryCache();
+const httpLink = new HttpLink({ uri: `${getEnv('PROXY_URL')}/data`, credentials: 'include' });
+
+const logoutMiddleware = onError(({ networkError }) => {
+	if (get(networkError, 'statusCode') === 401) {
+		window.location.reload();
+	}
 });
+
+export const dataService = new ApolloClient({
+	cache,
+	link: logoutMiddleware.concat(httpLink),
+} as any);
 
 type ApolloCache = { [key: string]: any };
 

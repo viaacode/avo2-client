@@ -36,7 +36,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
-	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -63,6 +62,7 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
 
@@ -190,7 +190,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canCreateCollections: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				uuid,
 				'collection'
 			);
@@ -747,31 +747,52 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										Ordering
 									</Trans>
 								</p>
-								{/* TODO: add links */}
-								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-										Deze collectie is een kopie van:
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-										Deze collectie is deel van een bundel:
-									</Trans>{' '}
-									{publishedBundles.map((bundle, index) => {
-										return (
-											<>
-												{index !== 0 && !!publishedBundles.length && ', '}
+								{!!get(collection, 'relations', []).length && (
+									<p className="c-body-1">
+										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+											Deze collectie is een kopie van:
+										</Trans>{' '}
+										{get(collection, 'relations', []).map((relation: any) => {
+											return (
 												<Link
-													to={buildLink(APP_PATH.BUNDLE_DETAIL.route, {
-														id: bundle.id,
-													})}
+													key={`copy-of-link-${relation.object_meta.id}`}
+													to={buildLink(
+														APP_PATH.COLLECTION_DETAIL.route,
+														{ id: relation.object_meta.id }
+													)}
 												>
-													{bundle.title}
+													{relation.object_meta.title}
 												</Link>
-											</>
-										);
-									})}
-								</p>
+											);
+										})}
+									</p>
+								)}
+								{!!publishedBundles.length && (
+									<p className="c-body-1">
+										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+											Deze collectie is deel van een bundel:
+										</Trans>{' '}
+										{publishedBundles.map((bundle, index) => {
+											return (
+												<>
+													{index !== 0 &&
+														!!publishedBundles.length &&
+														', '}
+													<Link
+														to={buildLink(
+															APP_PATH.BUNDLE_DETAIL.route,
+															{
+																id: bundle.id,
+															}
+														)}
+													>
+														{bundle.title}
+													</Link>
+												</>
+											);
+										})}
+									</p>
+								)}
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
@@ -831,13 +852,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClose={() => setIsAddToBundleModalOpen(false)}
 					/>
 				)}
-				<DeleteObjectModal
-					title={t(
-						'collection/views/collection-detail___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-					)}
-					body={t(
-						'collection/views/collection-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
+				<DeleteCollectionModal
+					collectionId={(collection as Avo.Collection.Collection).id}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}

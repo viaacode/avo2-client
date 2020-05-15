@@ -3,6 +3,7 @@ import { stringify } from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export async function getRelatedItems(
 	id: string | number,
@@ -24,7 +25,7 @@ export async function getRelatedItems(
 				'Content-Type': 'application/json',
 			},
 		};
-		const response = await fetch(url, body);
+		const response = await fetchWithLogout(url, body);
 
 		return (await response.json()).results;
 	} catch (err) {
