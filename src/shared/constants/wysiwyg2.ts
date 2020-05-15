@@ -12,7 +12,7 @@ export const WYSIWYG2_OPTIONS_BASE = [
 	'italic',
 	'strike-through',
 	'underline',
-	WYSIWYG2_OPTIONS_ALIGN,
+	...WYSIWYG2_OPTIONS_ALIGN,
 	'separator',
 	'list-ul',
 	'list-ol',
