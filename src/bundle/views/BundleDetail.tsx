@@ -38,7 +38,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
-import { ShareCollectionModal } from '../../collection/components';
+import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
@@ -77,10 +77,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [bundle, setBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedItems, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -302,7 +301,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				break;
 
 			case 'openShareModal':
-				setIsShareModalOpen(true);
+				setIsPublishModalOpen(true);
 				break;
 
 			case 'edit':
@@ -518,6 +517,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
 				: []),
 		];
+		const isPublic = bundle && bundle.is_public;
 		return (
 			<ButtonToolbar>
 				<Button
@@ -658,7 +658,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		const { is_public, thumbnail_path, title, description_long } = bundle as any; // TODO: Replace any by Avo.Collection.Collection when typings update releases, 2.17.0
 
 		if (!isFirstRender) {
-			setIsPublic(is_public);
 			setIsFirstRender(true);
 		}
 
@@ -726,15 +725,16 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					</Container>
 				</Container>
 				{renderMetaDataAndRelated()}
-				{isPublic !== null && (
-					<ShareCollectionModal
-						collection={{
-							...(bundle as Avo.Collection.Collection),
-							is_public: isPublic,
+				{!!bundle && (
+					<PublishCollectionModal
+						collection={bundle}
+						isOpen={isPublishModalOpen}
+						onClose={(newBundle: Avo.Collection.Collection | undefined) => {
+							setIsPublishModalOpen(false);
+							if (newBundle) {
+								setBundle(newBundle);
+							}
 						}}
-						isOpen={isShareModalOpen}
-						onClose={() => setIsShareModalOpen(false)}
-						setIsPublic={setIsPublic}
 						history={history}
 						location={location}
 						match={match}
