@@ -1,6 +1,8 @@
 export const WYSIWYG2_OPTIONS_ALIGN = ['separator', 'text-align'];
 
 export const WYSIWYG2_OPTIONS_BASE = [
+	'fullscreen',
+	'separator',
 	'undo',
 	'redo',
 	'separator',
@@ -26,6 +28,8 @@ export const WYSIWYG2_OPTIONS_AUTHOR = [
 	'link',
 	'separator',
 	'remove-styles',
+	'separator',
+	'code',
 ];
 
 // Admin
@@ -38,14 +42,17 @@ export const WYSIWYG2_OPTIONS_FULL = [
 	'hr',
 	'separator',
 	'link',
-	// 'media',
 	'separator',
 	'table',
 	'separator',
 	'remove-styles',
+	'separator',
+	'code',
 ];
 
 export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
+	'fullscreen',
+	'separator',
 	'undo',
 	'redo',
 	'separator',
@@ -65,9 +72,10 @@ export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
 	'hr',
 	'separator',
 	'link',
-	// 'media',
 	'separator',
 	'table',
 	'separator',
 	'remove-styles',
+	'separator',
+	'code',
 ];
