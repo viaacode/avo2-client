@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeString } from '../../collection/collection.types';
 import { CustomError, getEnv, toSeconds } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 /**
  * Get the first video still after the provided start times for all provided videos
@@ -16,7 +17,7 @@ export const getVideoStills = async (
 		if (!stillRequests || !stillRequests.length) {
 			return [];
 		}
-		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills`, {
+		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/video-stills`, {
 			method: 'POST',
 			body: JSON.stringify(stillRequests),
 			credentials: 'include',

@@ -3,6 +3,7 @@ import { Action, Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../../shared/helpers';
+import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { LoginMessage } from '../authentication.types';
 
 import {
@@ -50,7 +51,7 @@ export const setLoginLoading = (): SetLoginLoadingAction => ({
 export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
 	try {
 		const url = `${getEnv('PROXY_URL')}/auth/check-login`;
-		const response = await fetch(url, {
+		const response = await fetchWithLogout(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
