@@ -70,6 +70,15 @@ export function getProfileAlias(user: Avo.User.User | undefined): string {
 	return get(user, 'profile.alias', '');
 }
 
+export function getProfileAvatar(user: Avo.User.User | undefined): string {
+	if (!user) {
+		throw new CustomError(
+			'Failed to get profile avatar because the logged in user is undefined'
+		);
+	}
+	return get(user, 'profile.avatar', '');
+}
+
 export function getProfileInitials(user: Avo.User.User | undefined): string {
 	if (!user) {
 		throw new CustomError(
