@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../shared/helpers';
+import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 
 import { SpecialPermissionGroups } from './authentication.types';
 
@@ -17,7 +18,7 @@ export async function verifyStamboekNumber(
 	if (stamboekValidationCache[stamboekNumber]) {
 		return 'VALID';
 	}
-	const response = await fetch(
+	const response = await fetchWithLogout(
 		`${getEnv('PROXY_URL')}/stamboek/validate?${queryString.stringify({
 			stamboekNumber,
 		})}`,

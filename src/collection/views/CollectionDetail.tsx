@@ -36,7 +36,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
-	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -61,8 +60,9 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
-import { FragmentList, ShareCollectionModal } from '../components';
+import { FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
 
@@ -85,12 +85,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	// TODO see if we can remove this by setting the is_public in the sharemodal onClose handler
-	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -126,10 +124,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
-			setIsPublic(collection.is_public);
 			setIsFirstRender(true);
 		}
-	}, [collection, isFirstRender, setIsFirstRender, setIsPublic]);
+	}, [collection, isFirstRender, setIsFirstRender]);
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
@@ -193,7 +190,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canCreateCollections: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				uuid,
 				'collection'
 			);
@@ -349,7 +346,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				break;
 
 			case 'openShareCollectionModal':
-				setIsShareModalOpen(!isShareModalOpen);
+				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
 
 			case 'toggleBookmark':
@@ -750,31 +747,52 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										Ordering
 									</Trans>
 								</p>
-								{/* TODO: add links */}
-								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-										Deze collectie is een kopie van:
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-										Deze collectie is deel van een bundel:
-									</Trans>{' '}
-									{publishedBundles.map((bundle, index) => {
-										return (
-											<>
-												{index !== 0 && !!publishedBundles.length && ', '}
+								{!!get(collection, 'relations', []).length && (
+									<p className="c-body-1">
+										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+											Deze collectie is een kopie van:
+										</Trans>{' '}
+										{get(collection, 'relations', []).map((relation: any) => {
+											return (
 												<Link
-													to={buildLink(APP_PATH.BUNDLE_DETAIL.route, {
-														id: bundle.id,
-													})}
+													key={`copy-of-link-${relation.object_meta.id}`}
+													to={buildLink(
+														APP_PATH.COLLECTION_DETAIL.route,
+														{ id: relation.object_meta.id }
+													)}
 												>
-													{bundle.title}
+													{relation.object_meta.title}
 												</Link>
-											</>
-										);
-									})}
-								</p>
+											);
+										})}
+									</p>
+								)}
+								{!!publishedBundles.length && (
+									<p className="c-body-1">
+										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+											Deze collectie is deel van een bundel:
+										</Trans>{' '}
+										{publishedBundles.map((bundle, index) => {
+											return (
+												<>
+													{index !== 0 &&
+														!!publishedBundles.length &&
+														', '}
+													<Link
+														to={buildLink(
+															APP_PATH.BUNDLE_DETAIL.route,
+															{
+																id: bundle.id,
+															}
+														)}
+													>
+														{bundle.title}
+													</Link>
+												</>
+											);
+										})}
+									</p>
+								)}
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
@@ -806,15 +824,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						)}
 					</Container>
 				</Container>
-				{isPublic !== null && (
-					<ShareCollectionModal
-						collection={{
-							...(collection as Avo.Collection.Collection),
-							is_public: isPublic,
+				{!!collection && (
+					<PublishCollectionModal
+						collection={collection}
+						isOpen={isPublishModalOpen}
+						onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+							setIsPublishModalOpen(false);
+							if (newCollection) {
+								setCollection(newCollection);
+							}
 						}}
-						isOpen={isShareModalOpen}
-						onClose={() => setIsShareModalOpen(false)}
-						setIsPublic={setIsPublic}
 						history={history}
 						location={location}
 						match={match}
@@ -833,13 +852,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClose={() => setIsAddToBundleModalOpen(false)}
 					/>
 				)}
-				<DeleteObjectModal
-					title={t(
-						'collection/views/collection-detail___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-					)}
-					body={t(
-						'collection/views/collection-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
+				<DeleteCollectionModal
+					collectionId={(collection as Avo.Collection.Collection).id}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}

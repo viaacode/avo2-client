@@ -5,6 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 import { NotificationService } from './notification-service';
 
@@ -20,12 +21,15 @@ export class InteractiveTourService {
 	public static async fetchInteractiveTourRouteIds() {
 		try {
 			if (!this.routeIds) {
-				const response = await fetch(`${getEnv('PROXY_URL')}/interactive-tours/route-ids`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
+				const response = await fetchWithLogout(
+					`${getEnv('PROXY_URL')}/interactive-tours/route-ids`,
+					{
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					}
+				);
 				if (response.status < 200 || response.status >= 400) {
 					throw new CustomError('invalid status code', null, {
 						response,
@@ -122,7 +126,7 @@ export class InteractiveTourService {
 		profileId: string | undefined
 	): Promise<any> {
 		try {
-			const response = await fetch(
+			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/interactive-tours/tour?${queryString.stringify({
 					routeId,
 					profileId,

@@ -25,11 +25,15 @@ import {
 export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
 	position: number,
-	backgroundColor: Color = Color.White,
+	backgroundColor: Color = Color.Transparent,
 	headerBackgroundColor: Color = Color.Transparent,
 	padding: PaddingFieldState = {
 		top: 'top',
 		bottom: 'bottom',
+	},
+	margin: PaddingFieldState = {
+		top: 'none',
+		bottom: 'none',
 	},
 	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
 ): DefaultContentBlockState => ({
@@ -38,12 +42,14 @@ export const BLOCK_STATE_DEFAULTS = (
 	backgroundColor,
 	headerBackgroundColor,
 	padding,
+	margin,
 	userGroupIds,
 });
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
 	padding: PADDING_FIELD(),
+	margin: PADDING_FIELD(i18n.t('Marge')),
 	userGroupIds: USER_GROUP_SELECT(),
 
 	// Used to link to this block from inside the same page using the anchors-block

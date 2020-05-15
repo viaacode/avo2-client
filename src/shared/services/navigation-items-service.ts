@@ -3,6 +3,7 @@ import { memoize } from 'lodash-es';
 import { IconName } from '@viaa/avo2-components';
 
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export interface AppContentNavElement {
 	content_path: string | null;
@@ -32,7 +33,7 @@ export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };
  */
 async function getNavItems(): Promise<NavItemMap> {
 	try {
-		const response = await fetch(`${getEnv('PROXY_URL')}/navigation/items`, {
+		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/navigation/items`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

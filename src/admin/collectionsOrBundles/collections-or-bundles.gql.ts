@@ -58,6 +58,11 @@ export const GET_COLLECTIONS = gql`
 				id
 				label
 			}
+			relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
+				aggregate {
+					count
+				}
+			}
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {

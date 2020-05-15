@@ -3,13 +3,14 @@ import queryString from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export const fetchCities = async (): Promise<string[]> => {
 	let url: string | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/education-organizations/cities`;
 
-		const response = await fetch(url, {
+		const response = await fetchWithLogout(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export const fetchEducationOrganizations = async (
 			}
 		)}`;
 
-		const response = await fetch(url, {
+		const response = await fetchWithLogout(url, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

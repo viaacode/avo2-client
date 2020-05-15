@@ -56,7 +56,6 @@ export const GET_COLLECTION_BY_ID = gql`
 					first_name
 					last_name
 					mail
-					role_id
 					uid
 					updated_at
 					role {
@@ -94,6 +93,12 @@ export const GET_COLLECTION_BY_ID = gql`
 			collection_labels {
 				label
 				id
+			}
+			relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
+				object_meta {
+					id
+					title
+				}
 			}
 		}
 	}
@@ -337,9 +342,18 @@ export const GET_QUALITY_LABELS = gql`
 `;
 
 export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
-	query getCollectionByTitleOrDescription($title: String!, $description: String!) {
+	query getCollectionByTitleOrDescription(
+		$title: String!
+		$description: String!
+		$collectionId: uuid!
+	) {
 		collectionByTitle: app_collections(
-			where: { title: { _eq: $title }, is_deleted: { _eq: false }, is_public: { _eq: true } }
+			where: {
+				title: { _eq: $title }
+				is_deleted: { _eq: false }
+				is_public: { _eq: true }
+				id: { _neq: $collectionId }
+			}
 			limit: 1
 		) {
 			id
@@ -349,6 +363,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 				description: { _eq: $description }
 				is_deleted: { _eq: false }
 				is_public: { _eq: true }
+				id: { _neq: $collectionId }
 			}
 			limit: 1
 		) {
@@ -373,6 +388,22 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 					organization_id
 					unit_id
 				}
+			}
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_RELATION = gql`
+	mutation insertCollectionRelation(
+		$originalId: uuid!
+		$otherId: uuid!
+		$relationType: lookup_enum_relation_types_enum!
+	) {
+		insert_app_collection_relations(
+			objects: [{ object: $originalId, subject: $otherId, predicate: $relationType }]
+		) {
+			returning {
+				id
 			}
 		}
 	}

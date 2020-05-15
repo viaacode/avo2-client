@@ -15,5 +15,7 @@ export default {
 		'em',
 		'strike',
 		'br',
+		'sub',
+		'super',
 	],
 };
