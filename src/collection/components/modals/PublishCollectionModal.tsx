@@ -150,7 +150,11 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('collection/components/modals/share-collection-modal___deel-deze-collectie')}
+			title={
+				isCollection()
+					? t('collection/components/modals/share-collection-modal___deel-deze-collectie')
+					: t('Deel deze bundel')
+			}
 			size="large"
 			onClose={onClose}
 			scrollable
