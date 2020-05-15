@@ -91,6 +91,17 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 			render={props => {
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
+					if (!loginState.acceptedConditions) {
+						// Redirect to the accept user and privacy declaration
+						return (
+							<Redirect
+								to={{
+									pathname: APP_PATH.ACCEPT_CONDITIONS.route,
+									state: { from: props.location },
+								}}
+							/>
+						);
+					}
 					if (path === APP_PATH.COMPLETE_PROFILE.route) {
 						// Force user to complete their profile before letting them in
 						// This has to happen in the secure route component so we can pass the user object to the profile component
@@ -100,17 +111,6 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 								user={user}
 								isCompleteProfileStep
 								redirectTo={get(props, 'location.from.path')}
-							/>
-						);
-					}
-					if (!loginState.acceptedConditions) {
-						// Redirect to the accept user and privacy declaration
-						return (
-							<Redirect
-								to={{
-									pathname: APP_PATH.ACCEPT_CONDITIONS.route,
-									state: { from: props.location },
-								}}
 							/>
 						);
 					}

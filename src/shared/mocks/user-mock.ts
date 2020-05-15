@@ -8,7 +8,7 @@ const mockUser: Avo.User.User = {
 	expires_at: null,
 	external_uid: null,
 	role_id: 1,
-	role: { id: 1, label: 'Administrator', name: 'admin' },
+	role: { id: 1, label: 'Beheerder', name: 'admin' },
 	type: null,
 	uid: '517aec71-cf0e-4e08-99d1-8e7e042923f7',
 	updated_at: '2019-10-23T16:21:17.984884+00:00',
