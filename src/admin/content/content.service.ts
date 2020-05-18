@@ -1,4 +1,4 @@
-import { cloneDeep, get, omit } from 'lodash-es';
+import { get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -435,6 +435,6 @@ export class ContentService {
 	public static convertRichTextEditorStatesToHtml(
 		blockConfigs: ContentBlockConfig[]
 	): ContentBlockConfig[] {
-		return omitByDeep(cloneDeep(blockConfigs), key => String(key).endsWith(RichEditorStateKey));
+		return omitByDeep(blockConfigs, key => String(key).endsWith(RichEditorStateKey));
 	}
 }

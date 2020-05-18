@@ -1,14 +1,17 @@
-import { forIn, isObject } from 'lodash-es';
+import { forIn, isArray, isObject } from 'lodash-es';
 
 export function omitByDeep(obj: any, predicate: (key: string, value: any) => boolean): any {
+	const returnObj: any = isArray(obj) ? [] : {};
 	forIn(obj, (value, key) => {
-		if (predicate(key, value)) {
-			// delete before checking the inner object to avoid circular references that will be deleted anyways
-			delete obj[key];
-		} else if (isObject(value)) {
-			// Recursively omit inner object properties
-			obj[key] = omitByDeep(value, predicate);
+		if (!predicate(key, value)) {
+			if (isObject(value)) {
+				// Recursively omit inner object properties
+				returnObj[key] = omitByDeep(value, predicate);
+			} else {
+				returnObj[key] = value;
+			}
 		}
+		// else if predicate is true => we do not need to copy the property to the returnObj
 	});
-	return obj;
+	return returnObj;
 }
