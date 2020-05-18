@@ -16,6 +16,17 @@
 		<noscript>You need to enable JavaScript to run this app.</noscript>
 		<div id="root"></div>
 
+		<!-- Detect old browsers-->
+		<script src="%PUBLIC_URL%/old-browser-detector.min.js"></script>
+		<script type="text/javascript">
+		var Detector = new oldBrowserDetector(null, function() {
+			// unsupported browser
+			window.open('/unsupported-browser.html');
+		});
+
+		Detector.detect();
+		</script>
+
 		<!-- jQuery for WYSIWYG -->
 		<script
 		src="https://code.jquery.com/jquery-3.4.1.min.js"
