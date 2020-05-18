@@ -1,4 +1,4 @@
-import { cloneDeep, compact, get, map, orderBy } from 'lodash-es';
+import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -39,7 +39,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate, sanitize, stripHtml } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
@@ -109,6 +109,9 @@ export interface EditableStep extends Avo.InteractiveTour.Step {
 
 interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
+const MAX_STEP_TITLE_LENGTH = 28;
+const MAX_STEP_TEXT_LENGTH = 200;
+
 const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	history,
 	match,
@@ -177,12 +180,14 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					action.index,
 					delta
 				);
+				setFormErrors({});
 				break;
 
 			case 'REMOVE_STEP':
 				const newSteps = newCurrentInteractiveTour.steps;
 				newSteps.splice(action.index, 1);
 				newCurrentInteractiveTour.steps = newSteps;
+				setFormErrors({});
 				break;
 
 			case 'UPDATE_INTERACTIVE_TOUR_PROP':
@@ -311,27 +316,40 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	};
 
 	const getFormErrors = (): InteractiveTourEditFormErrorState | null => {
+		const errors: InteractiveTourEditFormErrorState = {};
 		if (
 			!interactiveTourState.currentInteractiveTour ||
 			!interactiveTourState.currentInteractiveTour.name
 		) {
-			return {
-				name: t(
-					'admin/interactive-tour/views/interactive-tour-edit___een-naam-is-verplicht'
-				),
-			};
+			errors.name = t(
+				'admin/interactive-tour/views/interactive-tour-edit___een-naam-is-verplicht'
+			);
 		}
 		if (
 			!interactiveTourState.currentInteractiveTour ||
 			!interactiveTourState.currentInteractiveTour.page_id
 		) {
-			return {
-				page_id: t(
-					'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
-				),
-			};
+			errors.page_id = t(
+				'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
+			);
 		}
-		return null;
+		get(interactiveTourState.currentInteractiveTour, 'steps', []).forEach((step, index) => {
+			if (step.title.length > MAX_STEP_TITLE_LENGTH) {
+				errors.steps = errors.steps || [];
+				errors.steps[index] = {
+					...(errors.steps[index] || {}),
+					title: t('De titel is te lang'),
+				};
+			}
+			if (step.title.length > MAX_STEP_TEXT_LENGTH) {
+				errors.steps = errors.steps || [];
+				errors.steps[index] = {
+					...(errors.steps[index] || {}),
+					content: t('De tekst is te lang'),
+				};
+			}
+		});
+		return isEmpty(errors) ? null : errors;
 	};
 
 	const convertTourContentToHtml = (
@@ -479,6 +497,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
+
 		return (
 			<div key={`step_${step.id}`}>
 				<Panel>
@@ -529,7 +548,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								label={t(
 									'admin/interactive-tour/views/interactive-tour-edit___titel'
 								)}
-								required
+								error={get(formErrors, `steps[${index}].title`)}
 							>
 								<TextInput
 									value={(step.title || '').toString()}
@@ -542,12 +561,13 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										});
 									}}
 								/>
+								<Spacer margin="top-small">{step.title.length} / 28</Spacer>
 							</FormGroup>
 							<FormGroup
 								label={t(
 									'admin/interactive-tour/views/interactive-tour-edit___tekst'
 								)}
-								required
+								error={get(formErrors, `steps[${index}].content`)}
 							>
 								<WYSIWYG2Wrapper
 									initialHtml={(step.content || '').toString()}
@@ -566,6 +586,15 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'
 									)}
 								/>
+								<Spacer margin="top-small">
+									{
+										(step.contentState
+											? stripHtml(step.contentState.toHTML())
+											: step.content || ''
+										).length
+									}{' '}
+									/ 200
+								</Spacer>
 							</FormGroup>
 
 							<FormGroup

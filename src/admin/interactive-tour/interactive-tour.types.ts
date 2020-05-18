@@ -10,6 +10,7 @@ export type InteractiveTourOverviewTableCols =
 export interface InteractiveTourEditFormErrorState {
 	name?: string;
 	page_id?: string;
+	steps?: { title?: string; content?: string }[];
 }
 
 export interface InteractiveTourTableState extends FilterableTableState {
