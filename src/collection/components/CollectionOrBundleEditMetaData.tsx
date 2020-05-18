@@ -10,6 +10,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	RichEditorState,
 	Spacer,
 	TagInfo,
 	TagsInput,
@@ -18,6 +19,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { FileUpload } from '../../shared/components';
+import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG2_OPTIONS_DEFAULT_NO_TITLES } from '../../shared/constants/wysiwyg2';
 import { CustomError } from '../../shared/helpers';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { dataService } from '../../shared/services';
@@ -45,6 +48,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 	const [subjects, setSubjects] = useState<TagInfo[]>([]);
 	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
+	const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
+		RichEditorState | undefined
+	>(undefined);
 
 	const isCollection = type === 'collection';
 
@@ -181,16 +187,19 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												true
 											)} // TODO: Remove as any when typings update releases, 2.17.0
 										>
-											<TextArea
-												name="longDescriptionId"
-												value={(collection as any).description_long || ''} // TODO: Remove as any when typings update releases, 2.17.0
+											<WYSIWYG2Wrapper
 												id="longDescriptionId"
-												height="medium"
-												onChange={(value: string) =>
+												controls={WYSIWYG2_OPTIONS_DEFAULT_NO_TITLES}
+												initialHtml={(collection as any).description_long} // TODO: Remove as any when typings update releases, 2.17.0
+												state={descriptionLongEditorState}
+												onChange={setDescriptionLongEditorState}
+												onBlur={() =>
 													changeCollectionState({
 														type: 'UPDATE_COLLECTION_PROP',
 														collectionProp: 'description_long',
-														collectionPropValue: value,
+														collectionPropValue: descriptionLongEditorState
+															? descriptionLongEditorState.toHTML()
+															: (collection as any).description_long,
 													})
 												}
 											/>

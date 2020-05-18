@@ -11,11 +11,17 @@ export default {
 		'li',
 		'b',
 		'i',
+		'u',
 		'strong',
 		'em',
 		'strike',
 		'br',
 		'sub',
+		'sup',
 		'super',
+		'span',
 	],
+	allowedAttributes: {
+		span: ['style'],
+	},
 };
