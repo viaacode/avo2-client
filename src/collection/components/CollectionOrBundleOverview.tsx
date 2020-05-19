@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { isNil } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -198,20 +198,24 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		</Link>
 	);
 
-	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
+	const renderTitle = (collection: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link {...getLinkProps(id, title)}>{truncateTableValue(title)}</Link>
+				<Link {...getLinkProps(collection.id, collection.title)}>
+					{truncateTableValue(collection.title)}
+				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={type}>
 					<MetaDataItem>
-						<span title={`Aangemaakt: ${formatDate(created_at)}`}>
-							{fromNow(created_at)}
+						<span title={`Aangemaakt: ${formatDate(collection.created_at)}`}>
+							{fromNow(collection.created_at)}
 						</span>
 					</MetaDataItem>
-					{/* TODO: Views from GQL */}
-					<MetaDataItem icon="eye" label="0" />
+					<MetaDataItem
+						icon="eye"
+						label={get(collection, 'view_counts_aggregate.aggregate.sum.count') || '0'}
+					/>
 				</MetaData>
 			</div>
 		</div>
