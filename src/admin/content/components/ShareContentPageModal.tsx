@@ -79,6 +79,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 			)}
 			size="large"
 			onClose={onClose}
+			scrollable={false}
 		>
 			<ModalBody>
 				<p>

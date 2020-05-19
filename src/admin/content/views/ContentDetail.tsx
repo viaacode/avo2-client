@@ -1,17 +1,15 @@
 import { useMutation } from '@apollo/react-hooks';
 import { compact, flatten, get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
 	LinkTarget,
 	Navbar,
-	Spacer,
 	Table,
 	Tabs,
 	TagInfo,
@@ -250,6 +248,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		if (!contentPage) {
 			return null;
 		}
+
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
@@ -258,24 +257,6 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				return (
 					<Container mode="vertical" size="small">
 						<Container mode="horizontal">
-							{!!contentPage.description && (
-								<Spacer margin="bottom-large">
-									<BlockHeading type="h4">
-										<Trans i18nKey="admin/content/views/content-detail___omschrijving">
-											Omschrijving:
-										</Trans>
-									</BlockHeading>
-									<p
-										dangerouslySetInnerHTML={{
-											__html: sanitize(
-												contentPage.description,
-												sanitizePresets.link
-											),
-										}}
-									/>
-								</Spacer>
-							)}
-
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
 									{/*TODO remove cast after typings update to 2.15.0*/}
@@ -290,10 +271,19 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									)}
 									{renderSimpleDetailRows(contentPage, [
 										['title', t('admin/content/views/content-detail___titel')],
-										[
-											'description',
-											t('admin/content/views/content-detail___beschrijving'),
-										],
+									])}
+									{renderDetailRow(
+										<p
+											dangerouslySetInnerHTML={{
+												__html: sanitize(
+													(contentPage as any).description,
+													sanitizePresets.link
+												),
+											}}
+										/>,
+										t('admin/content/views/content-detail___beschrijving')
+									)}
+									{renderSimpleDetailRows(contentPage, [
 										[
 											'content_type',
 											t('admin/content/views/content-detail___content-type'),
