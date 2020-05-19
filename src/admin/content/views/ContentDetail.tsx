@@ -322,14 +322,19 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												'admin/content/views/content-detail___laatst-bewerkt'
 											),
 										],
-										[
-											'published_at',
-											t('admin/content/views/content-detail___gepubliceerd'),
-											t('Nee'),
-										],
-										['publish_at', t('Wordt gepubliceerd op')],
-										['depublish_at', t('Wordt gedepubliceerd op')],
 									])}
+									{renderDetailRow(
+										<p>{contentPage.published_at || 'Nee'}</p>,
+										t('admin/content/views/content-detail___gepubliceerd')
+									)}
+									{renderDetailRow(
+										<p>{contentPage.publish_at || 'N.v.t'}</p>,
+										t('Wordt gepubliceerd op')
+									)}
+									{renderDetailRow(
+										<p>{contentPage.depublish_at || 'N.v.t.'}</p>,
+										t('Wordt gedepubliceerd op')
+									)}
 									{renderDetailRow(
 										<TagList
 											swatches={false}

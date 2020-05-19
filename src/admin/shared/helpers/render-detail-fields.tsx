@@ -6,6 +6,7 @@ import { TagList, TagOption } from '@viaa/avo2-components';
 import { formatDate } from '../../../shared/helpers/formatters';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
+	console.log(value);
 	return (
 		<tr key={`detail-row_${label}`}>
 			<th>{label}</th>
