@@ -1,3 +1,5 @@
+import { CheckboxProps } from '@viaa/avo2-components';
+
 import {
 	FileUploadProps,
 	PHOTO_TYPES,
@@ -82,8 +84,10 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				} as FileUploadProps,
 			}),
 			mediaAutoplay: {
-				label: i18n.t('Automatisch afspelen'),
 				editorType: ContentBlockEditor.Checkbox,
+				editorProps: {
+					label: i18n.t('Automatisch afspelen'),
+				} as CheckBoxProps,
 			},
 			headingTitle: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
