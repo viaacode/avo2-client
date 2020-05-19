@@ -18,27 +18,19 @@ interface MediaPlayerProps {
 	src?: string;
 	poster?: string;
 	width?: 'full-width' | '500px' | '400px';
+	autoplay?: boolean;
 }
 
-export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, src, poster, title, width }) => {
+export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
+	item,
+	src,
+	poster,
+	title,
+	width,
+	autoplay,
+}) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
-
-	const retrieveStill = useCallback(async () => {
-		if (poster) {
-			setVideoStill(poster);
-			return;
-		}
-		const videoStills = await getVideoStills([
-			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
-		]);
-
-		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
-	}, [item, poster]);
-
-	useEffect(() => {
-		retrieveStill();
-	}, [retrieveStill]);
 
 	const initFlowPlayer = async () => {
 		try {
@@ -56,6 +48,28 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, src, poster, ti
 		}
 	};
 
+	const retrieveStill = useCallback(async () => {
+		if (poster) {
+			setVideoStill(poster);
+			return;
+		}
+		const videoStills = await getVideoStills([
+			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
+		]);
+
+		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
+	}, [item, poster]);
+
+	useEffect(() => {
+		retrieveStill();
+	}, [retrieveStill]);
+
+	useEffect(() => {
+		if (autoplay) {
+			initFlowPlayer();
+		}
+	}, [autoplay, initFlowPlayer]);
+
 	return (
 		<div
 			className={classnames(
@@ -72,6 +86,11 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, src, poster, ti
 					onInit={get(item, 'value') ? initFlowPlayer : () => {}}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+					// autoplay + src => internal autoplay = true
+					// no autoplay + src => internal autoplay = false
+					// autoplay + no src (mam) => call get token immediately + internal autoplay = true
+					// no autoplay + no src (mam) => show poster + internal autoplay = true
+					autoplay={src ? autoplay : true}
 				/>
 			)}
 		</div>
