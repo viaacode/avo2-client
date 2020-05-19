@@ -71,3 +71,23 @@ export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
 	'separator',
 	'remove-styles',
 ];
+
+export const WYSIWYG2_OPTIONS_DEFAULT_NO_TITLES = [
+	'undo',
+	'redo',
+	'separator',
+	'bold',
+	'italic',
+	'strike-through',
+	'underline',
+	'separator',
+	'list-ul',
+	'list-ol',
+	'separator',
+	'subscript',
+	'superscript',
+	'separator',
+	'hr',
+	'separator',
+	'remove-styles',
+];
