@@ -315,6 +315,7 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
 	align: AlignOption;
+	mediaAutoplay: boolean;
 }
 
 export interface MediaGridBlockComponentState {
