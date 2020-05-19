@@ -1,3 +1,5 @@
+import { CheckboxProps } from '@viaa/avo2-components';
+
 import {
 	FileUploadProps,
 	PHOTO_TYPES,
@@ -75,8 +77,10 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				},
 			},
 			autoplay: {
-				label: i18n.t('Automatisch afspelen'),
 				editorType: ContentBlockEditor.Checkbox,
+				editorProps: {
+					label: i18n.t('Automatisch afspelen'),
+				} as CheckboxProps,
 			},
 		},
 	},
