@@ -86,6 +86,10 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 					onInit={get(item, 'value') ? initFlowPlayer : () => {}}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+					// autoplay + src => internal autoplay = true
+					// no autoplay + src => internal autoplay = false
+					// autoplay + no src (mam) => call get token immediately + internal autoplay = true
+					// no autoplay + no src (mam) => show poster + internal autoplay = true
 					autoplay={src ? autoplay : true}
 				/>
 			)}
