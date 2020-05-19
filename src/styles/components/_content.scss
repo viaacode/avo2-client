@@ -8,6 +8,8 @@
    Usage: use these classes to style individual components like their rich text equivalent
    ========================================================================== */
 
+@import '~braft-editor/dist/output.css';
+
 .c-h1-display,
 .c-content .c-h1-display {
 	font-size: 4.8rem;
@@ -96,7 +98,7 @@
 // Provide a generic method to remove the margin top on the first item in .c-content
 .c-content--no-mt {
 	> *:first-child {
-	margin-top: 0;
+		margin-top: 0;
 	}
 }
 
@@ -220,6 +222,64 @@
 		padding: 0.2rem;
 		border-radius: 0.2rem;
 		color: $color-error;
+	}
+
+	/**
+	 * Braft editor output css
+	 */
+	p {
+		min-height: 1em
+	}
+
+	.image-wrap {
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+
+		&.float-left {
+			margin: 0 10px 0 0;
+		}
+
+		&.float-right {
+			margin: 0 0 0 10px;
+		}
+	}
+
+	ul, ol {
+		margin: 16px 0;
+		padding: 0
+	}
+
+	blockquote {
+		margin: 0 0 10px 0;
+		padding: 15px 20px;
+		background-color: #f1f2f3;
+		border-left: solid 5px #ccc;
+		color: #666;
+		font-style: italic
+	}
+
+	pre {
+		max-width: 100%;
+		max-height: 100%;
+		margin: 10px 0;
+		padding: 15px;
+		overflow: auto;
+		background-color: #f1f2f3;
+		border-radius: 3px;
+		color: #666;
+		font-family: monospace;
+		font-size: 14px;
+		font-weight: normal;
+		line-height: 16px;
+		word-wrap: break-word;
+		white-space: pre-wrap
+	}
+
+	pre pre {
+		margin: 0;
+		padding: 0
 	}
 }
 
