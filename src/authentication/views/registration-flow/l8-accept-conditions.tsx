@@ -160,8 +160,19 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('voorwaarden pagina titel'))}</title>
-				<meta name="description" content={t('voorwaarden pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t(
+							'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel'
+						)
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}

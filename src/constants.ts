@@ -197,4 +197,4 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 } as any; // TODO remove cast once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
 
 export const GENERATE_SITE_TITLE = (...pageTitleParts: (string | null | undefined)[]) =>
-	compact([...pageTitleParts, i18n.t('Het Archief voor Onderwijs')]).join(' | ');
+	compact([...pageTitleParts, i18n.t('constants___het-archief-voor-onderwijs')]).join(' | ');

@@ -50,8 +50,12 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De lange beschrijving van deze collectie is te lang.')
-				: i18n.t('De lange beschrijving van deze bundel is te lang.'),
+				? i18n.t(
+						'collection/collection___de-lange-beschrijving-van-deze-collectie-is-te-lang'
+				  )
+				: i18n.t(
+						'collection/collection___de-lange-beschrijving-van-deze-bundel-is-te-lang'
+				  ),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!(collection as any).description_long ||
 			(collection as any).description_long.length <= MAX_LONG_DESCRIPTION_LENGTH,

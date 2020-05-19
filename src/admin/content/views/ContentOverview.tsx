@@ -305,8 +305,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						{/*	icon="eye"*/}
 						{/*	onClick={() => handlePreviewClicked(rowData)}*/}
 						{/*	size="small"*/}
-						{/*	title={t('Preview content')}*/}
-						{/*	ariaLabel={t('Preview content')}*/}
+						{/*	title={t('admin/content/views/content-overview___preview-content')}*/}
+						{/*	ariaLabel={t('admin/content/views/content-overview___preview-content')}*/}
 						{/*	type="secondary"*/}
 						{/*/>*/}
 						<Button
@@ -431,10 +431,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Content beheer overview pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/content/views/content-overview___content-beheer-overview-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Content beheer overview pagina beschrijving')}
+						content={t(
+							'admin/content/views/content-overview___content-beheer-overview-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

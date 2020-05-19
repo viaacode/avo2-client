@@ -302,12 +302,16 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t('Interactieve rondleiding beheer overview pagina titel')
+							t(
+								'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel'
+							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t('Interactieve rondleiding beheer overview pagina beschrijving')}
+						content={t(
+							'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

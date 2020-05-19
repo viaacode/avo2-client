@@ -163,11 +163,17 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
-						{GENERATE_SITE_TITLE(t('Gebruikersbeheer overzicht pagina titel'))}
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-titel'
+							)
+						)}
 					</title>
 					<meta
 						name="description"
-						content={t('Gebruikersbeheer overzicht pagina beschrijving')}
+						content={t(
+							'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

@@ -522,9 +522,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		return (
 			<ButtonToolbar>
 				<Button
-					title={isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')}
+					title={
+						isPublic
+							? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
+							: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
+					}
 					ariaLabel={
-						isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')
+						isPublic
+							? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
+							: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
 					}
 					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
@@ -772,7 +778,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		<>
 			<MetaTags>
 				<title>
-					{GENERATE_SITE_TITLE(get(bundle, 'title', t('Bundel detail titel fallback')))}
+					{GENERATE_SITE_TITLE(
+						get(
+							bundle,
+							'title',
+							t('bundle/views/bundle-detail___bundel-detail-titel-fallback')
+						)
+					)}
 				</title>
 				<meta name="description" content={get(bundle, 'description') || ''} />
 			</MetaTags>

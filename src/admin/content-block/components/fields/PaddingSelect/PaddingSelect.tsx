@@ -18,7 +18,9 @@ const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value 
 	const generateOptions = (direction: PaddingDirection) =>
 		[
 			{
-				label: t('Geen'),
+				label: t(
+					'admin/content-block/components/fields/padding-select/padding-select___geen'
+				),
 				value: 'none',
 			},
 			{

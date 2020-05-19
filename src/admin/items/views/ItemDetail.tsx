@@ -477,7 +477,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		<>
 			<MetaTags>
 				<title>
-					{GENERATE_SITE_TITLE(get(item, 'title'), t('Item beheer detail pagina titel'))}
+					{GENERATE_SITE_TITLE(
+						get(item, 'title'),
+						t('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
+					)}
 				</title>
 				<meta name="description" content={get(item, 'description') || ''} />
 			</MetaTags>

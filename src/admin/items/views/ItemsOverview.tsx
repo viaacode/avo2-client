@@ -230,10 +230,18 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
 			<AdminLayoutBody>
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Item beheer overview pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/items/views/items-overview___item-beheer-overview-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Item beheer overview pagina beschrijving')}
+						content={t(
+							'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">
