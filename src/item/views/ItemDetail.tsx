@@ -32,6 +32,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -58,7 +59,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { BookmarksViewsPlaysService, dataService, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -66,7 +67,6 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
-import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './ItemDetail.scss';
 
@@ -144,14 +144,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					});
 					return;
 				}
-				const response = await dataService.query({
-					query: GET_ITEM_BY_ID,
-					variables: {
-						id: match.params.id,
-					},
-				});
 
-				const itemObj: Avo.Item.Item | undefined = get(response, 'data.app_item_meta[0]');
+				const itemObj: Avo.Item.Item | null = await ItemsService.fetchItemByExternalId(
+					match.params.id
+				);
 				if (!itemObj) {
 					setLoadingInfo({
 						state: 'error',

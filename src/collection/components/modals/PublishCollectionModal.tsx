@@ -64,7 +64,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 
 	useEffect(() => {
 		setIsCollectionPublic(collection.is_public);
-	}, [isOpen]);
+	}, [isOpen, setIsCollectionPublic, collection.is_public]);
 
 	const onSave = async () => {
 		try {
