@@ -17,7 +17,11 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getFirstName, getProfileInitials } from '../../../authentication/helpers/get-profile-info';
+import {
+	getFirstName,
+	getProfileAvatar,
+	getProfileInitials,
+} from '../../../authentication/helpers/get-profile-info';
 import {
 	redirectToClientPage,
 	redirectToExternalPage,
@@ -130,6 +134,7 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 							<Avatar
 								initials={getProfileInitials(user)}
 								name={getFirstName(user) || ''}
+								image={getProfileAvatar(user)}
 							/>
 							<Icon name="caret-down" size="small" />
 						</div>
