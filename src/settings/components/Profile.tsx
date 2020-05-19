@@ -409,9 +409,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												labelFor="profilePicture"
 											>
 												<FileUpload
-													label={t(
-														'collection/components/collection-or-bundle-edit-meta-data___upload-een-cover-afbeelding'
-													)}
+													label={t('Upload een profiel foto')}
 													urls={avatar ? [avatar] : []}
 													allowMulti={false}
 													assetType="PROFILE_AVATAR"
