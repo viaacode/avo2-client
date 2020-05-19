@@ -87,7 +87,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				editorType: ContentBlockEditor.Checkbox,
 				editorProps: {
 					label: i18n.t('Automatisch afspelen'),
-				} as CheckBoxProps,
+				} as CheckboxProps,
 			},
 			headingTitle: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
