@@ -103,8 +103,13 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 		<Container mode="vertical" background="alt">
 			<Container size="medium" mode="horizontal">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Error pagina titel'))}</title>
-					<meta name="description" content={t('Error pagina beschrijving')} />
+					<title>
+						{GENERATE_SITE_TITLE(t('error/views/error-view___error-pagina-titel'))}
+					</title>
+					<meta
+						name="description"
+						content={t('error/views/error-view___error-pagina-beschrijving')}
+					/>
 				</MetaTags>
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}

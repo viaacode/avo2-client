@@ -703,7 +703,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(item, 'title', t('Item detail pagina titel fallback'))
+						get(
+							item,
+							'title',
+							t('item/views/item-detail___item-detail-pagina-titel-fallback')
+						)
 					)}
 				</title>
 				<meta name="description" content={get(item, 'description', '')} />

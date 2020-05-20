@@ -65,7 +65,9 @@ export class AssignmentHelper {
 						response,
 						...queryParams,
 					});
-					ToastService.danger(i18n.t('De opdracht inhoud is verwijderd'));
+					ToastService.danger(
+						i18n.t('assignment/assignment___de-opdracht-inhoud-is-verwijderd')
+					);
 				}
 			}
 			return assignmentContentResponse;
@@ -179,7 +181,9 @@ export class AssignmentHelper {
 							<p>
 								{get(content, 'title') ||
 									get(content, 'description') ||
-									i18n.t('De opdracht inhoud is verwijderd')}
+									i18n.t(
+										'assignment/assignment___de-opdracht-inhoud-is-verwijderd'
+									)}
 							</p>
 						</div>
 					</FlexItem>

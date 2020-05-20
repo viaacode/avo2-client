@@ -542,8 +542,11 @@ const Search: FunctionComponent<SearchProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Zoeken pagina titel'))}</title>
-				<meta name="description" content={t('Zoeken pagina beschrijving')} />
+				<title>{GENERATE_SITE_TITLE(t('search/views/search___zoeken-pagina-titel'))}</title>
+				<meta
+					name="description"
+					content={t('search/views/search___zoeken-pagina-beschrijving')}
+				/>
 			</MetaTags>
 			<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
 				<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>

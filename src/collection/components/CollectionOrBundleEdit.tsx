@@ -1141,8 +1141,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							collectionState.currentCollection,
 							'title',
 							isCollection
-								? t('Collectie bewerken titel fallback')
-								: t('Bundel bewerken titel fallback')
+								? t(
+										'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback'
+								  )
+								: t(
+										'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback'
+								  )
 						)
 					)}
 				</title>

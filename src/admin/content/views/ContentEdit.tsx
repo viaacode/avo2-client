@@ -469,8 +469,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						{GENERATE_SITE_TITLE(
 							get(contentForm, 'title'),
 							pageType === PageType.Create
-								? t('Content beheer aanmaak pagina titel')
-								: t('Content beheer bewerk pagina titel')
+								? t(
+										'admin/content/views/content-edit___content-beheer-aanmaak-pagina-titel'
+								  )
+								: t(
+										'admin/content/views/content-edit___content-beheer-bewerk-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta name="description" content={get(contentForm, 'description')} />

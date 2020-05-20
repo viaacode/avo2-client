@@ -179,7 +179,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 									</FormGroup>
 									{!isCollection && (
 										<FormGroup
-											label={t('Beschrijving')}
+											label={t(
+												'collection/components/collection-or-bundle-edit-meta-data___beschrijving'
+											)}
 											labelFor="longDescriptionId"
 											error={getValidationFeedbackForShortDescription(
 												(collection as any).description_long,

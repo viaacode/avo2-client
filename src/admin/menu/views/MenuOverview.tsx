@@ -127,10 +127,16 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			)}
 			<AdminLayoutBody>
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Menu overzicht beheer pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t('admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel')
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Menu overzicht beheer pagina beschrijving')}
+						content={t(
+							'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">
