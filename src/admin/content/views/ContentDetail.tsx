@@ -53,6 +53,7 @@ import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';
+import { getPublishedState } from '../helpers/get-published-state';
 
 import './ContentDetail.scss';
 
@@ -220,7 +221,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				});
 
 				ToastService.success(
-					newContentPage.is_public
+					getPublishedState(newContentPage)
 						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
 						: t(
 								'admin/content/views/content-detail___de-content-pagina-is-nu-niet-meer-publiek'
