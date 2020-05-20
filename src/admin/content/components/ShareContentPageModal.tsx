@@ -20,6 +20,7 @@ import {
 
 import { ToastService } from '../../../shared/services';
 import { DbContent } from '../content.types';
+import { getPublishedState } from '../helpers/get-published-state';
 
 type publishOption = 'private' | 'public' | 'timebound';
 
@@ -38,11 +39,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [selectedOption, setSelectedOption] = useState<publishOption>(
-		contentPage.is_public
-			? contentPage.publish_at || contentPage.depublish_at
-				? 'timebound'
-				: 'public'
-			: 'private'
+		getPublishedState(contentPage)
 	);
 	const [publishAt, setPublishAt] = useState<string | null>(contentPage.publish_at);
 	const [depublishAt, setDepublishAt] = useState<string | null>(contentPage.depublish_at);
