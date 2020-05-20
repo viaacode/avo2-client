@@ -79,6 +79,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						// @ts-ignore
 						(queryWordWildcard: string) => [
 							{ title: { _ilike: queryWordWildcard } },
+							{ path: { _ilike: queryWordWildcard } },
 							{
 								profile: {
 									usersByuserId: { first_name: { _ilike: queryWordWildcard } },

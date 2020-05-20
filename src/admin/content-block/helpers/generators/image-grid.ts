@@ -65,22 +65,22 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			title: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___titel'),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			}),
 			text: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___tekst'),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			}),
 			buttonLabel: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			}),
 			buttonTitle: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tooltip'),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			}),
 			buttonType: {
 				label: i18n.t(

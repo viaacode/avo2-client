@@ -20,6 +20,7 @@ import {
 	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
+	GET_CONTENT_PAGE_BY_PATH,
 	GET_CONTENT_PAGES,
 	GET_CONTENT_PAGES_BY_TITLE,
 	GET_CONTENT_TYPES,
@@ -42,7 +43,7 @@ export class ContentService {
 			},
 		};
 
-		return performQuery(query, CONTENT_RESULT_PATH.GET, 'Failed to retrieve content items.');
+		return performQuery(query, CONTENT_RESULT_PATH.GET, 'Failed to retrieve content pages.');
 	}
 
 	public static async getProjectContentItems(
@@ -59,7 +60,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve project content items.'
+			'Failed to retrieve project content pages.'
 		);
 	}
 
@@ -79,7 +80,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve content items by title.'
+			'Failed to retrieve content pages by title.'
 		);
 	}
 
@@ -99,7 +100,7 @@ export class ContentService {
 		return performQuery(
 			query,
 			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve content items by title.'
+			'Failed to retrieve content pages by title.'
 		);
 	}
 
@@ -114,7 +115,22 @@ export class ContentService {
 		return performQuery(
 			query,
 			`${CONTENT_RESULT_PATH.GET}[0]`,
-			`Failed to retrieve content item by id: ${id}.`
+			`Failed to retrieve content page by id: ${id}.`
+		);
+	}
+
+	public static async fetchContentPageByPath(path: string): Promise<DbContent | null> {
+		const query = {
+			query: GET_CONTENT_PAGE_BY_PATH,
+			variables: {
+				path,
+			},
+		};
+
+		return performQuery(
+			query,
+			`${CONTENT_RESULT_PATH.GET}[0]`,
+			`Failed to retrieve content page by path: ${path}.`
 		);
 	}
 
