@@ -72,7 +72,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		};
 
 		try {
-			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItems(
+			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 				tableState.sort_order || 'desc',
@@ -147,7 +147,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				return get(rowData, 'type.label', '-');
 
 			case 'views':
-				return get(rowData, 'view_counts_aggregate.aggregate.count', '-');
+				return get(rowData, 'view_counts_aggregate.aggregate.sum.count', '-');
 
 			case 'is_published':
 			case 'is_deleted':

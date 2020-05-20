@@ -685,6 +685,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			if (isCollection) {
 				// We're adding an item to the collection
 				const item = await ItemsService.fetchItemByExternalId(id);
+				if (!item) {
+					throw new CustomError('Response does not contain an item', null, {
+						item,
+					});
+				}
 				const collectionId = get(collectionState.currentCollection, 'id');
 				if (!collectionId) {
 					throw new CustomError('Collection id could not be found', null, {

@@ -108,7 +108,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				actionButtons: ['home'],
 			});
 		}
-	}, [user, page, sortColumn, sortOrder, isCollection]);
+	}, [user, page, sortColumn, sortOrder, isCollection, t]);
 
 	useEffect(() => {
 		fetchCollections();
