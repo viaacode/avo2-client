@@ -81,6 +81,8 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 		<BlockIntro
 			content={collectionFragment.custom_description || ''}
 			title={collectionFragment.custom_title || ''}
+			headingType="h3"
+			align="center"
 		/>
 	);
 };

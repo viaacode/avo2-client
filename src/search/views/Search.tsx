@@ -450,7 +450,7 @@ const Search: FunctionComponent<SearchProps> = ({
 											)}
 											onClick={onCopySearchLinkClicked}
 										/>
-										{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
+										{/* TODO: DISABLED_FEATURE Create link to create search assignment task */}
 										{/* <Button
 											type="link"
 											className="c-menu__item"

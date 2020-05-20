@@ -5,12 +5,20 @@ import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { ActionMeta, ValueType } from 'react-select/src/types';
 
-import { Button, Flex, FlexItem, FormGroup, LinkTarget, TextInput } from '@viaa/avo2-components';
+import {
+	Button,
+	ContentPickerType,
+	Flex,
+	FlexItem,
+	FormGroup,
+	LinkTarget,
+	TextInput,
+} from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
-import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
+import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
 	DEFAULT_ALLOWED_TYPES,
@@ -21,7 +29,7 @@ import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.he
 import './ContentPicker.scss';
 
 export interface ContentPickerProps {
-	allowedTypes?: ContentPickerType[];
+	allowedTypes?: (ContentPickerType | 'PROFILE')[];
 	initialValue?: PickerItem;
 	onSelect: (value: PickerItem | null) => void;
 	hideTypeDropdown?: boolean;
@@ -44,9 +52,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	// apply initial type from `initialValue`, default to first available type
 	const currentTypeObject = typeOptions.find(type => type.value === get(initialValue, 'type'));
-	const [selectedType, setSelectedType] = useState<PickerTypeOption<ContentPickerType>>(
-		currentTypeObject || typeOptions[0]
-	);
+	const [selectedType, setSelectedType] = useState<
+		PickerTypeOption<ContentPickerType | 'PROFILE'>
+	>(currentTypeObject || typeOptions[0]);
 
 	// available options for the item picker.
 	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
@@ -168,7 +176,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
 		propValue: ContentPickerType | ValueType<PickerItem> | string | number | null | LinkTarget
 	) => {
-		let newType: ContentPickerType;
+		let newType: ContentPickerType | 'PROFILE';
 		if (prop === 'type') {
 			newType = propValue as ContentPickerType;
 		} else {
