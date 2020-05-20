@@ -50,7 +50,9 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				validator: undefined,
 			}),
 			src: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen video uploaden (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___eigen-video-uploaden-optioneel'
+				),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,
@@ -60,7 +62,9 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				} as FileUploadProps,
 			}),
 			poster: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen poster uploaden (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___eigen-poster-uploaden-optioneel'
+				),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,

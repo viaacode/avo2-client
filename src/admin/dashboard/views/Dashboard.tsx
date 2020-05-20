@@ -15,8 +15,17 @@ const Dashboard = () => {
 		<AdminLayout pageTitle={i18n.t('admin/dashboard/views/dashboard___dashboard')}>
 			<Container className="u-spacer-top-l" mode="vertical" size="small">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Beheer Dashboard pagina titel'))}</title>
-					<meta name="description" content={t('Beheer dashboard pagina beschrijving')} />
+					<title>
+						{GENERATE_SITE_TITLE(
+							t('admin/dashboard/views/dashboard___beheer-dashboard-pagina-titel')
+						)}
+					</title>
+					<meta
+						name="description"
+						content={t(
+							'admin/dashboard/views/dashboard___beheer-dashboard-pagina-beschrijving'
+						)}
+					/>
 				</MetaTags>
 				<p>
 					<Trans i18nKey="admin/dashboard/views/dashboard___introductie-beheer-dashboard">

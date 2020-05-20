@@ -14,10 +14,10 @@ export type SettingsTab =
 
 export const GET_NEWSLETTER_LABELS = () => ({
 	newsletter: i18n.t(
-		'Ik ontvang graag tips en inspiratie voor mijn lessen en nieuws van partners.'
+		'settings/settings___ik-ontvang-graag-tips-en-inspiratie-voor-mijn-lessen-en-nieuws-van-partners'
 	),
-	workshop: i18n.t('Ik wil berichten over workshops en events ontvangen.'),
+	workshop: i18n.t('settings/settings___ik-wil-berichten-over-workshops-en-events-ontvangen'),
 	ambassador: i18n.t(
-		'Ik krijg graag berichten om actief mee te werken aan Het Archief voor Onderwijs.'
+		'settings/settings___ik-krijg-graag-berichten-om-actief-mee-te-werken-aan-het-archief-voor-onderwijs'
 	),
 });

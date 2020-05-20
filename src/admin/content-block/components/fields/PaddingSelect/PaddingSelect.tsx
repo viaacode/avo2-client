@@ -5,6 +5,8 @@ import { Form, FormGroup, Select, SelectOption, SpacerOption } from '@viaa/avo2-
 
 import { PaddingFieldState } from '../../../../shared/types';
 
+import './PaddingSelect.scss';
+
 interface PaddingSelectProps {
 	onChange: (value: PaddingFieldState) => void;
 	value: PaddingFieldState;
@@ -18,7 +20,9 @@ const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value 
 	const generateOptions = (direction: PaddingDirection) =>
 		[
 			{
-				label: t('Geen'),
+				label: t(
+					'admin/content-block/components/fields/padding-select/padding-select___geen'
+				),
 				value: 'none',
 			},
 			{
@@ -52,7 +56,7 @@ const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value 
 	};
 
 	return (
-		<Form type="inline">
+		<Form type="inline" className="c-padding-select">
 			<FormGroup label="Boven">
 				<Select
 					onChange={(value: string) => handleChange(value, 'top')}

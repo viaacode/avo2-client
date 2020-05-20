@@ -72,7 +72,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		};
 
 		try {
-			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItems(
+			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 				tableState.sort_order || 'desc',
@@ -147,7 +147,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 				return get(rowData, 'type.label', '-');
 
 			case 'views':
-				return get(rowData, 'view_counts_aggregate.aggregate.count', '-');
+				return get(rowData, 'view_counts_aggregate.aggregate.sum.count', '-');
 
 			case 'is_published':
 			case 'is_deleted':
@@ -230,10 +230,18 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
 			<AdminLayoutBody>
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Item beheer overview pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/items/views/items-overview___item-beheer-overview-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Item beheer overview pagina beschrijving')}
+						content={t(
+							'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

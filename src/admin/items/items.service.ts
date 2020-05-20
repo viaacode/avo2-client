@@ -2,14 +2,17 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../shared/helpers';
+import { CustomError, performQuery } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
+	GET_EXTERNAL_ID_BY_MEDIAMOSA_ID,
 	GET_ITEM_BY_EXTERNAL_ID,
-	GET_ITEM_BY_ID,
+	GET_ITEM_BY_UUID,
 	GET_ITEMS,
+	GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+	GET_ITEMS_WITH_FILTERS,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
 } from './items.gql';
@@ -28,7 +31,7 @@ export class ItemsService {
 		return [{ [sortColumn]: sortOrder }];
 	}
 
-	public static async fetchItems(
+	public static async fetchItemsWithFilters(
 		page: number,
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
@@ -44,7 +47,7 @@ export class ItemsService {
 			};
 			const response = await dataService.query({
 				variables,
-				query: GET_ITEMS,
+				query: GET_ITEMS_WITH_FILTERS,
 			});
 			const items = get(response, 'data.app_item_meta');
 			const itemCount = get(response, 'data.app_item_meta_aggregate.aggregate.count');
@@ -59,20 +62,20 @@ export class ItemsService {
 		} catch (err) {
 			throw new CustomError('Failed to get items from the database', err, {
 				variables,
-				query: 'GET_ITEMS',
+				query: 'GET_ITEMS_WITH_FILTERS',
 			});
 		}
 	}
 
-	public static async fetchItem(id: string): Promise<Avo.Item.Item> {
+	public static async fetchItemByUuid(uuid: string): Promise<Avo.Item.Item> {
 		let variables: any;
 		try {
 			variables = {
-				id,
+				uuid,
 			};
 			const response = await dataService.query({
 				variables,
-				query: GET_ITEM_BY_ID,
+				query: GET_ITEM_BY_UUID,
 			});
 			const item = get(response, 'data.app_item_meta[0]');
 
@@ -86,43 +89,16 @@ export class ItemsService {
 		} catch (err) {
 			throw new CustomError('Failed to get the item from the database', err, {
 				variables,
-				query: 'GET_ITEM_BY_ID',
+				query: 'GET_ITEM_BY_UUID',
 			});
 		}
 	}
 
-	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item> {
+	static async setItemPublishedState(itemUuid: string, isPublished: boolean): Promise<void> {
 		let variables: any;
 		try {
 			variables = {
-				externalId,
-			};
-			const response = await dataService.query({
-				variables,
-				query: GET_ITEM_BY_EXTERNAL_ID,
-			});
-			const item = get(response, 'data.app_item_meta[0]');
-
-			if (!item) {
-				throw new CustomError('Response does not contain an item', null, {
-					response,
-				});
-			}
-
-			return item;
-		} catch (err) {
-			throw new CustomError('Failed to get the item from the database', err, {
-				variables,
-				query: 'GET_ITEM_BY_EXTERNAL_ID',
-			});
-		}
-	}
-
-	static async setItemPublishedState(id: string, isPublished: boolean): Promise<void> {
-		let variables: any;
-		try {
-			variables = {
-				id,
+				itemUuid,
 				isPublished,
 			};
 			const response = await dataService.mutate({
@@ -147,11 +123,11 @@ export class ItemsService {
 		}
 	}
 
-	static async setItemNotes(id: string, note: string | null): Promise<void> {
+	static async setItemNotes(itemUuid: string, note: string | null): Promise<void> {
 		let variables: any;
 		try {
 			variables = {
-				id,
+				itemUuid,
 				note,
 			};
 			const response = await dataService.mutate({
@@ -168,6 +144,94 @@ export class ItemsService {
 			throw new CustomError('Failed to update note field for item in the database', err, {
 				variables,
 				query: 'UPDATE_ITEM_NOTES',
+			});
+		}
+	}
+
+	public static async fetchItems(limit?: number): Promise<Avo.Item.Item[] | null> {
+		const query = {
+			query: GET_ITEMS,
+			variables: { limit },
+		};
+
+		return performQuery(query, 'data.app_item_meta', 'Failed to retrieve items.');
+	}
+
+	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item | null> {
+		try {
+			const response = await dataService.query({
+				query: GET_ITEM_BY_EXTERNAL_ID,
+				variables: {
+					externalId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			return get(response, 'data.app_item_meta[0]') || null;
+		} catch (err) {
+			throw new CustomError('Failed to get item by external id', err, {
+				externalId,
+				query: 'GET_ITEM_BY_EXTERNAL_ID',
+			});
+		}
+	}
+
+	public static async fetchItemExternalIdByMediamosaId(
+		mediamosaId: string
+	): Promise<string | null> {
+		try {
+			const response = await dataService.query({
+				query: GET_EXTERNAL_ID_BY_MEDIAMOSA_ID,
+				variables: {
+					mediamosaId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			return get(response, 'data.migrate_reference_ids[0].external_id') || null;
+		} catch (err) {
+			throw new CustomError('Failed to get item by media mosa id (avo1 id)', err, {
+				mediamosaId,
+				query: 'GET_EXTERNAL_ID_BY_MEDIAMOSA_ID',
+			});
+		}
+	}
+
+	public static async fetchItemsByTitleOrExternalId(
+		titleOrExternalId: string,
+		limit?: number
+	): Promise<Avo.Item.Item[]> {
+		try {
+			const query = {
+				query: GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+				variables: {
+					limit,
+					title: `%${titleOrExternalId}%`,
+					externalId: titleOrExternalId,
+				},
+			};
+
+			const response = await performQuery(
+				query,
+				'data',
+				'Failed to retrieve items by title or external id.'
+			);
+
+			let items = get(response, 'itemsByExternalId', []);
+			if (items.length === 0) {
+				items = get(response, 'itemsByTitle', []);
+			}
+			return items;
+		} catch (err) {
+			throw new CustomError('Failed to fetch items by title or external id', err, {
+				titleOrExternalId,
+				limit,
 			});
 		}
 	}

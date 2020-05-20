@@ -508,7 +508,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						get(
 							currentAssignment,
 							'title',
-							t('Collectie bewerken pagina titel fallback')
+							t(
+								'assignment/views/assignment-edit___collectie-bewerken-pagina-titel-fallback'
+							)
 						)
 					)}
 				</title>
