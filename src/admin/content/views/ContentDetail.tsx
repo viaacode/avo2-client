@@ -220,6 +220,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					...newContentPage,
 				});
 
+				setContentPage({
+					...contentPage,
+					...newContentPage,
+				} as DbContent);
+
 				ToastService.success(
 					isPublic(newContentPage)
 						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
@@ -241,6 +246,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				false
 			);
 		}
+
 		setIsShareModalOpen(false);
 	};
 
