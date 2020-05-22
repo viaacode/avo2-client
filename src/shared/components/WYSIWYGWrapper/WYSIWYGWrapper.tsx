@@ -38,7 +38,9 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 						});
 					} catch (err) {
 						const error = new CustomError(
-							t('Het opladen van de afbeelding is mislukt'),
+							t(
+								'shared/components/wysiwyg-wrapper/wysiwyg-wrapper___het-opladen-van-de-afbeelding-is-mislukt'
+							),
 							err,
 							{ param }
 						);
@@ -51,7 +53,11 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 						// MAX_FILE_SIZE: 10MB
 						return true;
 					}
-					ToastService.danger(t('Dit bestand is te groot (max 10MB)'));
+					ToastService.danger(
+						t(
+							'shared/components/wysiwyg-wrapper/wysiwyg-wrapper___dit-bestand-is-te-groot-max-10-mb'
+						)
+					);
 					return false;
 				},
 		  }

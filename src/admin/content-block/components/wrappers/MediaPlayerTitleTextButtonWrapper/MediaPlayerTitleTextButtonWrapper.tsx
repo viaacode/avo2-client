@@ -19,6 +19,9 @@ import { MediaPlayerWrapper } from '../MediaPlayerWrapper/MediaPlayerWrapper';
 interface MediaPlayerTitleTextButtonWrapperProps extends RouteComponentProps {
 	mediaTitle: string;
 	mediaItem: ButtonAction;
+	mediaSrc?: string;
+	mediaPoster?: string;
+	mediaAutoplay?: boolean;
 	headingType: HeadingTypeOption;
 	headingTitle: string;
 	content: string;
@@ -31,6 +34,8 @@ interface MediaPlayerTitleTextButtonWrapperProps extends RouteComponentProps {
 
 export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWrapperProps> = ({
 	mediaItem,
+	mediaSrc,
+	mediaPoster,
 	mediaTitle,
 	headingTitle,
 	headingType,
@@ -41,11 +46,18 @@ export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWra
 	buttonAction,
 	history,
 	align,
+	mediaAutoplay,
 }) => {
 	return (
 		<Grid className="c-item-video-description">
 			<Column size="2-7">
-				<MediaPlayerWrapper item={mediaItem} title={mediaTitle} />
+				<MediaPlayerWrapper
+					item={mediaItem}
+					title={mediaTitle}
+					autoplay={mediaAutoplay}
+					src={mediaSrc}
+					poster={mediaPoster}
+				/>
 			</Column>
 			<Column size="2-5" className={`u-text-${align}`}>
 				<BlockHeading type={headingType}>{headingTitle}</BlockHeading>

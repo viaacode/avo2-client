@@ -469,16 +469,24 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				<title>
 					{GENERATE_SITE_TITLE(
 						isCreatePage
-							? t('Permissiegroep beheer aanmaak pagina titel')
-							: t('Permissiegroep beheer bewerk pagina titel')
+							? t(
+									'admin/permission-groups/views/permission-group-edit___permissiegroep-beheer-aanmaak-pagina-titel'
+							  )
+							: t(
+									'admin/permission-groups/views/permission-group-edit___permissiegroep-beheer-bewerk-pagina-titel'
+							  )
 					)}
 				</title>
 				<meta
 					name="description"
 					content={
 						isCreatePage
-							? t('Permissiegroep beheer aanmaak pagina beschrijving')
-							: t('Permissiegroep beheer bewerk pagina beschrijving')
+							? t(
+									'admin/permission-groups/views/permission-group-edit___permissiegroep-beheer-aanmaak-pagina-beschrijving'
+							  )
+							: t(
+									'admin/permission-groups/views/permission-group-edit___permissiegroep-beheer-bewerk-pagina-beschrijving'
+							  )
 					}
 				/>
 			</MetaTags>

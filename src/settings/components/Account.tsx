@@ -63,33 +63,42 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 			);
 		}
 		return (
-			<Button
-				className={`c-button-${idpType.toLocaleLowerCase()}`}
-				icon={idpType.toLocaleLowerCase() as IconName}
-				label={
-					idpType === 'SMARTSCHOOL'
-						? t('settings/components/account___link-je-smartschool-account')
-						: t('settings/components/account___link-je-klascement-account')
-				}
-				title={
-					idpType === 'SMARTSCHOOL'
-						? t(
-								'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
-						  )
-						: t(
-								'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
-						  )
-				}
-				onClick={() => redirectToServerLinkAccount(location, idpType)}
-			/>
+			<Spacer margin="bottom-small">
+				<Button
+					className={`c-button-${idpType.toLocaleLowerCase()}`}
+					icon={idpType.toLocaleLowerCase() as IconName}
+					label={
+						idpType === 'SMARTSCHOOL'
+							? t('settings/components/account___link-je-smartschool-account')
+							: t('settings/components/account___link-je-klascement-account')
+					}
+					title={
+						idpType === 'SMARTSCHOOL'
+							? t(
+									'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
+							  )
+							: t(
+									'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
+							  )
+					}
+					onClick={() => redirectToServerLinkAccount(location, idpType)}
+				/>
+			</Spacer>
 		);
 	};
 
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Account instellingen pagina titel'))}</title>
-				<meta name="description" content={t('Account pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/account___account-instellingen-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t('settings/components/account___account-pagina-beschrijving')}
+				/>
 			</MetaTags>
 			<Container mode="vertical">
 				<Container mode="horizontal">

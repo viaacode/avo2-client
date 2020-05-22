@@ -70,6 +70,15 @@ export function getProfileAlias(user: Avo.User.User | undefined): string {
 	return get(user, 'profile.alias', '');
 }
 
+export function getProfileAvatar(user: Avo.User.User | undefined): string {
+	if (!user) {
+		throw new CustomError(
+			'Failed to get profile avatar because the logged in user is undefined'
+		);
+	}
+	return get(user, 'profile.avatar', '');
+}
+
 export function getProfileInitials(user: Avo.User.User | undefined): string {
 	if (!user) {
 		throw new CustomError(
@@ -92,7 +101,7 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 	const profile = get(user, 'profile');
 
 	// Only teachers have to fill in their profile for now
-	if (user.role_id !== 2) {
+	if (get(user, 'role.name') !== 'lesgever') {
 		return true;
 	}
 
