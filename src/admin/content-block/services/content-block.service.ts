@@ -17,6 +17,128 @@ import {
 import { parseContentBlockConfig, parseContentBlockConfigs } from '../helpers';
 
 export class ContentBlockService {
+	/**
+	 * Update content block.
+	 *
+	 * @param contentBlockConfig updated state of content block
+	 */
+	public static async updateContentBlock(
+		contentBlockConfig: ContentBlockConfig
+	): Promise<FetchResult<any> | null> {
+		try {
+			const contentBlock = parseContentBlockConfig(contentBlockConfig);
+
+			return await dataService.mutate({
+				mutation: UPDATE_CONTENT_BLOCK,
+				variables: { contentBlock, id: contentBlockConfig.id },
+				update: ApolloCacheManager.clearContentBlocksCache,
+			});
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to update content block', err, {
+					contentBlockConfig,
+				})
+			);
+
+			ToastService.danger(
+				i18n.t(
+					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
+				),
+				false
+			);
+
+			return null;
+		}
+	}
+
+	/**
+	 * Delete content block.
+	 *
+	 * @param id content block identifier
+	 */
+	public static async deleteContentBlock(id: number) {
+		try {
+			return await dataService.mutate({
+				mutation: DELETE_CONTENT_BLOCK,
+				variables: { id },
+				update: ApolloCacheManager.clearContentBlocksCache,
+			});
+		} catch (err) {
+			console.error(new CustomError('Failed to delete content block', err, { id }));
+
+			ToastService.danger(
+				i18n.t(
+					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
+				),
+				false
+			);
+
+			return null;
+		}
+	}
+
+	/**
+	 * Insert content blocks.
+	 *
+	 * @param contentId content page identifier
+	 * @param contentBlockConfigs configs of content blocks to add
+	 * @param parse define whether the content blocks need parsing
+	 *
+	 * @return content blocks
+	 */
+	public static async insertContentBlocks(
+		contentId: number,
+		contentBlockConfigs: ContentBlockConfig[],
+		parse?: boolean
+	): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> {
+		try {
+			let contentBlocks;
+
+			if (parse) {
+				contentBlocks = parseContentBlockConfigs(contentId, contentBlockConfigs);
+			} else {
+				contentBlocks = (contentBlockConfigs || []).map(
+					(contentBlockConfig: ContentBlockConfig) => {
+						delete (contentBlockConfig as any).__typename;
+
+						// add correct content id
+						return { ...contentBlockConfig, content_id: contentId };
+					}
+				);
+			}
+
+			const response = await dataService.mutate({
+				mutation: INSERT_CONTENT_BLOCKS,
+				variables: { contentBlocks },
+				update: ApolloCacheManager.clearContentBlocksCache,
+			});
+
+			return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to insert content blocks', err, {
+					contentId,
+					contentBlockConfigs,
+				})
+			);
+
+			ToastService.danger(
+				i18n.t(
+					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
+				),
+				false
+			);
+
+			return null;
+		}
+	}
+	/**
+	 * Retrieve content blocks by content id.
+	 *
+	 * @param contentId content page identifier
+	 *
+	 * @return content blocks
+	 */
 	public static async fetchContentBlocksByContentId(
 		contentId: number
 	): Promise<Avo.ContentBlocks.ContentBlocks[] | null> {
@@ -25,9 +147,11 @@ export class ContentBlockService {
 				query: GET_CONTENT_BLOCKS_BY_CONTENT_ID,
 				variables: { contentId },
 			});
+
 			if (response.errors) {
 				throw new CustomError('Response contains errors', null, { response });
 			}
+
 			return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.GET}`, null);
 		} catch (err) {
 			console.error(
@@ -35,6 +159,7 @@ export class ContentBlockService {
 					contentId,
 				})
 			);
+
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-blocks'
@@ -46,64 +171,13 @@ export class ContentBlockService {
 		}
 	}
 
-	// TODO: Rework two functions below into one
-	public static async insertContentBlocks(
-		contentId: number,
-		contentBlockConfigs: ContentBlockConfig[]
-	): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> {
-		try {
-			const contentBlocks = parseContentBlockConfigs(contentId, contentBlockConfigs);
-			const response = await dataService.mutate({
-				mutation: INSERT_CONTENT_BLOCKS,
-				variables: { contentBlocks },
-				update: ApolloCacheManager.clearContentBlocksCache,
-			});
-
-			return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				i18n.t(
-					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
-				),
-				false
-			);
-
-			return null;
-		}
-	}
-
-	public static async insertContentBlocksWithoutParse(
-		contentId: number,
-		contentBlocks: ContentBlockConfig[]
-	): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> {
-		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_CONTENT_BLOCKS,
-				variables: {
-					contentBlocks: contentBlocks.map(cb => {
-						delete (cb as any).__typename;
-
-						return { ...cb, content_id: contentId };
-					}),
-				},
-				update: ApolloCacheManager.clearContentBlocksCache,
-			});
-
-			return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				i18n.t(
-					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
-				),
-				false
-			);
-
-			return null;
-		}
-	}
-
+	/**
+	 * Update content blocks.
+	 *
+	 * @param contentId content page identifier
+	 * @param initialContentBlocks initial state of content blocks
+	 * @param contentBlockConfigs configs of content blocks to update
+	 */
 	public static async updateContentBlocks(
 		contentId: number,
 		initialContentBlocks: Avo.ContentBlocks.ContentBlocks[],
@@ -154,53 +228,17 @@ export class ContentBlockService {
 				Promise.all(deletePromises),
 			]);
 		} catch (err) {
-			console.error(err);
+			console.error(
+				new CustomError('Failed to update content blocks', err, {
+					contentId,
+					initialContentBlocks,
+					contentBlockConfigs,
+				})
+			);
+
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
-				),
-				false
-			);
-
-			return null;
-		}
-	}
-
-	public static async deleteContentBlock(id: number) {
-		try {
-			return await dataService.mutate({
-				mutation: DELETE_CONTENT_BLOCK,
-				variables: { id },
-				update: ApolloCacheManager.clearContentBlocksCache,
-			});
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				i18n.t(
-					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
-				),
-				false
-			);
-
-			return null;
-		}
-	}
-
-	public static async updateContentBlock(
-		contentBlockConfig: ContentBlockConfig
-	): Promise<FetchResult<any> | null> {
-		try {
-			const contentBlock = parseContentBlockConfig(contentBlockConfig);
-			return await dataService.mutate({
-				mutation: UPDATE_CONTENT_BLOCK,
-				variables: { contentBlock, id: contentBlockConfig.id },
-				update: ApolloCacheManager.clearContentBlocksCache,
-			});
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				i18n.t(
-					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
 				),
 				false
 			);

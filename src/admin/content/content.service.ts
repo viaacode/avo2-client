@@ -72,7 +72,7 @@ export class ContentService {
 			query: GET_CONTENT_PAGES_BY_TITLE,
 			variables: {
 				title,
-				limit,
+				limit: limit || null,
 				orderBy: { title: 'asc' },
 			},
 		};
@@ -377,12 +377,11 @@ export class ContentService {
 			if (id) {
 				// Insert content-blocks
 				if (contentBlockConfigs && contentBlockConfigs.length) {
-					const contentBlocks = parse
-						? await ContentBlockService.insertContentBlocks(id, contentBlockConfigs)
-						: await ContentBlockService.insertContentBlocksWithoutParse(
-								id,
-								contentBlockConfigs
-						  );
+					const contentBlocks = await ContentBlockService.insertContentBlocks(
+						id,
+						contentBlockConfigs,
+						parse
+					);
 
 					if (!contentBlocks) {
 						// return null to prevent triggering success toast
@@ -465,6 +464,7 @@ export class ContentService {
 		return omitByDeep(blockConfigs, key => String(key).endsWith(RichEditorStateKey));
 	}
 
+	// TODO: Make function generic so we can combine this getTitle and the one from collections.
 	/**
 	 * Find name that isn't a duplicate of an existing name of a content page of this user
 	 * eg if these content pages exist:

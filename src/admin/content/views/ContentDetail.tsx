@@ -209,7 +209,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			case 'duplicate':
 				try {
 					if (!contentPage) {
-						ToastService.danger(t('De content pagina kon niet worden gedupliceerd.'));
+						ToastService.danger(
+							t('De content pagina kon niet worden gedupliceerd.'),
+							false
+						);
 						return;
 					}
 
@@ -221,7 +224,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 					if (!duplicateContentPage) {
 						ToastService.danger(
-							t('De gedupliceerde content pagina kon niet worden gevonden.')
+							t('De gedupliceerde content pagina kon niet worden gevonden.'),
+							false
 						);
 						return;
 					}
@@ -231,13 +235,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						history
 					);
 
-					ToastService.success(t('De content pagina is gedupliceerd'));
+					ToastService.success(t('De content pagina is gedupliceerd'), false);
 				} catch (err) {
 					console.error('Failed to duplicate content page', err, {
 						originalContentPage: contentPage,
 					});
 
-					ToastService.danger(t('Het dupliceren van de content pagina is mislukt.'));
+					ToastService.danger(
+						t('Het dupliceren van de content pagina is mislukt.'),
+						false
+					);
 				}
 				break;
 
