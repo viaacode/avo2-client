@@ -90,8 +90,15 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Account instellingen pagina titel'))}</title>
-				<meta name="description" content={t('Account pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/account___account-instellingen-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t('settings/components/account___account-pagina-beschrijving')}
+				/>
 			</MetaTags>
 			<Container mode="vertical">
 				<Container mode="horizontal">

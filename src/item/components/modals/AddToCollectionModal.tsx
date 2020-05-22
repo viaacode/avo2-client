@@ -516,7 +516,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												  )
 												: !createNewCollection && !selectedCollection
 												? t(
-														'Je moet een collectie kiezen om dit item aan toe te voegen'
+														'item/components/modals/add-to-collection-modal___je-moet-een-collectie-kiezen-om-dit-item-aan-toe-te-voegen'
 												  )
 												: ''
 										}

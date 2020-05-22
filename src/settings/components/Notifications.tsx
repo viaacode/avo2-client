@@ -12,10 +12,16 @@ const Notifications: FunctionComponent<NotificationsProps> = () => {
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Notificatie voorkeuren pagina titel'))}</title>
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/notifications___notificatie-voorkeuren-pagina-titel')
+					)}
+				</title>
 				<meta
 					name="description"
-					content={t('Notificatie voorkeuren pagina beschrijving')}
+					content={t(
+						'settings/components/notifications___notificatie-voorkeuren-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<span>TODO notificaties</span>

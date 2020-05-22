@@ -1,8 +1,19 @@
 @import '../../../styles/settings/variables';
 
 .react-joyride__tooltip {
+
 	h4 {
-		font-weight: bold;
+		font-weight: 500;
+		padding: 10px 10px 0;
+	}
+
+	> div {
+		> h4,
+		> div,
+		> button {
+			text-align: left;
+			font-size: 14px !important;
+		}
 	}
 }
 

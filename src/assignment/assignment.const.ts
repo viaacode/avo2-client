@@ -2,8 +2,8 @@ import { DocumentNode } from 'graphql';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { GET_ITEM_BY_EXTERNAL_ID } from '../admin/items/items.gql';
 import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
-import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { ROUTE_PARTS } from '../shared/constants';
 
 export const ITEMS_PER_PAGE = 20;
@@ -21,7 +21,7 @@ export const CONTENT_LABEL_TO_QUERY: {
 		getVariables: (id: string) => ({ id }),
 	},
 	ITEM: {
-		query: GET_ITEM_BY_ID,
+		query: GET_ITEM_BY_EXTERNAL_ID,
 		resultPath: 'app_item_meta[0]',
 		getVariables: (id: string) => ({ id }),
 	},

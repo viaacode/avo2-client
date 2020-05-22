@@ -106,8 +106,18 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 						return match; // Do not modify the translations, since we cannot generate a key
 					}
 
-					newTranslations[formattedKey] = formattedTranslation;
-					return `<Trans i18nKey="${formattedKey}">${formattedTranslation}</Trans>`;
+					const hasKeyAlready = formattedTranslation.includes('___');
+
+					newTranslations[formattedKey] =
+						(hasKeyAlready
+							? getFormattedTranslation((oldTranslations as keyMap)[formattedKey])
+							: formattedTranslation) || '';
+
+					if (hasKeyAlready) {
+						return match;
+					} else {
+						return `<Trans i18nKey="${formattedKey}">${formattedTranslation}</Trans>`;
+					}
 				}
 			);
 
@@ -186,7 +196,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 			);
 
 			if (content !== newContent) {
-				fs.writeFileSync(absoluteFilePath, content);
+				fs.writeFileSync(absoluteFilePath, newContent);
 			}
 		} catch (err) {
 			console.error(`Failed to find translations in file: ${relativeFilePath}`, err);
@@ -196,7 +206,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 }
 
 async function getOnlineTranslations() {
-	const response = await fetch(`${process.env.PROXY_URL}/translations/nl.json`, {
+	const response = await fetch(`https://avo2-proxy-qas.hetarchief.be/translations/nl.json`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',

@@ -58,6 +58,7 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 	isMobileWidth,
+	sanitize,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
@@ -521,9 +522,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		return (
 			<ButtonToolbar>
 				<Button
-					title={isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')}
+					title={
+						isPublic
+							? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
+							: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
+					}
 					ariaLabel={
-						isPublic ? t('Maak deze bundel privé') : t('Maak deze bundel openbaar')
+						isPublic
+							? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
+							: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
 					}
 					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openShareModal')}
@@ -703,7 +710,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<ToolbarItem>{renderActions()}</ToolbarItem>
 									</ToolbarRight>
 								</Toolbar>
-								<p className="c-body-1">{description_long}</p>
+								<p
+									className="c-body-1 c-content"
+									dangerouslySetInnerHTML={{ __html: sanitize(description_long) }}
+								/>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
 										<Avatar
@@ -768,7 +778,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		<>
 			<MetaTags>
 				<title>
-					{GENERATE_SITE_TITLE(get(bundle, 'title', t('Bundel detail titel fallback')))}
+					{GENERATE_SITE_TITLE(
+						get(
+							bundle,
+							'title',
+							t('bundle/views/bundle-detail___bundel-detail-titel-fallback')
+						)
+					)}
 				</title>
 				<meta name="description" content={get(bundle, 'description') || ''} />
 			</MetaTags>

@@ -60,14 +60,14 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 					assetType: 'CONTENT_PAGE_IMAGE',
 					allowMulti: false,
 				} as FileUploadProps,
-				validator: () => [],
+				validator: undefined,
 			}),
 			customTitle: TEXT_FIELD('', {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/project-spotlight___aangepaste-titel-optioneel'
 				),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			}),
 		},
 	},

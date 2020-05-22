@@ -1,3 +1,5 @@
+import { CheckboxProps } from '@viaa/avo2-components';
+
 import {
 	FileUploadProps,
 	PHOTO_TYPES,
@@ -23,6 +25,7 @@ import {
 
 export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
 	title: '',
+	autoplay: false,
 });
 
 export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
@@ -44,11 +47,13 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				}
 			),
 			item: VIDEO_FIELD(undefined, {
-				validator: () => [],
+				validator: undefined,
 			}),
 			src: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen video uploaden (optioneel)'),
-				validator: () => [],
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___eigen-video-uploaden-optioneel'
+				),
+				validator: undefined,
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: VIDEO_TYPES,
@@ -57,8 +62,10 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				} as FileUploadProps,
 			}),
 			poster: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen poster uploaden (optioneel)'),
-				validator: () => [],
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___eigen-poster-uploaden-optioneel'
+				),
+				validator: undefined,
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: PHOTO_TYPES,
@@ -72,6 +79,12 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				editorProps: {
 					options: GET_WIDTH_OPTIONS(),
 				},
+			},
+			autoplay: {
+				editorType: ContentBlockEditor.Checkbox,
+				editorProps: {
+					label: i18n.t('Automatisch afspelen'),
+				} as CheckboxProps,
 			},
 		},
 	},

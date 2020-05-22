@@ -301,6 +301,7 @@ export interface QuoteBlockComponentState {
 export interface MediaPlayerBlockComponentState {
 	title: string;
 	item?: ButtonAction;
+	autoplay: boolean;
 }
 
 export interface MediaPlayerTitleTextButtonBlockComponentState {
@@ -314,6 +315,7 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
 	align: AlignOption;
+	mediaAutoplay: boolean;
 }
 
 export interface MediaGridBlockComponentState {

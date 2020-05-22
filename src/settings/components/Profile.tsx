@@ -5,7 +5,6 @@ import MetaTags from 'react-meta-tags';
 
 import {
 	Alert,
-	Avatar,
 	BlockHeading,
 	Box,
 	Button,
@@ -14,7 +13,6 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	Icon,
 	Select,
 	Spacer,
 	TagInfo,
@@ -34,7 +32,7 @@ import {
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { DataQueryComponent } from '../../shared/components';
+import { DataQueryComponent, FileUpload } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
 import {
@@ -245,11 +243,6 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		selectedOrganizations &&
 		selectedOrganizations.length > 0;
 
-	const handleAvatarOnChange = () => {
-		setAvatar('');
-		ToastService.info(t('settings/components/profile___nog-niet-geimplementeerd'));
-	};
-
 	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (
 		<>
 			<FormGroup
@@ -415,18 +408,14 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												)}
 												labelFor="profilePicture"
 											>
-												<Box>
-													{/* TODO replace with components from component repo */}
-													<Avatar initials="XX" />
-													<Icon name="user" size="large" />
-													<input
-														type="file"
-														placeholder={t(
-															'settings/components/profile___profielfoto-uploaden'
-														)}
-														onChange={handleAvatarOnChange}
-													/>
-												</Box>
+												<FileUpload
+													label={t('Upload een profiel foto')}
+													urls={avatar ? [avatar] : []}
+													allowMulti={false}
+													assetType="PROFILE_AVATAR"
+													ownerId={get(user, 'profile.id')}
+													onChange={urls => setAvatar(urls[0])}
+												/>
 											</FormGroup>
 											<FormGroup
 												label={t('settings/components/profile___bio')}
@@ -492,8 +481,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Profiel instellingen pagina titel'))}</title>
-				<meta name="description" content={t('Profiel instellingen pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/profile___profiel-instellingen-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'settings/components/profile___profiel-instellingen-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<DataQueryComponent
 				query={GET_CLASSIFICATIONS_AND_SUBJECTS}
