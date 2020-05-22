@@ -6,6 +6,7 @@ import { stripHtml } from '../shared/helpers/formatters';
 import i18n from '../shared/translations/i18n';
 
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
+import { CollectionService } from './collection.service';
 import { ContentTypeNumber } from './collection.types';
 
 export const getValidationFeedbackForShortDescription = (
@@ -49,8 +50,12 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De lange beschrijving van deze collectie is te lang.')
-				: i18n.t('De lange beschrijving van deze bundel is te lang.'),
+				? i18n.t(
+						'collection/collection___de-lange-beschrijving-van-deze-collectie-is-te-lang'
+				  )
+				: i18n.t(
+						'collection/collection___de-lange-beschrijving-van-deze-bundel-is-te-lang'
+				  ),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!(collection as any).description_long ||
 			(collection as any).description_long.length <= MAX_LONG_DESCRIPTION_LENGTH,
@@ -218,25 +223,69 @@ export const getValidationErrorsForStartAndEnd = (
 	);
 };
 
-export const getValidationErrorsForPublish = (
+export const getDuplicateTitleOrDescriptionErrors = async (
 	collection: Partial<Avo.Collection.Collection>
-): string[] => {
-	return compact(
-		[...GET_VALIDATION_RULES_FOR_SAVE(), ...VALIDATION_RULES_FOR_PUBLISH].map(rule => {
-			return rule.isValid(collection) ? null : getError(rule, collection);
-		})
+): Promise<string[]> => {
+	// Check if title and description is,'t the same as an existing published collection
+	const duplicates = await CollectionService.getCollectionByTitleOrDescription(
+		collection.title || '',
+		collection.description || '',
+		collection.id as string
 	);
+
+	const errors = [];
+
+	if (duplicates.byTitle) {
+		errors.push(
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t(
+						'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-titel-bestaat-reeds'
+				  )
+				: i18n.t(
+						'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-titel-bestaat-reeds'
+				  )
+		);
+	}
+
+	if (duplicates.byDescription) {
+		errors.push(
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t(
+						'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-beschrijving-bestaat-reeds'
+				  )
+				: i18n.t(
+						'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-beschrijving-bestaat-reeds'
+				  )
+		);
+	}
+	return errors;
 };
 
-export const getValidationErrorForSave = (
+export const getValidationErrorsForPublish = async (
 	collection: Partial<Avo.Collection.Collection>
-): string[] => {
+): Promise<string[]> => {
+	const validationErrors = [
+		...GET_VALIDATION_RULES_FOR_SAVE(),
+		...VALIDATION_RULES_FOR_PUBLISH,
+	].map(rule => {
+		return rule.isValid(collection) ? null : getError(rule, collection);
+	});
+	const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(collection);
+	return compact([...validationErrors, ...duplicateErrors]);
+};
+
+export const getValidationErrorForSave = async (
+	collection: Partial<Avo.Collection.Collection>
+): Promise<string[]> => {
 	// List of validator functions, so we can use the functions separately as well
-	return compact(
-		GET_VALIDATION_RULES_FOR_SAVE().map(rule =>
-			rule.isValid(collection) ? null : getError(rule, collection)
-		)
+	const validationErrors = GET_VALIDATION_RULES_FOR_SAVE().map(rule =>
+		rule.isValid(collection) ? null : getError(rule, collection)
 	);
+
+	const duplicateErrors = collection.is_public
+		? await getDuplicateTitleOrDescriptionErrors(collection)
+		: [];
+	return compact([...validationErrors, ...duplicateErrors]);
 };
 
 function getError<T>(rule: ValidationRule<T>, object: T) {
@@ -274,6 +323,7 @@ export const cleanCollectionBeforeSave = (
 		'profile',
 		'updated_by',
 		'collection_labels',
+		'relations',
 	];
 
 	return omit(collection, propertiesToDelete);

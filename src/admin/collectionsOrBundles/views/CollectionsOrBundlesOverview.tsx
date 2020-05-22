@@ -207,7 +207,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const collectionLabelOptions = [
 		{
 			id: 'NO_LABEL',
-			label: t('Geen label'),
+			label: t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
+			),
 			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
 		},
 		...collectionLabels.map(
@@ -245,7 +247,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'last_updated_by_profile',
-			label: i18n.t('Laatste bewerkt door'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
+			),
 			sortable: true,
 		},
 		{
@@ -526,16 +530,24 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t('Collectie beheer overview pagina titel')
-								: t('Bundel beheer overview pagina titel')
+								? t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-titel'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta
 						name="description"
 						content={
 							isCollection
-								? t('Collectie beheer overview pagina beschrijving')
-								: t('Bundel beheer overview pagina beschrijving')
+								? t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-beschrijving'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-beschrijving'
+								  )
 						}
 					/>
 				</MetaTags>

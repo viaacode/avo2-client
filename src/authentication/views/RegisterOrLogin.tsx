@@ -35,10 +35,18 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Registratie of login pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'authentication/views/register-or-login___registratie-of-login-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Registratie of login pagina beschrijving')}
+						content={t(
+							'authentication/views/register-or-login___registratie-of-login-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Modal className="c-register-login-view__modal" isOpen size="medium">

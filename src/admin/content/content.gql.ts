@@ -87,6 +87,39 @@ export const GET_PROJECT_CONTENT_PAGES_BY_TITLE = gql`
 	}
 `;
 
+export const GET_CONTENT_PAGE_BY_PATH = gql`
+	query getContentPageByPath($path: String!) {
+		app_content(where: { path: { _eq: $path } }) {
+			thumbnail_path
+			title
+			content_type
+			content_width
+			created_at
+			depublish_at
+			description
+			id
+			is_protected
+			is_public
+			publish_at
+			path
+			contentBlockssBycontentId(order_by: { position: asc }) {
+				content_block_type
+				content_id
+				created_at
+				id
+				position
+				updated_at
+				variables
+				enum_content_block_type {
+					description
+					value
+				}
+			}
+			user_group_ids
+		}
+	}
+`;
+
 export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 	query getContent(
 		$where: app_content_bool_exp

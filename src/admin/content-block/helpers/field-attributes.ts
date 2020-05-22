@@ -58,22 +58,22 @@ export const generateFieldAttributes = (
 				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
 			};
 		case ContentBlockEditor.MultiRange:
-			const num = value;
 			return {
 				onChange: (value: any) => {
 					onChange(isArray(value) ? value[0] || 0 : value);
 				},
-				values: [num || 0], // TODO default to min value of input field instead of 0
+				values: [value || 0], // TODO default to min value of input field instead of 0
 			};
 		case ContentBlockEditor.Checkbox:
 			return {
 				onChange: (value: any) => onChange(value),
 				checked: value,
 			};
-		case ContentBlockEditor.TextArea:
 		case ContentBlockEditor.UserGroupSelect:
 			return {
-				onChange: (value: any) => onChange(value),
+				onChange: (value: any) => {
+					onChange(value);
+				},
 				values: value,
 			};
 		default:

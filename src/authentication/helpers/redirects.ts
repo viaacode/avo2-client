@@ -74,6 +74,14 @@ export function redirectToServerLogoutPage(location: Location, routeAfterLogout:
 	})}`;
 }
 
+export function logoutAndRedirectToLogin() {
+	// Url to return to after logout is completed
+	const returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
+	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
+		returnToUrl,
+	})}`;
+}
+
 /**
  * Redirect to server link accounts route
  * @param location

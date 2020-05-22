@@ -3,6 +3,7 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, isString, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { CollectionService } from '../collection/collection.service';
@@ -18,6 +19,7 @@ import i18n from '../shared/translations/i18n';
 import { CONTENT_LABEL_TO_QUERY, ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
+	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
@@ -207,6 +209,45 @@ export class AssignmentService {
 		}
 
 		return null;
+	}
+
+	public static async fetchAssignmentByContentIdAndType(
+		contentId: string,
+		contentType: AssignmentContentLabel
+	): Promise<Partial<Avo.Assignment.Assignment>[]> {
+		try {
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+				query: GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
+				variables: { contentId, contentType },
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignments: Avo.Assignment.Assignment[] | undefined = get(
+				response,
+				'data.app_assignments'
+			);
+
+			if (!assignments) {
+				throw new CustomError('Response does not contain any assignments', null, {
+					response,
+				});
+			}
+
+			return assignments;
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get assignment by content id and content type from database',
+				err,
+				{
+					contentId,
+					contentType,
+					query: 'GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE',
+				}
+			);
+		}
 	}
 
 	/**

@@ -1,3 +1,10 @@
+import { CheckboxProps } from '@viaa/avo2-components';
+
+import {
+	FileUploadProps,
+	PHOTO_TYPES,
+	VIDEO_TYPES,
+} from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
@@ -13,12 +20,14 @@ import {
 	ALIGN_FIELD,
 	BLOCK_FIELD_DEFAULTS,
 	BLOCK_STATE_DEFAULTS,
+	FILE_FIELD,
 	TEXT_FIELD,
 	VIDEO_FIELD,
 } from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
 	mediaTitle: '',
+	mediaAutoplay: false,
 	headingTitle: '',
 	headingType: 'h2',
 	align: 'left',
@@ -54,6 +63,32 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				}
 			),
 			mediaItem: VIDEO_FIELD(),
+			mediaSrc: FILE_FIELD(undefined, {
+				label: i18n.t('Eigen video uploaden (optioneel)'),
+				validator: undefined,
+				editorProps: {
+					allowMulti: false,
+					allowedTypes: VIDEO_TYPES,
+					assetType: 'CONTENT_PAGE_IMAGE',
+					ownerId: '',
+				} as FileUploadProps,
+			}),
+			mediaPoster: FILE_FIELD(undefined, {
+				label: i18n.t('Eigen poster uploaden (optioneel)'),
+				validator: undefined,
+				editorProps: {
+					allowMulti: false,
+					allowedTypes: PHOTO_TYPES,
+					assetType: 'CONTENT_PAGE_IMAGE',
+					ownerId: '',
+				} as FileUploadProps,
+			}),
+			mediaAutoplay: {
+				editorType: ContentBlockEditor.Checkbox,
+				editorProps: {
+					label: i18n.t('Automatisch afspelen'),
+				} as CheckboxProps,
+			},
 			headingTitle: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
 				{
