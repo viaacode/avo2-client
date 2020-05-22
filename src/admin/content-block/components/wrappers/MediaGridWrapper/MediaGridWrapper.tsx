@@ -6,6 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentTypeNumber } from '../../../../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { CustomError, formatDate, navigateToContentType } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
@@ -97,6 +98,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		const isItem =
 			get(itemOrCollection, 'type.label') === 'video' ||
 			get(itemOrCollection, 'type.label') === 'audio';
+		const isCollection = get(itemOrCollection, 'type.id') === ContentTypeNumber.collection;
 		const itemDuration = get(itemOrCollection, 'duration', 0);
 		const itemLabel = get(itemOrCollection, 'type.label', 'item');
 		const collectionItems = get(
@@ -104,7 +106,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			'collection_fragments_aggregate.aggregate.count',
 			0
 		); // TODO add fragment count to elasticsearch index
-		const viewCount = get(itemOrCollection, 'view_counts_aggregate.aggregate.count', 0);
+		const viewCount = get(itemOrCollection, 'view_counts_aggregate.aggregate.sum.count', 0);
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
@@ -117,7 +119,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			buttonLabel: element.buttonLabel,
 			buttonType: element.buttonType,
 			buttonIcon: element.buttonIcon,
-			buttonAction: element.buttonAction || element.mediaItem, // Default link can be overridden by the user
+			buttonAction: element.buttonAction || // Default link can be overridden by the user
+				element.mediaItem || {
+					type: isItem ? 'ITEM' : isCollection ? 'COLLECTION' : 'BUNDLE',
+					value: itemOrCollection.external_id,
+					target: get(searchQuery, 'target') || '_self',
+				},
 			title: itemOrCollection.title || '',
 			thumbnail: {
 				label: itemLabel,

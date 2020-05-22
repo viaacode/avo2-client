@@ -47,7 +47,9 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 				),
 			},
 			buttons: {
-				label: i18n.t('Knop'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/rich-text-two-columns___knop'
+				),
 				fields: {
 					type: {
 						label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
@@ -83,8 +85,12 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 				min: 0,
 				max: 10,
 				repeat: true,
-				repeatAddButtonLabel: i18n.t('Voeg knop toe'),
-				repeatDeleteButtonLabel: i18n.t('Verwijder knop'),
+				repeatAddButtonLabel: i18n.t(
+					'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
+				),
+				repeatDeleteButtonLabel: i18n.t(
+					'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
+				),
 			},
 		},
 	},

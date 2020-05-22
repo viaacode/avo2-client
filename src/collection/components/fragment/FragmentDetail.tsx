@@ -10,6 +10,8 @@ import { ItemVideoDescription } from '../../../item/components';
 import { buildLink } from '../../../shared/helpers';
 import { getFragmentProperty } from '../../helpers';
 
+import './FragmentDetail.scss';
+
 interface FragmentDetailProps extends DefaultSecureRouteProps {
 	collectionFragment: Avo.Collection.Fragment;
 	showDescription: boolean;
@@ -83,6 +85,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 			title={collectionFragment.custom_title || ''}
 			headingType="h3"
 			align="center"
+			className="c-fragment-detail__intro-block"
 		/>
 	);
 };

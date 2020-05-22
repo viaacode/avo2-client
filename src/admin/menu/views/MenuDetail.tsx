@@ -329,8 +329,18 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(menuId, t('Menu beheer detail pagina titel'))}</title>
-				<meta name="description" content={t('Menu beheer detail pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						menuId,
+						t('admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}

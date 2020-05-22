@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { getLoginStateAction } from '../../authentication/store/actions';
@@ -21,7 +22,6 @@ import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
-import { GET_EXTERNAL_ID_BY_MEDIAMOSA_ID } from '../../item/item.gql';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
@@ -65,16 +65,10 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				const avo1Id = (location.pathname.split('/').pop() || '').trim();
 				if (avo1Id) {
 					// Check if id matches an item mediamosa id
-					const itemResponse = await dataService.query({
-						query: GET_EXTERNAL_ID_BY_MEDIAMOSA_ID,
-						variables: {
-							mediamosaId: avo1Id,
-						},
-					});
-					const itemExternalId: string | undefined = get(
-						itemResponse,
-						'data.migrate_reference_ids[0].external_id'
+					const itemExternalId = await ItemsService.fetchItemExternalIdByMediamosaId(
+						avo1Id
 					);
+
 					if (itemExternalId) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
 						history.push(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId }));

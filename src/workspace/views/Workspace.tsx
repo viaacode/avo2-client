@@ -332,8 +332,15 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Mijn werkruimte pagina titel'))}</title>
-				<meta name="description" content={t('Mijn werkruimte pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('workspace/views/workspace___mijn-werkruimte-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t('workspace/views/workspace___mijn-werkruimte-pagina-beschrijving')}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}

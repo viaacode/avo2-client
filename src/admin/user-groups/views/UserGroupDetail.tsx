@@ -328,7 +328,9 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(userGroup, 'label'),
-						t('Gebruikersgroep beheer detail pagina titel')
+						t(
+							'admin/user-groups/views/user-group-detail___gebruikersgroep-beheer-detail-pagina-titel'
+						)
 					)}
 				</title>
 				<meta name="description" content={get(userGroup, 'description') || ''} />

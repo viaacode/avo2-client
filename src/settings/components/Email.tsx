@@ -90,7 +90,11 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 			});
 		} catch (err) {
 			console.error(new CustomError('Failed to retrieve newsletter preferences', err));
-			ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden opgevraagd.'));
+			ToastService.danger(
+				t(
+					'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-opgevraagd'
+				)
+			);
 		}
 		setIsLoading(false);
 	}, [user.mail, t]);
@@ -127,11 +131,17 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 					...initialNewsletterPreferences,
 					...newsletterPreferences,
 				});
-				ToastService.success(t('Je voorkeuren zijn opgeslagen'));
+				ToastService.success(
+					t('settings/components/email___je-voorkeuren-zijn-opgeslagen')
+				);
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to update newsletter preferences', err));
-			ToastService.danger(t('De nieuwsbriefvoorkeuren konden niet worden geüpdatet.'));
+			ToastService.danger(
+				t(
+					'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-geupdatet'
+				)
+			);
 		}
 
 		setIsLoading(false);
@@ -141,10 +151,16 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 		<Container mode="vertical">
 			<Container mode="horizontal">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Nieuwsbrief voorkeuren pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t('settings/components/email___nieuwsbrief-voorkeuren-pagina-titel')
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Nieuwsbrief voorkeuren pagina beschrijving')}
+						content={t(
+							'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<BlockHeading type="h3">E-mail nieuwsbrief voorkeuren</BlockHeading>

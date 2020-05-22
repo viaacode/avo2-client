@@ -429,7 +429,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<title>
 						{GENERATE_SITE_TITLE(
 							get(contentPage, 'title'),
-							t('Content beheer detail pagina titel')
+							t(
+								'admin/content/views/content-detail___content-beheer-detail-pagina-titel'
+							)
 						)}
 					</title>
 					<meta name="description" content={get(contentPage, 'description') || ''} />

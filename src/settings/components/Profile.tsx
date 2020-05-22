@@ -481,8 +481,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Profiel instellingen pagina titel'))}</title>
-				<meta name="description" content={t('Profiel instellingen pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/profile___profiel-instellingen-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'settings/components/profile___profiel-instellingen-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<DataQueryComponent
 				query={GET_CLASSIFICATIONS_AND_SUBJECTS}

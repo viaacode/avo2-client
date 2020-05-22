@@ -6,7 +6,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
+import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
+import { ToastService } from '../shared/services';
+import { NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
@@ -17,13 +20,22 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [userPermissions, setUserPermissions] = useState<PermissionName[] | null>(null);
+	const [navigationItems, setNavigationItems] = useState<NavigationItemInfo[] | null>(null);
 
 	useEffect(() => {
 		if (!user) {
 			return;
 		}
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ADMIN_DASHBOARD)) {
-			setLoadingInfo({ state: 'loaded' });
+			const tempUserPermissions = PermissionService.getUserPermissions(user);
+			setUserPermissions(tempUserPermissions);
+			GET_NAV_ITEMS(tempUserPermissions)
+				.then(setNavigationItems)
+				.catch(err => {
+					console.error(new CustomError('Failed to get nav items', err));
+					ToastService.danger('Het ophalen van de navigatie items is mislukt');
+				});
 		} else {
 			setLoadingInfo({
 				state: 'error',
@@ -36,8 +48,16 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 		}
 	}, [user, setLoadingInfo, t]);
 
+	useEffect(() => {
+		if (userPermissions && navigationItems) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [userPermissions, navigationItems, setLoadingInfo]);
+
 	const renderAdminPage = () => {
-		const userPermissions = PermissionService.getUserPermissions(user);
+		if (!navigationItems || !userPermissions) {
+			return null;
+		}
 		return (
 			<div className="m-resizable-panels">
 				<ResizablePanels
@@ -48,7 +68,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				>
 					<Sidebar
 						headerLink={ADMIN_PATH.DASHBOARD}
-						navItems={GET_NAV_ITEMS(userPermissions)}
+						navItems={navigationItems}
 						className="o-app--admin__sidebar"
 					/>
 					<Flex

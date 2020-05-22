@@ -685,6 +685,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			if (isCollection) {
 				// We're adding an item to the collection
 				const item = await ItemsService.fetchItemByExternalId(id);
+				if (!item) {
+					throw new CustomError('Response does not contain an item', null, {
+						item,
+					});
+				}
 				const collectionId = get(collectionState.currentCollection, 'id');
 				if (!collectionId) {
 					throw new CustomError('Collection id could not be found', null, {
@@ -1141,8 +1146,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							collectionState.currentCollection,
 							'title',
 							isCollection
-								? t('Collectie bewerken titel fallback')
-								: t('Bundel bewerken titel fallback')
+								? t(
+										'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback'
+								  )
+								: t(
+										'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback'
+								  )
 						)
 					)}
 				</title>
