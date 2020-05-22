@@ -28,8 +28,6 @@ export const WYSIWYG2_OPTIONS_AUTHOR = [
 	'link',
 	'separator',
 	'remove-styles',
-	'separator',
-	'code',
 ];
 
 // Admin
@@ -46,8 +44,6 @@ export const WYSIWYG2_OPTIONS_FULL = [
 	'table',
 	'separator',
 	'remove-styles',
-	'separator',
-	'code',
 ];
 
 export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
@@ -76,6 +72,4 @@ export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
 	'table',
 	'separator',
 	'remove-styles',
-	'separator',
-	'code',
 ];
