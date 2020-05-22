@@ -155,8 +155,12 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					type="secondary"
 					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
 					icon="arrow-left"
-					title={t('Ga terug naar de stamboek pagina')}
-					ariaLabel={t('Ga terug naar de stamboek pagina')}
+					title={t(
+						'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
+					)}
+					ariaLabel={t(
+						'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
+					)}
 				/>
 				<BlockHeading type="h2">
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
@@ -281,10 +285,18 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Manuele account aanvraag pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('manuele account aanvraag pagina beschrijving')}
+						content={t(
+							'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>

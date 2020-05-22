@@ -30,14 +30,14 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 			title: {
 				label: i18n.t('admin/content-block/helpers/generators/image___bijschift-titel'),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			},
 			text: {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/image___bijschrift-beschrijving'
 				),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			},
 			imageSource: FILE_FIELD(
 				i18n.t(

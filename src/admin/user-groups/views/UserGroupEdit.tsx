@@ -533,8 +533,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					{GENERATE_SITE_TITLE(
 						get(userGroup, 'label'),
 						isCreatePage
-							? t('Gebruikersgroep beheer aanmaak pagina titel')
-							: t('Gebruikersgroep beheer bewerk pagina titel')
+							? t(
+									'admin/user-groups/views/user-group-edit___gebruikersgroep-beheer-aanmaak-pagina-titel'
+							  )
+							: t(
+									'admin/user-groups/views/user-group-edit___gebruikersgroep-beheer-bewerk-pagina-titel'
+							  )
 					)}
 				</title>
 				<meta name="description" content={get(userGroup, 'description') || ''} />

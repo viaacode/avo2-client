@@ -21,11 +21,10 @@ import {
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { dataService, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
@@ -141,7 +140,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setConfigToDelete(configIndex);
 	};
 
-	const getPathOrDefault = () => contentForm.path || `/${kebabCase(contentForm.title)}`;
+	const getPathOrDefault = (): string => contentForm.path || `/${kebabCase(contentForm.title)}`;
 
 	const handleSave = async () => {
 		try {
@@ -329,11 +328,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		// check if the path is unique
 		const path = getPathOrDefault();
-		const response = await dataService.query({
-			query: GET_CONTENT_PAGE_BY_PATH,
-			variables: { path },
-		});
-		const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
+
+		const page: Avo.Content.Content | null = await ContentService.fetchContentPageByPath(path);
 		if (page && String(page.id) !== id) {
 			errors.path = t(
 				'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
@@ -470,7 +466,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<div id="pasteElement" onPaste={onPasteContentBlock}>
+		<div onPaste={onPasteContentBlock}>
 			<AdminLayout showBackButton pageTitle={pageTitle}>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
@@ -499,8 +495,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 							{GENERATE_SITE_TITLE(
 								get(contentForm, 'title'),
 								pageType === PageType.Create
-									? t('Content beheer aanmaak pagina titel')
-									: t('Content beheer bewerk pagina titel')
+									? t(
+											'admin/content/views/content-edit___content-beheer-aanmaak-pagina-titel'
+									  )
+									: t(
+											'admin/content/views/content-edit___content-beheer-bewerk-pagina-titel'
+									  )
 							)}
 						</title>
 						<meta name="description" content={get(contentForm, 'description')} />

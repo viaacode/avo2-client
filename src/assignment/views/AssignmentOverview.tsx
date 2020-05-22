@@ -137,7 +137,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van je opdrachten is mislukt'),
+				message: t(
+					'assignment/views/assignment-overview___het-ophalen-van-je-opdrachten-is-mislukt'
+				),
 			});
 		}
 	}, [
@@ -575,7 +577,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								</ButtonGroup>
 							)}
 							<CheckboxDropdownModal
-								label={t('Vakken of projecten')}
+								label={t(
+									'assignment/views/assignment-overview___vakken-of-projecten'
+								)}
 								id="labels"
 								options={getLabelOptions()}
 								onChange={setSelectedAssignmentLabelsIds}

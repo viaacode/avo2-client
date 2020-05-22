@@ -57,7 +57,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 				),
 			});
 		}
-	}, [setAssignments]);
+	}, [setAssignments, collectionId, t]);
 
 	useEffect(() => {
 		if (assignments) {

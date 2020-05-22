@@ -791,16 +791,24 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					{GENERATE_SITE_TITLE(
 						get(interactiveTourState.currentInteractiveTour, 'name'),
 						isCreatePage
-							? t('Interactieve rondleiding beheer aanmaak pagina titel')
-							: t('Interactieve rondleiding beheer bewerk pagina titel')
+							? t(
+									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel'
+							  )
+							: t(
+									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel'
+							  )
 					)}
 				</title>
 				<meta
 					name="description"
 					content={
 						isCreatePage
-							? t('Interactieve rondleiding beheer aanmaak pagina beschrijving')
-							: t('Interactieve rondleiding beheer bewerk pagina beschrijving')
+							? t(
+									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-beschrijving'
+							  )
+							: t(
+									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-beschrijving'
+							  )
 					}
 				/>
 			</MetaTags>

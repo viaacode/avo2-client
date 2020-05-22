@@ -377,8 +377,12 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						{GENERATE_SITE_TITLE(
 							get(menuForm, 'label'),
 							menuItemId
-								? t('Menu item beheer bewerk pagina titel')
-								: t('Menu item beheer aanmaak pagina titel')
+								? t(
+										'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel'
+								  )
+								: t(
+										'admin/menu/views/menu-edit___menu-item-beheer-aanmaak-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta name="description" content={get(menuForm, 'description') || ''} />

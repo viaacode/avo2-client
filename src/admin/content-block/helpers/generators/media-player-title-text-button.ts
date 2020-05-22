@@ -65,7 +65,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 			mediaItem: VIDEO_FIELD(),
 			mediaSrc: FILE_FIELD(undefined, {
 				label: i18n.t('Eigen video uploaden (optioneel)'),
-				validator: () => [],
+				validator: undefined,
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: VIDEO_TYPES,
@@ -75,7 +75,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 			}),
 			mediaPoster: FILE_FIELD(undefined, {
 				label: i18n.t('Eigen poster uploaden (optioneel)'),
-				validator: () => [],
+				validator: undefined,
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: PHOTO_TYPES,

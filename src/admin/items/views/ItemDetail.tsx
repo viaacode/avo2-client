@@ -70,16 +70,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const fetchItemById = useCallback(async () => {
 		try {
-			setItem(await ItemsService.fetchItem(match.params.id));
+			setItem(await ItemsService.fetchItemByUuid(match.params.id));
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to get item by id', err, {
-					query: 'GET_ITEM_BY_ID',
-					variables: {
-						id: match.params.id,
-					},
-				})
-			);
+			console.error(new CustomError('Failed to get item by uuid', err));
 			setLoadingInfo({
 				state: 'error',
 				message: t(
@@ -321,7 +314,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderSimpleDetailRows(item, [
 								[
-									'view_counts_aggregate.aggregate.count',
+									'view_counts_aggregate.aggregate.sum.count',
 									t('admin/items/views/item-detail___views'),
 								],
 							])}
@@ -477,7 +470,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		<>
 			<MetaTags>
 				<title>
-					{GENERATE_SITE_TITLE(get(item, 'title'), t('Item beheer detail pagina titel'))}
+					{GENERATE_SITE_TITLE(
+						get(item, 'title'),
+						t('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
+					)}
 				</title>
 				<meta name="description" content={get(item, 'description') || ''} />
 			</MetaTags>
