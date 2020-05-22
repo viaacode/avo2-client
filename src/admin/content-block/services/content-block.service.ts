@@ -72,6 +72,37 @@ export class ContentBlockService {
 		}
 	}
 
+	public static async insertContentBlocksWithoutParse(
+		contentId: number,
+		contentBlocks: ContentBlockConfig[]
+	): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> {
+		try {
+			const response = await dataService.mutate({
+				mutation: INSERT_CONTENT_BLOCKS,
+				variables: {
+					contentBlocks: contentBlocks.map(cb => {
+						delete (cb as any).__typename;
+
+						return { ...cb, content_id: contentId };
+					}),
+				},
+				update: ApolloCacheManager.clearContentBlocksCache,
+			});
+
+			return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				i18n.t(
+					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
+				),
+				false
+			);
+
+			return null;
+		}
+	}
+
 	public static async updateContentBlocks(
 		contentId: number,
 		initialContentBlocks: Avo.ContentBlocks.ContentBlocks[],

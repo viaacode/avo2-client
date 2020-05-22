@@ -354,7 +354,8 @@ export class ContentService {
 
 	public static async insertContentPage(
 		contentPage: Partial<DbContent>,
-		contentBlockConfigs: ContentBlockConfig[]
+		contentBlockConfigs: ContentBlockConfig[],
+		parse?: boolean
 	): Promise<Partial<Avo.Content.Content> | null> {
 		try {
 			const response = await dataService.mutate({
@@ -362,8 +363,6 @@ export class ContentService {
 				variables: { contentItem: this.cleanupBeforeInsert(contentPage) },
 				update: ApolloCacheManager.clearContentCache,
 			});
-
-			console.log(contentBlockConfigs);
 
 			if (response.errors) {
 				throw new CustomError('Response contains errors', null, { response });
@@ -378,10 +377,12 @@ export class ContentService {
 			if (id) {
 				// Insert content-blocks
 				if (contentBlockConfigs && contentBlockConfigs.length) {
-					const contentBlocks = await ContentBlockService.insertContentBlocks(
-						id,
-						contentBlockConfigs
-					);
+					const contentBlocks = parse
+						? await ContentBlockService.insertContentBlocks(id, contentBlockConfigs)
+						: await ContentBlockService.insertContentBlocksWithoutParse(
+								id,
+								contentBlockConfigs
+						  );
 
 					if (!contentBlocks) {
 						// return null to prevent triggering success toast
@@ -556,7 +557,6 @@ export class ContentService {
 				contentPage.id
 			);
 
-			console.log('CB', contentBlocks);
 			const contentBlocksVariables: any[] = (contentBlocks || []).map(contentBlock => {
 				const variables: any = { ...contentBlock };
 
@@ -564,8 +564,6 @@ export class ContentService {
 
 				return variables;
 			});
-
-			console.log(contentBlocksVariables);
 
 			// insert duplicated collection
 			const duplicatedContentPage: Partial<
