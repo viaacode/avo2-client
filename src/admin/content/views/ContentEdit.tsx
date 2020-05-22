@@ -440,19 +440,28 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	};
 
 	const onPasteContentBlock = (e: any) => {
-		if (e.clipboardData && e.clipboardData.getData) {
-			const pastedText = e.clipboardData.getData('text/plain');
+		try {
+			if (e.clipboardData && e.clipboardData.getData) {
+				const pastedText = e.clipboardData.getData('text/plain');
 
-			const newConfig = JSON.parse(pastedText).block;
+				const newConfig = JSON.parse(pastedText).block;
 
-			delete newConfig.id;
+				delete newConfig.id;
 
-			if (pastedText.startsWith('{"block":')) {
-				dispatch({
-					type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
-					payload: newConfig,
-				});
+				if (pastedText.startsWith('{"block":')) {
+					dispatch({
+						type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
+						payload: newConfig,
+					});
+
+					ToastService.success(
+						t('Uw geplakte content blok is toegevoegd aan de content pagina.')
+					);
+				}
 			}
+		} catch (err) {
+			console.error(new CustomError('Failed to paste content block', err));
+			ToastService.danger(t('Het plakken van het content blok is mislukt.'));
 		}
 	};
 
