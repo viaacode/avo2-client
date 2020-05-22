@@ -33,6 +33,7 @@ import {
 	navigateToAbsoluteOrRelativeUrl,
 	sanitize,
 	sanitizePresets,
+	formatDate,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
@@ -331,15 +332,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 										],
 									])}
 									{renderDetailRow(
-										<p>{contentPage.published_at || 'Nee'}</p>,
+										<p>{formatDate(contentPage.published_at) || 'Nee'}</p>,
 										t('admin/content/views/content-detail___gepubliceerd')
 									)}
 									{renderDetailRow(
-										<p>{contentPage.publish_at || 'N.v.t'}</p>,
+										<p>{formatDate(contentPage.publish_at) || 'N.v.t'}</p>,
 										t('Wordt gepubliceerd op')
 									)}
 									{renderDetailRow(
-										<p>{contentPage.depublish_at || 'N.v.t.'}</p>,
+										<p>{formatDate(contentPage.depublish_at) || 'N.v.t.'}</p>,
 										t('Wordt gedepubliceerd op')
 									)}
 									{renderDetailRow(
