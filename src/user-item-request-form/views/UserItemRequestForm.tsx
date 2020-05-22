@@ -247,10 +247,18 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Gebruikersaanvraag pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Gebruikersaanvraag pagina beschrijving')}
+						content={t(
+							'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>

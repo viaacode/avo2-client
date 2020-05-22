@@ -35,8 +35,12 @@ export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					label: i18n.t('admin/content-block/helpers/generators/klaar___titel'),
 					editorType: ContentBlockEditor.TextInput,
 					repeat: true,
-					repeatAddButtonLabel: i18n.t('Voeg titel toe'),
-					repeatDeleteButtonLabel: i18n.t('Verwijder titel'),
+					repeatAddButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/klaar___voeg-titel-toe'
+					),
+					repeatDeleteButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/klaar___verwijder-titel'
+					),
 				}
 			),
 			date: {
@@ -46,7 +50,11 @@ export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					const errorArray: string[] = [];
 
 					if (isNil(value) || isEmpty(value)) {
-						errorArray.push(i18n.t('Datum is verplicht'));
+						errorArray.push(
+							i18n.t(
+								'admin/content-block/helpers/generators/klaar___datum-is-verplicht'
+							)
+						);
 					}
 
 					return errorArray;

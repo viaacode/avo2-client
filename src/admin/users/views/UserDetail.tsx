@@ -322,12 +322,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 							storedProfile,
 							'user.last_name'
 						)}`,
-						t('Item detail pagina titel')
+						t('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t('Gebruikersbeheer detail pagina beschrijving')}
+					content={t(
+						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent

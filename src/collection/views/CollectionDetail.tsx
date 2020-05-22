@@ -875,7 +875,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(collection, 'title', t('Collectie detail titel fallback'))
+						get(
+							collection,
+							'title',
+							t(
+								'collection/views/collection-detail___collectie-detail-titel-fallback'
+							)
+						)
 					)}
 				</title>
 				<meta name="description" content={get(collection, 'description') || ''} />

@@ -192,6 +192,6 @@ export const CONTENT_TYPE_AND_LABELS_INPUT = (
 ): ContentBlockField => ({
 	label: i18n.t('admin/content-block/helpers/generators/defaults___type-en-labels'),
 	editorType: ContentBlockEditor.ContentTypeAndLabelsPicker,
-	validator: () => [],
+	validator: undefined,
 	...propOverride,
 });

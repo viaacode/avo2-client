@@ -237,11 +237,17 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
-						{GENERATE_SITE_TITLE(t('Permissiegroep beheer overzicht pagina titel'))}
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/permission-groups/views/permission-group-overview___permissiegroep-beheer-overzicht-pagina-titel'
+							)
+						)}
 					</title>
 					<meta
 						name="description"
-						content={t('Permissiegroep beheer overzicht pagina beschrijving')}
+						content={t(
+							'admin/permission-groups/views/permission-group-overview___permissiegroep-beheer-overzicht-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

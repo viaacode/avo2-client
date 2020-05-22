@@ -18,10 +18,10 @@ import { ContentPageService } from '../../../shared/services/content-page-servic
 import { NotificationService } from '../../../shared/services/notification-service';
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
+import { isProfileComplete } from '../../helpers/get-profile-info';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { getLoginStateAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
-import { isProfileComplete } from '../../helpers/get-profile-info';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
@@ -160,8 +160,19 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('voorwaarden pagina titel'))}</title>
-				<meta name="description" content={t('voorwaarden pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t(
+							'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel'
+						)
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}

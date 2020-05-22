@@ -238,6 +238,13 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			depublish_at
 			created_at
 			thumbnail_path
+			view_counts_aggregate {
+				aggregate {
+					sum {
+						count
+					}
+				}
+			}
 		}
 	}
 `;

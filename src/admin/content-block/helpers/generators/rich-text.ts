@@ -1,3 +1,4 @@
+import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -25,7 +26,11 @@ export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 		},
 		state: INITIAL_RICH_TEXT_COMPONENTS_STATE(),
 		fields: {
-			content: TEXT_FIELD(),
+			content: TEXT_FIELD(i18n.t('Tekst is verplicht!'), {
+				editorProps: {
+					controls: [...WYSIWYG2_OPTIONS_FULL, 'media'],
+				},
+			}),
 		},
 	},
 	block: {
