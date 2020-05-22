@@ -162,6 +162,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				contentBlockConfigs
 			);
 
+			console.log(blockConfigs);
+
 			// Run validators on to check untouched inputs
 			blockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;

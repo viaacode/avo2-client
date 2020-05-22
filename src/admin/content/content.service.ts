@@ -1,4 +1,5 @@
 import { get, omit } from 'lodash-es';
+import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -65,7 +66,7 @@ export class ContentService {
 
 	public static async getContentItemsByTitle(
 		title: string,
-		limit: number
+		limit?: number
 	): Promise<Avo.Content.Content[] | null> {
 		const query = {
 			query: GET_CONTENT_PAGES_BY_TITLE,
@@ -362,6 +363,8 @@ export class ContentService {
 				update: ApolloCacheManager.clearContentCache,
 			});
 
+			console.log(contentBlockConfigs);
+
 			if (response.errors) {
 				throw new CustomError('Response contains errors', null, { response });
 			}
@@ -463,7 +466,7 @@ export class ContentService {
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a content page of this user
-	 * eg if these collections exist:
+	 * eg if these content pages exist:
 	 * copy 1: test
 	 * copy 2: test
 	 * copy 4: test
@@ -472,7 +475,6 @@ export class ContentService {
 	 * @param copyPrefix
 	 * @param copyRegex
 	 * @param existingTitle
-	 * @param user
 	 *
 	 * @returns Potential title for duplicate content page.
 	 */
@@ -481,12 +483,12 @@ export class ContentService {
 		copyRegex: RegExp,
 		existingTitle: string
 	): Promise<string> => {
-		const contentPages = await ContentService.getContentItemsByTitle(existingTitle, 50);
+		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
+		const contentPages = await ContentService.getContentItemsByTitle(`%${titleWithoutCopy}`);
 		const titles = (contentPages || []).map(c => c.title);
 
 		let index = 0;
 		let candidateTitle: string;
-		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
 
 		do {
 			index += 1;
@@ -500,7 +502,6 @@ export class ContentService {
 	 * Add duplicate of content page
 	 *
 	 * @param contentPage
-	 * @param user
 	 * @param copyPrefix
 	 * @param copyRegex
 	 *
@@ -520,9 +521,12 @@ export class ContentService {
 			contentToInsert.depublish_at = null;
 			contentToInsert.publish_at = null;
 			contentToInsert.path = null;
+			contentToInsert.created_at = moment().toISOString();
 
 			// remove id from duplicate
 			delete contentToInsert.id;
+			delete contentToInsert.contentBlockssBycontentId;
+			delete (contentToInsert as any).content_content_labels;
 
 			try {
 				contentToInsert.title = await this.getCopyTitleForContentPage(
@@ -548,10 +552,28 @@ export class ContentService {
 				}`;
 			}
 
+			const contentBlocks = await ContentBlockService.fetchContentBlocksByContentId(
+				contentPage.id
+			);
+
+			console.log('CB', contentBlocks);
+			const contentBlocksVariables: any[] = (contentBlocks || []).map(contentBlock => {
+				const variables: any = { ...contentBlock };
+
+				delete variables.id;
+
+				return variables;
+			});
+
+			console.log(contentBlocksVariables);
+
 			// insert duplicated collection
 			const duplicatedContentPage: Partial<
 				Avo.Content.Content
-			> | null = await ContentService.insertContentPage(contentToInsert, []);
+			> | null = await ContentService.insertContentPage(
+				contentToInsert,
+				contentBlocksVariables
+			);
 
 			return duplicatedContentPage as Avo.Content.Content;
 		} catch (err) {
