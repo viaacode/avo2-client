@@ -1,4 +1,4 @@
-import { get, has, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isNil, kebabCase, without, isFunction } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -172,23 +172,25 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					keysToValidate.forEach(key => {
 						const validator = fields[key].validator;
 
-						if (Array.isArray(state) && state.length > 0) {
-							state.forEach((singleState, stateIndex) => {
+						if (validator && isFunction(validator)) {
+							if (Array.isArray(state) && state.length > 0) {
+								state.forEach((singleState, stateIndex) => {
+									newErrors = validateContentBlockField(
+										key,
+										validator,
+										newErrors,
+										singleState[key as keyof ContentBlockComponentState],
+										stateIndex
+									);
+								});
+							} else if (has(state, key)) {
 								newErrors = validateContentBlockField(
 									key,
 									validator,
 									newErrors,
-									singleState[key as keyof ContentBlockComponentState],
-									stateIndex
+									state[key as keyof ContentBlockComponentState]
 								);
-							});
-						} else if (has(state, key)) {
-							newErrors = validateContentBlockField(
-								key,
-								validator,
-								newErrors,
-								state[key as keyof ContentBlockComponentState]
-							);
+							}
 						}
 					});
 					areConfigsValid = Object.keys(newErrors).length === 0;
