@@ -581,7 +581,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(assignment, 'title', t('Opdracht detail pagina titel fallback'))
+						get(
+							assignment,
+							'title',
+							t(
+								'assignment/views/assignment-detail___opdracht-detail-pagina-titel-fallback'
+							)
+						)
 					)}
 				</title>
 				<meta name="description" content={get(assignment, 'description') || ''} />

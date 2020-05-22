@@ -5,6 +5,9 @@ import React, { FunctionComponent, ReactElement } from 'react';
 import { Trans } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
 
+import { CustomError } from '../../../../shared/helpers';
+import { ToastService } from '../../../../shared/services';
+import i18n from '../../../../shared/translations/i18n';
 import { NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
@@ -37,6 +40,22 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		index: number | string,
 		isSubLink: boolean
 	): ReactElement => {
+		if (!navItem.location) {
+			console.error(
+				new CustomError(
+					'Failed to correctly render navigation item because location is undefined',
+					null,
+					{ navItem, index, isSubLink }
+				)
+			);
+			ToastService.danger(
+				i18n.t(
+					'admin/shared/components/sidebar/sidebar___navigatie-item-met-leeg-pad-label',
+					{ label: navItem.label }
+				),
+				false
+			);
+		}
 		return (
 			<li
 				key={`${navItem.location}-${index}`}
@@ -49,7 +68,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 					activeClassName="o-sidebar__nav-item--active"
 					// @ts-ignore
 					isActive={(match, location) => isActiveClass(navItem, location)}
-					to={navItem.location as string}
+					to={navItem.location || '/'}
 				>
 					{navItem.label}
 				</NavLink>

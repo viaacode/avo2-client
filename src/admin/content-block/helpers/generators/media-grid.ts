@@ -53,26 +53,26 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				},
 			},
 			buttonLabel: TEXT_FIELD('', {
-				label: i18n.t('Knop tekst'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
 			buttonIcon: {
-				label: i18n.t('Knop icoon'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
 					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			buttonType: {
-				label: i18n.t('Knop type'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			buttonAction: {
-				label: i18n.t('Knop actie'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},
@@ -81,17 +81,21 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		state: INITIAL_MEDIA_GRID_BLOCK_STATE(position),
 		fields: {
 			title: TEXT_FIELD('', {
-				label: i18n.t('Algemene titel'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___algemene-titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
 			buttonLabel: TEXT_FIELD('', {
-				label: i18n.t('Algemene knop tekst'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___algemene-knop-tekst'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
 			buttonAction: {
-				label: i18n.t('Algemene knop actie'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___algemene-knop-actie'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 			searchQuery: {
@@ -125,7 +129,9 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				i18n.t('admin/content-block/helpers/generators/media-grid___cta-titel-kleur')
 			),
 			ctaTitleSize: {
-				label: i18n.t('CTA titel grootte'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___cta-titel-grootte'
+				),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_FULL_HEADING_TYPE_OPTIONS(),
@@ -147,14 +153,14 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				validator: undefined,
 			}),
 			ctaButtonIcon: {
-				label: i18n.t('CTA knop icoon'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
 					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			ctaButtonType: {
-				label: i18n.t('CTA knop type'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_BUTTON_TYPE_OPTIONS(),
@@ -169,7 +175,9 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				GET_BACKGROUND_COLOR_OPTIONS()[1]
 			),
 			ctaBackgroundImage: {
-				label: i18n.t('CTA achtergrond afbeelding'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___cta-achtergrond-afbeelding'
+				),
 				editorType: ContentBlockEditor.FileUpload,
 				validator: undefined,
 				editorProps: {

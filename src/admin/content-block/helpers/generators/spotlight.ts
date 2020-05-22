@@ -53,7 +53,7 @@ export const SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 			title: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/spotlight___titel'),
 				editorType: ContentBlockEditor.TextInput,
-				validator: () => [],
+				validator: undefined,
 			}),
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/spotlight___link'),

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -26,12 +26,10 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import i18n from '../../../shared/translations/i18n';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
-import { CollectionService } from '../../collection.service';
 
-interface ShareCollectionModalProps extends DefaultSecureRouteProps {
+interface PublishCollectionModalProps extends DefaultSecureRouteProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
-	setIsPublic: (value: any) => void;
 	collection: Avo.Collection.Collection;
 }
 
@@ -48,11 +46,10 @@ const GET_SHARE_OPTIONS = () => [
 	},
 ];
 
-const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
+const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = ({
 	onClose,
 	isOpen,
 	collection,
-	setIsPublic,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -64,6 +61,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const isCollection = () => {
 		return collection.type_id === 3;
 	};
+
+	useEffect(() => {
+		setIsCollectionPublic(collection.is_public);
+	}, [isOpen, setIsCollectionPublic, collection.is_public]);
 
 	const onSave = async () => {
 		try {
@@ -78,57 +79,23 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 			// Validate if user wants to publish
 			if (isPublished) {
-				const validationErrors: string[] = getValidationErrorsForPublish(collection);
+				const validationErrors: string[] = await getValidationErrorsForPublish(collection);
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
 					ToastService.danger(validationErrors);
 					return;
 				}
-
-				// Check if title and description is,'t the same as an existing published collection
-				const duplicates = await CollectionService.getCollectionByTitleOrDescription(
-					collection.title,
-					collection.description
-				);
-
-				if (duplicates.byTitle) {
-					ToastService.danger(
-						isCollection()
-							? t(
-									'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-titel-bestaat-reeds'
-							  )
-							: t(
-									'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-titel-bestaat-reeds'
-							  )
-					);
-					return;
-				}
-
-				if (duplicates.byDescription) {
-					ToastService.danger(
-						isCollection()
-							? t(
-									'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-beschrijving-bestaat-reeds'
-							  )
-							: t(
-									'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-beschrijving-bestaat-reeds'
-							  )
-					);
-					return;
-				}
 			}
 
-			setIsPublic(isCollectionPublic);
-
-			const newCollection: Avo.Collection.Collection = {
+			const newCollectionProps: Partial<Avo.Collection.Collection> = {
 				is_public: isCollectionPublic,
 				published_at: new Date().toISOString(),
-			} as Avo.Collection.Collection;
+			};
 			await triggerCollectionPropertyUpdate({
 				variables: {
 					id: collection.id,
-					collection: newCollection,
+					collection: newCollectionProps,
 				},
 			});
 			setValidationError(undefined);
@@ -149,7 +116,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
 					  )
 			);
-			closeModal(newCollection);
+			closeModal({
+				...collection,
+				...newCollectionProps,
+			});
 
 			// Public status changed => log as event
 			trackEvents(
@@ -180,7 +150,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('collection/components/modals/share-collection-modal___deel-deze-collectie')}
+			title={
+				isCollection()
+					? t('collection/components/modals/share-collection-modal___deel-deze-collectie')
+					: t('collection/components/modals/publish-collection-modal___deel-deze-bundel')
+			}
 			size="large"
 			onClose={onClose}
 			scrollable
@@ -245,4 +219,4 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	);
 };
 
-export default ShareCollectionModal;
+export default PublishCollectionModal;

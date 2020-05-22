@@ -419,8 +419,17 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Maak opdracht pagina titel'))}</title>
-				<meta name="description" content={t('Maak opdracht pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('assignment/views/assignment-create___maak-opdracht-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				dataObject={currentAssignment}

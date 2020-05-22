@@ -207,7 +207,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const collectionLabelOptions = [
 		{
 			id: 'NO_LABEL',
-			label: t('Geen label'),
+			label: t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
+			),
 			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
 		},
 		...collectionLabels.map(
@@ -245,7 +247,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'last_updated_by_profile',
-			label: i18n.t('Laatste bewerkt door'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
+			),
 			sortable: true,
 		},
 		{
@@ -291,6 +295,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 			),
 			icon: 'bookmark',
+			sortable: true,
+		},
+		{
+			id: 'copies',
+			tooltip: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-gekopieerd'
+			),
+			icon: 'copy',
 			sortable: true,
 		},
 		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
@@ -371,6 +383,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'bookmarks':
 				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
+
+			case 'copies':
+				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':
@@ -517,16 +532,24 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t('Collectie beheer overview pagina titel')
-								: t('Bundel beheer overview pagina titel')
+								? t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-titel'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta
 						name="description"
 						content={
 							isCollection
-								? t('Collectie beheer overview pagina beschrijving')
-								: t('Bundel beheer overview pagina beschrijving')
+								? t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-beschrijving'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-beschrijving'
+								  )
 						}
 					/>
 				</MetaTags>

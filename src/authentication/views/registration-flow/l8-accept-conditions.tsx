@@ -9,7 +9,7 @@ import { Dispatch } from 'redux';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
@@ -18,6 +18,7 @@ import { ContentPageService } from '../../../shared/services/content-page-servic
 import { NotificationService } from '../../../shared/services/notification-service';
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
+import { isProfileComplete } from '../../helpers/get-profile-info';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { getLoginStateAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
@@ -105,7 +106,11 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				true
 			);
 
-			getLoginState();
+			if (isProfileComplete(user)) {
+				getLoginState();
+			} else {
+				redirectToClientPage(APP_PATH.COMPLETE_PROFILE.route, history);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to set accept conditions notification in the database')
@@ -155,8 +160,19 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('voorwaarden pagina titel'))}</title>
-				<meta name="description" content={t('voorwaarden pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t(
+							'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel'
+						)
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}

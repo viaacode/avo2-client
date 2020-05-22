@@ -37,8 +37,19 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Stamboek pagina titel'))}</title>
-					<meta name="description" content={t('Stamboek pagina beschrijving')} />
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-titel'
+							)
+						)}
+					</title>
+					<meta
+						name="description"
+						content={t(
+							'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-beschrijving'
+						)}
+					/>
 				</MetaTags>
 				<div className="c-content">
 					<BlockHeading type="h2">

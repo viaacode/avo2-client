@@ -19,8 +19,19 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Student lesgever pagina titel'))}</title>
-					<meta name="description" content={t('Student lesgever pagina beschrijving')} />
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-titel'
+							)
+						)}
+					</title>
+					<meta
+						name="description"
+						content={t(
+							'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-beschrijving'
+						)}
+					/>
 				</MetaTags>
 				<div className="c-content">
 					<Button
@@ -29,8 +40,12 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST.route, history)
 						}
 						icon="arrow-left"
-						title={t('Ga terug naar de manuele account aanvraag pagina')}
-						ariaLabel={t('Ga terug naar de manuele account aanvraag pagina')}
+						title={t(
+							'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
+						)}
+						ariaLabel={t(
+							'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
+						)}
 					/>
 					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten">

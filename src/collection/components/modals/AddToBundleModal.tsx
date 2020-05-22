@@ -393,7 +393,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 											  )
 											: !createNewBundle && !selectedBundle
 											? t(
-													'Je moet een bundel kiezen om deze collectie aan toe te voegen'
+													'collection/components/modals/add-to-bundle-modal___je-moet-een-bundel-kiezen-om-deze-collectie-aan-toe-te-voegen'
 											  )
 											: ''
 									}

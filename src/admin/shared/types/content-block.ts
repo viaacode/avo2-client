@@ -167,6 +167,7 @@ export interface DefaultContentBlockState {
 	blockType: ContentBlockType;
 	position: number;
 	padding: PaddingFieldState;
+	margin: PaddingFieldState;
 	userGroupIds: number[];
 	fullWidth?: boolean;
 	anchor?: string; // Contains an id that the user can enter, so they can link to this block using the anchor-block buttons
@@ -300,6 +301,7 @@ export interface QuoteBlockComponentState {
 export interface MediaPlayerBlockComponentState {
 	title: string;
 	item?: ButtonAction;
+	autoplay: boolean;
 }
 
 export interface MediaPlayerTitleTextButtonBlockComponentState {
@@ -313,6 +315,7 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
 	align: AlignOption;
+	mediaAutoplay: boolean;
 }
 
 export interface MediaGridBlockComponentState {

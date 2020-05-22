@@ -134,8 +134,13 @@ const Home: FunctionComponent<HomeProps> = ({
 	return (
 		<div className="m-home-page">
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Startpagina pagina titel'))}</title>
-				<meta name="description" content={t('Startpagina pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(t('home/views/home___startpagina-pagina-titel'))}
+				</title>
+				<meta
+					name="description"
+					content={t('home/views/home___startpagina-pagina-beschrijving')}
+				/>
 			</MetaTags>
 			<Container mode="vertical" background="alt">
 				<Container mode="horizontal" size="medium">

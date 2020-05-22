@@ -1,6 +1,8 @@
 export const WYSIWYG2_OPTIONS_ALIGN = ['separator', 'text-align'];
 
 export const WYSIWYG2_OPTIONS_BASE = [
+	'fullscreen',
+	'separator',
 	'undo',
 	'redo',
 	'separator',
@@ -10,7 +12,7 @@ export const WYSIWYG2_OPTIONS_BASE = [
 	'italic',
 	'strike-through',
 	'underline',
-	WYSIWYG2_OPTIONS_ALIGN,
+	...WYSIWYG2_OPTIONS_ALIGN,
 	'separator',
 	'list-ul',
 	'list-ol',
@@ -38,7 +40,6 @@ export const WYSIWYG2_OPTIONS_FULL = [
 	'hr',
 	'separator',
 	'link',
-	// 'media',
 	'separator',
 	'table',
 	'separator',
@@ -46,6 +47,8 @@ export const WYSIWYG2_OPTIONS_FULL = [
 ];
 
 export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
+	'fullscreen',
+	'separator',
 	'undo',
 	'redo',
 	'separator',
@@ -65,9 +68,28 @@ export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN = [
 	'hr',
 	'separator',
 	'link',
-	// 'media',
 	'separator',
 	'table',
+	'separator',
+	'remove-styles',
+];
+
+export const WYSIWYG2_OPTIONS_DEFAULT_NO_TITLES = [
+	'undo',
+	'redo',
+	'separator',
+	'bold',
+	'italic',
+	'strike-through',
+	'underline',
+	'separator',
+	'list-ul',
+	'list-ol',
+	'separator',
+	'subscript',
+	'superscript',
+	'separator',
+	'hr',
 	'separator',
 	'remove-styles',
 ];

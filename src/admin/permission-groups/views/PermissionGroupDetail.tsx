@@ -223,10 +223,18 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Permissiegroep beheer detail pagina titel'))}</title>
+				<title>
+					{GENERATE_SITE_TITLE(
+						t(
+							'admin/permission-groups/views/permission-group-detail___permissiegroep-beheer-detail-pagina-titel'
+						)
+					)}
+				</title>
 				<meta
 					name="description"
-					content={t('Permissiegroep beheer detail pagina beschrijving')}
+					content={t(
+						'admin/permission-groups/views/permission-group-detail___permissiegroep-beheer-detail-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent

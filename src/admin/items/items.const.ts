@@ -21,7 +21,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 > = {
 	organisation: (order: Avo.Search.OrderDirection) => ({ organisation: { name: order } }),
 	type: (order: Avo.Search.OrderDirection) => ({ type: { label: order } }),
-	views: (order: Avo.Search.OrderDirection) => ({ view_counts_aggregate: { count: order } }),
+	views: (order: Avo.Search.OrderDirection) => ({
+		view_counts_aggregate: { sum: { count: order } },
+	}),
 };
 
 export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [

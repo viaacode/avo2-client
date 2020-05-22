@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export class FileUploadService {
 	private static fileToBase64(file: File): Promise<string | null> {
@@ -38,7 +39,7 @@ export class FileUploadService {
 				mimeType: file.type,
 			};
 
-			const response = await fetch(url, {
+			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ export class FileUploadService {
 				type: assetType,
 			};
 
-			const response = await fetch(url, {
+			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ export class FileUploadService {
 				url: fileUrl,
 			};
 
-			const response = await fetch(url, {
+			const response = await fetchWithLogout(url, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',

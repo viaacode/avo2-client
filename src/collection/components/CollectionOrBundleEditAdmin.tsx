@@ -15,7 +15,6 @@ import {
 	Table,
 	TagInfo,
 	TagsInput,
-	TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -243,29 +242,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													collectionPropValue: value.value,
 												});
 											}}
-										/>
-									</FormGroup>
-									<FormGroup
-										label={t(
-											'collection/views/collection-edit-meta-data___persoonlijke-opmerkingen-notities'
-										)}
-										labelFor="personalRemarkId"
-									>
-										<TextArea
-											name="personalRemarkId"
-											value={collection.note || ''}
-											id="personalRemarkId"
-											height="medium"
-											placeholder={t(
-												'collection/views/collection-edit-meta-data___geef-hier-je-persoonlijke-opmerkingen-notities-in'
-											)}
-											onChange={(value: string) =>
-												changeCollectionState({
-													type: 'UPDATE_COLLECTION_PROP',
-													collectionProp: 'note',
-													collectionPropValue: value,
-												})
-											}
 										/>
 									</FormGroup>
 								</Column>

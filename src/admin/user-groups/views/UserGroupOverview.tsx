@@ -268,11 +268,17 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
-						{GENERATE_SITE_TITLE(t('Gebruikersgroepen beheer overzicht pagina titel'))}
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-titel'
+							)
+						)}
 					</title>
 					<meta
 						name="description"
-						content={t('Gebruikersgroepen beheer overzicht pagina beschrijving')}
+						content={t(
+							'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

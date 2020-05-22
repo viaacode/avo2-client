@@ -1,10 +1,13 @@
 import { every, some } from 'lodash-es';
 
+import { buildLink, CustomError } from '../shared/helpers';
+import { ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PATH } from './content/content.const';
+import { ContentService } from './content/content.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
@@ -143,7 +146,23 @@ function hasPermissions(
 	return [];
 }
 
-export const GET_NAV_ITEMS = (userPermissions: string[]): NavigationItemInfo[] => [
+async function getContentPageDetailRouteByPath(path: string): Promise<string | undefined> {
+	try {
+		const page = await ContentService.fetchContentPageByPath(path);
+		if (!page) {
+			return undefined;
+		}
+		return buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: page.id });
+	} catch (err) {
+		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
+		ToastService.danger(
+			i18n.t('admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt')
+		);
+		return undefined;
+	}
+}
+
+export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<NavigationItemInfo[]> => [
 	...getUserNavItems(userPermissions),
 	...hasPermissions(['EDIT_NAVIGATION_BARS'], 'OR', userPermissions, {
 		label: i18n.t('admin/admin___navigatie'),
@@ -190,6 +209,26 @@ export const GET_NAV_ITEMS = (userPermissions: string[]): NavigationItemInfo[] =
 			{
 				label: i18n.t('admin/admin___overzichtspaginas'),
 				location: ADMIN_PATH.OVERVIEWS,
+				key: 'faqs',
+				exact: true,
+			},
+			{
+				label: i18n.t('admin/admin___start-uitgelogd'),
+				location: await getContentPageDetailRouteByPath('/'),
+				key: 'faqs',
+				exact: true,
+			},
+			{
+				label: i18n.t('admin/admin___start-uitgelogd-leerlingen'),
+				location: await getContentPageDetailRouteByPath('/leerlingen'),
+				key: 'faqs',
+				exact: true,
+			},
+			{
+				label: i18n.t('admin/admin___start-ingelogd-lesgever'),
+				location: await getContentPageDetailRouteByPath(
+					'/startpagina-voor-ingelogde-lesgevers'
+				),
 				key: 'faqs',
 				exact: true,
 			},

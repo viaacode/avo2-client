@@ -1,7 +1,7 @@
 import { debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Joyride, { CallBackProps, STATUS } from 'react-joyride';
+import Joyride, { CallBackProps } from 'react-joyride';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -143,9 +143,14 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 		if (!tour) {
 			return;
 		}
-		const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
-		if (finishedStatuses.includes(data.status)) {
-			markTourAsSeen();
+		if (data.action === 'close' || data.action === 'skip' || data.status === 'finished') {
+			setTour({
+				...tour,
+				seen: true,
+			});
+			if (data.action === 'close' || data.status === 'finished') {
+				markTourAsSeen();
+			}
 		}
 	};
 

@@ -117,10 +117,18 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('Vertalingen beheer pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('Vertalingen beheer pagina beschrijving')}
+						content={t(
+							'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

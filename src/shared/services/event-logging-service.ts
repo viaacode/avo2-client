@@ -2,6 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { getEnv } from '../helpers';
+import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
@@ -32,7 +33,7 @@ export function trackEvents(
 				};
 			}
 		);
-		fetch(`${getEnv('PROXY_URL')}/event-logging`, {
+		fetchWithLogout(`${getEnv('PROXY_URL')}/event-logging`, {
 			method: 'POST',
 			body: JSON.stringify(eventLogEntries),
 			credentials: 'include',

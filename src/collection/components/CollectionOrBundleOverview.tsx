@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, ReactText, useState } from 'react';
+import { get, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -22,11 +23,14 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
+import {
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -40,10 +44,12 @@ import {
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
+import { DELETE_COLLECTION } from '../collection.gql';
+import { CollectionService } from '../collection.service';
 import { ContentTypeNumber } from '../collection.types';
 
 import './CollectionOrBundleOverview.scss';
+import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -61,9 +67,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [t] = useTranslation();
 
 	// State
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
+
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<string | null>(null);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
@@ -75,12 +83,48 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onClickDelete = (collectionId: string) => {
 		setDropdownOpen({ [collectionId]: false });
 		setIdToDelete(collectionId);
-		setIsDeleteModalOpen(true);
 	};
 
 	const isCollection = type === 'collection';
 
-	const onDeleteCollection = async (refetchCollections: () => void) => {
+	const fetchCollections = useCallback(async () => {
+		try {
+			setCollections(
+				await CollectionService.fetchCollectionsByOwner(
+					user,
+					page * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
+					{ [sortColumn]: sortOrder },
+					isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle
+				)
+			);
+		} catch (err) {
+			console.error('Failed to fetch collections', err, {});
+			setLoadingInfo({
+				state: 'error',
+				message: isCollection
+					? t(
+							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-collecties-is-mislukt'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-bundels-is-mislukt'
+					  ),
+				actionButtons: ['home'],
+			});
+		}
+	}, [user, page, sortColumn, sortOrder, isCollection, t]);
+
+	useEffect(() => {
+		fetchCollections();
+	}, [fetchCollections]);
+
+	useEffect(() => {
+		if (collections) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [setLoadingInfo, collections]);
+
+	const onDeleteCollection = async () => {
 		try {
 			await triggerCollectionDelete({
 				variables: {
@@ -99,7 +143,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					  )
 			);
 			onUpdate();
-			refetchCollections();
+			fetchCollections();
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -158,20 +202,24 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		</Link>
 	);
 
-	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
+	const renderTitle = (collection: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link {...getLinkProps(id, title)}>{truncateTableValue(title)}</Link>
+				<Link {...getLinkProps(collection.id, collection.title)}>
+					{truncateTableValue(collection.title)}
+				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={type}>
 					<MetaDataItem>
-						<span title={`Aangemaakt: ${formatDate(created_at)}`}>
-							{fromNow(created_at)}
+						<span title={`Aangemaakt: ${formatDate(collection.created_at)}`}>
+							{fromNow(collection.created_at)}
 						</span>
 					</MetaDataItem>
-					{/* TODO: Views from GQL */}
-					<MetaDataItem icon="eye" label="0" />
+					<MetaDataItem
+						icon="eye"
+						label={get(collection, 'view_counts_aggregate.aggregate.sum.count') || '0'}
+					/>
 				</MetaData>
 			</div>
 		</div>
@@ -449,52 +497,42 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		</ErrorView>
 	);
 
-	const renderCollections = (
-		collections: Avo.Collection.Collection[],
-		refetchCollections: () => void
-	) => (
-		<>
-			{collections.length ? renderTable(collections) : renderEmptyFallback()}
+	const renderDeleteModal = () => {
+		if (isCollection) {
+			return (
+				<DeleteCollectionModal
+					collectionId={idToDelete as string}
+					isOpen={!isNil(idToDelete)}
+					onClose={() => setIdToDelete(null)}
+					deleteObjectCallback={onDeleteCollection}
+				/>
+			);
+		}
+		return (
 			<DeleteObjectModal
-				title={
-					isCollection
-						? t('collection/views/collection-overview___verwijder-collectie')
-						: t(
-								'collection/components/collection-or-bundle-overview___verwijder-bundel'
-						  )
-				}
+				title={t('collection/components/collection-or-bundle-overview___verwijder-bundel')}
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
-				isOpen={isDeleteModalOpen}
-				onClose={() => setIsDeleteModalOpen(false)}
-				deleteObjectCallback={() => onDeleteCollection(refetchCollections)}
+				isOpen={!isNil(idToDelete)}
+				onClose={() => setIdToDelete(null)}
+				deleteObjectCallback={onDeleteCollection}
 			/>
+		);
+	};
+
+	const renderCollections = () => (
+		<>
+			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
+			{!isNil(idToDelete) && renderDeleteModal()}
 		</>
 	);
 
 	return (
-		<DataQueryComponent
-			query={GET_COLLECTIONS_BY_OWNER}
-			variables={{
-				owner_profile_id: getProfileId(user),
-				offset: page * ITEMS_PER_PAGE,
-				limit: ITEMS_PER_PAGE,
-				order: { [sortColumn]: sortOrder },
-				type_id: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-			}}
-			resultPath="app_collections"
-			renderData={renderCollections}
-			notFoundMessage={
-				isCollection
-					? t(
-							'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
-					  )
-					: t(
-							'collection/components/collection-or-bundle-overview___er-konden-geen-bundels-worden-gevonden'
-					  )
-			}
-			actionButtons={['home']}
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			dataObject={collections}
+			render={renderCollections}
 		/>
 	);
 };

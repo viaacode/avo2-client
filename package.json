@@ -1,8 +1,9 @@
 {
 	"name": "avo2-client",
-	"version": "0.34.2",
+	"version": "0.35.0",
 	"private": true,
 	"scripts": {
+		"preinstall": "npx npm-force-resolutions",
 		"prestart": "npm run env",
 		"start": "react-scripts start",
 		"env": "node ./scripts/env.js && cp env-config.js ./public",
@@ -37,6 +38,7 @@
 		"i18next": "^19.0.2",
 		"i18next-xhr-backend": "^3.2.2",
 		"immer": "^6.0.0",
+		"immutable": "3.8.2",
 		"lodash-es": "^4.17.11",
 		"marked": "^0.7.0",
 		"moment": "^2.24.0",
@@ -114,6 +116,9 @@
 	},
 	"peerDependencies": {
 		"avo2-proxy-server": "0.21.0"
+	},
+	"resolutions": {
+		"immutable": "3.8.2"
 	},
 	"browserslist": {
 		"production": [

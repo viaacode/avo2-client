@@ -231,12 +231,16 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(interactiveTour, 'name'),
-						t('Interactieve rondleiding beheer detail pagina titel')
+						t(
+							'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel'
+						)
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t('Interactieve rondleiding beheer detail pagina beschrijving')}
+					content={t(
+						'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
