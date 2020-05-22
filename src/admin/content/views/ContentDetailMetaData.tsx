@@ -27,7 +27,7 @@ import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DbContent } from '../content.types';
 
 interface ContentDetailMetaDataProps {
-	contentPage: Avo.Content.Content | DbContent;
+	contentPage: DbContent;
 }
 
 export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps> = ({
@@ -55,7 +55,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	}, [setAllUserGroups, t]);
 
 	// Methods
-	const getUserGroups = (contentPage: Avo.Content.Content): TagOption[] => {
+	const getUserGroups = (contentPage: DbContent): TagOption[] => {
 		const tagInfos: TagInfo[] = compact(
 			(contentPage.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
 				return allUserGroups.find(
@@ -93,11 +93,9 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 		);
 	};
 
-	const getContentPageWidthLabel = (contentPage: Avo.Content.Content): string => {
+	const getContentPageWidthLabel = (contentPage: DbContent): string => {
 		return get(
-			(GET_CONTENT_WIDTH_OPTIONS() as any).find(
-				(option: any) => option.value === contentPage.content_width
-			),
+			GET_CONTENT_WIDTH_OPTIONS().find(option => option.value === contentPage.content_width),
 			'label',
 			'-'
 		);
