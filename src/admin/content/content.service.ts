@@ -121,6 +121,7 @@ export class ContentService {
 	public static async getContentTypes(): Promise<ContentPageType[] | null> {
 		try {
 			const response = await dataService.query({ query: GET_CONTENT_TYPES });
+
 			return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(
 				(obj: { value: ContentPageType }) => obj.value
 			);
@@ -141,14 +142,17 @@ export class ContentService {
 		contentType: string
 	): Promise<Avo.Content.ContentLabel[]> {
 		let variables: any;
+
 		try {
 			variables = {
 				contentType,
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 			});
+
 			if (response.errors) {
 				throw new CustomError(
 					'Failed to get content labels by content type from database because of graphql errors',
@@ -156,12 +160,15 @@ export class ContentService {
 					{ response }
 				);
 			}
+
 			const labels = get(response, 'data.app_content_labels');
+
 			if (!labels) {
 				throw new CustomError('The response does not contain any labels', null, {
 					response,
 				});
 			}
+
 			return labels;
 		} catch (err) {
 			throw new CustomError(
@@ -185,11 +192,13 @@ export class ContentService {
 				label,
 				contentType,
 			};
+
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_CONTENT_LABEL,
 				update: ApolloCacheManager.clearContentLabels,
 			});
+
 			if (response.errors) {
 				throw new CustomError(
 					'Failed to insert content labels in the database because of graphql errors',
@@ -197,10 +206,15 @@ export class ContentService {
 					{ response }
 				);
 			}
+
 			const contentLabel = get(response, 'data.insert_app_content_labels.returning[0]');
+
 			if (!contentLabel) {
-				throw new CustomError('The response does not contain a label', null, { response });
+				throw new CustomError('The response does not contain a label', null, {
+					response,
+				});
 			}
+
 			return contentLabel;
 		} catch (err) {
 			throw new CustomError('Failed to insert content label in the database', err, {
@@ -222,10 +236,12 @@ export class ContentService {
 					label_id: labelId,
 				})),
 			};
+
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_CONTENT_LABEL_LINKS,
 			});
+
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
 			}
@@ -242,15 +258,18 @@ export class ContentService {
 		labelIds: (number | string)[]
 	): Promise<void> {
 		let variables: any;
+
 		try {
 			variables = {
 				labelIds,
 				contentPageId,
 			};
+
 			const response = await dataService.mutate({
 				variables,
 				mutation: DELETE_CONTENT_LABEL_LINKS,
 			});
+
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
 			}
@@ -268,9 +287,11 @@ export class ContentService {
 	) {
 		const getOrderFunc: Function | undefined =
 			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
+
 		if (getOrderFunc) {
 			return [getOrderFunc(sortOrder)];
 		}
+
 		return [{ [sortColumn]: sortOrder }];
 	}
 
@@ -288,6 +309,7 @@ export class ContentService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: ContentService.getOrderObject(sortColumn, sortOrder),
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_CONTENT_PAGES,
@@ -298,6 +320,7 @@ export class ContentService {
 				'data.app_content',
 				[]
 			);
+
 			const contentPageCount: number = get(
 				response,
 				'data.app_content_aggregate.aggregate.count',
@@ -436,5 +459,107 @@ export class ContentService {
 		blockConfigs: ContentBlockConfig[]
 	): ContentBlockConfig[] {
 		return omitByDeep(blockConfigs, key => String(key).endsWith(RichEditorStateKey));
+	}
+
+	/**
+	 * Find name that isn't a duplicate of an existing name of a content page of this user
+	 * eg if these collections exist:
+	 * copy 1: test
+	 * copy 2: test
+	 * copy 4: test
+	 *
+	 * Then the algorithm will propose: copy 3: test
+	 * @param copyPrefix
+	 * @param copyRegex
+	 * @param existingTitle
+	 * @param user
+	 *
+	 * @returns Potential title for duplicate content page.
+	 */
+	public static getCopyTitleForContentPage = async (
+		copyPrefix: string,
+		copyRegex: RegExp,
+		existingTitle: string
+	): Promise<string> => {
+		const contentPages = await ContentService.getContentItemsByTitle(existingTitle, 50);
+		const titles = (contentPages || []).map(c => c.title);
+
+		let index = 0;
+		let candidateTitle: string;
+		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
+
+		do {
+			index += 1;
+			candidateTitle = copyPrefix.replace('%index%', String(index)) + titleWithoutCopy;
+		} while (titles.includes(candidateTitle));
+
+		return candidateTitle;
+	};
+
+	/**
+	 * Add duplicate of content page
+	 *
+	 * @param contentPage
+	 * @param user
+	 * @param copyPrefix
+	 * @param copyRegex
+	 *
+	 * @returns Duplicate content page.
+	 */
+	public static async duplicateContentPage(
+		contentPage: Avo.Content.Content,
+		copyPrefix: string,
+		copyRegex: RegExp
+	): Promise<Avo.Content.Content | null> {
+		try {
+			const contentToInsert = { ...contentPage };
+
+			// update attributes specific to duplicate
+			contentToInsert.is_public = false;
+			(contentToInsert as any).published_at = null; // TODO: Fix type
+			contentToInsert.depublish_at = null;
+			contentToInsert.publish_at = null;
+			contentToInsert.path = null;
+
+			// remove id from duplicate
+			delete contentToInsert.id;
+
+			try {
+				contentToInsert.title = await this.getCopyTitleForContentPage(
+					copyPrefix,
+					copyRegex,
+					contentToInsert.title
+				);
+			} catch (err) {
+				// handle error
+				const customError = new CustomError(
+					'Failed to retrieve title for duplicate content page',
+					err,
+					{
+						contentToInsert,
+					}
+				);
+
+				console.error(customError);
+
+				// fallback to simple copy title
+				contentToInsert.title = `${copyPrefix.replace(' %index%', '')}${
+					contentToInsert.title
+				}`;
+			}
+
+			// insert duplicated collection
+			const duplicatedContentPage: Partial<
+				Avo.Content.Content
+			> | null = await ContentService.insertContentPage(contentToInsert, []);
+
+			return duplicatedContentPage as Avo.Content.Content;
+		} catch (err) {
+			throw new CustomError('Failed to duplicate collection', err, {
+				contentPage,
+				copyPrefix,
+				copyRegex,
+			});
+		}
 	}
 }

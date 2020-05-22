@@ -25,6 +25,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import {
@@ -34,6 +35,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import {
+	buildLink,
 	createDropdownMenuItem,
 	CustomError,
 	navigate,
@@ -55,6 +57,9 @@ import { ContentDetailParams, DbContent } from '../content.types';
 
 import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
+
+export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
+export const CONTENT_PAGE_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -202,7 +207,38 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const executeAction = async (item: ReactText) => {
 		switch (item) {
 			case 'duplicate':
-				// TODO: Duplicate content
+				try {
+					if (!contentPage) {
+						ToastService.danger(t('De content pagina kon niet worden gedupliceerd.'));
+						return;
+					}
+
+					const duplicateContentPage = await ContentService.duplicateContentPage(
+						contentPage,
+						CONTENT_PAGE_COPY,
+						CONTENT_PAGE_COPY_REGEX
+					);
+
+					if (!duplicateContentPage) {
+						ToastService.danger(
+							t('De gedupliceerde content pagina kon niet worden gevonden.')
+						);
+						return;
+					}
+
+					redirectToClientPage(
+						buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: duplicateContentPage.id }),
+						history
+					);
+
+					ToastService.success(t('De content pagina is gedupliceerd'));
+				} catch (err) {
+					console.error('Failed to duplicate content page', err, {
+						originalContentPage: contentPage,
+					});
+
+					ToastService.danger(t('Het dupliceren van de content pagina is mislukt.'));
+				}
 				break;
 
 			case 'delete':
