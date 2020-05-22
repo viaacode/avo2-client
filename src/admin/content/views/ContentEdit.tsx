@@ -439,53 +439,72 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
+	const onPasteContentBlock = (e: any) => {
+		if (e.clipboardData && e.clipboardData.getData) {
+			const pastedText = e.clipboardData.getData('text/plain');
+
+			const newConfig = JSON.parse(pastedText).block;
+
+			delete newConfig.id;
+
+			if (pastedText.startsWith('{"block":')) {
+				dispatch({
+					type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
+					payload: newConfig,
+				});
+			}
+		}
+	};
+
 	return isLoading || isLoadingContentTypes || isLoadingContentBlocks ? (
 		<Flex orientation="horizontal" center>
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout showBackButton pageTitle={pageTitle}>
-			<AdminLayoutTopBarRight>
-				<ButtonToolbar>
-					<Button
-						label={t('admin/content/views/content-edit___annuleer')}
-						onClick={navigateBack}
-						type="tertiary"
+		<div id="pasteElement" onPaste={onPasteContentBlock}>
+			<AdminLayout showBackButton pageTitle={pageTitle}>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							label={t('admin/content/views/content-edit___annuleer')}
+							onClick={navigateBack}
+							type="tertiary"
+						/>
+						<Button
+							disabled={isSaving}
+							label={t('admin/content/views/content-edit___opslaan')}
+							onClick={handleSave}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutHeader>
+					<Navbar background="alt" placement="top" autoHeight>
+						<Container mode="horizontal">
+							<Tabs tabs={tabs} onClick={setCurrentTab} />
+						</Container>
+					</Navbar>
+				</AdminLayoutHeader>
+				<AdminLayoutBody>
+					<MetaTags>
+						<title>
+							{GENERATE_SITE_TITLE(
+								get(contentForm, 'title'),
+								pageType === PageType.Create
+									? t('Content beheer aanmaak pagina titel')
+									: t('Content beheer bewerk pagina titel')
+							)}
+						</title>
+						<meta name="description" content={get(contentForm, 'description')} />
+					</MetaTags>
+					{renderTabContent()}
+					<DeleteObjectModal
+						deleteObjectCallback={removeContentBlockConfig}
+						isOpen={isDeleteModalOpen}
+						onClose={() => setIsDeleteModalOpen(false)}
 					/>
-					<Button
-						disabled={isSaving}
-						label={t('admin/content/views/content-edit___opslaan')}
-						onClick={handleSave}
-					/>
-				</ButtonToolbar>
-			</AdminLayoutTopBarRight>
-			<AdminLayoutHeader>
-				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">
-						<Tabs tabs={tabs} onClick={setCurrentTab} />
-					</Container>
-				</Navbar>
-			</AdminLayoutHeader>
-			<AdminLayoutBody>
-				<MetaTags>
-					<title>
-						{GENERATE_SITE_TITLE(
-							get(contentForm, 'title'),
-							pageType === PageType.Create
-								? t('Content beheer aanmaak pagina titel')
-								: t('Content beheer bewerk pagina titel')
-						)}
-					</title>
-					<meta name="description" content={get(contentForm, 'description')} />
-				</MetaTags>
-				{renderTabContent()}
-				<DeleteObjectModal
-					deleteObjectCallback={removeContentBlockConfig}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</div>
 	);
 };
 

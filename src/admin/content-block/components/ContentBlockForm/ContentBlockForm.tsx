@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { get, isEqual, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -240,6 +241,15 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								type="tertiary"
 							/>
 						</ButtonGroup>
+						<CopyToClipboard text={JSON.stringify({ block: config })}>
+							<Button
+								icon="copy"
+								size="small"
+								title={t('Kopieer content blok')}
+								ariaLabel={t('Kopieer content blok')}
+								type="secondary"
+							/>
+						</CopyToClipboard>
 						<Button
 							icon="delete"
 							onClick={() => onRemove(blockIndex)}

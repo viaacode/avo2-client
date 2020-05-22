@@ -3,3 +3,4 @@ declare module 'flowplayer-files';
 declare module 'capture-stack-trace';
 declare module 'react-meta-tags';
 declare module 'recursive-omit-by';
+declare module 'react-copy-to-clipboard';
