@@ -527,7 +527,6 @@ export class ContentService {
 			// remove id from duplicate
 			delete contentToInsert.id;
 			delete contentToInsert.contentBlockssBycontentId;
-			delete (contentToInsert as any).content_content_labels;
 
 			try {
 				contentToInsert.title = await this.getCopyTitleForContentPage(

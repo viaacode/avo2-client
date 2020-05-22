@@ -46,6 +46,7 @@ export class ContentBlockService {
 		}
 	}
 
+	// TODO: Rework two functions below into one
 	public static async insertContentBlocks(
 		contentId: number,
 		contentBlockConfigs: ContentBlockConfig[]
