@@ -299,7 +299,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'copies',
-			tooltip: i18n.t('Aantal keer gekopieërd'),
+			tooltip: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-gekopieerd'
+			),
 			icon: 'copy',
 			sortable: true,
 		},

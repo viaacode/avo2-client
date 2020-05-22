@@ -1,6 +1,7 @@
 import { every, some } from 'lodash-es';
 
 import { buildLink, CustomError } from '../shared/helpers';
+import { ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 
@@ -15,7 +16,6 @@ import { PERMISSION_GROUP_PATH } from './permission-groups/permission-group.cons
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
-import { ToastService } from '../shared/services';
 
 export const ADMIN_PATH = Object.freeze({
 	...DASHBOARD_PATH,
@@ -155,7 +155,9 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 		return buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: page.id });
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
-		ToastService.danger(i18n.t('Het ophalen van de route adhv het pagina pad is mislukt'));
+		ToastService.danger(
+			i18n.t('admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt')
+		);
 		return undefined;
 	}
 }
@@ -211,19 +213,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 				exact: true,
 			},
 			{
-				label: i18n.t('Start: uitgelogd'),
+				label: i18n.t('admin/admin___start-uitgelogd'),
 				location: await getContentPageDetailRouteByPath('/'),
 				key: 'faqs',
 				exact: true,
 			},
 			{
-				label: i18n.t('Start: uitgelogd leerlingen'),
+				label: i18n.t('admin/admin___start-uitgelogd-leerlingen'),
 				location: await getContentPageDetailRouteByPath('/leerlingen'),
 				key: 'faqs',
 				exact: true,
 			},
 			{
-				label: i18n.t('Start: ingelogd lesgever'),
+				label: i18n.t('admin/admin___start-ingelogd-lesgever'),
 				location: await getContentPageDetailRouteByPath(
 					'/startpagina-voor-ingelogde-lesgevers'
 				),

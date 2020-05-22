@@ -499,8 +499,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 
 				ToastService.success(
 					isCollection
-						? t('De collectie naam is aangepast')
-						: t('De bundel naam is aangepast')
+						? t(
+								'collection/components/collection-or-bundle-edit___de-collectie-naam-is-aangepast'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___de-bundel-naam-is-aangepast'
+						  )
 				);
 			} // else collection wasn't saved because of validation errors
 		} catch (err) {
