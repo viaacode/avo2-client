@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { cloneDeep, compact, intersection, noop, set } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
@@ -17,11 +18,13 @@ import './ContentPage.scss';
 type ContentPageDetailProps =
 	| {
 			contentPage: Avo.Content.Content;
+			activeBlockPosition?: number | null;
 			onBlockClicked?: BlockClickHandler;
 	  }
 	| {
 			contentBlockConfigs: ContentBlockConfig[];
 			contentWidth: Avo.Content.ContentWidth;
+			activeBlockPosition?: number | null;
 			onBlockClicked?: BlockClickHandler;
 	  };
 
@@ -85,7 +88,13 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 							componentState={contentBlockConfig.components.state}
 							contentWidth={contentWidth}
 							blockState={contentBlockConfig.block.state}
-							className={`content-block-preview-${contentBlockConfig.position}`}
+							className={classnames(
+								`content-block-preview-${contentBlockConfig.position}`,
+								{
+									'c-content-block__active':
+										contentBlockConfig.position === props.activeBlockPosition,
+								}
+							)}
 							onClick={() =>
 								(props.onBlockClicked || noop)(
 									contentBlockConfig.position,
