@@ -71,20 +71,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		// Update content block configs
 		onAdd(newConfig);
 
-		// Set newly added config accordion as open
-		setActiveBlockPosition(newConfig.position);
-
 		// Scroll preview and sidebar to the bottom
-		scrollToBottom(previewScrollable);
-		scrollToBottom(sidebarScrollable);
-	};
-
-	const scrollToBottom = (ref: RefObject<HTMLDivElement>) => {
-		setTimeout(() => {
-			if (ref.current) {
-				ref.current.scroll({ left: 0, top: 1000000, behavior: 'smooth' });
-			}
-		}, 0);
+		focusBlock(newConfig.position, 'preview');
+		focusBlock(newConfig.position, 'sidebar');
 	};
 
 	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
@@ -142,10 +131,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	const renderContentBlockForms = () => {
 		return contentBlockConfigs.map((contentBlockConfig, index) => {
 			return (
-				<div
-					onClick={() => focusBlock(contentBlockConfig.position, 'sidebar')}
-					className={`content-block-sidebar-${contentBlockConfig.position}`}
-				>
+				<div className={`content-block-sidebar-${contentBlockConfig.position}`}>
 					<ContentBlockForm
 						key={createKey('form', index)}
 						config={contentBlockConfig}
@@ -153,9 +139,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						isAccordionOpen={contentBlockConfig.position === activeBlockPosition}
 						length={contentBlockConfigs.length}
 						hasSubmitted={hasSubmitted}
-						toggleIsAccordionOpen={() =>
-							toggleActiveBlock(contentBlockConfig.position, false)
-						}
+						toggleIsAccordionOpen={() => {
+							focusBlock(contentBlockConfig.position, 'sidebar');
+						}}
 						onChange={(
 							formGroupType: ContentBlockStateType,
 							input: any,
