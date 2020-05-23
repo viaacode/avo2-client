@@ -17,13 +17,14 @@ export const INITIAL_ANCHOR_LINKS_COMPONENTS_STATE = (): AnchorLinksBlockCompone
 	},
 ];
 
-export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): AnchorLinksBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks, position),
+export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (): AnchorLinksBlockState => ({
+	...BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks),
 	align: 'center',
 	hasDividers: true,
 });
 
 export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
 	type: ContentBlockType.AnchorLinks,
 	components: {
@@ -49,7 +50,7 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 		},
 	},
 	block: {
-		state: INITIAL_ANCHOR_LINKS_BLOCK_STATE(position),
+		state: INITIAL_ANCHOR_LINKS_BLOCK_STATE(),
 		fields: {
 			align: ALIGN_FIELD(),
 			...BLOCK_FIELD_DEFAULTS(),

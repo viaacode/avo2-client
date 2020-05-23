@@ -18,10 +18,11 @@ export const INITIAL_BUTTONS_COMPONENTS_STATE = (): ButtonsBlockComponentState[]
 	},
 ];
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Buttons, position);
+export const INITIAL_BUTTONS_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Buttons);
 
 export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
 	type: ContentBlockType.Buttons,
 	components: {
@@ -59,7 +60,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		},
 	},
 	block: {
-		state: INITIAL_BUTTONS_BLOCK_STATE(position),
+		state: INITIAL_BUTTONS_BLOCK_STATE(),
 		fields: {
 			align: ALIGN_FIELD(),
 			...BLOCK_FIELD_DEFAULTS(),

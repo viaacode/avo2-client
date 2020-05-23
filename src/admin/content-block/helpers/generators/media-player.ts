@@ -28,10 +28,11 @@ export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockCompone
 	autoplay: false,
 });
 
-export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayer, position);
+export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayer)
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/media-player___media-speler'),
 	type: ContentBlockType.MediaPlayer,
 	components: {
@@ -91,7 +92,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 		},
 	},
 	block: {
-		state: INITIAL_MEDIA_PLAYER_BLOCK_STATE(position),
+		state: INITIAL_MEDIA_PLAYER_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

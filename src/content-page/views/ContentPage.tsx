@@ -1,4 +1,4 @@
-import { cloneDeep, compact, intersection, set } from 'lodash-es';
+import { cloneDeep, compact, intersection, noop, set } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { BlockImageProps } from '@viaa/avo2-components';
@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
+import { BlockClickHandler } from '../../admin/content/content.types';
 import { ContentBlockConfig, ContentBlockType } from '../../admin/shared/types';
 import { getUserGroupIds } from '../../authentication/authentication.service';
 import { InteractiveTour } from '../../shared/components';
@@ -16,10 +17,12 @@ import './ContentPage.scss';
 type ContentPageDetailProps =
 	| {
 			contentPage: Avo.Content.Content;
+			onBlockClicked?: BlockClickHandler;
 	  }
 	| {
 			contentBlockConfigs: ContentBlockConfig[];
 			contentWidth: Avo.Content.ContentWidth;
+			onBlockClicked?: BlockClickHandler;
 	  };
 
 const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props => {
@@ -82,6 +85,13 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 							componentState={contentBlockConfig.components.state}
 							contentWidth={contentWidth}
 							blockState={contentBlockConfig.block.state}
+							className={`content-block-preview-${contentBlockConfig.position}`}
+							onClick={() =>
+								(props.onBlockClicked || noop)(
+									contentBlockConfig.position,
+									'preview'
+								)
+							}
 						/>
 					);
 				}

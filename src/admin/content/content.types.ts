@@ -97,3 +97,5 @@ export interface ContentEditAction {
 export type DbContent = Avo.Content.Content & {
 	content_content_labels: Avo.Content.ContentLabelLink[];
 };
+
+export type BlockClickHandler = (position: number, type: 'preview' | 'sidebar') => void;

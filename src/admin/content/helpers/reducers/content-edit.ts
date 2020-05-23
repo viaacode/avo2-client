@@ -27,7 +27,7 @@ export const CONTENT_EDIT_INITIAL_STATE = (
 // Helpers
 const repositionConfigs = (updatedConfigs: ContentBlockConfig[]) => {
 	updatedConfigs.forEach((config, position) => {
-		config.block.state.position = position;
+		config.position = position;
 	});
 };
 

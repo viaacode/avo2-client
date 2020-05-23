@@ -13,10 +13,10 @@ export const parseContentBlockConfig = (
 	contentId?: number
 ) => {
 	const componentState = contentBlockConfig.components.state;
-	const { blockType, position, ...blockState } = contentBlockConfig.block.state;
+	const { blockType, ...blockState } = contentBlockConfig.block.state;
 
 	return {
-		position,
+		position: contentBlockConfig.position,
 		variables: { componentState, blockState },
 		...(contentId ? { content_id: contentId } : null),
 		content_block_type: blockType,

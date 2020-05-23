@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,6 +22,7 @@ import {
 	ContentBlockType,
 } from '../../shared/types';
 import { ContentService } from '../content.service';
+import { BlockClickHandler } from '../content.types';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -55,7 +57,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	const [t] = useTranslation();
 
 	// Hooks
-	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
+	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [position: number]: boolean }>(
+		{}
+	);
 
 	const previewScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 	const sidebarScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
@@ -94,39 +98,82 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		onReorder(configIndex, indexUpdate);
 	};
 
+	/**
+	 * https://imgur.com/a/E7TxvUN
+	 * @param position
+	 * @param type
+	 */
+	const scrollToBlockPosition: BlockClickHandler = (
+		position: number,
+		type: 'preview' | 'sidebar'
+	) => {
+		const blockElem = document.querySelector(`.content-block-${type}-${position}`);
+		const scrollable = get(
+			type === 'sidebar' ? sidebarScrollable : previewScrollable,
+			'current'
+		);
+		if (!blockElem || !scrollable) {
+			return;
+		}
+		const blockElemTop = blockElem.getBoundingClientRect().top;
+		const scrollableTop = scrollable.getBoundingClientRect().top;
+		const scrollTop = scrollable.scrollTop;
+		const scrollMargin = type === 'sidebar' ? 18 : 0;
+		const desiredScrollPosition = Math.max(
+			blockElemTop - (scrollableTop - scrollTop) - scrollMargin,
+			0
+		);
+		scrollable.scroll({ left: 0, top: desiredScrollPosition, behavior: 'smooth' });
+	};
+
+	const focusBlock: BlockClickHandler = (position: number, type: 'preview' | 'sidebar') => {
+		setAccordionsOpenState({
+			[position]: !accordionsOpenState[position],
+		});
+		setTimeout(() => {
+			const inverseType = type === 'preview' ? 'sidebar' : 'preview';
+			scrollToBlockPosition(position, inverseType);
+		}, 0);
+	};
+
 	// Render
 	const renderContentBlockForms = () => {
 		return contentBlockConfigs.map((contentBlockConfig, index) => {
-			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
-
 			return (
-				<ContentBlockForm
-					key={createKey('form', index)}
-					config={contentBlockConfig}
-					blockIndex={index}
-					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
-					length={contentBlockConfigs.length}
-					hasSubmitted={hasSubmitted}
-					toggleIsAccordionOpen={() =>
-						setAccordionsOpenState({
-							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
-						})
-					}
-					onChange={(
-						formGroupType: ContentBlockStateType,
-						input: any,
-						stateIndex?: number
-					) => onSave(index, formGroupType, input, stateIndex)}
-					addComponentToState={() =>
-						addComponentToState(index, contentBlockConfig.block.state.blockType)
-					}
-					removeComponentFromState={(stateIndex: number) =>
-						removeComponentFromState(index, stateIndex)
-					}
-					onError={onError}
-					onRemove={onRemove}
-					onReorder={handleReorderContentBlock}
-				/>
+				<div
+					onClick={() => focusBlock(contentBlockConfig.position, 'sidebar')}
+					className={`content-block-sidebar-${contentBlockConfig.position}`}
+				>
+					<ContentBlockForm
+						key={createKey('form', index)}
+						config={contentBlockConfig}
+						blockIndex={index}
+						isAccordionOpen={accordionsOpenState[contentBlockConfig.position] || false}
+						length={contentBlockConfigs.length}
+						hasSubmitted={hasSubmitted}
+						toggleIsAccordionOpen={() =>
+							setAccordionsOpenState({
+								[contentBlockConfig.position]: !accordionsOpenState[
+									contentBlockConfig.position
+								],
+							})
+						}
+						onChange={(
+							formGroupType: ContentBlockStateType,
+							input: any,
+							stateIndex?: number
+						) => onSave(index, formGroupType, input, stateIndex)}
+						addComponentToState={() =>
+							addComponentToState(index, contentBlockConfig.block.state.blockType)
+						}
+						removeComponentFromState={(stateIndex: number) =>
+							removeComponentFromState(index, stateIndex)
+						}
+						onError={onError}
+						onRemove={onRemove}
+						onReorder={handleReorderContentBlock}
+					/>
+				</div>
 			);
 		});
 	};
@@ -148,6 +195,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							contentBlockConfigs
 						)}
 						contentWidth={contentWidth}
+						onBlockClicked={focusBlock}
 					/>
 				</div>
 				<Sidebar className="c-content-edit-view__sidebar" light>
