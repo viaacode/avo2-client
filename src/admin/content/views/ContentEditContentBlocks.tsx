@@ -131,9 +131,11 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	const renderContentBlockForms = () => {
 		return contentBlockConfigs.map((contentBlockConfig, index) => {
 			return (
-				<div className={`content-block-sidebar-${contentBlockConfig.position}`}>
+				<div
+					className={`content-block-sidebar-${contentBlockConfig.position}`}
+					key={createKey('form', index)}
+				>
 					<ContentBlockForm
-						key={createKey('form', index)}
 						config={contentBlockConfig}
 						blockIndex={index}
 						isAccordionOpen={contentBlockConfig.position === activeBlockPosition}
