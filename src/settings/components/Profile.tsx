@@ -409,7 +409,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												labelFor="profilePicture"
 											>
 												<FileUpload
-													label={t('Upload een profiel foto')}
+													label={t(
+														'settings/components/profile___upload-een-profiel-foto'
+													)}
 													urls={avatar ? [avatar] : []}
 													allowMulti={false}
 													assetType="PROFILE_AVATAR"
@@ -442,7 +444,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												areAllRequiredFieldFilledIn()
 													? ''
 													: t(
-															'Gelieve alle verplichte velden in te vullen'
+															'settings/components/profile___gelieve-alle-verplichte-velden-in-te-vullen'
 													  )
 											}
 											onClick={saveProfileChanges}

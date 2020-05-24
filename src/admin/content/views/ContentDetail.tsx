@@ -278,6 +278,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
+									{/* TODO: Change typings repo to allow removal of as any cast */}
 									{renderDetailRow(
 										<div style={{ width: '400px' }}>
 											<Thumbnail

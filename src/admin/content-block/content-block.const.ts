@@ -258,7 +258,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 // Options
 export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
-		label: i18n.t('Geen'),
+		label: i18n.t('admin/content-block/content-block___geen'),
 		value: Color.Transparent,
 	},
 	{

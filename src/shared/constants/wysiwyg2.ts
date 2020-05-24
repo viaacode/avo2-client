@@ -3,6 +3,8 @@ import { WYSIWYG2Control } from '@viaa/avo2-components';
 export const WYSIWYG2_OPTIONS_ALIGN: WYSIWYG2Control[] = ['separator', 'text-align'];
 
 export const WYSIWYG2_OPTIONS_BASE: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
+	'fullscreen',
+	'separator',
 	'undo',
 	'redo',
 	'separator',
@@ -12,7 +14,7 @@ export const WYSIWYG2_OPTIONS_BASE: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
 	'italic',
 	'strike-through',
 	'underline',
-	WYSIWYG2_OPTIONS_ALIGN,
+	...WYSIWYG2_OPTIONS_ALIGN,
 	'separator',
 	'list-ul',
 	'list-ol',
@@ -44,7 +46,6 @@ export const WYSIWYG2_OPTIONS_FULL: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
 	'hr',
 	'separator',
 	'link',
-	// 'media',
 	'separator',
 	'table' as WYSIWYG2Control, // TODO: Remove "as WYSIWYG2Control" when components 1.42.0 is released.
 	'separator',
@@ -52,6 +53,8 @@ export const WYSIWYG2_OPTIONS_FULL: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
 ];
 
 export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
+	'fullscreen',
+	'separator',
 	'undo',
 	'redo',
 	'separator',
@@ -71,7 +74,6 @@ export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYG2Control[] | WYSIWYG2C
 	'hr',
 	'separator',
 	'link',
-	// 'media',
 	'separator',
 	'table' as WYSIWYG2Control, // TODO: Remove "as WYSIWYG2Control" when components 1.42.0 is released.
 	'separator',

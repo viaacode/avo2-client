@@ -153,7 +153,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			title={
 				isCollection()
 					? t('collection/components/modals/share-collection-modal___deel-deze-collectie')
-					: t('Deel deze bundel')
+					: t('collection/components/modals/publish-collection-modal___deel-deze-bundel')
 			}
 			size="large"
 			onClose={onClose}
