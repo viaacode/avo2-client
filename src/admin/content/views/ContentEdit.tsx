@@ -1,4 +1,4 @@
-import { get, has, isNil, kebabCase, without, isFunction } from 'lodash-es';
+import { get, has, isFunction, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -448,12 +448,18 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						payload: newConfig,
 					});
 
-					ToastService.success(t('De blok is toegevoegd.'), false);
+					ToastService.success(
+						t('admin/content/views/content-edit___de-blok-is-toegevoegd'),
+						false
+					);
 				}
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to paste content block', err));
-			ToastService.danger(t('Het plakken van het content blok is mislukt.'), false);
+			ToastService.danger(
+				t('admin/content/views/content-edit___het-plakken-van-het-content-blok-is-mislukt'),
+				false
+			);
 		}
 	};
 

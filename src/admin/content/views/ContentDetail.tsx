@@ -210,7 +210,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				try {
 					if (!contentPage) {
 						ToastService.danger(
-							t('De content pagina kon niet worden gedupliceerd.'),
+							t(
+								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
+							),
 							false
 						);
 						return;
@@ -224,7 +226,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 					if (!duplicateContentPage) {
 						ToastService.danger(
-							t('De gedupliceerde content pagina kon niet worden gevonden.'),
+							t(
+								'admin/content/views/content-detail___de-gedupliceerde-content-pagina-kon-niet-worden-gevonden'
+							),
 							false
 						);
 						return;
@@ -235,14 +239,19 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						history
 					);
 
-					ToastService.success(t('De content pagina is gedupliceerd'), false);
+					ToastService.success(
+						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd'),
+						false
+					);
 				} catch (err) {
 					console.error('Failed to duplicate content page', err, {
 						originalContentPage: contentPage,
 					});
 
 					ToastService.danger(
-						t('Het dupliceren van de content pagina is mislukt.'),
+						t(
+							'admin/content/views/content-detail___het-dupliceren-van-de-content-pagina-is-mislukt'
+						),
 						false
 					);
 				}
@@ -311,7 +320,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	// Render
 	const renderContentDetail = (contentPage: DbContent | null): ReactElement | null => {
 		if (!contentPage) {
-			ToastService.danger(t('De content pagina kon niet worden ingeladen.'), false);
+			ToastService.danger(
+				t(
+					'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-ingeladen'
+				),
+				false
+			);
 			return null;
 		}
 
@@ -321,7 +335,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			case 'metadata':
 				return <ContentDetailMetaData contentPage={contentPage} />;
 			default:
-				return <Blankslate title={t('Dit tabblad kon niet gevonden worden.')} />;
+				return (
+					<Blankslate
+						title={t(
+							'admin/content/views/content-detail___dit-tabblad-kon-niet-gevonden-worden'
+						)}
+					/>
+				);
 		}
 	};
 
