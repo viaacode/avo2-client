@@ -241,6 +241,7 @@ export class ContentService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_CONTENT_LABEL_LINKS,
+				update: ApolloCacheManager.clearContentLabels,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
@@ -266,6 +267,7 @@ export class ContentService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: DELETE_CONTENT_LABEL_LINKS,
+				update: ApolloCacheManager.clearContentCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });

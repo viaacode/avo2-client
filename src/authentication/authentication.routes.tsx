@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Route } from 'react-router';
 
 import { APP_PATH } from '../constants';
+import Profile from '../settings/components/Profile';
 
 import { Login, Logout, RegisterOrLogin, RegisterStamboek } from './views';
 import AcceptConditions from './views/registration-flow/l8-accept-conditions';
@@ -40,5 +41,11 @@ export const renderAuthenticationRoutes = (): ReactNode[] => [
 		exact
 		path={APP_PATH.ACCEPT_CONDITIONS.route}
 		key={APP_PATH.ACCEPT_CONDITIONS.route}
+	/>,
+	<Route
+		component={Profile}
+		exact
+		path={APP_PATH.COMPLETE_PROFILE.route}
+		key={APP_PATH.COMPLETE_PROFILE.route}
 	/>,
 ];
