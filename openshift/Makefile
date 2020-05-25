@@ -1,14 +1,11 @@
 PROJECT=sc-avo2
 GIT_VERSION=`git describe --tags`
-APP_NAME=avo2-client
-WD=/tmp
 REPO_URI=https://github.com/viaacode/avo2-client.git
 GIT_NAME=avo2-client
-JENKINS_WORKDIR=
-TOKEN=`oc whoami -t`
-openshiftserver=https://do-prd-okp-m0.do.viaa.be:8443
-path_to_oc=`which oc`
-oc_registry=docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
+okd_registry=docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
+ENDPOINT=https://c100-e.eu-de.containers.cloud.ibm.com:31240
+okd_endpoint=https://do-prd-okp-m0.do.viaa.be:8443
+oc_registry=docker-registry-default.meemoo-596946-2bc857e5f10eb63ab790a3a1d19a696c-0001.eu-de.containers.appdomain.cloud
 .ONESHELL:
 SHELL = /bin/bash
 .PHONY:	all
@@ -30,28 +27,24 @@ CMD_INT_TEST="npm run integration-tests"
 CMD_UNIT_TEST="npm run integration-tests"
 
 login:	check-env
-	#oc login ${openshiftserver}
-	oc project "${OC_PROJECT}"
-	#docker login -p ${TOKEN} -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be 2>/dev/null
+	login_oc.sh ${ENDPOINT} > /dev/null 2>&1 && oc project "${OC_PROJECT}"
 
 build:
-	docker build --build-arg NODE_ENV=int . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION} && \
-	docker tag docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}  docker-registry-default.meemoo-596946-2bc857e5f10eb63ab790a3a1d19a696c-0001.eu-de.containers.appdomain.cloud/sc-avo2/avo2-client:`git describe --tags`  
-
-push:	login
-	login_oc.sh https://do-prd-okp-m0.do.viaa.be:8443 && oc project sc-avo2 
-	docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION} && \
-	login_oc.sh https://c100-e.eu-de.containers.cloud.ibm.com:31240 &&  oc project sc-avo2 && \
-	docker push docker-registry-default.meemoo-596946-2bc857e5f10eb63ab790a3a1d19a696c-0001.eu-de.containers.appdomain.cloud/sc-avo2/avo2-client:`git describe --tags` && \ 
-	login_oc.sh https://do-prd-okp-m0.do.viaa.be:8443 && oc project sc-avo2 
+	docker build --build-arg NODE_ENV=int . -t ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION}
+	docker tag ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION} ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION}
+push:
+	login_oc.sh ${ENDPOINT} > /dev/null 2>&1  && oc project sc-avo2 &&\
+	docker push ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION} && \
+	login_oc.sh ${okd_endpoint} > /dev/null 2>&1  && oc project sc-avo2 &&\
+	docker push ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION} 
 tag_int:
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int
-rollout_int:	login
-	bash ./openshift/wait4rollout.sh int
+rollout_int:
+	echo not implemented
 tag_staging:	login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas
-versions_int:
-	bash ./openshift/versions.sh int
+staging:	tag_staging
+	bash  ./openshift/wait4rollout.sh qas
 versions_qas:
 	bash ./openshift/versions.sh qas
 versions_prd:
@@ -60,13 +53,5 @@ int_test:
 	bash ./openshift/cy-openshift.sh
 unit_test:
 	bash ./openshift/unittest-openshift.sh
-
-
-
 anno_qas:	login versions_qas
 anno_prd:	login versions_prd
-staging:	tag_staging
-	bash  ./openshift/wait4rollout.sh qas && bash ./openshift/versions.sh qas
-
-
-

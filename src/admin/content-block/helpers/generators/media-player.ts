@@ -83,7 +83,9 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 			autoplay: {
 				editorType: ContentBlockEditor.Checkbox,
 				editorProps: {
-					label: i18n.t('Automatisch afspelen'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/media-player___automatisch-afspelen'
+					),
 				} as CheckboxProps,
 			},
 		},

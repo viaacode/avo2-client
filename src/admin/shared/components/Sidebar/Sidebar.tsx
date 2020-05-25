@@ -49,7 +49,10 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 				)
 			);
 			ToastService.danger(
-				i18n.t('Navigatie item met leeg pad: {{label}}', { label: navItem.label }),
+				i18n.t(
+					'admin/shared/components/sidebar/sidebar___navigatie-item-met-leeg-pad-label',
+					{ label: navItem.label }
+				),
 				false
 			);
 		}
