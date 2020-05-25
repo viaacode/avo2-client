@@ -450,14 +450,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						payload: newConfig,
 					});
 
-					ToastService.success(
-						t('Uw geplakte content blok is toegevoegd aan de content pagina.')
-					);
+					ToastService.success(t('De blok is toegevoegd.'), false);
 				}
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to paste content block', err));
-			ToastService.danger(t('Het plakken van het content blok is mislukt.'));
+			ToastService.danger(t('Het plakken van het content blok is mislukt.'), false);
 		}
 	};
 

@@ -22,6 +22,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { ToastService } from '../../../../shared/services';
 import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
@@ -241,7 +242,17 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								type="tertiary"
 							/>
 						</ButtonGroup>
-						<CopyToClipboard text={JSON.stringify({ block: config })}>
+						<CopyToClipboard
+							text={JSON.stringify({ block: config })}
+							onCopy={() =>
+								ToastService.success(
+									t(
+										'De blok is naar je klembord gekopieerd. Druk ctrl + v om hem te plakken.'
+									),
+									false
+								)
+							}
+						>
 							<Button
 								icon="copy"
 								size="small"
