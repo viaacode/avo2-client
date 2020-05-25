@@ -440,11 +440,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			if (e.clipboardData && e.clipboardData.getData) {
 				const pastedText = e.clipboardData.getData('text/plain');
 
-				const newConfig = JSON.parse(pastedText).block;
-
-				delete newConfig.id;
-
 				if (pastedText.startsWith('{"block":')) {
+					const newConfig = JSON.parse(pastedText).block;
+					delete newConfig.id;
 					dispatch({
 						type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
 						payload: newConfig,
