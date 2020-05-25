@@ -64,6 +64,9 @@ export class ApolloCacheManager {
 	public static clearPermissionCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'users_permission');
 
+	public static clearNotificationCache = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'users_notifications');
+
 	/**
 	 * Clears all content blocks related items from the cache
 	 * eg: content

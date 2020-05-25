@@ -189,6 +189,7 @@ export class CollectionService {
 				dataService.mutate({
 					mutation: DELETE_COLLECTION_FRAGMENT,
 					variables: { id },
+					update: ApolloCacheManager.clearCollectionCache,
 				})
 			);
 
@@ -224,6 +225,7 @@ export class CollectionService {
 							id,
 							fragment: fragmentToUpdate,
 						},
+						update: ApolloCacheManager.clearCollectionCache,
 					});
 				})
 			);
@@ -887,6 +889,7 @@ export class CollectionService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_COLLECTION_LABELS,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
@@ -912,6 +915,7 @@ export class CollectionService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: DELETE_COLLECTION_LABELS,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
@@ -1066,6 +1070,7 @@ export class CollectionService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_COLLECTION_RELATION,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });

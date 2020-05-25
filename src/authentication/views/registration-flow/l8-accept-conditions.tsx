@@ -9,7 +9,7 @@ import { Dispatch } from 'redux';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
@@ -18,7 +18,6 @@ import { ContentPageService } from '../../../shared/services/content-page-servic
 import { NotificationService } from '../../../shared/services/notification-service';
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
-import { isProfileComplete } from '../../helpers/get-profile-info';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { getLoginStateAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
@@ -106,11 +105,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				true
 			);
 
-			if (isProfileComplete(user)) {
-				getLoginState();
-			} else {
-				redirectToClientPage(APP_PATH.COMPLETE_PROFILE.route, history);
-			}
+			getLoginState();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to set accept conditions notification in the database')
