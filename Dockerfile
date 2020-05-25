@@ -10,9 +10,8 @@ WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
 RUN chown -R node:node /app
 RUN apk add --no-cache --virtual .gyp python make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-USER node
-COPY  . . 
-RUN npm ci --production=false 
+COPY  . .
+RUN npm ci --production=false
 FROM node:12-alpine AS build
 COPY --from=compile /app /app
 # set our node environment, defaults to production
@@ -22,12 +21,13 @@ ARG CI=true
 ENV NODE_ENV $NODE_ENV
 ENV CI $CI
 ENV TZ=Europe/Brussels
+ENV NODE_OPTIONS="--max_old_space_size=4096"
 WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
 RUN chown -R node:node /app
 USER node
-COPY  . . 
-#RUN npm ci --production=false 
+COPY  . .
+#RUN npm ci --production=false
 RUN CI=false npm run build
 # set permissions for openshift
 #USER root
