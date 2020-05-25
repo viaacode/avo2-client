@@ -17,6 +17,7 @@ import {
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
 import {
+	DELETE_CONTENT,
 	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
@@ -452,5 +453,24 @@ export class ContentService {
 		blockConfigs: ContentBlockConfig[]
 	): ContentBlockConfig[] {
 		return omitByDeep(blockConfigs, key => String(key).endsWith(RichEditorStateKey));
+	}
+
+	public static async deleteContentPage(id: number) {
+		try {
+			const response = await dataService.mutate({
+				variables: { id },
+				mutation: DELETE_CONTENT,
+				update: ApolloCacheManager.clearContentCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Failed due to graphql errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to delete content page from the database', err, {
+				id,
+				query: 'DELETE_CONTENT',
+			});
+		}
 	}
 }
