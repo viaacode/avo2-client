@@ -1,21 +1,9 @@
-import { LinkTarget } from '@viaa/avo2-components';
-
-export type ContentPickerType =
-	| 'CONTENT_PAGE'
-	| 'COLLECTION'
-	| 'ITEM'
-	| 'DROPDOWN'
-	| 'INTERNAL_LINK'
-	| 'EXTERNAL_LINK'
-	| 'BUNDLE'
-	| 'SEARCH_QUERY'
-	| 'PROJECTS'
-	| 'PROFILE'
-	| 'ANCHOR_LINK'; // TODO replace with type from typings repo after update to 2.16.0
+import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 
-export interface PickerTypeOption<T = ContentPickerType> {
+// TODO: remove | PROFILE when typings 2.18 is released.
+export interface PickerTypeOption<T = ContentPickerType | 'PROFILE'> {
 	value: T;
 	label: string;
 	disabled?: boolean;
@@ -31,7 +19,7 @@ export interface PickerSelectItem {
 
 export interface PickerItem {
 	label?: string;
-	type: ContentPickerType;
+	type: ContentPickerType | 'PROFILE';
 	value: string;
 	target?: LinkTarget;
 }

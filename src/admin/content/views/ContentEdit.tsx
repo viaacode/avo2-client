@@ -1,4 +1,4 @@
-import { get, has, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isFunction, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -171,23 +171,25 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					keysToValidate.forEach(key => {
 						const validator = fields[key].validator;
 
-						if (Array.isArray(state) && state.length > 0) {
-							state.forEach((singleState, stateIndex) => {
+						if (validator && isFunction(validator)) {
+							if (Array.isArray(state) && state.length > 0) {
+								state.forEach((singleState, stateIndex) => {
+									newErrors = validateContentBlockField(
+										key,
+										validator,
+										newErrors,
+										singleState[key as keyof ContentBlockComponentState],
+										stateIndex
+									);
+								});
+							} else if (has(state, key)) {
 								newErrors = validateContentBlockField(
 									key,
 									validator,
 									newErrors,
-									singleState[key as keyof ContentBlockComponentState],
-									stateIndex
+									state[key as keyof ContentBlockComponentState]
 								);
-							});
-						} else if (has(state, key)) {
-							newErrors = validateContentBlockField(
-								key,
-								validator,
-								newErrors,
-								state[key as keyof ContentBlockComponentState]
-							);
+							}
 						}
 					});
 					areConfigsValid = Object.keys(newErrors).length === 0;
@@ -237,7 +239,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					blockConfigs
+					blockConfigs,
+					true
 				);
 			} else {
 				if (!isNil(id)) {
@@ -432,57 +435,87 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
+	const onPasteContentBlock = (e: any) => {
+		try {
+			if (e.clipboardData && e.clipboardData.getData) {
+				const pastedText = e.clipboardData.getData('text/plain');
+
+				if (pastedText.startsWith('{"block":')) {
+					const newConfig = JSON.parse(pastedText).block;
+					delete newConfig.id;
+					dispatch({
+						type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
+						payload: newConfig,
+					});
+
+					ToastService.success(
+						t('admin/content/views/content-edit___de-blok-is-toegevoegd'),
+						false
+					);
+				}
+			}
+		} catch (err) {
+			console.error(new CustomError('Failed to paste content block', err));
+			ToastService.danger(
+				t('admin/content/views/content-edit___het-plakken-van-het-content-blok-is-mislukt'),
+				false
+			);
+		}
+	};
+
 	return isLoading || isLoadingContentTypes || isLoadingContentBlocks ? (
 		<Flex orientation="horizontal" center>
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout showBackButton pageTitle={pageTitle}>
-			<AdminLayoutTopBarRight>
-				<ButtonToolbar>
-					<Button
-						label={t('admin/content/views/content-edit___annuleer')}
-						onClick={navigateBack}
-						type="tertiary"
+		<div onPaste={onPasteContentBlock}>
+			<AdminLayout showBackButton pageTitle={pageTitle}>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							label={t('admin/content/views/content-edit___annuleer')}
+							onClick={navigateBack}
+							type="tertiary"
+						/>
+						<Button
+							disabled={isSaving}
+							label={t('admin/content/views/content-edit___opslaan')}
+							onClick={handleSave}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutHeader>
+					<Navbar background="alt" placement="top" autoHeight>
+						<Container mode="horizontal">
+							<Tabs tabs={tabs} onClick={setCurrentTab} />
+						</Container>
+					</Navbar>
+				</AdminLayoutHeader>
+				<AdminLayoutBody>
+					<MetaTags>
+						<title>
+							{GENERATE_SITE_TITLE(
+								get(contentForm, 'title'),
+								pageType === PageType.Create
+									? t(
+											'admin/content/views/content-edit___content-beheer-aanmaak-pagina-titel'
+									  )
+									: t(
+											'admin/content/views/content-edit___content-beheer-bewerk-pagina-titel'
+									  )
+							)}
+						</title>
+						<meta name="description" content={get(contentForm, 'description')} />
+					</MetaTags>
+					{renderTabContent()}
+					<DeleteObjectModal
+						deleteObjectCallback={removeContentBlockConfig}
+						isOpen={isDeleteModalOpen}
+						onClose={() => setIsDeleteModalOpen(false)}
 					/>
-					<Button
-						disabled={isSaving}
-						label={t('admin/content/views/content-edit___opslaan')}
-						onClick={handleSave}
-					/>
-				</ButtonToolbar>
-			</AdminLayoutTopBarRight>
-			<AdminLayoutHeader>
-				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">
-						<Tabs tabs={tabs} onClick={setCurrentTab} />
-					</Container>
-				</Navbar>
-			</AdminLayoutHeader>
-			<AdminLayoutBody>
-				<MetaTags>
-					<title>
-						{GENERATE_SITE_TITLE(
-							get(contentForm, 'title'),
-							pageType === PageType.Create
-								? t(
-										'admin/content/views/content-edit___content-beheer-aanmaak-pagina-titel'
-								  )
-								: t(
-										'admin/content/views/content-edit___content-beheer-bewerk-pagina-titel'
-								  )
-						)}
-					</title>
-					<meta name="description" content={get(contentForm, 'description')} />
-				</MetaTags>
-				{renderTabContent()}
-				<DeleteObjectModal
-					deleteObjectCallback={removeContentBlockConfig}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</div>
 	);
 };
 

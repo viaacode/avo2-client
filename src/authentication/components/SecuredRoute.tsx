@@ -1,4 +1,3 @@
-import { get } from 'lodash-es';
 import queryString from 'query-string';
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +9,6 @@ import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
-import { Profile } from '../../settings/components';
 import { buildLink } from '../../shared/helpers';
 import { AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
@@ -99,18 +97,6 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 									pathname: APP_PATH.ACCEPT_CONDITIONS.route,
 									state: { from: props.location },
 								}}
-							/>
-						);
-					}
-					if (path === APP_PATH.COMPLETE_PROFILE.route) {
-						// Force user to complete their profile before letting them in
-						// This has to happen in the secure route component so we can pass the user object to the profile component
-						return (
-							<Profile
-								{...props}
-								user={user}
-								isCompleteProfileStep
-								redirectTo={get(props, 'location.from.path')}
 							/>
 						);
 					}
