@@ -1,3 +1,5 @@
+import { ContentPickerType } from '@viaa/avo2-components';
+
 import i18n from '../../../../shared/translations/i18n';
 import { retrieveAnchorBlocks } from '../../helpers/content-picker/anchor-link';
 import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
@@ -8,7 +10,7 @@ import {
 import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
 import { retrieveItems } from '../../helpers/content-picker/item';
 import { retrieveProfiles } from '../../helpers/content-picker/profile';
-import { ContentPickerType, PickerTypeOption } from '../../types';
+import { PickerTypeOption } from '../../types';
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{

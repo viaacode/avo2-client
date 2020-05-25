@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 
 import { CustomError } from '../helpers';
 
-import { dataService } from './data-service';
+import { ApolloCacheManager, dataService } from './data-service';
 import {
 	GET_NOTIFICATION,
 	INSERT_NOTIFICATION,
@@ -78,6 +78,7 @@ export class NotificationService {
 					throughEmail,
 					throughPlatform,
 				},
+				update: ApolloCacheManager.clearNotificationCache,
 			});
 			if (mutateResponse.errors) {
 				throw new CustomError('Response from graphql contains errors', null, {
