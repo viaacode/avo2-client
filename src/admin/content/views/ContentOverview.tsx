@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -30,7 +29,7 @@ import {
 	navigate,
 } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import FilterTable, {
 	FilterableColumn,
@@ -44,7 +43,6 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
-import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentTableState } from '../content.types';
 import { useContentTypes } from '../hooks';
@@ -66,7 +64,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	const [contentTypes] = useContentTypes();
 
-	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
 	const fetchContentPages = useCallback(async () => {
@@ -222,10 +219,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return;
 			}
 
-			await triggerContentDelete({
-				variables: { id: contentToDelete.id },
-				update: ApolloCacheManager.clearContentCache,
-			});
+			await ContentService.deleteContentPage(contentToDelete.id);
+			fetchContentPages();
 			ToastService.success(
 				t(
 					'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
