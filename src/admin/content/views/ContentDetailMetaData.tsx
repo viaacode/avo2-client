@@ -125,7 +125,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							<div style={{ width: '400px' }}>
 								<Thumbnail
 									category="item"
-									src={(contentPage as any).thumbnail_path} // TODO: Fix type
+									src={contentPage.thumbnail_path || undefined}
 								/>
 							</div>,
 							t('admin/content/views/content-detail___cover-afbeelding')

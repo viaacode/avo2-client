@@ -60,7 +60,7 @@ export function mapNavElementsToNavigationItems(
 				return {
 					label: navItem.label,
 					icon: navItem.icon_name,
-					tooltip: (navItem as any).tooltip, // TODO: Remove 'as any' when typings 2.16 is released.
+					tooltip: navItem.tooltip,
 					component: <Component history={history} location={location} match={match} />,
 					key: `nav-item-${navItem.id}`,
 				};
@@ -70,7 +70,7 @@ export function mapNavElementsToNavigationItems(
 			return {
 				label: navItem.label,
 				icon: navItem.icon_name,
-				tooltip: (navItem as any).tooltip, // TODO: Remove 'as any' when typings 2.16 is released.
+				tooltip: navItem.tooltip,
 				location: getLocation(navItem, t),
 				target: navItem.link_target,
 				key: `nav-item-${navItem.id}`,

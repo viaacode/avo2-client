@@ -4,5 +4,4 @@ export { default as FragmentDetail } from './fragment/FragmentDetail';
 export { default as FragmentEdit } from './fragment/FragmentEdit';
 export { default as CollectionStillsModal } from './modals/CollectionStillsModal';
 export { default as CutFragmentModal } from './modals/CutFragmentModal';
-export { default as ReorderCollectionModal } from './modals/ReorderCollectionModal';
 export { default as PublishCollectionModal } from './modals/PublishCollectionModal';
