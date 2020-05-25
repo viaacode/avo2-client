@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.36.0",
+	"version": "0.35.2",
 	"private": true,
 	"scripts": {
 		"preinstall": "npx npm-force-resolutions",
@@ -47,6 +47,7 @@
 		"query-string": "^6.8.3",
 		"react": "^16.8.6",
 		"react-apollo": "^2.5.8",
+		"react-copy-to-clipboard": "^5.0.2",
 		"react-datepicker": "^2.9.6",
 		"react-dom": "^16.8.6",
 		"react-i18next": "^11.2.7",
@@ -83,6 +84,7 @@
 		"@types/node-fetch": "^2.5.7",
 		"@types/node-zendesk": "^1.4.0",
 		"@types/react": "16.8.17",
+		"@types/react-copy-to-clipboard": "^4.3.0",
 		"@types/react-datepicker": "^2.9.3",
 		"@types/react-dom": "16.8.4",
 		"@types/react-redux": "^6.0.14",
