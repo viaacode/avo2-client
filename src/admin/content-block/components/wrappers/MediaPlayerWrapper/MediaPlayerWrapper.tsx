@@ -32,7 +32,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
 
-	const initFlowPlayer = async () => {
+	const initFlowPlayer = useCallback(async () => {
 		try {
 			if (!playerTicket && item) {
 				const data: string = await fetchPlayerTicket(item.value.toString());
@@ -46,7 +46,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 				)
 			);
 		}
-	};
+	}, [setPlayerTicket, playerTicket, item]);
 
 	const retrieveStill = useCallback(async () => {
 		if (poster) {
