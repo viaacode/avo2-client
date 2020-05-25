@@ -3,7 +3,7 @@ import { WYSIWYG2Control } from '@viaa/avo2-components';
 export const WYSIWYG2_OPTIONS_ALIGN: WYSIWYG2Control[] = ['separator', 'text-align'];
 
 export const WYSIWYG2_OPTIONS_BASE: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
-	'fullscreen',
+	'fullscreen' as WYSIWYG2Control, // TODO: Remove "as WYSIWYG2Control" when components 1.42.0 is released.
 	'separator',
 	'undo',
 	'redo',
@@ -53,7 +53,7 @@ export const WYSIWYG2_OPTIONS_FULL: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
 ];
 
 export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
-	'fullscreen',
+	'fullscreen' as WYSIWYG2Control, // TODO: Remove "as WYSIWYG2Control" when components 1.42.0 is released.
 	'separator',
 	'undo',
 	'redo',
