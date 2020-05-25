@@ -53,7 +53,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 			setLoadingInfo({
 				state: 'error',
 				message: t(
-					'Het controleren of deze collectie gebruikt wordt door een van je opdrachten is mislukt'
+					'collection/components/modals/delete-collection-modal___het-controleren-of-deze-collectie-gebruikt-wordt-door-een-van-je-opdrachten-is-mislukt'
 				),
 			});
 		}
@@ -85,8 +85,20 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
-							<Button type="secondary" label={t('Annuleer')} onClick={onClose} />
-							<Button type="danger" label={t('Verwijder')} onClick={handleDelete} />
+							<Button
+								type="secondary"
+								label={t(
+									'collection/components/modals/delete-collection-modal___annuleer'
+								)}
+								onClick={onClose}
+							/>
+							<Button
+								type="danger"
+								label={t(
+									'collection/components/modals/delete-collection-modal___verwijder'
+								)}
+								onClick={handleDelete}
+							/>
 						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarRight>
@@ -97,7 +109,11 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const renderConfirmUsedByAssignment = () => {
 		return (
 			<>
-				<p>{t('Deze collectie wordt nog gebruikt door deze opdrachten:')}</p>
+				<p>
+					{t(
+						'collection/components/modals/delete-collection-modal___deze-collectie-wordt-nog-gebruikt-door-deze-opdrachten'
+					)}
+				</p>
 				<ul>
 					{(assignments || []).map(assigment => (
 						<li key={assigment.id}>
@@ -119,9 +135,13 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const renderDeleteMessage = () => {
 		return (
 			<p>
-				{t('ben je zeker dat je deze collectie wil verwijderen?')}
+				{t(
+					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+				)}
 				<br />
-				{t('Deze operatie kan niet meer ongedaan gemaakt worden.')}
+				{t(
+					'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
+				)}
 			</p>
 		);
 	};
@@ -140,7 +160,9 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('Verwijder deze collectie')}
+			title={t(
+				'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
+			)}
 			size="large"
 			onClose={onClose}
 			scrollable

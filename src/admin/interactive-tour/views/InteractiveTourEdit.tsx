@@ -338,14 +338,18 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				errors.steps = errors.steps || [];
 				errors.steps[index] = {
 					...(errors.steps[index] || {}),
-					title: t('De titel is te lang'),
+					title: t(
+						'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
+					),
 				};
 			}
 			if (step.title.length > MAX_STEP_TEXT_LENGTH) {
 				errors.steps = errors.steps || [];
 				errors.steps[index] = {
 					...(errors.steps[index] || {}),
-					content: t('De tekst is te lang'),
+					content: t(
+						'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
+					),
 				};
 			}
 		});

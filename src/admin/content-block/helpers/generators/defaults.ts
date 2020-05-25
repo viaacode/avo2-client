@@ -49,7 +49,7 @@ export const BLOCK_STATE_DEFAULTS = (
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
 	padding: PADDING_FIELD(),
-	margin: PADDING_FIELD(i18n.t('Marge')),
+	margin: PADDING_FIELD(i18n.t('admin/content-block/helpers/generators/defaults___marge')),
 	userGroupIds: USER_GROUP_SELECT(),
 
 	// Used to link to this block from inside the same page using the anchors-block

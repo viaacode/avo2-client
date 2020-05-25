@@ -103,8 +103,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t('Het ophalen van de collecties is mislukt')
-					: t('Het ophalen van de bundels is mislukt'),
+					? t(
+							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-collecties-is-mislukt'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-bundels-is-mislukt'
+					  ),
 				actionButtons: ['home'],
 			});
 		}

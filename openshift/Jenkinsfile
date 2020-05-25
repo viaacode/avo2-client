@@ -26,10 +26,13 @@ pipeline {
     }
 
 	environment {
-		VERSION = sh(returnStdout: true, script: "git describe --tags|| echo noTagFound").trim()
-		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-		BRANCH = sh(returnStdout: true, script: "git branch | grep '*' | cut -d ' ' -f2").trim()
-		//sh(returnStdout: true, script: 'git describe --tags')
+        ENDPOINT = sh(returnStdout: true, script: 'echo https://c100-e.eu-de.containers.cloud.ibm.com:31240').trim()
+        VERSION = sh(returnStdout: true, script: "git describe --tags|| echo noTagFound").trim()
+        shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+        BRANCH = sh(returnStdout: true, script: "git branch | grep '*' | cut -d ' ' -f2").trim()
+        REGISTRY = sh(returnStdout: true, script: 'echo docker-registry-default.meemoo-596946-2bc857e5f10eb63ab790a3a1d19a696c-0001.eu-de.containers.appdomain.cloud').trim()
+        OKD_REGISTRY = sh(returnStdout: true, script: 'echo docker-registry-default.apps.do-prd-okp-m0.do.viaa.be').trim()
+        OKD_ENDPOINT = sh(returnStdout: true, script: 'echo https://do-prd-okp-m0.do.viaa.be:8443').trim()
     }
     stages {
         stage('preamble') {
@@ -42,25 +45,15 @@ pipeline {
                             echo "Building docker image the avo2-client This is a plain docker build"
 			                echo "Testing login script for the external docker agent"
 			                sh '''#!/bin/bash
-					   login_oc.sh https://do-prd-okp-m0.do.viaa.be:8443 && oc project sc-avo2
-					   '''
+                            set +x
+                            login_oc.sh $ENDPOINT && oc project sc-avo2 1>/dev/null
+                            '''
                         }
                     }
                 }//end script
             }
         }
-        stage('Template update') {
-            steps {
-                script {echo shortCommit
-			            echo VERSION
-                        sh'''#!/bin/bash
-			            echo commitRef:  ${shortCommit}
-                        echo "Configure template, you can use add to project if you want to install the app"
-                        oc project sc-avo2
-                        oc process -l app=avo2-client -p ENV=int PROXY_URL=http://avo2-proxy-int-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -                          '''
-                } // script
-            } // step
-        } // end stage
+
         stage('Docker build') {
             steps {
                 script {                   
@@ -84,8 +77,6 @@ pipeline {
             steps {
                 script {
                     sh'''#!/bin/bash
-                    echo *** PAUSING ROLLOUT  INT***
-                    #oc rollout pause dc/avo2-client-int 2>/dev/null || echo warn: was paused already
                     echo "pushing image version $VERSION"
                     make -f ./openshift/Makefile push 
                     '''
@@ -103,11 +94,8 @@ pipeline {
                     }// end script
                     script {
                         sh'''#!/bin/bash
-                        echo *** RESUMING rollout ***
-                        oc rollout resume dc/avo2-client-int 2>/dev/null || echo "not paused"
                         echo "Waiting deploymentconfig to rollout"
                         make -f ./openshift/Makefile rollout_int
-                        #oc rollout latest avo2-client-int
                         '''
                     }// end script               
                 }
@@ -142,7 +130,7 @@ pipeline {
                 echo 'I will tag a production image which will roll out !!'
                 sh '''#!/bin/bash
                 echo "### Using ${GIT_COMMIT} commit ###"
-                oc project sc-avo2
+                login_oc.sh https://c100-e.eu-de.containers.cloud.ibm.com:31240 && oc project sc-avo2 > /dev/null 2>&1 && \
                 oc tag sc-avo2/avo2-client:${VERSION} sc-avo2/avo2-client:prd
                 '''
                         } // script

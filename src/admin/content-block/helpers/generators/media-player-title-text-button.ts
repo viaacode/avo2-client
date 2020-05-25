@@ -64,7 +64,9 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 			),
 			mediaItem: VIDEO_FIELD(),
 			mediaSrc: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen video uploaden (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___eigen-video-uploaden-optioneel'
+				),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,
@@ -74,7 +76,9 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				} as FileUploadProps,
 			}),
 			mediaPoster: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen poster uploaden (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___eigen-poster-uploaden-optioneel'
+				),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,
@@ -86,7 +90,9 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 			mediaAutoplay: {
 				editorType: ContentBlockEditor.Checkbox,
 				editorProps: {
-					label: i18n.t('Automatisch afspelen'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/media-player-title-text-button___automatisch-afspelen'
+					),
 				} as CheckboxProps,
 			},
 			headingTitle: TEXT_FIELD(
