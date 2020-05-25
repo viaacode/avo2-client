@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { get, isEqual, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -21,6 +22,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { ToastService } from '../../../../shared/services';
 import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
@@ -240,6 +242,25 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								type="tertiary"
 							/>
 						</ButtonGroup>
+						<CopyToClipboard
+							text={JSON.stringify({ block: config })}
+							onCopy={() =>
+								ToastService.success(
+									t(
+										'De blok is naar je klembord gekopieerd. Druk ctrl + v om hem te plakken.'
+									),
+									false
+								)
+							}
+						>
+							<Button
+								icon="copy"
+								size="small"
+								title={t('Kopieer content blok')}
+								ariaLabel={t('Kopieer content blok')}
+								type="secondary"
+							/>
+						</CopyToClipboard>
 						<Button
 							icon="delete"
 							onClick={() => onRemove(blockIndex)}
