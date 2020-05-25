@@ -5,7 +5,7 @@ import { ContentPickerType } from '@viaa/avo2-components';
 
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
-// TODO: remove | PROFILE when typing 2.18 isi released.
+// TODO: remove | PROFILE when typings 2.18 is released.
 export const filterTypes = (
 	types: PickerTypeOption<ContentPickerType | 'PROFILE'>[],
 	allowedTypes: (ContentPickerType | 'PROFILE')[]
