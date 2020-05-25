@@ -17,7 +17,6 @@ import {
 } from './assignment-labels-service.gql';
 
 export class AssignmentLabelsService {
-	// TODO replace with typings type: Avo.Assignments.Label after update to v2.16.0
 	public static async getLabelsForProfile(profileId: string): Promise<Avo.Assignment.Label[]> {
 		try {
 			const response = await dataService.query({
