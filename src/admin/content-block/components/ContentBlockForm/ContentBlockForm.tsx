@@ -247,7 +247,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							onCopy={() =>
 								ToastService.success(
 									t(
-										'De blok is naar je klembord gekopieerd. Druk ctrl + v om hem te plakken.'
+										'admin/content-block/components/content-block-form/content-block-form___de-blok-is-naar-je-klembord-gekopieerd-druk-ctrl-v-om-hem-te-plakken'
 									),
 									false
 								)
@@ -256,8 +256,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							<Button
 								icon="copy"
 								size="small"
-								title={t('Kopieer content blok')}
-								ariaLabel={t('Kopieer content blok')}
+								title={t(
+									'admin/content-block/components/content-block-form/content-block-form___kopieer-content-blok'
+								)}
+								ariaLabel={t(
+									'admin/content-block/components/content-block-form/content-block-form___kopieer-content-blok'
+								)}
 								type="secondary"
 							/>
 						</CopyToClipboard>

@@ -33,6 +33,8 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { DataQueryComponent, FileUpload } from '../../shared/components';
+import { ROUTE_PARTS } from '../../shared/constants';
+import withUser from '../../shared/hocs/withUser';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
 import {
@@ -44,17 +46,17 @@ import store from '../../store';
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
-	isCompleteProfileStep?: boolean;
 	redirectTo?: string;
 }
 
 const Profile: FunctionComponent<ProfileProps> = ({
-	isCompleteProfileStep = false,
 	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
 	history,
+	location,
 	user,
 }) => {
 	const [t] = useTranslation();
+	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
 	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
 		label: enumLabel,
@@ -504,4 +506,4 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	);
 };
 
-export default Profile;
+export default withUser(Profile) as FunctionComponent<ProfileProps>;
