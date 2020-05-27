@@ -91,6 +91,13 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				}
 			}
 
+			// Check if path is old item id
+			if (/\/pid\/[^/]+/g.test(location.pathname)) {
+				const itemPid = (location.pathname.split('/').pop() || '').trim();
+				history.push(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }));
+				return;
+			}
+
 			// Check if path points to a content page
 			const contentPage: Avo.Content.Content | null = await ContentPageService.getContentPageByPath(
 				location.pathname
