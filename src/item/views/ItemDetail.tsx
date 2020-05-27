@@ -328,7 +328,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					title={item.title}
 					category={toEnglishContentType(item.type.label)}
 					showMetaData={true}
-					containerSize="large"
 					className="c-item-detail__header"
 				>
 					<HeaderContentType
@@ -336,16 +335,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						label={item.type.label}
 					>
 						<Spacer margin="bottom">
-							<div className="c-content-type c-content-type--video">
-								<Icon
-									name={
-										(get(item, 'type.id') === ContentTypeNumber.audio
-											? 'headphone'
-											: get(item, 'type.label')) as IconName
-									}
-								/>
-								<p>{get(item, 'type.label')}</p>
-							</div>
+						<div className="c-content-type c-content-type--video">
+							<Icon
+								name={
+									(get(item, 'type.id') === ContentTypeNumber.audio
+										? 'headphone'
+										: get(item, 'type.label')) as IconName
+								}
+							/>
+							<p>{get(item, 'type.label')}</p>
+						</div>
 						</Spacer>
 					</HeaderContentType>
 					<HeaderButtons>
