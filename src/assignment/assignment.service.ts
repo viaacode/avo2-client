@@ -21,12 +21,15 @@ import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_ID,
+	GET_ASSIGNMENT_WITH_RESPONSE,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
+	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
+	UPDATE_ASSIGNMENT_RESPONSE,
 } from './assignment.gql';
-import { AssignmentLayout } from './assignment.types';
+import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -552,6 +555,159 @@ export class AssignmentService {
 					'assignment/assignment___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht'
 				),
 			]);
+		}
+	}
+
+	public static async updateAssignmentResponse(
+		id: number,
+		assignmentResponse: Partial<Avo.Assignment.Response>
+	): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				mutation: UPDATE_ASSIGNMENT_RESPONSE,
+				variables: {
+					id,
+					assignmentResponse,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains Graphql errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update assignment response', err, {
+				id,
+				assignmentResponse,
+			});
+		}
+	}
+
+	public static async fetchAssignmentAndContent(
+		pupilProfileId: string,
+		assignmentId: number | string
+	): Promise<
+		| {
+				assignmentContent: Avo.Assignment.Content | null;
+				assignment: Avo.Assignment.Assignment;
+		  }
+		| AssignmentRetrieveError
+	> {
+		try {
+			// Load assignment
+			const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
+				query: GET_ASSIGNMENT_WITH_RESPONSE,
+				variables: {
+					pupilUuid: pupilProfileId,
+					assignmentId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, response);
+			}
+
+			const tempAssignment: Avo.Assignment.Assignment | undefined | null = get(
+				response,
+				'data.assignments[0]'
+			);
+
+			if (!tempAssignment) {
+				throw new CustomError('Failed to find assignment by id');
+			}
+
+			// Load content (collection, item or search query) according to assignment
+			const assignmentContent: Avo.Assignment.Content | null = await AssignmentService.fetchAssignmentContent(
+				tempAssignment
+			);
+			return {
+				assignmentContent,
+				assignment: tempAssignment,
+			};
+		} catch (err) {
+			const graphqlError = get(err, 'graphQLErrors[0].message');
+			if (graphqlError) {
+				return graphqlError;
+			}
+
+			throw new CustomError('Failed to fetch assignment with content', err, {
+				pupilProfileId,
+				assignmentId,
+			});
+		}
+	}
+
+	public static isOwnerOfAssignment(
+		assignment: Avo.Assignment.Assignment,
+		user: Avo.User.User | undefined
+	) {
+		return getProfileId(user) === assignment.owner_profile_id;
+	}
+
+	/**
+	 * If the creation of the assignment response fails, we'll still continue with getting the assignment content
+	 * @param assignment assignment is passed since the tempAssignment has not been set into the state yet,
+	 * since we might need to get the assignment content as well and
+	 * this looks cleaner if everything loads at once instead of staggered
+	 * @param user
+	 */
+	public static async createAssignmentResponseObject(
+		assignment: Avo.Assignment.Assignment,
+		user: Avo.User.User | undefined
+	) {
+		try {
+			if (!this.isOwnerOfAssignment(assignment, user)) {
+				let assignmentResponse: Partial<Avo.Assignment.Response> | null | undefined = get(
+					assignment,
+					'assignment_responses[0]'
+				);
+
+				if (!assignmentResponse) {
+					// Student has never viewed this assignment before, we should create a response object for him
+					assignmentResponse = {
+						owner_profile_ids: [getProfileId(user)],
+						assignment_id: assignment.id,
+						collection: null,
+						collection_uuid: null,
+						submitted_at: null,
+					};
+					const response = await dataService.mutate({
+						mutation: INSERT_ASSIGNMENT_RESPONSE,
+						variables: {
+							assignmentResponses: [assignmentResponse],
+						},
+					});
+
+					if (response.errors) {
+						throw new CustomError('Response contains Graphql errors', null, {
+							response,
+						});
+					}
+
+					const assignmentResponseId = get(
+						response,
+						'data.insert_app_assignment_responses.returning[0].id'
+					);
+
+					if (isNil(assignmentResponseId)) {
+						throw new CustomError(
+							'Response from graphql does not contain an assignment response id',
+							null,
+							{ response }
+						);
+					}
+
+					(assignmentResponse as Partial<
+						Avo.Assignment.Response
+					>).id = assignmentResponseId;
+					assignment.assignment_responses = [
+						assignmentResponse as Avo.Assignment.Response,
+					];
+				}
+			}
+		} catch (err) {
+			throw new CustomError('Failed to insert an assignment response in the database', err, {
+				assignment,
+			});
 		}
 	}
 }

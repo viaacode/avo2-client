@@ -23,7 +23,7 @@ export const CONTENT_LABEL_TO_QUERY: {
 	ITEM: {
 		query: GET_ITEM_BY_EXTERNAL_ID,
 		resultPath: 'app_item_meta[0]',
-		getVariables: (id: string) => ({ id }),
+		getVariables: (id: string) => ({ externalId: id }),
 	},
 	ZOEKOPDRACHT: {
 		// TODO implement search query saving and usage

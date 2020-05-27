@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash-es';
+import { get, isEmpty, compact } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -79,6 +79,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			PermissionService.hasPermission(PermissionName.CREATE_COLLECTIONS, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_BUNDLES, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENT_RESPONSE, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
 		])
 			.then(response => {
@@ -93,8 +94,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				setPermissions({
 					[COLLECTIONS_ID]: response[1],
 					[BUNDLES_ID]: response[2],
-					[ASSIGNMENTS_ID]: response[3],
-					[BOOKMARKS_ID]: response[4],
+					[ASSIGNMENTS_ID]: response[3] || response[4],
+					[BOOKMARKS_ID]: response[5],
 				});
 			})
 			.catch(err => {
@@ -120,7 +121,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			}
 			return {};
 		};
-		setTabs({
+		const tabs = {
 			...addTabIfUserHasPerm(COLLECTIONS_ID, {
 				component: () => (
 					<CollectionOrBundleOverview
@@ -185,7 +186,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					/>
 				),
 			}),
-		});
+		};
+		setTabs(tabs);
 	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
 
 	const goToTab = (id: ReactText) => {
@@ -222,12 +224,22 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
-		return GET_TABS().map(tab => ({
-			...tab,
-			active: (tabId || Object.keys(tabs)[0]) === tab.id,
-			label: tabCounts[tab.id] ? `${tab.label} (${tabCounts[tab.id]})` : tab.label,
-		}));
-	}, [tabs, tabId, tabCounts]);
+		return compact(
+			GET_TABS().map(tab => {
+				if (permissions[tab.id]) {
+					return {
+						...tab,
+						active: (tabId || Object.keys(tabs)[0]) === tab.id,
+						label: tabCounts[tab.id]
+							? `${tab.label} (${tabCounts[tab.id]})`
+							: tab.label,
+					};
+				} else {
+					return null;
+				}
+			})
+		);
+	}, [tabs, tabId, tabCounts, permissions]);
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 

@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { capitalize, compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -343,65 +343,86 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const renderActions = (rowData: Avo.Assignment.Assignment) => {
 		return (
 			<ButtonToolbar>
-				<Dropdown
-					isOpen={dropdownOpenForAssignmentId === rowData.id}
-					menuWidth="fit-content"
-					onClose={() => setDropdownOpenForAssignmentId(null)}
-					onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							icon="more-horizontal"
-							type="borderless"
-							title={t('assignment/views/assignment-overview___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={[
-								{
-									icon: 'edit2' as IconName,
-									id: 'edit',
-									label: t('assignment/views/assignment-overview___bewerk'),
-								},
-								{
-									icon: 'archive' as IconName,
-									id: 'archive',
-									label:
-										activeView === 'archived_assignments'
-											? t(
-													'assignment/views/assignment-overview___dearchiveer'
-											  )
-											: t('assignment/views/assignment-overview___archiveer'),
-								},
-								{
-									icon: 'copy' as IconName,
-									id: 'duplicate',
-									label: t('assignment/views/assignment-overview___dupliceer'),
-								},
-								{
-									icon: 'delete' as IconName,
-									id: 'delete',
-									label: t('assignment/views/assignment-overview___verwijder'),
-								},
-							]}
-							onClick={(actionId: ReactText) =>
-								handleExtraOptionsItemClicked(
-									actionId.toString() as ExtraAssignmentOptions,
-									rowData
-								)
-							}
-						/>
-					</DropdownContent>
-				</Dropdown>
+				{canEditAssignments && (
+					<Dropdown
+						isOpen={dropdownOpenForAssignmentId === rowData.id}
+						menuWidth="fit-content"
+						onClose={() => setDropdownOpenForAssignmentId(null)}
+						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
+						placement="bottom-end"
+					>
+						<DropdownButton>
+							<Button
+								icon="more-horizontal"
+								type="borderless"
+								title={t('assignment/views/assignment-overview___meer-opties')}
+							/>
+						</DropdownButton>
+						<DropdownContent>
+							<MenuContent
+								menuItems={[
+									{
+										icon: 'edit2' as IconName,
+										id: 'edit',
+										label: t('assignment/views/assignment-overview___bewerk'),
+									},
+									{
+										icon: 'archive' as IconName,
+										id: 'archive',
+										label:
+											activeView === 'archived_assignments'
+												? t(
+														'assignment/views/assignment-overview___dearchiveer'
+												  )
+												: t(
+														'assignment/views/assignment-overview___archiveer'
+												  ),
+									},
+									{
+										icon: 'copy' as IconName,
+										id: 'duplicate',
+										label: t(
+											'assignment/views/assignment-overview___dupliceer'
+										),
+									},
+									{
+										icon: 'delete' as IconName,
+										id: 'delete',
+										label: t(
+											'assignment/views/assignment-overview___verwijder'
+										),
+									},
+								]}
+								onClick={(actionId: ReactText) =>
+									handleExtraOptionsItemClicked(
+										actionId.toString() as ExtraAssignmentOptions,
+										rowData
+									)
+								}
+							/>
+						</DropdownContent>
+					</Dropdown>
+				)}
 
-				{!isMobileWidth() && (
+				{!isMobileWidth() && canEditAssignments && (
 					<Button
 						icon="chevron-right"
 						title={t('assignment/views/assignment-overview___bewerk-de-opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
+								id: rowData.id,
+							})
+						}
+						type="borderless"
+					/>
+				)}
+
+				{!isMobileWidth() && !canEditAssignments && (
+					<Button
+						icon="chevron-right"
+						title={t('Bekijk deze opdracht')}
+						onClick={() =>
+							navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, {
 								id: rowData.id,
 							})
 						}
@@ -538,9 +559,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 											value: 'assignments',
 										},
 										{
-											label: t(
-												'assignment/views/assignment-overview___gearchiveerde-opdrachten'
-											),
+											label: canEditAssignments
+												? t(
+														'assignment/views/assignment-overview___gearchiveerde-opdrachten'
+												  )
+												: t('Verlopen opdrachten'),
 											value: 'archived_assignments',
 										},
 									]}
@@ -565,73 +588,118 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									/>
 									<Button
 										type="secondary"
-										label={t(
-											'assignment/views/assignment-overview___gearchiveerde-opdrachten'
-										)}
-										title={t(
-											'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
-										)}
+										label={
+											canEditAssignments
+												? t(
+														'assignment/views/assignment-overview___gearchiveerde-opdrachten'
+												  )
+												: t('Verlopen opdrachten')
+										}
+										title={
+											canEditAssignments
+												? t(
+														'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
+												  )
+												: t('Verlopen opdrachten')
+										}
 										active={activeView === 'archived_assignments'}
 										onClick={() => setActiveView('archived_assignments')}
 									/>
 								</ButtonGroup>
 							)}
-							<CheckboxDropdownModal
-								label={t(
-									'assignment/views/assignment-overview___vakken-of-projecten'
-								)}
-								id="labels"
-								options={getLabelOptions()}
-								onChange={setSelectedAssignmentLabelsIds}
-							/>
+							{canEditAssignments && (
+								<CheckboxDropdownModal
+									label={t(
+										'assignment/views/assignment-overview___vakken-of-projecten'
+									)}
+									id="labels"
+									options={getLabelOptions()}
+									onChange={setSelectedAssignmentLabelsIds}
+								/>
+							)}
 						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarLeft>
-				<ToolbarRight>
-					<ToolbarItem>
-						<Form type="inline">
-							<FormGroup>
-								<TextInput
-									icon="filter"
-									value={filterString}
-									onChange={setFilterString}
-									disabled={!assignments || !assignments.length}
-								/>
-							</FormGroup>
-						</Form>
-					</ToolbarItem>
-				</ToolbarRight>
+				{canEditAssignments && (
+					<ToolbarRight>
+						<ToolbarItem>
+							<Form type="inline">
+								<FormGroup>
+									<TextInput
+										icon="filter"
+										value={filterString}
+										onChange={setFilterString}
+										disabled={!assignments || !assignments.length}
+									/>
+								</FormGroup>
+							</Form>
+						</ToolbarItem>
+					</ToolbarRight>
+				)}
 			</Toolbar>
 		);
 	};
 
 	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
 
+	const getEmptyFallbackTitle = () => {
+		if (canEditAssignments) {
+			// Teacher
+			if (activeView === 'assignments') {
+				return t(
+					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
+				);
+			} else {
+				return t('Je hebt nog geen opdrachten gearchiveerd');
+			}
+		} else {
+			// Pupil
+			if (activeView === 'assignments') {
+				return t('Je hebt nog geen opdrachten ontvangen van je leerkracht');
+			} else {
+				return t('Er zijn nog geen opdrachten verlopen');
+			}
+		}
+	};
+
+	const getEmptyFallbackDescription = () => {
+		if (canEditAssignments) {
+			// Teacher
+			if (activeView === 'assignments') {
+				return t(
+					'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken'
+				);
+			} else {
+				return t('Beschrijving gearchiveerde opdrachten in werkruimte');
+			}
+		} else {
+			// Pupil
+			if (activeView === 'assignments') {
+				return t('Beschrijving opdrachten in werkruimte voor leerling');
+			} else {
+				return t('Beschrijving verlopen opdrachten in werkruimte voor leerling');
+			}
+		}
+	};
+
 	const renderEmptyFallback = () => (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
 				{renderHeader()}
-				<ErrorView
-					icon="clipboard"
-					message={t(
-						'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
+				<ErrorView icon="clipboard" message={getEmptyFallbackTitle()}>
+					<p>{getEmptyFallbackDescription()}</p>
+					{canEditAssignments && (
+						<Spacer margin="top">
+							<Button
+								type="primary"
+								icon="search"
+								label={t(
+									'assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht'
+								)}
+								onClick={onClickCreate}
+							/>
+						</Spacer>
 					)}
-				>
-					<p>
-						<Trans i18nKey="assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken">
-							Beschrijving hoe een opdracht aan te maken
-						</Trans>
-					</p>
-					<Spacer margin="top">
-						<Button
-							type="primary"
-							icon="search"
-							label={t(
-								'assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht'
-							)}
-							onClick={onClickCreate}
-						/>
-					</Spacer>
 				</ErrorView>
 			</Container>
 		</Container>

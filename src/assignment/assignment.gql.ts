@@ -181,7 +181,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentId: Int!, $studentUuid: String!) {
+	query getAssignmentWithResponse($assignmentId: Int!, $pupilUuid: String!) {
 		assignments: app_assignments(
 			where: {
 				id: { _eq: $assignmentId }
@@ -201,7 +201,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					label
 				}
 			}
-			assignment_responses(where: { owner_profile_ids: { _has_key: $studentUuid } }) {
+			assignment_responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {
 				id
 				created_at
 				submitted_at
