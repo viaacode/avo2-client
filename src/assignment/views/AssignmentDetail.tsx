@@ -1,4 +1,4 @@
-import { cloneDeep, get, isNil, isString, omit, set } from 'lodash-es';
+import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -8,6 +8,7 @@ import {
 	BlockHeading,
 	Box,
 	Button,
+	Checkbox,
 	Container,
 	Dropdown,
 	DropdownButton,
@@ -127,7 +128,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 			setAssignment(response.assignment);
 			setAssignmentContent(response.assignmentContent);
-		} catch (err) {}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch assignment and content for detail page', err, {
+					user,
+					id: match.params.id,
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het laden van de opdracht is mislukt'),
+			});
+		}
 	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user]);
 
 	const checkPermissions = useCallback(async () => {
@@ -171,61 +183,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	const handleExtraOptionsClick = async (itemId: 'archive') => {
 		if (itemId === 'archive') {
 			try {
-				if (assignment && AssignmentService.isOwnerOfAssignment(assignment, user)) {
-					ToastService.info(
-						t(
-							'assignment/views/assignment-detail___u-kan-deze-opdracht-niet-archiveren-want-dit-is-slechts-een-voorbeeld'
-						)
-					);
+				if (!assignment) {
 					return;
 				}
-
-				const assignmentResponse = getAssignmentResponse();
-
-				if (!isNil(assignmentResponse) && !isNil(assignmentResponse.id)) {
-					const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), [
-						'__typename',
-						'id',
-					]);
-					await AssignmentService.updateAssignmentResponse(
-						assignmentResponse.id,
-						updatedAssignmentResponse
-					);
-					ToastService.success(
-						isAssignmentResponseArchived()
-							? t(
-									'assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd'
-							  )
-							: t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
-					);
-
-					// Update local cached assignment
-					setAssignment(
-						set(
-							cloneDeep(assignment as Avo.Assignment.Assignment),
-							'assignment_responses[0].is_archived',
-							!isAssignmentResponseArchived()
-						)
-					);
-				} else {
-					console.error(
-						new CustomError(
-							"assignmentResponse object is null or doesn't have an id",
-							null,
-							{
-								assignmentResponse,
-							}
-						)
-					);
-					ToastService.danger(
-						t(
-							'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
-						)
-					);
-				}
+				const archived = !(get(assignment, 'is_archived') || false);
+				await AssignmentService.toggleAssignmentArchiveStatus(assignment.id, archived);
+				fetchAssignmentAndContent();
+				ToastService.success(
+					archived ? t('De opdracht is gearchiveerd') : t('De opdracht is gedearchiveerd')
+				);
 			} catch (err) {
 				console.error(
-					new CustomError('failed to update assignmentResponse object', err, {
+					new CustomError('failed to archive the assignment object', err, {
 						assignment,
 					})
 				);
@@ -238,12 +207,42 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		}
 	};
 
-	const getAssignmentResponse = (): Avo.Assignment.Response | null => {
-		return get(assignment, 'assignment_responses[0]', null);
-	};
-
-	const isAssignmentResponseArchived = (): Avo.Assignment.Response | null => {
-		return get(getAssignmentResponse(), 'is_archived', false);
+	const handleSubmittedAtChanged = async (checked: boolean) => {
+		try {
+			const assignmentResponse = get(assignment, 'assignment_responses[0]');
+			if (!assignmentResponse) {
+				console.error(
+					new CustomError(
+						'Trying to submit an assignment response while passing null',
+						null,
+						{ assignmentResponse }
+					)
+				);
+				ToastService.danger(
+					t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+				);
+				return;
+			}
+			await AssignmentService.toggleAssignmentResponseSubmitStatus(
+				assignmentResponse.id,
+				checked ? new Date().toISOString() : null
+			);
+			fetchAssignmentAndContent();
+			ToastService.success(
+				checked
+					? t('De opdracht is gemarkeerd als gemaakt')
+					: t('De opdracht is gemarkeerd als nog niet gemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle assignment response submit status', err, {
+					assignment,
+				})
+			);
+			ToastService.danger(
+				t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+			);
+		}
 	};
 
 	// Render methods
@@ -354,6 +353,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 								</ToolbarLeft>
 								<ToolbarRight>
 									<ToolbarItem>
+										<Checkbox
+											label={t('Opdracht gemaakt')}
+											checked={
+												!!get(
+													assignment,
+													'assignment_responses[0].submitted_at'
+												)
+											}
+											onChange={handleSubmittedAtChanged}
+										/>
+									</ToolbarItem>
+									<ToolbarItem>
 										<TagList tags={tags} closable={false} swatches bordered />
 									</ToolbarItem>
 									{!!profile && (
@@ -392,7 +403,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 															{
 																icon: 'archive',
 																id: 'archive',
-																label: isAssignmentResponseArchived()
+																label: assignment.is_archived
 																	? t(
 																			'assignment/views/assignment-detail___dearchiveer'
 																	  )

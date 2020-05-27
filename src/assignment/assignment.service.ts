@@ -1,6 +1,6 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, isString, without } from 'lodash-es';
+import { cloneDeep, get, isNil, isString, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
@@ -27,7 +27,9 @@ import {
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
+	UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
 	UPDATE_ASSIGNMENT_RESPONSE,
+	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
 
@@ -64,9 +66,9 @@ export class AssignmentService {
 	static async fetchAssignments(
 		canEditAssignments: boolean,
 		user: Avo.User.User,
-		archived: boolean,
-		sortColumn: string,
-		sortOrder: Avo.Search.OrderDirection,
+		archived: boolean | null,
+		pastDeadline: boolean | null,
+		order: any,
 		page: number,
 		filterString: string | undefined,
 		labelIds: string[] | undefined
@@ -97,10 +99,25 @@ export class AssignmentService {
 					assignment_assignment_tags: { assignment_tag_id: { _in: labelIds } },
 				});
 			}
+			if (!isNil(archived)) {
+				filterArray.push({
+					is_archived: { _eq: archived },
+				});
+			}
+			if (!isNil(pastDeadline)) {
+				if (pastDeadline) {
+					filterArray.push({
+						deadline_at: { _lt: new Date().toISOString() },
+					});
+				} else {
+					filterArray.push({
+						deadline_at: { _gt: new Date().toISOString() },
+					});
+				}
+			}
 			variables = {
-				archived,
+				order: canEditAssignments ? order.assignment : order,
 				owner_profile_id: getProfileId(user),
-				order: { [sortColumn]: sortOrder },
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
 				filter: filterArray.length ? filterArray : {},
@@ -369,6 +386,64 @@ export class AssignmentService {
 		} catch (err) {
 			console.error(err);
 			throw err;
+		}
+	}
+
+	public static async toggleAssignmentArchiveStatus(
+		id: number | string,
+		archived: boolean
+	): Promise<void> {
+		try {
+			const response: void | ExecutionResult<
+				Avo.Assignment.Assignment
+			> = await dataService.mutate({
+				mutation: UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
+				variables: {
+					id,
+					archived,
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to toggle archived status for assignment', err, {
+				id,
+				archived,
+			});
+		}
+	}
+
+	public static async toggleAssignmentResponseSubmitStatus(
+		id: number | string,
+		submittedAt: string | null
+	): Promise<void> {
+		try {
+			const response: void | ExecutionResult<
+				Avo.Assignment.Assignment
+			> = await dataService.mutate({
+				mutation: UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
+				variables: {
+					id,
+					submittedAt,
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to toggle submitted at status for assignment response',
+				err,
+				{
+					id,
+					submittedAt,
+				}
+			);
 		}
 	}
 
@@ -709,5 +784,11 @@ export class AssignmentService {
 				assignment,
 			});
 		}
+	}
+
+	public static cleanAssignmentResponse(
+		assignmentResponse: Partial<Avo.Assignment.Response>
+	): Partial<Avo.Assignment.Response> {
+		return omit(assignmentResponse, ['__typename', 'id']);
 	}
 }

@@ -50,11 +50,13 @@ import {
 	fromNow,
 	isMobileWidth,
 	navigate,
+	renderAvatar,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
 
@@ -93,9 +95,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [page, setPage] = useState<number>(0);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
-	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<
-		AssignmentOverviewTableColumns | 'created_at'
-	>('created_at');
+	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<AssignmentOverviewTableColumns>(
+		'created_at'
+	);
 
 	const checkPermissions = useCallback(async () => {
 		try {
@@ -125,9 +127,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
 				user,
-				activeView === 'archived_assignments',
-				sortColumn,
-				sortOrder,
+				canEditAssignments ? activeView === 'archived_assignments' : null, // Teachers can see archived assignments
+				canEditAssignments ? null : activeView === 'archived_assignments', // pupils can see assignments past deadline
+				TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn]
+					? (TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn] as Function)(sortOrder)
+					: {
+							[sortColumn]: sortOrder,
+					  },
 				page,
 				filterString,
 				selectedAssignmentLabelsIds
@@ -340,6 +346,45 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setMarkedAssignment(null);
 	};
 
+	const toggleAssignmentSubmitStatus = async (
+		assignmentResponse: Avo.Assignment.Response | null
+	) => {
+		try {
+			if (!assignmentResponse) {
+				console.error(
+					new CustomError(
+						'Trying to submit an assignment response while passing null',
+						null,
+						{ assignmentResponse }
+					)
+				);
+				ToastService.danger(
+					t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+				);
+				return;
+			}
+			await AssignmentService.toggleAssignmentResponseSubmitStatus(
+				assignmentResponse.id,
+				assignmentResponse.submitted_at ? null : new Date().toISOString()
+			);
+			fetchAssignments();
+			ToastService.success(
+				assignmentResponse.submitted_at
+					? t('De opdracht is gemarkeerd als nog niet gemaakt')
+					: t('De opdracht is gemarkeerd als gemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle assignment response submit status', err, {
+					assignmentResponse,
+				})
+			);
+			ToastService.danger(
+				t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+			);
+		}
+	};
+
 	const renderActions = (rowData: Avo.Assignment.Assignment) => {
 		return (
 			<ButtonToolbar>
@@ -434,12 +479,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderCell = (
-		rowData: Avo.Assignment.Assignment,
+		assignment: Avo.Assignment.Assignment,
 		colKey: AssignmentOverviewTableColumns
 	) => {
-		const cellData: any = (rowData as any)[colKey];
-		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: rowData.id });
-		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: rowData.id });
+		const cellData: any = (assignment as any)[colKey];
+		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
+		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id });
 
 		switch (colKey) {
 			case 'title':
@@ -451,7 +496,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link to={canEditAssignments ? editLink : detailLink}>
-									{truncateTableValue(rowData.title)}
+									{truncateTableValue(assignment.title)}
 								</Link>
 							</h3>
 						</div>
@@ -463,7 +508,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'labels':
 				const labels: Avo.Assignment.Label[] = (get(
-					rowData,
+					assignment,
 					'assignment_assignment_tags',
 					[]
 				) as any[]).map((labelLink: any) => labelLink.assignment_tag);
@@ -474,6 +519,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				}));
 				return <TagList tags={tagOptions} swatches closable={false} />;
 
+			case 'author':
+				return renderAvatar(get(assignment, 'profile', null), {
+					includeRole: false,
+					dark: true,
+					abbreviatedName: true,
+					small: true,
+				});
+
 			case 'class_room':
 				return cellData;
 
@@ -482,13 +535,30 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'assignment_responses':
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: rowData.id })}>
+					<Link
+						to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}
+					>
 						{(cellData || []).length}
 					</Link>
 				);
 
+			case 'submitted_at':
+				const isSubmitted = !!get(assignment, 'assignment_responses[0].submitted_at');
+				return (
+					<Button
+						type="borderless"
+						icon={isSubmitted ? 'check-square' : 'square'}
+						title={
+							isSubmitted ? t('Markeer als niet gemaakt') : t('Markeer als gemaakt')
+						}
+						onClick={() =>
+							toggleAssignmentSubmitStatus(get(assignment, 'assignment_responses[0]'))
+						}
+					/>
+				);
+
 			case 'actions':
-				return renderActions(rowData);
+				return renderActions(assignment);
 
 			default:
 				return cellData;
@@ -504,8 +574,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					{
 						id: 'labels',
 						label: t('assignment/views/assignment-overview___vak-of-project'),
+						sortable: false,
 					},
 			  ]),
+		...(canEditAssignments ? [] : [{ id: 'author', label: t('Leerkracht'), sortable: true }]), // Only show teacher for pupils
 		...(isMobileWidth()
 			? []
 			: [
@@ -520,6 +592,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			label: t('assignment/views/assignment-overview___deadline'),
 			sortable: true,
 		},
+		...(canEditAssignments
+			? []
+			: [
+					{
+						id: 'submitted_at',
+						label: t('Status'),
+						tooltip: t('Heb je deze opdracht reeds ingediend?'),
+						sortable: true,
+					},
+			  ]), // Only show teacher for pupils
 		// { id: 'assignment_responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'actions', label: '' },
 	] as AssignmentColumn[];
@@ -682,11 +764,29 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	};
 
+	const getEmptyFallbackIcon = (): IconName => {
+		if (canEditAssignments) {
+			// Teacher
+			if (activeView === 'assignments') {
+				return 'clipboard';
+			} else {
+				return 'archive';
+			}
+		} else {
+			// Pupil
+			if (activeView === 'assignments') {
+				return 'clipboard';
+			} else {
+				return 'clock';
+			}
+		}
+	};
+
 	const renderEmptyFallback = () => (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
 				{renderHeader()}
-				<ErrorView icon="clipboard" message={getEmptyFallbackTitle()}>
+				<ErrorView icon={getEmptyFallbackIcon()} message={getEmptyFallbackTitle()}>
 					<p>{getEmptyFallbackDescription()}</p>
 					{canEditAssignments && (
 						<Spacer margin="top">

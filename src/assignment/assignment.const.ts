@@ -6,6 +6,8 @@ import { GET_ITEM_BY_EXTERNAL_ID } from '../admin/items/items.gql';
 import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { ROUTE_PARTS } from '../shared/constants';
 
+import { AssignmentOverviewTableColumns } from './assignment.types';
+
 export const ITEMS_PER_PAGE = 20;
 
 export const CONTENT_LABEL_TO_QUERY: {
@@ -47,4 +49,26 @@ export const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
 	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
+};
+
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	title: (order: Avo.Search.OrderDirection) => ({
+		assignment: { title: order },
+	}),
+	class_room: (order: Avo.Search.OrderDirection) => ({
+		assignment: { class_room: order },
+	}),
+	deadline_at: (order: Avo.Search.OrderDirection) => ({
+		assignment: { deadline_at: order },
+	}),
+	created_at: (order: Avo.Search.OrderDirection) => ({
+		assignment: { created_at: order },
+	}),
+	author: (order: Avo.Search.OrderDirection) => ({
+		assignment: { profile: { usersByuserId: { last_name: order } } },
+	}),
 };
