@@ -6,6 +6,7 @@ export const ROUTE_PARTS = Object.freeze({
 	collection: 'collectie',
 	collections: 'collecties',
 	content: 'content',
+	contentPageLabels: 'content-pagina-labels',
 	create: 'maak',
 	detail: 'detail',
 	edit: 'bewerk',
