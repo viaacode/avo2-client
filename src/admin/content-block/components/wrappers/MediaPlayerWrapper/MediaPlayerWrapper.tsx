@@ -1,18 +1,26 @@
 import classnames from 'classnames';
 import { get } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
+import { FlowPlayerWrapper } from '../../../../../shared/components';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
+import withUser from '../../../../../shared/hocs/withUser';
 import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../../../shared/services/stills-service';
 import i18n from '../../../../../shared/translations/i18n';
+import { ItemsService } from '../../../../items/items.service';
 
 import './BlockMediaPlayerWrapper.scss';
 
-interface MediaPlayerProps {
+interface MediaPlayerWrapperProps {
 	title: string;
 	item?: ButtonAction;
 	src?: string;
@@ -21,16 +29,21 @@ interface MediaPlayerProps {
 	autoplay?: boolean;
 }
 
-export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
+const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps & DefaultSecureRouteProps> = ({
 	item,
 	src,
 	poster,
 	title,
 	width,
 	autoplay,
+	location,
+	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
+	const [mediaItem, setMediaItem] = useState<Avo.Item.Item | null>(null);
 
 	const initFlowPlayer = useCallback(async () => {
 		try {
@@ -60,9 +73,23 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
 	}, [item, poster]);
 
+	const retrieveMediaItem = useCallback(async () => {
+		try {
+			if (item) {
+				setMediaItem(await ItemsService.fetchItemByExternalId(item.value.toString()));
+			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch item info from the database', err, { item })
+			);
+			ToastService.danger(t('Het ophalen van het fragment is mislukt'));
+		}
+	}, [item, t]);
+
 	useEffect(() => {
 		retrieveStill();
-	}, [retrieveStill]);
+		retrieveMediaItem();
+	}, [retrieveStill, retrieveMediaItem]);
 
 	useEffect(() => {
 		if (autoplay) {
@@ -78,7 +105,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 				'u-center-m'
 			)}
 		>
-			{!!videoStill && (
+			{!!videoStill && src && (
 				<BlockFlowPlayer
 					title={title}
 					src={src || (playerTicket ? playerTicket.toString() : null)}
@@ -93,6 +120,20 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 					autoplay={src ? autoplay : true}
 				/>
 			)}
+			{!!videoStill && mediaItem && (
+				<FlowPlayerWrapper
+					item={{
+						...mediaItem,
+						title: title || mediaItem.title,
+					}}
+					user={user}
+					location={location}
+				/>
+			)}
 		</div>
 	);
 };
+
+export default compose(withRouter, withUser)(MediaPlayerWrapper) as FunctionComponent<
+	MediaPlayerWrapperProps
+>;
