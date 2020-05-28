@@ -9,8 +9,7 @@ import { CustomError, getEnv, reorderDate } from '../../helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
-
-import { FlowPlayer } from './FlowPlayer/FlowPlayer';
+import { FlowPlayer } from '@viaa/avo2-components';
 
 export interface CuePoints {
 	start: number | null;
