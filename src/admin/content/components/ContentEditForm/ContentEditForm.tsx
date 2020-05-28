@@ -18,10 +18,9 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DeleteObjectModal, FileUpload } from '../../../../shared/components';
+import { FileUpload } from '../../../../shared/components';
 import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
-import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
@@ -60,8 +59,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	const [t] = useTranslation();
 
 	const [contentTypeLabels, setContentTypeLabels] = useState<Avo.Content.ContentLabel[]>([]);
-	const [labelToBeCreated, setLabelToBeCreated] = useState<string | null>(null);
-	const [isConfirmCreateModalOpen, setIsConfirmCreateModalOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		// Set fixed content width for specific page types
@@ -113,37 +110,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	const handleContentTypeChange = (value: string) => {
 		onChange('contentType', value);
 		onChange('labels', []);
-	};
-
-	const handleLabelCreate = async (value: TagInfo) => {
-		if (!value) {
-			return;
-		}
-		setLabelToBeCreated(value.label);
-		setIsConfirmCreateModalOpen(true);
-	};
-
-	const handleLabelCreateConfirmed = async () => {
-		try {
-			if (!labelToBeCreated) {
-				throw new CustomError(
-					'Failed to create label because the labelToBeCreated is undefined'
-				);
-			}
-			const newLabel = await ContentService.insertContentLabel(
-				labelToBeCreated,
-				formState.contentType
-			);
-			onChange('labels', [...formState.labels, newLabel]);
-		} catch (err) {
-			console.error(new CustomError('Failed to create label', err, { labelToBeCreated }));
-			ToastService.danger(
-				t(
-					'admin/content/components/content-edit-form/content-edit-form___het-aanmaken-van-het-label-is-mislukt'
-				),
-				false
-			);
-		}
 	};
 
 	const mapLabelsToTags = (contentLabels: Partial<Avo.Content.ContentLabel>[]): TagInfo[] => {
@@ -299,8 +265,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 												  )
 										}
 										allowMulti
-										allowCreate
-										onCreate={handleLabelCreate}
 										onChange={values =>
 											onChange(
 												'labels',
@@ -329,20 +293,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							</Column>
 						</Grid>
 					</Form>
-					<DeleteObjectModal
-						title={t(
-							'admin/content/components/content-edit-form/content-edit-form___maak-label-aan'
-						)}
-						body={t(
-							'admin/content/components/content-edit-form/content-edit-form___weet-je-zeker-dat-je-een-nieuw-label-wil-aanmaken'
-						)}
-						confirmLabel={t(
-							'admin/content/components/content-edit-form/content-edit-form___aanmaken'
-						)}
-						isOpen={isConfirmCreateModalOpen}
-						onClose={() => setIsConfirmCreateModalOpen(false)}
-						deleteObjectCallback={handleLabelCreateConfirmed}
-					/>
 				</Container>
 			</Container>
 		</Container>
