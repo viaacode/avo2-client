@@ -29,7 +29,7 @@ export const ROUTE_PARTS = Object.freeze({
 	stamboek: 'stamboek',
 	forTeachers: 'voor-leerkrachten',
 	forPupils: 'voor-leerlingen',
-	workspace: 'mijn-werkruimte',
+	workspace: 'werkruimte',
 	settings: 'instellingen',
 	help: 'hulp',
 	feedback: 'feedback',
