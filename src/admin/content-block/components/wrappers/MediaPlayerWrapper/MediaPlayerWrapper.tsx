@@ -2,16 +2,13 @@ import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
-import { compose } from 'redux';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { FlowPlayerWrapper } from '../../../../../shared/components';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
-import withUser from '../../../../../shared/hocs/withUser';
+import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../../../shared/services/stills-service';
@@ -29,14 +26,13 @@ interface MediaPlayerWrapperProps {
 	autoplay?: boolean;
 }
 
-const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps & DefaultSecureRouteProps> = ({
+const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps & UserProps> = ({
 	item,
 	src,
 	poster,
 	title,
 	width,
 	autoplay,
-	location,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -127,13 +123,10 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps & DefaultSec
 						title: title || mediaItem.title,
 					}}
 					user={user}
-					location={location}
 				/>
 			)}
 		</div>
 	);
 };
 
-export default compose(withRouter, withUser)(MediaPlayerWrapper) as FunctionComponent<
-	MediaPlayerWrapperProps
->;
+export default withUser(MediaPlayerWrapper) as FunctionComponent<MediaPlayerWrapperProps>;

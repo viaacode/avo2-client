@@ -1,10 +1,7 @@
-import { Location } from 'history';
 import { get } from 'lodash-es';
-import { parse } from 'query-string';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { FlowPlayer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
@@ -12,7 +9,8 @@ import { CustomError, getEnv, reorderDate } from '../../helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
-import { generateRandomId } from '../../helpers/uuid';
+
+import { FlowPlayer } from './FlowPlayer/FlowPlayer';
 
 export interface CuePoints {
 	start: number | null;
@@ -21,10 +19,10 @@ export interface CuePoints {
 
 interface FlowPlayerWrapperProps {
 	item: Avo.Item.Item;
-	user: Avo.User.User;
+	user: Avo.User.User | undefined;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
-	location: Location;
+	seekTime?: number;
 }
 
 /**
@@ -37,7 +35,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = ({
 	user,
 	canPlay = true,
 	cuePoints,
-	location,
+	seekTime = 0,
 }) => {
 	const [t] = useTranslation();
 
@@ -45,22 +43,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = ({
 
 	const [triggeredForUrl, setTriggeredForUrl] = useState<string | null>(null);
 	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [time, setTime] = useState<number>(0);
-	const [randomId] = useState<string>(generateRandomId());
 
 	useEffect(() => {
 		// reset token when item changes
-		console.log('resetting player ticket');
 		setPlayerTicket(undefined);
 	}, [item.external_id]);
-
-	useEffect(() => {
-		// Set video current time from the query params once the video has loaded its meta data
-		// If this happens sooner, the time will be ignored by the video player
-		const queryParams = parse(location.search);
-
-		setTime(parseInt((queryParams.time as string) || '0', 10));
-	}, [location.search]);
 
 	const initFlowPlayer = async () => {
 		try {
@@ -68,19 +55,20 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = ({
 				return;
 			}
 			const data: string = await fetchPlayerTicket(item.external_id);
-			console.log('setting player ticket', data);
 			setPlayerTicket(data);
-			trackEvents(
-				{
-					object: item.external_id,
-					object_type: 'avo_item_pid',
-					message: `Gebruiker ${getProfileName(user)} heeft het item ${
-						item.external_id
-					} afgespeeld`,
-					action: 'view',
-				},
-				user
-			);
+			if (user) {
+				trackEvents(
+					{
+						object: item.external_id,
+						object_type: 'avo_item_pid',
+						message: `Gebruiker ${getProfileName(user)} heeft het item ${
+							item.external_id
+						} afgespeeld`,
+						action: 'view',
+					},
+					user
+				);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to initFlowlayer in FlowPlayerWrapper', err, {
@@ -107,12 +95,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = ({
 		}
 	};
 
-	console.log('seek time: ', time, playerTicket, randomId);
 	return (
 		<div className="c-video-player t-player-skin--dark" ref={videoRef}>
 			<FlowPlayer
 				src={playerTicket ? playerTicket.toString() : null}
-				seekTime={time}
+				seekTime={seekTime}
 				poster={item.thumbnail_path}
 				title={item.title}
 				onInit={initFlowPlayer}

@@ -1,10 +1,19 @@
 import { debounce } from 'lodash-es';
-import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
-import { Trans } from 'react-i18next';
+import { parse } from 'querystring';
+import React, {
+	createRef,
+	FunctionComponent,
+	ReactNode,
+	RefObject,
+	useEffect,
+	useState,
+} from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
 	BlockHeading,
+	Button,
 	Column,
 	convertToHtml,
 	ExpandableContainer,
@@ -16,6 +25,7 @@ import { Color } from '../../admin/shared/types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { parseDuration } from '../../shared/helpers';
 
 import './ItemVideoDescription.scss';
 
@@ -45,9 +55,20 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	canPlay = true,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
+	const [seekTime, setSeekTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
+
+	useEffect(() => {
+		// Set video current time from the query params once the video has loaded its meta data
+		// If this happens sooner, the time will be ignored by the video player
+		const queryParams = parse(location.search);
+
+		setSeekTime(parseInt((queryParams.time as string) || '0', 10));
+	}, [location.search]);
 
 	useEffect(() => {
 		// Register window listener when the component mounts
@@ -72,54 +93,51 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		};
 	}, [videoRef]);
 
-	// const handleTimeLinkClicked = async (timestamp: string) => {
-	// 	const seconds = parseDuration(timestamp);
-	// 	history.push({
-	// 		pathname: location.pathname,
-	// 		search: `?time=${seconds}`,
-	// 	});
-	// };
+	const handleTimeLinkClicked = async (timestamp: string) => {
+		const seconds = parseDuration(timestamp);
+		setSeekTime(seconds);
+	};
 
-	// /**
-	//  * Split string by time markers and adds links to those times into the output jsx code
-	//  */
-	// const formatTimestamps = (description: string = ''): ReactNode => {
-	// 	const timestampRegex = /([0-9]{2}:[0-9]{2}:[0-9]{2}|\n)/g;
-	// 	const parts: string[] = description.split(timestampRegex);
-	// 	return parts.map((part: string, index: number) => {
-	// 		if (part === '\n') {
-	// 			return <br key={`description-new-line-${index}`} />;
-	// 		}
-	//
-	// 		if (timestampRegex.test(part)) {
-	// 			return (
-	// 				<Button
-	// 					type="link"
-	// 					key={`description-link-${index}`}
-	// 					title={t(
-	// 						'item/components/item-video-description___sprint-naar-tijdscode-code',
-	// 						{ code: part }
-	// 					)}
-	// 					ariaLabel={t(
-	// 						'item/components/item-video-description___sprint-naar-tijdscode-code',
-	// 						{ code: part }
-	// 					)}
-	// 					className="u-clickable"
-	// 					onClick={() => handleTimeLinkClicked(part)}
-	// 				>
-	// 					{part}
-	// 				</Button>
-	// 			);
-	// 		}
-	//
-	// 		return (
-	// 			<span
-	// 				key={`description-part-${index}`}
-	// 				dangerouslySetInnerHTML={{ __html: part }}
-	// 			/>
-	// 		);
-	// 	});
-	// };
+	/**
+	 * Split string by time markers and adds links to those times into the output jsx code
+	 */
+	const formatTimestamps = (description: string = ''): ReactNode => {
+		const timestampRegex = /([0-9]{2}:[0-9]{2}:[0-9]{2}|\n)/g;
+		const parts: string[] = description.split(timestampRegex);
+		return parts.map((part: string, index: number) => {
+			if (part === '\n') {
+				return <br key={`description-new-line-${index}`} />;
+			}
+
+			if (timestampRegex.test(part)) {
+				return (
+					<Button
+						type="link"
+						key={`description-link-${index}`}
+						title={t(
+							'item/components/item-video-description___sprint-naar-tijdscode-code',
+							{ code: part }
+						)}
+						ariaLabel={t(
+							'item/components/item-video-description___sprint-naar-tijdscode-code',
+							{ code: part }
+						)}
+						className="u-clickable"
+						onClick={() => handleTimeLinkClicked(part)}
+					>
+						{part}
+					</Button>
+				);
+			}
+
+			return (
+				<span
+					key={`description-part-${index}`}
+					dangerouslySetInnerHTML={{ __html: part }}
+				/>
+			);
+		});
+	};
 
 	const renderMedia = () => (
 		<FlowPlayerWrapper
@@ -127,7 +145,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			canPlay={canPlay}
 			user={user}
 			cuePoints={cuePoints}
-			location={location}
+			seekTime={seekTime}
 		/>
 	);
 
@@ -157,10 +175,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 						</Trans>
 					</BlockHeading>
 				)}
-				<p>
-					<span dangerouslySetInnerHTML={{ __html: convertToHtml(description) }} />
-				</p>
-				{/*<p>{formatTimestamps(convertToHtml(description))}</p>*/}
+				<p>{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
 	);
