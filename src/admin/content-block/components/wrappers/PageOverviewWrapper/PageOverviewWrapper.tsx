@@ -70,7 +70,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const dbToPageOverviewContentPage = (dbContentPage: Avo.Content.Content): ContentPageInfo => {
 		return {
-			thumbnail_path: dbContentPage.thumbnail_path || '/images/placeholder.png',
+			thumbnail_path: dbContentPage.thumbnail_path || '/images/placeholder-wide.png',
 			labels: [],
 			created_at: dbContentPage.created_at,
 			description: dbContentPage.description,
