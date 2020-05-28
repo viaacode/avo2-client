@@ -39,7 +39,14 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError, navigate, sanitize, stripHtml } from '../../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	navigate,
+	sanitize,
+	sanitizePresets,
+	stripHtml,
+} from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
@@ -362,7 +369,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
-				step.content = step.contentState.toHTML();
+				step.content = sanitize(step.contentState.toHTML(), sanitizePresets.link);
 				delete step.contentState;
 			}
 		});
@@ -585,6 +592,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										});
 									}}
 									controls={WYSIWYG2_OPTIONS_FULL}
+									fileType="INTERACTIVE_TOUR_IMAGE"
 									id={`content_editor_${index}`}
 									placeholder={t(
 										'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'
@@ -593,7 +601,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								<Spacer margin="top-small">
 									{
 										(step.contentState
-											? stripHtml(step.contentState.toHTML())
+											? stripHtml(
+													sanitize(
+														step.contentState.toHTML(),
+														sanitizePresets.link
+													)
+											  )
 											: step.content || ''
 										).length
 									}{' '}
@@ -634,7 +647,8 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 													__html: sanitize(
 														t(
 															'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
-														)
+														),
+														sanitizePresets.link
 													),
 												}}
 											/>

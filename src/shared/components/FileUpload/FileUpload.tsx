@@ -14,7 +14,6 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
@@ -22,6 +21,7 @@ import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';
+import { AssetType } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 export const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
@@ -42,7 +42,8 @@ export interface FileUploadProps {
 	label?: string;
 	allowedTypes?: string[];
 	allowMulti?: boolean;
-	assetType: Avo.FileUpload.AssetType;
+	// TODO replace by type from typings v2.18.0
+	assetType: AssetType;
 	ownerId: string;
 	urls: string[] | null;
 	onChange: (urls: string[]) => void;

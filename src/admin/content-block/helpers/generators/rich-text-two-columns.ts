@@ -48,6 +48,7 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 					{
 						editorProps: {
 							controls: [...WYSIWYG2_OPTIONS_FULL, 'media'],
+							fileType: 'CONTENT_BLOCK_IMAGE',
 						},
 					}
 				),

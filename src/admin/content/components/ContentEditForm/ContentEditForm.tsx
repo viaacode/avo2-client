@@ -181,7 +181,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									<FileUpload
 										ownerId={get(user, 'profile.id')}
 										urls={compact([formState.thumbnail_path])}
-										assetType={'CONTENT_PAGE_IMAGE'}
+										assetType="CONTENT_PAGE_COVER"
 										allowMulti={false}
 										label={t(
 											'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
@@ -218,6 +218,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 											onChange('descriptionState', state)
 										}
 										controls={WYSIWYG2_OPTIONS_FULL}
+										fileType="CONTENT_PAGE_DESCRIPTION_IMAGE"
 										id="description"
 									/>
 								</FormGroup>

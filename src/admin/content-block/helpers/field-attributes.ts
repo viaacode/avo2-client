@@ -4,6 +4,7 @@ import { SelectOption, WYSIWYG2Props } from '@viaa/avo2-components';
 
 import { RichEditorStateKey } from '../../content/content.const';
 import { ContentBlockEditor, ContentBlockField, PickerItem } from '../../shared/types';
+import { sanitize, sanitizePresets } from '../../../shared/helpers/sanitize';
 
 export const generateFieldAttributes = (
 	field: ContentBlockField,
@@ -46,7 +47,7 @@ export const generateFieldAttributes = (
 				state: (state as any)[`${key}${RichEditorStateKey}`],
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
-					onChange(editorState.toHTML(), key);
+					onChange(sanitize(editorState.toHTML(), sanitizePresets.full), key);
 				},
 			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:

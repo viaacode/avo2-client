@@ -113,7 +113,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 						</BlockHeading>
 						<p
 							dangerouslySetInnerHTML={{
-								__html: sanitize(contentPage.description, sanitizePresets.link),
+								__html: sanitize(contentPage.description, sanitizePresets.full),
 							}}
 						/>
 					</Spacer>

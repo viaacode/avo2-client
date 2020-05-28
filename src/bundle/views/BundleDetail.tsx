@@ -59,6 +59,7 @@ import {
 	generateSearchLinks,
 	isMobileWidth,
 	sanitize,
+	sanitizePresets,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
@@ -712,7 +713,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								</Toolbar>
 								<p
 									className="c-body-1 c-content"
-									dangerouslySetInnerHTML={{ __html: sanitize(description_long) }}
+									dangerouslySetInnerHTML={{
+										__html: sanitize(description_long, sanitizePresets.link),
+									}}
 								/>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">

@@ -40,7 +40,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, copyToClipboard } from '../../shared/helpers';
+import { buildLink, copyToClipboard, sanitize, sanitizePresets } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -260,9 +260,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
 				'descriptionRichEditorState'
 			];
-			assignment.description = descriptionRichEditorState
-				? descriptionRichEditorState.toHTML()
-				: assignment.description || '';
+			assignment.description = sanitize(
+				descriptionRichEditorState
+					? descriptionRichEditorState.toHTML()
+					: assignment.description || '',
+				sanitizePresets.full
+			);
 			delete (assignment as any)['descriptionRichEditorState'];
 
 			// edit => update graphql

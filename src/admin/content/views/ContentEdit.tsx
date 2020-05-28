@@ -22,7 +22,7 @@ import {
 } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { DeleteObjectModal } from '../../../shared/components';
-import { CustomError, navigate } from '../../../shared/helpers';
+import { CustomError, navigate, sanitize, sanitizePresets } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
@@ -222,9 +222,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			const contentItem: Partial<Avo.Content.Content> | any = {
 				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
-				description: contentForm.descriptionState
-					? contentForm.descriptionState.toHTML()
-					: contentForm.descriptionHtml || null,
+				description:
+					sanitize(
+						contentForm.descriptionState
+							? contentForm.descriptionState.toHTML()
+							: contentForm.descriptionHtml || '',
+						sanitizePresets.link
+					) || null,
 				is_protected: contentForm.isProtected,
 				path: getPathOrDefault(),
 				content_type: contentForm.contentType,

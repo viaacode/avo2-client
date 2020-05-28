@@ -28,7 +28,7 @@ import {
 } from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { buildLink, CustomError, sanitize, sanitizePresets } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import {
@@ -180,7 +180,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			await ItemsService.setItemNotes(
 				item.uid,
-				noteEditorState ? noteEditorState.toHTML() : (item as any).note || null
+				sanitize(
+					(noteEditorState ? noteEditorState.toHTML() : (item as any).note) || '',
+					sanitizePresets.link
+				) || null
 			);
 			ToastService.success(
 				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
@@ -326,6 +329,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 												<WYSIWYG2Wrapper
 													id="note"
 													controls={WYSIWYG2_OPTIONS_FULL}
+													fileType="ITEM_NOTE_IMAGE"
 													initialHtml={item.note || undefined}
 													state={noteEditorState}
 													onChange={setNoteEditorState}

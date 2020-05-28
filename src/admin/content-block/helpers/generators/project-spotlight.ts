@@ -57,7 +57,7 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 					'admin/content-block/helpers/generators/project-spotlight___aangepaste-afbeelding-optioneel'
 				),
 				editorProps: {
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					allowMulti: false,
 				} as FileUploadProps,
 				validator: undefined,

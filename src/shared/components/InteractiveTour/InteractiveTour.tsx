@@ -11,7 +11,7 @@ import { Avo } from '@viaa/avo2-types';
 import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteInfo } from '../../../constants';
-import { CustomError } from '../../helpers';
+import { CustomError, sanitize, sanitizePresets } from '../../helpers';
 import withUser from '../../hocs/withUser';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
 
@@ -46,7 +46,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				mappedStep.content = (
 					<div
 						dangerouslySetInnerHTML={{
-							__html: dbStep.content as string,
+							__html: sanitize(dbStep.content as string, sanitizePresets.link),
 						}}
 					/>
 				);
