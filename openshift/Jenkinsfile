@@ -45,7 +45,7 @@ pipeline {
 			                echo "Testing login script for the external docker agent"
 			                sh '''#!/bin/bash
                             set +x
-                            login_oc.sh $ENDPOINT && oc project sc-avo2 1>/dev/null
+                            login_oc.sh $ENDPOINT > /dev/null 2>&1  && oc project sc-avo2 1>/dev/null
                             '''
                         }
                     }

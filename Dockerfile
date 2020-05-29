@@ -31,7 +31,7 @@ WORKDIR /app
 #COPY package.json package-lock.json .npmrc ./
 #RUN chown -R node:node /app && chmod -R  g+sw /app
 USER node
-COPY  . .
+#COPY  . .
 #RUN npm ci --production=false
 RUN CI=false npm run build
 # set permissions for openshift
