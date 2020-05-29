@@ -373,8 +373,7 @@ export class ContentService {
 
 	public static async insertContentPage(
 		contentPage: Partial<DbContent>,
-		contentBlockConfigs: ContentBlockConfig[],
-		parse?: boolean
+		contentBlockConfigs: ContentBlockConfig[]
 	): Promise<Partial<Avo.Content.Content> | null> {
 		try {
 			const response = await dataService.mutate({
@@ -398,8 +397,7 @@ export class ContentService {
 				if (contentBlockConfigs && contentBlockConfigs.length) {
 					const contentBlocks = await ContentBlockService.insertContentBlocks(
 						id,
-						contentBlockConfigs,
-						parse
+						contentBlockConfigs
 					);
 
 					if (!contentBlocks) {
