@@ -9,6 +9,7 @@ import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
@@ -43,10 +44,35 @@ import {
 	getValidationErrorsForPublish,
 } from './collection.helpers';
 import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
-import { VideoStillService } from '../shared/services/video-stills-service';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
+
+	public static async getCollectionById(id: string): Promise<Avo.Collection.Collection> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTION_BY_ID,
+				variables: { id },
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, response);
+			}
+
+			const collection = get(response, 'data.app_collections[0]');
+
+			if (!collection) {
+				throw new CustomError('Response does not contain a collection', null, { response });
+			}
+
+			return collection;
+		} catch (err) {
+			throw new CustomError('Failed to fetch collection by id from the database', err, {
+				query: 'GET_COLLECTION_BY_ID',
+				variables: { id },
+			});
+		}
+	}
 
 	/**
 	 * Insert collection and underlying collection fragments.
@@ -97,7 +123,7 @@ export class CollectionService {
 
 			// insert fragments
 			if (fragments && fragments.length) {
-				newCollection.collection_fragments = await this.insertFragments(
+				newCollection.collection_fragments = await CollectionService.insertFragments(
 					newCollection.id,
 					fragments
 				);
@@ -722,7 +748,7 @@ export class CollectionService {
 
 	public static async insertFragments(
 		collectionId: string,
-		fragments: Avo.Collection.Fragment[]
+		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
 			fragments.forEach(fragment => (fragment.collection_uuid = collectionId));
@@ -759,7 +785,7 @@ export class CollectionService {
 				}
 			);
 
-			return fragments;
+			return fragments as Avo.Collection.Fragment[];
 		} catch (err) {
 			throw new CustomError('Failed to insert fragments into collection', err, {
 				collectionId,

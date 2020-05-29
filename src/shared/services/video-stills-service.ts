@@ -35,7 +35,7 @@ export class VideoStillService {
 
 	public static async getVideoStill(externalId: string, startTime: number): Promise<string> {
 		const stills = await this.getVideoStills([{ externalId, startTime }]);
-		return stills[0].thumbnailImagePath;
+		return stills[0].previewImagePath;
 	}
 
 	public static async getThumbnailsForCollection(
@@ -81,7 +81,7 @@ export class VideoStillService {
 				// current thumbnail image
 				...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
 				// Cut video thumbnails
-				...cutVideoStills.map(videoStill => videoStill.thumbnailImagePath),
+				...cutVideoStills.map(videoStill => videoStill.previewImagePath),
 				// Uncut video thumbnails
 				...uncutVideoFragments.map(
 					fragment => fragment.item_meta && fragment.item_meta.thumbnail_path

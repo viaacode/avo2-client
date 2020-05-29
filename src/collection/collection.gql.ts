@@ -28,6 +28,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				created_at
 				collection_uuid
 				type
+				thumbnail_path
 			}
 			updated_at
 			type_id

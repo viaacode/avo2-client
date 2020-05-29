@@ -192,7 +192,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		>
 			<ModalBody>
 				<FlowPlayerWrapper
-					item={itemMetaData}
+					item={{
+						...itemMetaData,
+						thumbnail_path: fragment.thumbnail_path || itemMetaData.thumbnail_path,
+					}}
 					seekTime={fragmentStart}
 					cuePoints={{
 						start: fragmentStart,

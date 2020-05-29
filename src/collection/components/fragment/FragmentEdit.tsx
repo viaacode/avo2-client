@@ -372,7 +372,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 							<Column size="3-6">
 								{!isCollection ? (
 									<FlowPlayerWrapper
-										item={itemMetaData}
+										item={{
+											...itemMetaData,
+											thumbnail_path:
+												fragment.thumbnail_path ||
+												itemMetaData.thumbnail_path,
+										}}
 										cuePoints={cuePoints}
 										canPlay={!isCutModalOpen && !isDeleteModalOpen}
 									/>
