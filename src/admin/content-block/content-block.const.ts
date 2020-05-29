@@ -298,7 +298,7 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	},
 	{
 		label: i18n.t('Leerlingen Geel'),
-		value: Color.PupilYellow,
+		value: Color.Yellow,
 	},
 ];
 
@@ -402,6 +402,18 @@ export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___link-inline'),
 		value: 'inline-link',
+	},
+	{
+		label: i18n.t('Leerling primair (geel)'),
+		value: 'pupil-primary',
+	},
+	{
+		label: i18n.t('Leerling link (tekst in geel)'),
+		value: 'pupil-link',
+	},
+	{
+		label: i18n.t('Leerling link geel (inline)'),
+		value: 'pupil-inline-link',
 	},
 ];
 
