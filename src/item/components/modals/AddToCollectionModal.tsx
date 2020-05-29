@@ -361,7 +361,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<ItemVideoDescription
 									itemMetaData={itemMetaData}
-									user={user}
 									history={history}
 									location={location}
 									match={match}

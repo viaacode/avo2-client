@@ -9,6 +9,7 @@ import React, {
 	useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
@@ -22,14 +23,13 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { Color } from '../../admin/shared/types';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { parseDuration } from '../../shared/helpers';
 
 import './ItemVideoDescription.scss';
 
-interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
+interface ItemVideoDescriptionProps extends RouteComponentProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
 	showDescription?: boolean;
@@ -53,7 +53,6 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	onTitleClicked,
 	cuePoints,
 	canPlay = true,
-	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -143,7 +142,6 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		<FlowPlayerWrapper
 			item={itemMetaData}
 			canPlay={canPlay}
-			user={user}
 			cuePoints={cuePoints}
 			seekTime={seekTime}
 		/>

@@ -358,7 +358,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							history={history}
 							location={location}
 							match={match}
-							user={user}
 							canPlay={
 								!isOpenAddToCollectionModal &&
 								!isShareThroughEmailModalOpen &&

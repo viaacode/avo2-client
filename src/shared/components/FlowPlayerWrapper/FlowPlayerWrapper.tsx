@@ -6,10 +6,12 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CustomError, getEnv, reorderDate } from '../../helpers';
+import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
-import { FlowPlayer } from '@viaa/avo2-components';
+
+import { FlowPlayer } from './FlowPlayer/FlowPlayer';
 
 export interface CuePoints {
 	start: number | null;
@@ -18,7 +20,6 @@ export interface CuePoints {
 
 interface FlowPlayerWrapperProps {
 	item: Avo.Item.Item;
-	user: Avo.User.User | undefined;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
 	seekTime?: number;
@@ -29,7 +30,7 @@ interface FlowPlayerWrapperProps {
  * @param props
  * @constructor
  */
-const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = ({
+const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> = ({
 	item,
 	user,
 	canPlay = true,
@@ -118,4 +119,4 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = ({
 	);
 };
 
-export default FlowPlayerWrapper;
+export default withUser(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;

@@ -16,6 +16,7 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
 	collectionFragment: Avo.Collection.Fragment;
 	showDescription: boolean;
 	linkToItems: boolean;
+	canPlay?: boolean;
 }
 
 /**

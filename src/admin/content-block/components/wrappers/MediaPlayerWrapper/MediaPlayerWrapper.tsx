@@ -8,7 +8,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayerWrapper } from '../../../../../shared/components';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
-import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../../../shared/services/stills-service';
@@ -26,14 +25,13 @@ interface MediaPlayerWrapperProps {
 	autoplay?: boolean;
 }
 
-const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps & UserProps> = ({
+const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 	item,
 	src,
 	poster,
 	title,
 	width,
 	autoplay,
-	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -122,11 +120,10 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps & UserProps>
 						...mediaItem,
 						title: title || mediaItem.title,
 					}}
-					user={user}
 				/>
 			)}
 		</div>
 	);
 };
 
-export default withUser(MediaPlayerWrapper) as FunctionComponent<MediaPlayerWrapperProps>;
+export default MediaPlayerWrapper;
