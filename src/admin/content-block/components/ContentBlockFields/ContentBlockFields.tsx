@@ -42,8 +42,6 @@ const ContentBlockFields: FunctionComponent<ContentBlockFieldProps> = ({
 	const fieldId = createKey('editor', index, formGroupIndex, stateIndex);
 
 	// Generate fields
-
-	console.log('rendering ContentBlockFields: ', state);
 	return (
 		<FieldGenerator
 			fieldKey={fieldKey}

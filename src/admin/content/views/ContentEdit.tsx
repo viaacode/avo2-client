@@ -386,7 +386,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		formGroupState: ContentBlockStateOption,
 		stateIndex?: number
 	) => {
-		console.log('saving ContentEdit: ', formGroupState);
 		dispatch({
 			type:
 				formGroupType === 'block'
@@ -405,7 +404,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const renderTabContent = () => {
 		switch (currentTab) {
 			case 'inhoud':
-				console.log('rendering ContentEdit: ', contentBlockConfigs);
 				return (
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}

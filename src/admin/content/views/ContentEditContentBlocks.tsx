@@ -99,7 +99,6 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		return contentBlockConfigs.map((contentBlockConfig, index) => {
 			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
 
-			console.log('rendering ContentEditContentBlocks: ', contentBlockConfig);
 			return (
 				<ContentBlockForm
 					key={createKey('form', index)}
@@ -118,7 +117,6 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						input: any,
 						stateIndex?: number
 					) => {
-						console.log('saving ContentEditContentBlocks: ', input);
 						onSave(index, formGroupType, input, stateIndex);
 					}}
 					addComponentToState={() =>

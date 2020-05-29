@@ -150,8 +150,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 
 		// Render each state individually in a ContentBlockFormGroup
-
-		console.log('rendering ContentBlockForm: ', formGroup.state);
 		return (
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (

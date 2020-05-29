@@ -68,7 +68,6 @@ export const FieldGroup: FunctionComponent<FieldGroupProps> = ({
 
 				const EditorComponents = (EDITOR_TYPES_MAP as any)[fieldState[1].editorType];
 
-				console.log('field group: ', editorProps);
 				return (
 					<Spacer margin="top" key={`${fieldKey}-${fieldState[0]}-${fieldIndex}`}>
 						<FormGroup label={`${fieldState[1].label}`}>

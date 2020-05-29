@@ -89,8 +89,6 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 				}
 
 				// REPEATED FIELDGROUP
-
-				console.log('rendering fieldgroup in field generator: ', currentState);
 				const renderFieldGroups = (singleState: any, singleStateIndex: number = 0) => (
 					<Spacer key={`${fieldGroup.label}-${singleStateIndex}`} margin="top-large">
 						<Flex>
