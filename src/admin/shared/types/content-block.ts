@@ -1,4 +1,5 @@
 import {
+	BlockHeroProps,
 	ButtonAction,
 	ButtonType,
 	ContentItemStyle,
@@ -63,6 +64,7 @@ export enum Color {
 	TealBright200 = '#CFE3E9',
 	BorderColor = '#3FB1D6',
 	InputBoxShadow = '#69C2dF',
+	PupilYellow = '#E7A11C',
 	Transparent = 'transparent',
 }
 
@@ -114,9 +116,11 @@ export interface ContentBlockField {
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
-	repeat?: boolean;
-	repeatAddButtonLabel?: string;
-	repeatDeleteButtonLabel?: string;
+	repeat?: {
+		defaultState: any;
+		addButtonLabel?: string;
+		deleteButtonLabel?: string;
+	};
 }
 
 export type ContentBlockEditorType = 'field' | 'fieldGroup';
@@ -129,9 +133,11 @@ export interface ContentBlockFieldGroup {
 	type?: ContentBlockEditorType;
 	min?: number;
 	max?: number;
-	repeat?: boolean;
-	repeatAddButtonLabel?: string;
-	repeatDeleteButtonLabel?: string;
+	repeat?: {
+		defaultState: any;
+		addButtonLabel?: string;
+		deleteButtonLabel?: string;
+	};
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
@@ -154,6 +160,7 @@ export enum ContentBlockType {
 	PageOverview = 'PAGE_OVERVIEW',
 	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
 	Spotlight = 'SPOTLIGHT',
+	Hero = 'HERO',
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
@@ -205,6 +212,7 @@ export enum ContentBlockEditor {
 export type ContentBlockComponentState =
 	| ButtonsBlockComponentState
 	| Partial<CTAProps>
+	| Partial<BlockHeroProps>
 	| HeadingBlockComponentState
 	| IFrameBlockComponentState
 	| ImageBlockComponentState
@@ -258,21 +266,21 @@ export interface PageOverviewBlockComponentStateFields {
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
-	navigate?: () => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 export interface ButtonsBlockComponentState {
 	label: string;
 	icon?: IconName;
 	type?: ButtonType;
-	navigate?: () => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 export interface AnchorLinksBlockComponentState {
 	label: string;
 	icon?: IconName;
 	type?: ButtonType;
-	navigate?: () => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 export interface KlaarBlockComponentState {
@@ -351,3 +359,10 @@ export interface AnchorLinksBlockState extends DefaultContentBlockState {
 	align: AlignOption;
 	hasDividers: boolean;
 }
+
+export const DEFAULT_BUTTON_PROPS = {
+	type: 'primary',
+	label: '',
+	icon: undefined,
+	buttonAction: undefined,
+};

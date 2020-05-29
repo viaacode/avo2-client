@@ -20,7 +20,7 @@ export interface BlockGridWrapperProps {
 	fill?: FillOption;
 	textAlign?: AlignOptions;
 	className?: string;
-	navigate?: (action: ButtonAction) => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 const formatLookup: {

@@ -84,10 +84,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const updateObject = {
 			[key]: value,
 		};
-		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
+		const stateUpdate = isArray(components.state)
+			? [updateObject]
+			: { ...components.state, [key]: value };
 
 		handleValidation(key, formGroupType, value, stateIndex);
-		onChange(formGroupType, stateUpdate, stateIndex);
+		onChange(formGroupType, stateUpdate, isArray(components.state) ? stateIndex : undefined);
 	};
 
 	const handleValidation = (
@@ -148,6 +150,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 
 		// Render each state individually in a ContentBlockFormGroup
+
+		console.log('rendering ContentBlockForm: ', formGroup.state);
 		return (
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (

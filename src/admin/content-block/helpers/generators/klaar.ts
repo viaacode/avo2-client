@@ -4,6 +4,7 @@ import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
+	ContentBlockField,
 	ContentBlockType,
 	DefaultContentBlockState,
 	KlaarBlockComponentState,
@@ -34,15 +35,17 @@ export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				{
 					label: i18n.t('admin/content-block/helpers/generators/klaar___titel'),
 					editorType: ContentBlockEditor.TextInput,
-					repeat: true,
-					repeatAddButtonLabel: i18n.t(
-						'admin/content-block/helpers/generators/klaar___voeg-titel-toe'
-					),
-					repeatDeleteButtonLabel: i18n.t(
-						'admin/content-block/helpers/generators/klaar___verwijder-titel'
-					),
+					repeat: {
+						defaultState: '',
+						addButtonLabel: i18n.t(
+							'admin/content-block/helpers/generators/klaar___voeg-titel-toe'
+						),
+						deleteButtonLabel: i18n.t(
+							'admin/content-block/helpers/generators/klaar___verwijder-titel'
+						),
+					},
 				}
-			),
+			) as ContentBlockField,
 			date: {
 				label: 'Datum',
 				editorType: ContentBlockEditor.DatePicker,

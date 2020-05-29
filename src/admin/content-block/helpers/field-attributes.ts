@@ -19,7 +19,13 @@ export const generateFieldAttributes = (
 		case ContentBlockEditor.TextInput:
 			return {
 				value,
-				onChange: debounce((value: any) => onChange(value), 150, { leading: true }),
+				onChange: debounce(
+					(value: any) => {
+						onChange(value);
+					},
+					150,
+					{ leading: true }
+				),
 			};
 		case ContentBlockEditor.ContentPicker:
 			return {
@@ -34,7 +40,9 @@ export const generateFieldAttributes = (
 		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			return {
-				onChange: (option: SelectOption<string>) => onChange(get(option, 'value', '')),
+				onChange: (option: SelectOption<string>) => {
+					onChange(get(option, 'value', ''));
+				},
 				value: field.editorProps.options.find(
 					(opt: SelectOption<string>) => opt.value === value
 				),
@@ -79,9 +87,7 @@ export const generateFieldAttributes = (
 		default:
 			return {
 				value,
-				onChange: (value: any) => {
-					onChange(value);
-				},
+				onChange,
 			};
 	}
 };

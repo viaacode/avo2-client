@@ -88,6 +88,7 @@ import {
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers';
+import { HERO_BLOCK_CONFIG, INITIAL_HERO_COMPONENTS_STATE } from './helpers/generators/hero';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -172,6 +173,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		label: i18n.t('admin/content-block/content-block___links'),
 		value: ContentBlockType.AnchorLinks,
 	},
+	{
+		label: i18n.t('Hero'),
+		value: ContentBlockType.Hero,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -197,6 +202,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
+	[ContentBlockType.Hero]: HERO_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
@@ -218,6 +224,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_COMPONENTS_STATE,
+	[ContentBlockType.Hero]: INITIAL_HERO_COMPONENTS_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_COMPONENTS_STATE,
 	[ContentBlockType.Image]: INITIAL_IMAGE_COMPONENTS_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_COMPONENTS_STATE,
@@ -288,6 +295,10 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___oceaangroen'),
 		value: Color.OceanGreen,
+	},
+	{
+		label: i18n.t('Leerlingen Geel'),
+		value: Color.PupilYellow,
 	},
 ];
 

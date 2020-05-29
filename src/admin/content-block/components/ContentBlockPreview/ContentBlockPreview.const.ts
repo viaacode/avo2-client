@@ -2,6 +2,7 @@ import {
 	BlockButtons,
 	BlockCTAs,
 	BlockHeading,
+	BlockHero,
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
@@ -43,6 +44,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.Spotlight]: BlockSpotlight,
+	[ContentBlockType.Hero]: BlockHero,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -57,6 +59,9 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Spotlight,
 ];
 
+/**
+ * Blocks that must receive a navigate function so that their buttons can link to their buttonActions
+ */
 export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.AnchorLinks,
 	ContentBlockType.Buttons,
@@ -66,6 +71,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.Spotlight,
+	ContentBlockType.Hero,
 ];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [

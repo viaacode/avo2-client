@@ -1,0 +1,139 @@
+import { BlockHeroProps } from '@viaa/avo2-components';
+
+import {
+	FileUploadProps,
+	PHOTO_TYPES,
+	VIDEO_TYPES,
+} from '../../../../shared/components/FileUpload/FileUpload';
+import i18n from '../../../../shared/translations/i18n';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import {
+	Color,
+	ContentBlockConfig,
+	ContentBlockEditor,
+	ContentBlockFieldGroup,
+	ContentBlockType,
+	DEFAULT_BUTTON_PROPS,
+	DefaultContentBlockState,
+} from '../../../shared/types';
+import { GET_BUTTON_TYPE_OPTIONS } from '../../content-block.const';
+
+import {
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
+	FILE_FIELD,
+	FOREGROUND_COLOR_FIELD,
+	TEXT_FIELD,
+} from './defaults';
+
+export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
+	title: '',
+	titleColor: Color.White,
+	content: '',
+	contentColor: Color.White,
+	altText: '',
+	buttons: [],
+});
+
+export const INITIAL_HERO_BLOCK_STATE = (position: number): DefaultContentBlockState => ({
+	...BLOCK_STATE_DEFAULTS(ContentBlockType.Hero, position),
+	backgroundColor: Color.NightBlue,
+});
+
+export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	name: i18n.t('Hero'),
+	type: ContentBlockType.Hero,
+	components: {
+		state: INITIAL_HERO_COMPONENTS_STATE(),
+		fields: {
+			title: TEXT_FIELD('', {
+				label: i18n.t('Titel'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			}),
+			titleColor: FOREGROUND_COLOR_FIELD(i18n.t('Titel kleur')),
+			content: TEXT_FIELD('', {
+				label: i18n.t('Beschrijving'),
+				editorType: ContentBlockEditor.TextArea,
+				validator: undefined,
+			}),
+			contentColor: FOREGROUND_COLOR_FIELD(i18n.t('Beschrijving kleur')),
+
+			buttons: {
+				label: i18n.t('Knop'),
+				fields: {
+					type: {
+						label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
+						editorType: ContentBlockEditor.Select,
+						editorProps: {
+							options: GET_BUTTON_TYPE_OPTIONS(),
+						},
+					},
+					label: TEXT_FIELD(
+						i18n.t(
+							'admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'
+						),
+						{
+							label: i18n.t('admin/content-block/helpers/generators/buttons___tekst'),
+							editorType: ContentBlockEditor.TextInput,
+						}
+					),
+					icon: {
+						label: i18n.t('admin/content-block/helpers/generators/buttons___icoon'),
+						editorType: ContentBlockEditor.IconPicker,
+						editorProps: {
+							options: GET_ADMIN_ICON_OPTIONS(),
+						},
+					},
+					buttonAction: {
+						label: i18n.t(
+							'admin/content-block/helpers/generators/buttons___knop-actie'
+						),
+						editorType: ContentBlockEditor.ContentPicker,
+					},
+				},
+				type: 'fieldGroup',
+				repeat: {
+					defaultState: DEFAULT_BUTTON_PROPS,
+					addButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
+					),
+					deleteButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
+					),
+				},
+			} as ContentBlockFieldGroup,
+
+			src: FILE_FIELD(undefined, {
+				label: i18n.t('Eigen video uploaden'),
+				validator: undefined,
+				editorProps: {
+					allowMulti: false,
+					allowedTypes: VIDEO_TYPES,
+					assetType: 'CONTENT_PAGE_IMAGE',
+					ownerId: '',
+				} as FileUploadProps,
+			}),
+			poster: FILE_FIELD(undefined, {
+				label: i18n.t('Eigen poster uploaden'),
+				validator: undefined,
+				editorProps: {
+					allowMulti: false,
+					allowedTypes: PHOTO_TYPES,
+					assetType: 'CONTENT_PAGE_IMAGE',
+					ownerId: '',
+				} as FileUploadProps,
+			}),
+			altText: TEXT_FIELD(undefined, {
+				label: i18n.t('Alt tekst voor video/afbeelding'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
+		},
+	},
+	block: {
+		state: INITIAL_HERO_BLOCK_STATE(position),
+		fields: {
+			...BLOCK_FIELD_DEFAULTS(),
+		},
+	},
+});

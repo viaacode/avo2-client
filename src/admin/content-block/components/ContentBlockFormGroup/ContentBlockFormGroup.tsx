@@ -51,6 +51,7 @@ const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 				error = formErrorsForBlock as string[];
 			}
 
+			console.log('rendering ContentBlockFormGroup: ', formGroupState);
 			return (
 				<Spacer
 					key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)}

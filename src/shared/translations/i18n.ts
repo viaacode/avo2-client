@@ -1,6 +1,6 @@
 import I18n from 'i18next';
 import XHR from 'i18next-xhr-backend';
-import { get, lowerCase, upperFirst } from 'lodash-es';
+import { lowerCase, upperFirst } from 'lodash-es';
 import { initReactI18next } from 'react-i18next';
 
 import { getEnv } from '../helpers';
@@ -22,7 +22,7 @@ I18n.use(XHR)
 				return JSON.parse(data).value;
 			},
 		},
-		debug: get(window, '_ENV_.ENV') === 'local',
+		debug: false,
 		keySeparator: '^',
 		nsSeparator: '^',
 		lng: 'nl',
