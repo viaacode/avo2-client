@@ -2,6 +2,7 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { FlowPlayer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
@@ -10,8 +11,6 @@ import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
-
-import { FlowPlayer } from './FlowPlayer/FlowPlayer';
 
 export interface CuePoints {
 	start: number | null;

@@ -367,6 +367,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									showTitle
 									showDescription
 									canPlay={isOpen}
+									cuePoints={{ start: fragmentStartTime, end: fragmentEndTime }}
+									seekTime={fragmentStartTime || 0}
 								/>
 								<Grid>
 									<Column size="2-7">

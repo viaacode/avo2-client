@@ -37,6 +37,7 @@ interface ItemVideoDescriptionProps extends RouteComponentProps {
 	title?: string;
 	description?: string;
 	cuePoints?: CuePoints;
+	seekTime?: number;
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	onTitleClicked?: () => void;
 }
@@ -52,13 +53,14 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	description = itemMetaData.description,
 	onTitleClicked,
 	cuePoints,
+	seekTime = 0,
 	canPlay = true,
 }) => {
 	const [t] = useTranslation();
 
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [seekTime, setSeekTime] = useState<number>(0);
+	const [time, setTime] = useState<number>(seekTime);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
@@ -66,8 +68,12 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		// If this happens sooner, the time will be ignored by the video player
 		const queryParams = parse(location.search);
 
-		setSeekTime(parseInt((queryParams.time as string) || '0', 10));
+		setTime(parseInt((queryParams.time as string) || String(seekTime), 10));
 	}, [location.search]);
+
+	useEffect(() => {
+		setTime(seekTime || time);
+	}, [seekTime, setTime]);
 
 	useEffect(() => {
 		// Register window listener when the component mounts
@@ -94,7 +100,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
-		setSeekTime(seconds);
+		setTime(seconds);
 	};
 
 	/**
@@ -143,7 +149,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			item={itemMetaData}
 			canPlay={canPlay}
 			cuePoints={cuePoints}
-			seekTime={seekTime}
+			seekTime={time}
 		/>
 	);
 
