@@ -36,7 +36,7 @@ import {
 } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { getThumbnailForCollection } from '../../../shared/services/stills-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
@@ -137,9 +137,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		}
 	};
 
-	const getFragment = (
+	const getFragment = async (
 		collection: Partial<Avo.Collection.Collection>
-	): Partial<Avo.Collection.Fragment> => {
+	): Promise<Partial<Avo.Collection.Fragment>> => {
 		const hasCut =
 			fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
 
@@ -154,6 +154,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			collection_uuid: collection.id,
 			item_meta: itemMetaData,
 			type: 'ITEM',
+			thumbnail_path: await VideoStillService.getVideoStill(externalId, fragmentStartTime),
 		};
 	};
 
@@ -162,7 +163,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		setIsProcessing(true);
 
 		try {
-			const fragment = getFragment(collection);
+			const fragment = await getFragment(collection);
 			delete fragment.item_meta;
 			const fragments = await CollectionService.insertFragments(collection.id as string, [
 				fragment as Avo.Collection.Fragment,
@@ -213,13 +214,17 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				type_id: ContentTypeNumber.collection,
 			};
 			try {
-				newCollection.thumbnail_path = await getThumbnailForCollection({
+				newCollection.thumbnail_path = await VideoStillService.getThumbnailForCollection({
 					thumbnail_path: undefined,
-					collection_fragments: [getFragment(newCollection) as Avo.Collection.Fragment],
+					collection_fragments: [
+						(await getFragment(newCollection)) as Avo.Collection.Fragment,
+					],
 				});
 			} catch (err) {
 				console.error('Failed to find cover image for new collection', err, {
-					collectionFragments: [getFragment(newCollection) as Avo.Collection.Fragment],
+					collectionFragments: [
+						(await getFragment(newCollection)) as Avo.Collection.Fragment,
+					],
 				});
 			}
 

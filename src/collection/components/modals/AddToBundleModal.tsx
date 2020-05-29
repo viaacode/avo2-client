@@ -28,7 +28,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { getThumbnailForCollection } from '../../../shared/services/stills-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -215,7 +215,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				type_id: ContentTypeNumber.bundle,
 			};
 			try {
-				newBundle.thumbnail_path = await getThumbnailForCollection({
+				newBundle.thumbnail_path = await VideoStillService.getThumbnailForCollection({
 					thumbnail_path: undefined,
 					collection_fragments: [getFragment(newBundle) as Avo.Collection.Fragment],
 				});

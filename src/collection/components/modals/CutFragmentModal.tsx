@@ -19,7 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { CustomError, formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { getVideoStills } from '../../../shared/services/stills-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { KeyCode } from '../../../shared/types';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
@@ -91,11 +91,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const startTime = toSeconds(fragmentStartString, true);
 		const endTime = toSeconds(fragmentEndString, true);
 
-		const videoStills = await getVideoStills([
-			{ externalId: fragment.external_id, startTime: startTime || 0 },
-		]);
-
 		const hasNoCut = startTime === 0 && endTime === fragmentDuration;
+
+		const videoStill: string = hasNoCut
+			? itemMetaData.thumbnail_path
+			: await VideoStillService.getVideoStill(fragment.external_id, startTime || 0);
 
 		changeCollectionState({
 			index,
@@ -111,12 +111,12 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragmentPropValue: hasNoCut ? null : endTime,
 		});
 
-		if (videoStills && videoStills.length) {
+		if (videoStill) {
 			changeCollectionState({
 				index,
 				type: 'UPDATE_FRAGMENT_PROP',
 				fragmentProp: 'thumbnail_path',
-				fragmentPropValue: videoStills[0].previewImagePath,
+				fragmentPropValue: videoStill,
 			});
 		}
 

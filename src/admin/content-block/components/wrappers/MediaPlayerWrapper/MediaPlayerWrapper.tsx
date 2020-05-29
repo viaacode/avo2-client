@@ -10,7 +10,6 @@ import { FlowPlayerWrapper } from '../../../../../shared/components';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
-import { getVideoStills } from '../../../../../shared/services/stills-service';
 import i18n from '../../../../../shared/translations/i18n';
 import { ItemsService } from '../../../../items/items.service';
 
@@ -55,22 +54,18 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 		}
 	}, [setPlayerTicket, playerTicket, item]);
 
-	const retrieveStill = useCallback(async () => {
-		if (poster) {
-			setVideoStill(poster);
-			return;
-		}
-		const videoStills = await getVideoStills([
-			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
-		]);
-
-		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
-	}, [item, poster]);
-
 	const retrieveMediaItem = useCallback(async () => {
 		try {
 			if (item) {
-				setMediaItem(await ItemsService.fetchItemByExternalId(item.value.toString()));
+				// Video from MAM
+				const mediaItemTemp = await ItemsService.fetchItemByExternalId(
+					item.value.toString()
+				);
+				setMediaItem(mediaItemTemp);
+				setVideoStill(get(mediaItemTemp, 'thumbnail_path'));
+			} else {
+				// Custom video
+				setVideoStill(poster);
 			}
 		} catch (err) {
 			console.error(
@@ -78,12 +73,11 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			);
 			ToastService.danger(t('Het ophalen van het fragment is mislukt'));
 		}
-	}, [item, t]);
+	}, [item, poster, t]);
 
 	useEffect(() => {
-		retrieveStill();
 		retrieveMediaItem();
-	}, [retrieveStill, retrieveMediaItem]);
+	}, [retrieveMediaItem]);
 
 	useEffect(() => {
 		if (autoplay) {

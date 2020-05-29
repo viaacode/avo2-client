@@ -9,7 +9,6 @@ import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
-import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
@@ -44,6 +43,7 @@ import {
 	getValidationErrorsForPublish,
 } from './collection.helpers';
 import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
+import { VideoStillService } from '../shared/services/video-stills-service';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -778,7 +778,7 @@ export class CollectionService {
 			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
 			// TODO:  || collection.thumbnail_type === 'auto'
 			if (!collection.thumbnail_path) {
-				return await getThumbnailForCollection(collection);
+				return await VideoStillService.getThumbnailForCollection(collection);
 			}
 
 			return collection.thumbnail_path;
