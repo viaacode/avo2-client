@@ -8,7 +8,7 @@ import { ContentBlockConfig, ContentBlockType } from '../../shared/types';
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
 
 // Parse content-block config to valid request body
-export const parseContentBlockConfig = (
+export const convertBlockToDatabaseFormat = (
 	contentBlockConfig: ContentBlockConfig,
 	contentId?: number
 ) => {
@@ -23,12 +23,12 @@ export const parseContentBlockConfig = (
 	};
 };
 
-export const parseContentBlockConfigs = (
+export const convertBlocksToDatabaseFormat = (
 	contentId: number,
 	contentBlockConfigs: ContentBlockConfig[]
 ): Partial<Avo.ContentBlocks.ContentBlocks>[] =>
 	contentBlockConfigs.map(contentBlockConfig =>
-		parseContentBlockConfig(contentBlockConfig, contentId)
+		convertBlockToDatabaseFormat(contentBlockConfig, contentId)
 	);
 
 // Parse content-blocks to configs
