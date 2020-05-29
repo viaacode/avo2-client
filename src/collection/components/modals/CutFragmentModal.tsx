@@ -24,6 +24,8 @@ import { KeyCode } from '../../../shared/types';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 
+import './CutFragmentModal.scss';
+
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
@@ -186,6 +188,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			size="medium"
 			onClose={onClose}
 			scrollable
+			className="m-cut-fragment-modal"
 		>
 			<ModalBody>
 				<FlowPlayerWrapper
