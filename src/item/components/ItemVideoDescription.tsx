@@ -69,7 +69,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		const queryParams = parse(location.search);
 
 		setTime(parseInt((queryParams.time as string) || String(seekTime), 10));
-	}, [location.search]);
+	}, [location.search, setTime, seekTime]);
 
 	useEffect(() => {
 		setTime(seekTime || time);
