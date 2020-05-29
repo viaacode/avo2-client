@@ -298,7 +298,7 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	},
 	{
 		label: i18n.t('Leerlingen Geel'),
-		value: Color.PupilYellow,
+		value: Color.Yellow,
 	},
 ];
 

@@ -64,7 +64,6 @@ export enum Color {
 	TealBright200 = '#CFE3E9',
 	BorderColor = '#3FB1D6',
 	InputBoxShadow = '#69C2dF',
-	PupilYellow = '#E7A11C',
 	Transparent = 'transparent',
 }
 
