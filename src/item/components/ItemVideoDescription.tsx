@@ -72,7 +72,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	}, [location.search, setTime, seekTime]);
 
 	useEffect(() => {
-		setTime(seekTime || time);
+		if (seekTime) {
+			setTime(seekTime);
+		}
 	}, [seekTime, setTime]);
 
 	useEffect(() => {
