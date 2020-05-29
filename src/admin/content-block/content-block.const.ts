@@ -417,6 +417,17 @@ export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	},
 ];
 
+export const GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
+	{
+		label: i18n.t('Blauw'),
+		value: 'underlined-link',
+	},
+	{
+		label: i18n.t('Geel'),
+		value: 'pupil-underlined-link' as any, // TODO remove cast ater update to components v1.42.0
+	},
+];
+
 export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___schermbreedte-header'),
