@@ -70,32 +70,34 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 	});
 
 	// Add page title as header block for faq items
-	contentPage.contentBlockConfigs = [
-		{
-			name: 'Titel',
-			type: 'HEADING',
-			components: {
-				state: {
-					children: contentPage.title,
-					type: 'h1',
-					align: 'left',
-				},
-			},
-			block: {
-				state: {
-					blockType: 'HEADING',
-					position: 2,
-					backgroundColor: '#FFF',
-					headerBackgroundColor: '#FFF',
-					padding: {
-						top: 'top-extra-large',
-						bottom: 'bottom-small',
+	if (contentPage.contentType === ContentPageType.FaqItem) {
+		contentPage.contentBlockConfigs = [
+			{
+				name: 'Titel',
+				type: 'HEADING',
+				components: {
+					state: {
+						children: contentPage.title,
+						type: 'h1',
+						align: 'left',
 					},
 				},
-			},
-		} as ContentBlockConfig,
-		...contentPage.contentBlockConfigs,
-	];
+				block: {
+					state: {
+						blockType: 'HEADING',
+						position: 2,
+						backgroundColor: '#FFF',
+						headerBackgroundColor: '#FFF',
+						padding: {
+							top: 'top-extra-large',
+							bottom: 'bottom-small',
+						},
+					},
+				},
+			} as ContentBlockConfig,
+			...contentPage.contentBlockConfigs,
+		];
+	}
 
 	const getVisibleContentBlocks = (contentBlockConfigs: ContentBlockConfig[]) => {
 		return compact(

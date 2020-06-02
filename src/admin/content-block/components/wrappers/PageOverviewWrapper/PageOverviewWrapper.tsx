@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -25,6 +25,7 @@ import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+import queryString from 'query-string';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
@@ -57,6 +58,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	),
 	itemsPerPage = 20,
 	history,
+	location,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -65,6 +67,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
 	const [pages, setPages] = useState<DbContent[]>([]);
 	const [pageCount, setPageCount] = useState<number>(1);
+	const [focusedPageId, setFocusedPageId] = useState<number | undefined>(undefined);
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
@@ -156,8 +159,20 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		t,
 	]);
 
+	const checkFocusedPage = () => {
+		const queryParams = queryString.parse(location.search);
+		if (
+			queryParams.focus &&
+			isString(queryParams.focus) &&
+			/^[0-9]+$/g.test(queryParams.focus)
+		) {
+			setFocusedPageId(parseInt(queryParams.focus, 10));
+		}
+	};
+
 	useEffect(() => {
 		fetchPages();
+		checkFocusedPage();
 	}, [fetchPages]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
@@ -195,6 +210,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
 			)}
 			buttonLabel={buttonLabel}
+			activePageId={focusedPageId}
 			navigate={(buttonAction: ButtonAction) => navigateToContentType(buttonAction, history)}
 		/>
 	);
