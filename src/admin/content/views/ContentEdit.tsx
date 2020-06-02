@@ -1,4 +1,4 @@
-import { get, has, isFunction, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isFunction, isNil, kebabCase, set, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -442,6 +442,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				if (pastedText.startsWith('{"block":')) {
 					const newConfig = JSON.parse(pastedText).block;
 					delete newConfig.id;
+					// Ensure block is added at the bottom of the page
+					set(newConfig, 'block.state.position', contentBlockConfigs.length);
 					dispatch({
 						type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
 						payload: newConfig,
