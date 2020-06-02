@@ -92,10 +92,12 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
 		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
 	);
-	const [alias, setAlias] = useState<string>(getProfileAlias(user));
-	const [avatar, setAvatar] = useState<string | null>(getProfile(user).avatar);
-	const [bio, setBio] = useState<string | null>((getProfile(user) as any).bio);
-	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
+	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
+	const [avatar, setAvatar] = useState<string | null>(
+		get(getProfile(user, true), 'avatar', null)
+	);
+	const [bio, setBio] = useState<string | null>(get(getProfile(user, true), 'bio', null));
+	const [func, setFunc] = useState<string | null>(get(getProfile(user, true), 'function', null));
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 
@@ -383,7 +385,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 								{renderRequiredFields(subjects, educationLevels)}
 							</Spacer>
 							{get(user, 'role.name') === 'lesgever' && (
-								<Spacer margin="top">
+								<Spacer margin="bottom">
 									<FormGroup>
 										<Checkbox
 											label={t(
