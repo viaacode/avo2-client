@@ -63,7 +63,7 @@ export interface ContentPageEditFormState {
 	descriptionHtml: string;
 	isProtected: boolean;
 	path: string;
-	contentType: string;
+	contentType: ContentPageType | undefined;
 	contentWidth: Avo.Content.ContentWidth;
 	publishAt: string;
 	depublishAt: string;

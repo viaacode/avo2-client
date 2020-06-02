@@ -21,10 +21,13 @@ import {
 	ContentBlockType,
 } from '../../shared/types';
 import { ContentService } from '../content.service';
+import { ContentPageType } from '../content.types';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
+	contentType: ContentPageType | undefined;
+	title: string;
 	hasSubmitted: boolean;
 	onAdd: (config: ContentBlockConfig) => void;
 	onError: (configIndex: number, errors: ContentBlockErrors) => void;
@@ -43,6 +46,8 @@ interface ContentEditContentBlocksProps {
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	contentWidth,
+	contentType,
+	title,
 	hasSubmitted,
 	onAdd,
 	onError,
@@ -148,6 +153,8 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							contentBlockConfigs
 						)}
 						contentWidth={contentWidth}
+						contentType={contentType}
+						title={title}
 					/>
 				</div>
 				<Sidebar className="c-content-edit-view__sidebar" light>

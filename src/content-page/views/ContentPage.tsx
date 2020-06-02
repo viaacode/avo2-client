@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
+import { ContentPageType } from '../../admin/content/content.types';
 import { ContentBlockConfig, ContentBlockType } from '../../admin/shared/types';
 import { getUserGroupIds } from '../../authentication/authentication.service';
 import { InteractiveTour } from '../../shared/components';
@@ -13,31 +14,49 @@ import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 import './ContentPage.scss';
 
+// Because of legacy we have 2 ways of passing content page info
+// The preferred way is where we pass the whole Avo.Content.Content object
 type ContentPageDetailProps =
 	| {
 			contentPage: Avo.Content.Content;
 	  }
 	| {
+			// Deprecated
 			contentBlockConfigs: ContentBlockConfig[];
 			contentWidth: Avo.Content.ContentWidth;
+			contentType: ContentPageType | undefined;
+			title: string;
 	  };
 
 const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props => {
-	let contentBlockConfigs: ContentBlockConfig[];
-	let contentWidth: Avo.Content.ContentWidth;
+	let contentPage: {
+		contentBlockConfigs: ContentBlockConfig[];
+		contentWidth: Avo.Content.ContentWidth;
+		contentType: ContentPageType;
+		title: string;
+	};
+
 	if ((props as any).contentPage) {
-		contentBlockConfigs = parseContentBlocks(
-			(props as any).contentPage.contentBlockssBycontentId || []
-		);
-		contentWidth = (props as any).contentPage.content_width;
+		contentPage = {
+			contentBlockConfigs: parseContentBlocks(
+				(props as any).contentPage.contentBlockssBycontentId || []
+			),
+			contentWidth: (props as any).contentPage.content_width,
+			contentType: (props as any).contentPage.content_type,
+			title: (props as any).contentPage.title,
+		};
 	} else {
-		contentBlockConfigs = (props as any).contentBlockConfigs || [];
-		contentWidth = (props as any).contentWidth;
+		contentPage = {
+			contentBlockConfigs: (props as any).contentBlockConfigs || [],
+			contentWidth: (props as any).contentWidth,
+			contentType: (props as any).contentType,
+			title: (props as any).title,
+		};
 	}
 
 	// images can have a setting to go full width
 	// so we need to set the block prop: fullWidth to true if we find an image block with size setting: pageWidth
-	contentBlockConfigs = contentBlockConfigs.map(contentBlockConfig => {
+	contentPage.contentBlockConfigs = contentPage.contentBlockConfigs.map(contentBlockConfig => {
 		const width = (contentBlockConfig.components.state as BlockImageProps).width;
 		if (
 			contentBlockConfig.type === ContentBlockType.Image &&
@@ -49,6 +68,34 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 		}
 		return contentBlockConfig;
 	});
+
+	// Add page title as header block for faq items
+	contentPage.contentBlockConfigs = [
+		{
+			name: 'Titel',
+			type: 'HEADING',
+			components: {
+				state: {
+					children: contentPage.title,
+					type: 'h1',
+					align: 'left',
+				},
+			},
+			block: {
+				state: {
+					blockType: 'HEADING',
+					position: 2,
+					backgroundColor: '#FFF',
+					headerBackgroundColor: '#FFF',
+					padding: {
+						top: 'top-extra-large',
+						bottom: 'bottom-small',
+					},
+				},
+			},
+		} as ContentBlockConfig,
+		...contentPage.contentBlockConfigs,
+	];
 
 	const getVisibleContentBlocks = (contentBlockConfigs: ContentBlockConfig[]) => {
 		return compact(
@@ -74,13 +121,13 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 	return (
 		<>
 			<InteractiveTour showButton={false} />
-			{getVisibleContentBlocks(contentBlockConfigs).map(
+			{getVisibleContentBlocks(contentPage.contentBlockConfigs).map(
 				(contentBlockConfig: ContentBlockConfig) => {
 					return (
 						<ContentBlockPreview
 							key={contentBlockConfig.id}
 							componentState={contentBlockConfig.components.state}
-							contentWidth={contentWidth}
+							contentWidth={contentPage.contentWidth}
 							blockState={contentBlockConfig.block.state}
 						/>
 					);

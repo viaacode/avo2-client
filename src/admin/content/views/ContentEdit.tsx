@@ -408,6 +408,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						contentWidth={contentForm.contentWidth}
+						contentType={contentForm.contentType}
+						title={contentForm.title}
 						hasSubmitted={hasSubmitted}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}

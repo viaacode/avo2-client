@@ -74,7 +74,7 @@ export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
 	descriptionState: undefined,
 	isProtected: false,
 	path: '',
-	contentType: '',
+	contentType: undefined,
 	contentWidth: ContentWidth.REGULAR,
 	publishAt: '',
 	depublishAt: '',

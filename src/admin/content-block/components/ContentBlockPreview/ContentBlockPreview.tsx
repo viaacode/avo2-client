@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { omit } from 'lodash-es';
+import { get, omit } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -99,8 +99,14 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 					'c-content-block-preview--dark': hasDarkBg,
 					'u-color-white': hasDarkBg,
 				})}
-				margin={[blockState.margin.top, blockState.margin.bottom]}
-				padding={[blockState.padding.top, blockState.padding.bottom]}
+				margin={[
+					get(blockState, 'margin.top', 'none'),
+					get(blockState, 'margin.bottom', 'none'),
+				]}
+				padding={[
+					get(blockState, 'padding.top', 'none'),
+					get(blockState, 'padding.bottom', 'none'),
+				]}
 			>
 				{blockState.headerBackgroundColor !== Color.Transparent && (
 					<div

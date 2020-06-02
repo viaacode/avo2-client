@@ -67,6 +67,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		// Set fixed content width for specific page types
 		Object.keys(DEFAULT_PAGES_WIDTH).forEach(key => {
 			if (
+				formState.contentType &&
 				DEFAULT_PAGES_WIDTH[key as ContentWidth].includes(formState.contentType) &&
 				formState.contentWidth !== key
 			) {
@@ -125,6 +126,11 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	const handleLabelCreateConfirmed = async () => {
 		try {
+			if (!formState.contentType) {
+				throw new CustomError(
+					'Failed to create label because the contentType is undefined'
+				);
+			}
 			if (!labelToBeCreated) {
 				throw new CustomError(
 					'Failed to create label because the labelToBeCreated is undefined'
@@ -155,7 +161,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	const mapTagsToLabels = (
 		tags: TagInfo[],
-		contentType: string
+		contentType: ContentPageType | undefined
 	): Partial<Avo.Content.ContentLabel>[] => {
 		return (tags || []).map(tag => ({
 			label: tag.label,
