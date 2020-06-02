@@ -12,6 +12,7 @@ import {
 	BlockSpotlight,
 } from '@viaa/avo2-components';
 
+import BlockSearch from '../../../../search/components/BlockSearch';
 import { ContentBlockType } from '../../../shared/types';
 import {
 	BlockGridWrapper,
@@ -45,6 +46,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.Spotlight]: BlockSpotlight,
 	[ContentBlockType.Hero]: BlockHero,
+	[ContentBlockType.Search]: BlockSearch,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [

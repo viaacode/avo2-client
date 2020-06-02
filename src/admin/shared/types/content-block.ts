@@ -160,6 +160,7 @@ export enum ContentBlockType {
 	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
 	Spotlight = 'SPOTLIGHT',
 	Hero = 'HERO',
+	Search = 'SEARCH',
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
@@ -222,7 +223,8 @@ export type ContentBlockComponentState =
 	| MediaPlayerBlockComponentState
 	| PageOverviewBlockComponentStateFields
 	| QuoteBlockComponentState
-	| RichTextBlockComponentState;
+	| RichTextBlockComponentState
+	| {};
 
 export interface HeadingBlockComponentState {
 	children: string;
