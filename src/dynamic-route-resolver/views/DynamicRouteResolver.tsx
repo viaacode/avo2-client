@@ -167,7 +167,14 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				<>
 					<MetaTags>
 						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
-						<meta name="description" content={get(routeInfo.data, 'description')} />
+						<meta
+							name="description"
+							content={
+								get(routeInfo.data, 'seo_description') ||
+								get(routeInfo.data, 'description') ||
+								''
+							}
+						/>
 					</MetaTags>
 					<ContentPage contentPage={routeInfo.data} />
 				</>

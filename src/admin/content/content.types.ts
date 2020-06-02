@@ -38,12 +38,6 @@ export type ContentOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export type DateRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
-export type FilterRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
-export type RangeFilters = {
-	[key in FilterRangeKeys]?: { _gte?: string; _lte?: string };
-};
-
 export interface ContentTableState extends FilterableTableState {
 	content_type: string[];
 	created_at: DateRange;
@@ -61,6 +55,7 @@ export interface ContentPageEditFormState {
 	title: string;
 	descriptionState: RichEditorState | undefined;
 	descriptionHtml: string;
+	seoDescription: string | undefined;
 	isProtected: boolean;
 	path: string;
 	contentType: string;

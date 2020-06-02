@@ -86,6 +86,7 @@ export const useContentPage = (history: History, id?: string): UseContentPageTup
 						title: dbContentPage.title,
 						descriptionHtml: dbContentPage.description || '',
 						descriptionState: null,
+						seoDescription: (dbContentPage as any).seo_description || '', // TODO remove cast after typings v2.18.0
 						isProtected: dbContentPage.is_protected,
 						path: dbContentPage.path,
 						contentType: dbContentPage.content_type,
