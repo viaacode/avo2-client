@@ -243,8 +243,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					blockConfigs,
-					true
+					blockConfigs
 				);
 			} else {
 				if (!isNil(id)) {
