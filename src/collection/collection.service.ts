@@ -9,6 +9,8 @@ import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { RelationService } from '../shared/services/relation-service/relation.service';
+import { RelationType } from '../shared/services/relation-service/relation.types';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
@@ -32,7 +34,6 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
-	INSERT_COLLECTION_RELATION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from './collection.gql';
@@ -43,7 +44,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
+import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -374,7 +375,8 @@ export class CollectionService {
 				collectionToInsert
 			);
 
-			await this.insertCollectionRelation(
+			await RelationService.insertRelation(
+				'collection',
 				collection.id,
 				duplicatedCollection.id,
 				RelationType.IS_COPY_OF
@@ -1051,44 +1053,6 @@ export class CollectionService {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
 				query: 'GET_COLLECTIONS_BY_OWNER',
-			});
-		}
-	}
-
-	private static async insertCollectionRelation(
-		originalCollectionId: string,
-		otherCollectionId: string,
-		relationType: RelationType
-	): Promise<number> {
-		let variables: any;
-		try {
-			variables = {
-				relationType,
-				originalId: originalCollectionId,
-				otherId: otherCollectionId,
-			};
-			const response = await dataService.mutate({
-				variables,
-				mutation: INSERT_COLLECTION_RELATION,
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
-			const relationId = get(
-				response,
-				'data.insert_app_collection_relations.returning[0].id'
-			);
-			if (!relationId) {
-				throw new CustomError('Response does not contain a relation id', null, {
-					response,
-				});
-			}
-			return relationId;
-		} catch (err) {
-			throw new CustomError('Failed to insert collection relation into the database', err, {
-				variables,
-				query: 'INSERT_COLLECTION_RELATION',
 			});
 		}
 	}
