@@ -26,6 +26,7 @@ import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../co
 import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 import queryString from 'query-string';
+import { ContentService } from '../../../../content/content.service';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
@@ -159,14 +160,21 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		t,
 	]);
 
-	const checkFocusedPage = () => {
-		const queryParams = queryString.parse(location.search);
-		if (
-			queryParams.focus &&
-			isString(queryParams.focus) &&
-			/^[0-9]+$/g.test(queryParams.focus)
-		) {
-			setFocusedPageId(parseInt(queryParams.focus, 10));
+	const checkFocusedPage = async () => {
+		try {
+			const queryParams = queryString.parse(location.search);
+			if (queryParams.focus && isString(queryParams.focus)) {
+				const contentPage = await ContentService.fetchContentPageByPath(queryParams.focus);
+				if (!contentPage) {
+					throw new CustomError('No pages were found with the provided path');
+				}
+				setFocusedPageId(contentPage.id);
+			}
+		} catch (err) {
+			console.error('Failed to fetch content page by path', err, {
+				queryParams: location.search,
+			});
+			ToastService.danger(t('Het ophalen van het te focussen item is mislukt'));
 		}
 	};
 
