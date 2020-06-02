@@ -8,6 +8,7 @@ import {
 	Button,
 	ButtonGroup,
 	ButtonToolbar,
+	Checkbox,
 	Container,
 	Dropdown,
 	DropdownButton,
@@ -399,7 +400,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						<DropdownButton>
 							<Button
 								icon="more-horizontal"
-								type="borderless"
+								type={isMobileWidth() ? 'tertiary' : 'borderless'}
 								title={t('assignment/views/assignment-overview___meer-opties')}
 							/>
 						</DropdownButton>
@@ -449,29 +450,31 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					</Dropdown>
 				)}
 
-				{!isMobileWidth() && canEditAssignments && (
+				{canEditAssignments && (
 					<Button
 						icon="chevron-right"
+						label={isMobileWidth() ? t('Bewerken') : undefined}
 						title={t('assignment/views/assignment-overview___bewerk-de-opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
 								id: rowData.id,
 							})
 						}
-						type="borderless"
+						type={isMobileWidth() ? 'tertiary' : 'borderless'}
 					/>
 				)}
 
-				{!isMobileWidth() && !canEditAssignments && (
+				{!canEditAssignments && (
 					<Button
 						icon="chevron-right"
+						label={isMobileWidth() ? t('Bekijken') : undefined}
 						title={t('Bekijk deze opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, {
 								id: rowData.id,
 							})
 						}
-						type="borderless"
+						type={isMobileWidth() ? 'tertiary' : 'borderless'}
 					/>
 				)}
 			</ButtonToolbar>
@@ -544,20 +547,24 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'submitted_at':
 				const isSubmitted = !!get(assignment, 'assignment_responses[0].submitted_at');
-				return (
-					<Button
-						type="borderless"
-						icon={isSubmitted ? 'check-square' : 'square'}
-						title={
-							isSubmitted ? t('Markeer als niet gemaakt') : t('Markeer als gemaakt')
-						}
-						onClick={() =>
+				const checkbox = (
+					<Checkbox
+						checked={isSubmitted}
+						label={t('gemaakt')}
+						onChange={() =>
 							toggleAssignmentSubmitStatus(get(assignment, 'assignment_responses[0]'))
 						}
 					/>
 				);
+				if (isMobileWidth()) {
+					return <Spacer margin="top">{checkbox}</Spacer>;
+				}
+				return checkbox;
 
 			case 'actions':
+				if (isMobileWidth()) {
+					return <Spacer margin="top">{renderActions(assignment)}</Spacer>;
+				}
 				return renderActions(assignment);
 
 			default:
@@ -842,6 +849,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						}
 						sortColumn={sortColumn}
 						sortOrder={sortOrder}
+						useCards={isMobileWidth()}
 					/>
 					<Spacer margin="top-large">
 						<Pagination
