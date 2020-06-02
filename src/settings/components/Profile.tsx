@@ -8,6 +8,7 @@ import {
 	BlockHeading,
 	Box,
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -34,6 +35,7 @@ import { getLoginResponse, setLoginSuccess } from '../../authentication/store/ac
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { DataQueryComponent, FileUpload } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { CustomError } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
@@ -41,9 +43,10 @@ import {
 	fetchCities,
 	fetchEducationOrganizations,
 } from '../../shared/services/education-organizations-service';
+import { NewsletterPreferences } from '../../shared/types';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
-import { updateProfileInfo } from '../settings.service';
+import { updateNewsletterPreferences, updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
@@ -94,6 +97,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [bio, setBio] = useState<string | null>((getProfile(user) as any).bio);
 	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 
 	useEffect(() => {
 		fetchCities()
@@ -163,6 +167,28 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				})),
 				function: func, // This database field naming isn't ideal
 			});
+
+			// save newsletter subscription if checked
+			if (subscribeToNewsletter) {
+				const preferences: Partial<NewsletterPreferences> = {
+					newsletter: true,
+				};
+				try {
+					await updateNewsletterPreferences(
+						`${user.first_name} ${user.last_name}`,
+						user.mail,
+						preferences
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to subscribe to newsletter', err, {
+							preferences,
+							user,
+						})
+					);
+					ToastService.danger(t('Het inschijven voor de nieuwsbrief is mislukt'));
+				}
+			}
 
 			// Refresh the login state, so the profile info will be up to date
 			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
@@ -356,6 +382,19 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							<Spacer margin={['top-large', 'bottom-large']}>
 								{renderRequiredFields(subjects, educationLevels)}
 							</Spacer>
+							{get(user, 'role.name') === 'lesgever' && (
+								<Spacer margin="top">
+									<FormGroup>
+										<Checkbox
+											label={t(
+												'Ik ontvang graag per e-mail tips en inspiratie voor mijn lessen, vacatures, gratis workshops en nieuws van partners.'
+											)}
+											checked={subscribeToNewsletter}
+											onChange={setSubscribeToNewsletter}
+										/>
+									</FormGroup>
+								</Spacer>
+							)}
 						</Form>
 						<Button
 							label={t('settings/components/profile___inloggen')}
