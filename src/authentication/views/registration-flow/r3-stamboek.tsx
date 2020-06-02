@@ -4,7 +4,15 @@ import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
+import {
+	Alert,
+	BlockHeading,
+	Button,
+	Checkbox,
+	Container,
+	FormGroup,
+	Spacer,
+} from '@viaa/avo2-components';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ToastService } from '../../../shared/services';
@@ -32,6 +40,17 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 	const [t] = useTranslation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
+	const [acceptedPrivacyConditions, setAcceptedPrivacyConditions] = useState<boolean>(false);
+
+	const handleCreateAccountButtonClicked = () => {
+		if (acceptedPrivacyConditions) {
+			redirectToServerArchiefRegistrationIdp(location, validStamboekNumber);
+		} else {
+			ToastService.danger(
+				'Je moet de privacy voorwaarden accepteren om een account te kunnen aanmaken'
+			);
+		}
+	};
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
@@ -83,7 +102,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						</Alert>
 					</Spacer>
 				</div>
-				<Spacer margin="top-large">
+				<Spacer margin={['top-large', 'bottom']}>
 					<FormGroup
 						label={t(
 							'authentication/views/registration-flow/r-3-stamboek___lerarenkaart-of-stamboeknummer'
@@ -98,6 +117,30 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 							{...props}
 						/>
 					</FormGroup>
+					<FormGroup>
+						<Checkbox
+							label={
+								(
+									<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring">
+										Ik aanvaard de&nbsp;
+										<a
+											href="//meemoo.be/nl/privacybeleid"
+											target="_blank"
+											rel="noopener noreferrer"
+											title={t(
+												'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
+											)}
+										>
+											privacyverklaring
+										</a>
+										.
+									</Trans>
+								) as any // TODO remove cast after components v1.42.0
+							}
+							checked={acceptedPrivacyConditions}
+							onChange={setAcceptedPrivacyConditions}
+						/>
+					</FormGroup>
 				</Spacer>
 				<FormGroup>
 					<Button
@@ -106,9 +149,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						)}
 						type="primary"
 						disabled={!validStamboekNumber}
-						onClick={() =>
-							redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
-						}
+						onClick={handleCreateAccountButtonClicked}
 					/>
 				</FormGroup>
 
