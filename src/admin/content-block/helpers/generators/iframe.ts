@@ -15,7 +15,14 @@ export const INITIAL_IFRAME_COMPONENTS_STATE = (): IFrameBlockComponentState => 
 });
 
 export const INITIAL_IFRAME_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.IFrame, position);
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.IFrame,
+		padding: {
+			top: 'top-extra-large',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),

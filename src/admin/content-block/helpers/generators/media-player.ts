@@ -29,7 +29,14 @@ export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockCompone
 });
 
 export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayer, position);
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.MediaPlayer,
+		padding: {
+			top: 'top-extra-large',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/media-player___media-speler'),

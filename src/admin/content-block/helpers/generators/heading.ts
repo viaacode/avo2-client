@@ -1,6 +1,5 @@
 import i18n from '../../../../shared/translations/i18n';
 import {
-	Color,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -18,9 +17,13 @@ export const INITIAL_HEADING_COMPONENTS_STATE = (): HeadingBlockComponentState =
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Heading, position, Color.White, Color.White, {
-		top: 'top-extra-large',
-		bottom: 'bottom-small',
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.Heading,
+		padding: {
+			top: 'top-extra-large',
+			bottom: 'bottom-small',
+		},
 	});
 
 export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({

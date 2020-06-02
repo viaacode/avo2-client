@@ -33,7 +33,14 @@ const EMPTY_CTA: Partial<CTAProps> = {
 export const INITIAL_CTAS_COMPONENTS_STATE = (): Partial<CTAProps>[] => [EMPTY_CTA, EMPTY_CTA];
 
 export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.CTAs, position);
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.CTAs,
+		padding: {
+			top: 'top-large',
+			bottom: 'bottom-small',
+		},
+	});
 
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/ctas___ctas'),

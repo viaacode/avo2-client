@@ -39,16 +39,14 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultContentBlockState => {
 	return {
-		...BLOCK_STATE_DEFAULTS(
-			ContentBlockType.PageOverview,
+		...BLOCK_STATE_DEFAULTS({
 			position,
-			Color.White,
-			Color.Transparent,
-			{
+			blockType: ContentBlockType.PageOverview,
+			padding: {
 				top: 'top-small',
 				bottom: 'bottom-extra-large',
-			}
-		),
+			},
+		}),
 	};
 };
 

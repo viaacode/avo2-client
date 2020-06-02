@@ -17,7 +17,14 @@ export const INITIAL_QUOTE_COMPONENTS_STATE = (): QuoteBlockComponentState => ({
 });
 
 export const INITIAL_QUOTE_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Quote, position);
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.Quote,
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-small',
+		},
+	});
 
 export const QUOTE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/quote___quote'),
