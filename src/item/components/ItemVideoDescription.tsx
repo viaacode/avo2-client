@@ -25,13 +25,8 @@ import { Color } from '../../admin/shared/types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { FlowPlayerWrapper } from '../../shared/components';
-import {
-	getEnv,
-	parseDuration,
-	reorderDate,
-	sanitizePresets,
-	sanitize,
-} from '../../shared/helpers';
+import Html from '../../shared/components/Html/Html';
+import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
@@ -148,12 +143,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				);
 			}
 
-			return (
-				<span
-					key={`description-part-${index}`}
-					dangerouslySetInnerHTML={{ __html: sanitize(part, sanitizePresets.link) }}
-				/>
-			);
+			return <Html key={`description-part-${index}`} content={part} type="span" />;
 		});
 	};
 

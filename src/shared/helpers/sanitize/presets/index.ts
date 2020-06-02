@@ -45,8 +45,12 @@ const full = {
 	},
 };
 
-export default {
+export type SanitizePreset = 'basic' | 'link' | 'full';
+
+const presetLookup: { [preset in SanitizePreset]: any } = {
 	basic,
 	link,
 	full,
 };
+
+export default presetLookup;

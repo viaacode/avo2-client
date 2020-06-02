@@ -2,9 +2,9 @@ import { debounce, get, isArray, isNil } from 'lodash-es';
 
 import { SelectOption, WYSIWYG2Props } from '@viaa/avo2-components';
 
+import { sanitize } from '../../../shared/helpers/sanitize';
 import { RichEditorStateKey } from '../../content/content.const';
 import { ContentBlockEditor, ContentBlockField, PickerItem } from '../../shared/types';
-import { sanitize, sanitizePresets } from '../../../shared/helpers/sanitize';
 
 export const generateFieldAttributes = (
 	field: ContentBlockField,
@@ -47,7 +47,7 @@ export const generateFieldAttributes = (
 				state: (state as any)[`${key}${RichEditorStateKey}`],
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
-					onChange(sanitize(editorState.toHTML(), sanitizePresets.full), key);
+					onChange(sanitize(editorState.toHTML(), 'full'), key);
 				},
 			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:

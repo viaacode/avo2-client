@@ -19,9 +19,9 @@ import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
+import { AssetType } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
 import './FileUpload.scss';
-import { AssetType } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 export const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];

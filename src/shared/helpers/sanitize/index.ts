@@ -1,10 +1,8 @@
 import sanitizeHtml from 'sanitize-html';
 
-import sanitizePresets from './presets';
+import sanitizePresets, { SanitizePreset } from './presets';
 
-const sanitize = (input: string, preset = sanitizePresets.basic) =>
-	sanitizeHtml(input, {
-		...preset,
-	});
+const sanitize = (input: string, preset: SanitizePreset) =>
+	sanitizeHtml(input, sanitizePresets[preset] || sanitizePresets['basic']);
 
 export { sanitize, sanitizePresets };

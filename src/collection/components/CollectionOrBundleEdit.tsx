@@ -58,7 +58,6 @@ import {
 	navigate,
 	renderAvatar,
 	sanitize,
-	sanitizePresets,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
@@ -408,7 +407,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
 				fragment.custom_description = sanitize(
 					(fragment.custom_description as any).toHTML(),
-					sanitizePresets.link
+					'link'
 				);
 			}
 		});

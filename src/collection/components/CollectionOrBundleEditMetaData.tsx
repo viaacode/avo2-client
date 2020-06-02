@@ -21,7 +21,7 @@ import { Avo } from '@viaa/avo2-types';
 import { FileUpload } from '../../shared/components';
 import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_DEFAULT_NO_TITLES } from '../../shared/constants/wysiwyg2';
-import { CustomError, sanitize, sanitizePresets } from '../../shared/helpers';
+import { CustomError, sanitize } from '../../shared/helpers';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { dataService } from '../../shared/services';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
@@ -204,7 +204,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 																? descriptionLongEditorState.toHTML()
 																: (collection as any)
 																		.description_long,
-															sanitizePresets.link
+															'link'
 														),
 													})
 												}

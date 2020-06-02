@@ -20,8 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { sanitize } from '../../../shared/helpers';
-import sanitizePresets from '../../../shared/helpers/sanitize/presets';
+import Html from '../../../shared/components/Html/Html';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
@@ -167,16 +166,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						Vraag een account aan op het Archief voor Onderwijs
 					</Trans>
 				</BlockHeading>
-				<p
-					dangerouslySetInnerHTML={{
-						__html: sanitize(
-							t(
-								'authentication/views/registration-flow/r-4-manual-registration___intro',
-								links
-							),
-							sanitizePresets.link
-						),
-					}}
+				<Html
+					content={t(
+						'authentication/views/registration-flow/r-4-manual-registration___intro',
+						links
+					)}
 				/>
 				<BlockHeading type="h3">
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
