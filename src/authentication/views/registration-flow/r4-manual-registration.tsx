@@ -26,6 +26,7 @@ import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
+import { ROUTE_PARTS } from '../../../shared/constants';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 
@@ -144,7 +145,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	const links = {
 		linkToStudentTeacher: APP_PATH.STUDENT_TEACHER.route,
 		linkToPupilAccessVersionTeachers: '/leerlingen-toegang-versie-leerkrachten',
-		linkForPupilAccess: APP_PATH.FOR_PUPILS.route,
+		linkForPupilAccess: `/${ROUTE_PARTS.pupils}`,
 		linkToStamboek: APP_PATH.STAMBOEK.route,
 	};
 

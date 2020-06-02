@@ -28,7 +28,7 @@ export const ROUTE_PARTS = Object.freeze({
 	searchQuery: 'zoekopdracht',
 	stamboek: 'stamboek',
 	forTeachers: 'voor-leerkrachten',
-	forPupils: 'voor-leerlingen',
+	pupils: 'leerlingen',
 	workspace: 'mijn-werkruimte',
 	settings: 'instellingen',
 	help: 'hulp',

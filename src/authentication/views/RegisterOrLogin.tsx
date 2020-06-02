@@ -21,6 +21,7 @@ import LoginOptions from '../components/LoginOptions';
 import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 
 import './RegisterOrLogin.scss';
+import { ROUTE_PARTS } from '../../shared/constants';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}
 
@@ -91,7 +92,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 											type="primary"
 											onClick={() =>
 												redirectToClientPage(
-													APP_PATH.FOR_PUPILS.route,
+													`/${ROUTE_PARTS.pupils}`,
 													history
 												)
 											}

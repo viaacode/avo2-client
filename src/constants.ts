@@ -11,9 +11,44 @@ export interface RouteInfo {
 	showForInteractiveTour: boolean;
 }
 
+export type RouteId =
+	| 'LOGIN'
+	| 'LOGOUT'
+	| 'REGISTER_OR_LOGIN'
+	| 'MANUAL_ACCESS_REQUEST'
+	| 'STUDENT_TEACHER'
+	| 'STAMBOEK'
+	| 'COLLECTION_DETAIL'
+	| 'COLLECTION_EDIT'
+	| 'BUNDLE_DETAIL'
+	| 'BUNDLE_EDIT'
+	| 'LOGGED_OUT_HOME'
+	| 'LOGGED_IN_HOME'
+	| 'ITEM_DETAIL'
+	| 'SEARCH'
+	| 'USER_ITEM_REQUEST_FORM'
+	| 'WORKSPACE'
+	| 'WORKSPACE_TAB'
+	| 'WORKSPACE_COLLECTIONS'
+	| 'WORKSPACE_BUNDLES'
+	| 'WORKSPACE_BOOKMARKS'
+	| 'ASSIGNMENT_CREATE'
+	| 'ASSIGNMENT_DETAIL'
+	| 'ASSIGNMENT_EDIT'
+	| 'ASSIGNMENT_RESPONSES'
+	| 'SETTINGS'
+	| 'SETTINGS_TAB'
+	| 'SETTINGS_PROFILE'
+	| 'SETTINGS_ACCOUNT'
+	| 'SETTINGS_EMAIL'
+	| 'SETTINGS_NOTIFICATIONS'
+	| 'COMPLETE_PROFILE'
+	| 'ACCEPT_CONDITIONS'
+	| 'ERROR';
+
 // Routes should be ordered from least specific, to most specific
 // So we can use this order to search for interactive tours in the correct order
-export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
+export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	LOGIN: {
 		route: `/${ROUTE_PARTS.login}`,
 		showInContentPicker: true,
@@ -67,11 +102,6 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
 	LOGGED_OUT_HOME: {
 		route: '/',
 		showInContentPicker: true,
-		showForInteractiveTour: false,
-	},
-	FOR_PUPILS: {
-		route: `/${ROUTE_PARTS.forPupils}`,
-		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
 	LOGGED_IN_HOME: {
@@ -185,8 +215,6 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
 		showForInteractiveTour: false,
 	},
 };
-
-export type RouteId = keyof typeof APP_PATH;
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
 	video: APP_PATH.ITEM_DETAIL.route,
