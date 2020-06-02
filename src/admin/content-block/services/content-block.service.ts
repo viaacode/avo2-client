@@ -14,7 +14,7 @@ import {
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from '../content-block.gql';
-import { parseContentBlockConfig, parseContentBlockConfigs } from '../helpers';
+import { convertBlockToDatabaseFormat, convertBlocksToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
 	/**
@@ -26,7 +26,7 @@ export class ContentBlockService {
 		contentBlockConfig: ContentBlockConfig
 	): Promise<FetchResult<any> | null> {
 		try {
-			const contentBlock = parseContentBlockConfig(contentBlockConfig);
+			const contentBlock = convertBlockToDatabaseFormat(contentBlockConfig);
 
 			return await dataService.mutate({
 				mutation: UPDATE_CONTENT_BLOCK,
@@ -82,30 +82,15 @@ export class ContentBlockService {
 	 *
 	 * @param contentId content page identifier
 	 * @param contentBlockConfigs configs of content blocks to add
-	 * @param parse define whether the content blocks need parsing
 	 *
 	 * @return content blocks
 	 */
 	public static async insertContentBlocks(
 		contentId: number,
-		contentBlockConfigs: ContentBlockConfig[],
-		parse?: boolean
+		contentBlockConfigs: ContentBlockConfig[]
 	): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> {
 		try {
-			let contentBlocks;
-
-			if (parse) {
-				contentBlocks = parseContentBlockConfigs(contentId, contentBlockConfigs);
-			} else {
-				contentBlocks = (contentBlockConfigs || []).map(
-					(contentBlockConfig: ContentBlockConfig) => {
-						delete (contentBlockConfig as any).__typename;
-
-						// add correct content id
-						return { ...contentBlockConfig, content_id: contentId };
-					}
-				);
-			}
+			const contentBlocks = convertBlocksToDatabaseFormat(contentId, contentBlockConfigs);
 
 			const response = await dataService.mutate({
 				mutation: INSERT_CONTENT_BLOCKS,
