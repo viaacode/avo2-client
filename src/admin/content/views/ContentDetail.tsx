@@ -365,7 +365,14 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 							)
 						)}
 					</title>
-					<meta name="description" content={get(contentPage, 'description') || ''} />
+					<meta
+						name="description"
+						content={
+							get(contentPage, 'seo_description') ||
+							get(contentPage, 'description') ||
+							''
+						}
+					/>
 				</MetaTags>
 				<div className="m-content-detail-preview">
 					<LoadingErrorLoadedComponent

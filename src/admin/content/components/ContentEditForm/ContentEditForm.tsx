@@ -14,6 +14,7 @@ import {
 	SelectOption,
 	TagInfo,
 	TagsInput,
+	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -185,6 +186,21 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										}
 										controls={WYSIWYG2_OPTIONS_FULL}
 										id="description"
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="12">
+								<FormGroup
+									error={formErrors.seoDescription}
+									label={t('SEO omschrijving')}
+								>
+									<TextArea
+										value={formState.seoDescription}
+										onChange={newValue => onChange('seoDescription', newValue)}
+										height="auto"
+										placeholder={t(
+											'Omschijving voor de google. De pagina omschrijving wordt gebruikt indien dit veld niet ingevuld is'
+										)}
 									/>
 								</FormGroup>
 							</Column>

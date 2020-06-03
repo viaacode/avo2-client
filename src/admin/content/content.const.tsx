@@ -63,15 +63,12 @@ export const INITIAL_FILTER_FORM = (): ContentTableState => ({
 	sort_order: 'desc' as Avo.Search.OrderDirection,
 });
 
-export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
-	filterForm: INITIAL_FILTER_FORM(),
-});
-
 export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
 	thumbnail_path: null,
 	title: '',
 	descriptionHtml: '',
 	descriptionState: undefined,
+	seoDescription: '',
 	isProtected: false,
 	path: '',
 	contentType: '',

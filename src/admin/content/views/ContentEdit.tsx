@@ -225,6 +225,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				description: contentForm.descriptionState
 					? contentForm.descriptionState.toHTML()
 					: contentForm.descriptionHtml || null,
+				// We'll default to description when the page is rendered
+				// To avoid defaulting to description once and then having to manually update this field evey time
+				// This also avoids storing the description twice
+				seo_description: (contentForm.seoDescription || '').trim() || null,
 				is_protected: contentForm.isProtected,
 				path: getPathOrDefault(),
 				content_type: contentForm.contentType,

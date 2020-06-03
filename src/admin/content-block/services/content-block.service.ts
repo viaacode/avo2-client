@@ -14,7 +14,7 @@ import {
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from '../content-block.gql';
-import { convertBlockToDatabaseFormat, convertBlocksToDatabaseFormat } from '../helpers';
+import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
 	/**
