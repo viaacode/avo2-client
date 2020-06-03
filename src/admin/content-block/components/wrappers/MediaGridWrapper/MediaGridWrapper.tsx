@@ -119,19 +119,21 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			buttonLabel: element.buttonLabel,
 			buttonType: element.buttonType,
 			buttonIcon: element.buttonIcon,
-			buttonAction: element.buttonAction || // Default link can be overridden by the user
-				element.mediaItem || {
+			buttonAction:
+				element.buttonAction || // Default link can be overridden by the user
+				element.mediaItem ||
+				({
 					type: isItem ? 'ITEM' : isCollection ? 'COLLECTION' : 'BUNDLE',
 					value: itemOrCollection.external_id,
 					target: get(searchQuery, 'target') || '_self',
-				},
+				} as ButtonAction),
 			title: itemOrCollection.title || '',
 			thumbnail: {
 				label: itemLabel,
 				meta: isItem ? itemDuration : `${collectionItems} items`,
 				src: itemOrCollection.thumbnail_path || '',
 			},
-		} as any; // Remove cast after update to components 1.40.0
+		};
 	};
 
 	// Render
