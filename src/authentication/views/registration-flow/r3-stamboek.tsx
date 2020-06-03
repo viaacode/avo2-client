@@ -120,22 +120,20 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 					<FormGroup>
 						<Checkbox
 							label={
-								(
-									<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring">
-										Ik aanvaard de&nbsp;
-										<a
-											href="//meemoo.be/nl/privacybeleid"
-											target="_blank"
-											rel="noopener noreferrer"
-											title={t(
-												'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
-											)}
-										>
-											privacyverklaring
-										</a>
-										.
-									</Trans>
-								) as any // TODO remove cast after components v1.42.0
+								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring">
+									Ik aanvaard de&nbsp;
+									<a
+										href="//meemoo.be/nl/privacybeleid"
+										target="_blank"
+										rel="noopener noreferrer"
+										title={t(
+											'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
+										)}
+									>
+										privacyverklaring
+									</a>
+									.
+								</Trans>
 							}
 							checked={acceptedPrivacyConditions}
 							onChange={setAcceptedPrivacyConditions}

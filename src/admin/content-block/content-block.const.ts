@@ -392,7 +392,7 @@ export const GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonT
 	},
 	{
 		label: i18n.t('Geel'),
-		value: 'pupil-underlined-link' as any, // TODO remove cast ater update to components v1.42.0
+		value: 'pupil-underlined-link' as any, // TODO remove cast after update to components v1.43.0
 	},
 ];
 
