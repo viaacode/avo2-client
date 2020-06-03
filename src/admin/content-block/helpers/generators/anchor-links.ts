@@ -18,8 +18,15 @@ export const INITIAL_ANCHOR_LINKS_COMPONENTS_STATE = (): AnchorLinksBlockCompone
 	},
 ];
 
-export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (): AnchorLinksBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks),
+export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): AnchorLinksBlockState => ({
+	...BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.AnchorLinks,
+		padding: {
+			top: 'top',
+			bottom: 'bottom',
+		},
+	}),
 	align: 'center',
 	hasDividers: true,
 });

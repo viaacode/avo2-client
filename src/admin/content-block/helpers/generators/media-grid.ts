@@ -26,8 +26,15 @@ import {
 
 export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [{}];
 
-export const INITIAL_MEDIA_GRID_BLOCK_STATE = (): MediaGridBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.MediaGrid),
+export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlockState => ({
+	...BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.MediaGrid,
+		padding: {
+			top: 'top-large',
+			bottom: 'bottom-small',
+		},
+	}),
 	ctaTitle: '',
 	ctaContent: '',
 	ctaButtonLabel: '',

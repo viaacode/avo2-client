@@ -23,26 +23,28 @@ import {
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
-	blockType: ContentBlockType,
-	backgroundColor: Color = Color.Transparent,
-	headerBackgroundColor: Color = Color.Transparent,
-	padding: PaddingFieldState = {
-		top: 'top',
-		bottom: 'bottom',
-	},
-	margin: PaddingFieldState = {
-		top: 'none',
-		bottom: 'none',
-	},
-	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
-): DefaultContentBlockState => ({
-	blockType,
-	backgroundColor,
-	headerBackgroundColor,
-	padding,
-	margin,
-	userGroupIds,
-});
+	state: { blockType: ContentBlockType; position: number } & Partial<DefaultContentBlockState>
+): DefaultContentBlockState => {
+	return {
+		blockType: state.blockType,
+		position: state.position || 0,
+		backgroundColor: state.backgroundColor || Color.Transparent,
+		headerBackgroundColor: state.headerBackgroundColor || Color.Transparent,
+		padding:
+			state.padding ||
+			({
+				top: 'small',
+				bottom: 'small',
+			} as PaddingFieldState),
+		margin:
+			state.margin ||
+			({
+				top: 'none',
+				bottom: 'none',
+			} as PaddingFieldState),
+		userGroupIds: state.userGroupIds || [],
+	};
+};
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),

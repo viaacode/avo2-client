@@ -14,8 +14,15 @@ export const INITIAL_RICH_TEXT_COMPONENTS_STATE = (): RichTextBlockComponentStat
 	contentRichEditorState: undefined,
 });
 
-export const INITIAL_RICH_TEXT_BLOCK_STATE = (): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.RichText)
+export const INITIAL_RICH_TEXT_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.RichText,
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-small',
+		},
+	});
 
 export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	position,

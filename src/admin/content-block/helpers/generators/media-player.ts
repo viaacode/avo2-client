@@ -28,8 +28,15 @@ export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockCompone
 	autoplay: false,
 });
 
-export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayer)
+export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.MediaPlayer,
+		padding: {
+			top: 'top-extra-large',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	position,

@@ -34,7 +34,14 @@ export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSt
 export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockGridWrapperProps &
 	DefaultContentBlockState => {
 	return {
-		...BLOCK_STATE_DEFAULTS(ContentBlockType.ImageGrid),
+		...BLOCK_STATE_DEFAULTS({
+			position,
+			blockType: ContentBlockType.ImageGrid,
+			padding: {
+				top: 'top-large',
+				bottom: 'bottom',
+			},
+		}),
 		elements: [] as GridItem[],
 		format: 'squareLarge',
 		fill: 'cover',

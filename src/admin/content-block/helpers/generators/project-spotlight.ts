@@ -25,8 +25,17 @@ export const INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE = (): ImageInfo[] =>
 			} as any)
 	);
 
-export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.ProjectsSpotlight);
+export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (
+	position: number
+): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		position,
+		blockType: ContentBlockType.ProjectsSpotlight,
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	position,
