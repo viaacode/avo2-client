@@ -27,8 +27,14 @@ export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): 
 	return get(user, 'last_name') || defaultName;
 };
 
-export function getProfile(user: Avo.User.User | undefined): Avo.User.Profile {
+export function getProfile(
+	user: Avo.User.User | undefined,
+	silent: boolean = false
+): Avo.User.Profile | null {
 	if (!user) {
+		if (silent) {
+			return null;
+		}
 		throw new CustomError('Failed to get profile because the logged in user is undefined');
 	}
 	const profile = get(user, 'profile');
