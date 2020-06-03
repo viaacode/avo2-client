@@ -33,7 +33,6 @@ import {
 	CustomError,
 	formatDate,
 	getFullName,
-	getRole,
 	navigate,
 	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
@@ -51,6 +50,7 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { UserService } from '../../users/user.service';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentTableState } from '../content.types';
@@ -289,7 +289,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'author':
 				return getFullName(profile) || '-';
 			case 'role':
-				return getRole(profile) || '-';
+				return UserService.getUserRoleLabel(profile) || '-';
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':

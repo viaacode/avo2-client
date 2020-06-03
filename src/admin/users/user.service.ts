@@ -81,4 +81,26 @@ export class UserService {
 			});
 		}
 	}
+
+	/**
+	 * Get user role name from user of profile object
+	 * @param userOrProfile
+	 * @returns userRole eg: leerling, lesgever, admin, ...  See database for all options: shared.user_roles
+	 */
+	public static getUserRole(
+		userOrProfile: Avo.User.User | Avo.User.Profile | undefined | null
+	): string | null {
+		return get(userOrProfile, 'role.name') || get(userOrProfile, 'user.role.name') || null;
+	}
+
+	/**
+	 * Get user role label from user of profile object
+	 * @param userOrProfile
+	 * @returns userRole eg: Leerling, Lesgever, Beheerder, ...  See database for all options: shared.user_roles
+	 */
+	public static getUserRoleLabel(
+		userOrProfile: Avo.User.User | Avo.User.Profile | undefined | null
+	): string | null {
+		return get(userOrProfile, 'role.label') || get(userOrProfile, 'user.role.label') || null;
+	}
 }

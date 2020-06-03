@@ -9,6 +9,7 @@ import { Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../../admin/items/items.service';
+import { UserService } from '../../admin/users/user.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { getLoginStateAction } from '../../authentication/store/actions';
@@ -16,7 +17,6 @@ import {
 	selectLogin,
 	selectLoginError,
 	selectLoginLoading,
-	selectUser,
 } from '../../authentication/store/selectors';
 import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -40,7 +40,6 @@ interface DynamicRouteResolverProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
 	loginStateError: boolean;
 	loginStateLoading: boolean;
-	user: Avo.User.User;
 }
 
 const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
@@ -50,7 +49,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	loginState,
 	loginStateError,
 	loginStateLoading,
-	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -60,9 +58,20 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	const analyseRoute = useCallback(async () => {
 		try {
+			if (!loginState) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Het controleren van je login status is mislukt'),
+					actionButtons: ['home', 'helpdesk'],
+				});
+				return;
+			}
+
+			const pathname = location.pathname;
+
 			// Check if path is an old media url
-			if (/\/media\/[^/]+\/[^/]+/g.test(location.pathname)) {
-				const avo1Id = (location.pathname.split('/').pop() || '').trim();
+			if (/\/media\/[^/]+\/[^/]+/g.test(pathname)) {
+				const avo1Id = (pathname.split('/').pop() || '').trim();
 				if (avo1Id) {
 					// Check if id matches an item mediamosa id
 					const itemExternalId = await ItemsService.fetchItemExternalIdByMediamosaId(
@@ -92,15 +101,35 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path is old item id
-			if (/\/pid\/[^/]+/g.test(location.pathname)) {
-				const itemPid = (location.pathname.split('/').pop() || '').trim();
+			if (/\/pid\/[^/]+/g.test(pathname)) {
+				const itemPid = (pathname.split('/').pop() || '').trim();
 				history.push(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }));
+				return;
+			}
+
+			// Special route exception
+			// /klaar/archief: redirect teachers to search page with klaar filter
+			if (
+				pathname === '/klaar/archief' &&
+				PermissionService.hasPerm(loginState.userInfo, PermissionName.SEARCH)
+			) {
+				history.push(generateSearchLinkString('serie', 'Klaar'));
+				return;
+			}
+
+			// Special route exception
+			// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
+			if (
+				pathname === APP_PATH.LOGGED_IN_HOME.route &&
+				UserService.getUserRole(loginState.userInfo) === 'leerling'
+			) {
+				history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 				return;
 			}
 
 			// Check if path points to a content page
 			const contentPage: Avo.Content.Content | null = await ContentPageService.getContentPageByPath(
-				location.pathname
+				pathname
 			);
 			if (!contentPage) {
 				setRouteInfo({ type: 'notFound', data: null });
@@ -121,26 +150,39 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				icon: 'search',
 			});
 		}
-	}, [location.pathname, history, t]);
-
-	// Analyse the path and determine the routeType
-	useEffect(() => {
-		if (!location.pathname) {
-			return;
-		}
-
-		analyseRoute();
-	}, [location.pathname, analyseRoute]);
+	}, [loginState, location.pathname, setRouteInfo, setLoadingInfo, history, t]);
 
 	// Check if current user is logged in
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
-		} else if (routeInfo && loginState) {
-			// Prevent seeing the content-page before loginState and routeInfo are both done
+		} else if (loginStateError) {
+			console.error(
+				new CustomError('Login error was encountered', null, {
+					loginStateError,
+					loginState,
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Er ging iets mis bij het inloggen'),
+				actionButtons: ['home', 'helpdesk'],
+			});
+		}
+	}, [getLoginState, loginState, loginStateError, loginStateLoading]);
+
+	useEffect(() => {
+		if (loginState && location.pathname) {
+			// Analyse the path and determine the routeType
+			analyseRoute();
+		}
+	}, [loginState, location.pathname]);
+
+	useEffect(() => {
+		if (routeInfo) {
 			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, routeInfo, user]);
+	}, [routeInfo]);
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
@@ -158,16 +200,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 						}}
 					/>
 				);
-			}
-
-			// Special route exceptions
-			// /klaar/archief: redirect teachers to search page with klaar filter
-			const routePath = get(routeInfo, 'data.path', '');
-			if (
-				routePath === '/klaar/archief' &&
-				PermissionService.hasPerm(user, PermissionName.SEARCH)
-			) {
-				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
 			}
 
 			return (
@@ -215,7 +247,6 @@ const mapStateToProps = (state: AppState) => ({
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),
-	user: selectUser(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

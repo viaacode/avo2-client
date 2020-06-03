@@ -387,7 +387,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
 
 			case 'author_role':
-				return get(rowData, 'profile.usersByuserId.role.label', '-');
+				return UserService.getUserRoleLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(

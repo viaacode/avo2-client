@@ -22,6 +22,7 @@ import {
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
+import { UserService } from '../../users/user.service';
 import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DbContent } from '../content.types';
 
@@ -151,7 +152,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							t('admin/content/views/content-detail___auteur')
 						)}
 						{renderDetailRow(
-							get(contentPage, 'profile.user.role.label'),
+							UserService.getUserRoleLabel(get(contentPage, 'profile')),
 							t('admin/content/views/content-detail___auteur-rol')
 						)}
 						{renderDateDetailRows(contentPage, [
