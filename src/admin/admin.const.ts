@@ -6,6 +6,7 @@ import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
+import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
 import { CONTENT_PATH } from './content/content.const';
 import { ContentService } from './content/content.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
@@ -23,6 +24,7 @@ export const ADMIN_PATH = Object.freeze({
 	...USER_GROUP_PATH,
 	...MENU_PATH,
 	...CONTENT_PATH,
+	...CONTENT_PAGE_LABEL_PATH,
 	...TRANSLATIONS_PATH,
 	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
@@ -233,6 +235,12 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 				exact: true,
 			},
 		],
+	}),
+	...hasPermissions(['EDIT_CONTENT_PAGE_LABELS'], 'OR', userPermissions, {
+		label: i18n.t('Content pagina labels'),
+		location: ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
+		key: 'content-page-labels',
+		exact: false,
 	}),
 	...getMediaNavItems(userPermissions),
 	...hasPermissions(['EDIT_INTERACTIVE_TOURS'], 'OR', userPermissions, {

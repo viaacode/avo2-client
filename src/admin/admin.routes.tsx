@@ -5,6 +5,7 @@ import { Switch } from 'react-router';
 import { renderErrorRoutes } from '../error/error.routes';
 
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
+import { renderAdminContentPageLabelRoutes } from './content-page-labels/content-page-label.routes';
 import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';
 import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour.routes';
@@ -49,6 +50,7 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 				['EDIT_OWN_CONTENT_PAGES', 'EDIT_ANY_CONTENT_PAGES'],
 				'OR'
 			)}
+			{renderWithPermissions(renderAdminContentPageLabelRoutes, ['EDIT_CONTENT_PAGE_LABELS'])}
 			{renderWithPermissions(renderItemRoutes, ['VIEW_ITEMS_OVERVIEW'])}
 			{renderWithPermissions(
 				renderCollectionOrBundleRoutes,

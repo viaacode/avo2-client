@@ -4,7 +4,15 @@ import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	Container,
+	LinkTarget,
+	Modal,
+	ModalBody,
+	Spacer,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -27,6 +35,7 @@ import {
 	getFullName,
 	getRole,
 	navigate,
+	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
@@ -256,15 +265,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
-	// function handlePreviewClicked(page: Avo.Content.Content) {
-	// 	if (page && page.path) {
-	// 		navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
-	// 	} else {
-	// 		ToastService.danger(
-	// 			t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
-	// 		);
-	// 	}
-	// }
+	function handlePreviewClicked(page: Avo.Content.Content) {
+		if (page && page.path) {
+			navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
+		} else {
+			ToastService.danger(
+				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+			);
+		}
+	}
 
 	// Render
 	const renderTableCell = (rowData: any, columnId: string): ReactNode => {
@@ -297,14 +306,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
 							type="secondary"
 						/>
-						{/*<Button*/}
-						{/*	icon="eye"*/}
-						{/*	onClick={() => handlePreviewClicked(rowData)}*/}
-						{/*	size="small"*/}
-						{/*	title={t('admin/content/views/content-overview___preview-content')}*/}
-						{/*	ariaLabel={t('admin/content/views/content-overview___preview-content')}*/}
-						{/*	type="secondary"*/}
-						{/*/>*/}
+						<Button
+							icon="eye"
+							onClick={() => handlePreviewClicked(rowData)}
+							size="small"
+							title={t('admin/content/views/content-overview___preview-content')}
+							ariaLabel={t('admin/content/views/content-overview___preview-content')}
+							type="secondary"
+						/>
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
