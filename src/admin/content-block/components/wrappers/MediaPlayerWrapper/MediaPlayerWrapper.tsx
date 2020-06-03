@@ -10,14 +10,12 @@ import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-
 import { getVideoStills } from '../../../../../shared/services/stills-service';
 import i18n from '../../../../../shared/translations/i18n';
 
-import './BlockMediaPlayerWrapper.scss';
-
 interface MediaPlayerProps {
 	title: string;
 	item?: ButtonAction;
 	src?: string;
 	poster?: string;
-	width?: 'full-width' | '500px' | '400px';
+	width?: string;
 	autoplay?: boolean;
 }
 
@@ -72,11 +70,8 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 
 	return (
 		<div
-			className={classnames(
-				'c-video-player t-player-skin--dark',
-				`o-media-block-width-${width}`,
-				'u-center-m'
-			)}
+			className={classnames('c-video-player t-player-skin--dark', 'u-center-m')}
+			style={{ width }}
 		>
 			{!!videoStill && (
 				<BlockFlowPlayer

@@ -13,7 +13,7 @@ import {
 	DefaultContentBlockState,
 	MediaPlayerBlockComponentState,
 } from '../../../shared/types';
-import { GET_WIDTH_OPTIONS } from '../../content-block.const';
+import { GET_MEDIA_PLAYER_WIDTH_OPTIONS } from '../../content-block.const';
 
 import {
 	BLOCK_FIELD_DEFAULTS,
@@ -77,7 +77,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				label: i18n.t('admin/content-block/helpers/generators/media-player___breedte'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_WIDTH_OPTIONS(),
+					options: GET_MEDIA_PLAYER_WIDTH_OPTIONS(),
 				},
 			},
 			autoplay: {
