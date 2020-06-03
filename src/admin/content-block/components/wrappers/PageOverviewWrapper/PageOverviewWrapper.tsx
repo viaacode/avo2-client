@@ -70,7 +70,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const dbToPageOverviewContentPage = (dbContentPage: DbContent): ContentPageInfo => {
 		return {
-			thumbnail_path: '/images/placeholder.png',
+			thumbnail_path: dbContentPage.thumbnail_path || '/images/placeholder-wide.png',
 			labels: dbContentPage.content_content_labels.map(cl => {
 				const contentLabel = (cl.content_label as unknown) as Avo.Content.ContentLabel; // TODO remove cast after typings v2.18.0
 				return {
