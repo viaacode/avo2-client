@@ -7,6 +7,7 @@ import { Dispatch } from 'redux';
 import {
 	BlockHeading,
 	Button,
+	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -129,7 +130,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 	};
 
 	return (
-		<div className="m-search-block">
+		<Container mode="horizontal" size="medium" className="m-search-block">
 			<Spacer>
 				<BlockHeading type="h2" className="u-text-center">
 					<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
@@ -196,7 +197,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 					</Spacer>
 				</div>
 			</Spacer>
-		</div>
+		</Container>
 	);
 };
 
