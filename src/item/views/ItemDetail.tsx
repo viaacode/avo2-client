@@ -262,6 +262,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 		}
 	};
 
+	const handleRelatedItemClicked = (relatedItem: Avo.Search.ResultItem) => {
+		redirectToClientPage(
+			buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
+			history
+		);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
@@ -287,12 +295,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							category={englishContentType}
-							onClick={() =>
-								redirectToClientPage(
-									buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
-									history
-								)
-							}
+							onClick={() => handleRelatedItemClicked(relatedItem)}
 							orientation="horizontal"
 							title={relatedItem.dc_title}
 						>
