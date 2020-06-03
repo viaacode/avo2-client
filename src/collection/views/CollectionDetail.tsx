@@ -700,6 +700,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							collectionFragments={collection_fragments}
 							showDescription
 							linkToItems={permissions.canViewItems || false}
+							canPlay={
+								!isAddToBundleModalOpen &&
+								!isDeleteModalOpen &&
+								!isPublishModalOpen &&
+								!isShareThroughEmailModalOpen
+							}
 							history={history}
 							location={location}
 							match={match}

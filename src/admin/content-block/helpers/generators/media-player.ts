@@ -38,15 +38,13 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 	components: {
 		state: INITIAL_MEDIA_PLAYER_COMPONENTS_STATE(),
 		fields: {
-			title: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/media-player___titel-is-verplicht'),
-				{
-					label: i18n.t(
-						'admin/content-block/helpers/generators/media-player___toegankelijkheidstitel'
-					),
-					editorType: ContentBlockEditor.TextInput,
-				}
-			),
+			title: TEXT_FIELD(undefined, {
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___toegankelijkheidstitel'
+				),
+				validator: undefined,
+				editorType: ContentBlockEditor.TextInput,
+			}),
 			item: VIDEO_FIELD(undefined, {
 				validator: undefined,
 			}),

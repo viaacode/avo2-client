@@ -72,17 +72,17 @@ export const INIT_COLLECTION_VIEWS = gql`
 `;
 
 export const INCREMENT_ITEM_PLAYS = gql`
-	mutation increaseCollectionPlays($itemUuid: uuid!) {
-		update_app_item_plays(where: { collection_uuid: { _eq: $itemUuid } }, _inc: { count: 1 }) {
+	mutation increaseItemPlays($itemUuid: uuid!) {
+		update_app_item_plays(where: { item_id: { _eq: $itemUuid } }, _inc: { count: 1 }) {
 			affected_rows
 		}
 	}
 `;
 
 export const INCREMENT_COLLECTION_PLAYS = gql`
-	mutation increaseItemPlays($collectionUuid: uuid!) {
+	mutation increaseCollectionPlays($collectionUuid: uuid!) {
 		update_app_collection_plays(
-			where: { item_id: { _eq: $collectionUuid } }
+			where: { collection_uuid: { _eq: $collectionUuid } }
 			_inc: { count: 1 }
 		) {
 			affected_rows

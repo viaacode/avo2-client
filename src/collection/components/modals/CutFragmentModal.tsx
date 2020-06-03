@@ -1,4 +1,4 @@
-import { clamp, get } from 'lodash-es';
+import { clamp } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,7 +6,6 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	FlowPlayer,
 	Modal,
 	ModalBody,
 	MultiRange,
@@ -17,18 +16,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	CustomError,
-	formatDurationHoursMinutesSeconds,
-	getEnv,
-	toSeconds,
-} from '../../../shared/helpers';
+import { FlowPlayerWrapper } from '../../../shared/components';
+import { CustomError, formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-import { getVideoStills } from '../../../shared/services/stills-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { KeyCode } from '../../../shared/types';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
+
+import './CutFragmentModal.scss';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -51,7 +47,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	// Save initial state for reusability purposess
+	// Save initial state for reusability purposes
 	const { start, end, startString, endString } = {
 		start: fragment.start_oc || 0,
 		end: fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0,
@@ -62,7 +58,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 	const itemMeta = fragment.item_meta as Avo.Item.Item;
 
-	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStart, setFragmentStart] = useState<number>(start);
 	const [fragmentEnd, setFragmentEnd] = useState<number>(end);
 	const [fragmentStartString, setFragmentStartString] = useState<string>(startString);
@@ -96,11 +91,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const startTime = toSeconds(fragmentStartString, true);
 		const endTime = toSeconds(fragmentEndString, true);
 
-		const videoStills = await getVideoStills([
-			{ externalId: fragment.external_id, startTime: startTime || 0 },
-		]);
-
 		const hasNoCut = startTime === 0 && endTime === fragmentDuration;
+
+		const videoStill: string = hasNoCut
+			? itemMetaData.thumbnail_path
+			: await VideoStillService.getVideoStill(fragment.external_id, startTime || 0);
 
 		changeCollectionState({
 			index,
@@ -116,12 +111,12 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragmentPropValue: hasNoCut ? null : endTime,
 		});
 
-		if (videoStills && videoStills.length) {
+		if (videoStill) {
 			changeCollectionState({
 				index,
 				type: 'UPDATE_FRAGMENT_PROP',
 				fragmentProp: 'thumbnail_path',
-				fragmentPropValue: videoStills[0].previewImagePath,
+				fragmentPropValue: videoStill,
 			});
 		}
 
@@ -185,10 +180,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		}
 	};
 
-	const initFlowPlayer = () =>
-		!playerTicket &&
-		fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
-
 	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
 	return (
 		<Modal
@@ -197,17 +188,20 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			size="medium"
 			onClose={onClose}
 			scrollable
+			className="m-cut-fragment-modal"
 		>
 			<ModalBody>
-				<FlowPlayer
-					src={playerTicket ? playerTicket.toString() : null}
-					poster={itemMetaData.thumbnail_path}
-					title={itemMetaData.title}
-					onInit={initFlowPlayer}
-					subtitles={[itemMetaData.issued, get(itemMetaData, 'organisation.name', '')]}
-					token={getEnv('FLOW_PLAYER_TOKEN')}
-					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-					logo={get(itemMetaData, 'organisation.logo_url')}
+				<FlowPlayerWrapper
+					item={{
+						...itemMetaData,
+						thumbnail_path: fragment.thumbnail_path || itemMetaData.thumbnail_path,
+					}}
+					seekTime={fragmentStart}
+					cuePoints={{
+						start: fragmentStart,
+						end: fragmentEnd,
+					}}
+					canPlay={isOpen}
 				/>
 				<Container mode="vertical" className="m-time-crop-controls">
 					<TextInput

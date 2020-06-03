@@ -20,7 +20,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ToastService } from '../../../shared/services';
-import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { STILL_DIMENSIONS } from '../../collection.const';
 
 interface CollectionStillsModalProps {
@@ -48,7 +48,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 
 		const fetchThumbnailImages = async () => {
 			try {
-				setVideoStills(await getThumbnailsForCollection(collection));
+				setVideoStills(await VideoStillService.getThumbnailsForCollection(collection));
 			} catch (err) {
 				console.error(err);
 				ToastService.danger('Het ophalen van de media thumbnails is mislukt.');

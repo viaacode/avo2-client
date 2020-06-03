@@ -414,7 +414,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 						showDescription={content_layout === AssignmentLayout.PlayerAndText}
 						location={location}
 						match={match}
-						user={user}
 						{...rest}
 					/>
 				);

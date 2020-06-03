@@ -1,16 +1,21 @@
 import classnames from 'classnames';
 import { get } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
+import { FlowPlayerWrapper } from '../../../../../shared/components';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
-import { getVideoStills } from '../../../../../shared/services/stills-service';
 import i18n from '../../../../../shared/translations/i18n';
+import { ItemsService } from '../../../../items/items.service';
 
-interface MediaPlayerProps {
+import './BlockMediaPlayerWrapper.scss';
+
+interface MediaPlayerWrapperProps {
 	title: string;
 	item?: ButtonAction;
 	src?: string;
@@ -19,7 +24,7 @@ interface MediaPlayerProps {
 	autoplay?: boolean;
 }
 
-export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
+const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 	item,
 	src,
 	poster,
@@ -27,8 +32,11 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 	width,
 	autoplay,
 }) => {
+	const [t] = useTranslation();
+
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
+	const [mediaItem, setMediaItem] = useState<Avo.Item.Item | null>(null);
 
 	const initFlowPlayer = useCallback(async () => {
 		try {
@@ -46,21 +54,30 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 		}
 	}, [setPlayerTicket, playerTicket, item]);
 
-	const retrieveStill = useCallback(async () => {
-		if (poster) {
-			setVideoStill(poster);
-			return;
+	const retrieveMediaItem = useCallback(async () => {
+		try {
+			if (item) {
+				// Video from MAM
+				const mediaItemTemp = await ItemsService.fetchItemByExternalId(
+					item.value.toString()
+				);
+				setMediaItem(mediaItemTemp);
+				setVideoStill(get(mediaItemTemp, 'thumbnail_path'));
+			} else {
+				// Custom video
+				setVideoStill(poster);
+			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch item info from the database', err, { item })
+			);
+			ToastService.danger(t('Het ophalen van het fragment is mislukt'));
 		}
-		const videoStills = await getVideoStills([
-			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
-		]);
-
-		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
-	}, [item, poster]);
+	}, [item, poster, t]);
 
 	useEffect(() => {
-		retrieveStill();
-	}, [retrieveStill]);
+		retrieveMediaItem();
+	}, [retrieveMediaItem]);
 
 	useEffect(() => {
 		if (autoplay) {
@@ -73,7 +90,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 			className={classnames('c-video-player t-player-skin--dark', 'u-center-m')}
 			style={{ width }}
 		>
-			{!!videoStill && (
+			{!!videoStill && src && (
 				<BlockFlowPlayer
 					title={title}
 					src={src || (playerTicket ? playerTicket.toString() : null)}
@@ -88,6 +105,16 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({
 					autoplay={src ? autoplay : true}
 				/>
 			)}
+			{!!videoStill && mediaItem && (
+				<FlowPlayerWrapper
+					item={{
+						...mediaItem,
+						title: title || mediaItem.title,
+					}}
+				/>
+			)}
 		</div>
 	);
 };
+
+export default MediaPlayerWrapper;
