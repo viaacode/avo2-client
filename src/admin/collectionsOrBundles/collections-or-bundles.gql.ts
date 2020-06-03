@@ -18,7 +18,7 @@ export const GET_COLLECTIONS = gql`
 			created_at
 			profile {
 				id
-				usersByuserId {
+				user: usersByuserId {
 					id
 					first_name
 					last_name
@@ -44,7 +44,7 @@ export const GET_COLLECTIONS = gql`
 			lom_classification
 			updated_by {
 				id
-				usersByuserId {
+				user: usersByuserId {
 					id
 					first_name
 					last_name

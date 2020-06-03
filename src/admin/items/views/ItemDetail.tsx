@@ -45,7 +45,7 @@ type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
 
 const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
 	title: 'title',
-	author: 'profile.usersByuserId.last_name',
+	author: 'profile.user.last_name',
 	organization: 'profile.profile_organizations[0].organization_id',
 	actions: '',
 };
@@ -204,7 +204,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	): ReactNode => {
 		switch (columnId) {
 			case 'author':
-				const user = get(rowData, 'profile.usersByuserId');
+				const user = get(rowData, 'profile.user');
 				if (!user) {
 					return '-';
 				}

@@ -1,6 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
-import { ApolloQueryResult } from 'apollo-client';
-import { cloneDeep, eq, get, isNil, omit, set } from 'lodash-es';
+import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -10,6 +8,7 @@ import {
 	BlockHeading,
 	Box,
 	Button,
+	Checkbox,
 	Container,
 	Dropdown,
 	DropdownButton,
@@ -30,31 +29,16 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { PermissionName } from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
-import {
-	checkPermissions,
-	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	LoadingInfo,
-} from '../../shared/components';
+import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
-import {
-	ApolloCacheManager,
-	AssignmentLabelsService,
-	dataService,
-	ToastService,
-} from '../../shared/services';
+import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import {
-	GET_ASSIGNMENT_WITH_RESPONSE,
-	INSERT_ASSIGNMENT_RESPONSE,
-	UPDATE_ASSIGNMENT_RESPONSE,
-} from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
@@ -74,297 +58,146 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	const [assignmentContent, setAssignmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
 	>();
+	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
+	const [canCreateAssignmentResponse, setCanCreateAssignmentResponse] = useState<boolean | null>(
+		null
+	);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-
-	// Mutations
-	const [triggerInsertAssignmentResponse] = useMutation(INSERT_ASSIGNMENT_RESPONSE);
-	const [triggerUpdateAssignmentResponse] = useMutation(UPDATE_ASSIGNMENT_RESPONSE);
 
 	const [t] = useTranslation();
 
-	const isOwnerOfAssignment = useCallback(
-		(tempAssignment: Avo.Assignment.Assignment) => {
-			return getProfileId(user) === tempAssignment.owner_profile_id;
-		},
-		[user]
-	);
+	// Retrieve data from GraphQL
+	const fetchAssignmentAndContent = useCallback(async () => {
+		try {
+			const response = await AssignmentService.fetchAssignmentAndContent(
+				getProfileId(user),
+				match.params.id
+			);
 
-	useEffect(() => {
-		/**
-		 * If the creation of the assignment response fails, we'll still continue with getting the assignment content
-		 * @param tempAssignment assignment is passed since the tempAssignment has not been set into the state yet,
-		 * since we might need to get the assignment content as well and
-		 * this looks cleaner if everything loads at once instead of staggered
-		 */
-		const createAssignmentResponseObject = async (
-			tempAssignment: Avo.Assignment.Assignment
-		) => {
-			if (!isOwnerOfAssignment(tempAssignment)) {
-				let assignmentResponse: Partial<Avo.Assignment.Response> | null | undefined = get(
-					tempAssignment,
-					'assignment_responses[0]'
-				);
-
-				if (!assignmentResponse) {
-					// Student has never viewed this assignment before, we should create a response object for him
-					assignmentResponse = {
-						owner_profile_ids: [getProfileId(user)],
-						assignment_id: tempAssignment.id,
-						collection: null,
-						collection_uuid: null,
-						submitted_at: null,
-					};
-
-					try {
-						const reply = await triggerInsertAssignmentResponse({
-							variables: {
-								assignmentResponses: [assignmentResponse],
-							},
-							update: ApolloCacheManager.clearAssignmentCache,
-						});
-
-						const assignmentResponseId = get(
-							reply,
-							'data.insert_app_assignment_responses.returning[0].id'
-						);
-
-						if (isNil(assignmentResponseId)) {
-							ToastService.info(
-								t(
-									'assignment/views/assignment-detail___het-aanmaken-van-de-opdracht-antwoord-entry-is-mislukt-leeg-id'
-								)
-							);
-							return;
-						}
-
-						(assignmentResponse as Partial<
-							Avo.Assignment.Response
-						>).id = assignmentResponseId;
-						tempAssignment.assignment_responses = [
-							assignmentResponse as Avo.Assignment.Response,
-						];
-					} catch (err) {
-						console.error(err);
-						ToastService.danger(
-							t(
-								'assignment/views/assignment-detail___het-aanmaken-van-een-opdracht-antwoord-entry-is-mislukt'
-							)
-						);
-					}
-				}
-			}
-		};
-
-		// Retrieve data from GraphQL
-		const retrieveAssignmentAndContent = () => {
-			const assignmentQuery = {
-				query: GET_ASSIGNMENT_WITH_RESPONSE,
-				variables: {
-					studentUuid: getProfileId(user),
-					assignmentId: (match.params as any).id,
-				},
-			};
-
-			// Load assignment
-			dataService
-				.query(assignmentQuery)
-				.then(async (apiResponse: ApolloQueryResult<Avo.Assignment.Assignment>) => {
-					const tempAssignment: Avo.Assignment.Assignment | undefined | null = get(
-						apiResponse,
-						'data.assignments[0]'
-					);
-
-					if (!tempAssignment) {
-						setLoadingInfo({
-							state: 'error',
+			if (isString(response)) {
+				// error
+				let errorObj: { message: string; icon: IconName };
+				switch (response as AssignmentRetrieveError) {
+					case AssignmentRetrieveError.DELETED:
+						errorObj = {
 							message: t(
-								'assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'
+								'assignment/views/assignment-detail___de-opdracht-werd-verwijderd'
 							),
-							icon: 'search',
-						});
-						return;
-					}
+							icon: 'delete' as IconName,
+						};
+						break;
 
-					// Create an assignmentResponse object to track the student viewing and finishing the assignment
-					// Currently we wait for this to complete
-					// so we can set the created assignment response on the tempAssignment object,
-					// so we don't need to do a refetch of the original assignment
-					await createAssignmentResponseObject(tempAssignment);
+					case AssignmentRetrieveError.NOT_YET_AVAILABLE:
+						errorObj = {
+							message: t(
+								'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
+							),
+							icon: 'clock' as IconName,
+						};
+						break;
 
-					// Load content (collection, item or search query) according to assignment
-					AssignmentService.fetchAssignmentContent(tempAssignment)
-						.then((response: Avo.Assignment.Content | null) => {
-							setAssignmentContent(response);
-							setAssignment(tempAssignment);
-						})
-						.catch(err => {
-							console.error(
-								new CustomError('Failed to get assignment content', err, {
-									assignment: tempAssignment,
-								})
-							);
-							// Show toast instead of showing error using the loadingInfo
-							// since we still want to show the assignment without the content if the content fails to load
-							if (err && err.message === 'NOT_FOUND') {
-								ToastService.danger(
-									t(
-										'assignment/views/assignment-detail___de-opdracht-inhoud-werdt-niet-terug-gevonden'
-									)
-								);
-							} else {
-								ToastService.danger(
-									t(
-										'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
-									)
-								);
-							}
-						})
-						.finally(() => setLoadingInfo({ state: 'loaded' }));
-				})
-				.catch(err => {
-					const { DELETED, NOT_YET_AVAILABLE, PAST_DEADLINE } = AssignmentRetrieveError;
-					let errorObj: { message: string; icon: IconName };
-					const graphqlError = get(err, 'graphQLErrors[0].message');
+					case AssignmentRetrieveError.PAST_DEADLINE:
+						errorObj = {
+							message: t(
+								'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
+							),
+							icon: 'clock' as IconName,
+						};
+						break;
 
-					switch (graphqlError) {
-						case DELETED:
-							errorObj = {
-								message: t(
-									'assignment/views/assignment-detail___de-opdracht-werd-verwijderd'
-								),
-								icon: 'delete' as IconName,
-							};
-							break;
-
-						case NOT_YET_AVAILABLE:
-							errorObj = {
-								message: t(
-									'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
-								),
-								icon: 'clock' as IconName,
-							};
-							break;
-
-						case PAST_DEADLINE:
-							errorObj = {
-								message: t(
-									'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
-								),
-								icon: 'clock' as IconName,
-							};
-							break;
-
-						default:
-							errorObj = {
-								message: t(
-									'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
-								),
-								icon: 'alert-triangle' as IconName,
-							};
-							break;
-					}
-
-					if (
-						loadingInfo.state !== 'error' ||
-						!eq(errorObj.message, loadingInfo.message)
-					) {
-						console.error(err);
-						setLoadingInfo({ state: 'error', ...errorObj });
-					}
+					default:
+						errorObj = {
+							message: t(
+								'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
+							),
+							icon: 'alert-triangle' as IconName,
+						};
+						break;
+				}
+				setLoadingInfo({
+					state: 'error',
+					...errorObj,
 				});
-		};
-
-		checkPermissions(
-			{
-				name: PermissionName.CREATE_ASSIGNMENT_RESPONSE,
-				obj: match.params.id,
-			},
-			user,
-			retrieveAssignmentAndContent,
-			setLoadingInfo,
-			t(
-				'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
-			)
-		);
-	}, [
-		loadingInfo.message,
-		loadingInfo.state,
-		match.params,
-		user,
-		isOwnerOfAssignment,
-		triggerInsertAssignmentResponse,
-		t,
-	]);
-
-	const handleExtraOptionsClick = (itemId: 'archive') => {
-		if (itemId === 'archive') {
-			if (assignment && isOwnerOfAssignment(assignment)) {
-				ToastService.info(
-					t(
-						'assignment/views/assignment-detail___u-kan-deze-opdracht-niet-archiveren-want-dit-is-slechts-een-voorbeeld'
-					)
-				);
 				return;
 			}
 
-			const assignmentResponse = getAssignmentResponse();
+			// Create an assignmentResponse object to track the student viewing and finishing the assignment
+			// Currently we wait for this to complete
+			// so we can set the created assignment response on the tempAssignment object,
+			// so we don't need to do a refetch of the original assignment
+			await AssignmentService.createAssignmentResponseObject(response.assignment, user);
 
-			if (!isNil(assignmentResponse) && !isNil(assignmentResponse.id)) {
-				const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), [
-					'__typename',
-					'id',
-				]);
-				triggerUpdateAssignmentResponse({
-					variables: {
-						id: assignmentResponse.id,
-						assignmentResponse: updatedAssignmentResponse,
-					},
-					update: ApolloCacheManager.clearAssignmentCache,
+			setAssignment(response.assignment);
+			setAssignmentContent(response.assignmentContent);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch assignment and content for detail page', err, {
+					user,
+					id: match.params.id,
 				})
-					.then(() => {
-						ToastService.success(
-							isAssignmentResponseArchived()
-								? t(
-										'assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd'
-								  )
-								: t(
-										'assignment/views/assignment-detail___de-opdracht-is-gearchiveerd'
-								  )
-						);
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het laden van de opdracht is mislukt'),
+			});
+		}
+	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user]);
 
-						// Update local cached assignment
-						setAssignment(
-							set(
-								cloneDeep(assignment as Avo.Assignment.Assignment),
-								'assignment_responses[0].is_archived',
-								!isAssignmentResponseArchived()
-							)
-						);
-					})
-					.catch(err => {
-						console.error(
-							new CustomError('failed to update assignmentResponse object', err, {
-								variables: {
-									assignmentResponse,
-									id: assignmentResponse.id,
-								},
-							})
-						);
-						ToastService.danger(
-							t(
-								'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
-							)
-						);
-					});
-			} else {
+	const checkPermissions = useCallback(async () => {
+		setCanEditAssignments(
+			await PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
+		);
+		setCanCreateAssignmentResponse(
+			await PermissionService.hasPermissions(PermissionName.CREATE_ASSIGNMENT_RESPONSE, user)
+		);
+	}, [setCanEditAssignments, setCanCreateAssignmentResponse, user]);
+
+	useEffect(() => {
+		checkPermissions();
+	}, [checkPermissions]);
+
+	useEffect(() => {
+		if (isNil(canCreateAssignmentResponse)) {
+			return;
+		}
+		if (canCreateAssignmentResponse) {
+			fetchAssignmentAndContent();
+		} else {
+			setLoadingInfo({
+				state: 'error',
+				message: t(
+					'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+				),
+				icon: 'lock',
+			});
+		}
+	}, [canCreateAssignmentResponse, fetchAssignmentAndContent, t]);
+
+	useEffect(() => {
+		if (assignment) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [assignment]);
+
+	const handleExtraOptionsClick = async (itemId: 'archive') => {
+		if (itemId === 'archive') {
+			try {
+				if (!assignment) {
+					return;
+				}
+				const archived = !(get(assignment, 'is_archived') || false);
+				await AssignmentService.toggleAssignmentArchiveStatus(assignment.id, archived);
+				fetchAssignmentAndContent();
+				ToastService.success(
+					archived ? t('De opdracht is gearchiveerd') : t('De opdracht is gedearchiveerd')
+				);
+			} catch (err) {
 				console.error(
-					new CustomError(
-						"assignmentResponse object is null or doesn't have an id",
-						null,
-						{
-							assignmentResponse,
-						}
-					)
+					new CustomError('failed to archive the assignment object', err, {
+						assignment,
+					})
 				);
 				ToastService.danger(
 					t(
@@ -375,17 +208,47 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		}
 	};
 
-	const getAssignmentResponse = (): Avo.Assignment.Response | null => {
-		return get(assignment, 'assignment_responses[0]', null);
-	};
-
-	const isAssignmentResponseArchived = (): Avo.Assignment.Response | null => {
-		return get(getAssignmentResponse(), 'is_archived', false);
+	const handleSubmittedAtChanged = async (checked: boolean) => {
+		try {
+			const assignmentResponse = get(assignment, 'assignment_responses[0]');
+			if (!assignmentResponse) {
+				console.error(
+					new CustomError(
+						'Trying to submit an assignment response while passing null',
+						null,
+						{ assignmentResponse }
+					)
+				);
+				ToastService.danger(
+					t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+				);
+				return;
+			}
+			await AssignmentService.toggleAssignmentResponseSubmitStatus(
+				assignmentResponse.id,
+				checked ? new Date().toISOString() : null
+			);
+			fetchAssignmentAndContent();
+			ToastService.success(
+				checked
+					? t('De opdracht is gemarkeerd als gemaakt')
+					: t('De opdracht is gemarkeerd als nog niet gemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle assignment response submit status', err, {
+					assignment,
+				})
+			);
+			ToastService.danger(
+				t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+			);
+		}
 	};
 
 	// Render methods
 	const renderContent = () => {
-		if (!assignment) {
+		if (!assignment || !assignmentContent) {
 			return null;
 		}
 
@@ -490,6 +353,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 								</ToolbarLeft>
 								<ToolbarRight>
 									<ToolbarItem>
+										<Checkbox
+											label={t('Opdracht gemaakt')}
+											checked={
+												!!get(
+													assignment,
+													'assignment_responses[0].submitted_at'
+												)
+											}
+											onChange={handleSubmittedAtChanged}
+										/>
+									</ToolbarItem>
+									<ToolbarItem>
 										<TagList tags={tags} closable={false} swatches bordered />
 									</ToolbarItem>
 									{!!profile && (
@@ -501,46 +376,48 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 											})}
 										</ToolbarItem>
 									)}
-									<ToolbarItem>
-										<Dropdown
-											isOpen={isActionsDropdownOpen}
-											menuWidth="fit-content"
-											onClose={() => setActionsDropdownOpen(false)}
-											onOpen={() => setActionsDropdownOpen(true)}
-											placement="bottom-end"
-										>
-											<DropdownButton>
-												<Button
-													icon="more-horizontal"
-													type="secondary"
-													ariaLabel={t(
-														'assignment/views/assignment-detail___meer-opties'
-													)}
-													title={t(
-														'assignment/views/assignment-detail___meer-opties'
-													)}
-												/>
-											</DropdownButton>
-											<DropdownContent>
-												<MenuContent
-													menuItems={[
-														{
-															icon: 'archive',
-															id: 'archive',
-															label: isAssignmentResponseArchived()
-																? t(
-																		'assignment/views/assignment-detail___dearchiveer'
-																  )
-																: t(
-																		'assignment/views/assignment-detail___archiveer'
-																  ),
-														},
-													]}
-													onClick={handleExtraOptionsClick as any}
-												/>
-											</DropdownContent>
-										</Dropdown>
-									</ToolbarItem>
+									{canEditAssignments && (
+										<ToolbarItem>
+											<Dropdown
+												isOpen={isActionsDropdownOpen}
+												menuWidth="fit-content"
+												onClose={() => setActionsDropdownOpen(false)}
+												onOpen={() => setActionsDropdownOpen(true)}
+												placement="bottom-end"
+											>
+												<DropdownButton>
+													<Button
+														icon="more-horizontal"
+														type="secondary"
+														ariaLabel={t(
+															'assignment/views/assignment-detail___meer-opties'
+														)}
+														title={t(
+															'assignment/views/assignment-detail___meer-opties'
+														)}
+													/>
+												</DropdownButton>
+												<DropdownContent>
+													<MenuContent
+														menuItems={[
+															{
+																icon: 'archive',
+																id: 'archive',
+																label: assignment.is_archived
+																	? t(
+																			'assignment/views/assignment-detail___dearchiveer'
+																	  )
+																	: t(
+																			'assignment/views/assignment-detail___archiveer'
+																	  ),
+															},
+														]}
+														onClick={handleExtraOptionsClick as any}
+													/>
+												</DropdownContent>
+											</Dropdown>
+										</ToolbarItem>
+									)}
 									<ToolbarItem>
 										<InteractiveTour showButton />
 									</ToolbarItem>

@@ -60,22 +60,20 @@ export const GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE = gql`
 export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 	query getAssignmentsByOwner(
 		$owner_profile_id: uuid
-		$archived: Boolean = false
 		$offset: Int = 0
 		$limit: Int
-		$order: [app_assignments_order_by!] = { deadline_at: desc }
+		$order: app_assignments_order_by! = { deadline_at: desc }
 		$filter: [app_assignments_bool_exp]
 	) {
 		app_assignments(
 			where: {
 				owner_profile_id: { _eq: $owner_profile_id }
 				is_deleted: { _eq: false }
-				is_archived: { _eq: $archived }
 				_and: $filter
 			}
 			offset: $offset
 			limit: $limit
-			order_by: $order
+			order_by: [$order]
 		) {
 			assignment_assignment_tags(order_by: { assignment_tag: { label: asc } }) {
 				assignment_tag {
@@ -106,7 +104,6 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			where: {
 				owner_profile_id: { _eq: $owner_profile_id }
 				is_deleted: { _eq: false }
-				is_archived: { _eq: $archived }
 				_or: $filter
 			}
 		) {
@@ -120,23 +117,19 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 	query getAssignmentsByResponseOwnerId(
 		$owner_profile_id: String!
-		$archived: Boolean = false
 		$offset: Int = 0
 		$limit: Int
-		$order: [app_assignments_order_by!] = { deadline_at: desc }
 		$filter: [app_assignments_bool_exp]
+		$order: app_assignment_responses_order_by!
 	) {
 		app_assignment_responses(
 			where: {
 				owner_profile_ids: { _has_key: $owner_profile_id }
-				assignment: {
-					is_deleted: { _eq: false }
-					is_archived: { _eq: $archived }
-					_or: $filter
-				}
+				assignment: { is_deleted: { _eq: false }, _or: $filter }
 			}
 			limit: $limit
 			offset: $offset
+			order_by: [$order]
 		) {
 			assignment {
 				assignment_assignment_tags {
@@ -153,6 +146,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 				}
 				assignment_responses {
 					id
+					submitted_at
 				}
 				assignment_type
 				class_room
@@ -163,13 +157,21 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 				title
 				owner_profile_id
 				created_at
+				profile {
+					user: usersByuserId {
+						first_name
+						last_name
+						id
+					}
+					avatar
+					id
+				}
 			}
 		}
 		count: app_assignments_aggregate(
 			where: {
 				assignment_responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
 				is_deleted: { _eq: false }
-				is_archived: { _eq: $archived }
 				_or: $filter
 			}
 		) {
@@ -181,15 +183,17 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentId: Int!, $studentUuid: String!) {
+	query getAssignmentWithResponse($assignmentId: Int!, $pupilUuid: String!) {
 		assignments: app_assignments(
 			where: {
 				id: { _eq: $assignmentId }
 				is_deleted: { _eq: false }
 				is_archived: { _eq: false }
 			}
+			order_by: [{ deadline_at: desc }]
 		) {
 			assignment_assignment_tags {
+				id
 				assignment_tag {
 					color_enum_value
 					color_override
@@ -201,7 +205,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					label
 				}
 			}
-			assignment_responses(where: { owner_profile_ids: { _has_key: $studentUuid } }) {
+			assignment_responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {
 				id
 				created_at
 				submitted_at
@@ -225,6 +229,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			answer_url
 			owner_profile_id
 			profile {
+				id
 				user: usersByuserId {
 					id
 					role {
@@ -253,6 +258,25 @@ export const INSERT_ASSIGNMENT = gql`
 export const UPDATE_ASSIGNMENT = gql`
 	mutation updateAssignmentById($id: Int!, $assignment: app_assignments_set_input!) {
 		update_app_assignments(where: { id: { _eq: $id } }, _set: $assignment) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_ASSIGNMENT_ARCHIVE_STATUS = gql`
+	mutation toggleAssignmentArchiveStatus($id: Int!, $archived: Boolean!) {
+		update_app_assignments(where: { id: { _eq: $id } }, _set: { is_archived: $archived }) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
+	mutation toggleAssignmentResponseSubmitStatus($id: Int!, $submittedAt: timestamptz) {
+		update_app_assignment_responses(
+			where: { id: { _eq: $id } }
+			_set: { submitted_at: $submittedAt }
+		) {
 			affected_rows
 		}
 	}
