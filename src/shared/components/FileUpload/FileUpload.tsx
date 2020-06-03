@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import {
 	Blankslate,
-	Box,
 	Button,
 	Flex,
 	FlexItem,
@@ -192,50 +191,48 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 
 	// Render
 	return (
-		<Box backgroundColor="gray" className="c-file-upload">
-			<Spacer margin="large">
-				{renderFilesPreview()}
-				{!isProcessing ? (
-					<Flex>
-						{!!icon && (
-							<FlexItem shrink>
-								<Icon size="large" name={icon} />
-							</FlexItem>
-						)}
-						<FlexItem className="c-file-upload-button-and-input">
-							<Button
-								label={
-									label ||
-									(allowMulti
-										? i18n.t(
-												'shared/components/file-upload/file-upload___selecteer-bestanden'
-										  )
-										: i18n.t(
-												'shared/components/file-upload/file-upload___selecteer-een-bestand'
-										  ))
-								}
-								ariaLabel={label}
-								type="secondary"
-								autoHeight
-							/>
-							<input
-								type="file"
-								title={t(
-									'shared/components/file-upload/file-upload___kies-een-bestand'
-								)}
-								multiple={allowMulti}
-								onChange={evt =>
-									!!evt.target.files &&
-									uploadSelectedFile(Array.from(evt.target.files))
-								}
-							/>
+		<div className="c-file-upload">
+			{renderFilesPreview()}
+			{!isProcessing ? (
+				<Flex>
+					{!!icon && (
+						<FlexItem shrink>
+							<Icon size="large" name={icon} />
 						</FlexItem>
-					</Flex>
-				) : (
-					<Spinner size="large" />
-				)}
-			</Spacer>
-		</Box>
+					)}
+					<FlexItem className="c-file-upload-button-and-input">
+						<Button
+							label={
+								label ||
+								(allowMulti
+									? i18n.t(
+											'shared/components/file-upload/file-upload___selecteer-bestanden'
+									  )
+									: i18n.t(
+											'shared/components/file-upload/file-upload___selecteer-een-bestand'
+									  ))
+							}
+							ariaLabel={label}
+							type="secondary"
+							autoHeight
+						/>
+						<input
+							type="file"
+							title={t(
+								'shared/components/file-upload/file-upload___kies-een-bestand'
+							)}
+							multiple={allowMulti}
+							onChange={evt =>
+								!!evt.target.files &&
+								uploadSelectedFile(Array.from(evt.target.files))
+							}
+						/>
+					</FlexItem>
+				</Flex>
+			) : (
+				<Spinner size="large" />
+			)}
+		</div>
 	);
 };
 

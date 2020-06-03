@@ -94,6 +94,11 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
 		showInContentPicker: true,
 		showForInteractiveTour: false,
 	},
+	USER_ITEM_REQUEST_FORM_CONFIRM: {
+		route: '/gebruiker-item-aanvraag-bevestiging',
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
 	WORKSPACE: {
 		route: `/${ROUTE_PARTS.workspace}`,
 		showInContentPicker: true,
