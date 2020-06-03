@@ -77,7 +77,8 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 	// Add page title as header block for faq items
 	if (contentPage.contentType === ContentPageType.FaqItem) {
 		contentPage.contentBlockConfigs = [
-			{
+			({
+				position: 0,
 				name: 'Titel',
 				type: 'HEADING',
 				components: {
@@ -99,7 +100,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 						},
 					},
 				},
-			} as ContentBlockConfig,
+			} as unknown) as ContentBlockConfig,
 			...contentPage.contentBlockConfigs,
 		];
 	}
@@ -133,9 +134,8 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 					return (
 						<ContentBlockPreview
 							key={contentBlockConfig.id}
-							componentState={contentBlockConfig.components.state}
+							contentBlockConfig={contentBlockConfig}
 							contentWidth={contentPage.contentWidth}
-							blockState={contentBlockConfig.block.state}
 							className={classnames(
 								`content-block-preview-${contentBlockConfig.position}`,
 								{

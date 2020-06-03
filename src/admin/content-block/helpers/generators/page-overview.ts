@@ -40,8 +40,6 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (): DefaultContentBlockState => {
 	return {
 		...BLOCK_STATE_DEFAULTS({
-			position,
-			blockType: ContentBlockType.PageOverview,
 			padding: {
 				top: 'top-small',
 				bottom: 'bottom-extra-large',

@@ -7,7 +7,7 @@ import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
-import { Color, ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
+import { Color, ContentBlockConfig } from '../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
 import {
@@ -19,9 +19,8 @@ import {
 import './ContentBlockPreview.scss';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
-	componentState: ContentBlockComponentState | ContentBlockComponentState[];
+	contentBlockConfig: ContentBlockConfig;
 	contentWidth?: Avo.Content.ContentWidth;
-	blockState: ContentBlockState;
 	onClick: () => void;
 	className?: string;
 }
@@ -34,15 +33,16 @@ enum ContentWidthMap {
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	history,
-	componentState,
+	contentBlockConfig,
 	contentWidth = 'REGULAR',
-	blockState,
 	onClick = noop,
 	className,
 }) => {
+	const blockState = get(contentBlockConfig, 'block.state');
+	const componentState = get(contentBlockConfig, 'components.state');
 	const containerSize = ContentWidthMap[contentWidth];
-	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
-	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
+	const PreviewComponent = COMPONENT_PREVIEW_MAP[contentBlockConfig.type];
+	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
 	const blockRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
@@ -74,7 +74,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 
 	useEffect(updateHeaderHeight, [blockRef.current, blockState, componentState]);
 
-	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
+	if (NAVIGABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type)) {
 		// Pass the navigate function to the block
 		blockStateProps.navigate = (buttonAction: ButtonAction) => {
 			navigateToContentType(buttonAction, history);

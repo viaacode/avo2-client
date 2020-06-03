@@ -18,10 +18,8 @@ export const INITIAL_BUTTONS_COMPONENTS_STATE = (): ButtonsBlockComponentState[]
 	},
 ];
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+export const INITIAL_BUTTONS_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
-		position,
-		blockType: ContentBlockType.Buttons,
 		padding: {
 			top: 'none',
 			bottom: 'bottom-extra-large',

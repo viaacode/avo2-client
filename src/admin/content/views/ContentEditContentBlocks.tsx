@@ -154,7 +154,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							stateIndex?: number
 						) => onSave(index, formGroupType, input, stateIndex)}
 						addComponentToState={() =>
-							addComponentToState(index, contentBlockConfig.block.state.blockType)
+							addComponentToState(index, contentBlockConfig.type)
 						}
 						removeComponentFromState={(stateIndex: number) =>
 							removeComponentFromState(index, stateIndex)

@@ -17,10 +17,8 @@ export const INITIAL_KLAAR_COMPONENTS_STATE = (): KlaarBlockComponentState => ({
 	date: '',
 });
 
-export const INITIAL_KLAAR_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+export const INITIAL_KLAAR_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
-		position,
-		blockType: ContentBlockType.Klaar,
 		padding: {
 			top: 'none',
 			bottom: 'none',

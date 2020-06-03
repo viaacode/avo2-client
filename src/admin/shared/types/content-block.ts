@@ -172,7 +172,6 @@ export interface DefaultContentBlockState {
 	backgroundColor: Color;
 	headerBackgroundColor?: Color; // css color string. eg: '#222' or 'black' or 'rgb(0, 0, 255)'
 	headerHeight?: string; // css height string. eg: '20px' or '15%'
-	blockType: ContentBlockType;
 	padding: PaddingFieldState;
 	margin: PaddingFieldState;
 	userGroupIds: number[];

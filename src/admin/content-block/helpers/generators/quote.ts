@@ -16,10 +16,8 @@ export const INITIAL_QUOTE_COMPONENTS_STATE = (): QuoteBlockComponentState => ({
 	authorInitials: '',
 });
 
-export const INITIAL_QUOTE_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+export const INITIAL_QUOTE_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
-		position,
-		blockType: ContentBlockType.Quote,
 		padding: {
 			top: 'top-small',
 			bottom: 'bottom-small',

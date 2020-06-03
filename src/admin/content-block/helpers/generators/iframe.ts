@@ -14,10 +14,8 @@ export const INITIAL_IFRAME_COMPONENTS_STATE = (): IFrameBlockComponentState => 
 	src: '',
 });
 
-export const INITIAL_IFRAME_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+export const INITIAL_IFRAME_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
-		position,
-		blockType: ContentBlockType.IFrame,
 		padding: {
 			top: 'top-extra-large',
 			bottom: 'bottom-extra-large',

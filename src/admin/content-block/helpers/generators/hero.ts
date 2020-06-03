@@ -35,12 +35,13 @@ export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
 	buttons: [],
 });
 
-export const INITIAL_HERO_BLOCK_STATE = (position: number): DefaultContentBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.Hero, position),
+export const INITIAL_HERO_BLOCK_STATE = (): DefaultContentBlockState => ({
+	...BLOCK_STATE_DEFAULTS(),
 	backgroundColor: Color.NightBlue,
 });
 
 export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('Hero'),
 	type: ContentBlockType.Hero,
 	components: {
@@ -110,9 +111,9 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: VIDEO_TYPES,
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					ownerId: '',
-				} as FileUploadProps,
+				} as Partial<FileUploadProps>,
 			}),
 			poster: FILE_FIELD(undefined, {
 				label: i18n.t('Eigen poster uploaden'),
@@ -120,9 +121,9 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: PHOTO_TYPES,
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					ownerId: '',
-				} as FileUploadProps,
+				} as Partial<FileUploadProps>,
 			}),
 			altText: TEXT_FIELD(undefined, {
 				label: i18n.t('Alt tekst voor video/afbeelding'),
@@ -131,7 +132,7 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 		},
 	},
 	block: {
-		state: INITIAL_HERO_BLOCK_STATE(position),
+		state: INITIAL_HERO_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 		},

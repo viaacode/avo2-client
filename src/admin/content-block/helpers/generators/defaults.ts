@@ -11,7 +11,6 @@ import {
 	Color,
 	ContentBlockEditor,
 	ContentBlockField,
-	ContentBlockType,
 	DefaultContentBlockState,
 	PaddingFieldState,
 } from '../../../shared/types';
@@ -23,11 +22,9 @@ import {
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
-	state: { blockType: ContentBlockType; position: number } & Partial<DefaultContentBlockState>
+	state: Partial<DefaultContentBlockState> = {}
 ): DefaultContentBlockState => {
 	return {
-		blockType: state.blockType,
-		position: state.position || 0,
 		backgroundColor: state.backgroundColor || Color.Transparent,
 		headerBackgroundColor: state.headerBackgroundColor || Color.Transparent,
 		padding:

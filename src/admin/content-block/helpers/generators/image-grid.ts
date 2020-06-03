@@ -35,8 +35,6 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockGridWrapperProps &
 	DefaultContentBlockState => {
 	return {
 		...BLOCK_STATE_DEFAULTS({
-			position,
-			blockType: ContentBlockType.ImageGrid,
 			padding: {
 				top: 'top-large',
 				bottom: 'bottom',

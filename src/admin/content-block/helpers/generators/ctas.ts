@@ -32,10 +32,8 @@ const EMPTY_CTA: Partial<CTAProps> = {
 
 export const INITIAL_CTAS_COMPONENTS_STATE = (): Partial<CTAProps>[] => [EMPTY_CTA, EMPTY_CTA];
 
-export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+export const INITIAL_CTAS_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
-		position,
-		blockType: ContentBlockType.CTAs,
 		padding: {
 			top: 'top-large',
 			bottom: 'bottom-small',

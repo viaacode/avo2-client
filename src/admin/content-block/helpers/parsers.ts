@@ -13,13 +13,13 @@ export const convertBlockToDatabaseFormat = (
 	contentId?: number
 ) => {
 	const componentState = contentBlockConfig.components.state;
-	const { blockType, ...blockState } = contentBlockConfig.block.state;
+	const { ...blockState } = contentBlockConfig.block.state;
 
 	return {
 		position: contentBlockConfig.position,
 		variables: { componentState, blockState },
 		...(contentId ? { content_id: contentId } : null),
-		content_block_type: blockType,
+		content_block_type: contentBlockConfig.type,
 	};
 };
 

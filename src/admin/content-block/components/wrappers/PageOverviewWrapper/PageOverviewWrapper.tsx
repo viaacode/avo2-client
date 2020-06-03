@@ -1,11 +1,12 @@
 import { get, isString } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
-import queryString from 'query-string';
 
 import {
+	BlockPageOverview,
 	ButtonAction,
 	ContentItemStyle,
 	ContentPageInfo,
@@ -23,11 +24,9 @@ import { useDebounce } from '../../../../../shared/hooks';
 import { dataService, ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
+import { ContentService } from '../../../../content/content.service';
 import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
-import { ContentService } from '../../../../content/content.service';
-
-import { BlockPageOverview } from './BlockPageOverview/BlockPageOverview';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
@@ -108,7 +107,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 					},
 				},
 			];
-		} else if (blockLabelIds.length) {
+		}
+		if (blockLabelIds.length) {
 			// If the "all" label is selected, we want to get content pages with any of the block labels
 			return [
 				{
@@ -117,9 +117,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 					},
 				},
 			];
-		} else {
-			return [];
 		}
+		return [];
 	};
 
 	const fetchPages = useCallback(async () => {

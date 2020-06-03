@@ -16,10 +16,8 @@ export const INITIAL_INTRO_COMPONENTS_STATE = (): IntroBlockComponentState => ({
 	align: 'center',
 });
 
-export const INITIAL_INTRO_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+export const INITIAL_INTRO_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
-		position,
-		blockType: ContentBlockType.Intro,
 		padding: { top: 'top-extra-large', bottom: 'bottom-small' },
 	});
 

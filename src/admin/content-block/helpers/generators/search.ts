@@ -10,12 +10,13 @@ import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS } from './defaults';
 
 export const INITIAL_SEARCH_COMPONENTS_STATE = () => ({});
 
-export const INITIAL_SEARCH_BLOCK_STATE = (position: number): DefaultContentBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.Search, position),
+export const INITIAL_SEARCH_BLOCK_STATE = (): DefaultContentBlockState => ({
+	...BLOCK_STATE_DEFAULTS(),
 	backgroundColor: Color.Gray50,
 });
 
 export const SEARCH_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('Search'),
 	type: ContentBlockType.Search,
 	components: {
@@ -23,7 +24,7 @@ export const SEARCH_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =>
 		fields: {},
 	},
 	block: {
-		state: INITIAL_SEARCH_BLOCK_STATE(position),
+		state: INITIAL_SEARCH_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 		},

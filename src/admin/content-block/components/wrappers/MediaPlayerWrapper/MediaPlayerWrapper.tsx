@@ -13,8 +13,6 @@ import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-
 import i18n from '../../../../../shared/translations/i18n';
 import { ItemsService } from '../../../../items/items.service';
 
-import './BlockMediaPlayerWrapper.scss';
-
 interface MediaPlayerWrapperProps {
 	title: string;
 	item?: ButtonAction;
