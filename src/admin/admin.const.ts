@@ -151,14 +151,14 @@ function hasPermissions(
 async function getContentPageDetailRouteByPath(path: string): Promise<string | undefined> {
 	try {
 		const page = await ContentService.fetchContentPageByPath(path);
-		if (!page) {
-			return undefined;
-		}
 		return buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: page.id });
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
 		ToastService.danger(
-			i18n.t('admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt')
+			`${i18n.t(
+				'admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt'
+			)}: ${path}`,
+			false
 		);
 		return undefined;
 	}

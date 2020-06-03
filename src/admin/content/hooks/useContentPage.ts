@@ -78,37 +78,39 @@ export const useContentPage = (history: History, id?: string): UseContentPageTup
 			const dbContentPage: DbContent | null = await ContentService.getContentPageById(
 				Number(id)
 			);
-			if (dbContentPage) {
-				dispatch({
-					type: ContentPageActionType.SET_CONTENT_PAGE_FORM,
-					payload: {
-						thumbnail_path: (dbContentPage as any).thumbnail_path, // Remove cast after update to typings 2.15.0
-						title: dbContentPage.title,
-						descriptionHtml: dbContentPage.description || '',
-						descriptionState: null,
-						seoDescription: (dbContentPage as any).seo_description || '', // TODO remove cast after typings v2.18.0
-						isProtected: dbContentPage.is_protected,
-						path: dbContentPage.path,
-						contentType: dbContentPage.content_type,
-						contentWidth: dbContentPage.content_width || ContentWidth.REGULAR,
-						publishAt: dbContentPage.publish_at || '',
-						depublishAt: dbContentPage.depublish_at || '',
-						userGroupIds: dbContentPage.user_group_ids,
-						labels: flatten(
-							dbContentPage.content_content_labels.map(link => link.content_label)
-						),
-					} as Partial<Avo.Content.Content>,
-				});
-			} else {
+			if (!dbContentPage) {
 				throw new CustomError('Failed to find content page by id');
 			}
+			dispatch({
+				type: ContentPageActionType.SET_CONTENT_PAGE_FORM,
+				payload: {
+					thumbnail_path: (dbContentPage as any).thumbnail_path, // Remove cast after update to typings 2.15.0
+					title: dbContentPage.title,
+					descriptionHtml: dbContentPage.description || '',
+					descriptionState: null,
+					seoDescription: (dbContentPage as any).seo_description || '', // TODO remove cast after typings v2.18.0
+					isProtected: dbContentPage.is_protected,
+					path: dbContentPage.path,
+					contentType: dbContentPage.content_type,
+					contentWidth: dbContentPage.content_width || ContentWidth.REGULAR,
+					publishAt: dbContentPage.publish_at || '',
+					depublishAt: dbContentPage.depublish_at || '',
+					userGroupIds: dbContentPage.user_group_ids,
+					labels: flatten(
+						dbContentPage.content_content_labels.map(link => link.content_label)
+					),
+				} as Partial<Avo.Content.Content>,
+			});
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch content page by id', err, { id }));
+			const notFound = JSON.stringify(err).includes('NOT_FOUND');
 			ToastService.danger(
-				t(
-					'admin/content/hooks/use-content-item___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-met-id-id',
-					{ id }
-				),
+				notFound
+					? t('De pagina met id {{id}} kon niet worden gevonden', { id })
+					: t(
+							'admin/content/hooks/use-content-item___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-met-id-id',
+							{ id }
+					  ),
 				false
 			);
 			history.push(CONTENT_PATH.CONTENT);

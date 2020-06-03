@@ -106,7 +106,7 @@ export class ContentService {
 		);
 	}
 
-	public static async getContentPageById(id: number | string): Promise<DbContent | null> {
+	public static async getContentPageById(id: number | string): Promise<DbContent> {
 		const query = {
 			query: GET_CONTENT_BY_ID,
 			variables: {
@@ -114,14 +114,21 @@ export class ContentService {
 			},
 		};
 
-		return performQuery(
+		const contentPage = await performQuery(
 			query,
 			`${CONTENT_RESULT_PATH.GET}[0]`,
 			`Failed to retrieve content page by id: ${id}.`
 		);
+		if (!contentPage) {
+			throw new CustomError('No content page found with provided id', null, {
+				id,
+				code: 'NOT_FOUND',
+			});
+		}
+		return contentPage;
 	}
 
-	public static async fetchContentPageByPath(path: string): Promise<DbContent | null> {
+	public static async fetchContentPageByPath(path: string): Promise<DbContent> {
 		const query = {
 			query: GET_CONTENT_PAGE_BY_PATH,
 			variables: {
@@ -129,11 +136,15 @@ export class ContentService {
 			},
 		};
 
-		return performQuery(
+		const contentPage = await performQuery(
 			query,
 			`${CONTENT_RESULT_PATH.GET}[0]`,
 			`Failed to retrieve content page by path: ${path}.`
 		);
+		if (!contentPage) {
+			throw new CustomError('No content page found with provided path', null, { path });
+		}
+		return contentPage;
 	}
 
 	public static async getContentTypes(): Promise<ContentPageType[] | null> {
