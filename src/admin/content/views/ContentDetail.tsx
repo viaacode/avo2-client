@@ -99,11 +99,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					},
 				})
 			);
+			const notFound = JSON.stringify(err).includes('NOT_FOUND');
 			setLoadingInfo({
 				state: 'error',
-				message: t(
-					'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
-				),
+				message: notFound
+					? t('Een content pagina met dit id kon niet worden gevonden')
+					: t(
+							'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
+					  ),
+				icon: notFound ? 'search' : 'alert-triangle',
 			});
 		}
 	}, [setContentPage, setLoadingInfo, t, id]);
