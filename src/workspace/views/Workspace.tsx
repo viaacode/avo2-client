@@ -1,4 +1,4 @@
-import { get, isEmpty, compact } from 'lodash-es';
+import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -121,7 +121,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			}
 			return {};
 		};
-		const tabs = {
+		const tempTabs = {
 			...addTabIfUserHasPerm(COLLECTIONS_ID, {
 				component: () => (
 					<CollectionOrBundleOverview
@@ -187,7 +187,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				),
 			}),
 		};
-		setTabs(tabs);
+		setTabs(tempTabs);
 	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
 
 	const goToTab = (id: ReactText) => {
@@ -197,7 +197,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	// Get active tab based on above map with tabId
 	const getActiveTab = useCallback(() => {
-		return tabs[tabId || Object.keys(tabs)[0]];
+		const firstTabId = Object.keys(tabs)[0];
+		const safeTabId = tabId || firstTabId;
+		return tabs[safeTabId] || tabs[firstTabId];
 	}, [tabs, tabId]);
 
 	useEffect(() => {
@@ -234,9 +236,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 							? `${tab.label} (${tabCounts[tab.id]})`
 							: tab.label,
 					};
-				} else {
-					return null;
 				}
+				return null;
 			})
 		);
 	}, [tabs, tabId, tabCounts, permissions]);
