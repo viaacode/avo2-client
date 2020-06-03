@@ -94,7 +94,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		};
 	};
 
-	const getLabelFilter = (): any[] => {
+	const getLabelFilter = useCallback((): any[] => {
 		const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
 		const blockLabelIds = ((get(contentTypeAndTabs, 'selectedLabels') ||
 			[]) as Avo.Content.ContentLabel[]).map(labelObj => labelObj.id);
@@ -119,7 +119,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			];
 		}
 		return [];
-	};
+	}, [selectedTabs, contentTypeAndTabs]);
 
 	const fetchPages = useCallback(async () => {
 		try {
@@ -172,18 +172,18 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			);
 		}
 	}, [
-		selectedTabs,
 		itemStyle,
 		currentPage,
 		debouncedItemsPerPage,
 		setPages,
 		setPageCount,
 		contentTypeAndTabs,
+		getLabelFilter,
 		user,
 		t,
 	]);
 
-	const checkFocusedPage = async () => {
+	const checkFocusedPage = useCallback(async () => {
 		try {
 			const queryParams = queryString.parse(location.search);
 			if (queryParams.focus && isString(queryParams.focus)) {
@@ -199,12 +199,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			});
 			ToastService.danger(t('Het ophalen van het te focussen item is mislukt'));
 		}
-	};
+	}, [location.search, setFocusedPageId, t]);
 
 	useEffect(() => {
 		fetchPages();
 		checkFocusedPage();
-	}, [fetchPages]);
+	}, [fetchPages, checkFocusedPage]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
 		setCurrentPage(pageIndex);
