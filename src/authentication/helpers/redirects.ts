@@ -124,5 +124,7 @@ export function getFromPath(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
-	return get(location, 'state.from.pathname', defaultPath);
+	return (
+		get(location, 'state.from.pathname', defaultPath) + get(location, 'state.from.search', '')
+	);
 }
