@@ -149,6 +149,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
+	WORKSPACE_ASSIGNMENTS: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}`,
+		showInContentPicker: true,
+		showForInteractiveTour: true,
+	},
 	WORKSPACE_BOOKMARKS: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.bookmarks}`,
 		showInContentPicker: true,
