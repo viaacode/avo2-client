@@ -22,13 +22,15 @@ import {
 	ContentBlockType,
 } from '../../shared/types';
 import { ContentService } from '../content.service';
-import { BlockClickHandler } from '../content.types';
+import { BlockClickHandler, ContentPageType } from '../content.types';
 
 import './ContentEditContentBlocks.scss';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
+	contentType: ContentPageType | undefined;
+	title: string;
 	hasSubmitted: boolean;
 	onAdd: (config: ContentBlockConfig) => void;
 	onError: (configIndex: number, errors: ContentBlockErrors) => void;
@@ -47,6 +49,8 @@ interface ContentEditContentBlocksProps {
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	contentWidth,
+	contentType,
+	title,
 	hasSubmitted,
 	onAdd,
 	onError,
@@ -181,6 +185,8 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							contentBlockConfigs
 						)}
 						contentWidth={contentWidth}
+						contentType={contentType}
+						title={title}
 						onBlockClicked={focusBlock}
 						activeBlockPosition={activeBlockPosition}
 					/>

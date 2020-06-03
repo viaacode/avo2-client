@@ -58,7 +58,7 @@ export interface ContentPageEditFormState {
 	seoDescription: string | undefined;
 	isProtected: boolean;
 	path: string;
-	contentType: string;
+	contentType: ContentPageType | undefined;
 	contentWidth: Avo.Content.ContentWidth;
 	publishAt: string;
 	depublishAt: string;

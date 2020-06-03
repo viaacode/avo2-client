@@ -71,7 +71,7 @@ export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
 	seoDescription: '',
 	isProtected: false,
 	path: '',
-	contentType: '',
+	contentType: undefined,
 	contentWidth: ContentWidth.REGULAR,
 	publishAt: '',
 	depublishAt: '',
