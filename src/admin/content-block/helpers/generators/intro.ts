@@ -43,7 +43,8 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 					editorType: ContentBlockEditor.WYSIWYG,
 					editorProps: {
-						controls: WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN,
+						controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
+						fileType: 'CONTENT_BLOCK_IMAGE',
 					},
 				}
 			),

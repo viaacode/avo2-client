@@ -131,7 +131,7 @@ export const TEXT_FIELD = (
 	},
 	editorProps: {
 		controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
-		fileType: 'CONTENT_PAGE_IMAGE',
+		fileType: 'CONTENT_BLOCK_IMAGE',
 	} as Partial<WYSIWYG2WrapperProps>,
 	...propOverride,
 });
@@ -159,7 +159,7 @@ export const FILE_FIELD = (
 
 		return errorArray;
 	},
-	editorProps: { assetType: 'CONTENT_PAGE_IMAGE' } as FileUploadProps,
+	editorProps: { assetType: 'CONTENT_BLOCK_IMAGE' } as FileUploadProps,
 	...propOverride,
 });
 

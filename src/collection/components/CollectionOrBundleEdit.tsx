@@ -57,6 +57,7 @@ import {
 	isMobileWidth,
 	navigate,
 	renderAvatar,
+	sanitize,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
@@ -404,7 +405,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		const clonedCollection = cloneDeep(collection);
 		getFragmentsFromCollection(clonedCollection).forEach(fragment => {
 			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
-				fragment.custom_description = (fragment.custom_description as any).toHTML();
+				fragment.custom_description = sanitize(
+					(fragment.custom_description as any).toHTML(),
+					'link'
+				);
 			}
 		});
 		return clonedCollection;

@@ -6,8 +6,7 @@ import { RouteComponentProps } from 'react-router';
 import { BlockHeading, Button, Container } from '@viaa/avo2-components';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { sanitize } from '../../../shared/helpers/sanitize';
-import sanitizePresets from '../../../shared/helpers/sanitize/presets';
+import Html from '../../../shared/components/Html/Html';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 export interface StudentTeacherProps extends RouteComponentProps {}
@@ -52,15 +51,10 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 							Het Archief voor Onderwijs voor Student-leerkrachten
 						</Trans>
 					</BlockHeading>
-					<p
-						dangerouslySetInnerHTML={{
-							__html: sanitize(
-								t(
-									'authentication/views/registration-flow/r-10-student-teacher___student-teacher-description'
-								),
-								sanitizePresets.link
-							),
-						}}
+					<Html
+						content={t(
+							'authentication/views/registration-flow/r-10-student-teacher___student-teacher-description'
+						)}
 					/>
 				</div>
 			</Container>

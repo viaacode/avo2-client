@@ -37,6 +37,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import Html from '../../../shared/components/Html/Html';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitize, stripHtml } from '../../../shared/helpers';
@@ -362,7 +363,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
-				step.content = step.contentState.toHTML();
+				step.content = sanitize(step.contentState.toHTML(), 'link');
 				delete step.contentState;
 			}
 		});
@@ -585,6 +586,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										});
 									}}
 									controls={WYSIWYG2_OPTIONS_FULL}
+									fileType="INTERACTIVE_TOUR_IMAGE"
 									id={`content_editor_${index}`}
 									placeholder={t(
 										'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'
@@ -593,7 +595,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								<Spacer margin="top-small">
 									{
 										(step.contentState
-											? stripHtml(step.contentState.toHTML())
+											? stripHtml(
+													sanitize(step.contentState.toHTML(), 'link')
+											  )
 											: step.content || ''
 										).length
 									}{' '}
@@ -629,14 +633,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									</TooltipTrigger>
 									<TooltipContent>
 										<Spacer padding="small">
-											<div
-												dangerouslySetInnerHTML={{
-													__html: sanitize(
-														t(
-															'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
-														)
-													),
-												}}
+											<Html
+												content={t(
+													'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
+												)}
+												type="div"
 											/>
 										</Spacer>
 									</TooltipContent>

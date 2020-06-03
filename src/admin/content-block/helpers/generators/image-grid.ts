@@ -64,7 +64,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				{
 					label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding'),
 					editorProps: {
-						assetType: 'CONTENT_PAGE_IMAGE',
+						assetType: 'CONTENT_BLOCK_IMAGE',
 						allowMulti: false,
 					} as FileUploadProps,
 				}

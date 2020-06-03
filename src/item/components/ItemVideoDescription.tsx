@@ -25,7 +25,11 @@ import { Avo } from '@viaa/avo2-types';
 import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { parseDuration } from '../../shared/helpers';
+import Html from '../../shared/components/Html/Html';
+import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
 import './ItemVideoDescription.scss';
 
@@ -137,12 +141,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				);
 			}
 
-			return (
-				<span
-					key={`description-part-${index}`}
-					dangerouslySetInnerHTML={{ __html: part }}
-				/>
-			);
+			return <Html key={`description-part-${index}`} content={part} type="span" />;
 		});
 	};
 

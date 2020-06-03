@@ -1,7 +1,6 @@
 import { compact, flatten, get } from 'lodash';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import sanitize from 'sanitize-html';
 
 import {
 	BlockHeading,
@@ -15,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { sanitizePresets } from '../../../shared/helpers';
+import Html from '../../../shared/components/Html/Html';
 import { ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import {
@@ -111,11 +110,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 								Omschrijving:
 							</Trans>
 						</BlockHeading>
-						<p
-							dangerouslySetInnerHTML={{
-								__html: sanitize(contentPage.description, sanitizePresets.link),
-							}}
-						/>
+						<Html content={t('contentPage.description')} sanitizePreset="full" />
 					</Spacer>
 				)}
 

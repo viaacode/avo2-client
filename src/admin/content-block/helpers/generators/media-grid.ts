@@ -189,7 +189,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.FileUpload,
 				validator: undefined,
 				editorProps: {
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					allowMulti: false,
 				} as FileUploadProps,
 			},

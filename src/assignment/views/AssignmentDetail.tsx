@@ -41,6 +41,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import Html from '../../shared/components/Html/Html';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import {
 	ApolloCacheManager,
@@ -548,9 +549,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 						</Container>
 						<Spacer margin="top">
 							<Container mode="horizontal">
-								<div
+								<Html
+									content={description}
+									type="div"
+									sanitizePreset="full"
 									className="c-content"
-									dangerouslySetInnerHTML={{ __html: description }}
 								/>
 								{!!answer_url && (
 									<Box backgroundColor="soft-white" condensed>

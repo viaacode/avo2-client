@@ -14,6 +14,7 @@ import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
+import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
 
@@ -43,13 +44,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				}
 				mappedStep.disableBeacon = true;
 				mappedStep.title = dbStep.title;
-				mappedStep.content = (
-					<div
-						dangerouslySetInnerHTML={{
-							__html: dbStep.content as string,
-						}}
-					/>
-				);
+				mappedStep.content = <Html content={dbStep.content as string} type="div" />;
 				return mappedStep as Avo.InteractiveTour.Step;
 			}
 		);

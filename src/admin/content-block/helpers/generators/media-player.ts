@@ -63,7 +63,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: VIDEO_TYPES,
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					ownerId: '',
 				} as FileUploadProps,
 			}),
@@ -75,7 +75,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: PHOTO_TYPES,
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					ownerId: '',
 				} as FileUploadProps,
 			}),
