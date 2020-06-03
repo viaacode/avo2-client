@@ -16,10 +16,11 @@ export const INITIAL_KLAAR_COMPONENTS_STATE = (): KlaarBlockComponentState => ({
 	date: '',
 });
 
-export const INITIAL_KLAAR_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Klaar, position);
+export const INITIAL_KLAAR_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Klaar)
 
 export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/klaar___klaar'),
 	type: ContentBlockType.Klaar,
 	components: {
@@ -63,7 +64,7 @@ export const KLAAR_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 		},
 	},
 	block: {
-		state: INITIAL_KLAAR_BLOCK_STATE(position),
+		state: INITIAL_KLAAR_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 		},

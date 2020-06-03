@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { omit } from 'lodash-es';
+import { noop, omit } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -22,6 +22,8 @@ interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	contentWidth?: Avo.Content.ContentWidth;
 	blockState: ContentBlockState;
+	onClick: () => void;
+	className?: string;
 }
 
 enum ContentWidthMap {
@@ -35,6 +37,8 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
 	contentWidth = 'REGULAR',
 	blockState,
+	onClick = noop,
+	className,
 }) => {
 	const containerSize = ContentWidthMap[contentWidth];
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
@@ -88,11 +92,12 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 
 	return (
 		<div
-			className="c-content-block"
+			className={classnames('c-content-block', className)}
 			style={{ backgroundColor: blockState.backgroundColor }}
 			id={blockState.anchor}
 			data-anchor={blockState.anchor}
 			ref={blockRef}
+			onClick={onClick}
 		>
 			<Spacer
 				className={classnames('c-content-block-preview', {

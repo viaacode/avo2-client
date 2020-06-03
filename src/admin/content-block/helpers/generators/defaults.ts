@@ -24,7 +24,6 @@ import {
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
-	position: number,
 	backgroundColor: Color = Color.Transparent,
 	headerBackgroundColor: Color = Color.Transparent,
 	padding: PaddingFieldState = {
@@ -38,7 +37,6 @@ export const BLOCK_STATE_DEFAULTS = (
 	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
 ): DefaultContentBlockState => ({
 	blockType,
-	position,
 	backgroundColor,
 	headerBackgroundColor,
 	padding,

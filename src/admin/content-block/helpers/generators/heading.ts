@@ -17,13 +17,14 @@ export const INITIAL_HEADING_COMPONENTS_STATE = (): HeadingBlockComponentState =
 	align: 'center',
 });
 
-export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Heading, position, Color.White, Color.White, {
+export const INITIAL_HEADING_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Heading, Color.White, Color.White, {
 		top: 'top-extra-large',
 		bottom: 'bottom-small',
 	});
 
 export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 	type: ContentBlockType.Heading,
 	components: {
@@ -47,7 +48,7 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		},
 	},
 	block: {
-		state: INITIAL_HEADING_BLOCK_STATE(position),
+		state: INITIAL_HEADING_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

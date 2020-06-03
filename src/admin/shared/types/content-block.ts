@@ -86,6 +86,7 @@ export interface ContentBlockConfig {
 	block: ContentBlockBlockConfig;
 	type: ContentBlockType;
 	anchor?: string;
+	position: number;
 }
 
 export interface ContentBlockComponentsConfig {
@@ -165,7 +166,6 @@ export interface DefaultContentBlockState {
 	headerBackgroundColor?: Color; // css color string. eg: '#222' or 'black' or 'rgb(0, 0, 255)'
 	headerHeight?: string; // css height string. eg: '20px' or '15%'
 	blockType: ContentBlockType;
-	position: number;
 	padding: PaddingFieldState;
 	margin: PaddingFieldState;
 	userGroupIds: number[];

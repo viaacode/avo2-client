@@ -31,11 +31,10 @@ export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSt
 	} as any,
 ];
 
-export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
-	position: number
-): BlockGridWrapperProps & DefaultContentBlockState => {
+export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockGridWrapperProps &
+	DefaultContentBlockState => {
 	return {
-		...BLOCK_STATE_DEFAULTS(ContentBlockType.ImageGrid, position),
+		...BLOCK_STATE_DEFAULTS(ContentBlockType.ImageGrid),
 		elements: [] as GridItem[],
 		format: 'squareLarge',
 		fill: 'cover',
@@ -44,6 +43,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 };
 
 export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/image-grid___afbeeldingen-grid'),
 	type: ContentBlockType.ImageGrid,
 	components: {
@@ -98,7 +98,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		},
 	},
 	block: {
-		state: INITIAL_IMAGE_GRID_BLOCK_STATE(position),
+		state: INITIAL_IMAGE_GRID_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 			format: {

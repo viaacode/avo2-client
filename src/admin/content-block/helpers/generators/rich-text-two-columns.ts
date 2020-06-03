@@ -25,11 +25,11 @@ export const INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE = (): RichTextBlockC
 	},
 ];
 
-export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (
-	position: number
-): DefaultContentBlockState => BLOCK_STATE_DEFAULTS(ContentBlockType.RichTextTwoColumns, position);
+export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS(ContentBlockType.RichTextTwoColumns);
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-2-kolommen'),
 	type: ContentBlockType.RichTextTwoColumns,
 	components: {
@@ -101,7 +101,7 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 		},
 	},
 	block: {
-		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(position),
+		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,6 +22,9 @@ import {
 	ContentBlockType,
 } from '../../shared/types';
 import { ContentService } from '../content.service';
+import { BlockClickHandler } from '../content.types';
+
+import './ContentEditContentBlocks.scss';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -55,78 +59,107 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	const [t] = useTranslation();
 
 	// Hooks
-	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
+	const [activeBlockPosition, setActiveBlockPosition] = useState<number | null>(null);
 
 	const previewScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 	const sidebarScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
 	// Methods
-	const getFormKey = (name: string, blockIndex: number, stateIndex: number = 0) =>
-		`${name}-${blockIndex}-${stateIndex}`;
-
 	const handleAddContentBlock = (configType: ContentBlockType) => {
 		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](contentBlockConfigs.length);
-		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
 		// Update content block configs
 		onAdd(newConfig);
 
-		// Set newly added config accordion as open
-		setAccordionsOpenState({ [contentBlockFormKey]: true });
-
 		// Scroll preview and sidebar to the bottom
-		scrollToBottom(previewScrollable);
-		scrollToBottom(sidebarScrollable);
-	};
-
-	const scrollToBottom = (ref: RefObject<HTMLDivElement>) => {
-		setTimeout(() => {
-			if (ref.current) {
-				ref.current.scroll({ left: 0, top: 1000000, behavior: 'smooth' });
-			}
-		}, 0);
+		focusBlock(newConfig.position, 'preview');
+		focusBlock(newConfig.position, 'sidebar');
 	};
 
 	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
 		// Close accordions
-		setAccordionsOpenState({});
+		setActiveBlockPosition(null);
 		// Trigger reorder
 		onReorder(configIndex, indexUpdate);
+	};
+
+	/**
+	 * https://imgur.com/a/E7TxvUN
+	 * @param position
+	 * @param type
+	 */
+	const scrollToBlockPosition: BlockClickHandler = (
+		position: number,
+		type: 'preview' | 'sidebar'
+	) => {
+		const blockElem = document.querySelector(`.content-block-${type}-${position}`);
+		const scrollable = get(
+			type === 'sidebar' ? sidebarScrollable : previewScrollable,
+			'current'
+		);
+		if (!blockElem || !scrollable) {
+			return;
+		}
+		const blockElemTop = blockElem.getBoundingClientRect().top;
+		const scrollableTop = scrollable.getBoundingClientRect().top;
+		const scrollTop = scrollable.scrollTop;
+		const scrollMargin = type === 'sidebar' ? 18 : 0;
+		const desiredScrollPosition = Math.max(
+			blockElemTop - (scrollableTop - scrollTop) - scrollMargin,
+			0
+		);
+		scrollable.scroll({ left: 0, top: desiredScrollPosition, behavior: 'smooth' });
+	};
+
+	const focusBlock: BlockClickHandler = (position: number, type: 'preview' | 'sidebar') => {
+		toggleActiveBlock(position, type === 'preview');
+		const inverseType = type === 'preview' ? 'sidebar' : 'preview';
+		setTimeout(() => {
+			scrollToBlockPosition(position, inverseType);
+		}, 0);
+	};
+
+	const toggleActiveBlock = (position: number, onlyOpen: boolean) => {
+		if (position === activeBlockPosition && !onlyOpen) {
+			setActiveBlockPosition(null);
+		} else {
+			setActiveBlockPosition(position);
+		}
 	};
 
 	// Render
 	const renderContentBlockForms = () => {
 		return contentBlockConfigs.map((contentBlockConfig, index) => {
-			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
-
 			return (
-				<ContentBlockForm
+				<div
+					className={`content-block-sidebar-${contentBlockConfig.position}`}
 					key={createKey('form', index)}
-					config={contentBlockConfig}
-					blockIndex={index}
-					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
-					length={contentBlockConfigs.length}
-					hasSubmitted={hasSubmitted}
-					toggleIsAccordionOpen={() =>
-						setAccordionsOpenState({
-							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
-						})
-					}
-					onChange={(
-						formGroupType: ContentBlockStateType,
-						input: any,
-						stateIndex?: number
-					) => onSave(index, formGroupType, input, stateIndex)}
-					addComponentToState={() =>
-						addComponentToState(index, contentBlockConfig.block.state.blockType)
-					}
-					removeComponentFromState={(stateIndex: number) =>
-						removeComponentFromState(index, stateIndex)
-					}
-					onError={onError}
-					onRemove={onRemove}
-					onReorder={handleReorderContentBlock}
-				/>
+				>
+					<ContentBlockForm
+						config={contentBlockConfig}
+						blockIndex={index}
+						isAccordionOpen={contentBlockConfig.position === activeBlockPosition}
+						length={contentBlockConfigs.length}
+						hasSubmitted={hasSubmitted}
+						toggleIsAccordionOpen={() => {
+							focusBlock(contentBlockConfig.position, 'sidebar');
+						}}
+						onChange={(
+							formGroupType: ContentBlockStateType,
+							input: any,
+							stateIndex?: number
+						) => onSave(index, formGroupType, input, stateIndex)}
+						addComponentToState={() =>
+							addComponentToState(index, contentBlockConfig.block.state.blockType)
+						}
+						removeComponentFromState={(stateIndex: number) =>
+							removeComponentFromState(index, stateIndex)
+						}
+						onError={onError}
+						onRemove={onRemove}
+						onReorder={handleReorderContentBlock}
+					/>
+				</div>
 			);
 		});
 	};
@@ -148,6 +181,8 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							contentBlockConfigs
 						)}
 						contentWidth={contentWidth}
+						onBlockClicked={focusBlock}
+						activeBlockPosition={activeBlockPosition}
 					/>
 				</div>
 				<Sidebar className="c-content-edit-view__sidebar" light>

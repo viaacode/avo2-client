@@ -26,8 +26,8 @@ import {
 
 export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [{}];
 
-export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.MediaGrid, position),
+export const INITIAL_MEDIA_GRID_BLOCK_STATE = (): MediaGridBlockState => ({
+	...BLOCK_STATE_DEFAULTS(ContentBlockType.MediaGrid),
 	ctaTitle: '',
 	ctaContent: '',
 	ctaButtonLabel: '',
@@ -37,6 +37,7 @@ export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlock
 });
 
 export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/media-grid___media-tegels'),
 	type: ContentBlockType.MediaGrid,
 	components: {
@@ -78,7 +79,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		},
 	},
 	block: {
-		state: INITIAL_MEDIA_GRID_BLOCK_STATE(position),
+		state: INITIAL_MEDIA_GRID_BLOCK_STATE(),
 		fields: {
 			title: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___algemene-titel'),
