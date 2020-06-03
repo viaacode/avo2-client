@@ -75,13 +75,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	useEffect(updateHeaderHeight, [blockRef.current, blockState, componentState]);
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
-		// Pass the navigate function to each element (deprecated) => prefer passing the navigate function once to the block
-		if (componentStateProps.elements && componentStateProps.elements.length) {
-			componentStateProps.elements = componentStateProps.elements.map((element: any) => ({
-				...element,
-				navigate: () => navigateToContentType(element.buttonAction, history),
-			}));
-		}
 		// Pass the navigate function to the block
 		blockStateProps.navigate = (buttonAction: ButtonAction) => {
 			navigateToContentType(buttonAction, history);

@@ -228,9 +228,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			},
 			{
 				label: i18n.t('admin/admin___start-ingelogd-lesgever'),
-				location: await getContentPageDetailRouteByPath(
-					'/startpagina-voor-ingelogde-lesgevers'
-				),
+				location: await getContentPageDetailRouteByPath('/start'),
 				key: 'faqs',
 				exact: true,
 			},

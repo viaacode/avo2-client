@@ -4,7 +4,9 @@ import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
+	ContentBlockFieldGroup,
 	ContentBlockType,
+	DEFAULT_BUTTON_PROPS,
 	DefaultContentBlockState,
 	RichTextBlockComponentState,
 } from '../../../shared/types';
@@ -90,14 +92,16 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 				type: 'fieldGroup',
 				min: 0,
 				max: 10,
-				repeat: true,
-				repeatAddButtonLabel: i18n.t(
-					'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
-				),
-				repeatDeleteButtonLabel: i18n.t(
-					'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
-				),
-			},
+				repeat: {
+					defaultState: DEFAULT_BUTTON_PROPS,
+					addButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
+					),
+					deleteButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
+					),
+				},
+			} as ContentBlockFieldGroup,
 		},
 	},
 	block: {

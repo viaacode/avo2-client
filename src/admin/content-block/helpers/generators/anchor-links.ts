@@ -7,6 +7,7 @@ import {
 	ContentBlockEditor,
 	ContentBlockType,
 } from '../../../shared/types';
+import { GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
 import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -38,6 +39,13 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
+			type: {
+				label: i18n.t('kleur'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS(),
+				},
+			},
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
