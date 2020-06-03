@@ -169,14 +169,14 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, t]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
 			// Analyse the path and determine the routeType
 			analyseRoute();
 		}
-	}, [loginState, location.pathname]);
+	}, [loginState, location.pathname, analyseRoute]);
 
 	useEffect(() => {
 		if (routeInfo) {
