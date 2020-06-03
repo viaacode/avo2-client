@@ -5,7 +5,6 @@ import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import {
-	BlockPageOverview,
 	ButtonAction,
 	ContentItemStyle,
 	ContentPageInfo,
@@ -25,6 +24,7 @@ import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+import { BlockPageOverview } from './BlockPageOverview/BlockPageOverview';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
@@ -68,10 +68,16 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
-	const dbToPageOverviewContentPage = (dbContentPage: Avo.Content.Content): ContentPageInfo => {
+	const dbToPageOverviewContentPage = (dbContentPage: DbContent): ContentPageInfo => {
 		return {
 			thumbnail_path: '/images/placeholder.png',
-			labels: [],
+			labels: dbContentPage.content_content_labels.map(cl => {
+				const contentLabel = (cl.content_label as unknown) as Avo.Content.ContentLabel; // TODO remove cast after typings v2.18.0
+				return {
+					id: contentLabel.id,
+					label: contentLabel.label,
+				};
+			}),
 			created_at: dbContentPage.created_at,
 			description: dbContentPage.description,
 			title: dbContentPage.title,
@@ -84,11 +90,37 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		};
 	};
 
+	const getLabelFilter = (): any[] => {
+		const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
+		const blockLabelIds = ((get(contentTypeAndTabs, 'selectedLabels') ||
+			[]) as Avo.Content.ContentLabel[]).map(labelObj => labelObj.id);
+		if (selectedLabelIds.length) {
+			// The user selected some block labels at the top of the page overview component
+			return [
+				{
+					content_content_labels: {
+						content_label: { id: { _in: selectedLabelIds } },
+					},
+				},
+			];
+		} else if (blockLabelIds.length) {
+			// If the "all" label is selected, we want to get content pages with any of the block labels
+			return [
+				{
+					content_content_labels: {
+						content_label: { id: { _in: blockLabelIds } },
+					},
+				},
+			];
+		} else {
+			return [];
+		}
+	};
+
 	const fetchPages = useCallback(async () => {
 		try {
 			const userGroupIds: number[] = getUserGroupIds(user);
 
-			const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
 			const response = await dataService.query({
 				query:
 					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
@@ -105,16 +137,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 									user_group_ids: { _contains: userGroupId },
 								})),
 							},
-							// Get pages for the selected labels if some labels are selected
-							...(selectedLabelIds.length
-								? [
-										{
-											content_content_labels: {
-												content_label: { id: { _in: selectedLabelIds } },
-											},
-										},
-								  ]
-								: []),
+							...getLabelFilter(),
 						],
 					},
 					offset: currentPage * debouncedItemsPerPage,
