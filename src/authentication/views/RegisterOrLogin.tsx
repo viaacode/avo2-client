@@ -17,11 +17,11 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ROUTE_PARTS } from '../../shared/constants';
 import LoginOptions from '../components/LoginOptions';
 import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 
 import './RegisterOrLogin.scss';
-import { ROUTE_PARTS } from '../../shared/constants';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}
 

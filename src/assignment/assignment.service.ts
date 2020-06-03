@@ -672,8 +672,8 @@ export class AssignmentService {
 			const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
 				query: GET_ASSIGNMENT_WITH_RESPONSE,
 				variables: {
-					pupilUuid: pupilProfileId,
 					assignmentId,
+					pupilUuid: pupilProfileId,
 				},
 			});
 

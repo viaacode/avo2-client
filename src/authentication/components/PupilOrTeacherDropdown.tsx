@@ -5,8 +5,8 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import { redirectToClientPage } from '../helpers/redirects';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { redirectToClientPage } from '../helpers/redirects';
 
 export interface PupilOrTeacherDropdownProps extends RouteComponentProps {
 	closeDropdown?: () => void;

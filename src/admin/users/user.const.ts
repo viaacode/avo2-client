@@ -1,7 +1,9 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
-import { Avo } from '@viaa/avo2-types';
+
 import { UserOverviewTableCol } from './user.types';
 
 export const USER_PATH = {

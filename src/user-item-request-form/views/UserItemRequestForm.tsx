@@ -18,13 +18,13 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
 import { isMobileWidth } from '../../shared/helpers';
 import { sanitize, sanitizePresets } from '../../shared/helpers/sanitize';
 import { ToastService, ZendeskService } from '../../shared/services';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
 

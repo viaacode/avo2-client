@@ -21,11 +21,11 @@ import {
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import Html from '../../../shared/components/Html/Html';
+import { ROUTE_PARTS } from '../../../shared/constants';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
-import { ROUTE_PARTS } from '../../../shared/constants';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 

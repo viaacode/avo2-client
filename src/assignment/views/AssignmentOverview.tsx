@@ -738,17 +738,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return t(
 					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
 				);
-			} else {
-				return t('Je hebt nog geen opdrachten gearchiveerd');
 			}
-		} else {
-			// Pupil
-			if (activeView === 'assignments') {
-				return t('Je hebt nog geen opdrachten ontvangen van je leerkracht');
-			} else {
-				return t('Er zijn nog geen opdrachten verlopen');
-			}
+			return t('Je hebt nog geen opdrachten gearchiveerd');
 		}
+		// Pupil
+		if (activeView === 'assignments') {
+			return t('Je hebt nog geen opdrachten ontvangen van je leerkracht');
+		}
+		return t('Er zijn nog geen opdrachten verlopen');
 	};
 
 	const getEmptyFallbackDescription = () => {
@@ -758,17 +755,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return t(
 					'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken'
 				);
-			} else {
-				return t('Beschrijving gearchiveerde opdrachten in werkruimte');
 			}
-		} else {
-			// Pupil
-			if (activeView === 'assignments') {
-				return t('Beschrijving opdrachten in werkruimte voor leerling');
-			} else {
-				return t('Beschrijving verlopen opdrachten in werkruimte voor leerling');
-			}
+			return t('Beschrijving gearchiveerde opdrachten in werkruimte');
 		}
+		// Pupil
+		if (activeView === 'assignments') {
+			return t('Beschrijving opdrachten in werkruimte voor leerling');
+		}
+		return t('Beschrijving verlopen opdrachten in werkruimte voor leerling');
 	};
 
 	const getEmptyFallbackIcon = (): IconName => {
@@ -776,17 +770,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			// Teacher
 			if (activeView === 'assignments') {
 				return 'clipboard';
-			} else {
-				return 'archive';
 			}
-		} else {
-			// Pupil
-			if (activeView === 'assignments') {
-				return 'clipboard';
-			} else {
-				return 'clock';
-			}
+			return 'archive';
 		}
+		// Pupil
+		if (activeView === 'assignments') {
+			return 'clipboard';
+		}
+		return 'clock';
 	};
 
 	const renderEmptyFallback = () => (

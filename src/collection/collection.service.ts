@@ -9,10 +9,9 @@ import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
-import { VideoStillService } from '../shared/services/video-stills-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { RelationType } from '../shared/services/relation-service/relation.types';
-import { getThumbnailForCollection } from '../shared/services/stills-service';
+import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {

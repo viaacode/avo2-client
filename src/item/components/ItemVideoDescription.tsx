@@ -26,10 +26,7 @@ import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import Html from '../../shared/components/Html/Html';
-import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
+import { parseDuration } from '../../shared/helpers';
 
 import './ItemVideoDescription.scss';
 
