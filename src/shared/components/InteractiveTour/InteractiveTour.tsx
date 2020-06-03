@@ -10,7 +10,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
-import { APP_PATH, RouteInfo } from '../../../constants';
+import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
@@ -29,7 +29,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	const [t] = useTranslation();
 
 	const [tour, setTour] = useState<TourInfo | null>(null);
-	const [routeId, setRouteId] = useState<string | null>(null);
+	const [routeId, setRouteId] = useState<RouteId | null>(null);
 
 	const mapSteps = (dbSteps: Avo.InteractiveTour.Step[]): Avo.InteractiveTour.Step[] => {
 		return dbSteps.map(
@@ -71,13 +71,13 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				}
 			);
 
-			let routeId: string | undefined;
+			let routeId: RouteId | undefined;
 			if (matchingRoutePair) {
 				// static page
-				routeId = matchingRoutePair[0];
+				routeId = matchingRoutePair[0] as RouteId;
 			} else {
 				// check content pages
-				routeId = location.pathname;
+				routeId = location.pathname as RouteId;
 			}
 
 			// Get all routes that have an interactive tour
