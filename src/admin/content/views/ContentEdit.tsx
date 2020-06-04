@@ -22,7 +22,7 @@ import {
 } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { DeleteObjectModal } from '../../../shared/components';
-import { CustomError, navigate, sanitize } from '../../../shared/helpers';
+import { CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
@@ -223,7 +223,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
 				description:
-					sanitize(
+					sanitizeHtml(
 						contentForm.descriptionState
 							? contentForm.descriptionState.toHTML()
 							: contentForm.descriptionHtml || '',

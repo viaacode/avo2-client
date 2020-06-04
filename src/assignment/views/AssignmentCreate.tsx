@@ -37,7 +37,13 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, copyToClipboard, CustomError, navigate, sanitize } from '../../shared/helpers';
+import {
+	buildLink,
+	copyToClipboard,
+	CustomError,
+	navigate,
+	sanitizeHtml,
+} from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -214,7 +220,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
 				'descriptionRichEditorState'
 			];
-			assignment.description = sanitize(
+			assignment.description = sanitizeHtml(
 				descriptionRichEditorState
 					? descriptionRichEditorState.toHTML()
 					: assignment.description || '',

@@ -28,7 +28,7 @@ import {
 } from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError, sanitize } from '../../../shared/helpers';
+import { buildLink, CustomError, sanitizeHtml } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import {
@@ -180,7 +180,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			await ItemsService.setItemNotes(
 				item.uid,
-				sanitize(
+				sanitizeHtml(
 					(noteEditorState ? noteEditorState.toHTML() : (item as any).note) || '',
 					'link'
 				) || null

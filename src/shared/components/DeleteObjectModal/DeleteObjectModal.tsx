@@ -10,7 +10,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { sanitize } from '../../helpers/sanitize';
+import { sanitizeHtml } from '../../helpers/sanitize';
 import i18n from '../../translations/i18n';
 import Html from '../Html/Html';
 
@@ -41,7 +41,7 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={title && sanitize(title, 'basic')}
+			title={title && sanitizeHtml(title, 'basic')}
 			size="small"
 			onClose={onClose}
 			scrollable
