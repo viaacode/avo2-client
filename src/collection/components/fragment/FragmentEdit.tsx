@@ -121,17 +121,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		});
 	};
 
-	const getDescription = () => {
-		let description: string | RichEditorState | undefined | null;
+	const getDescription = (): string | undefined => {
+		let description: string | undefined | null;
 		if (fragment.use_custom_fields) {
 			description = fragment.custom_description;
 		} else {
 			description = get(fragment, 'item_meta.description');
 		}
-		if (!description || isString(description)) {
-			return convertToHtml(description || '');
+		if (isString(description)) {
+			description = convertToHtml(description);
 		}
-		return description;
+		return description || undefined;
 	};
 
 	const itemMetaData = (fragment as any).item_meta;
@@ -230,7 +230,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const renderForm = () => {
 		const disableVideoFields: boolean = !fragment.use_custom_fields && fragment.type !== 'TEXT';
-		const description: string | RichEditorState = getDescription();
 
 		return (
 			<Form>
@@ -290,15 +289,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								placeholder={t(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
-								initialHtml={isString(description) ? description : undefined}
+								initialHtml={getDescription()}
 								state={descriptionRichEditorState}
 								onChange={setDescriptionRichEditorState}
-								onBlur={() =>
-									handleChangedValue(
-										'custom_description',
-										descriptionRichEditorState
-									)
-								}
+								onBlur={() => {
+									if (descriptionRichEditorState) {
+										handleChangedValue(
+											'custom_description' as any,
+											descriptionRichEditorState.toHTML()
+										);
+									}
+								}}
 								disabled={disableVideoFields}
 							/>
 						)}
