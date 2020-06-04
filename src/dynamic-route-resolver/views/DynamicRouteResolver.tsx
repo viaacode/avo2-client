@@ -113,7 +113,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				pathname === '/klaar/archief' &&
 				PermissionService.hasPerm(loginState.userInfo, PermissionName.SEARCH)
 			) {
-				history.push(generateSearchLinkString('serie', 'Klaar'));
+				history.push(generateSearchLinkString('serie', 'KLAAR', 'broadcastDate', 'desc'));
 				return;
 			}
 
