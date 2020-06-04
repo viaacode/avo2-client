@@ -177,7 +177,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 						</Trans>
 					</BlockHeading>
 				)}
-				<p>{formatTimestamps(convertToHtml(description))}</p>
+				<p className="c-content">{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
 	);
