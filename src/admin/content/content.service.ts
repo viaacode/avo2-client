@@ -1,13 +1,13 @@
-import { get, omit } from 'lodash-es';
+import { get, isFunction, omit } from 'lodash-es';
 import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError, performQuery } from '../../shared/helpers';
+import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 import { ContentBlockService } from '../content-block/services/content-block.service';
-import { omitByDeep } from '../shared/helpers/omitByDeep';
+import { mapDeep } from '../shared/helpers/mapDeep';
 import { ContentBlockConfig } from '../shared/types';
 
 import {
@@ -489,7 +489,23 @@ export class ContentService {
 	public static convertRichTextEditorStatesToHtml(
 		blockConfigs: ContentBlockConfig[]
 	): ContentBlockConfig[] {
-		return omitByDeep(blockConfigs, key => String(key).endsWith(RichEditorStateKey));
+		return mapDeep(
+			blockConfigs,
+			(obj: any, value: any, key: string) => {
+				if (
+					String(key).endsWith(RichEditorStateKey) &&
+					value &&
+					value.toHTML &&
+					isFunction(value.toHTML)
+				) {
+					const htmlKey: string = key.substr(0, key.length - RichEditorStateKey.length);
+					obj[htmlKey] = sanitizeHtml(value.toHTML(), 'full');
+					delete obj[key];
+				}
+				return obj;
+			},
+			key => String(key).endsWith(RichEditorStateKey)
+		);
 	}
 
 	// TODO: Make function generic so we can combine this getTitle and the one from collections.

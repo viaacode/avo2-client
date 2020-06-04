@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { sanitize } from '../../helpers/sanitize';
+import { sanitizeHtml } from '../../helpers/sanitize';
 import { SanitizePreset } from '../../helpers/sanitize/presets';
 
 export interface HtmlProps {
@@ -20,7 +20,7 @@ const Html: FunctionComponent<HtmlProps> = ({
 
 	return (
 		<Type
-			dangerouslySetInnerHTML={{ __html: sanitize(content, sanitizePreset) }}
+			dangerouslySetInnerHTML={{ __html: sanitizeHtml(content, sanitizePreset) }}
 			className={className}
 		/>
 	);

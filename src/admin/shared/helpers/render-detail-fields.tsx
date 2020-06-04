@@ -4,14 +4,16 @@ import React, { ReactElement, ReactNode } from 'react';
 import { TagList, TagOption } from '@viaa/avo2-components';
 
 import { formatDate } from '../../../shared/helpers/formatters';
-import { sanitize, sanitizePresets } from '../../../shared/helpers/sanitize';
+import { sanitizeHtml, sanitizePresets } from '../../../shared/helpers/sanitize';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
 	return (
 		<tr key={`detail-row_${label}`}>
 			<th>{label}</th>
 			{isString(value) && (
-				<td dangerouslySetInnerHTML={{ __html: sanitize(value, sanitizePresets.link) }} />
+				<td
+					dangerouslySetInnerHTML={{ __html: sanitizeHtml(value, sanitizePresets.link) }}
+				/>
 			)}
 			{!isString(value) && <td>{value}</td>}
 		</tr>

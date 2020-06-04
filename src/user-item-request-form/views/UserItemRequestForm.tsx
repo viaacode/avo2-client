@@ -23,7 +23,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
 import { isMobileWidth } from '../../shared/helpers';
-import { sanitize, sanitizePresets } from '../../shared/helpers/sanitize';
+import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
 import { ToastService, ZendeskService } from '../../shared/services';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
@@ -167,7 +167,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				</BlockHeading>
 				<p
 					dangerouslySetInnerHTML={{
-						__html: sanitize(
+						__html: sanitizeHtml(
 							t(
 								'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
 							),
@@ -178,7 +178,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				<Container mode="vertical">
 					<p
 						dangerouslySetInnerHTML={{
-							__html: sanitize(
+							__html: sanitizeHtml(
 								t(
 									'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
 								),

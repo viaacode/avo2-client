@@ -56,7 +56,7 @@ export const contentEditReducer = produce(
 				return;
 			}
 			case ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS:
-				draft.contentBlockConfigs = payload as ContentBlockConfig[];
+				draft.contentBlockConfigs = payload;
 				return;
 			case ContentEditActionType.ADD_COMPONENTS_STATE: {
 				const { formGroupState, index } = payload as AddComponentStatePayload;

@@ -2,7 +2,6 @@ import { debounce, get, isArray, isNil } from 'lodash-es';
 
 import { SelectOption, WYSIWYG2Props } from '@viaa/avo2-components';
 
-import { sanitize } from '../../../shared/helpers/sanitize';
 import { RichEditorStateKey } from '../../content/content.const';
 import { ContentBlockEditor, ContentBlockField, PickerItem } from '../../shared/types';
 
@@ -49,13 +48,14 @@ export const generateFieldAttributes = (
 				),
 			};
 		case ContentBlockEditor.WYSIWYG:
+			const html = (state as any)[`${key}`] || '';
+			const richEditorState = (state as any)[`${key}${RichEditorStateKey}`];
 			return {
 				id,
-				initialHtml: (state as any)[`${key}`] || '',
-				state: (state as any)[`${key}${RichEditorStateKey}`],
+				initialHtml: html, // Only use the html the first time, then use the editor state
+				state: richEditorState,
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
-					onChange(sanitize(editorState.toHTML(), 'full'), key);
 				},
 			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:
