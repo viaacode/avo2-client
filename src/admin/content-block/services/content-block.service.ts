@@ -14,7 +14,7 @@ import {
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from '../content-block.gql';
-import { convertBlockToDatabaseFormat } from '../helpers';
+import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
 	/**
@@ -195,7 +195,10 @@ export class ContentBlockService {
 
 			if (insertedConfigs.length) {
 				insertPromises.push(
-					ContentBlockService.insertContentBlocks(contentId, insertedConfigs)
+					ContentBlockService.insertContentBlocks(
+						contentId,
+						convertBlocksToDatabaseFormat(insertedConfigs)
+					)
 				);
 			}
 
