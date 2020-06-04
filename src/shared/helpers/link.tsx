@@ -215,13 +215,26 @@ export function generateSearchLink(
 	);
 }
 
-export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
-	const queryParams =
-		String(filterProp) === 'query'
-			? queryString.stringify({ filters: JSON.stringify({ query: filterValue }) })
-			: queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
+export function generateSearchLinkString(
+	filterProp: Avo.Search.FilterProp,
+	filterValue: string,
+	orderProperty?: Avo.Search.OrderProperty,
+	orderDirection?: Avo.Search.OrderDirection
+) {
+	const queryParamObject: any = {};
+	if (String(filterProp) === 'query') {
+		queryParamObject.filters = JSON.stringify({ query: filterValue });
+	} else {
+		queryParamObject.filters = `{"${filterProp}":["${filterValue}"]}`;
+	}
+	if (orderProperty) {
+		queryParamObject.orderProperty = orderProperty;
+	}
+	if (orderDirection) {
+		queryParamObject.orderDirection = orderDirection;
+	}
 
-	return buildLink(APP_PATH.SEARCH.route, {}, queryParams);
+	return buildLink(APP_PATH.SEARCH.route, {}, queryString.stringify(queryParamObject));
 }
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
