@@ -13,8 +13,7 @@ import {
 	INSERT_INTERACTIVE_TOUR,
 	UPDATE_INTERACTIVE_TOUR,
 } from './interactive-tour.gql';
-import { InteractiveTourOverviewTableCols } from './interactive-tour.types';
-import { EditableStep } from './views/InteractiveTourEdit';
+import { EditableStep, InteractiveTourOverviewTableCols } from './interactive-tour.types';
 
 export class InteractiveTourService {
 	public static async fetchInteractiveTours(
