@@ -225,7 +225,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					const duplicateContentPage = await ContentService.duplicateContentPage(
 						contentPage,
 						CONTENT_PAGE_COPY,
-						CONTENT_PAGE_COPY_REGEX
+						CONTENT_PAGE_COPY_REGEX,
+						get(user, 'profile.id')
 					);
 
 					if (!duplicateContentPage) {

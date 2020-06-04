@@ -9,11 +9,11 @@ import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
 
 // Parse content-block config to valid request body
 export const convertBlockToDatabaseFormat = (
-	contentBlockConfig: ContentBlockConfig,
+	contentBlockConfig: Partial<ContentBlockConfig>,
 	contentId?: number
 ) => {
-	const componentState = contentBlockConfig.components.state;
-	const { ...blockState } = contentBlockConfig.block.state;
+	const componentState = get(contentBlockConfig, 'components.state');
+	const { ...blockState } = get(contentBlockConfig, 'block.state');
 
 	return {
 		position: contentBlockConfig.position,
@@ -24,8 +24,8 @@ export const convertBlockToDatabaseFormat = (
 };
 
 export const convertBlocksToDatabaseFormat = (
-	contentId: number,
-	contentBlockConfigs: ContentBlockConfig[]
+	contentBlockConfigs: Partial<ContentBlockConfig>[],
+	contentId?: number
 ): Partial<Avo.ContentBlocks.ContentBlocks>[] =>
 	contentBlockConfigs.map(contentBlockConfig =>
 		convertBlockToDatabaseFormat(contentBlockConfig, contentId)
