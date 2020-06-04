@@ -884,8 +884,32 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				)
 			);
 		}
+
 		const isPublic =
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
+		let publishButtonTooltip: string;
+		if (hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')) {
+			publishButtonTooltip = t(
+				'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+			);
+		} else if (isPublic) {
+			if (isCollection) {
+				publishButtonTooltip = t(
+					'collection/views/collection-detail___maak-deze-collectie-prive'
+				);
+			} else {
+				publishButtonTooltip = t('bundle/views/bundle-detail___maak-deze-bundel-prive');
+			}
+		} else {
+			if (isCollection) {
+				publishButtonTooltip = t(
+					'collection/views/collection-detail___maak-deze-collectie-openbaar'
+				);
+			} else {
+				publishButtonTooltip = t('bundle/views/bundle-detail___maak-deze-bundel-openbaar');
+			}
+		}
+
 		return (
 			<ButtonToolbar>
 				<Button
@@ -893,20 +917,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					disabled={
 						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
 					}
-					title={
-						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
-							? t(
-									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
-							  )
-							: isPublic
-							? t('collection/views/collection-detail___maak-deze-collectie-prive')
-							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
-					}
-					ariaLabel={
-						isPublic
-							? t('collection/views/collection-detail___maak-deze-collectie-prive')
-							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
-					}
+					title={publishButtonTooltip}
+					ariaLabel={publishButtonTooltip}
 					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openPublishModal')}
 				/>
