@@ -379,12 +379,13 @@ export class ContentService {
 			'profile',
 			'__typename',
 			'content_content_labels',
+			'id',
 		]);
 	}
 
 	public static async insertContentPage(
 		contentPage: Partial<DbContent>,
-		contentBlockConfigs: ContentBlockConfig[]
+		dbContentBlocks: Partial<Avo.ContentBlocks.ContentBlocks>[]
 	): Promise<Partial<Avo.Content.Content> | null> {
 		try {
 			const response = await dataService.mutate({
@@ -405,10 +406,10 @@ export class ContentService {
 
 			if (id) {
 				// Insert content-blocks
-				if (contentBlockConfigs && contentBlockConfigs.length) {
+				if (dbContentBlocks && dbContentBlocks.length) {
 					const contentBlocks = await ContentBlockService.insertContentBlocks(
 						id,
-						contentBlockConfigs
+						dbContentBlocks
 					);
 
 					if (!contentBlocks) {
@@ -549,13 +550,15 @@ export class ContentService {
 	 * @param contentPage
 	 * @param copyPrefix
 	 * @param copyRegex
+	 * @param profileId user who will be the owner of the copy
 	 *
 	 * @returns Duplicate content page.
 	 */
 	public static async duplicateContentPage(
 		contentPage: Avo.Content.Content,
 		copyPrefix: string,
-		copyRegex: RegExp
+		copyRegex: RegExp,
+		profileId: string
 	): Promise<Avo.Content.Content | null> {
 		try {
 			const contentToInsert = { ...contentPage };
@@ -567,10 +570,8 @@ export class ContentService {
 			contentToInsert.publish_at = null;
 			contentToInsert.path = null;
 			contentToInsert.created_at = moment().toISOString();
-
-			// remove id from duplicate
-			delete contentToInsert.id;
-			delete contentToInsert.contentBlockssBycontentId;
+			contentToInsert.updated_at = contentToInsert.created_at;
+			contentToInsert.user_profile_id = profileId;
 
 			try {
 				contentToInsert.title = await this.getCopyTitleForContentPage(
@@ -596,24 +597,12 @@ export class ContentService {
 				}`;
 			}
 
-			const contentBlocks = await ContentBlockService.fetchContentBlocksByContentId(
-				contentPage.id
-			);
-
-			const contentBlocksVariables: any[] = (contentBlocks || []).map(contentBlock => {
-				const variables: any = { ...contentBlock };
-
-				delete variables.id;
-
-				return variables;
-			});
-
 			// insert duplicated collection
 			const duplicatedContentPage: Partial<
 				Avo.Content.Content
 			> | null = await ContentService.insertContentPage(
 				contentToInsert,
-				contentBlocksVariables
+				contentPage.contentBlockssBycontentId
 			);
 
 			return duplicatedContentPage as Avo.Content.Content;

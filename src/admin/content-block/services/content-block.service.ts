@@ -1,5 +1,5 @@
 import { FetchResult } from 'apollo-link';
-import { get, has, without } from 'lodash-es';
+import { get, has, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -14,7 +14,7 @@ import {
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from '../content-block.gql';
-import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
+import { convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
 	/**
@@ -77,24 +77,33 @@ export class ContentBlockService {
 		}
 	}
 
+	private static cleanContentBlocksBeforeDatabaseInsert(
+		dbContentBlocks: Partial<Avo.ContentBlocks.ContentBlocks>[]
+	) {
+		return (dbContentBlocks || []).map(block =>
+			omit(block, 'enum_content_block_type', '__typename', 'id')
+		);
+	}
+
 	/**
 	 * Insert content blocks.
 	 *
 	 * @param contentId content page identifier
-	 * @param contentBlockConfigs configs of content blocks to add
+	 * @param dbContentBlocks
 	 *
 	 * @return content blocks
 	 */
 	public static async insertContentBlocks(
 		contentId: number,
-		contentBlockConfigs: ContentBlockConfig[]
+		dbContentBlocks: Partial<Avo.ContentBlocks.ContentBlocks>[]
 	): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> {
 		try {
-			const contentBlocks = convertBlocksToDatabaseFormat(contentId, contentBlockConfigs);
-
+			(dbContentBlocks || []).forEach(block => (block.content_id = contentId));
 			const response = await dataService.mutate({
 				mutation: INSERT_CONTENT_BLOCKS,
-				variables: { contentBlocks },
+				variables: {
+					contentBlocks: this.cleanContentBlocksBeforeDatabaseInsert(dbContentBlocks),
+				},
 				update: ApolloCacheManager.clearContentBlocksCache,
 			});
 
@@ -103,7 +112,7 @@ export class ContentBlockService {
 			console.error(
 				new CustomError('Failed to insert content blocks', err, {
 					contentId,
-					contentBlockConfigs,
+					dbContentBlocks,
 				})
 			);
 
@@ -184,9 +193,11 @@ export class ContentBlockService {
 			const insertPromises: Promise<any>[] = [];
 			const insertedConfigs = contentBlockConfigs.filter(config => !has(config, 'id'));
 
-			insertPromises.push(
-				ContentBlockService.insertContentBlocks(contentId, insertedConfigs)
-			);
+			if (insertedConfigs.length) {
+				insertPromises.push(
+					ContentBlockService.insertContentBlocks(contentId, insertedConfigs)
+				);
+			}
 
 			// Updated content-blocks
 			const updatePromises: Promise<any>[] = [];

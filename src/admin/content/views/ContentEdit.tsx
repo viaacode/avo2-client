@@ -26,7 +26,7 @@ import { CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
-import { parseContentBlocks } from '../../content-block/helpers';
+import { convertBlocksToDatabaseFormat, parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { validateContentBlockField } from '../../shared/helpers';
 import {
@@ -247,7 +247,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					blockConfigs
+					convertBlocksToDatabaseFormat(blockConfigs)
 				);
 			} else {
 				if (!isNil(id)) {
