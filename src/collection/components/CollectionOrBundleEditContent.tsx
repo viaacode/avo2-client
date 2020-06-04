@@ -11,6 +11,7 @@ import { ToastService } from '../../shared/services';
 import { FragmentAdd, FragmentEdit } from '../components';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
+import './CollectionOrBundleEditContent.scss';
 
 interface CollectionOrBundleEditContentProps extends DefaultSecureRouteProps {
 	type: 'collection' | 'bundle';
@@ -57,7 +58,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		return null;
 	}
 	return (
-		<Container mode="vertical">
+		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
 			<Container mode="horizontal">
 				{collectionFragments.map((fragment: Avo.Collection.Fragment, index: number) => (
 					<FragmentEdit
