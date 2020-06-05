@@ -18,7 +18,7 @@ import { Avo } from '@viaa/avo2-types';
 import { getUserGroupIds } from '../../../../../authentication/authentication.service';
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
-import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
+import { CustomError, navigateToContentType, sanitizeHtml } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
 import { dataService, ToastService } from '../../../../../shared/services';
@@ -83,7 +83,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 				};
 			}),
 			created_at: dbContentPage.created_at,
-			description: dbContentPage.description,
+			description: dbContentPage.description
+				? sanitizeHtml(dbContentPage.description, 'full')
+				: null,
 			title: dbContentPage.title,
 			id: dbContentPage.id,
 			blocks: dbContentPage.contentBlockssBycontentId ? (
