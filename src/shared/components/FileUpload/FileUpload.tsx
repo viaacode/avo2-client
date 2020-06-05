@@ -55,7 +55,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					: [];
 				if (notAllowedFiles.length) {
 					const allowedExtensions = allowedTypes
-						.map(type => type.split('/').pop() || type)
+						.map((type: string) => type.split('/').pop() || type)
 						.join(', ');
 					ToastService.danger(
 						t(
