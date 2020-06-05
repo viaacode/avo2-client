@@ -1,5 +1,3 @@
-import { get } from 'lodash-es';
-import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,26 +13,13 @@ import {
 } from '@viaa/avo2-components';
 
 import { CustomError } from '../../helpers';
+import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
 import { AssetType } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
 import './FileUpload.scss';
-
-export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-export const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
-
-export function isPhoto(url: string): boolean {
-	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[(url.split('.').pop() || '').toLowerCase()]);
-}
-
-export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
-	jpeg: 'image/jpeg',
-	jpg: 'image/jpeg',
-	png: 'image/png',
-	gif: 'image/gif',
-};
 
 export interface FileUploadProps {
 	icon?: IconName;
@@ -170,7 +155,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				return (
 					<Spacer margin="bottom-small" key={url}>
 						<div
-							className="a-upload-image-preview"
+							className="a-upload-media-preview"
 							style={{ backgroundImage: `url(${url})` }}
 						>
 							{renderDeleteButton(url)}
@@ -178,11 +163,28 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					</Spacer>
 				);
 			}
-			const queryParams = queryString.parse(url.split('?').pop() || '');
-			const title: string = get(queryParams, 'name', 'bestand') as string;
+			if (isVideo(url)) {
+				return (
+					<Spacer margin="bottom-small" key={url}>
+						<div className="a-upload-media-preview">
+							<video src={url} controls />
+							{renderDeleteButton(url)}
+						</div>
+					</Spacer>
+				);
+			}
+			const urlInfo = getUrlInfo(url);
+			const fileName = urlInfo.fileName.substring(
+				0,
+				urlInfo.fileName.length - '-00000000-0000-0000-0000-000000000000'.length
+			);
 			return (
 				<Spacer margin="bottom-small" key={url}>
-					<Blankslate title={title} icon="file" className="a-upload-file-preview">
+					<Blankslate
+						title={`${fileName}.${urlInfo.extension}`}
+						icon="file"
+						className="a-upload-file-preview"
+					>
 						{renderDeleteButton(url)}
 					</Blankslate>
 				</Spacer>

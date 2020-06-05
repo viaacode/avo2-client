@@ -88,7 +88,7 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			className={classnames('c-video-player t-player-skin--dark', 'u-center-m')}
 			style={{ width }}
 		>
-			{!!videoStill && src && (
+			{src && (
 				<BlockFlowPlayer
 					title={title}
 					src={src || (playerTicket ? playerTicket.toString() : null)}

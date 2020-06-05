@@ -1,10 +1,7 @@
 import { BlockHeroProps } from '@viaa/avo2-components';
 
-import {
-	FileUploadProps,
-	PHOTO_TYPES,
-	VIDEO_TYPES,
-} from '../../../../shared/components/FileUpload/FileUpload';
+import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {

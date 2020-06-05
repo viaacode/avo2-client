@@ -21,8 +21,8 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
-import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
 import { isMobileWidth } from '../../shared/helpers';
+import { isPhoto } from '../../shared/helpers/files';
 import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
 import { ToastService, ZendeskService } from '../../shared/services';
 

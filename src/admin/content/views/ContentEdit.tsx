@@ -336,14 +336,20 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		// check if the path is unique
 		const path = getPathOrDefault();
 
-		const page: Avo.Content.Content | null = await ContentService.fetchContentPageByPath(path);
-		if (page && String(page.id) !== id) {
-			errors.path = t(
-				'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
-				{
-					pageTitle: page.title,
-				}
+		try {
+			const page: Avo.Content.Content | null = await ContentService.fetchContentPageByPath(
+				path
 			);
+			if (page && String(page.id) !== id) {
+				errors.path = t(
+					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
+					{
+						pageTitle: page.title,
+					}
+				);
+			}
+		} catch (err) {
+			// ignore error if content page does not exist yet, since we're trying to save it
 		}
 
 		if (
