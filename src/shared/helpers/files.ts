@@ -1,5 +1,5 @@
-export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-export const VIDEO_TYPES = ['video/mp4', 'video/webm'];
+export const PHOTO_TYPES: string[] = ['image/jpeg', 'image/png', 'image/gif'];
+export const VIDEO_TYPES: string[] = ['video/mp4', 'video/webm'];
 
 export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
 	jpeg: 'image/jpeg',
