@@ -15,6 +15,7 @@ import {
 import BlockSearch from '../../../../search/components/BlockSearch';
 import { ContentBlockType } from '../../../shared/types';
 import {
+	BlockContentPageMeta,
 	BlockGridWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
@@ -47,6 +48,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Spotlight]: BlockSpotlight,
 	[ContentBlockType.Hero]: BlockHero,
 	[ContentBlockType.Search]: BlockSearch,
+	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -75,6 +77,12 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Spotlight,
 	ContentBlockType.Hero,
 ];
+
+/**
+ * Blocks that need access to the top level content page
+ * The contentPageInfo property will be added to these blocks automatically
+ */
+export const CONTENT_PAGE_ACCESS_BLOCKS = [ContentBlockType.ContentPageMeta];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
 	'backgroundColor',

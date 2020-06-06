@@ -41,6 +41,10 @@ import {
 	BUTTONS_BLOCK_CONFIG,
 	INITIAL_BUTTONS_COMPONENTS_STATE,
 } from './helpers/generators/buttons';
+import {
+	CONTENT_PAGE_META_BLOCK_CONFIG,
+	INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
+} from './helpers/generators/content-page-meta';
 import { CTAS_BLOCK_CONFIG, INITIAL_CTAS_COMPONENTS_STATE } from './helpers/generators/ctas';
 import {
 	HEADING_BLOCK_CONFIG,
@@ -181,6 +185,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		label: i18n.t('Zoek'),
 		value: ContentBlockType.Search,
 	},
+	{
+		label: i18n.t('Pagina metadata'),
+		value: ContentBlockType.ContentPageMeta,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -222,6 +230,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.Search]: SEARCH_BLOCK_CONFIG,
+	[ContentBlockType.ContentPageMeta]: CONTENT_PAGE_META_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
@@ -247,6 +256,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 	[ContentBlockType.Search]: INITIAL_SEARCH_COMPONENTS_STATE,
+	[ContentBlockType.ContentPageMeta]: INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
 };
 
 // Options

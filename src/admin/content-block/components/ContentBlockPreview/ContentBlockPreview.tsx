@@ -12,6 +12,7 @@ import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
 import {
 	COMPONENT_PREVIEW_MAP,
+	CONTENT_PAGE_ACCESS_BLOCKS,
 	IGNORE_BLOCK_LEVEL_PROPS,
 	NAVIGABLE_CONTENT_BLOCKS,
 	REPEATABLE_CONTENT_BLOCKS,
@@ -79,6 +80,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		blockStateProps.navigate = (buttonAction: ButtonAction) => {
 			navigateToContentType(buttonAction, history);
 		};
+	}
+
+	if (CONTENT_PAGE_ACCESS_BLOCKS.includes(contentBlockConfig.type)) {
+		// Pass the content page object to the block
+		blockStateProps.contentPageInfo = contentPageInfo;
 	}
 
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
