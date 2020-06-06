@@ -2,8 +2,7 @@ import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 
-// TODO: remove | PROFILE when typings 2.18 is released.
-export interface PickerTypeOption<T = ContentPickerType | 'PROFILE'> {
+export interface PickerTypeOption<T = ContentPickerType> {
 	value: T;
 	label: string;
 	disabled?: boolean;
@@ -19,7 +18,7 @@ export interface PickerSelectItem {
 
 export interface PickerItem {
 	label?: string;
-	type: ContentPickerType | 'PROFILE';
+	type: ContentPickerType;
 	value: string;
 	target?: LinkTarget;
 }

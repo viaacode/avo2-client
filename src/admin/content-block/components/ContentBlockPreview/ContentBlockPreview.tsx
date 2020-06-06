@@ -4,9 +4,9 @@ import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
+import { ContentPageInfo } from '../../../content/content.types';
 import { Color, ContentBlockConfig } from '../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
@@ -20,7 +20,7 @@ import './ContentBlockPreview.scss';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	contentBlockConfig: ContentBlockConfig;
-	contentWidth?: Avo.Content.ContentWidth;
+	contentPageInfo: Partial<ContentPageInfo>;
 	onClick: () => void;
 	className?: string;
 }
@@ -32,15 +32,15 @@ enum ContentWidthMap {
 }
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
-	history,
 	contentBlockConfig,
-	contentWidth = 'REGULAR',
+	contentPageInfo,
 	onClick = noop,
 	className,
+	history,
 }) => {
 	const blockState = get(contentBlockConfig, 'block.state');
 	const componentState = get(contentBlockConfig, 'components.state');
-	const containerSize = ContentWidthMap[contentWidth];
+	const containerSize = ContentWidthMap[contentPageInfo.content_width || 'REGULAR'];
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[contentBlockConfig.type];
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;

@@ -26,14 +26,14 @@ export const convertBlockToDatabaseFormat = (
 export const convertBlocksToDatabaseFormat = (
 	contentBlockConfigs: Partial<ContentBlockConfig>[],
 	contentId?: number
-): Partial<Avo.ContentBlocks.ContentBlocks>[] =>
+): Partial<Avo.ContentPage.Block>[] =>
 	contentBlockConfigs.map(contentBlockConfig =>
 		convertBlockToDatabaseFormat(contentBlockConfig, contentId)
 	);
 
 // Parse content-blocks to configs
 export const parseContentBlocks = (
-	contentBlocks: Avo.ContentBlocks.ContentBlocks[]
+	contentBlocks: Avo.ContentPage.Block[]
 ): ContentBlockConfig[] => {
 	const sortedContentBlocks = contentBlocks.sort((a, b) => a.position - b.position);
 

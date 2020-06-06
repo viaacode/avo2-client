@@ -53,7 +53,7 @@ import ShareContentPageModal from '../components/ShareContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
-import { ContentDetailParams, DbContent } from '../content.types';
+import { ContentDetailParams, ContentPageInfo } from '../content.types';
 
 import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
@@ -69,7 +69,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	// Hooks
 	const [t] = useTranslation();
 
-	const [contentPage, setContentPage] = useState<DbContent | null>(null);
+	const [contentPageInfo, setContentPageInfo] = useState<ContentPageInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -84,12 +84,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	// Computed
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
-	const isContentProtected = get(contentPage, 'is_protected', false);
-	const pageTitle = `Content: ${get(contentPage, 'title', '')}`;
+	const isContentProtected = get(contentPageInfo, 'is_protected', false);
+	const pageTitle = `Content: ${get(contentPageInfo, 'title', '')}`;
+	const description = contentPageInfo ? ContentService.getDescription(contentPageInfo) : '';
 
 	const fetchContentPageById = useCallback(async () => {
 		try {
-			setContentPage(await ContentService.getContentPageById(id));
+			setContentPageInfo(await ContentService.getContentPageById(id));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content page by id', err, {
@@ -110,19 +111,19 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				icon: notFound ? 'search' : 'alert-triangle',
 			});
 		}
-	}, [setContentPage, setLoadingInfo, t, id]);
+	}, [setContentPageInfo, setLoadingInfo, t, id]);
 
 	useEffect(() => {
 		fetchContentPageById();
 	}, [fetchContentPageById]);
 
 	useEffect(() => {
-		if (contentPage) {
+		if (contentPageInfo) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [contentPage, setLoadingInfo]);
+	}, [contentPageInfo, setLoadingInfo]);
 
 	const handleDelete = () => {
 		triggerContentDelete({
@@ -150,8 +151,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	function handlePreviewClicked() {
-		if (contentPage && contentPage.path) {
-			navigateToAbsoluteOrRelativeUrl(contentPage.path, history, LinkTarget.Blank);
+		if (contentPageInfo && contentPageInfo.path) {
+			navigateToAbsoluteOrRelativeUrl(contentPageInfo.path, history, LinkTarget.Blank);
 		} else {
 			ToastService.danger(
 				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
@@ -159,11 +160,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	}
 
-	const handleShareModalClose = async (newContentPage?: Partial<DbContent>) => {
+	const handleShareModalClose = async (newContentPage?: Partial<ContentPageInfo>) => {
 		try {
 			if (newContentPage) {
 				await ContentService.updateContentPage({
-					...contentPage,
+					...contentPageInfo,
 					...newContentPage,
 				});
 
@@ -179,7 +180,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		} catch (err) {
 			console.error('Failed to save is_public state to content page', err, {
 				newContentPage,
-				contentPage,
+				contentPage: contentPageInfo,
 			});
 
 			ToastService.danger(
@@ -212,7 +213,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		switch (item) {
 			case 'duplicate':
 				try {
-					if (!contentPage) {
+					if (!contentPageInfo) {
 						ToastService.danger(
 							t(
 								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
@@ -223,7 +224,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					}
 
 					const duplicateContentPage = await ContentService.duplicateContentPage(
-						contentPage,
+						contentPageInfo,
 						CONTENT_PAGE_COPY,
 						CONTENT_PAGE_COPY_REGEX,
 						get(user, 'profile.id')
@@ -250,7 +251,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					);
 				} catch (err) {
 					console.error('Failed to duplicate content page', err, {
-						originalContentPage: contentPage,
+						originalContentPage: contentPageInfo,
 					});
 
 					ToastService.danger(
@@ -275,7 +276,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		<ButtonToolbar>
 			<Button
 				type="secondary"
-				icon={get(contentPage, 'is_public') === true ? 'unlock-3' : 'lock'}
+				icon={get(contentPageInfo, 'is_public') === true ? 'unlock-3' : 'lock'}
 				label={t('admin/content/views/content-detail___publiceren')}
 				title={t(
 					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
@@ -323,8 +324,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	);
 
 	// Render
-	const renderContentDetail = (contentPage: DbContent | null): ReactElement | null => {
-		if (!contentPage) {
+	const renderContentDetail = (contentPageInfo: ContentPageInfo | null): ReactElement | null => {
+		if (!contentPageInfo) {
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-ingeladen'
@@ -336,9 +337,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 		switch (currentTab) {
 			case 'inhoud':
-				return <ContentPage contentPage={contentPage} />;
+				return <ContentPage contentPageInfo={contentPageInfo} />;
 			case 'metadata':
-				return <ContentDetailMetaData contentPage={contentPage} />;
+				return <ContentDetailMetaData contentPageInfo={contentPageInfo} />;
 			default:
 				return (
 					<Blankslate
@@ -364,7 +365,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							get(contentPage, 'title'),
+							get(contentPageInfo, 'title'),
 							t(
 								'admin/content/views/content-detail___content-beheer-detail-pagina-titel'
 							)
@@ -372,18 +373,14 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					</title>
 					<meta
 						name="description"
-						content={
-							get(contentPage, 'seo_description') ||
-							get(contentPage, 'description') ||
-							''
-						}
+						content={get(contentPageInfo, 'seo_description') || description || ''}
 					/>
 				</MetaTags>
 				<div className="m-content-detail-preview">
 					<LoadingErrorLoadedComponent
 						loadingInfo={loadingInfo}
-						dataObject={contentPage}
-						render={() => renderContentDetail(contentPage)}
+						dataObject={contentPageInfo}
+						render={() => renderContentDetail(contentPageInfo)}
 					/>
 					<DeleteObjectModal
 						deleteObjectCallback={handleDelete}
@@ -397,9 +394,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 								: ''
 						}
 					/>
-					{!!contentPage && (
+					{!!contentPageInfo && (
 						<ShareContentPageModal
-							contentPage={contentPage}
+							contentPage={contentPageInfo}
 							isOpen={isShareModalOpen}
 							onClose={handleShareModalClose}
 						/>

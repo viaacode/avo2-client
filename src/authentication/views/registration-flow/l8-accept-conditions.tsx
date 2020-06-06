@@ -9,6 +9,7 @@ import { Dispatch } from 'redux';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentPageInfo } from '../../../admin/content/content.types';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
@@ -40,7 +41,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	const [t] = useTranslation();
 
 	// The term of use and the privacy conditions
-	const [pages, setPages] = useState<(Avo.Content.Content | null)[]>([]);
+	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
 
@@ -124,9 +125,9 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			<>
 				<Spacer margin="bottom-large">
 					{/* terms of use */}
-					<ContentPage contentPage={pages[0] as Avo.Content.Content} />
+					{!!pages[0] && <ContentPage contentPageInfo={pages[0] as ContentPageInfo} />}
 					{/* privacy conditions */}
-					<ContentPage contentPage={pages[1] as Avo.Content.Content} />
+					{!!pages[1] && <ContentPage contentPageInfo={pages[1] as ContentPageInfo} />}
 				</Spacer>
 				<Spacer margin="large">
 					<Toolbar>

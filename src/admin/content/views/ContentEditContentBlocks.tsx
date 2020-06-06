@@ -1,9 +1,8 @@
-import { get } from 'lodash-es';
+import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Navbar, Select } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { ContentPage } from '../../../content-page/views';
 import { ResizablePanels } from '../../../shared/components';
@@ -15,27 +14,20 @@ import {
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
 import {
-	ContentBlockConfig,
-	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../shared/types';
-import { ContentService } from '../content.service';
-import { BlockClickHandler, ContentPageType } from '../content.types';
+import { BlockClickHandler, ContentEditActionType, ContentPageInfo } from '../content.types';
+import { ContentEditAction } from '../helpers/reducers';
 
 import './ContentEditContentBlocks.scss';
 
 interface ContentEditContentBlocksProps {
-	contentBlockConfigs: ContentBlockConfig[];
-	contentWidth: Avo.Content.ContentWidth;
-	contentType: ContentPageType | undefined;
-	title: string;
+	contentPageInfo: Partial<ContentPageInfo>;
 	hasSubmitted: boolean;
-	onAdd: (config: ContentBlockConfig) => void;
-	onError: (configIndex: number, errors: ContentBlockErrors) => void;
+	changeContentPageState: (action: ContentEditAction) => void;
 	onRemove: (configIndex: number) => void;
-	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
 		index: number,
 		formGroupType: ContentBlockStateType,
@@ -47,15 +39,10 @@ interface ContentEditContentBlocksProps {
 }
 
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
-	contentBlockConfigs,
-	contentWidth,
-	contentType,
-	title,
+	contentPageInfo,
 	hasSubmitted,
-	onAdd,
-	onError,
+	changeContentPageState,
 	onRemove,
-	onReorder,
 	onSave,
 	addComponentToState,
 	removeComponentFromState,
@@ -70,10 +57,15 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 	// Methods
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](contentBlockConfigs.length);
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](
+			(contentPageInfo.contentBlockConfigs || []).length
+		);
 
 		// Update content block configs
-		onAdd(newConfig);
+		changeContentPageState({
+			type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
+			payload: newConfig,
+		});
 
 		// Scroll preview and sidebar to the bottom
 		focusBlock(newConfig.position, 'preview');
@@ -84,7 +76,10 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		// Close accordions
 		setActiveBlockPosition(null);
 		// Trigger reorder
-		onReorder(configIndex, indexUpdate);
+		changeContentPageState({
+			type: ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG,
+			payload: { configIndex, indexUpdate },
+		});
 	};
 
 	/**
@@ -133,7 +128,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 	// Render
 	const renderContentBlockForms = () => {
-		return contentBlockConfigs.map((contentBlockConfig, index) => {
+		return (contentPageInfo.contentBlockConfigs || []).map((contentBlockConfig, index) => {
 			return (
 				<div
 					className={`content-block-sidebar-${contentBlockConfig.position}`}
@@ -143,7 +138,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						config={contentBlockConfig}
 						blockIndex={index}
 						isAccordionOpen={contentBlockConfig.position === activeBlockPosition}
-						length={contentBlockConfigs.length}
+						length={(contentPageInfo.contentBlockConfigs || []).length}
 						hasSubmitted={hasSubmitted}
 						toggleIsAccordionOpen={() => {
 							focusBlock(contentBlockConfig.position, 'sidebar');
@@ -159,7 +154,14 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						removeComponentFromState={(stateIndex: number) =>
 							removeComponentFromState(index, stateIndex)
 						}
-						onError={onError}
+						onError={
+							noop
+							// (configIndex: number, errors: ContentBlockErrors) =>
+							// changeContentPageState({
+							// 	type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
+							// 	payload: { configIndex, errors },
+							// })
+						}
 						onRemove={onRemove}
 						onReorder={handleReorderContentBlock}
 					/>
@@ -181,12 +183,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 			>
 				<div className="c-content-edit-view__preview" ref={previewScrollable}>
 					<ContentPage
-						contentBlockConfigs={ContentService.convertRichTextEditorStatesToHtml(
-							contentBlockConfigs
-						)}
-						contentWidth={contentWidth}
-						contentType={contentType}
-						title={title}
+						contentPageInfo={contentPageInfo}
 						onBlockClicked={focusBlock}
 						activeBlockPosition={activeBlockPosition}
 					/>

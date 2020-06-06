@@ -13,6 +13,7 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -22,7 +23,6 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { ContentPageType } from '../../content/content.types';
 import { useContentTypes } from '../../content/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
@@ -55,7 +55,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 		if (isCreatePage) {
 			const contentLabel = ({
 				label: '',
-				content_type: ContentPageType.Page,
+				content_type: 'PAGINA',
 				created_at: new Date().toISOString(),
 				updated_at: new Date().toISOString(),
 				permissions: [],
@@ -201,7 +201,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 										onChange={newContentType =>
 											setContentPageLabel({
 												...contentPageLabel,
-												content_type: newContentType as ContentPageType,
+												content_type: newContentType as Avo.ContentPage.Type,
 											})
 										}
 									/>

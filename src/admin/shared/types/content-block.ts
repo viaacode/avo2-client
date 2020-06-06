@@ -7,11 +7,11 @@ import {
 	CTAProps,
 	HeadingType,
 	IconName,
+	ImageInfo,
 	RichEditorState,
 	SpacerOption,
 } from '@viaa/avo2-components';
-
-import { ContentPageType } from '../../content/content.types';
+import { Avo } from '@viaa/avo2-types';
 
 // OPTIONS
 export type AlignOption = 'left' | 'right' | 'center';
@@ -93,7 +93,7 @@ export interface ContentBlockConfig {
 export interface ContentBlockComponentsConfig {
 	name?: string;
 	limits?: ContentBlockComponentsLimits;
-	state: ContentBlockComponentState | ContentBlockComponentState[];
+	state: ContentBlockComponentState;
 	fields: {
 		[key: string]: any;
 	};
@@ -208,22 +208,32 @@ export enum ContentBlockEditor {
 }
 
 /* CONTENT BLOCKS */
-export type ContentBlockComponentState =
+export type RepeatedContentBlockComponentState =
+	| AnchorLinksBlockComponentState
 	| ButtonsBlockComponentState
 	| Partial<CTAProps>
-	| Partial<BlockHeroProps>
+	| ImageGridBlockComponentStateFields
+	| MediaGridBlockComponentState
+	| ImageInfo // project spotlight & spotlight
+	| RichTextBlockComponentState;
+
+export type SingleContentBlockComponentState =
 	| HeadingBlockComponentState
+	| Partial<BlockHeroProps>
 	| IFrameBlockComponentState
 	| ImageBlockComponentState
-	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
 	| KlaarBlockComponentState
-	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
+	| MediaPlayerTitleTextButtonBlockComponentState
 	| PageOverviewBlockComponentStateFields
 	| QuoteBlockComponentState
 	| RichTextBlockComponentState
-	| {};
+	| {}; // Search block & content page meta
+
+export type ContentBlockComponentState =
+	| RepeatedContentBlockComponentState[]
+	| SingleContentBlockComponentState;
 
 export interface HeadingBlockComponentState {
 	children: string;
@@ -258,8 +268,8 @@ export interface PageOverviewBlockComponentStateFields {
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
 	centerHeader?: boolean;
-	headerBackgroundColor?: string;
-	contentType: ContentPageType;
+	headerBackgroundColor?: Color;
+	contentType: Avo.ContentPage.Type;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;

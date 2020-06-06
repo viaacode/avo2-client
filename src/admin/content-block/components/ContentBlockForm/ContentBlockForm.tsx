@@ -32,6 +32,7 @@ import {
 	ContentBlockErrors,
 	ContentBlockState,
 	ContentBlockStateType,
+	RepeatedContentBlockComponentState,
 } from '../../../shared/types';
 import ContentBlockFormGroup from '../ContentBlockFormGroup/ContentBlockFormGroup';
 import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview.const';
@@ -153,27 +154,33 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (
-					formGroup.state.map((formGroupState, stateIndex) => (
-						<Spacer key={stateIndex} margin="bottom">
-							<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
-								<Toolbar autoHeight>
-									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex +
-										1}`}</ToolbarLeft>
-									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
-								</Toolbar>
-							</BlockHeading>
-							<Flex spaced="regular" wrap>
-								<FlexItem>
-									<ContentBlockFormGroup
-										key={stateIndex}
-										{...formGroupOptions}
-										formGroupState={formGroupState}
-										stateIndex={stateIndex}
-									/>
-								</FlexItem>
-							</Flex>
-						</Spacer>
-					))
+					formGroup.state.map(
+						(formGroupState: RepeatedContentBlockComponentState, stateIndex) => (
+							<Spacer key={stateIndex} margin="bottom">
+								<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
+									<Toolbar autoHeight>
+										<ToolbarLeft>{`${get(
+											config,
+											'components.name'
+										)} ${stateIndex + 1}`}</ToolbarLeft>
+										<ToolbarRight>
+											{renderRemoveButton(stateIndex)}
+										</ToolbarRight>
+									</Toolbar>
+								</BlockHeading>
+								<Flex spaced="regular" wrap>
+									<FlexItem>
+										<ContentBlockFormGroup
+											key={stateIndex}
+											{...formGroupOptions}
+											formGroupState={formGroupState}
+											stateIndex={stateIndex}
+										/>
+									</FlexItem>
+								</Flex>
+							</Spacer>
+						)
+					)
 				) : (
 					<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
 				)}
