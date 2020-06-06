@@ -26,6 +26,7 @@ import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
+import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 
 interface PageOverviewWrapperProps {
@@ -145,7 +146,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 					limit: debouncedItemsPerPage,
 				},
 			});
-			setPages(get(response, 'data.app_content', []));
+			const dbPages = get(response, 'data.app_content', []);
+			setPages(convertToContentPageInfos(dbPages));
 			setPageCount(
 				Math.ceil(
 					get(response, 'data.app_content_aggregate.aggregate.count', 0) /
@@ -180,15 +182,31 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		t,
 	]);
 
-	const checkFocusedPage = useCallback(async () => {
+	const checkFocusedFilterAndPage = useCallback(async () => {
 		try {
 			const queryParams = queryString.parse(location.search);
-			if (queryParams.focus && isString(queryParams.focus)) {
-				const contentPage = await ContentService.fetchContentPageByPath(queryParams.focus);
+			const hasLabel = queryParams.label && isString(queryParams.label);
+			const hasItem = queryParams.item && isString(queryParams.item);
+			if (hasLabel) {
+				const labelObj = contentTypeAndTabs.selectedLabels.find(
+					l => l.label === queryParams.label
+				);
+				if (labelObj) {
+					setSelectedTabs([{ label: labelObj.label, id: labelObj.id }]);
+				}
+			}
+			if (hasItem) {
+				const contentPage = await ContentService.fetchContentPageByPath(
+					queryParams.item as string
+				);
 				if (!contentPage) {
 					throw new CustomError('No pages were found with the provided path');
 				}
 				setFocusedPageId(contentPage.id);
+			}
+			if (hasItem || hasLabel) {
+				// Clear query params to avoid inf loop
+				history.push(location.pathname);
 			}
 		} catch (err) {
 			console.error('Failed to fetch content page by path', err, {
@@ -196,12 +214,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			});
 			ToastService.danger(t('Het ophalen van het te focussen item is mislukt'));
 		}
-	}, [location.search, setFocusedPageId, t]);
+	}, [location.search, setFocusedPageId, contentTypeAndTabs.selectedLabels, t]);
 
 	useEffect(() => {
 		fetchPages();
-		checkFocusedPage();
-	}, [fetchPages, checkFocusedPage]);
+		checkFocusedFilterAndPage();
+	}, [fetchPages, checkFocusedFilterAndPage]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
 		setCurrentPage(pageIndex);

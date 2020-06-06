@@ -162,6 +162,7 @@ export enum ContentBlockType {
 	Spotlight = 'SPOTLIGHT',
 	Hero = 'HERO',
 	Search = 'SEARCH',
+	ContentPageMeta = 'CONTENT_PAGE_META',
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
