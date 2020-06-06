@@ -1,4 +1,4 @@
-import { compact, flatten, get } from 'lodash';
+import { compact, get } from 'lodash';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -12,7 +12,6 @@ import {
 	TagOption,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import Html from '../../../shared/components/Html/Html';
 import { ToastService } from '../../../shared/services';
@@ -24,14 +23,15 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { UserService } from '../../users/user.service';
 import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
-import { DbContent } from '../content.types';
+import { ContentService } from '../content.service';
+import { ContentPageInfo } from '../content.types';
 
 interface ContentDetailMetaDataProps {
-	contentPage: DbContent;
+	contentPageInfo: ContentPageInfo;
 }
 
 export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps> = ({
-	contentPage,
+	contentPageInfo,
 }) => {
 	const [t] = useTranslation();
 
@@ -55,9 +55,11 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	}, [setAllUserGroups, t]);
 
 	// Methods
-	const getUserGroups = (contentPage: DbContent): TagOption[] => {
+	const getUserGroups = (contentPageInfo: ContentPageInfo): TagOption[] => {
 		const tagInfos: TagInfo[] = compact(
-			(contentPage.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
+			(contentPageInfo.user_group_ids || []).map((userGroupId: number):
+				| TagInfo
+				| undefined => {
 				return allUserGroups.find(
 					(userGroupOption: any) => userGroupOption.value === userGroupId
 				);
@@ -83,35 +85,28 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 		];
 	};
 
-	const getLabels = (contentPage: DbContent): TagOption[] => {
-		return flatten(
-			(contentPage.content_content_labels || []).map(
-				(contentLabelLink: Avo.Content.ContentLabelLink) => {
-					return contentLabelLink.content_label;
-				}
-			)
-		);
-	};
-
-	const getContentPageWidthLabel = (contentPage: DbContent): string => {
+	const getContentPageWidthLabel = (contentPageInfo: ContentPageInfo): string => {
 		return get(
-			GET_CONTENT_WIDTH_OPTIONS().find(option => option.value === contentPage.content_width),
+			GET_CONTENT_WIDTH_OPTIONS().find(
+				option => option.value === contentPageInfo.content_width
+			),
 			'label',
 			'-'
 		);
 	};
 
+	const description = ContentService.getDescription(contentPageInfo, 'full');
 	return (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
-				{!!contentPage.description && (
+				{!!description && (
 					<Spacer margin="bottom-large">
 						<BlockHeading type="h4">
 							<Trans i18nKey="admin/content/views/content-detail___omschrijving">
 								Omschrijving:
 							</Trans>
 						</BlockHeading>
-						<Html content={t('contentPage.description')} sanitizePreset="full" />
+						<Html content={description || '-'} sanitizePreset="full" />
 					</Spacer>
 				)}
 
@@ -121,14 +116,19 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							<div style={{ width: '400px' }}>
 								<Thumbnail
 									category="item"
-									src={contentPage.thumbnail_path || undefined}
+									src={contentPageInfo.thumbnail_path || undefined}
 								/>
 							</div>,
 							t('admin/content/views/content-detail___cover-afbeelding')
 						)}
-						{renderSimpleDetailRows(contentPage, [
+						{renderSimpleDetailRows(contentPageInfo, [
 							['title', t('admin/content/views/content-detail___titel')],
-							['description', t('admin/content/views/content-detail___beschrijving')],
+						])}
+						{renderDetailRow(
+							description || '-',
+							t('admin/content/views/content-detail___beschrijving')
+						)}
+						{renderSimpleDetailRows(contentPageInfo, [
 							['seo_description', t('SEO beschrijving')],
 							[
 								'content_type',
@@ -141,21 +141,21 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							],
 						])}
 						{renderDetailRow(
-							getContentPageWidthLabel(contentPage),
+							getContentPageWidthLabel(contentPageInfo),
 							t('admin/content/views/content-detail___breedte')
 						)}
 						{renderDetailRow(
-							`${get(contentPage, 'profile.user.first_name')} ${get(
-								contentPage,
+							`${get(contentPageInfo, 'profile.user.first_name')} ${get(
+								contentPageInfo,
 								'profile.user.last_name'
 							)}`,
 							t('admin/content/views/content-detail___auteur')
 						)}
 						{renderDetailRow(
-							UserService.getUserRoleLabel(get(contentPage, 'profile')),
+							UserService.getUserRoleLabel(get(contentPageInfo, 'profile')),
 							t('admin/content/views/content-detail___auteur-rol')
 						)}
-						{renderDateDetailRows(contentPage, [
+						{renderDateDetailRows(contentPageInfo, [
 							['created_at', t('admin/content/views/content-detail___aangemaakt')],
 							[
 								'updated_at',
@@ -172,7 +172,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 								swatches={false}
 								selectable={false}
 								closable={false}
-								tags={getUserGroups(contentPage)}
+								tags={getUserGroups(contentPageInfo)}
 							/>,
 							t('admin/content/views/content-detail___toegankelijk-voor')
 						)}
@@ -181,7 +181,12 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 								swatches={false}
 								selectable={false}
 								closable={false}
-								tags={getLabels(contentPage as DbContent)}
+								tags={contentPageInfo.labels
+									.filter(labelObj => labelObj.label && labelObj.id)
+									.map(labelObj => ({
+										label: labelObj.label as string,
+										id: String(labelObj.id),
+									}))}
 							/>,
 							t('admin/content/views/content-detail___labels')
 						)}

@@ -11,13 +11,13 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../helpers';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
-import { AssetType } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
 import './FileUpload.scss';
 
@@ -26,8 +26,7 @@ export interface FileUploadProps {
 	label?: string;
 	allowedTypes?: string[];
 	allowMulti?: boolean;
-	// TODO replace by type from typings v2.18.0
-	assetType: AssetType;
+	assetType: Avo.FileUpload.AssetType;
 	ownerId: string;
 	urls: string[] | null;
 	onChange: (urls: string[]) => void;

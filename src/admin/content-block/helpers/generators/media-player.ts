@@ -1,6 +1,7 @@
 import { CheckboxProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -18,7 +19,6 @@ import {
 	TEXT_FIELD,
 	VIDEO_FIELD,
 } from './defaults';
-import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
 
 export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
 	title: '',

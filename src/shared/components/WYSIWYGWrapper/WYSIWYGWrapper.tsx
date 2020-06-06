@@ -1,30 +1,17 @@
+import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WYSIWYG2, WYSIWYG2Media, WYSIWYG2Props, WYSIWYG2UploadInfo } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { WYSIWYG2_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 
-// TODO replace by type from typings v2.18.0
-export type AssetType =
-	| 'BUNDLE_COVER'
-	| 'COLLECTION_COVER'
-	| 'CONTENT_PAGE_COVER'
-	| 'CONTENT_BLOCK_IMAGE'
-	| 'CONTENT_PAGE_DESCRIPTION_IMAGE'
-	| 'ASSIGNMENT_DESCRIPTION_IMAGE'
-	| 'PROFILE_AVATAR'
-	| 'ITEM_SUBTITLE'
-	| 'ITEM_NOTE_IMAGE'
-	| 'INTERACTIVE_TOUR_IMAGE'
-	| 'ZENDESK_ATTACHMENT';
-
 export type WYSIWYG2WrapperProps = WYSIWYG2Props & {
-	// TODO replace by type from typings v2.18.0
-	fileType?: AssetType; // Required to enable file upload
+	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload
 	ownerId?: string;
 };
 
@@ -36,7 +23,7 @@ export type WYSIWYG2WrapperProps = WYSIWYG2Props & {
 const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 	const [t] = useTranslation();
 
-	const { controls, fileType, ownerId, ...rest } = props;
+	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
 
 	if ((controls || []).includes('media') && !fileType) {
 		console.error(
@@ -87,7 +74,19 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 		  }
 		: undefined;
 
-	return <WYSIWYG2 {...rest} controls={controls || WYSIWYG2_OPTIONS_DEFAULT} media={media} />;
+	return (
+		<WYSIWYG2
+			{...rest}
+			controls={controls || WYSIWYG2_OPTIONS_DEFAULT}
+			media={media}
+			state={state}
+			onChange={newState => {
+				if (!!onChange && !isEqual(newState, state)) {
+					onChange(newState);
+				}
+			}}
+		/>
+	);
 };
 
 export default WYSIWYG2Wrapper;

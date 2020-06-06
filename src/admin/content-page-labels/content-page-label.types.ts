@@ -1,4 +1,5 @@
-import { ContentPageType } from '../content/content.types';
+import { Avo } from '@viaa/avo2-types';
+
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type ContentPageLabelOverviewTableCols =
@@ -11,7 +12,7 @@ export type ContentPageLabelOverviewTableCols =
 export interface ContentPageLabel {
 	id: number;
 	label: string;
-	content_type: ContentPageType;
+	content_type: Avo.ContentPage.Type;
 	created_at: string;
 	updated_at: string;
 }
@@ -23,7 +24,7 @@ export interface ContentPageLabelEditFormErrorState {
 
 export interface ContentPageLabelTableState extends FilterableTableState {
 	label: string;
-	content_type: ContentPageType | null;
+	content_type: Avo.ContentPage.Type | null;
 	created_at: string;
 	updated_at: string;
 }

@@ -4,13 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
-import {
-	ContentOverviewTableCols,
-	ContentPageEditFormState,
-	ContentPageType,
-	ContentTableState,
-	ContentWidth,
-} from './content.types';
+import { ContentOverviewTableCols, ContentPageInfo, ContentWidth } from './content.types';
 
 export const RichEditorStateKey = 'RichEditorState';
 
@@ -51,31 +45,19 @@ export const CONTENT_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const INITIAL_FILTER_FORM = (): ContentTableState => ({
-	content_type: [],
-	created_at: { gte: '', lte: '' },
-	updated_at: { gte: '', lte: '' },
-	publish_at: { gte: '', lte: '' },
-	depublish_at: { gte: '', lte: '' },
-	query: '',
-	page: 0,
-	sort_column: 'updated_at',
-	sort_order: 'desc' as Avo.Search.OrderDirection,
-});
-
-export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
+export const INITIAL_CONTENT_FORM = (): Partial<ContentPageInfo> => ({
 	thumbnail_path: null,
 	title: '',
-	descriptionHtml: '',
-	descriptionState: undefined,
-	seoDescription: '',
-	isProtected: false,
+	description_html: '',
+	description_state: undefined,
+	seo_description: '',
+	is_protected: false,
 	path: '',
-	contentType: undefined,
-	contentWidth: ContentWidth.REGULAR,
-	publishAt: '',
-	depublishAt: '',
-	userGroupIds: [],
+	content_type: undefined,
+	content_width: ContentWidth.REGULAR,
+	publish_at: '',
+	depublish_at: '',
+	user_group_ids: [],
 	labels: [],
 });
 
@@ -103,8 +85,8 @@ export const GET_CONTENT_WIDTH_OPTIONS = () => [
 	{ label: i18n.t('admin/content/content___medium-720-px'), value: 'MEDIUM' },
 ];
 
-export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {
-	[ContentWidth.REGULAR]: [ContentPageType.Project],
+export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: Avo.ContentPage.Type[] } = {
+	[ContentWidth.REGULAR]: ['PROJECT'],
 	[ContentWidth.LARGE]: [],
-	[ContentWidth.MEDIUM]: [ContentPageType.NewsItem],
+	[ContentWidth.MEDIUM]: ['NIEUWS_ITEM'],
 };

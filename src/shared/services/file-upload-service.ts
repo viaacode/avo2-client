@@ -1,6 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { AssetType } from '../components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
@@ -16,7 +15,7 @@ export class FileUploadService {
 
 	public static async uploadFile(
 		file: File,
-		assetType: AssetType, // TODO replace by type from typings v2.18.0
+		assetType: Avo.FileUpload.AssetType,
 		ownerId: string
 	): Promise<string> {
 		if (assetType === 'ZENDESK_ATTACHMENT') {
@@ -65,8 +64,7 @@ export class FileUploadService {
 
 	public static async uploadFileToBlobStorage(
 		file: File,
-		// TODO replace by type from typings v2.18.0
-		assetType: AssetType,
+		assetType: Avo.FileUpload.AssetType,
 		ownerId: string
 	): Promise<string> {
 		let url: string | undefined;

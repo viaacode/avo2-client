@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentPageInfo } from '../../admin/content/content.types';
 import { ItemsService } from '../../admin/items/items.service';
 import { UserService } from '../../admin/users/user.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
@@ -128,7 +129,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path points to a content page
-			const contentPage: Avo.Content.Content | null = await ContentPageService.getContentPageByPath(
+			const contentPage: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
 				pathname
 			);
 			if (!contentPage) {
@@ -215,7 +216,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 							}
 						/>
 					</MetaTags>
-					<ContentPage contentPage={routeInfo.data} />
+					<ContentPage contentPageInfo={routeInfo.data} />
 				</>
 			);
 		}

@@ -29,7 +29,7 @@ import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.he
 import './ContentPicker.scss';
 
 export interface ContentPickerProps {
-	allowedTypes?: (ContentPickerType | 'PROFILE')[];
+	allowedTypes?: ContentPickerType[];
 	initialValue?: PickerItem;
 	onSelect: (value: PickerItem | null) => void;
 	hideTypeDropdown?: boolean;
@@ -52,9 +52,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	// apply initial type from `initialValue`, default to first available type
 	const currentTypeObject = typeOptions.find(type => type.value === get(initialValue, 'type'));
-	const [selectedType, setSelectedType] = useState<
-		PickerTypeOption<ContentPickerType | 'PROFILE'>
-	>(currentTypeObject || typeOptions[0]);
+	const [selectedType, setSelectedType] = useState<PickerTypeOption<ContentPickerType>>(
+		currentTypeObject || typeOptions[0]
+	);
 
 	// available options for the item picker.
 	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
@@ -176,7 +176,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
 		propValue: ContentPickerType | ValueType<PickerItem> | string | number | null | LinkTarget
 	) => {
-		let newType: ContentPickerType | 'PROFILE';
+		let newType: ContentPickerType;
 		if (prop === 'type') {
 			newType = propValue as ContentPickerType;
 		} else {

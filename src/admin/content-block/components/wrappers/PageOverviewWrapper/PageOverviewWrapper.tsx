@@ -9,23 +9,23 @@ import {
 	BlockPageOverview,
 	ButtonAction,
 	ContentItemStyle,
-	ContentPageInfo,
 	ContentTabStyle,
 	LabelObj,
+	PageInfo,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { getUserGroupIds } from '../../../../../authentication/authentication.service';
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
-import { CustomError, navigateToContentType, sanitizeHtml } from '../../../../../shared/helpers';
+import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
 import { dataService, ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { ContentService } from '../../../../content/content.service';
-import { DbContent } from '../../../../content/content.types';
+import { ContentPageInfo } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 
 interface PageOverviewWrapperProps {
@@ -66,40 +66,35 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
-	const [pages, setPages] = useState<DbContent[]>([]);
+	const [pages, setPages] = useState<ContentPageInfo[]>([]);
 	const [pageCount, setPageCount] = useState<number>(1);
 	const [focusedPageId, setFocusedPageId] = useState<number | undefined>(undefined);
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
-	const dbToPageOverviewContentPage = (dbContentPage: DbContent): ContentPageInfo => {
+	const dbToPageOverviewContentPage = (contentPageInfo: ContentPageInfo): PageInfo => {
 		return {
-			thumbnail_path: dbContentPage.thumbnail_path || '/images/placeholder-wide.png',
-			labels: dbContentPage.content_content_labels.map(cl => {
-				const contentLabel = (cl.content_label as unknown) as Avo.Content.ContentLabel; // TODO remove cast after typings v2.18.0
-				return {
-					id: contentLabel.id,
-					label: contentLabel.label,
-				};
-			}),
-			created_at: dbContentPage.created_at,
-			description: dbContentPage.description
-				? sanitizeHtml(dbContentPage.description, 'full')
-				: null,
-			title: dbContentPage.title,
-			id: dbContentPage.id,
-			blocks: dbContentPage.contentBlockssBycontentId ? (
-				<ContentPage contentPage={dbContentPage} />
+			thumbnail_path: contentPageInfo.thumbnail_path || '/images/placeholder-wide.png',
+			labels: ((contentPageInfo.labels || []) as Avo.ContentPage.Label[]).map(labelObj => ({
+				id: labelObj.id,
+				label: labelObj.label,
+			})),
+			created_at: contentPageInfo.created_at,
+			description: ContentService.getDescription(contentPageInfo, 'full'),
+			title: contentPageInfo.title,
+			id: contentPageInfo.id,
+			blocks: contentPageInfo.contentBlockConfigs ? (
+				<ContentPage contentPageInfo={contentPageInfo} />
 			) : null,
-			content_width: dbContentPage.content_width,
-			path: dbContentPage.path as string, // TODO enforce path in database
+			content_width: contentPageInfo.content_width,
+			path: contentPageInfo.path as string, // TODO enforce path in database
 		};
 	};
 
 	const getLabelFilter = useCallback((): any[] => {
 		const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
 		const blockLabelIds = ((get(contentTypeAndTabs, 'selectedLabels') ||
-			[]) as Avo.Content.ContentLabel[]).map(labelObj => labelObj.id);
+			[]) as Avo.ContentPage.Label[]).map(labelObj => labelObj.id);
 		if (selectedLabelIds.length) {
 			// The user selected some block labels at the top of the page overview component
 			return [

@@ -1,7 +1,6 @@
 import { CheckboxProps, MultiRangeProps } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
-import { ContentPageType } from '../../../content/content.types';
 import {
 	Color,
 	ContentBlockConfig,
@@ -27,8 +26,8 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 	tabStyle: 'MENU_BAR',
 	allowMultiple: false,
 	centerHeader: false,
-	headerBackgroundColor: 'transparent',
-	contentType: ContentPageType.Project, // lookup options in lookup.enum_content_types
+	headerBackgroundColor: Color.Transparent,
+	contentType: 'PROJECT',
 	itemStyle: 'LIST',
 	showTitle: true,
 	showDescription: true,
