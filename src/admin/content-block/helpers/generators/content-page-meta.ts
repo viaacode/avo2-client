@@ -12,8 +12,8 @@ export const INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE = () => ({});
 export const INITIAL_CONTENT_PAGE_META_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
 		padding: {
-			top: 'none',
-			bottom: 'none',
+			top: 'top',
+			bottom: 'bottom',
 		},
 	});
 
