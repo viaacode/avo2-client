@@ -2,6 +2,7 @@ import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import {
@@ -229,4 +230,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BlockSearch);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BlockSearch));
