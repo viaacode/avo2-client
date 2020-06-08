@@ -164,8 +164,14 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 						)}
 					/>
 				</MetaTags>
-				<BlockHeading type="h3">{t('E-mail nieuwsbrief voorkeuren')}</BlockHeading>
-				<Html content={t('E-mail nieuwsbrief voorkeuren beschrijving')} />
+				<BlockHeading type="h3">
+					{t('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}
+				</BlockHeading>
+				<Html
+					content={t(
+						'settings/components/email___e-mail-nieuwsbrief-voorkeuren-beschrijving'
+					)}
+				/>
 				<Spacer margin="top">
 					<Form>
 						<FormGroup labelFor="newsletter" required>

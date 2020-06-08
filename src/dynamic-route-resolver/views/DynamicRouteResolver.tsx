@@ -62,7 +62,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			if (!loginState) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het controleren van je login status is mislukt'),
+					message: t(
+						'dynamic-route-resolver/views/dynamic-route-resolver___het-controleren-van-je-login-status-is-mislukt'
+					),
 					actionButtons: ['home', 'helpdesk'],
 				});
 				return;
@@ -166,7 +168,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Er ging iets mis bij het inloggen'),
+				message: t(
+					'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
+				),
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}

@@ -203,7 +203,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="12">
 								<FormGroup
 									error={formErrors.seo_description}
-									label={t('SEO omschrijving')}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___seo-omschrijving'
+									)}
 								>
 									<TextArea
 										value={contentPageInfo.seo_description || ''}
@@ -212,7 +214,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										}
 										height="auto"
 										placeholder={t(
-											'Omschijving voor de google. De pagina omschrijving wordt gebruikt indien dit veld niet ingevuld is'
+											'admin/content/components/content-edit-form/content-edit-form___omschijving-voor-de-google-de-pagina-omschrijving-wordt-gebruikt-indien-dit-veld-niet-ingevuld-is'
 										)}
 									/>
 								</FormGroup>

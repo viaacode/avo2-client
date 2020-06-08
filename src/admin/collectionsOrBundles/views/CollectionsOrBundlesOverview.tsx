@@ -316,7 +316,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			? [
 					{
 						id: 'in_bundle',
-						tooltip: i18n.t('Aantal keer opgenomen in een bundel'),
+						tooltip: i18n.t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bundel'
+						),
 						icon: 'folder' as IconName,
 						sortable: true,
 					},
@@ -326,7 +328,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			? [
 					{
 						id: 'in_assignment',
-						tooltip: i18n.t('Aantal keer opgenomen in een opdracht'),
+						tooltip: i18n.t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
+						),
 						icon: 'clipboard' as IconName,
 						sortable: true,
 					},

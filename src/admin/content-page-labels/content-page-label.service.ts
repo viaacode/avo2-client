@@ -189,7 +189,9 @@ export class ContentPageLabelService {
 				})
 			);
 			ToastService.danger(
-				i18n.t('Het verwijderen van de content pagina label is mislukt'),
+				i18n.t(
+					'admin/content-page-labels/content-page-label___het-verwijderen-van-de-content-pagina-label-is-mislukt'
+				),
 				false
 			);
 		}
