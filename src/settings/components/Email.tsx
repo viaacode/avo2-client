@@ -25,6 +25,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
+import Html from '../../shared/components/Html/Html';
 import { convertToNewsletterPreferenceUpdate, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { NewsletterList, NewsletterPreferences, ReactAction } from '../../shared/types';
@@ -163,13 +164,8 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 						)}
 					/>
 				</MetaTags>
-				<BlockHeading type="h3">E-mail nieuwsbrief voorkeuren</BlockHeading>
-				<p>
-					Tips en inspiratie voor je lessen, uitnodigingen voor workshops, vacatures,
-					nieuws van de partners waarmee we werken aan beeld en geluid op maat van jouw
-					klas, en dit recht in je mailbox: klinkt goed? Schrijf je hieronder in voor onze
-					nieuwsbrief en andere communicatie. Je kan je voorkeuren altijd aanpassen.
-				</p>
+				<BlockHeading type="h3">{t('E-mail nieuwsbrief voorkeuren')}</BlockHeading>
+				<Html content={t('E-mail nieuwsbrief voorkeuren beschrijving')} />
 				<Spacer margin="top">
 					<Form>
 						<FormGroup labelFor="newsletter" required>

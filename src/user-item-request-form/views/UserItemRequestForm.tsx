@@ -5,7 +5,6 @@ import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -19,9 +18,12 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
-import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
+import { isMobileWidth } from '../../shared/helpers';
+import { isPhoto } from '../../shared/helpers/files';
+import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
 import { ToastService, ZendeskService } from '../../shared/services';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
@@ -33,7 +35,6 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const [wantsToUploadAttachment, setWantsToUploadAttachment] = useState<boolean>(false);
 	const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [hasBeenSent, setHasBeenSent] = useState<boolean>(false);
 
 	const getValidationErrors = (): string[] => {
 		const requiredError = t(
@@ -129,7 +130,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
 			);
-			setHasBeenSent(true);
+			redirectToClientPage(APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route, history);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
 			ToastService.danger(
@@ -144,50 +145,53 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const renderForm = () => {
 		return (
 			<>
-				<Button
-					type="secondary"
-					onClick={history.goBack}
-					label={t(
-						'authentication/views/registration-flow/r-4-manual-registration___terug'
-					)}
-					title={t(
-						'user-item-request-form/views/user-item-request-form___keer-terug-naar-het-stamboek-scherm'
-					)}
-					ariaLabel={t(
-						'user-item-request-form/views/user-item-request-form___keer-terug-naar-het-stamboek-scherm'
-					)}
-				/>
+				<Spacer margin="bottom-large">
+					<Button
+						type="secondary"
+						onClick={history.goBack}
+						label={t(
+							'authentication/views/registration-flow/r-4-manual-registration___terug'
+						)}
+						title={t(
+							'user-item-request-form/views/user-item-request-form___keer-terug-naar-het-stamboek-scherm'
+						)}
+						ariaLabel={t(
+							'user-item-request-form/views/user-item-request-form___keer-terug-naar-het-stamboek-scherm'
+						)}
+					/>
+				</Spacer>
 				<BlockHeading type="h2">
 					<Trans i18nKey="user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan">
 						Niet gevonden wat je zocht? Vraag het aan!
 					</Trans>
 				</BlockHeading>
-				<p>
-					<Trans i18nKey="user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in">
-						Vul onderstaand formulier in. Wij gaan na of de fragment(en) in aanmerking
-						komen voor publicatie op ons platform. We mogen immers niet zomaar alles
-						publiceren omdat we gebonden zijn aan enkele strikte richtlijnen. Bekijk
-						deze aandachtig verderop deze pagina. Tip: Ben je zeker dat het door jou
-						gezochte fragment fragment niet op ons platform staat? Misschien heeft het
-						ondertussen een andere titel? Of is er een gelijkaardig fragment dat je in
-						de plaats kunt gebruiken? <Link to="/zoektips">Bekijk onze zoektips</Link>.
-					</Trans>
-				</p>
-
+				<p
+					dangerouslySetInnerHTML={{
+						__html: sanitizeHtml(
+							t(
+								'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
+							),
+							sanitizePresets.link
+						),
+					}}
+				/>
 				<Container mode="vertical">
-					<FormGroup
-						label={t(
-							'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
-						)}
-						labelFor="description"
-						required
-					>
+					<p
+						dangerouslySetInnerHTML={{
+							__html: sanitizeHtml(
+								t(
+									'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
+								),
+								sanitizePresets.link
+							),
+						}}
+					/>
+					<FormGroup>
 						<TextArea
 							id="description"
 							value={description}
 							onChange={setDescription}
-							width="large"
-							rows={6}
+							rows={isMobileWidth() ? 6 : 15}
 							placeholder={t(
 								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-beschrijving'
 							)}
@@ -235,14 +239,6 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		);
 	};
 
-	const renderConfirmation = () => (
-		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bevestiging">
-			Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
-			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze
-			dan in een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
-		</Trans>
-	);
-
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
@@ -261,7 +257,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 						)}
 					/>
 				</MetaTags>
-				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>
+				<div className="c-content">{renderForm()}</div>
 			</Container>
 		</Container>
 	);

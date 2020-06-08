@@ -1,13 +1,18 @@
+import { TableColumn } from '@viaa/avo2-components';
+
 export type AssignmentOverviewTableColumns =
 	| 'title'
 	| 'assignment_type'
 	| 'labels'
+	| 'author'
 	| 'class_room'
 	| 'deadline_at'
 	| 'assignment_responses'
+	| 'submitted_at'
+	| 'created_at'
 	| 'actions';
 
-export interface AssignmentColumn {
+export interface AssignmentColumn extends TableColumn {
 	id: AssignmentOverviewTableColumns;
 	label: string;
 	sortable?: boolean;

@@ -2,13 +2,13 @@ import { get } from 'lodash';
 import { ValueType } from 'react-select/src/types';
 
 import { ContentPickerType } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
-// TODO: remove | PROFILE when typings 2.18 is released.
 export const filterTypes = (
-	types: PickerTypeOption<ContentPickerType | 'PROFILE'>[],
-	allowedTypes: (ContentPickerType | 'PROFILE')[]
+	types: PickerTypeOption<Avo.Core.ContentPickerType>[],
+	allowedTypes: ContentPickerType[]
 ) => {
 	return types.filter((option: PickerTypeOption) => {
 		return allowedTypes.length ? allowedTypes.includes(option.value) : option.value;
@@ -16,7 +16,7 @@ export const filterTypes = (
 };
 
 export const setInitialInput = (
-	type?: PickerTypeOption<ContentPickerType | 'PROFILE'>,
+	type?: PickerTypeOption<ContentPickerType>,
 	initialValue?: PickerItem
 ) => {
 	const isInput = get(type, 'picker') === 'TEXT_INPUT';

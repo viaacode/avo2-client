@@ -80,7 +80,7 @@ export class FileUploadService {
 				ownerId,
 				filename: file.name,
 				mimeType: file.type,
-				type: assetType,
+				type: assetType as any,
 			};
 
 			const response = await fetchWithLogout(url, {

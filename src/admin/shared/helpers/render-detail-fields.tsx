@@ -1,15 +1,21 @@
-import { get, isBoolean, isNil } from 'lodash-es';
+import { get, isBoolean, isNil, isString } from 'lodash-es';
 import React, { ReactElement, ReactNode } from 'react';
 
 import { TagList, TagOption } from '@viaa/avo2-components';
 
 import { formatDate } from '../../../shared/helpers/formatters';
+import { sanitizeHtml, sanitizePresets } from '../../../shared/helpers/sanitize';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
 	return (
 		<tr key={`detail-row_${label}`}>
 			<th>{label}</th>
-			<td>{value}</td>
+			{isString(value) && (
+				<td
+					dangerouslySetInnerHTML={{ __html: sanitizeHtml(value, sanitizePresets.link) }}
+				/>
+			)}
+			{!isString(value) && <td>{value}</td>}
 		</tr>
 	);
 }

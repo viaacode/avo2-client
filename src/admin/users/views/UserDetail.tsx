@@ -196,20 +196,23 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 					>
 						{renderList(sortBy(userGroups, 'label'), ADMIN_PATH.USER_GROUP_DETAIL)}
 					</Accordion>
-				</Spacer>
 
-				<Accordion
-					title={t('admin/users/views/user-detail___permissiegroepen')}
-					isOpen={false}
-				>
-					{renderList(
-						sortBy(permissionGroups, 'label'),
-						ADMIN_PATH.PERMISSION_GROUP_DETAIL
-					)}
-				</Accordion>
-				<Accordion title={t('admin/users/views/user-detail___permissies')} isOpen={false}>
-					{renderList(sortBy(permissions, 'label'))}
-				</Accordion>
+					<Accordion
+						title={t('admin/users/views/user-detail___permissiegroepen')}
+						isOpen={false}
+					>
+						{renderList(
+							sortBy(permissionGroups, 'label'),
+							ADMIN_PATH.PERMISSION_GROUP_DETAIL
+						)}
+					</Accordion>
+					<Accordion
+						title={t('admin/users/views/user-detail___permissies')}
+						isOpen={false}
+					>
+						{renderList(sortBy(permissions, 'label'))}
+					</Accordion>
+				</Spacer>
 			</>
 		);
 	};

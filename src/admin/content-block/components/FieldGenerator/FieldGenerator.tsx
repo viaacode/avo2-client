@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { Fragment, FunctionComponent } from 'react';
 
 import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
@@ -32,11 +33,11 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 	type,
 	handleChange,
 }) => {
-	const renderAddButton = (stateCopy: any, label?: string) => {
+	const renderAddButton = (stateCopy: any[], defaultState: any, label?: string) => {
 		const handleFieldAdd = () => {
 			const newState = [...stateCopy];
 
-			newState.push('');
+			newState.push(defaultState);
 
 			handleChange(type, fieldKey, newState, stateIndex);
 		};
@@ -84,6 +85,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 				const fieldGroup: ContentBlockFieldGroup = fieldOrFieldGroupInstance as ContentBlockFieldGroup;
 
 				if (!fieldGroup) {
+					return null;
 				}
 
 				// REPEATED FIELDGROUP
@@ -96,7 +98,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 									(fieldGroup.min !== undefined ? fieldGroup.min : 1) &&
 									renderDeleteButton(
 										currentState,
-										fieldGroup.repeatDeleteButtonLabel,
+										get(fieldGroup, 'repeat.deleteButtonLabel'),
 										singleStateIndex
 									)}
 							</FlexItem>
@@ -121,12 +123,13 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 								(fieldGroupState: any, fieldGroupStateIndex: number) =>
 									renderFieldGroups(fieldGroupState, fieldGroupStateIndex)
 							)}
-							{currentState.length < (fieldGroup.max || 0) && (
+							{(!fieldGroup.max || currentState.length < fieldGroup.max) && (
 								<Spacer margin="top">
 									<Flex center>
 										{renderAddButton(
 											currentState,
-											fieldGroup.repeatAddButtonLabel
+											get(fieldGroup, 'repeat.defaultState'),
+											get(fieldGroup, 'repeat.addButtonLabel')
 										)}
 									</Flex>
 								</Spacer>
@@ -186,8 +189,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 												<Spacer margin="left">
 													{renderDeleteButton(
 														currentState,
-														(field as ContentBlockField)
-															.repeatDeleteButtonLabel,
+														get(field, 'repeat.deleteButtonLabel'),
 														index
 													)}
 												</Spacer>
@@ -200,7 +202,8 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 								<Flex center>
 									{renderAddButton(
 										currentState,
-										(field as ContentBlockField).repeatAddButtonLabel
+										get(field, 'repeat.defaultState'),
+										get(field, 'repeat.addButtonLabel')
 									)}
 								</Flex>
 							</Spacer>

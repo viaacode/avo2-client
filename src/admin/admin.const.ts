@@ -6,6 +6,7 @@ import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
+import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
 import { CONTENT_PATH } from './content/content.const';
 import { ContentService } from './content/content.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
@@ -23,6 +24,7 @@ export const ADMIN_PATH = Object.freeze({
 	...USER_GROUP_PATH,
 	...MENU_PATH,
 	...CONTENT_PATH,
+	...CONTENT_PAGE_LABEL_PATH,
 	...TRANSLATIONS_PATH,
 	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
@@ -149,14 +151,14 @@ function hasPermissions(
 async function getContentPageDetailRouteByPath(path: string): Promise<string | undefined> {
 	try {
 		const page = await ContentService.fetchContentPageByPath(path);
-		if (!page) {
-			return undefined;
-		}
 		return buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: page.id });
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
 		ToastService.danger(
-			i18n.t('admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt')
+			`${i18n.t(
+				'admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt'
+			)}: ${path}`,
+			false
 		);
 		return undefined;
 	}
@@ -226,13 +228,17 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			},
 			{
 				label: i18n.t('admin/admin___start-ingelogd-lesgever'),
-				location: await getContentPageDetailRouteByPath(
-					'/startpagina-voor-ingelogde-lesgevers'
-				),
+				location: await getContentPageDetailRouteByPath('/start'),
 				key: 'faqs',
 				exact: true,
 			},
 		],
+	}),
+	...hasPermissions(['EDIT_CONTENT_PAGE_LABELS'], 'OR', userPermissions, {
+		label: i18n.t('Content pagina labels'),
+		location: ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
+		key: 'content-page-labels',
+		exact: false,
 	}),
 	...getMediaNavItems(userPermissions),
 	...hasPermissions(['EDIT_INTERACTIVE_TOURS'], 'OR', userPermissions, {

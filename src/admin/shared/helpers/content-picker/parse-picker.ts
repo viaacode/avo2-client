@@ -43,7 +43,7 @@ export const parseSearchQuery = (input: string): string => {
 };
 
 export const parsePickerItem = (
-	type: ContentPickerType | 'PROFILE',
+	type: ContentPickerType,
 	value: string,
 	target: LinkTarget = LinkTarget.Blank
 ): PickerItem => ({

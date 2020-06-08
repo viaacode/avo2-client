@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +23,17 @@ export type WYSIWYG2WrapperProps = WYSIWYG2Props & {
 const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 	const [t] = useTranslation();
 
-	const { controls, fileType, ownerId, ...rest } = props;
+	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
+
+	if ((controls || []).includes('media') && !fileType) {
+		console.error(
+			new CustomError(
+				'Trying to initialize WYSIWYG2Wrapper component with media without fileType',
+				null,
+				props
+			)
+		);
+	}
 
 	const media: WYSIWYG2Media | undefined = fileType
 		? {
@@ -63,7 +74,19 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 		  }
 		: undefined;
 
-	return <WYSIWYG2 {...rest} controls={controls || WYSIWYG2_OPTIONS_DEFAULT} media={media} />;
+	return (
+		<WYSIWYG2
+			{...rest}
+			controls={controls || WYSIWYG2_OPTIONS_DEFAULT}
+			media={media}
+			state={state}
+			onChange={newState => {
+				if (!!onChange && !isEqual(newState, state)) {
+					onChange(newState);
+				}
+			}}
+		/>
+	);
 };
 
 export default WYSIWYG2Wrapper;
