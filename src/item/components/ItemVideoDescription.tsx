@@ -1,5 +1,5 @@
-import { debounce, get } from 'lodash-es';
-import { parse } from 'query-string';
+import { debounce } from 'lodash-es';
+import { parse } from 'querystring';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -9,6 +9,7 @@ import React, {
 	useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
@@ -22,22 +23,14 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { Color } from '../../admin/shared/types';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { FlowPlayerWrapper } from '../../shared/components';
-import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
+import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import Html from '../../shared/components/Html/Html';
+import { parseDuration } from '../../shared/helpers';
 
 import './ItemVideoDescription.scss';
 
-interface CuePoints {
-	start: number | null;
-	end: number | null;
-}
-
-interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
+interface ItemVideoDescriptionProps extends RouteComponentProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
 	showDescription?: boolean;
@@ -45,6 +38,7 @@ interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	title?: string;
 	description?: string;
 	cuePoints?: CuePoints;
+	seekTime?: number;
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	onTitleClicked?: () => void;
 }
@@ -60,29 +54,31 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	description = itemMetaData.description,
 	onTitleClicked,
 	cuePoints,
+	seekTime = 0,
 	canPlay = true,
-	user,
 }) => {
 	const [t] = useTranslation();
 
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [time, setTime] = useState<number>(0);
+	const [time, setTime] = useState<number>(seekTime);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
-
-	useEffect(() => {
-		// reset token when item changes
-		setPlayerTicket(undefined);
-	}, [itemMetaData.external_id]);
 
 	useEffect(() => {
 		// Set video current time from the query params once the video has loaded its meta data
 		// If this happens sooner, the time will be ignored by the video player
 		const queryParams = parse(location.search);
 
-		setTime(parseInt((queryParams.time as string) || '0', 10));
+		setTime(parseInt((queryParams.time as string) || String(seekTime), 10));
+	}, [location.search, setTime, seekTime]);
 
+	useEffect(() => {
+		if (seekTime) {
+			setTime(seekTime);
+		}
+	}, [seekTime, setTime]);
+
+	useEffect(() => {
 		// Register window listener when the component mounts
 		const onResizeHandler = debounce(
 			() => {
@@ -103,7 +99,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		return () => {
 			window.removeEventListener('resize', onResizeHandler);
 		};
-	}, [location.search, videoRef]);
+	}, [videoRef]);
 
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
@@ -142,62 +138,17 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				);
 			}
 
-			return (
-				<span
-					key={`description-part-${index}`}
-					dangerouslySetInnerHTML={{ __html: part }}
-				/>
-			);
+			return <Html key={`description-part-${index}`} content={part} type="span" />;
 		});
 	};
 
-	const initFlowPlayer = () =>
-		!playerTicket &&
-		fetchPlayerTicket(itemMetaData.external_id)
-			.then((data: string) => {
-				setPlayerTicket(data);
-				trackEvents(
-					{
-						object: itemMetaData.external_id,
-						object_type: 'avo_item_pid',
-						message: `Gebruiker ${getProfileName(user)} heeft het item ${
-							itemMetaData.external_id
-						} afgespeeld`,
-						action: 'view',
-					},
-					user
-				);
-			})
-			.catch((err: any) => {
-				console.error(err);
-				ToastService.danger(
-					t(
-						'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
-					)
-				);
-			});
-
 	const renderMedia = () => (
-		<div className="c-video-player t-player-skin--dark">
-			<FlowPlayerWrapper
-				src={playerTicket ? playerTicket.toString() : null}
-				seekTime={time}
-				poster={itemMetaData.thumbnail_path}
-				title={itemMetaData.title}
-				onInit={initFlowPlayer}
-				subtitles={[
-					reorderDate(itemMetaData.issued || null, '.'),
-					get(itemMetaData, 'organisation.name', ''),
-				]}
-				token={getEnv('FLOW_PLAYER_TOKEN')}
-				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-				logo={get(itemMetaData, 'organisation.logo_url')}
-				{...cuePoints}
-				autoplay
-				canPlay={canPlay}
-				itemUuid={itemMetaData.uid}
-			/>
-		</div>
+		<FlowPlayerWrapper
+			item={itemMetaData}
+			canPlay={canPlay}
+			cuePoints={cuePoints}
+			seekTime={time}
+		/>
 	);
 
 	const renderDescription = () => (
@@ -226,7 +177,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 						</Trans>
 					</BlockHeading>
 				)}
-				<p>{formatTimestamps(convertToHtml(description))}</p>
+				<p className="c-content">{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
 	);

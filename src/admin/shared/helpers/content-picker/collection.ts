@@ -40,7 +40,7 @@ export const retrieveBundles = async (
 
 // parse raw data to react-select options
 const parseCollections = (
-	type: ContentPickerType | 'PROFILE',
+	type: ContentPickerType,
 	raw: Avo.Collection.Collection[]
 ): PickerSelectItem[] => {
 	return raw.map(

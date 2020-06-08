@@ -700,6 +700,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							collectionFragments={collection_fragments}
 							showDescription
 							linkToItems={permissions.canViewItems || false}
+							canPlay={
+								!isAddToBundleModalOpen &&
+								!isDeleteModalOpen &&
+								!isPublishModalOpen &&
+								!isShareThroughEmailModalOpen
+							}
 							history={history}
 							location={location}
 							match={match}
@@ -752,19 +758,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
 											Deze collectie is een kopie van:
 										</Trans>{' '}
-										{get(collection, 'relations', []).map((relation: any) => {
-											return (
-												<Link
-													key={`copy-of-link-${relation.object_meta.id}`}
-													to={buildLink(
-														APP_PATH.COLLECTION_DETAIL.route,
-														{ id: relation.object_meta.id }
-													)}
-												>
-													{relation.object_meta.title}
-												</Link>
-											);
-										})}
+										{(get(collection, 'relations', []) as any[]).map(
+											(relation: any) => {
+												return (
+													<Link
+														key={`copy-of-link-${relation.object_meta.id}`}
+														to={buildLink(
+															APP_PATH.COLLECTION_DETAIL.route,
+															{ id: relation.object_meta.id }
+														)}
+													>
+														{relation.object_meta.title}
+													</Link>
+												);
+											}
+										)}
 									</p>
 								)}
 								{!!publishedBundles.length && (

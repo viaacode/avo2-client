@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
+import { ROUTE_PARTS } from '../../shared/constants';
 import { redirectToClientPage } from '../helpers/redirects';
 
 export interface PupilOrTeacherDropdownProps extends RouteComponentProps {
@@ -63,7 +64,7 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 							)}
 							onClick={() => {
 								closeDropdown();
-								redirectToClientPage(APP_PATH.FOR_PUPILS.route, history);
+								redirectToClientPage(`/${ROUTE_PARTS.pupils}`, history);
 							}}
 						/>
 					</Spacer>

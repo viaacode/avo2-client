@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.35.3",
+	"version": "0.36.2",
 	"private": true,
 	"scripts": {
 		"preinstall": "npx npm-force-resolutions",
@@ -25,8 +25,8 @@
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
-		"@viaa/avo2-components": "^1.41.0",
-		"@viaa/avo2-types": "^2.16.0",
+		"@viaa/avo2-components": "^1.43.1",
+		"@viaa/avo2-types": "^2.19.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
 		"braft-extensions": "^0.1.0",

@@ -4,6 +4,8 @@ import React, { ReactNode } from 'react';
 import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { UserService } from '../../../admin/users/user.service';
+
 const getProfile = (obj: Avo.User.Profile | Avo.User.User | null | undefined) => {
 	if (!obj) {
 		return null;
@@ -37,9 +39,6 @@ export const getFullName = (userOrProfile: Avo.User.Profile | Avo.User.User | nu
 export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
 	`${get(profile, 'user.first_name', '')[0]}. ${get(profile, 'user.last_name')}`;
 
-export const getRole = (profile: Avo.User.Profile | null | undefined) =>
-	get(profile, 'user.role.label');
-
 export const getAvatarProps = (
 	profile: Avo.User.Profile | null,
 	options: {
@@ -51,7 +50,7 @@ export const getAvatarProps = (
 	const name: string = options.abbreviatedName
 		? getAbbreviatedFullName(profile)
 		: getFullName(profile) || '';
-	const role = getRole(profile);
+	const role = UserService.getUserRoleLabel(profile);
 	const nameAndRole: string = options.includeRole && role ? `${name} (${role})` : name;
 
 	return {

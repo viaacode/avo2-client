@@ -17,6 +17,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ROUTE_PARTS } from '../../shared/constants';
 import LoginOptions from '../components/LoginOptions';
 import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 
@@ -91,7 +92,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 											type="primary"
 											onClick={() =>
 												redirectToClientPage(
-													APP_PATH.FOR_PUPILS.route,
+													`/${ROUTE_PARTS.pupils}`,
 													history
 												)
 											}

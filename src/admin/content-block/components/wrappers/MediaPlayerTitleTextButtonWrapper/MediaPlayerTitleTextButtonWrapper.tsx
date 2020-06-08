@@ -14,7 +14,7 @@ import {
 
 import { navigateToContentType } from '../../../../../shared/helpers';
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
-import { MediaPlayerWrapper } from '../MediaPlayerWrapper/MediaPlayerWrapper';
+import MediaPlayerWrapper from '../MediaPlayerWrapper/MediaPlayerWrapper';
 
 interface MediaPlayerTitleTextButtonWrapperProps extends RouteComponentProps {
 	mediaTitle: string;

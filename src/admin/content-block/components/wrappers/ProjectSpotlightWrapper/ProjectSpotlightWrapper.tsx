@@ -5,13 +5,13 @@ import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { BlockSpotlight, ButtonAction, ImageInfo } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { CustomError } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
+import { ContentPageInfo } from '../../../../content/content.types';
 
 interface ProjectSpotlightProps {
 	project: ButtonAction;
@@ -30,7 +30,7 @@ const ProjectSpotlightWrapper: FunctionComponent<ProjectSpotlightWrapperProps &
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [projectContentPages, setProjectContentPages] = useState<
-		(Avo.Content.Content | null)[] | null
+		(ContentPageInfo | null)[] | null
 	>(null);
 
 	const fetchContentPages = useCallback(async () => {
@@ -74,7 +74,7 @@ const ProjectSpotlightWrapper: FunctionComponent<ProjectSpotlightWrapperProps &
 		return (
 			<BlockSpotlight
 				elements={projectContentPages.map(
-					(projectContentPage: Avo.Content.Content | null, index: number): ImageInfo => {
+					(projectContentPage: ContentPageInfo | null, index: number): ImageInfo => {
 						return {
 							title:
 								elements[index].customTitle ||

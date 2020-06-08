@@ -15,7 +15,6 @@ import {
 	convertToHtml,
 	DropdownButton,
 	DropdownContent,
-	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -32,12 +31,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
+import {
+	ControlledDropdown,
+	DeleteObjectModal,
+	FlowPlayerWrapper,
+} from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_AUTHOR, WYSIWYG2_OPTIONS_DEFAULT } from '../../../shared/constants';
-import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
+import { createDropdownMenuItem } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
@@ -68,7 +70,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
@@ -120,31 +121,18 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		});
 	};
 
-	const getDescription = () => {
-		let description: string | RichEditorState | undefined | null;
+	const getDescription = (): string | undefined => {
+		let description: string | undefined | null;
 		if (fragment.use_custom_fields) {
 			description = fragment.custom_description;
 		} else {
 			description = get(fragment, 'item_meta.description');
 		}
-		if (!description || isString(description)) {
-			return convertToHtml(description || '');
+		if (isString(description)) {
+			description = convertToHtml(description);
 		}
-		return description;
+		return description || undefined;
 	};
-
-	const initFlowPlayer = () =>
-		!playerTicket &&
-		!isCollection &&
-		fetchPlayerTicket(fragment.external_id)
-			.then(data => setPlayerTicket(data))
-			.catch(() =>
-				ToastService.danger(
-					t(
-						'collection/components/fragment/fragment-edit___play-ticket-kon-niet-opgehaald-worden'
-					)
-				)
-			);
 
 	const itemMetaData = (fragment as any).item_meta;
 
@@ -242,7 +230,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const renderForm = () => {
 		const disableVideoFields: boolean = !fragment.use_custom_fields && fragment.type !== 'TEXT';
-		const description: string | RichEditorState = getDescription();
 
 		return (
 			<Form>
@@ -302,15 +289,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								placeholder={t(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
-								initialHtml={isString(description) ? description : undefined}
+								initialHtml={getDescription()}
 								state={descriptionRichEditorState}
 								onChange={setDescriptionRichEditorState}
-								onBlur={() =>
-									handleChangedValue(
-										'custom_description',
-										descriptionRichEditorState
-									)
-								}
+								onBlur={() => {
+									if (descriptionRichEditorState) {
+										handleChangedValue(
+											'custom_description' as any,
+											descriptionRichEditorState.toHTML()
+										);
+									}
+								}}
 								disabled={disableVideoFields}
 							/>
 						)}
@@ -383,20 +372,15 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						<Grid>
 							<Column size="3-6">
 								{!isCollection ? (
-									<FlowPlayer
-										src={playerTicket ? playerTicket.toString() : null}
-										poster={itemMetaData.thumbnail_path}
-										title={itemMetaData.title}
-										onInit={initFlowPlayer}
-										subtitles={[
-											itemMetaData.issued,
-											get(itemMetaData, 'organisation.name', ''),
-										]}
-										token={getEnv('FLOW_PLAYER_TOKEN')}
-										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-										logo={get(itemMetaData, 'organisation.logo_url')}
-										autoplay
-										{...cuePoints}
+									<FlowPlayerWrapper
+										item={{
+											...itemMetaData,
+											thumbnail_path:
+												fragment.thumbnail_path ||
+												itemMetaData.thumbnail_path,
+										}}
+										cuePoints={cuePoints}
+										canPlay={!isCutModalOpen && !isDeleteModalOpen}
 									/>
 								) : (
 									<Thumbnail

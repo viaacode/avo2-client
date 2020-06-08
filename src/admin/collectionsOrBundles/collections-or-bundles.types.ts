@@ -12,7 +12,8 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'views'
 	| 'bookmarks'
 	| 'copies'
-	| 'in_bundles'
+	| 'in_bundle'
+	| 'in_assignment'
 	| 'subjects'
 	| 'education_levels'
 	| 'collection_labels'
@@ -30,7 +31,8 @@ export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	views: number;
 	bookmarks: number;
 	copies: number;
-	in_bundles: boolean;
+	in_bundle: boolean;
+	in_assignment: boolean;
 	subjects: string[];
 	education_levels: string[];
 	collection_labels: string[];

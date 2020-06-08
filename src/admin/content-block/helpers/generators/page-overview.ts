@@ -1,7 +1,6 @@
 import { CheckboxProps, MultiRangeProps } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
-import { ContentPageType } from '../../../content/content.types';
 import {
 	Color,
 	ContentBlockConfig,
@@ -27,8 +26,8 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 	tabStyle: 'MENU_BAR',
 	allowMultiple: false,
 	centerHeader: false,
-	headerBackgroundColor: 'transparent',
-	contentType: ContentPageType.Project, // lookup options in lookup.enum_content_types
+	headerBackgroundColor: Color.Transparent,
+	contentType: 'PROJECT',
 	itemStyle: 'LIST',
 	showTitle: true,
 	showDescription: true,
@@ -37,23 +36,20 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 	itemsPerPage: 20,
 });
 
-export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultContentBlockState => {
+export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (): DefaultContentBlockState => {
 	return {
-		...BLOCK_STATE_DEFAULTS(
-			ContentBlockType.PageOverview,
-			position,
-			Color.White,
-			Color.Transparent,
-			{
+		...BLOCK_STATE_DEFAULTS({
+			padding: {
 				top: 'top-small',
 				bottom: 'bottom-extra-large',
-			}
-		),
+			},
+		}),
 	};
 };
 
 export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => {
 	return {
+		position,
 		name: i18n.t('admin/content-block/helpers/generators/page-overview___pagina-overzicht'),
 		type: ContentBlockType.PageOverview,
 		components: {
@@ -143,7 +139,7 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 			},
 		},
 		block: {
-			state: INITIAL_PAGE_OVERVIEW_BLOCK_STATE(position),
+			state: INITIAL_PAGE_OVERVIEW_BLOCK_STATE(),
 			fields: {
 				headerBackgroundColor: BACKGROUND_COLOR_FIELD(
 					i18n.t(

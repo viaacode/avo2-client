@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
+import { InteractiveTourAction } from '../helpers/reducers';
 import {
 	EditableInteractiveTour,
 	EditableStep,
-	InteractiveTourAction,
-} from '../views/InteractiveTourEdit';
+	InteractiveTourEditActionType,
+} from '../interactive-tour.types';
 
 interface InteractiveTourAddProps {
 	index: number;
@@ -40,7 +41,7 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 	// Listeners
 	const handleAddStepClick = () => {
 		changeInteractiveTourState({
-			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
 			interactiveTourProp: 'steps',
 			interactiveTourPropValue: getStepsAfterInsertNewStep(),
 		});

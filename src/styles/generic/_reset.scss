@@ -34,6 +34,10 @@ footer, header, hgroup, menu, nav, section {
 
 body {
   line-height: 1;
+
+	> * {
+		white-space: pre-wrap; // needed to preserve whitespace before and after links inside translations
+	}
 }
 
 ol, ul {

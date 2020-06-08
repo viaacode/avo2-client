@@ -1,10 +1,7 @@
 import { CheckboxProps } from '@viaa/avo2-components';
 
-import {
-	FileUploadProps,
-	PHOTO_TYPES,
-	VIDEO_TYPES,
-} from '../../../../shared/components/FileUpload/FileUpload';
+import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
@@ -36,14 +33,13 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE = (): Media
 	buttonLabel: '',
 });
 
-export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
-	position: number
-): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayerTitleTextButton, position);
+export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS();
 
 export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	position: number = 0
 ): ContentBlockConfig => ({
+	position,
 	name: i18n.t(
 		'admin/content-block/helpers/generators/media-player-title-text-button___media-speler-met-titel-tekst-en-knop'
 	),
@@ -71,7 +67,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: VIDEO_TYPES,
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					ownerId: '',
 				} as FileUploadProps,
 			}),
@@ -83,7 +79,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				editorProps: {
 					allowMulti: false,
 					allowedTypes: PHOTO_TYPES,
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					ownerId: '',
 				} as FileUploadProps,
 			}),
@@ -138,7 +134,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 		},
 	},
 	block: {
-		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE(position),
+		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

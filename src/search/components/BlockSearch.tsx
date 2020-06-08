@@ -1,8 +1,8 @@
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import {
@@ -23,18 +23,17 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { toEnglishContentType } from '../../collection/collection.types';
-import { GENERATE_SITE_TITLE } from '../../constants';
-import { getSearchResults } from '../../search/store/actions';
-import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
 import { useDebounce } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { KeyCode } from '../../shared/types';
 import { AppState } from '../../store';
+import { getSearchResults } from '../store/actions';
+import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import './Home.scss';
+import './BlockSearch.scss';
 
-interface HomeProps extends DefaultSecureRouteProps {
+interface BlockSearchProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
 	search: (
@@ -49,7 +48,7 @@ interface HomeProps extends DefaultSecureRouteProps {
 
 const ITEMS_IN_AUTOCOMPLETE = 5;
 
-const Home: FunctionComponent<HomeProps> = ({
+const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
@@ -132,91 +131,74 @@ const Home: FunctionComponent<HomeProps> = ({
 	};
 
 	return (
-		<div className="m-home-page">
-			<MetaTags>
-				<title>
-					{GENERATE_SITE_TITLE(t('home/views/home___startpagina-pagina-titel'))}
-				</title>
-				<meta
-					name="description"
-					content={t('home/views/home___startpagina-pagina-beschrijving')}
-				/>
-			</MetaTags>
-			<Container mode="vertical" background="alt">
-				<Container mode="horizontal" size="medium">
-					<Spacer>
-						<BlockHeading type="h2" className="u-text-center">
-							<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
-								Vind alles wat je nodig hebt om je lessen te verrijken.
-							</Trans>
-						</BlockHeading>
-						<div className="u-text-center">
-							<Spacer margin="large">
-								<Dropdown
-									triggerWidth="full-width"
-									isOpen={isAutocompleteSearchOpen}
-									onOpen={() => setAutocompleteSearchOpen(true)}
-									onClose={() => setAutocompleteSearchOpen(false)}
-									searchMenu
-								>
-									<DropdownButton>
-										<TextInput
-											placeholder={t('home/views/home___vul-een-zoekterm-in')}
-											icon="search"
-											value={searchTerms}
-											onChange={searchTerm =>
-												handleSearchTermChanged(searchTerm)
-											}
-											onKeyUp={handleSearchFieldKeyUp}
-										/>
-									</DropdownButton>
-									<DropdownContent>
-										{!searchResultsLoading ? (
-											<MenuSearchResultContent
-												menuItems={autocompleteMenuItems}
-												noResultsLabel={t(
-													'home/views/home___geen-resultaten'
-												)}
-												onClick={id => goToSearchResult(id.toString())}
-											/>
-										) : (
-											<Spinner size="large" />
-										)}
-										<div className="c-menu__footer">
-											<Button
-												block
-												label={autocompleteButtonLabel}
-												onClick={gotoSearchPage}
-												type="secondary"
-											/>
-										</div>
-									</DropdownContent>
-								</Dropdown>
-							</Spacer>
-							<Spacer margin="large">
-								<p className="c-body-1">
-									<Trans i18nKey="home/views/home___vind-inspiratie-voor-specifieke-vakken-en-domeinen">
-										Vind inspiratie voor specifieke vakken en domeinen:
-									</Trans>
-								</p>
-								<Flex className="c-button-toolbar" orientation="horizontal" center>
-									{/* TODO discover/overview-basic.html */}
+		<Container mode="horizontal" size="medium" className="m-search-block">
+			<Spacer>
+				<BlockHeading type="h2" className="u-text-center">
+					<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
+						Vind alles wat je nodig hebt om je lessen te verrijken.
+					</Trans>
+				</BlockHeading>
+				<div className="u-text-center">
+					<Spacer margin="large">
+						<Dropdown
+							triggerWidth="full-width"
+							isOpen={isAutocompleteSearchOpen}
+							onOpen={() => setAutocompleteSearchOpen(true)}
+							onClose={() => setAutocompleteSearchOpen(false)}
+							searchMenu
+						>
+							<DropdownButton>
+								<TextInput
+									placeholder={t('home/views/home___vul-een-zoekterm-in')}
+									icon="search"
+									value={searchTerms}
+									onChange={searchTerm => handleSearchTermChanged(searchTerm)}
+									onKeyUp={handleSearchFieldKeyUp}
+								/>
+							</DropdownButton>
+							<DropdownContent>
+								{!searchResultsLoading ? (
+									<MenuSearchResultContent
+										menuItems={autocompleteMenuItems}
+										noResultsLabel={t('home/views/home___geen-resultaten')}
+										onClick={id => goToSearchResult(id.toString())}
+									/>
+								) : (
+									<Spinner size="large" />
+								)}
+								<div className="c-menu__footer">
 									<Button
-										label={t('home/views/home___basisonderwijs')}
+										block
+										label={autocompleteButtonLabel}
+										onClick={gotoSearchPage}
 										type="secondary"
 									/>
-									{/* TODO discover/overview-secondary.html */}
-									<Button
-										label={t('home/views/home___secundair-onderwijs')}
-										type="secondary"
-									/>
-								</Flex>
-							</Spacer>
-						</div>
+								</div>
+							</DropdownContent>
+						</Dropdown>
 					</Spacer>
-				</Container>
-			</Container>
-		</div>
+					<Spacer margin="large">
+						<p className="c-body-1">
+							<Trans i18nKey="home/views/home___vind-inspiratie-voor-specifieke-vakken-en-domeinen">
+								Vind inspiratie voor specifieke vakken en domeinen:
+							</Trans>
+						</p>
+						<Flex className="c-button-toolbar" orientation="horizontal" center>
+							{/* TODO link to content page */}
+							<Button
+								label={t('home/views/home___basisonderwijs')}
+								type="secondary"
+							/>
+							{/* TODO link to content page */}
+							<Button
+								label={t('home/views/home___secundair-onderwijs')}
+								type="secondary"
+							/>
+						</Flex>
+					</Spacer>
+				</div>
+			</Spacer>
+		</Container>
 	);
 };
 
@@ -248,4 +230,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BlockSearch));

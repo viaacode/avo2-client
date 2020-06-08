@@ -3,7 +3,14 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container, TagList, TagOption } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	Container,
+	IconName,
+	TagList,
+	TagOption,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -305,10 +312,26 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			icon: 'copy',
 			sortable: true,
 		},
-		// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
-		// { id: 'subjects', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'), sortable: true },
-		// { id: 'education_levels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'), sortable: true },
-		// { id: 'labels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___labels'), sortable: true },
+		...(isCollection
+			? [
+					{
+						id: 'in_bundle',
+						tooltip: i18n.t('Aantal keer opgenomen in een bundel'),
+						icon: 'folder' as IconName,
+						sortable: true,
+					},
+			  ]
+			: []),
+		...(isCollection
+			? [
+					{
+						id: 'in_assignment',
+						tooltip: i18n.t('Aantal keer opgenomen in een opdracht'),
+						icon: 'clipboard' as IconName,
+						sortable: true,
+					},
+			  ]
+			: []),
 		{ id: 'actions', label: '' },
 	];
 
@@ -364,7 +387,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
 
 			case 'author_role':
-				return get(rowData, 'profile.usersByuserId.role.label', '-');
+				return UserService.getUserRoleLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(
@@ -385,7 +408,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
 
 			case 'copies':
-				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
+				return get(rowData, 'copies.aggregate.count') || '0';
+
+			case 'in_bundle':
+				return get(rowData, 'in_bundle.aggregate.count') || '0';
+
+			case 'in_assignment':
+				return get(rowData, 'in_assignment.aggregate.count') || '0';
 
 			case 'created_at':
 			case 'updated_at':

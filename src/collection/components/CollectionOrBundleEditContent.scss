@@ -1,0 +1,12 @@
+.m-collection-or-bundle-edit-content {
+
+	// Hide h1, Hé, h5 and h6 in braft editor dropdown
+	.headings-dropdown {
+		.menu-item:nth-child(1),
+		.menu-item:nth-child(2),
+		.menu-item:nth-child(5),
+		.menu-item:nth-child(6)	{
+			display: none;
+		}
+	}
+}
