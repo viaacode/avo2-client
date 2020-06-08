@@ -78,7 +78,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de content pagina label is mislukt'),
+					message: t(
+						'admin/content-page-labels/views/content-page-label-edit___het-ophalen-van-de-content-pagina-label-is-mislukt'
+					),
 				});
 			}
 		}
@@ -107,7 +109,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	const getFormErrors = (): ContentPageLabelEditFormErrorState | null => {
 		if (!contentPageLabel || !contentPageLabel.label) {
 			return {
-				label: t('Een label is verplicht'),
+				label: t(
+					'admin/content-page-labels/views/content-page-label-edit___een-label-is-verplicht'
+				),
 			};
 		}
 		return null;
@@ -118,14 +122,19 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
-				ToastService.danger(t('De invoer is ongeldig'), false);
+				ToastService.danger(
+					t(
+						'admin/content-page-labels/views/content-page-label-edit___de-invoer-is-ongeldig'
+					),
+					false
+				);
 				return;
 			}
 
 			if (!initialContentPageLabel || !contentPageLabel) {
 				ToastService.danger(
 					t(
-						'Het opslaan van de permissie groep is mislukt omdat de permissie groep nog niet is geladen'
+						'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-de-permissie-groep-is-mislukt-omdat-de-permissie-groep-nog-niet-is-geladen'
 					),
 					false
 				);
@@ -146,7 +155,12 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				contentPageLabelId = match.params.id;
 			}
 
-			ToastService.success(t('De content pagina label is opgeslagen'), false);
+			ToastService.success(
+				t(
+					'admin/content-page-labels/views/content-page-label-edit___de-content-pagina-label-is-opgeslagen'
+				),
+				false
+			);
 			if (isCreatePage) {
 				redirectToClientPage(
 					buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_EDIT, { id: contentPageLabelId }),
@@ -165,7 +179,12 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 					initialContentPageLabel,
 				})
 			);
-			ToastService.danger(t('Het opslaan van de permissiegroep is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-de-permissiegroep-is-mislukt'
+				),
+				false
+			);
 		}
 		setIsSaving(false);
 	};
@@ -180,7 +199,13 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 					<Spacer margin="bottom-extra-large">
 						<Box backgroundColor="gray">
 							<Form>
-								<FormGroup label={t('Label')} error={formErrors.label} required>
+								<FormGroup
+									label={t(
+										'admin/content-page-labels/views/content-page-label-edit___label'
+									)}
+									error={formErrors.label}
+									required
+								>
 									<TextInput
 										value={contentPageLabel.label || ''}
 										onChange={newLabel =>
@@ -192,7 +217,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 									/>
 								</FormGroup>
 								<FormGroup
-									label={t('Content pagina type')}
+									label={t(
+										'admin/content-page-labels/views/content-page-label-edit___content-pagina-type'
+									)}
 									error={formErrors.content_type}
 								>
 									<Select
@@ -220,14 +247,30 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			showBackButton
 			pageTitle={
 				isCreatePage
-					? t('Content pagina label aanmaken')
-					: t('Content pagina label aanpassen')
+					? t(
+							'admin/content-page-labels/views/content-page-label-edit___content-pagina-label-aanmaken'
+					  )
+					: t(
+							'admin/content-page-labels/views/content-page-label-edit___content-pagina-label-aanpassen'
+					  )
 			}
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
-					<Button label={t('Annuleer')} onClick={navigateBack} type="tertiary" />
-					<Button disabled={isSaving} label={t('Opslaan')} onClick={handleSave} />
+					<Button
+						label={t(
+							'admin/content-page-labels/views/content-page-label-edit___annuleer'
+						)}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t(
+							'admin/content-page-labels/views/content-page-label-edit___opslaan'
+						)}
+						onClick={handleSave}
+					/>
 				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
@@ -244,16 +287,24 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				<title>
 					{GENERATE_SITE_TITLE(
 						isCreatePage
-							? t('Permissiegroep beheer aanmaak pagina titel')
-							: t('Permissiegroep beheer bewerk pagina titel')
+							? t(
+									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-aanmaak-pagina-titel'
+							  )
+							: t(
+									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-bewerk-pagina-titel'
+							  )
 					)}
 				</title>
 				<meta
 					name="description"
 					content={
 						isCreatePage
-							? t('Permissiegroep beheer aanmaak pagina beschrijving')
-							: t('Permissiegroep beheer bewerk pagina beschrijving')
+							? t(
+									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-aanmaak-pagina-beschrijving'
+							  )
+							: t(
+									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-bewerk-pagina-beschrijving'
+							  )
 					}
 				/>
 			</MetaTags>

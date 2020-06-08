@@ -39,26 +39,30 @@ export const INITIAL_HERO_BLOCK_STATE = (): DefaultContentBlockState => ({
 
 export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('Hero'),
+	name: i18n.t('admin/content-block/helpers/generators/hero___hero'),
 	type: ContentBlockType.Hero,
 	components: {
 		state: INITIAL_HERO_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD('', {
-				label: i18n.t('Titel'),
+				label: i18n.t('admin/content-block/helpers/generators/hero___titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			titleColor: FOREGROUND_COLOR_FIELD(i18n.t('Titel kleur')),
+			titleColor: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/hero___titel-kleur')
+			),
 			content: TEXT_FIELD('', {
-				label: i18n.t('Beschrijving'),
+				label: i18n.t('admin/content-block/helpers/generators/hero___beschrijving'),
 				editorType: ContentBlockEditor.TextArea,
 				validator: undefined,
 			}),
-			contentColor: FOREGROUND_COLOR_FIELD(i18n.t('Beschrijving kleur')),
+			contentColor: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/hero___beschrijving-kleur')
+			),
 
 			buttons: {
-				label: i18n.t('Knop'),
+				label: i18n.t('admin/content-block/helpers/generators/hero___knop'),
 				fields: {
 					type: {
 						label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
@@ -103,7 +107,7 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 			} as ContentBlockFieldGroup,
 
 			src: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen video uploaden'),
+				label: i18n.t('admin/content-block/helpers/generators/hero___eigen-video-uploaden'),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,
@@ -113,7 +117,9 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				} as Partial<FileUploadProps>,
 			}),
 			poster: FILE_FIELD(undefined, {
-				label: i18n.t('Eigen poster uploaden'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/hero___eigen-poster-uploaden'
+				),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,
@@ -123,7 +129,9 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				} as Partial<FileUploadProps>,
 			}),
 			altText: TEXT_FIELD(undefined, {
-				label: i18n.t('Alt tekst voor video/afbeelding'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/hero___alt-tekst-voor-video-afbeelding'
+				),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 		},

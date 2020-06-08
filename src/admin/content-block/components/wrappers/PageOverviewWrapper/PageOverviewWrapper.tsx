@@ -212,7 +212,11 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			console.error('Failed to fetch content page by path', err, {
 				queryParams: location.search,
 			});
-			ToastService.danger(t('Het ophalen van het te focussen item is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/content-block/components/wrappers/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-het-te-focussen-item-is-mislukt'
+				)
+			);
 		}
 	}, [
 		location.search,

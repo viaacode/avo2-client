@@ -145,7 +145,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het laden van de opdracht is mislukt'),
+				message: t(
+					'assignment/views/assignment-detail___het-laden-van-de-opdracht-is-mislukt'
+				),
 			});
 		}
 	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user]);
@@ -198,7 +200,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				await AssignmentService.toggleAssignmentArchiveStatus(assignment.id, archived);
 				fetchAssignmentAndContent();
 				ToastService.success(
-					archived ? t('De opdracht is gearchiveerd') : t('De opdracht is gedearchiveerd')
+					archived
+						? t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
+						: t('assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd')
 				);
 			} catch (err) {
 				console.error(
@@ -227,7 +231,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					)
 				);
 				ToastService.danger(
-					t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+					t(
+						'assignment/views/assignment-detail___deze-opdracht-kon-niet-geupdate-worden-probeer-de-pagina-te-herladen'
+					)
 				);
 				return;
 			}
@@ -238,8 +244,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 			fetchAssignmentAndContent();
 			ToastService.success(
 				checked
-					? t('De opdracht is gemarkeerd als gemaakt')
-					: t('De opdracht is gemarkeerd als nog niet gemaakt')
+					? t(
+							'assignment/views/assignment-detail___de-opdracht-is-gemarkeerd-als-gemaakt'
+					  )
+					: t(
+							'assignment/views/assignment-detail___de-opdracht-is-gemarkeerd-als-nog-niet-gemaakt'
+					  )
 			);
 		} catch (err) {
 			console.error(
@@ -248,7 +258,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				})
 			);
 			ToastService.danger(
-				t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+				t(
+					'assignment/views/assignment-detail___deze-opdracht-kon-niet-geupdate-worden-probeer-de-pagina-te-herladen'
+				)
 			);
 		}
 	};
@@ -367,7 +379,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 									{!isOwner() && (
 										<ToolbarItem>
 											<Checkbox
-												label={t('Opdracht gemaakt')}
+												label={t(
+													'assignment/views/assignment-detail___opdracht-gemaakt'
+												)}
 												checked={
 													!!get(
 														assignment,

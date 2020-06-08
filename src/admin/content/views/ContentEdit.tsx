@@ -104,7 +104,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			});
 		} catch (err) {
 			console.error(new CustomError('Failed to load content page', err, { id }));
-			ToastService.danger(t('Het laden van deze content pagina is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/content/views/content-edit___het-laden-van-deze-content-pagina-is-mislukt'
+				),
+				false
+			);
 		}
 	}, [id, t]);
 

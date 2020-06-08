@@ -90,10 +90,11 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 						Kopieer deze publieke link
 					</Trans>
 				</BlockHeading>
-				<Trans parent="p">
-					Let wel, enkel personen met een Archief voor Onderwijs account zullen deze link
-					kunnen openen.
-				</Trans>
+				<p>
+					{t(
+						'shared/components/share-through-email-modal/share-through-email-modal___waarschuwing-deel-link-via-email'
+					)}
+				</p>
 				<Spacer margin="top-large">
 					<Box backgroundColor="gray" condensed>
 						<Flex wrap justify="between" align="baseline">
