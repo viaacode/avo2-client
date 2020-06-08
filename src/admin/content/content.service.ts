@@ -520,17 +520,16 @@ export class ContentService {
 		return mapDeep(
 			blockConfigs,
 			(obj: any, key: string | number, value: any) => {
-				if (
-					String(key).endsWith(RichEditorStateKey) &&
-					value &&
-					value.toHTML &&
-					isFunction(value.toHTML)
-				) {
+				if (String(key).endsWith(RichEditorStateKey)) {
 					const htmlKey: string = String(key).substr(
 						0,
 						String(key).length - RichEditorStateKey.length
 					);
-					obj[htmlKey] = sanitizeHtml(value.toHTML(), 'full');
+					let htmlFromRichTextEditor = undefined;
+					if (value && value.toHTML && isFunction(value.toHTML)) {
+						htmlFromRichTextEditor = value.toHTML();
+					}
+					obj[htmlKey] = sanitizeHtml(htmlFromRichTextEditor || obj[htmlKey], 'full');
 					delete obj[key];
 				}
 			},
