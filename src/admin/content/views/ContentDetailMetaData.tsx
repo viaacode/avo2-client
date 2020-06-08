@@ -129,7 +129,12 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							t('admin/content/views/content-detail___beschrijving')
 						)}
 						{renderSimpleDetailRows(contentPageInfo, [
-							['seo_description', t('SEO beschrijving')],
+							[
+								'seo_description',
+								t(
+									'admin/content/views/content-detail-meta-data___seo-beschrijving'
+								),
+							],
 							[
 								'content_type',
 								t('admin/content/views/content-detail___content-type'),

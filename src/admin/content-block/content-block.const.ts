@@ -178,15 +178,15 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.AnchorLinks,
 	},
 	{
-		label: i18n.t('Hero'),
+		label: i18n.t('admin/content-block/content-block___hero'),
 		value: ContentBlockType.Hero,
 	},
 	{
-		label: i18n.t('Zoek'),
+		label: i18n.t('admin/content-block/content-block___zoek'),
 		value: ContentBlockType.Search,
 	},
 	{
-		label: i18n.t('Pagina metadata'),
+		label: i18n.t('admin/content-block/content-block___pagina-metadata'),
 		value: ContentBlockType.ContentPageMeta,
 	},
 ];
@@ -294,7 +294,7 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 		value: Color.OceanGreen,
 	},
 	{
-		label: i18n.t('Leerlingen Geel'),
+		label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
 		value: Color.Yellow,
 	},
 ];
@@ -401,26 +401,26 @@ export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 		value: 'inline-link',
 	},
 	{
-		label: i18n.t('Leerling primair (geel)'),
+		label: i18n.t('admin/content-block/content-block___leerling-primair-geel'),
 		value: 'pupil-primary',
 	},
 	{
-		label: i18n.t('Leerling link (tekst in geel)'),
+		label: i18n.t('admin/content-block/content-block___leerling-link-tekst-in-geel'),
 		value: 'pupil-link',
 	},
 	{
-		label: i18n.t('Leerling link geel (inline)'),
+		label: i18n.t('admin/content-block/content-block___leerling-link-geel-inline'),
 		value: 'pupil-inline-link',
 	},
 ];
 
 export const GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
-		label: i18n.t('Blauw'),
+		label: i18n.t('admin/content-block/content-block___blauw'),
 		value: 'underlined-link',
 	},
 	{
-		label: i18n.t('Geel'),
+		label: i18n.t('admin/content-block/content-block___geel'),
 		value: 'pupil-underlined-link' as any, // TODO remove cast after update to components v1.43.0
 	},
 ];

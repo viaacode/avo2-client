@@ -360,7 +360,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					)
 				);
 				ToastService.danger(
-					t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+					t(
+						'assignment/views/assignment-overview___deze-opdracht-kon-niet-geupdate-worden-probeer-de-pagina-te-herladen'
+					)
 				);
 				return;
 			}
@@ -371,8 +373,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			fetchAssignments();
 			ToastService.success(
 				assignmentResponse.submitted_at
-					? t('De opdracht is gemarkeerd als nog niet gemaakt')
-					: t('De opdracht is gemarkeerd als gemaakt')
+					? t(
+							'assignment/views/assignment-overview___de-opdracht-is-gemarkeerd-als-nog-niet-gemaakt'
+					  )
+					: t(
+							'assignment/views/assignment-overview___de-opdracht-is-gemarkeerd-als-gemaakt'
+					  )
 			);
 		} catch (err) {
 			console.error(
@@ -381,7 +387,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				})
 			);
 			ToastService.danger(
-				t('Deze opdracht kon niet geupdate worden, probeer de pagina te herladen')
+				t(
+					'assignment/views/assignment-overview___deze-opdracht-kon-niet-geupdate-worden-probeer-de-pagina-te-herladen'
+				)
 			);
 		}
 	};
@@ -453,7 +461,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				{canEditAssignments && (
 					<Button
 						icon="chevron-right"
-						label={isMobileWidth() ? t('Bewerken') : undefined}
+						label={
+							isMobileWidth()
+								? t('assignment/views/assignment-overview___bewerken')
+								: undefined
+						}
 						title={t('assignment/views/assignment-overview___bewerk-de-opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
@@ -467,8 +479,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				{!canEditAssignments && (
 					<Button
 						icon="chevron-right"
-						label={isMobileWidth() ? t('Bekijken') : undefined}
-						title={t('Bekijk deze opdracht')}
+						label={
+							isMobileWidth()
+								? t('assignment/views/assignment-overview___bekijken')
+								: undefined
+						}
+						title={t('assignment/views/assignment-overview___bekijk-deze-opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, {
 								id: rowData.id,
@@ -550,7 +566,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				const checkbox = (
 					<Checkbox
 						checked={isSubmitted}
-						label={t('gemaakt')}
+						label={t('assignment/views/assignment-overview___gemaakt')}
 						onChange={() =>
 							toggleAssignmentSubmitStatus(get(assignment, 'assignment_responses[0]'))
 						}
@@ -584,7 +600,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						sortable: false,
 					},
 			  ]),
-		...(canEditAssignments ? [] : [{ id: 'author', label: t('Leerkracht'), sortable: true }]), // Only show teacher for pupils
+		...(canEditAssignments
+			? []
+			: [
+					{
+						id: 'author',
+						label: t('assignment/views/assignment-overview___leerkracht'),
+						sortable: true,
+					},
+			  ]), // Only show teacher for pupils
 		...(isMobileWidth()
 			? []
 			: [
@@ -604,8 +628,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			: [
 					{
 						id: 'submitted_at',
-						label: t('Status'),
-						tooltip: t('Heb je deze opdracht reeds ingediend?'),
+						label: t('assignment/views/assignment-overview___status'),
+						tooltip: t(
+							'assignment/views/assignment-overview___heb-je-deze-opdracht-reeds-ingediend'
+						),
 						sortable: true,
 					},
 			  ]), // Only show teacher for pupils
@@ -652,7 +678,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 												? t(
 														'assignment/views/assignment-overview___gearchiveerde-opdrachten'
 												  )
-												: t('Verlopen opdrachten'),
+												: t(
+														'assignment/views/assignment-overview___verlopen-opdrachten'
+												  ),
 											value: 'archived_assignments',
 										},
 									]}
@@ -682,14 +710,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 												? t(
 														'assignment/views/assignment-overview___gearchiveerde-opdrachten'
 												  )
-												: t('Verlopen opdrachten')
+												: t(
+														'assignment/views/assignment-overview___verlopen-opdrachten'
+												  )
 										}
 										title={
 											canEditAssignments
 												? t(
 														'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
 												  )
-												: t('Verlopen opdrachten')
+												: t(
+														'assignment/views/assignment-overview___verlopen-opdrachten'
+												  )
 										}
 										active={activeView === 'archived_assignments'}
 										onClick={() => setActiveView('archived_assignments')}
@@ -739,13 +771,17 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
 				);
 			}
-			return t('Je hebt nog geen opdrachten gearchiveerd');
+			return t(
+				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-gearchiveerd'
+			);
 		}
 		// Pupil
 		if (activeView === 'assignments') {
-			return t('Je hebt nog geen opdrachten ontvangen van je leerkracht');
+			return t(
+				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-ontvangen-van-je-leerkracht'
+			);
 		}
-		return t('Er zijn nog geen opdrachten verlopen');
+		return t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-verlopen');
 	};
 
 	const getEmptyFallbackDescription = () => {
@@ -756,13 +792,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken'
 				);
 			}
-			return t('Beschrijving gearchiveerde opdrachten in werkruimte');
+			return t(
+				'assignment/views/assignment-overview___beschrijving-gearchiveerde-opdrachten-in-werkruimte'
+			);
 		}
 		// Pupil
 		if (activeView === 'assignments') {
-			return t('Beschrijving opdrachten in werkruimte voor leerling');
+			return t(
+				'assignment/views/assignment-overview___beschrijving-opdrachten-in-werkruimte-voor-leerling'
+			);
 		}
-		return t('Beschrijving verlopen opdrachten in werkruimte voor leerling');
+		return t(
+			'assignment/views/assignment-overview___beschrijving-verlopen-opdrachten-in-werkruimte-voor-leerling'
+		);
 	};
 
 	const getEmptyFallbackIcon = (): IconName => {
