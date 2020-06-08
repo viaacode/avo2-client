@@ -19,7 +19,13 @@ export const generateFieldAttributes = (
 		case ContentBlockEditor.TextInput:
 			return {
 				value,
-				onChange: debounce((value: any) => onChange(value), 150, { leading: true }),
+				onChange: debounce(
+					(value: any) => {
+						onChange(value);
+					},
+					150,
+					{ leading: true }
+				),
 			};
 		case ContentBlockEditor.ContentPicker:
 			return {
@@ -34,19 +40,22 @@ export const generateFieldAttributes = (
 		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			return {
-				onChange: (option: SelectOption<string>) => onChange(get(option, 'value', '')),
+				onChange: (option: SelectOption<string>) => {
+					onChange(get(option, 'value', ''));
+				},
 				value: field.editorProps.options.find(
 					(opt: SelectOption<string>) => opt.value === value
 				),
 			};
 		case ContentBlockEditor.WYSIWYG:
+			const html = (state as any)[`${key}`] || '';
+			const richEditorState = (state as any)[`${key}${RichEditorStateKey}`];
 			return {
 				id,
-				initialHtml: (state as any)[`${key}`] || '',
-				state: (state as any)[`${key}${RichEditorStateKey}`],
+				initialHtml: html, // Only use the html the first time, then use the editor state
+				state: richEditorState,
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
-					onChange(editorState.toHTML(), key);
 				},
 			} as Partial<WYSIWYG2Props>;
 		case ContentBlockEditor.FileUpload:
@@ -79,9 +88,7 @@ export const generateFieldAttributes = (
 		default:
 			return {
 				value,
-				onChange: (value: any) => {
-					onChange(value);
-				},
+				onChange,
 			};
 	}
 };

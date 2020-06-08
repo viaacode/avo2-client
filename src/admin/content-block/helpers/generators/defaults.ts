@@ -11,7 +11,6 @@ import {
 	Color,
 	ContentBlockEditor,
 	ContentBlockField,
-	ContentBlockType,
 	DefaultContentBlockState,
 	PaddingFieldState,
 } from '../../../shared/types';
@@ -23,28 +22,26 @@ import {
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
-	blockType: ContentBlockType,
-	position: number,
-	backgroundColor: Color = Color.Transparent,
-	headerBackgroundColor: Color = Color.Transparent,
-	padding: PaddingFieldState = {
-		top: 'top',
-		bottom: 'bottom',
-	},
-	margin: PaddingFieldState = {
-		top: 'none',
-		bottom: 'none',
-	},
-	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
-): DefaultContentBlockState => ({
-	blockType,
-	position,
-	backgroundColor,
-	headerBackgroundColor,
-	padding,
-	margin,
-	userGroupIds,
-});
+	state: Partial<DefaultContentBlockState> = {}
+): DefaultContentBlockState => {
+	return {
+		backgroundColor: state.backgroundColor || Color.Transparent,
+		headerBackgroundColor: state.headerBackgroundColor || Color.Transparent,
+		padding:
+			state.padding ||
+			({
+				top: 'small',
+				bottom: 'small',
+			} as PaddingFieldState),
+		margin:
+			state.margin ||
+			({
+				top: 'none',
+				bottom: 'none',
+			} as PaddingFieldState),
+		userGroupIds: state.userGroupIds || [],
+	};
+};
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
@@ -131,7 +128,7 @@ export const TEXT_FIELD = (
 	},
 	editorProps: {
 		controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
-		fileType: 'CONTENT_PAGE_IMAGE',
+		fileType: 'CONTENT_BLOCK_IMAGE',
 	} as Partial<WYSIWYG2WrapperProps>,
 	...propOverride,
 });
@@ -159,7 +156,7 @@ export const FILE_FIELD = (
 
 		return errorArray;
 	},
-	editorProps: { assetType: 'CONTENT_PAGE_IMAGE' } as FileUploadProps,
+	editorProps: { assetType: 'CONTENT_BLOCK_IMAGE' } as FileUploadProps,
 	...propOverride,
 });
 

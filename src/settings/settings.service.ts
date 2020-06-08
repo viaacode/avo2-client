@@ -28,10 +28,13 @@ interface UpdateProfileValues {
 }
 
 export const updateProfileInfo = async (
-	profile: Avo.User.Profile,
+	profile: Avo.User.Profile | null,
 	variables: Partial<UpdateProfileValues>
 ): Promise<void> => {
 	try {
+		if (!profile) {
+			return;
+		}
 		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/profile`, {
 			method: 'POST',
 			headers: {

@@ -3,7 +3,7 @@ import { generateRandomId } from '../../shared/helpers/uuid';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
-import { EditableInteractiveTour } from './views/InteractiveTourEdit';
+import { EditableInteractiveTour } from './interactive-tour.types';
 
 export const INTERACTIVE_TOUR_PATH = {
 	INTERACTIVE_TOUR_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.interactiveTours}`,
@@ -51,3 +51,6 @@ export function getInitialInteractiveTour(): EditableInteractiveTour {
 		],
 	};
 }
+
+export const MAX_STEP_TITLE_LENGTH = 28;
+export const MAX_STEP_TEXT_LENGTH = 200;

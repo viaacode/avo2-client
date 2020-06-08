@@ -335,7 +335,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				const isInFolder = true; // TODO: Check if collection is in bundle
 				return isInFolder && <Button icon="folder" type="borderless" />;
 
-			case 'isPublic':
+			case 'is_public':
 				return (
 					<div
 						title={
@@ -402,7 +402,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				sortable: true,
 			},
 			{
-				id: 'isPublic',
+				id: 'is_public',
 				label: t('collection/components/collection-or-bundle-overview___is-publiek'),
 				col: '2',
 				sortable: true,

@@ -1,4 +1,5 @@
 import {
+	BlockHeroProps,
 	ButtonAction,
 	ButtonType,
 	ContentItemStyle,
@@ -6,11 +7,11 @@ import {
 	CTAProps,
 	HeadingType,
 	IconName,
+	ImageInfo,
 	RichEditorState,
 	SpacerOption,
 } from '@viaa/avo2-components';
-
-import { ContentPageType } from '../../content/content.types';
+import { Avo } from '@viaa/avo2-types';
 
 // OPTIONS
 export type AlignOption = 'left' | 'right' | 'center';
@@ -86,12 +87,13 @@ export interface ContentBlockConfig {
 	block: ContentBlockBlockConfig;
 	type: ContentBlockType;
 	anchor?: string;
+	position: number;
 }
 
 export interface ContentBlockComponentsConfig {
 	name?: string;
 	limits?: ContentBlockComponentsLimits;
-	state: ContentBlockComponentState | ContentBlockComponentState[];
+	state: ContentBlockComponentState;
 	fields: {
 		[key: string]: any;
 	};
@@ -114,9 +116,11 @@ export interface ContentBlockField {
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
-	repeat?: boolean;
-	repeatAddButtonLabel?: string;
-	repeatDeleteButtonLabel?: string;
+	repeat?: {
+		defaultState: any;
+		addButtonLabel?: string;
+		deleteButtonLabel?: string;
+	};
 }
 
 export type ContentBlockEditorType = 'field' | 'fieldGroup';
@@ -129,9 +133,11 @@ export interface ContentBlockFieldGroup {
 	type?: ContentBlockEditorType;
 	min?: number;
 	max?: number;
-	repeat?: boolean;
-	repeatAddButtonLabel?: string;
-	repeatDeleteButtonLabel?: string;
+	repeat?: {
+		defaultState: any;
+		addButtonLabel?: string;
+		deleteButtonLabel?: string;
+	};
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
@@ -154,6 +160,9 @@ export enum ContentBlockType {
 	PageOverview = 'PAGE_OVERVIEW',
 	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
 	Spotlight = 'SPOTLIGHT',
+	Hero = 'HERO',
+	Search = 'SEARCH',
+	ContentPageMeta = 'CONTENT_PAGE_META',
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
@@ -164,8 +173,6 @@ export interface DefaultContentBlockState {
 	backgroundColor: Color;
 	headerBackgroundColor?: Color; // css color string. eg: '#222' or 'black' or 'rgb(0, 0, 255)'
 	headerHeight?: string; // css height string. eg: '20px' or '15%'
-	blockType: ContentBlockType;
-	position: number;
 	padding: PaddingFieldState;
 	margin: PaddingFieldState;
 	userGroupIds: number[];
@@ -202,20 +209,32 @@ export enum ContentBlockEditor {
 }
 
 /* CONTENT BLOCKS */
-export type ContentBlockComponentState =
+export type RepeatedContentBlockComponentState =
+	| AnchorLinksBlockComponentState
 	| ButtonsBlockComponentState
 	| Partial<CTAProps>
+	| ImageGridBlockComponentStateFields
+	| MediaGridBlockComponentState
+	| ImageInfo // project spotlight & spotlight
+	| RichTextBlockComponentState;
+
+export type SingleContentBlockComponentState =
 	| HeadingBlockComponentState
+	| Partial<BlockHeroProps>
 	| IFrameBlockComponentState
 	| ImageBlockComponentState
-	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
 	| KlaarBlockComponentState
-	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
+	| MediaPlayerTitleTextButtonBlockComponentState
 	| PageOverviewBlockComponentStateFields
 	| QuoteBlockComponentState
-	| RichTextBlockComponentState;
+	| RichTextBlockComponentState
+	| {}; // Search block & content page meta
+
+export type ContentBlockComponentState =
+	| RepeatedContentBlockComponentState[]
+	| SingleContentBlockComponentState;
 
 export interface HeadingBlockComponentState {
 	children: string;
@@ -250,29 +269,29 @@ export interface PageOverviewBlockComponentStateFields {
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
 	centerHeader?: boolean;
-	headerBackgroundColor?: string;
-	contentType: ContentPageType;
+	headerBackgroundColor?: Color;
+	contentType: Avo.ContentPage.Type;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
-	navigate?: () => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 export interface ButtonsBlockComponentState {
 	label: string;
 	icon?: IconName;
 	type?: ButtonType;
-	navigate?: () => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 export interface AnchorLinksBlockComponentState {
 	label: string;
 	icon?: IconName;
 	type?: ButtonType;
-	navigate?: () => void;
+	navigate?: (buttonAction: ButtonAction) => void;
 }
 
 export interface KlaarBlockComponentState {
@@ -351,3 +370,10 @@ export interface AnchorLinksBlockState extends DefaultContentBlockState {
 	align: AlignOption;
 	hasDividers: boolean;
 }
+
+export const DEFAULT_BUTTON_PROPS = {
+	type: 'primary',
+	label: '',
+	icon: undefined,
+	buttonAction: undefined,
+};

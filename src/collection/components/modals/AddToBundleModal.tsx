@@ -1,7 +1,4 @@
-import { ExecutionResult } from '@apollo/react-common';
-import { useMutation } from '@apollo/react-hooks';
-import { ApolloQueryResult } from 'apollo-client';
-import { get, isNil } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,14 +23,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import { CustomError } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { getThumbnailForCollection } from '../../../shared/services/stills-service';
-import {
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection.gql';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
 import { ContentTypeNumber } from '../../collection.types';
 
@@ -63,9 +56,6 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	);
 	const [newBundleTitle, setNewBundleTitle] = useState<string>('');
 	const [bundles, setBundles] = useState<Partial<Avo.Collection.Collection>[]>([]);
-
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 
 	const fetchBundles = React.useCallback(
 		() =>
@@ -102,21 +92,8 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		try {
 			setSelectedBundle(undefined);
 			setSelectedBundleId(id);
-			const response: ApolloQueryResult<Avo.Collection.Collection> = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id },
-			});
-			const collection = get(response, 'data.app_collections[0]');
-
-			if (collection) {
-				setSelectedBundle(collection);
-			} else {
-				ToastService.danger(
-					t(
-						'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt'
-					)
-				);
-			}
+			const collection = await CollectionService.getCollectionById(id);
+			setSelectedBundle(collection);
 		} catch (err) {
 			ToastService.danger(
 				t(
@@ -148,45 +125,33 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		setIsProcessing(true);
 
 		try {
+			if (!bundle.id) {
+				throw new CustomError('Bundle id is undefined', null, bundle);
+			}
 			const fragment = getFragment(bundle);
 			delete fragment.item_meta;
-			const response: void | ExecutionResult<
-				Avo.Collection.Fragment
-			> = await triggerCollectionFragmentsInsert({
-				variables: {
-					id: bundle.id,
-					fragments: [fragment],
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			const insertedFragments = await CollectionService.insertFragments(bundle.id, [
+				fragment,
+			]);
 
-			if (!response || response.errors) {
-				console.error(get(response, 'errors'));
-				ToastService.danger(
-					t(
-						'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
-					)
-				);
-			} else {
-				ToastService.success(
-					t(
-						'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
-					)
-				);
-				onClose();
-				trackEvents(
-					{
-						object: String(collection.id),
-						object_type: 'collections',
-						message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
-							response,
-							'data.insert_app_collection_fragments.returning[0].id'
-						)} toegevoegd aan collectie ${collection.id}`,
-						action: 'add_to_collection',
-					},
-					user
-				);
-			}
+			ToastService.success(
+				t(
+					'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
+				)
+			);
+			onClose();
+			trackEvents(
+				{
+					object: String(collection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
+						insertedFragments,
+						'[0].id'
+					)} toegevoegd aan collectie ${collection.id}`,
+					action: 'add_to_collection',
+				},
+				user
+			);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -215,7 +180,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				type_id: ContentTypeNumber.bundle,
 			};
 			try {
-				newBundle.thumbnail_path = await getThumbnailForCollection({
+				newBundle.thumbnail_path = await VideoStillService.getThumbnailForCollection({
 					thumbnail_path: undefined,
 					collection_fragments: [getFragment(newBundle) as Avo.Collection.Fragment],
 				});
@@ -225,38 +190,12 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				});
 			}
 
-			const response: void | ExecutionResult<
-				Avo.Collection.Collection
-			> = await triggerCollectionInsert({
-				variables: {
-					collection: newBundle,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			const insertedBundle = await CollectionService.insertCollection(newBundle);
 
-			const insertedBundle: Partial<Avo.Collection.Collection> = get(
-				response,
-				'data.insert_app_collections.returning[0]'
-			);
-
-			if (!response || response.errors) {
-				ToastService.danger(
-					t(
-						'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt'
-					)
-				);
-			} else if (!insertedBundle || isNil(insertedBundle.id)) {
-				ToastService.danger(
-					t(
-						'collection/components/modals/add-to-bundle-modal___de-aangemaakte-bundel-kon-niet-worden-opgehaald'
-					)
-				);
-			} else {
-				// Add collection to bundle
-				await addCollectionToExistingBundle(insertedBundle);
-				await fetchBundles();
-				onClose();
-			}
+			// Add collection to bundle
+			await addCollectionToExistingBundle(insertedBundle);
+			await fetchBundles();
+			onClose();
 
 			// Re-enable apply button
 			setIsProcessing(false);

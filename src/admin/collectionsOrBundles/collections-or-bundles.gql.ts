@@ -18,7 +18,7 @@ export const GET_COLLECTIONS = gql`
 			created_at
 			profile {
 				id
-				usersByuserId {
+				user: usersByuserId {
 					id
 					first_name
 					last_name
@@ -44,7 +44,7 @@ export const GET_COLLECTIONS = gql`
 			lom_classification
 			updated_by {
 				id
-				usersByuserId {
+				user: usersByuserId {
 					id
 					first_name
 					last_name
@@ -58,7 +58,19 @@ export const GET_COLLECTIONS = gql`
 				id
 				label
 			}
-			relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
+			copies: relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
+				aggregate {
+					count
+				}
+			}
+			in_bundle: relations_aggregate(where: { predicate: { _eq: "USED_IN_COLLECTION" } }) {
+				aggregate {
+					count
+				}
+			}
+			in_assignment: relations_aggregate(
+				where: { predicate: { _eq: "USED_IN_ASSIGNMENT" } }
+			) {
 				aggregate {
 					count
 				}

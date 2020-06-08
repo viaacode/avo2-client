@@ -1,11 +1,12 @@
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
-export type UserOverviewTableCols =
+export type UserOverviewTableCol =
 	| 'first_name'
 	| 'last_name'
 	| 'mail'
 	| 'stamboek'
 	| 'created_at'
+	| 'updated_at'
 	| 'actions';
 
 export interface UserTableState extends FilterableTableState {

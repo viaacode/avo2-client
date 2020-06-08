@@ -6,8 +6,6 @@ import { Trans } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
 
 import { CustomError } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
-import i18n from '../../../../shared/translations/i18n';
 import { NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
@@ -47,13 +45,6 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 					null,
 					{ navItem, index, isSubLink }
 				)
-			);
-			ToastService.danger(
-				i18n.t(
-					'admin/shared/components/sidebar/sidebar___navigatie-item-met-leeg-pad-label',
-					{ label: navItem.label }
-				),
-				false
 			);
 		}
 		return (

@@ -1,6 +1,5 @@
-import { Avo } from '@viaa/avo2-types';
-
 import { ContentService } from '../../../content/content.service';
+import { ContentPageInfo } from '../../../content/content.types';
 import { PickerSelectItem } from '../../types';
 
 import { parsePickerItem } from './parse-picker';
@@ -10,7 +9,7 @@ export const retrieveContentPages = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
-	const contentItems: Avo.Content.Content[] | null = title
+	const contentItems: ContentPageInfo[] | null = title
 		? await ContentService.getContentItemsByTitle(`%${title}%`, limit)
 		: await ContentService.getContentItems(limit);
 
@@ -22,7 +21,7 @@ export const retrieveProjectContentPages = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
-	const contentItems: Avo.Content.Content[] | null = title
+	const contentItems: Partial<ContentPageInfo>[] | null = title
 		? await ContentService.getProjectContentItemsByTitle(`%${title}%`, limit)
 		: await ContentService.getProjectContentItems(limit);
 
@@ -30,10 +29,10 @@ export const retrieveProjectContentPages = async (
 };
 
 // Parse raw content items to react-select options
-const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItem[] => {
+const parseContentPages = (raw: Partial<ContentPageInfo>[]): PickerSelectItem[] => {
 	return raw.map(
-		(item: Avo.Content.Content): PickerSelectItem => ({
-			label: item.title,
+		(item: Partial<ContentPageInfo>): PickerSelectItem => ({
+			label: item.title || '',
 			value: parsePickerItem('CONTENT_PAGE', item.path as string), // TODO enforce path in database
 		})
 	);

@@ -19,14 +19,14 @@ import {
 } from '@viaa/avo2-components';
 
 import { ToastService } from '../../../shared/services';
-import { DbContent } from '../content.types';
+import { ContentPageInfo } from '../content.types';
 
 type publishOption = 'private' | 'public' | 'timebound';
 
 interface ShareContentPageModalProps {
 	isOpen: boolean;
-	onClose: (contentPage?: Partial<DbContent>) => any;
-	contentPage: DbContent;
+	onClose: (contentPage?: Partial<ContentPageInfo>) => any;
+	contentPage: ContentPageInfo;
 }
 
 const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
@@ -49,12 +49,12 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 
 	const onSave = async () => {
 		try {
-			const newContent: Partial<DbContent> = {
+			const newContent: Partial<ContentPageInfo> = {
 				is_public: selectedOption === 'public',
 				published_at: selectedOption === 'public' ? new Date().toISOString() : null,
 				publish_at: selectedOption === 'timebound' ? publishAt : null,
 				depublish_at: selectedOption === 'timebound' ? depublishAt : null,
-			} as Partial<DbContent>;
+			} as Partial<ContentPageInfo>;
 			setValidationError(undefined);
 			closeModal(newContent);
 		} catch (err) {
@@ -66,7 +66,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 		}
 	};
 
-	const closeModal = (newContent?: Partial<DbContent>) => {
+	const closeModal = (newContent?: Partial<ContentPageInfo>) => {
 		setValidationError(undefined);
 		onClose(newContent);
 	};

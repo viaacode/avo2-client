@@ -14,10 +14,16 @@ export const INITIAL_IFRAME_COMPONENTS_STATE = (): IFrameBlockComponentState => 
 	src: '',
 });
 
-export const INITIAL_IFRAME_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.IFrame, position);
+export const INITIAL_IFRAME_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top-extra-large',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),
 	type: ContentBlockType.IFrame,
 	components: {
@@ -40,7 +46,7 @@ export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =>
 		},
 	},
 	block: {
-		state: INITIAL_IFRAME_BLOCK_STATE(position),
+		state: INITIAL_IFRAME_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

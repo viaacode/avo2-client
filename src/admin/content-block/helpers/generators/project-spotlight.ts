@@ -25,11 +25,16 @@ export const INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE = (): ImageInfo[] =>
 			} as any)
 	);
 
-export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (
-	position: number
-): DefaultContentBlockState => BLOCK_STATE_DEFAULTS(ContentBlockType.ProjectsSpotlight, position);
+export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t(
 		'admin/content-block/helpers/generators/projects-spotlight___projecten-in-de-kijker'
 	),
@@ -57,7 +62,7 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 					'admin/content-block/helpers/generators/project-spotlight___aangepaste-afbeelding-optioneel'
 				),
 				editorProps: {
-					assetType: 'CONTENT_PAGE_IMAGE',
+					assetType: 'CONTENT_BLOCK_IMAGE',
 					allowMulti: false,
 				} as FileUploadProps,
 				validator: undefined,
@@ -72,7 +77,7 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 		},
 	},
 	block: {
-		state: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE(position),
+		state: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 		},

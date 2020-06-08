@@ -1,6 +1,5 @@
 import { get } from 'lodash-es';
-import queryString from 'query-string';
-import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
@@ -79,14 +78,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	user,
 	...rest
 }) => {
-	const videoRef: RefObject<HTMLVideoElement> = createRef();
-
 	const [t] = useTranslation();
 
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	// TODO: use setTime when adding logic for enabling timestamps in the URL
-	const [time] = useState<number>(0);
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
@@ -209,29 +204,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 		checkPermissionsAndGetItem();
 	}, [match.params.id, setItem, t, user]);
 
-	/**
-	 * Update video and query param time when time changes in the state
-	 */
-	useEffect(() => {
-		const setSeekerTimeInQueryParams = (): void => {
-			history.push({
-				pathname: `/item/${match.params.id}`,
-				search: time ? `?${queryString.stringify({ time })}` : '',
-			});
-		};
-
-		const setSeekerTime = () => {
-			if (videoRef.current) {
-				videoRef.current.currentTime = time;
-			}
-		};
-
-		if (time) {
-			setSeekerTimeInQueryParams();
-			setSeekerTime();
-		}
-	}, [time, history, videoRef, match.params.id, relatedItems, user]);
-
 	const toggleBookmark = async () => {
 		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
@@ -262,15 +234,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 		}
 	};
 
-	/**
-	 * Set video current time from the query params once the video has loaded its meta data
-	 * If this happens sooner, the time will be ignored by the video player
-	 */
-	// TODO: trigger this function when flowplayer is loaded
-	// const getSeekerTimeFromQueryParams = () => {
-	// 	const queryParams = queryString.parse(location.search);
-	// 	setTime(parseInt((queryParams.time as string) || '0', 10));
-	// };
+	const handleRelatedItemClicked = (relatedItem: Avo.Search.ResultItem) => {
+		redirectToClientPage(
+			buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
+			history
+		);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
 
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
@@ -287,12 +257,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							category={englishContentType}
-							onClick={() =>
-								redirectToClientPage(
-									buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
-									history
-								)
-							}
+							onClick={() => handleRelatedItemClicked(relatedItem)}
 							orientation="horizontal"
 							title={relatedItem.dc_title}
 						>
@@ -328,7 +293,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					title={item.title}
 					category={toEnglishContentType(item.type.label)}
 					showMetaData={true}
-					containerSize="large"
 					className="c-item-detail__header"
 				>
 					<HeaderContentType
@@ -396,7 +360,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							history={history}
 							location={location}
 							match={match}
-							user={user}
 							canPlay={
 								!isOpenAddToCollectionModal &&
 								!isShareThroughEmailModalOpen &&
@@ -664,7 +627,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						</Grid>
 					</Container>
 				</Container>
-				{typeof match.params.id !== undefined && (
+				{typeof match.params.id !== undefined && isOpenAddToCollectionModal && (
 					<AddToCollectionModal
 						history={history}
 						location={location}

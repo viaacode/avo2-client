@@ -5,13 +5,28 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
-import { ITEMS_PER_PAGE } from './user.const';
+import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
 import { GET_USER_ROLES, GET_USERS } from './user.gql';
+import { UserOverviewTableCol } from './user.types';
 
 export class UserService {
+	private static getOrderObject(
+		sortColumn: UserOverviewTableCol,
+		sortOrder: Avo.Search.OrderDirection
+	) {
+		const getOrderFunc: Function | undefined =
+			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
+
+		if (getOrderFunc) {
+			return [getOrderFunc(sortOrder)];
+		}
+
+		return [{ [sortColumn]: sortOrder }];
+	}
+
 	public static async getProfiles(
 		page: number,
-		sortColumn: string,
+		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
 		queryText: string,
 		itemsPerPage: number = ITEMS_PER_PAGE
@@ -21,7 +36,7 @@ export class UserService {
 			variables = {
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
-				orderBy: [{ [sortColumn]: sortOrder }],
+				orderBy: this.getOrderObject(sortColumn, sortOrder),
 				queryText: `%${queryText}%`,
 			};
 			const response = await dataService.query({
@@ -65,5 +80,27 @@ export class UserService {
 				query: 'GET_USER_ROLES',
 			});
 		}
+	}
+
+	/**
+	 * Get user role name from user of profile object
+	 * @param userOrProfile
+	 * @returns userRole eg: leerling, lesgever, admin, ...  See database for all options: shared.user_roles
+	 */
+	public static getUserRole(
+		userOrProfile: Avo.User.User | Avo.User.Profile | undefined | null
+	): string | null {
+		return get(userOrProfile, 'role.name') || get(userOrProfile, 'user.role.name') || null;
+	}
+
+	/**
+	 * Get user role label from user of profile object
+	 * @param userOrProfile
+	 * @returns userRole eg: Leerling, Lesgever, Beheerder, ...  See database for all options: shared.user_roles
+	 */
+	public static getUserRoleLabel(
+		userOrProfile: Avo.User.User | Avo.User.Profile | undefined | null
+	): string | null {
+		return get(userOrProfile, 'role.label') || get(userOrProfile, 'user.role.label') || null;
 	}
 }

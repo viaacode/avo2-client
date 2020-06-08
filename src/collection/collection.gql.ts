@@ -28,6 +28,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				created_at
 				collection_uuid
 				type
+				thumbnail_path
 			}
 			updated_at
 			type_id
@@ -80,7 +81,7 @@ export const GET_COLLECTION_BY_ID = gql`
 			lom_typicalagerange
 			updated_by {
 				id
-				usersByuserId {
+				user: usersByuserId {
 					id
 					first_name
 					last_name
@@ -385,7 +386,7 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 			id
 			title
 			profile {
-				usersByuserId {
+				user: usersByuserId {
 					first_name
 					last_name
 					id

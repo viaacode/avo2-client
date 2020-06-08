@@ -1,17 +1,18 @@
 import classnames from 'classnames';
-import { omit } from 'lodash-es';
+import { get, noop, omit } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
-import { Color, ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
+import { ContentPageInfo } from '../../../content/content.types';
+import { Color, ContentBlockConfig } from '../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
 import {
 	COMPONENT_PREVIEW_MAP,
+	CONTENT_PAGE_ACCESS_BLOCKS,
 	IGNORE_BLOCK_LEVEL_PROPS,
 	NAVIGABLE_CONTENT_BLOCKS,
 	REPEATABLE_CONTENT_BLOCKS,
@@ -19,9 +20,10 @@ import {
 import './ContentBlockPreview.scss';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
-	componentState: ContentBlockComponentState | ContentBlockComponentState[];
-	contentWidth?: Avo.Content.ContentWidth;
-	blockState: ContentBlockState;
+	contentBlockConfig: ContentBlockConfig;
+	contentPageInfo: Partial<ContentPageInfo>;
+	onClick: () => void;
+	className?: string;
 }
 
 enum ContentWidthMap {
@@ -31,14 +33,17 @@ enum ContentWidthMap {
 }
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
+	contentBlockConfig,
+	contentPageInfo,
+	onClick = noop,
+	className,
 	history,
-	componentState,
-	contentWidth = 'REGULAR',
-	blockState,
 }) => {
-	const containerSize = ContentWidthMap[contentWidth];
-	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
-	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
+	const blockState = get(contentBlockConfig, 'block.state');
+	const componentState = get(contentBlockConfig, 'components.state');
+	const containerSize = ContentWidthMap[contentPageInfo.content_width || 'REGULAR'];
+	const PreviewComponent = COMPONENT_PREVIEW_MAP[contentBlockConfig.type];
+	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
 	const blockRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
@@ -70,37 +75,42 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 
 	useEffect(updateHeaderHeight, [blockRef.current, blockState, componentState]);
 
-	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
-		// Pass the navigate function to each element (deprecated) => prefer passing the navigate function once to the block
-		if (componentStateProps.elements && componentStateProps.elements.length) {
-			componentStateProps.elements = componentStateProps.elements.map((element: any) => ({
-				...element,
-				navigate: () => navigateToContentType(element.buttonAction, history),
-			}));
-		}
+	if (NAVIGABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type)) {
 		// Pass the navigate function to the block
 		blockStateProps.navigate = (buttonAction: ButtonAction) => {
 			navigateToContentType(buttonAction, history);
 		};
 	}
 
+	if (CONTENT_PAGE_ACCESS_BLOCKS.includes(contentBlockConfig.type)) {
+		// Pass the content page object to the block
+		blockStateProps.contentPageInfo = contentPageInfo;
+	}
+
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
 
 	return (
 		<div
-			className="c-content-block"
+			className={classnames('c-content-block', className)}
 			style={{ backgroundColor: blockState.backgroundColor }}
 			id={blockState.anchor}
 			data-anchor={blockState.anchor}
 			ref={blockRef}
+			onClick={onClick}
 		>
 			<Spacer
 				className={classnames('c-content-block-preview', {
 					'c-content-block-preview--dark': hasDarkBg,
 					'u-color-white': hasDarkBg,
 				})}
-				margin={[blockState.margin.top, blockState.margin.bottom]}
-				padding={[blockState.padding.top, blockState.padding.bottom]}
+				margin={[
+					get(blockState, 'margin.top', 'none'),
+					get(blockState, 'margin.bottom', 'none'),
+				]}
+				padding={[
+					get(blockState, 'padding.top', 'none'),
+					get(blockState, 'padding.bottom', 'none'),
+				]}
 			>
 				{blockState.headerBackgroundColor !== Color.Transparent && (
 					<div
