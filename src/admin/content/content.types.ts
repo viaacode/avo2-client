@@ -11,15 +11,6 @@ export enum PageType {
 	Edit = 'edit',
 }
 
-export enum ContentPageType {
-	NewsItem = 'NIEUWS_ITEM',
-	FaqItem = 'FAQ_ITEM',
-	Screencast = 'SCREENCAST',
-	Page = 'PAGINA',
-	Project = 'PROJECT',
-	overview = 'OVERZICHT',
-}
-
 export enum ContentWidth {
 	MEDIUM = 'MEDIUM',
 	LARGE = 'LARGE',
@@ -38,12 +29,6 @@ export type ContentOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export type DateRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
-export type FilterRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
-export type RangeFilters = {
-	[key in FilterRangeKeys]?: { _gte?: string; _lte?: string };
-};
-
 export interface ContentTableState extends FilterableTableState {
 	content_type: string[];
 	created_at: DateRange;
@@ -55,33 +40,14 @@ export interface ContentTableState extends FilterableTableState {
 // Content Detail
 export type ContentDetailParams = { id: string };
 
-// Content Edit
-export interface ContentPageEditFormState {
-	thumbnail_path: string | null;
-	title: string;
-	descriptionState: RichEditorState | undefined;
-	descriptionHtml: string;
-	isProtected: boolean;
-	path: string;
-	contentType: string;
-	contentWidth: Avo.Content.ContentWidth;
-	publishAt: string;
-	depublishAt: string;
-	userGroupIds: number[];
-	labels: Partial<Avo.Content.ContentLabel>[];
-}
-
-export interface ContentEditState {
-	readonly contentBlockConfigs: ContentBlockConfig[];
-}
-
-export type ContentEditFormErrors = Partial<{ [key in keyof ContentPageEditFormState]: string }>;
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentPageInfo]: string }>;
 
 export enum ContentEditActionType {
+	SET_CONTENT_PAGE = '@@admin-content-page/SET_CONTENT_PAGE',
+	SET_CONTENT_PAGE_PROP = '@@admin-content-page/SET_CONTENT_PAGE_PROP',
 	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLOCK_CONFIG',
 	REMOVE_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REMOVE_CONTENT_BLOCK_CONFIG',
 	REORDER_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REORDER_CONTENT_BLOCK_CONFIG',
-	SET_CONTENT_BLOCK_CONFIGS = '@@admin-content-edit/SET_CONTENT_BLOCK_CONFIGS',
 	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
 	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
 	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
@@ -89,11 +55,35 @@ export enum ContentEditActionType {
 	SET_CONTENT_BLOCK_ERROR = '@@admin-content-edit/SET_CONTENT_BLOCK_ERROR',
 }
 
-export interface ContentEditAction {
-	type: ContentEditActionType;
-	payload: any;
+/**
+ * Convenience type with certain fields converted to be easier to manipulate
+ * eg:
+ * - contentBlockConfigs: ContentBlockConfig[]; instead of contentBlockssBycontentId: ContentBlockSchema[];
+ * - labels: Avo.ContentPage.Label[] instead of content_content_labels: ContentLabelLinkSchema[];
+ */
+
+export interface ContentPageInfo {
+	id: number;
+	thumbnail_path: string | null;
+	title: string;
+	description_html: string | null;
+	description_state: RichEditorState | undefined;
+	seo_description: string | null;
+	path: string | null;
+	is_public: boolean;
+	published_at: string | null;
+	publish_at: string | null;
+	depublish_at: string | null;
+	created_at: string;
+	updated_at: string | null;
+	is_protected: boolean;
+	content_type: Avo.ContentPage.Type;
+	content_width: Avo.ContentPage.Width;
+	profile: Avo.User.Profile;
+	user_profile_id: string | null;
+	user_group_ids: number[] | null;
+	contentBlockConfigs: ContentBlockConfig[];
+	labels: Partial<Avo.ContentPage.Label>[];
 }
 
-export type DbContent = Avo.Content.Content & {
-	content_content_labels: Avo.Content.ContentLabelLink[];
-};
+export type BlockClickHandler = (position: number, type: 'preview' | 'sidebar') => void;

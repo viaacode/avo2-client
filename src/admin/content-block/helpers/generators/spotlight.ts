@@ -24,10 +24,16 @@ export const INITIAL_SPOTLIGHT_COMPONENTS_STATE = (): ImageInfo[] =>
 			} as any)
 	);
 
-export const INITIAL_SPOTLIGHT_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Spotlight, position);
+export const INITIAL_SPOTLIGHT_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-extra-large',
+		},
+	});
 
 export const SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/spotlight___in-de-kijker'),
 	type: ContentBlockType.Spotlight,
 	components: {
@@ -45,7 +51,7 @@ export const SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 				{
 					label: i18n.t('admin/content-block/helpers/generators/spotlight___afbeelding'),
 					editorProps: {
-						assetType: 'CONTENT_PAGE_IMAGE',
+						assetType: 'CONTENT_BLOCK_IMAGE',
 						allowMulti: false,
 					} as FileUploadProps,
 				}
@@ -62,7 +68,7 @@ export const SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 		},
 	},
 	block: {
-		state: INITIAL_SPOTLIGHT_BLOCK_STATE(position),
+		state: INITIAL_SPOTLIGHT_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 		},

@@ -1,0 +1,19 @@
+@import '../../../styles/settings/colors';
+
+@keyframes flash {
+	from,
+	50%,
+	to {
+		background-color: lighten($color-teal-bright, 30%);
+	}
+
+	25%,
+	75% {
+		background-color: white;
+	}
+}
+
+.c-content-block__active {
+	animation: flash 1s ease-in-out 2;
+	background-color: inherit;
+}

@@ -1,9 +1,12 @@
+import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
+	ContentBlockFieldGroup,
 	ContentBlockType,
+	DEFAULT_BUTTON_PROPS,
 	DefaultContentBlockState,
 	RichTextBlockComponentState,
 } from '../../../shared/types';
@@ -24,11 +27,16 @@ export const INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE = (): RichTextBlockC
 	},
 ];
 
-export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (
-	position: number
-): DefaultContentBlockState => BLOCK_STATE_DEFAULTS(ContentBlockType.RichTextTwoColumns, position);
+export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-small',
+		},
+	});
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-2-kolommen'),
 	type: ContentBlockType.RichTextTwoColumns,
 	components: {
@@ -43,7 +51,13 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 				...TEXT_FIELD(
 					i18n.t(
 						'admin/content-block/helpers/generators/rich-text-two-columns___tekst-is-verplicht'
-					)
+					),
+					{
+						editorProps: {
+							controls: [...WYSIWYG2_OPTIONS_FULL, 'media'],
+							fileType: 'CONTENT_BLOCK_IMAGE',
+						},
+					}
 				),
 			},
 			buttons: {
@@ -84,18 +98,20 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 				type: 'fieldGroup',
 				min: 0,
 				max: 10,
-				repeat: true,
-				repeatAddButtonLabel: i18n.t(
-					'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
-				),
-				repeatDeleteButtonLabel: i18n.t(
-					'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
-				),
-			},
+				repeat: {
+					defaultState: DEFAULT_BUTTON_PROPS,
+					addButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
+					),
+					deleteButtonLabel: i18n.t(
+						'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
+					),
+				},
+			} as ContentBlockFieldGroup,
 		},
 	},
 	block: {
-		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(position),
+		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

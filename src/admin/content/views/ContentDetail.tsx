@@ -1,48 +1,48 @@
 import { useMutation } from '@apollo/react-hooks';
 import { compact, flatten, get } from 'lodash-es';
-import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactElement,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import {
+	Blankslate,
 	Button,
 	ButtonToolbar,
 	Container,
+	DropdownButton,
+	DropdownContent,
 	LinkTarget,
+	MenuContent,
 	Navbar,
-	Table,
 	Tabs,
-	TagInfo,
-	TagList,
-	TagOption,
-	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import {
+	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
 import {
+	buildLink,
+	createDropdownMenuItem,
 	CustomError,
 	navigate,
 	navigateToAbsoluteOrRelativeUrl,
-	sanitize,
-	sanitizePresets,
-	formatDate,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
-import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
-import {
-	renderDateDetailRows,
-	renderDetailRow,
-	renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields';
 import {
 	AdminLayout,
 	AdminLayoutBody,
@@ -50,13 +50,17 @@ import {
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
 import ShareContentPageModal from '../components/ShareContentPageModal';
-import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
+import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
-import { ContentDetailParams, DbContent } from '../content.types';
+import { ContentDetailParams, ContentPageInfo } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';
 
 import './ContentDetail.scss';
+import { ContentDetailMetaData } from './ContentDetailMetaData';
+
+export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
+export const CONTENT_PAGE_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -64,14 +68,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const { id } = match.params;
 
 	// Hooks
-	const [contentPage, setContentPage] = useState<DbContent | null>(null);
+	const [t] = useTranslation();
+
+	const [contentPageInfo, setContentPageInfo] = useState<ContentPageInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
-	const [t] = useTranslation();
 
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),
@@ -80,12 +85,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	// Computed
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
-	const isContentProtected = get(contentPage, 'is_protected', false);
-	const pageTitle = `Content: ${get(contentPage, 'title', '')}`;
+	const isContentProtected = get(contentPageInfo, 'is_protected', false);
+	const pageTitle = `Content: ${get(contentPageInfo, 'title', '')}`;
+	const description = contentPageInfo ? ContentService.getDescription(contentPageInfo) : '';
 
 	const fetchContentPageById = useCallback(async () => {
 		try {
-			setContentPage(await ContentService.getContentPageById(id));
+			setContentPageInfo(await ContentService.getContentPageById(id));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content page by id', err, {
@@ -95,88 +101,30 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					},
 				})
 			);
+			const notFound = JSON.stringify(err).includes('NOT_FOUND');
 			setLoadingInfo({
 				state: 'error',
-				message: t(
-					'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
-				),
+				message: notFound
+					? t('Een content pagina met dit id kon niet worden gevonden')
+					: t(
+							'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
+					  ),
+				icon: notFound ? 'search' : 'alert-triangle',
 			});
 		}
-	}, [setContentPage, setLoadingInfo, t, id]);
+	}, [setContentPageInfo, setLoadingInfo, t, id]);
 
 	useEffect(() => {
 		fetchContentPageById();
 	}, [fetchContentPageById]);
 
 	useEffect(() => {
-		if (contentPage) {
+		if (contentPageInfo) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [contentPage, setLoadingInfo]);
-
-	// Get labels of the contentPages, so we can show a readable error message
-	useEffect(() => {
-		fetchAllUserGroups()
-			.then(userGroups => {
-				setAllUserGroups(userGroups);
-			})
-			.catch((err: any) => {
-				console.error('Failed to get user groups', err);
-				ToastService.danger(
-					t(
-						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
-					),
-					false
-				);
-			});
-	}, [setAllUserGroups, t]);
-
-	// Methods
-	const getUserGroups = (contentPage: Avo.Content.Content): TagOption[] => {
-		const tagInfos: TagInfo[] = compact(
-			(contentPage.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
-				return allUserGroups.find(userGroupOption => userGroupOption.value === userGroupId);
-			})
-		);
-		const tagOptions = tagInfos.map(
-			(ug: TagInfo): TagOption => ({
-				id: ug.value,
-				label: ug.label,
-			})
-		);
-		if (tagOptions && tagOptions.length) {
-			return tagOptions;
-		}
-		return [
-			{
-				id: -3,
-				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niemand'),
-			},
-		];
-	};
-
-	const getLabels = (contentPage: DbContent): TagOption[] => {
-		return flatten(
-			(contentPage.content_content_labels || []).map(
-				(contentLabelLink: Avo.Content.ContentLabelLink) => {
-					return contentLabelLink.content_label;
-				}
-			)
-		);
-	};
-
-	const getContentPageWidthLabel = (contentPage: Avo.Content.Content): string => {
-		return (
-			get(
-				GET_CONTENT_WIDTH_OPTIONS().find(
-					option => option.value === contentPage.content_width
-				),
-				'label'
-			) || '-'
-		);
-	};
+	}, [contentPageInfo, setLoadingInfo]);
 
 	const handleDelete = () => {
 		triggerContentDelete({
@@ -204,8 +152,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	function handlePreviewClicked() {
-		if (contentPage && contentPage.path) {
-			navigateToAbsoluteOrRelativeUrl(contentPage.path, history, LinkTarget.Blank);
+		if (contentPageInfo && contentPageInfo.path) {
+			navigateToAbsoluteOrRelativeUrl(contentPageInfo.path, history, LinkTarget.Blank);
 		} else {
 			ToastService.danger(
 				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
@@ -213,18 +161,18 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	}
 
-	const handleShareModalClose = async (newContentPage?: Partial<DbContent>) => {
+	const handleShareModalClose = async (newContentPage?: Partial<ContentPageInfo>) => {
 		try {
 			if (newContentPage) {
 				await ContentService.updateContentPage({
-					...contentPage,
+					...contentPageInfo,
 					...newContentPage,
 				});
 
-				setContentPage({
-					...contentPage,
+				setContentPageInfo({
+					...contentPageInfo,
 					...newContentPage,
-				} as DbContent);
+				} as ContentPageInfo);
 
 				ToastService.success(
 					isPublic(newContentPage)
@@ -238,8 +186,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		} catch (err) {
 			console.error('Failed to save is_public state to content page', err, {
 				newContentPage,
-				contentPage,
+				contentPage: contentPageInfo,
 			});
+
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___het-opslaan-van-de-publiek-status-van-de-content-pagina-is-mislukt'
@@ -251,173 +200,167 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		setIsShareModalOpen(false);
 	};
 
-	// Render
-	const renderContentDetail = (): ReactElement | null => {
-		if (!contentPage) {
-			return null;
-		}
+	const CONTENT_DROPDOWN_ITEMS = [
+		createDropdownMenuItem(
+			'duplicate',
+			t('collection/views/collection-detail___dupliceer'),
+			'copy'
+		),
+		...(!isContentProtected || (isContentProtected && isAdminUser)
+			? [
+					createDropdownMenuItem(
+						'delete',
+						t('admin/content/views/content-detail___verwijderen')
+					),
+			  ]
+			: []),
+	];
 
-		// TODO: Move tab contents to separate views
-		switch (currentTab) {
-			case 'inhoud':
-				return <ContentPage contentPage={contentPage} />;
-			case 'metadata':
-				return (
-					<Container mode="vertical" size="small">
-						<Container mode="horizontal">
-							<Table horizontal variant="invisible" className="c-table_detail-page">
-								<tbody>
-									{/*TODO remove cast after typings update to 2.15.0*/}
-									{renderDetailRow(
-										<div style={{ width: '400px' }}>
-											<Thumbnail
-												category="item"
-												src={(contentPage as any).thumbnail_path}
-											/>
-										</div>,
-										t('admin/content/views/content-detail___cover-afbeelding')
-									)}
-									{renderSimpleDetailRows(contentPage, [
-										['title', t('admin/content/views/content-detail___titel')],
-									])}
-									{renderDetailRow(
-										<p
-											dangerouslySetInnerHTML={{
-												__html: sanitize(
-													(contentPage as any).description,
-													sanitizePresets.link
-												),
-											}}
-										/>,
-										t('admin/content/views/content-detail___beschrijving')
-									)}
-									{renderSimpleDetailRows(contentPage, [
-										[
-											'content_type',
-											t('admin/content/views/content-detail___content-type'),
-										],
-										['path', t('admin/content/views/content-detail___pad')],
-										[
-											'is_protected',
-											t(
-												'admin/content/views/content-detail___beschermde-pagina'
-											),
-										],
-									])}
-									{renderDetailRow(
-										getContentPageWidthLabel(contentPage),
-										t('admin/content/views/content-detail___breedte')
-									)}
-									{renderDetailRow(
-										`${get(contentPage, 'profile.user.first_name')} ${get(
-											contentPage,
-											'profile.user.last_name'
-										)}`,
-										t('admin/content/views/content-detail___auteur')
-									)}
-									{renderDetailRow(
-										get(contentPage, 'profile.user.role.label'),
-										t('admin/content/views/content-detail___auteur-rol')
-									)}
-									{renderDateDetailRows(contentPage, [
-										[
-											'created_at',
-											t('admin/content/views/content-detail___aangemaakt'),
-										],
-										[
-											'updated_at',
-											t(
-												'admin/content/views/content-detail___laatst-bewerkt'
-											),
-										],
-									])}
-									{renderDetailRow(
-										<p>{formatDate(contentPage.published_at) || 'Nee'}</p>,
-										t('admin/content/views/content-detail___gepubliceerd')
-									)}
-									{renderDetailRow(
-										<p>{formatDate(contentPage.publish_at) || 'N.v.t'}</p>,
-										t('Wordt gepubliceerd op')
-									)}
-									{renderDetailRow(
-										<p>{formatDate(contentPage.depublish_at) || 'N.v.t.'}</p>,
-										t('Wordt gedepubliceerd op')
-									)}
-									{renderDetailRow(
-										<TagList
-											swatches={false}
-											selectable={false}
-											closable={false}
-											tags={getUserGroups(contentPage)}
-										/>,
-										t('admin/content/views/content-detail___toegankelijk-voor')
-									)}
-									{renderDetailRow(
-										<TagList
-											swatches={false}
-											selectable={false}
-											closable={false}
-											tags={getLabels(contentPage)}
-										/>,
-										t('admin/content/views/content-detail___labels')
-									)}
-								</tbody>
-							</Table>
-						</Container>
-					</Container>
-				);
+	const executeAction = async (item: ReactText) => {
+		switch (item) {
+			case 'duplicate':
+				try {
+					if (!contentPageInfo) {
+						ToastService.danger(
+							t(
+								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
+							),
+							false
+						);
+						return;
+					}
+
+					const duplicateContentPage = await ContentService.duplicateContentPage(
+						contentPageInfo,
+						CONTENT_PAGE_COPY,
+						CONTENT_PAGE_COPY_REGEX,
+						get(user, 'profile.id')
+					);
+
+					if (!duplicateContentPage) {
+						ToastService.danger(
+							t(
+								'admin/content/views/content-detail___de-gedupliceerde-content-pagina-kon-niet-worden-gevonden'
+							),
+							false
+						);
+						return;
+					}
+
+					redirectToClientPage(
+						buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: duplicateContentPage.id }),
+						history
+					);
+
+					ToastService.success(
+						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd'),
+						false
+					);
+				} catch (err) {
+					console.error('Failed to duplicate content page', err, {
+						originalContentPage: contentPageInfo,
+					});
+
+					ToastService.danger(
+						t(
+							'admin/content/views/content-detail___het-dupliceren-van-de-content-pagina-is-mislukt'
+						),
+						false
+					);
+				}
+				break;
+
+			case 'delete':
+				setIsConfirmModalOpen(true);
+				break;
 
 			default:
 				return null;
 		}
 	};
 
+	const renderContentActions = () => (
+		<ButtonToolbar>
+			<Button
+				type="secondary"
+				icon={get(contentPageInfo, 'is_public') === true ? 'unlock-3' : 'lock'}
+				label={t('admin/content/views/content-detail___publiceren')}
+				title={t(
+					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+				)}
+				ariaLabel={t(
+					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+				)}
+				onClick={() => setIsShareModalOpen(true)}
+			/>
+			<Button
+				type="secondary"
+				icon="eye"
+				label={t('admin/content/views/content-detail___preview')}
+				title={t('admin/content/views/content-detail___bekijk-deze-pagina-in-de-website')}
+				ariaLabel={t(
+					'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+				)}
+				onClick={handlePreviewClicked}
+			/>
+			<Button
+				label={t('admin/content/views/content-detail___bewerken')}
+				title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
+				onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+			/>
+			<ControlledDropdown
+				isOpen={isOptionsMenuOpen}
+				menuWidth="fit-content"
+				onOpen={() => setIsOptionsMenuOpen(true)}
+				onClose={() => setIsOptionsMenuOpen(false)}
+				placement="bottom-end"
+			>
+				<DropdownButton>
+					<Button
+						type="secondary"
+						icon="more-horizontal"
+						ariaLabel={t('collection/views/collection-detail___meer-opties')}
+						title={t('collection/views/collection-detail___meer-opties')}
+					/>
+				</DropdownButton>
+				<DropdownContent>
+					<MenuContent menuItems={CONTENT_DROPDOWN_ITEMS} onClick={executeAction} />
+				</DropdownContent>
+			</ControlledDropdown>
+		</ButtonToolbar>
+	);
+
+	// Render
+	const renderContentDetail = (contentPageInfo: ContentPageInfo | null): ReactElement | null => {
+		if (!contentPageInfo) {
+			ToastService.danger(
+				t(
+					'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-ingeladen'
+				),
+				false
+			);
+			return null;
+		}
+
+		switch (currentTab) {
+			case 'inhoud':
+				return <ContentPage contentPageInfo={contentPageInfo} />;
+			case 'metadata':
+				return <ContentDetailMetaData contentPageInfo={contentPageInfo} />;
+			default:
+				return (
+					<Blankslate
+						title={t(
+							'admin/content/views/content-detail___dit-tabblad-kon-niet-gevonden-worden'
+						)}
+					/>
+				);
+		}
+	};
+
 	return (
 		<AdminLayout showBackButton pageTitle={pageTitle}>
-			<AdminLayoutTopBarRight>
-				<ButtonToolbar>
-					<Button
-						type="secondary"
-						icon={isPublic(contentPage) ? 'unlock-3' : 'lock'}
-						label={t('admin/content/views/content-detail___publiceren')}
-						title={t(
-							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-						)}
-						ariaLabel={t(
-							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-						)}
-						onClick={() => setIsShareModalOpen(true)}
-					/>
-					<Button
-						type="secondary"
-						icon="eye"
-						label={t('admin/content/views/content-detail___preview')}
-						title={t(
-							'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
-						)}
-						ariaLabel={t(
-							'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
-						)}
-						onClick={handlePreviewClicked}
-					/>
-					<Button
-						label={t('admin/content/views/content-detail___bewerken')}
-						title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
-						onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
-					/>
-					{/* TODO: also check permissions */}
-					{(!isContentProtected || (isContentProtected && isAdminUser)) && (
-						<Button
-							label={t('admin/content/views/content-detail___verwijderen')}
-							title={t(
-								'admin/content/views/content-detail___verwijder-deze-content-pagina'
-							)}
-							onClick={() => setIsConfirmModalOpen(true)}
-							type="danger-hover"
-						/>
-					)}
-				</ButtonToolbar>
-			</AdminLayoutTopBarRight>
+			<AdminLayoutTopBarRight>{renderContentActions()}</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
@@ -429,19 +372,22 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							get(contentPage, 'title'),
+							get(contentPageInfo, 'title'),
 							t(
 								'admin/content/views/content-detail___content-beheer-detail-pagina-titel'
 							)
 						)}
 					</title>
-					<meta name="description" content={get(contentPage, 'description') || ''} />
+					<meta
+						name="description"
+						content={get(contentPageInfo, 'seo_description') || description || ''}
+					/>
 				</MetaTags>
 				<div className="m-content-detail-preview">
 					<LoadingErrorLoadedComponent
 						loadingInfo={loadingInfo}
-						dataObject={contentPage}
-						render={renderContentDetail}
+						dataObject={contentPageInfo}
+						render={() => renderContentDetail(contentPageInfo)}
 					/>
 					<DeleteObjectModal
 						deleteObjectCallback={handleDelete}
@@ -455,9 +401,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 								: ''
 						}
 					/>
-					{!!contentPage && (
+					{!!contentPageInfo && (
 						<ShareContentPageModal
-							contentPage={contentPage}
+							contentPage={contentPageInfo}
 							isOpen={isShareModalOpen}
 							onClose={handleShareModalClose}
 						/>

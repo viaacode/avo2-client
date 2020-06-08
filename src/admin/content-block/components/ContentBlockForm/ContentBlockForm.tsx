@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { get, isEqual, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -21,6 +22,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { ToastService } from '../../../../shared/services';
 import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
@@ -30,6 +32,7 @@ import {
 	ContentBlockErrors,
 	ContentBlockState,
 	ContentBlockStateType,
+	RepeatedContentBlockComponentState,
 } from '../../../shared/types';
 import ContentBlockFormGroup from '../ContentBlockFormGroup/ContentBlockFormGroup';
 import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview.const';
@@ -82,10 +85,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const updateObject = {
 			[key]: value,
 		};
-		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
+		const stateUpdate = isArray(components.state)
+			? [updateObject]
+			: { ...components.state, [key]: value };
 
 		handleValidation(key, formGroupType, value, stateIndex);
-		onChange(formGroupType, stateUpdate, stateIndex);
+		onChange(formGroupType, stateUpdate, isArray(components.state) ? stateIndex : undefined);
 	};
 
 	const handleValidation = (
@@ -149,27 +154,33 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (
-					formGroup.state.map((formGroupState, stateIndex) => (
-						<Spacer key={stateIndex} margin="bottom">
-							<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
-								<Toolbar autoHeight>
-									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex +
-										1}`}</ToolbarLeft>
-									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
-								</Toolbar>
-							</BlockHeading>
-							<Flex spaced="regular" wrap>
-								<FlexItem>
-									<ContentBlockFormGroup
-										key={stateIndex}
-										{...formGroupOptions}
-										formGroupState={formGroupState}
-										stateIndex={stateIndex}
-									/>
-								</FlexItem>
-							</Flex>
-						</Spacer>
-					))
+					formGroup.state.map(
+						(formGroupState: RepeatedContentBlockComponentState, stateIndex) => (
+							<Spacer key={stateIndex} margin="bottom">
+								<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
+									<Toolbar autoHeight>
+										<ToolbarLeft>{`${get(
+											config,
+											'components.name'
+										)} ${stateIndex + 1}`}</ToolbarLeft>
+										<ToolbarRight>
+											{renderRemoveButton(stateIndex)}
+										</ToolbarRight>
+									</Toolbar>
+								</BlockHeading>
+								<Flex spaced="regular" wrap>
+									<FlexItem>
+										<ContentBlockFormGroup
+											key={stateIndex}
+											{...formGroupOptions}
+											formGroupState={formGroupState}
+											stateIndex={stateIndex}
+										/>
+									</FlexItem>
+								</Flex>
+							</Spacer>
+						)
+					)
 				) : (
 					<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
 				)}
@@ -240,6 +251,29 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								type="tertiary"
 							/>
 						</ButtonGroup>
+						<CopyToClipboard
+							text={JSON.stringify({ block: config })}
+							onCopy={() =>
+								ToastService.success(
+									t(
+										'admin/content-block/components/content-block-form/content-block-form___de-blok-is-naar-je-klembord-gekopieerd-druk-ctrl-v-om-hem-te-plakken'
+									),
+									false
+								)
+							}
+						>
+							<Button
+								icon="copy"
+								size="small"
+								title={t(
+									'admin/content-block/components/content-block-form/content-block-form___kopieer-content-blok'
+								)}
+								ariaLabel={t(
+									'admin/content-block/components/content-block-form/content-block-form___kopieer-content-blok'
+								)}
+								type="secondary"
+							/>
+						</CopyToClipboard>
 						<Button
 							icon="delete"
 							onClick={() => onRemove(blockIndex)}

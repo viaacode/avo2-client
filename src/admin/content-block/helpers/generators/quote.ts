@@ -16,10 +16,16 @@ export const INITIAL_QUOTE_COMPONENTS_STATE = (): QuoteBlockComponentState => ({
 	authorInitials: '',
 });
 
-export const INITIAL_QUOTE_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Quote, position);
+export const INITIAL_QUOTE_BLOCK_STATE = (): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top-small',
+			bottom: 'bottom-small',
+		},
+	});
 
 export const QUOTE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/quote___quote'),
 	type: ContentBlockType.Intro,
 	components: {
@@ -52,13 +58,13 @@ export const QUOTE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/image___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE' } as FileUploadProps,
+					editorProps: { assetType: 'CONTENT_BLOCK_IMAGE' } as FileUploadProps,
 				}
 			),
 		},
 	},
 	block: {
-		state: INITIAL_QUOTE_BLOCK_STATE(position),
+		state: INITIAL_QUOTE_BLOCK_STATE(),
 		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

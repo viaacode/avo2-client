@@ -25,6 +25,7 @@ import {
 	AlignOption,
 	BlockGridFormatOption,
 	Color,
+	ContentBlockComponentState,
 	ContentBlockType,
 	FillOption,
 	HeadingTypeOption,
@@ -34,60 +35,64 @@ import {
 import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ANCHOR_LINKS_BLOCK_CONFIG,
-	BUTTONS_BLOCK_CONFIG,
-	CTAS_BLOCK_CONFIG,
-	HEADING_BLOCK_CONFIG,
-	IFRAME_BLOCK_CONFIG,
-	IMAGE_BLOCK_CONFIG,
-	IMAGE_GRID_BLOCK_CONFIG,
-	INITIAL_ANCHOR_LINKS_BLOCK_STATE,
 	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
-	INITIAL_BUTTONS_BLOCK_STATE,
+} from './helpers/generators/anchor-links';
+import {
+	BUTTONS_BLOCK_CONFIG,
 	INITIAL_BUTTONS_COMPONENTS_STATE,
-	INITIAL_CTAS_BLOCK_STATE,
-	INITIAL_CTAS_COMPONENTS_STATE,
-	INITIAL_HEADING_BLOCK_STATE,
+} from './helpers/generators/buttons';
+import {
+	CONTENT_PAGE_META_BLOCK_CONFIG,
+	INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
+} from './helpers/generators/content-page-meta';
+import { CTAS_BLOCK_CONFIG, INITIAL_CTAS_COMPONENTS_STATE } from './helpers/generators/ctas';
+import {
+	HEADING_BLOCK_CONFIG,
 	INITIAL_HEADING_COMPONENTS_STATE,
-	INITIAL_IFRAME_BLOCK_STATE,
-	INITIAL_IFRAME_COMPONENTS_STATE,
-	INITIAL_IMAGE_BLOCK_STATE,
-	INITIAL_IMAGE_COMPONENTS_STATE,
-	INITIAL_IMAGE_GRID_BLOCK_STATE,
+} from './helpers/generators/heading';
+import { HERO_BLOCK_CONFIG, INITIAL_HERO_COMPONENTS_STATE } from './helpers/generators/hero';
+import { IFRAME_BLOCK_CONFIG, INITIAL_IFRAME_COMPONENTS_STATE } from './helpers/generators/iframe';
+import { IMAGE_BLOCK_CONFIG, INITIAL_IMAGE_COMPONENTS_STATE } from './helpers/generators/image';
+import {
+	IMAGE_GRID_BLOCK_CONFIG,
 	INITIAL_IMAGE_GRID_COMPONENTS_STATE,
-	INITIAL_INTRO_BLOCK_STATE,
-	INITIAL_INTRO_COMPONENTS_STATE,
-	INITIAL_KLAAR_BLOCK_STATE,
-	INITIAL_KLAAR_COMPONENTS_STATE,
-	INITIAL_MEDIA_GRID_BLOCK_STATE,
+} from './helpers/generators/image-grid';
+import { INITIAL_INTRO_COMPONENTS_STATE, INTRO_BLOCK_CONFIG } from './helpers/generators/intro';
+import { INITIAL_KLAAR_COMPONENTS_STATE, KLAAR_BLOCK_CONFIG } from './helpers/generators/klaar';
+import {
 	INITIAL_MEDIA_GRID_COMPONENTS_STATE,
-	INITIAL_MEDIA_PLAYER_BLOCK_STATE,
-	INITIAL_MEDIA_PLAYER_COMPONENTS_STATE,
-	INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,
-	INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
-	INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
-	INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
-	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
-	INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
-	INITIAL_QUOTE_BLOCK_STATE,
-	INITIAL_QUOTE_COMPONENTS_STATE,
-	INITIAL_RICH_TEXT_BLOCK_STATE,
-	INITIAL_RICH_TEXT_COMPONENTS_STATE,
-	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
-	INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
-	INITIAL_SPOTLIGHT_BLOCK_STATE,
-	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
-	INTRO_BLOCK_CONFIG,
-	KLAAR_BLOCK_CONFIG,
 	MEDIA_GRID_BLOCK_CONFIG,
+} from './helpers/generators/media-grid';
+import {
+	INITIAL_MEDIA_PLAYER_COMPONENTS_STATE,
 	MEDIA_PLAYER_BLOCK_CONFIG,
+} from './helpers/generators/media-player';
+import {
+	INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
 	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
+} from './helpers/generators/media-player-title-text-button';
+import {
+	INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	PAGE_OVERVIEW_BLOCK_CONFIG,
+} from './helpers/generators/page-overview';
+import {
+	INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
 	PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
-	QUOTE_BLOCK_CONFIG,
+} from './helpers/generators/project-spotlight';
+import { INITIAL_QUOTE_COMPONENTS_STATE, QUOTE_BLOCK_CONFIG } from './helpers/generators/quote';
+import {
+	INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	RICH_TEXT_BLOCK_CONFIG,
+} from './helpers/generators/rich-text';
+import {
+	INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+} from './helpers/generators/rich-text-two-columns';
+import { INITIAL_SEARCH_COMPONENTS_STATE, SEARCH_BLOCK_CONFIG } from './helpers/generators/search';
+import {
+	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	SPOTLIGHT_BLOCK_CONFIG,
-} from './helpers';
+} from './helpers/generators/spotlight';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -172,6 +177,18 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		label: i18n.t('admin/content-block/content-block___links'),
 		value: ContentBlockType.AnchorLinks,
 	},
+	{
+		label: i18n.t('Hero'),
+		value: ContentBlockType.Hero,
+	},
+	{
+		label: i18n.t('Zoek'),
+		value: ContentBlockType.Search,
+	},
+	{
+		label: i18n.t('Pagina metadata'),
+		value: ContentBlockType.ContentPageMeta,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -197,6 +214,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
+	[ContentBlockType.Hero]: HERO_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
@@ -211,13 +229,18 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Spotlight]: SPOTLIGHT_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	[ContentBlockType.Search]: SEARCH_BLOCK_CONFIG,
+	[ContentBlockType.ContentPageMeta]: CONTENT_PAGE_META_BLOCK_CONFIG,
 };
 
-export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
+export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
+	[type in ContentBlockType]: (position?: number) => ContentBlockComponentState;
+} = {
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_COMPONENTS_STATE,
+	[ContentBlockType.Hero]: INITIAL_HERO_COMPONENTS_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_COMPONENTS_STATE,
 	[ContentBlockType.Image]: INITIAL_IMAGE_COMPONENTS_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_COMPONENTS_STATE,
@@ -232,33 +255,14 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Quote]: INITIAL_QUOTE_COMPONENTS_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
-};
-
-export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
-	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_BLOCK_STATE,
-	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
-	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
-	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_STATE,
-	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
-	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
-	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
-	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
-	[ContentBlockType.Klaar]: INITIAL_KLAAR_BLOCK_STATE,
-	[ContentBlockType.MediaGrid]: INITIAL_MEDIA_GRID_BLOCK_STATE,
-	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_STATE,
-	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,
-	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
-	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
-	[ContentBlockType.Spotlight]: INITIAL_SPOTLIGHT_BLOCK_STATE,
-	[ContentBlockType.Quote]: INITIAL_QUOTE_BLOCK_STATE,
-	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
-	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
+	[ContentBlockType.Search]: INITIAL_SEARCH_COMPONENTS_STATE,
+	[ContentBlockType.ContentPageMeta]: INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
 };
 
 // Options
 export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
-		label: i18n.t('Geen'),
+		label: i18n.t('admin/content-block/content-block___geen'),
 		value: Color.Transparent,
 	},
 	{
@@ -288,6 +292,10 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___oceaangroen'),
 		value: Color.OceanGreen,
+	},
+	{
+		label: i18n.t('Leerlingen Geel'),
+		value: Color.Yellow,
 	},
 ];
 
@@ -392,17 +400,32 @@ export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 		label: i18n.t('admin/content-block/content-block___link-inline'),
 		value: 'inline-link',
 	},
+	{
+		label: i18n.t('Leerling primair (geel)'),
+		value: 'pupil-primary',
+	},
+	{
+		label: i18n.t('Leerling link (tekst in geel)'),
+		value: 'pupil-link',
+	},
+	{
+		label: i18n.t('Leerling link geel (inline)'),
+		value: 'pupil-inline-link',
+	},
 ];
 
-export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
+export const GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___schermbreedte-header'),
-		value: 'page-header',
+		label: i18n.t('Blauw'),
+		value: 'underlined-link',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___schermbreedte'),
-		value: 'full-width',
+		label: i18n.t('Geel'),
+		value: 'pupil-underlined-link' as any, // TODO remove cast after update to components v1.43.0
 	},
+];
+
+export const GET_MEDIA_PLAYER_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___paginabreedte'),
 		value: '100%',
@@ -419,6 +442,18 @@ export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 		label: i18n.t('admin/content-block/content-block___klein'),
 		value: '400px',
 	},
+];
+
+export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
+	{
+		label: i18n.t('admin/content-block/content-block___schermbreedte-header'),
+		value: 'page-header',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___schermbreedte'),
+		value: 'full-width',
+	},
+	...GET_MEDIA_PLAYER_WIDTH_OPTIONS(),
 ];
 
 export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [

@@ -9,7 +9,9 @@ import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError, performQuery } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
-import { getThumbnailForCollection } from '../shared/services/stills-service';
+import { RelationService } from '../shared/services/relation-service/relation.service';
+import { RelationType } from '../shared/services/relation-service/relation.types';
+import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
@@ -32,7 +34,6 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
-	INSERT_COLLECTION_RELATION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from './collection.gql';
@@ -43,10 +44,36 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel, RelationType } from './collection.types';
+import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
+
+	public static async getCollectionById(id: string): Promise<Avo.Collection.Collection> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTION_BY_ID,
+				variables: { id },
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, response);
+			}
+
+			const collection = get(response, 'data.app_collections[0]');
+
+			if (!collection) {
+				throw new CustomError('Response does not contain a collection', null, { response });
+			}
+
+			return collection;
+		} catch (err) {
+			throw new CustomError('Failed to fetch collection by id from the database', err, {
+				query: 'GET_COLLECTION_BY_ID',
+				variables: { id },
+			});
+		}
+	}
 
 	/**
 	 * Insert collection and underlying collection fragments.
@@ -97,7 +124,7 @@ export class CollectionService {
 
 			// insert fragments
 			if (fragments && fragments.length) {
-				newCollection.collection_fragments = await this.insertFragments(
+				newCollection.collection_fragments = await CollectionService.insertFragments(
 					newCollection.id,
 					fragments
 				);
@@ -189,6 +216,7 @@ export class CollectionService {
 				dataService.mutate({
 					mutation: DELETE_COLLECTION_FRAGMENT,
 					variables: { id },
+					update: ApolloCacheManager.clearCollectionCache,
 				})
 			);
 
@@ -224,6 +252,7 @@ export class CollectionService {
 							id,
 							fragment: fragmentToUpdate,
 						},
+						update: ApolloCacheManager.clearCollectionCache,
 					});
 				})
 			);
@@ -372,7 +401,8 @@ export class CollectionService {
 				collectionToInsert
 			);
 
-			await this.insertCollectionRelation(
+			await RelationService.insertRelation(
+				'collection',
 				collection.id,
 				duplicatedCollection.id,
 				RelationType.IS_COPY_OF
@@ -720,7 +750,7 @@ export class CollectionService {
 
 	public static async insertFragments(
 		collectionId: string,
-		fragments: Avo.Collection.Fragment[]
+		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
 			fragments.forEach(fragment => (fragment.collection_uuid = collectionId));
@@ -757,7 +787,7 @@ export class CollectionService {
 				}
 			);
 
-			return fragments;
+			return fragments as Avo.Collection.Fragment[];
 		} catch (err) {
 			throw new CustomError('Failed to insert fragments into collection', err, {
 				collectionId,
@@ -776,7 +806,7 @@ export class CollectionService {
 			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
 			// TODO:  || collection.thumbnail_type === 'auto'
 			if (!collection.thumbnail_path) {
-				return await getThumbnailForCollection(collection);
+				return await VideoStillService.getThumbnailForCollection(collection);
 			}
 
 			return collection.thumbnail_path;
@@ -887,6 +917,7 @@ export class CollectionService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_COLLECTION_LABELS,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
@@ -912,6 +943,7 @@ export class CollectionService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: DELETE_COLLECTION_LABELS,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed due to graphql errors', null, { response });
@@ -1047,43 +1079,6 @@ export class CollectionService {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
 				query: 'GET_COLLECTIONS_BY_OWNER',
-			});
-		}
-	}
-
-	private static async insertCollectionRelation(
-		originalCollectionId: string,
-		otherCollectionId: string,
-		relationType: RelationType
-	): Promise<number> {
-		let variables: any;
-		try {
-			variables = {
-				relationType,
-				originalId: originalCollectionId,
-				otherId: otherCollectionId,
-			};
-			const response = await dataService.mutate({
-				variables,
-				mutation: INSERT_COLLECTION_RELATION,
-			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
-			const relationId = get(
-				response,
-				'data.insert_app_collection_relations.returning[0].id'
-			);
-			if (!relationId) {
-				throw new CustomError('Response does not contain a relation id', null, {
-					response,
-				});
-			}
-			return relationId;
-		} catch (err) {
-			throw new CustomError('Failed to insert collection relation into the database', err, {
-				variables,
-				query: 'INSERT_COLLECTION_RELATION',
 			});
 		}
 	}

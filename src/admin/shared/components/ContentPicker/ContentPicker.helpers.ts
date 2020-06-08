@@ -1,10 +1,13 @@
 import { get } from 'lodash';
 import { ValueType } from 'react-select/src/types';
 
-import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
+import { ContentPickerType } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+
+import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 export const filterTypes = (
-	types: PickerTypeOption<ContentPickerType>[],
+	types: PickerTypeOption<Avo.Core.ContentPickerType>[],
 	allowedTypes: ContentPickerType[]
 ) => {
 	return types.filter((option: PickerTypeOption) => {

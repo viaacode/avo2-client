@@ -1,8 +1,9 @@
+import { ContentPickerType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../../collection/collection.types';
-import { ContentPickerType, PickerSelectItem } from '../../types';
+import { PickerSelectItem } from '../../types';
 
 import { parsePickerItem } from './parse-picker';
 

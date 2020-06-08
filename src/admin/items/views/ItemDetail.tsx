@@ -28,7 +28,7 @@ import {
 } from '../../../shared/components';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { buildLink, CustomError, sanitizeHtml } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import {
@@ -45,7 +45,7 @@ type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
 
 const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
 	title: 'title',
-	author: 'profile.usersByuserId.last_name',
+	author: 'profile.user.last_name',
 	organization: 'profile.profile_organizations[0].organization_id',
 	actions: '',
 };
@@ -180,7 +180,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			await ItemsService.setItemNotes(
 				item.uid,
-				noteEditorState ? noteEditorState.toHTML() : (item as any).note || null
+				sanitizeHtml(
+					(noteEditorState ? noteEditorState.toHTML() : (item as any).note) || '',
+					'link'
+				) || null
 			);
 			ToastService.success(
 				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
@@ -201,7 +204,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	): ReactNode => {
 		switch (columnId) {
 			case 'author':
-				const user = get(rowData, 'profile.usersByuserId');
+				const user = get(rowData, 'profile.user');
 				if (!user) {
 					return '-';
 				}
@@ -326,6 +329,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 												<WYSIWYG2Wrapper
 													id="note"
 													controls={WYSIWYG2_OPTIONS_FULL}
+													fileType="ITEM_NOTE_IMAGE"
 													initialHtml={item.note || undefined}
 													state={noteEditorState}
 													onChange={setNoteEditorState}

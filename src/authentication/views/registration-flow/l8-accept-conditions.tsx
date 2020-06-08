@@ -9,7 +9,8 @@ import { Dispatch } from 'redux';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { ContentPageInfo } from '../../../admin/content/content.types';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
@@ -18,7 +19,6 @@ import { ContentPageService } from '../../../shared/services/content-page-servic
 import { NotificationService } from '../../../shared/services/notification-service';
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
-import { isProfileComplete } from '../../helpers/get-profile-info';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { getLoginStateAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
@@ -41,7 +41,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	const [t] = useTranslation();
 
 	// The term of use and the privacy conditions
-	const [pages, setPages] = useState<(Avo.Content.Content | null)[]>([]);
+	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
 
@@ -106,11 +106,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				true
 			);
 
-			if (isProfileComplete(user)) {
-				getLoginState();
-			} else {
-				redirectToClientPage(APP_PATH.COMPLETE_PROFILE.route, history);
-			}
+			getLoginState();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to set accept conditions notification in the database')
@@ -129,9 +125,9 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			<>
 				<Spacer margin="bottom-large">
 					{/* terms of use */}
-					<ContentPage contentPage={pages[0] as Avo.Content.Content} />
+					{!!pages[0] && <ContentPage contentPageInfo={pages[0] as ContentPageInfo} />}
 					{/* privacy conditions */}
-					<ContentPage contentPage={pages[1] as Avo.Content.Content} />
+					{!!pages[1] && <ContentPage contentPageInfo={pages[1] as ContentPageInfo} />}
 				</Spacer>
 				<Spacer margin="large">
 					<Toolbar>

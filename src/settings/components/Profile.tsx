@@ -8,6 +8,7 @@ import {
 	BlockHeading,
 	Box,
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -33,28 +34,32 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { DataQueryComponent, FileUpload } from '../../shared/components';
+import { ROUTE_PARTS } from '../../shared/constants';
+import { CustomError } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
 import {
 	fetchCities,
 	fetchEducationOrganizations,
 } from '../../shared/services/education-organizations-service';
+import { NewsletterPreferences } from '../../shared/types';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
-import { updateProfileInfo } from '../settings.service';
+import { updateNewsletterPreferences, updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
-	isCompleteProfileStep?: boolean;
 	redirectTo?: string;
 }
 
 const Profile: FunctionComponent<ProfileProps> = ({
-	isCompleteProfileStep = false,
 	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
 	history,
+	location,
 	user,
 }) => {
 	const [t] = useTranslation();
+	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
 	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
 		label: enumLabel,
@@ -87,11 +92,14 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
 		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
 	);
-	const [alias, setAlias] = useState<string>(getProfileAlias(user));
-	const [avatar, setAvatar] = useState<string | null>(getProfile(user).avatar);
-	const [bio, setBio] = useState<string | null>((getProfile(user) as any).bio);
-	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
+	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
+	const [avatar, setAvatar] = useState<string | null>(
+		get(getProfile(user, true), 'avatar', null)
+	);
+	const [bio, setBio] = useState<string | null>(get(getProfile(user, true), 'bio', null));
+	const [func, setFunc] = useState<string | null>(get(getProfile(user, true), 'function', null));
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 
 	useEffect(() => {
 		fetchCities()
@@ -161,6 +169,28 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				})),
 				function: func, // This database field naming isn't ideal
 			});
+
+			// save newsletter subscription if checked
+			if (subscribeToNewsletter) {
+				const preferences: Partial<NewsletterPreferences> = {
+					newsletter: true,
+				};
+				try {
+					await updateNewsletterPreferences(
+						`${user.first_name} ${user.last_name}`,
+						user.mail,
+						preferences
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to subscribe to newsletter', err, {
+							preferences,
+							user,
+						})
+					);
+					ToastService.danger(t('Het inschijven voor de nieuwsbrief is mislukt'));
+				}
+			}
 
 			// Refresh the login state, so the profile info will be up to date
 			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
@@ -354,6 +384,19 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							<Spacer margin={['top-large', 'bottom-large']}>
 								{renderRequiredFields(subjects, educationLevels)}
 							</Spacer>
+							{get(user, 'role.name') === 'lesgever' && (
+								<Spacer margin="bottom">
+									<FormGroup>
+										<Checkbox
+											label={t(
+												'Ik ontvang graag per e-mail tips en inspiratie voor mijn lessen, vacatures, gratis workshops en nieuws van partners.'
+											)}
+											checked={subscribeToNewsletter}
+											onChange={setSubscribeToNewsletter}
+										/>
+									</FormGroup>
+								</Spacer>
+							)}
 						</Form>
 						<Button
 							label={t('settings/components/profile___inloggen')}
@@ -409,7 +452,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												labelFor="profilePicture"
 											>
 												<FileUpload
-													label={t('Upload een profiel foto')}
+													label={t(
+														'settings/components/profile___upload-een-profiel-foto'
+													)}
 													urls={avatar ? [avatar] : []}
 													allowMulti={false}
 													assetType="PROFILE_AVATAR"
@@ -442,7 +487,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												areAllRequiredFieldFilledIn()
 													? ''
 													: t(
-															'Gelieve alle verplichte velden in te vullen'
+															'settings/components/profile___gelieve-alle-verplichte-velden-in-te-vullen'
 													  )
 											}
 											onClick={saveProfileChanges}
@@ -502,4 +547,4 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	);
 };
 
-export default Profile;
+export default withUser(Profile) as FunctionComponent<ProfileProps>;

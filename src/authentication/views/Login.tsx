@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { UserService } from '../../admin/users/user.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { AppState } from '../../store';
@@ -41,9 +42,17 @@ const Login: FunctionComponent<LoginProps> = ({
 			return;
 		}
 
-		// Redirect to previous requested path or home page
+		// Redirect to previous requested path or the default page for that role (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
 		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
-			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME.route));
+			let path = get(location, 'state.from.pathname');
+			if (!path) {
+				if (UserService.getUserRole(get(loginState, 'userInfo')) === 'leerling') {
+					path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
+				} else {
+					path = APP_PATH.LOGGED_IN_HOME.route;
+				}
+			}
+			history.push(path);
 			return;
 		}
 

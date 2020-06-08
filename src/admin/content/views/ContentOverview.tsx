@@ -1,12 +1,18 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import {
+	Button,
+	ButtonToolbar,
+	Container,
+	LinkTarget,
+	Modal,
+	ModalBody,
+	Spacer,
+} from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -26,11 +32,11 @@ import {
 	CustomError,
 	formatDate,
 	getFullName,
-	getRole,
 	navigate,
+	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import FilterTable, {
 	FilterableColumn,
@@ -43,10 +49,10 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { UserService } from '../../users/user.service';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
-import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
-import { ContentOverviewTableCols, ContentTableState } from '../content.types';
+import { ContentOverviewTableCols, ContentPageInfo, ContentTableState } from '../content.types';
 import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
@@ -55,10 +61,10 @@ interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
-	const [contentPages, setContentPages] = useState<Avo.Content.Content[] | null>(null);
+	const [contentPages, setContentPages] = useState<ContentPageInfo[] | null>(null);
 	const [contentPageCount, setContentPageCount] = useState<number>(0);
 
-	const [contentToDelete, setContentToDelete] = useState<Avo.Content.Content | null>(null);
+	const [contentToDelete, setContentToDelete] = useState<ContentPageInfo | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 	const [tableState, setTableState] = useState<Partial<ContentTableState>>({});
@@ -66,7 +72,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	const [contentTypes] = useContentTypes();
 
-	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
 	const fetchContentPages = useCallback(async () => {
@@ -133,7 +138,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				contentPageCountTemp,
 			] = await ContentService.fetchContentPages(
 				tableState.page || 0,
-				(tableState.sort_column || 'updated_at') as ContentOverviewTableCols,
+				(tableState.sort_column as ContentOverviewTableCols) || 'updated_at',
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState))
 			);
@@ -222,10 +227,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return;
 			}
 
-			await triggerContentDelete({
-				variables: { id: contentToDelete.id },
-				update: ApolloCacheManager.clearContentCache,
-			});
+			await ContentService.deleteContentPage(contentToDelete.id);
+			fetchContentPages();
 			ToastService.success(
 				t(
 					'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
@@ -245,7 +248,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
-	const openModal = (content: Avo.Content.Content): void => {
+	const openModal = (content: ContentPageInfo): void => {
 		if (content.is_protected) {
 			// Only allow admins to delete protected content
 			if (PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS)) {
@@ -261,18 +264,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
-	// function handlePreviewClicked(page: Avo.Content.Content) {
-	// 	if (page && page.path) {
-	// 		navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
-	// 	} else {
-	// 		ToastService.danger(
-	// 			t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
-	// 		);
-	// 	}
-	// }
+	function handlePreviewClicked(page: ContentPageInfo) {
+		if (page && page.path) {
+			navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
+		} else {
+			ToastService.danger(
+				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+			);
+		}
+	}
 
 	// Render
-	const renderTableCell = (rowData: any, columnId: string): ReactNode => {
+	const renderTableCell = (rowData: any, columnId: ContentOverviewTableCols): ReactNode => {
 		const { id, profile, title } = rowData;
 
 		switch (columnId) {
@@ -285,7 +288,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'author':
 				return getFullName(profile) || '-';
 			case 'role':
-				return getRole(profile) || '-';
+				return UserService.getUserRoleLabel(profile) || '-';
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
@@ -302,14 +305,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
 							type="secondary"
 						/>
-						{/*<Button*/}
-						{/*	icon="eye"*/}
-						{/*	onClick={() => handlePreviewClicked(rowData)}*/}
-						{/*	size="small"*/}
-						{/*	title={t('admin/content/views/content-overview___preview-content')}*/}
-						{/*	ariaLabel={t('admin/content/views/content-overview___preview-content')}*/}
-						{/*	type="secondary"*/}
-						{/*/>*/}
+						<Button
+							icon="eye"
+							onClick={() => handlePreviewClicked(rowData)}
+							size="small"
+							title={t('admin/content/views/content-overview___preview-content')}
+							ariaLabel={t('admin/content/views/content-overview___preview-content')}
+							type="secondary"
+						/>
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
@@ -383,7 +386,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}
 					renderNoResults={renderNoResults}
-					renderCell={renderTableCell}
+					renderCell={renderTableCell as any}
 					className="c-content-overview__table"
 					onTableStateChanged={setTableState}
 				/>

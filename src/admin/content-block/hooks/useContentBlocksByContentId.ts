@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Avo } from '@viaa/avo2-types';
-
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { ContentBlockConfig } from '../../shared/types';
 import { ContentBlockService } from '../services/content-block.service';
 
-type UseContentBlocksByContentIdTuple = [Avo.ContentBlocks.ContentBlocks[], boolean];
+type UseContentBlocksByContentIdTuple = [ContentBlockConfig[], boolean];
 
 export const useContentBlocksByContentId = (id?: string): UseContentBlocksByContentIdTuple => {
 	const [t] = useTranslation();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [contentBlocks, setContentBlocks] = useState<Avo.ContentBlocks.ContentBlocks[]>([]);
+	const [contentBlocks, setContentBlocks] = useState<ContentBlockConfig[]>([]);
 
 	useEffect(() => {
 		if (id) {

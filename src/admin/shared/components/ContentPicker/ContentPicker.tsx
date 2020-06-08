@@ -5,12 +5,20 @@ import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { ActionMeta, ValueType } from 'react-select/src/types';
 
-import { Button, Flex, FlexItem, FormGroup, LinkTarget, TextInput } from '@viaa/avo2-components';
+import {
+	Button,
+	ContentPickerType,
+	Flex,
+	FlexItem,
+	FormGroup,
+	LinkTarget,
+	TextInput,
+} from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
-import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
+import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
 	DEFAULT_ALLOWED_TYPES,

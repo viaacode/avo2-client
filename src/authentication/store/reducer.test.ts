@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { LoginMessage } from '../authentication.types';
@@ -24,6 +26,9 @@ describe('login > store > reducer', () => {
 		const payload: Avo.Auth.LoginResponse = {
 			message: LoginMessage.LOGGED_IN,
 			userInfo: {} as any,
+			sessionExpiresAt: moment()
+				.add(1, 'days')
+				.toString(),
 		};
 
 		const state = loginReducer(initialState, setLoginSuccess(payload));

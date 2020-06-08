@@ -8,37 +8,37 @@ import { ContentBlockConfig, ContentBlockType } from '../../shared/types';
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
 
 // Parse content-block config to valid request body
-export const parseContentBlockConfig = (
-	contentBlockConfig: ContentBlockConfig,
+export const convertBlockToDatabaseFormat = (
+	contentBlockConfig: Partial<ContentBlockConfig>,
 	contentId?: number
 ) => {
-	const componentState = contentBlockConfig.components.state;
-	const { blockType, position, ...blockState } = contentBlockConfig.block.state;
+	const componentState = get(contentBlockConfig, 'components.state');
+	const { ...blockState } = get(contentBlockConfig, 'block.state');
 
 	return {
-		position,
+		position: contentBlockConfig.position,
 		variables: { componentState, blockState },
 		...(contentId ? { content_id: contentId } : null),
-		content_block_type: blockType,
+		content_block_type: contentBlockConfig.type,
 	};
 };
 
-export const parseContentBlockConfigs = (
-	contentId: number,
-	contentBlockConfigs: ContentBlockConfig[]
-): Partial<Avo.ContentBlocks.ContentBlocks>[] =>
+export const convertBlocksToDatabaseFormat = (
+	contentBlockConfigs: Partial<ContentBlockConfig>[],
+	contentId?: number
+): Partial<Avo.ContentPage.Block>[] =>
 	contentBlockConfigs.map(contentBlockConfig =>
-		parseContentBlockConfig(contentBlockConfig, contentId)
+		convertBlockToDatabaseFormat(contentBlockConfig, contentId)
 	);
 
 // Parse content-blocks to configs
 export const parseContentBlocks = (
-	contentBlocks: Avo.ContentBlocks.ContentBlocks[]
+	contentBlocks: Avo.ContentPage.Block[]
 ): ContentBlockConfig[] => {
 	const sortedContentBlocks = contentBlocks.sort((a, b) => a.position - b.position);
 
 	return compact(
-		sortedContentBlocks.map(contentBlock => {
+		(sortedContentBlocks || []).map(contentBlock => {
 			const { content_block_type, id, variables } = contentBlock;
 			const configForType = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType];
 			if (!configForType) {

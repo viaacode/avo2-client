@@ -7,6 +7,7 @@ import {
 	ContentBlockEditor,
 	ContentBlockType,
 } from '../../../shared/types';
+import { GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
 import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -17,13 +18,19 @@ export const INITIAL_ANCHOR_LINKS_COMPONENTS_STATE = (): AnchorLinksBlockCompone
 	},
 ];
 
-export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): AnchorLinksBlockState => ({
-	...BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks, position),
+export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (): AnchorLinksBlockState => ({
+	...BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top',
+			bottom: 'bottom',
+		},
+	}),
 	align: 'center',
 	hasDividers: true,
 });
 
 export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	position,
 	name: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
 	type: ContentBlockType.AnchorLinks,
 	components: {
@@ -37,6 +44,13 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
+			type: {
+				label: i18n.t('kleur'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS(),
+				},
+			},
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
@@ -49,7 +63,7 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 		},
 	},
 	block: {
-		state: INITIAL_ANCHOR_LINKS_BLOCK_STATE(position),
+		state: INITIAL_ANCHOR_LINKS_BLOCK_STATE(),
 		fields: {
 			align: ALIGN_FIELD(),
 			...BLOCK_FIELD_DEFAULTS(),

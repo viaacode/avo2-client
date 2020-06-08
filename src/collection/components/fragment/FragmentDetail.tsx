@@ -16,6 +16,7 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
 	collectionFragment: Avo.Collection.Fragment;
 	showDescription: boolean;
 	linkToItems: boolean;
+	canPlay?: boolean;
 }
 
 /**
@@ -57,7 +58,12 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 		<ItemVideoDescription
 			showDescription={showDescription}
 			showTitle
-			itemMetaData={collectionFragment.item_meta as Avo.Item.Item}
+			itemMetaData={{
+				...(collectionFragment.item_meta as Avo.Item.Item),
+				thumbnail_path:
+					collectionFragment.thumbnail_path ||
+					(collectionFragment.item_meta as Avo.Item.Item).thumbnail_path,
+			}}
 			showTitleOnVideo={false}
 			title={getFragmentProperty(
 				collectionFragment.item_meta as Avo.Item.Item,
@@ -83,6 +89,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 		<BlockIntro
 			content={collectionFragment.custom_description || ''}
 			title={collectionFragment.custom_title || ''}
+			headingType="h3"
 			align="center"
 			className="c-fragment-detail__intro-block"
 		/>

@@ -265,6 +265,7 @@ export class AssignmentHelper {
 								initialHtml={assignment.description}
 								state={(assignment as any)['descriptionRichEditorState']}
 								controls={[...WYSIWYG2_OPTIONS_FULL, 'media']}
+								fileType="ASSIGNMENT_DESCRIPTION_IMAGE"
 								onChange={newState =>
 									setAssignmentProp('descriptionRichEditorState', newState)
 								}

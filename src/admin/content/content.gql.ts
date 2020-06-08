@@ -20,6 +20,7 @@ export const GET_CONTENT_PAGES = gql`
 			created_at
 			depublish_at
 			description
+			seo_description
 			id
 			thumbnail_path
 			is_protected
@@ -97,6 +98,7 @@ export const GET_CONTENT_PAGE_BY_PATH = gql`
 			created_at
 			depublish_at
 			description
+			seo_description
 			id
 			is_protected
 			is_public
@@ -132,6 +134,7 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 			created_at
 			depublish_at
 			description
+			seo_description
 			id
 			thumbnail_path
 			is_protected
@@ -187,6 +190,7 @@ export const GET_CONTENT_BY_ID = gql`
 			created_at
 			depublish_at
 			description
+			seo_description
 			id
 			thumbnail_path
 			is_protected
@@ -240,16 +244,16 @@ export const GET_CONTENT_TYPES = gql`
 `;
 
 export const UPDATE_CONTENT_BY_ID = gql`
-	mutation updateContentById($id: Int!, $contentItem: app_content_set_input!) {
-		update_app_content(where: { id: { _eq: $id } }, _set: $contentItem) {
+	mutation updateContentById($id: Int!, $contentPage: app_content_set_input!) {
+		update_app_content(where: { id: { _eq: $id } }, _set: $contentPage) {
 			affected_rows
 		}
 	}
 `;
 
 export const INSERT_CONTENT = gql`
-	mutation insertContent($contentItem: app_content_insert_input!) {
-		insert_app_content(objects: [$contentItem]) {
+	mutation insertContent($contentPage: app_content_insert_input!) {
+		insert_app_content(objects: [$contentPage]) {
 			returning {
 				id
 			}

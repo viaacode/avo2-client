@@ -1,15 +1,20 @@
 .c-file-upload {
 	position: relative;
 
-	.a-upload-image-preview {
+	.a-upload-media-preview {
 		height: 300px;
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: contain;
 		background-color: #ddd;
+
+		video {
+			width: 100%;
+			height: 100%;
+		}
 	}
 
-	.a-upload-image-preview,
+	.a-upload-media-preview,
 	.a-upload-file-preview {
 		position: relative;
 

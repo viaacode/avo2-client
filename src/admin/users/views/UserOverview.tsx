@@ -19,7 +19,7 @@ import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
 import { UserService } from '../user.service';
-import { UserOverviewTableCols, UserTableState } from '../user.types';
+import { UserOverviewTableCol, UserTableState } from '../user.types';
 
 interface UserOverviewProps extends DefaultSecureRouteProps {}
 
@@ -35,7 +35,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		try {
 			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
-				tableState.sort_column || 'created_at',
+				(tableState.sort_column || 'updated_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
 				tableState.query || ''
 			);
@@ -81,7 +81,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 	const renderTableCell = (
 		rowData: Partial<Avo.User.Profile>,
-		columnId: UserOverviewTableCols
+		columnId: UserOverviewTableCol
 	) => {
 		const { id, user, stamboek, created_at } = rowData;
 
@@ -142,7 +142,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
-						renderTableCell(rowData, columnId as UserOverviewTableCols)
+						renderTableCell(rowData, columnId as UserOverviewTableCol)
 					}
 					searchTextPlaceholder={t(
 						'admin/users/views/user-overview___zoek-op-naam-email-alias'

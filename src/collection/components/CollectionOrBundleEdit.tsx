@@ -57,6 +57,7 @@ import {
 	isMobileWidth,
 	navigate,
 	renderAvatar,
+	sanitizeHtml,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
@@ -404,7 +405,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		const clonedCollection = cloneDeep(collection);
 		getFragmentsFromCollection(clonedCollection).forEach(fragment => {
 			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
-				fragment.custom_description = (fragment.custom_description as any).toHTML();
+				fragment.custom_description = sanitizeHtml(
+					(fragment.custom_description as any).toHTML(),
+					'link'
+				);
 			}
 		});
 		return clonedCollection;
@@ -499,8 +503,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 
 				ToastService.success(
 					isCollection
-						? t('De collectie naam is aangepast')
-						: t('De bundel naam is aangepast')
+						? t(
+								'collection/components/collection-or-bundle-edit___de-collectie-naam-is-aangepast'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___de-bundel-naam-is-aangepast'
+						  )
 				);
 			} // else collection wasn't saved because of validation errors
 		} catch (err) {
@@ -876,8 +884,32 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				)
 			);
 		}
+
 		const isPublic =
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
+		let publishButtonTooltip: string;
+		if (hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')) {
+			publishButtonTooltip = t(
+				'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+			);
+		} else if (isPublic) {
+			if (isCollection) {
+				publishButtonTooltip = t(
+					'collection/views/collection-detail___maak-deze-collectie-prive'
+				);
+			} else {
+				publishButtonTooltip = t('bundle/views/bundle-detail___maak-deze-bundel-prive');
+			}
+		} else {
+			if (isCollection) {
+				publishButtonTooltip = t(
+					'collection/views/collection-detail___maak-deze-collectie-openbaar'
+				);
+			} else {
+				publishButtonTooltip = t('bundle/views/bundle-detail___maak-deze-bundel-openbaar');
+			}
+		}
+
 		return (
 			<ButtonToolbar>
 				<Button
@@ -885,20 +917,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					disabled={
 						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
 					}
-					title={
-						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
-							? t(
-									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
-							  )
-							: isPublic
-							? t('collection/views/collection-detail___maak-deze-collectie-prive')
-							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
-					}
-					ariaLabel={
-						isPublic
-							? t('collection/views/collection-detail___maak-deze-collectie-prive')
-							: t('collection/views/collection-detail___maak-deze-collectie-openbaar')
-					}
+					title={publishButtonTooltip}
+					ariaLabel={publishButtonTooltip}
 					icon={isPublic ? 'unlock-3' : 'lock'}
 					onClick={() => executeAction('openPublishModal')}
 				/>

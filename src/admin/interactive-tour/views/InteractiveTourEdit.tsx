@@ -1,5 +1,12 @@
-import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useReducer, useState } from 'react';
+import { cloneDeep, compact, get, isEmpty, isEqual, map, orderBy } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	Reducer,
+	useCallback,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
@@ -18,7 +25,6 @@ import {
 	Panel,
 	PanelBody,
 	PanelHeader,
-	RichEditorState,
 	Select,
 	SelectOption,
 	Spacer,
@@ -37,80 +43,40 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import Html from '../../../shared/components/Html/Html';
 import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError, navigate, sanitize, stripHtml } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate, sanitizeHtml, stripHtml } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
-import { ValueOf } from '../../../shared/types';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
-import { getInitialInteractiveTour, INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
+import {
+	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
+	InteractiveTourAction,
+	interactiveTourEditReducer,
+} from '../helpers/reducers';
+import {
+	getInitialInteractiveTour,
+	INTERACTIVE_TOUR_PATH,
+	MAX_STEP_TEXT_LENGTH,
+	MAX_STEP_TITLE_LENGTH,
+} from '../interactive-tour.const';
 import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
+	EditableInteractiveTour,
+	EditableStep,
+	InteractiveTourEditActionType,
 	InteractiveTourEditFormErrorState,
 	InteractiveTourPageType,
+	InteractiveTourState,
 } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
 
-type StepPropUpdateAction = {
-	type: 'UPDATE_STEP_PROP';
-	stepIndex: number;
-	stepProp: keyof Avo.InteractiveTour.Step | 'contentState';
-	stepPropValue: ValueOf<Avo.InteractiveTour.Step> | RichEditorState;
-};
-
-type StepSwapAction = {
-	type: 'SWAP_STEPS';
-	index: number;
-	direction: 'up' | 'down';
-};
-
-type StepRemoveAction = {
-	type: 'REMOVE_STEP';
-	index: number;
-};
-
-type InteractiveTourUpdateAction = {
-	type: 'UPDATE_INTERACTIVE_TOUR';
-	newInteractiveTour: EditableInteractiveTour | null;
-	updateInitialInteractiveTour?: boolean;
-};
-
-type InteractiveTourPropUpdateAction = {
-	type: 'UPDATE_INTERACTIVE_TOUR_PROP';
-	interactiveTourProp: keyof EditableInteractiveTour;
-	interactiveTourPropValue: ValueOf<EditableInteractiveTour>;
-	updateInitialInteractiveTour?: boolean;
-};
-
-export type InteractiveTourAction =
-	| StepPropUpdateAction
-	| StepSwapAction
-	| StepRemoveAction
-	| InteractiveTourUpdateAction
-	| InteractiveTourPropUpdateAction;
-
-interface InteractiveTourState {
-	currentInteractiveTour: EditableInteractiveTour | null;
-	initialInteractiveTour: EditableInteractiveTour | null;
-}
-
-export interface EditableInteractiveTour extends Avo.InteractiveTour.InteractiveTour {
-	steps: EditableStep[];
-}
-
-export interface EditableStep extends Avo.InteractiveTour.Step {
-	contentState: RichEditorState | undefined;
-}
-
-interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
-
-const MAX_STEP_TITLE_LENGTH = 28;
-const MAX_STEP_TEXT_LENGTH = 200;
+export interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	history,
@@ -127,91 +93,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
 
-	// Main interactiveTour reducer
-	function currentInteractiveTourReducer(
-		interactiveTourState: InteractiveTourState,
-		action: InteractiveTourAction
-	): InteractiveTourState {
-		if (action.type === 'UPDATE_INTERACTIVE_TOUR') {
-			return {
-				currentInteractiveTour: action.newInteractiveTour,
-				initialInteractiveTour: cloneDeep(action.newInteractiveTour),
-			};
-		}
-
-		const newCurrentInteractiveTour: EditableInteractiveTour | null = cloneDeep(
-			interactiveTourState.currentInteractiveTour
-		);
-		const newInitialInteractiveTour: EditableInteractiveTour | null = cloneDeep(
-			interactiveTourState.initialInteractiveTour
-		);
-
-		if (!newCurrentInteractiveTour) {
-			ToastService.danger(
-				t(
-					'admin/interactive-tour/views/interactive-tour-edit___de-interactieve-tour-is-nog-niet-geladen'
-				)
-			);
-			return interactiveTourState;
-		}
-
-		switch (action.type) {
-			case 'UPDATE_STEP_PROP':
-				newCurrentInteractiveTour.steps[action.stepIndex] = {
-					...newCurrentInteractiveTour.steps[action.stepIndex],
-					[action.stepProp]: action.stepPropValue,
-				};
-				break;
-
-			case 'SWAP_STEPS':
-				if (!newCurrentInteractiveTour.steps || !newCurrentInteractiveTour.steps.length) {
-					ToastService.danger(
-						t(
-							'admin/interactive-tour/views/interactive-tour-edit___deze-interactive-tour-lijkt-geen-stappen-te-bevatten'
-						)
-					);
-					return interactiveTourState;
-				}
-
-				const delta = action.direction === 'up' ? -1 : 1;
-
-				newCurrentInteractiveTour.steps = InteractiveTourService.swapStepPositions(
-					newCurrentInteractiveTour.steps || [],
-					action.index,
-					delta
-				);
-				setFormErrors({});
-				break;
-
-			case 'REMOVE_STEP':
-				const newSteps = newCurrentInteractiveTour.steps;
-				newSteps.splice(action.index, 1);
-				newCurrentInteractiveTour.steps = newSteps;
-				setFormErrors({});
-				break;
-
-			case 'UPDATE_INTERACTIVE_TOUR_PROP':
-				(newCurrentInteractiveTour as any)[action.interactiveTourProp] =
-					action.interactiveTourPropValue;
-				if (action.updateInitialInteractiveTour) {
-					(newInitialInteractiveTour as any)[action.interactiveTourProp] =
-						action.interactiveTourPropValue;
-				}
-				break;
-		}
-
-		return {
-			currentInteractiveTour: newCurrentInteractiveTour,
-			initialInteractiveTour: newInitialInteractiveTour,
-		};
-	}
-
 	const [interactiveTourState, changeInteractiveTourState] = useReducer<
-		React.Reducer<InteractiveTourState, InteractiveTourAction>
-	>(currentInteractiveTourReducer, {
-		currentInteractiveTour: null,
-		initialInteractiveTour: null,
-	});
+		Reducer<InteractiveTourState, InteractiveTourAction>
+	>(interactiveTourEditReducer, INTERACTIVE_TOUR_EDIT_INITIAL_STATE());
 
 	/**
 	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
@@ -245,7 +129,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	const initOrFetchInteractiveTour = useCallback(async () => {
 		if (isCreatePage) {
 			changeInteractiveTourState({
-				type: 'UPDATE_INTERACTIVE_TOUR',
+				type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR,
 				newInteractiveTour: getInitialInteractiveTour(),
 				updateInitialInteractiveTour: true,
 			});
@@ -273,7 +157,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				}
 
 				changeInteractiveTourState({
-					type: 'UPDATE_INTERACTIVE_TOUR',
+					type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR,
 					newInteractiveTour: interactiveTourObj,
 					updateInitialInteractiveTour: true,
 				});
@@ -338,14 +222,18 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				errors.steps = errors.steps || [];
 				errors.steps[index] = {
 					...(errors.steps[index] || {}),
-					title: t('De titel is te lang'),
+					title: t(
+						'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
+					),
 				};
 			}
 			if (step.title.length > MAX_STEP_TEXT_LENGTH) {
 				errors.steps = errors.steps || [];
 				errors.steps[index] = {
 					...(errors.steps[index] || {}),
-					content: t('De tekst is te lang'),
+					content: t(
+						'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
+					),
 				};
 			}
 		});
@@ -358,7 +246,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
-				step.content = step.contentState.toHTML();
+				step.content = sanitizeHtml(step.contentState.toHTML(), 'link');
 				delete step.contentState;
 			}
 		});
@@ -443,7 +331,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			return;
 		}
 		changeInteractiveTourState({
-			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
 			interactiveTourProp: 'page_id',
 			interactiveTourPropValue: item.value,
 		});
@@ -451,7 +339,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 	const handleStaticPageSelect = (newPageId: string) => {
 		changeInteractiveTourState({
-			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
 			interactiveTourProp: 'page_id',
 			interactiveTourPropValue: newPageId,
 		});
@@ -486,7 +374,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				changeInteractiveTourState({
 					direction,
 					index,
-					type: 'SWAP_STEPS',
+					type: InteractiveTourEditActionType.SWAP_STEPS,
 				});
 			}}
 			disabled={disabled}
@@ -528,7 +416,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										onClick={() => {
 											changeInteractiveTourState({
 												index,
-												type: 'REMOVE_STEP',
+												type: InteractiveTourEditActionType.REMOVE_STEP,
 											});
 										}}
 										ariaLabel={t(
@@ -554,7 +442,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									value={(step.title || '').toString()}
 									onChange={newTitle => {
 										changeInteractiveTourState({
-											type: 'UPDATE_STEP_PROP',
+											type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
 											stepIndex: index,
 											stepProp: 'title',
 											stepPropValue: newTitle,
@@ -573,14 +461,18 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									initialHtml={(step.content || '').toString()}
 									state={step.contentState}
 									onChange={newContentState => {
-										changeInteractiveTourState({
-											type: 'UPDATE_STEP_PROP',
-											stepIndex: index,
-											stepProp: 'contentState',
-											stepPropValue: newContentState,
-										});
+										if (!isEqual(newContentState, step.contentState)) {
+											changeInteractiveTourState({
+												type:
+													InteractiveTourEditActionType.UPDATE_STEP_PROP,
+												stepIndex: index,
+												stepProp: 'contentState',
+												stepPropValue: newContentState,
+											});
+										}
 									}}
 									controls={WYSIWYG2_OPTIONS_FULL}
+									fileType="INTERACTIVE_TOUR_IMAGE"
 									id={`content_editor_${index}`}
 									placeholder={t(
 										'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'
@@ -589,7 +481,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								<Spacer margin="top-small">
 									{
 										(step.contentState
-											? stripHtml(step.contentState.toHTML())
+											? stripHtml(
+													sanitizeHtml(step.contentState.toHTML(), 'link')
+											  )
 											: step.content || ''
 										).length
 									}{' '}
@@ -606,12 +500,13 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									value={(step.target || '').toString()}
 									onChange={newTarget => {
 										changeInteractiveTourState({
-											type: 'UPDATE_STEP_PROP',
+											type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
 											stepIndex: index,
 											stepProp: 'target',
 											stepPropValue: newTarget,
 										});
 									}}
+									className="c-text-input__selector"
 								/>
 								<Tooltip position="top">
 									<TooltipTrigger>
@@ -625,14 +520,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									</TooltipTrigger>
 									<TooltipContent>
 										<Spacer padding="small">
-											<div
-												dangerouslySetInnerHTML={{
-													__html: sanitize(
-														t(
-															'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
-														)
-													),
-												}}
+											<Html
+												content={t(
+													'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
+												)}
+												type="div"
 											/>
 										</Spacer>
 									</TooltipContent>
@@ -673,7 +565,8 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										}
 										onChange={newName =>
 											changeInteractiveTourState({
-												type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+												type:
+													InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
 												interactiveTourProp: 'name',
 												interactiveTourPropValue: newName,
 											})

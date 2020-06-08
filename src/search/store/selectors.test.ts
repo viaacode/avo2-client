@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { LoginMessage } from '../../authentication/authentication.types';
@@ -13,7 +15,13 @@ import {
 describe('search > store > selectors', () => {
 	const store: AppState = {
 		loginState: {
-			data: { message: LoginMessage.LOGGED_IN, userInfo: {} as Avo.User.User },
+			data: {
+				message: LoginMessage.LOGGED_IN,
+				userInfo: {} as Avo.User.User,
+				sessionExpiresAt: moment()
+					.add(1, 'days')
+					.toString(),
+			},
 			loading: false,
 			error: false,
 		},

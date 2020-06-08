@@ -30,10 +30,12 @@ function checkIfSessionExpires(expiresAt: string) {
 		// Show warning since user is about to be logged out
 		ToastService.info(
 			<>
-				{i18n.t('Je sessie gaat over 5 min verlopen, sla je werk op en log opnieuw in.')}
+				{i18n.t(
+					'authentication/store/actions___je-sessie-gaat-over-5-min-verlopen-sla-je-werk-op-en-log-opnieuw-in'
+				)}
 				<Spacer margin="top-small">
 					<Button
-						label={i18n.t('Ga naar login')}
+						label={i18n.t('authentication/store/actions___ga-naar-login')}
 						onClick={logoutAndRedirectToLogin}
 						type="primary"
 					/>
