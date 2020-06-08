@@ -45,7 +45,7 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				}
 			),
 			type: {
-				label: i18n.t('kleur'),
+				label: i18n.t('admin/content-block/helpers/generators/anchor-links___kleur'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS(),

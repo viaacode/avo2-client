@@ -42,9 +42,15 @@ const UserItemRequestFormConfirm: FunctionComponent<UserItemRequestFormProps> = 
 						<Button
 							type="primary"
 							onClick={history.goBack}
-							label={t('Doe nog een aanvraag')}
-							title={t('Doe nog een aanvraag')}
-							ariaLabel={t('oe nog een aanvraag')}
+							label={t(
+								'user-item-request-form/views/user-item-request-form-confirm___doe-nog-een-aanvraag'
+							)}
+							title={t(
+								'user-item-request-form/views/user-item-request-form-confirm___doe-nog-een-aanvraag'
+							)}
+							ariaLabel={t(
+								'user-item-request-form/views/user-item-request-form-confirm___oe-nog-een-aanvraag'
+							)}
 						/>
 					</Spacer>
 				</div>

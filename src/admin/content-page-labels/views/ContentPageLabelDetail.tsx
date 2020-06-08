@@ -42,7 +42,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				setLoadingInfo({
 					state: 'error',
 					icon: 'search',
-					message: t('Deze content pagina label werd niet gevonden'),
+					message: t(
+						'admin/content-page-labels/views/content-page-label-detail___deze-content-pagina-label-werd-niet-gevonden'
+					),
 				});
 				return;
 			}
@@ -64,7 +66,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de content pagina label is mislukt'),
+				message: t(
+					'admin/content-page-labels/views/content-page-label-detail___het-ophalen-van-de-content-pagina-label-is-mislukt'
+				),
 			});
 		}
 	}, [setLoadingInfo, setContentPageLabel, t, match.params.id]);
@@ -97,12 +101,32 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				<Table horizontal variant="invisible" className="c-table_detail-page">
 					<tbody>
 						{renderSimpleDetailRows(contentPageLabel, [
-							['label', t('Label')],
-							['content_type', t('Type')],
+							[
+								'label',
+								t(
+									'admin/content-page-labels/views/content-page-label-detail___label'
+								),
+							],
+							[
+								'content_type',
+								t(
+									'admin/content-page-labels/views/content-page-label-detail___type'
+								),
+							],
 						])}
 						{renderDateDetailRows(contentPageLabel, [
-							['created_at', t('Aangemaakt op')],
-							['updated_at', t('Aangepast op')],
+							[
+								'created_at',
+								t(
+									'admin/content-page-labels/views/content-page-label-detail___aangemaakt-op'
+								),
+							],
+							[
+								'updated_at',
+								t(
+									'admin/content-page-labels/views/content-page-label-detail___aangepast-op'
+								),
+							],
 						])}
 					</tbody>
 				</Table>
@@ -116,14 +140,25 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			return null;
 		}
 		return (
-			<AdminLayout showBackButton pageTitle={t('Content pagina label details')}>
+			<AdminLayout
+				showBackButton
+				pageTitle={t(
+					'admin/content-page-labels/views/content-page-label-detail___content-pagina-label-details'
+				)}
+			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
 						<Button
 							type="primary"
-							label={t('Bewerken')}
-							title={t('Bewerk deze content pagina label')}
-							ariaLabel={t('Bewerk deze content pagina label')}
+							label={t(
+								'admin/content-page-labels/views/content-page-label-detail___bewerken'
+							)}
+							title={t(
+								'admin/content-page-labels/views/content-page-label-detail___bewerk-deze-content-pagina-label'
+							)}
+							ariaLabel={t(
+								'admin/content-page-labels/views/content-page-label-detail___bewerk-deze-content-pagina-label'
+							)}
 							onClick={handleEditClick}
 						/>
 					</ButtonToolbar>
@@ -141,11 +176,17 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 		<>
 			<MetaTags>
 				<title>
-					{GENERATE_SITE_TITLE(t('content-page-label-beheer-detail-pagina-titel'))}
+					{GENERATE_SITE_TITLE(
+						t(
+							'admin/content-page-labels/views/content-page-label-detail___content-page-label-beheer-detail-pagina-titel'
+						)
+					)}
 				</title>
 				<meta
 					name="description"
-					content={t('content-page-label-beheer-detail-pagina-beschrijving')}
+					content={t(
+						'admin/content-page-labels/views/content-page-label-detail___content-page-label-beheer-detail-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
