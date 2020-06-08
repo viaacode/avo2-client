@@ -125,7 +125,14 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 			// Currently we wait for this to complete
 			// so we can set the created assignment response on the tempAssignment object,
 			// so we don't need to do a refetch of the original assignment
-			await AssignmentService.createAssignmentResponseObject(response.assignment, user);
+			const assignmentResponse = await AssignmentService.createAssignmentResponseObject(
+				response.assignment,
+				user
+			);
+
+			if (assignmentResponse) {
+				response.assignment.assignment_responses = [assignmentResponse];
+			}
 
 			setAssignment(response.assignment);
 			setAssignmentContent(response.assignmentContent);
@@ -322,6 +329,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		) : null;
 	};
 
+	const isOwner = () =>
+		!isNil(get(assignment, 'owner_profile_id')) &&
+		!isNil(get(user, 'profile.id')) &&
+		get(assignment, 'owner_profile_id') === get(user, 'profile.id');
+
 	const renderAssignment = (): ReactElement | null => {
 		if (!assignment) {
 			return null;
@@ -352,18 +364,20 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
-									<ToolbarItem>
-										<Checkbox
-											label={t('Opdracht gemaakt')}
-											checked={
-												!!get(
-													assignment,
-													'assignment_responses[0].submitted_at'
-												)
-											}
-											onChange={handleSubmittedAtChanged}
-										/>
-									</ToolbarItem>
+									{!isOwner() && (
+										<ToolbarItem>
+											<Checkbox
+												label={t('Opdracht gemaakt')}
+												checked={
+													!!get(
+														assignment,
+														'assignment_responses[0].submitted_at'
+													)
+												}
+												onChange={handleSubmittedAtChanged}
+											/>
+										</ToolbarItem>
+									)}
 									<ToolbarItem>
 										<TagList tags={tags} closable={false} swatches bordered />
 									</ToolbarItem>
