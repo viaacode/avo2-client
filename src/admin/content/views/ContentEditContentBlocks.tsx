@@ -1,4 +1,4 @@
-import { get, noop } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ import {
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
 import {
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -154,13 +155,11 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						removeComponentFromState={(stateIndex: number) =>
 							removeComponentFromState(index, stateIndex)
 						}
-						onError={
-							noop
-							// (configIndex: number, errors: ContentBlockErrors) =>
-							// changeContentPageState({
-							// 	type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
-							// 	payload: { configIndex, errors },
-							// })
+						onError={(configIndex: number, errors: ContentBlockErrors) =>
+							changeContentPageState({
+								type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
+								payload: { configIndex, errors },
+							})
 						}
 						onRemove={onRemove}
 						onReorder={handleReorderContentBlock}

@@ -214,7 +214,14 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			});
 			ToastService.danger(t('Het ophalen van het te focussen item is mislukt'));
 		}
-	}, [location.search, setFocusedPageId, contentTypeAndTabs.selectedLabels, t]);
+	}, [
+		location.search,
+		setFocusedPageId,
+		contentTypeAndTabs.selectedLabels,
+		t,
+		history,
+		location.pathname,
+	]);
 
 	useEffect(() => {
 		fetchPages();
