@@ -9,7 +9,7 @@ import { ApolloCacheManager, dataService, ToastService } from '../../shared/serv
 import i18n from '../../shared/translations/i18n';
 import { convertBlocksToDatabaseFormat } from '../content-block/helpers';
 import { ContentBlockService } from '../content-block/services/content-block.service';
-import { mapDeep } from '../shared/helpers/mapDeep';
+import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
 
 import {
@@ -52,7 +52,7 @@ export class ContentService {
 			},
 		};
 
-		return convertBlocksToDatabaseFormat(
+		return convertToContentPageInfos(
 			(await performQuery(
 				query,
 				CONTENT_RESULT_PATH.GET,
@@ -533,9 +533,8 @@ export class ContentService {
 					obj[htmlKey] = sanitizeHtml(value.toHTML(), 'full');
 					delete obj[key];
 				}
-				return obj;
 			},
-			key => String(key).endsWith(RichEditorStateKey)
+			(key: string | number) => String(key).endsWith(RichEditorStateKey)
 		);
 	}
 
