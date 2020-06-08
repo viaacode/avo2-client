@@ -101,6 +101,16 @@ pipeline {
                 }
             }//end stage	
 
+        stage('Tag QAS Image AND rollout QAS') {
+                steps {
+                    script {
+                        sh'''#!/bin/bash
+                        echo "Depoying QAS on IBM"
+                        make -f ./openshift/Makefile staging
+                        '''
+                    }// end script
+                }
+            }//end stage
 
     } // stages
     post {
