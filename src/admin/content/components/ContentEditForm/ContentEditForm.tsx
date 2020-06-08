@@ -109,10 +109,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 			value: '',
 			disabled: true,
 		},
-		...contentTypes.map(contentType => ({
-			label: contentType.value,
-			value: contentType.value,
-		})),
+		...contentTypes,
 	];
 
 	// Methods

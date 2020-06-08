@@ -162,12 +162,17 @@ export class ContentService {
 		return convertToContentPageInfo(dbContentPage);
 	}
 
-	public static async getContentTypes(): Promise<Avo.ContentPage.Type[] | null> {
+	public static async getContentTypes(): Promise<
+		{ value: Avo.ContentPage.Type; label: string }[] | null
+	> {
 		try {
 			const response = await dataService.query({ query: GET_CONTENT_TYPES });
 
 			return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(
-				(obj: { value: Avo.ContentPage.Type }) => obj.value
+				(obj: { value: Avo.ContentPage.Type; description: string }) => ({
+					value: obj.value,
+					label: obj.description,
+				})
 			);
 		} catch (err) {
 			console.error('Failed to retrieve content types.', err);
