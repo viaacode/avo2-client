@@ -28,7 +28,6 @@ import {
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
-	UPDATE_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
@@ -633,30 +632,6 @@ export class AssignmentService {
 		}
 	}
 
-	public static async updateAssignmentResponse(
-		id: number,
-		assignmentResponse: Partial<Avo.Assignment.Response>
-	): Promise<void> {
-		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_ASSIGNMENT_RESPONSE,
-				variables: {
-					id,
-					assignmentResponse,
-				},
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains Graphql errors', null, { response });
-			}
-		} catch (err) {
-			throw new CustomError('Failed to update assignment response', err, {
-				id,
-				assignmentResponse,
-			});
-		}
-	}
-
 	public static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: number | string
@@ -728,57 +703,55 @@ export class AssignmentService {
 	public static async createAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment,
 		user: Avo.User.User | undefined
-	) {
+	): Promise<Avo.Assignment.Response | null> {
 		try {
-			if (!this.isOwnerOfAssignment(assignment, user)) {
-				let assignmentResponse: Partial<Avo.Assignment.Response> | null | undefined = get(
-					assignment,
-					'assignment_responses[0]'
-				);
-
-				if (!assignmentResponse) {
-					// Student has never viewed this assignment before, we should create a response object for him
-					assignmentResponse = {
-						owner_profile_ids: [getProfileId(user)],
-						assignment_id: assignment.id,
-						collection: null,
-						collection_uuid: null,
-						submitted_at: null,
-					};
-					const response = await dataService.mutate({
-						mutation: INSERT_ASSIGNMENT_RESPONSE,
-						variables: {
-							assignmentResponses: [assignmentResponse],
-						},
-					});
-
-					if (response.errors) {
-						throw new CustomError('Response contains Graphql errors', null, {
-							response,
-						});
-					}
-
-					const assignmentResponseId = get(
-						response,
-						'data.insert_app_assignment_responses.returning[0].id'
-					);
-
-					if (isNil(assignmentResponseId)) {
-						throw new CustomError(
-							'Response from graphql does not contain an assignment response id',
-							null,
-							{ response }
-						);
-					}
-
-					(assignmentResponse as Partial<
-						Avo.Assignment.Response
-					>).id = assignmentResponseId;
-					assignment.assignment_responses = [
-						assignmentResponse as Avo.Assignment.Response,
-					];
-				}
+			if (this.isOwnerOfAssignment(assignment, user)) {
+				return null;
 			}
+			const existingAssignmentResponse: Avo.Assignment.Response | null | undefined = get(
+				assignment,
+				'assignment_responses[0]'
+			);
+
+			if (!isNil(existingAssignmentResponse)) {
+				return null;
+			}
+
+			// Student has never viewed this assignment before, we should create a response object for him
+			const assignmentResponse: Partial<Avo.Assignment.Response> = {
+				owner_profile_ids: [getProfileId(user)],
+				assignment_id: assignment.id,
+				collection: null,
+				collection_uuid: null,
+				submitted_at: null,
+			};
+			const response = await dataService.mutate({
+				mutation: INSERT_ASSIGNMENT_RESPONSE,
+				variables: {
+					assignmentResponses: [assignmentResponse],
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains Graphql errors', null, {
+					response,
+				});
+			}
+
+			const insertedAssignmentResponse: Avo.Assignment.Response | undefined = get(
+				response,
+				'data.insert_app_assignment_responses.returning[0]'
+			);
+
+			if (isNil(insertedAssignmentResponse)) {
+				throw new CustomError(
+					'Response from graphql does not contain an assignment response',
+					null,
+					{ response }
+				);
+			}
+
+			return insertedAssignmentResponse;
 		} catch (err) {
 			throw new CustomError('Failed to insert an assignment response in the database', err, {
 				assignment,

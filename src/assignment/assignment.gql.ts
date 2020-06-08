@@ -298,18 +298,12 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 			affected_rows
 			returning {
 				id
+				created_at
+				submitted_at
+				owner_profile_ids
+				assignment_id
+				collection_uuid
 			}
-		}
-	}
-`;
-
-export const UPDATE_ASSIGNMENT_RESPONSE = gql`
-	mutation updateAssignmentResponse(
-		$id: Int!
-		$assignmentResponse: app_assignment_responses_set_input
-	) {
-		update_app_assignment_responses(where: { id: { _eq: $id } }, _set: $assignmentResponse) {
-			affected_rows
 		}
 	}
 `;
