@@ -66,8 +66,8 @@ pipeline {
         stage('Run UNIT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
-                        echo "Running make unit_test"                        
-                        make -f ./openshift/Makefile unit_test
+                        echo "Running make unit_test ###DISABLED for build test####"                        
+                        #make -f ./openshift/Makefile unit_test
                         '''
                     }// end script
                 }
@@ -93,6 +93,7 @@ pipeline {
                     }// end script
                     script {
                         sh'''#!/bin/bash
+                        login_oc.sh $OKD_ENDPOINT
                         echo "Waiting deploymentconfig to rollout"
                         make -f ./openshift/Makefile rollout_dev
                         '''
