@@ -1,4 +1,3 @@
-import { compact } from 'lodash-es';
 import { useEffect, useState } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
@@ -18,24 +17,9 @@ export const useContentTypes = (): UseContentTypesTuple => {
 		setIsLoading(true);
 
 		ContentService.getContentTypes()
-			.then((types: Avo.ContentPage.Type[] | null) => {
+			.then(types => {
 				if (types) {
-					setContentTypeOptions(
-						compact(
-							types.map(type => {
-								if (
-									(type as string) === 'FAQ_OVERZICHT' || // TODO remove once all content pages have been updated in qas and prod database
-									(type as string) === 'NIEUWS_OVERZICHT'
-								) {
-									return null;
-								}
-								return {
-									label: type,
-									value: type,
-								};
-							})
-						)
-					);
+					setContentTypeOptions(types);
 				}
 			})
 			.finally(() => {
