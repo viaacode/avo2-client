@@ -22,7 +22,6 @@ interface UpdateProfileValues {
 	alternativeEmail: string;
 	avatar: string | null;
 	bio: string | null;
-	function: string | null;
 	location: string;
 	stamboek: string | null;
 }
