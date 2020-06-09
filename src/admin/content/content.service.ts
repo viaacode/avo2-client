@@ -9,7 +9,7 @@ import { ApolloCacheManager, dataService, ToastService } from '../../shared/serv
 import i18n from '../../shared/translations/i18n';
 import { convertBlocksToDatabaseFormat } from '../content-block/helpers';
 import { ContentBlockService } from '../content-block/services/content-block.service';
-import { mapDeep } from '../shared/helpers/mapDeep';
+import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
 
 import {
@@ -52,7 +52,7 @@ export class ContentService {
 			},
 		};
 
-		return convertBlocksToDatabaseFormat(
+		return convertToContentPageInfos(
 			(await performQuery(
 				query,
 				CONTENT_RESULT_PATH.GET,
@@ -525,22 +525,20 @@ export class ContentService {
 		return mapDeep(
 			blockConfigs,
 			(obj: any, key: string | number, value: any) => {
-				if (
-					String(key).endsWith(RichEditorStateKey) &&
-					value &&
-					value.toHTML &&
-					isFunction(value.toHTML)
-				) {
+				if (String(key).endsWith(RichEditorStateKey)) {
 					const htmlKey: string = String(key).substr(
 						0,
 						String(key).length - RichEditorStateKey.length
 					);
-					obj[htmlKey] = sanitizeHtml(value.toHTML(), 'full');
+					let htmlFromRichTextEditor = undefined;
+					if (value && value.toHTML && isFunction(value.toHTML)) {
+						htmlFromRichTextEditor = value.toHTML();
+					}
+					obj[htmlKey] = sanitizeHtml(htmlFromRichTextEditor || obj[htmlKey], 'full');
 					delete obj[key];
 				}
-				return obj;
 			},
-			key => String(key).endsWith(RichEditorStateKey)
+			(key: string | number) => String(key).endsWith(RichEditorStateKey)
 		);
 	}
 

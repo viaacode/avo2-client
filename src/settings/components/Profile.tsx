@@ -167,7 +167,6 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
 				})),
-				function: func, // This database field naming isn't ideal
 			});
 
 			// save newsletter subscription if checked

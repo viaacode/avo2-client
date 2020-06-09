@@ -42,11 +42,10 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
-                            echo "Building docker image the avo2-client This is a plain docker build"
 			                echo "Testing login script for the external docker agent"
 			                sh '''#!/bin/bash
                             set +x
-                            login_oc.sh $ENDPOINT && oc project sc-avo2 1>/dev/null
+                            login_oc.sh $ENDPOINT > /dev/null 2>&1  && oc project sc-avo2 1>/dev/null
                             '''
                         }
                     }
@@ -67,8 +66,8 @@ pipeline {
         stage('Run UNIT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
-                        echo "Running make unit_test"                        
-                        make -f ./openshift/Makefile unit_test
+                        echo "Running make unit_test ###DISABLED for build test####"                        
+                        #make -f ./openshift/Makefile unit_test
                         '''
                     }// end script
                 }
@@ -84,58 +83,34 @@ pipeline {
             }
         }//end stage
  
-        stage('Tag INT Image AND rollout INT') {
+        stage('Tag DEV Image AND rollout DEV') {
                 steps {
                     script {
                         sh'''#!/bin/bash
-                        echo "tagging int"                   
-                        make -f ./openshift/Makefile tag_int 
+                        echo "tagging dev"                   
+                        make -f ./openshift/Makefile tag_dev 
                         '''
                     }// end script
                     script {
                         sh'''#!/bin/bash
+                        login_oc.sh $OKD_ENDPOINT
                         echo "Waiting deploymentconfig to rollout"
-                        make -f ./openshift/Makefile rollout_int
+                        make -f ./openshift/Makefile rollout_dev
                         '''
                     }// end script               
                 }
             }//end stage	
-        
-   //     stage('Run INT Tests') {
-     //           steps {
-       //             script {sh'''#!/bin/bash
-         //               echo "Running make int_test"                      
-           //             make -f ./openshift/Makefile int_test
-             //           echo "Annotate int to set versions in pod and dc"    
-               //         make -f ./openshift/Makefile versions_int 
-                 //       '''
-                   // }// end script
-              //  }
-          //  }//end stage
-        stage('Rollout Staging') {
+
+        stage('Tag QAS Image AND rollout QAS') {
                 steps {
-                    script {sh'''#!/bin/bash
-                        echo "Running make staging"
-                        make -f ./openshift/Makefile staging 
+                    script {
+                        sh'''#!/bin/bash
+                        echo "Depoying QAS on IBM"
+                        make -f ./openshift/Makefile staging
                         '''
                     }// end script
                 }
             }//end stage
-        stage('Deploy production') {
-            steps {
-            input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
-                script {
-                sh '''#!/bin/bash
-                echo current branch: ${GIT_BRANCH#*/} '''
-                echo 'I will tag a production image which will roll out !!'
-                sh '''#!/bin/bash
-                echo "### Using ${GIT_COMMIT} commit ###"
-                login_oc.sh https://c100-e.eu-de.containers.cloud.ibm.com:31240 && oc project sc-avo2 > /dev/null 2>&1 && \
-                oc tag sc-avo2/avo2-client:${VERSION} sc-avo2/avo2-client:prd
-                '''
-                        } // script
-            } // steps
-        } // stage
 
     } // stages
     post {
@@ -150,6 +125,10 @@ pipeline {
             script {
                slackNotifier(currentBuild.currentResult)
             }
+            sh '''#!/bin/bash
+            set +x
+            echo "cleaning docker images and containers"
+            docker image prune -f && docker container prune -f'''
             cleanWs()
         }
     }
