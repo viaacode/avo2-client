@@ -239,6 +239,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					...contentPageState.currentContentPageInfo,
 					user_profile_id: getProfileId(user),
 					contentBlockConfigs: blockConfigs,
+					path:
+						contentPageState.currentContentPageInfo.path ||
+						`/${kebabCase(contentPageState.currentContentPageInfo.title || '')}`,
 				};
 				insertedOrUpdatedContent = await ContentService.insertContentPage(contentBody);
 			} else {
