@@ -7,6 +7,7 @@ import { renderBundleRoutes } from './bundle/bundle.routes';
 import { renderCollectionRoutes } from './collection/collection.routes';
 import { renderDynamicRouteResolverRoutes } from './dynamic-route-resolver/dynamic-route-resolver.routes';
 import { renderErrorRoutes } from './error/error.routes';
+import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
 import { renderKlaarRoutes } from './klaar/klaar.routes';
 import { renderSearchRoutes } from './search/search.routes';
@@ -16,6 +17,7 @@ import { renderWorkspaceRoutes } from './workspace/workspace.routes';
 
 export const renderRoutes = () => (
 	<Switch>
+		{renderHomeRoutes()}
 		{renderSearchRoutes()}
 		{renderItemRoutes()}
 		{renderCollectionRoutes()}

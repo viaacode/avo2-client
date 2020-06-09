@@ -176,7 +176,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									required
 								>
 									<TextInput
-										onChange={value => changeContentPageProp('title', value)}
+										onChange={value => {
+											changeContentPageProp('title', value);
+										}}
 										value={contentPageInfo.title}
 									/>
 								</FormGroup>
