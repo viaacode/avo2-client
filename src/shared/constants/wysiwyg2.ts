@@ -1,8 +1,8 @@
-import { WYSIWYG2Control } from '@viaa/avo2-components';
+import { WYSIWYGControl } from '@viaa/avo2-components';
 
-export const WYSIWYG2_OPTIONS_ALIGN: WYSIWYG2Control[] = ['separator', 'text-align'];
+export const WYSIWYG_OPTIONS_ALIGN: WYSIWYGControl[] = ['separator', 'text-align'];
 
-export const WYSIWYG2_OPTIONS_BASE: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
+export const WYSIWYG_OPTIONS_BASE: (WYSIWYGControl[] | WYSIWYGControl)[] = [
 	'fullscreen',
 	'separator',
 	'undo',
@@ -14,22 +14,22 @@ export const WYSIWYG2_OPTIONS_BASE: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
 	'italic',
 	'strike-through',
 	'underline',
-	...WYSIWYG2_OPTIONS_ALIGN,
+	...WYSIWYG_OPTIONS_ALIGN,
 	'separator',
 	'list-ul',
 	'list-ol',
 ];
 
 // LL & LK
-export const WYSIWYG2_OPTIONS_DEFAULT: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
-	...WYSIWYG2_OPTIONS_BASE,
+export const WYSIWYG_OPTIONS_DEFAULT: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+	...WYSIWYG_OPTIONS_BASE,
 	'separator',
 	'remove-styles',
 ];
 
 // Avo Eind redacteur, Educative Author & Partners
-export const WYSIWYG2_OPTIONS_AUTHOR: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
-	...WYSIWYG2_OPTIONS_BASE,
+export const WYSIWYG_OPTIONS_AUTHOR: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+	...WYSIWYG_OPTIONS_BASE,
 	'separator',
 	'link',
 	'separator',
@@ -37,8 +37,8 @@ export const WYSIWYG2_OPTIONS_AUTHOR: (WYSIWYG2Control[] | WYSIWYG2Control)[] = 
 ];
 
 // Admin
-export const WYSIWYG2_OPTIONS_FULL: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
-	...WYSIWYG2_OPTIONS_BASE,
+export const WYSIWYG_OPTIONS_FULL: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+	...WYSIWYG_OPTIONS_BASE,
 	'separator',
 	'subscript',
 	'superscript',
@@ -52,7 +52,7 @@ export const WYSIWYG2_OPTIONS_FULL: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
 	'remove-styles',
 ];
 
-export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
+export const WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYGControl[] | WYSIWYGControl)[] = [
 	'fullscreen',
 	'separator',
 	'undo',
@@ -80,7 +80,7 @@ export const WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYG2Control[] | WYSIWYG2C
 	'remove-styles',
 ];
 
-export const WYSIWYG2_OPTIONS_DEFAULT_NO_TITLES: (WYSIWYG2Control[] | WYSIWYG2Control)[] = [
+export const WYSIWYG_OPTIONS_DEFAULT_NO_TITLES: (WYSIWYGControl[] | WYSIWYGControl)[] = [
 	'undo',
 	'redo',
 	'separator',

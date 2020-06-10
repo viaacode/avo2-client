@@ -1,6 +1,6 @@
 import { debounce, get, isArray, isNil } from 'lodash-es';
 
-import { SelectOption, WYSIWYG2Props } from '@viaa/avo2-components';
+import { SelectOption, WYSIWYGProps } from '@viaa/avo2-components';
 
 import { RichEditorStateKey } from '../../content/content.const';
 import { ContentBlockEditor, ContentBlockField, PickerItem } from '../../shared/types';
@@ -57,7 +57,7 @@ export const generateFieldAttributes = (
 				onChange: (editorState: any) => {
 					onChange(editorState, `${key}${RichEditorStateKey}`);
 				},
-			} as Partial<WYSIWYG2Props>;
+			} as Partial<WYSIWYGProps>;
 		case ContentBlockEditor.FileUpload:
 			const urlOrUrls: string[] | undefined = value;
 			return {

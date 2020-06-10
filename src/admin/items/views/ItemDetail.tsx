@@ -26,8 +26,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
+import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, sanitizeHtml } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
@@ -326,9 +326,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									<Spacer margin="right-small">
 										<Spacer margin={['top']}>
 											<div style={{ backgroundColor: Color.White }}>
-												<WYSIWYG2Wrapper
+												<WYSIWYGWrapper
 													id="note"
-													controls={WYSIWYG2_OPTIONS_FULL}
+													controls={WYSIWYG_OPTIONS_FULL}
 													fileType="ITEM_NOTE_IMAGE"
 													initialHtml={item.note || undefined}
 													state={noteEditorState}
