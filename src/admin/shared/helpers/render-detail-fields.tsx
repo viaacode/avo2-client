@@ -35,13 +35,11 @@ export function renderSimpleDetailRows(
 
 export function renderDateDetailRows(
 	obj: any,
-	propAndTranslations: ([string, string] | [string, string, string])[]
+	propAndTranslations: [string, string][]
 ): ReactElement[] {
 	return propAndTranslations.map(propAndTranslation => {
 		return renderDetailRow(
-			obj[propAndTranslation[0]]
-				? formatDate(obj[propAndTranslation[0]])
-				: propAndTranslation[2] || '-',
+			obj[propAndTranslation[0]] ? formatDate(obj[propAndTranslation[0]]) : '-',
 			propAndTranslation[1]
 		);
 	});

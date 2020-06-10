@@ -63,8 +63,18 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 		}
 	};
 
+	const resetModal = () => {
+		setSelectedOption(getPublishedState(contentPage));
+		setPublishAt(contentPage.publish_at);
+		setDepublishAt(contentPage.depublish_at);
+	};
+
 	const closeModal = (newContent?: Partial<ContentPageInfo>) => {
-		setValidationError(undefined);
+		if (!newContent) {
+			resetModal();
+		} else {
+			setValidationError(undefined);
+		}
 		onClose(newContent);
 	};
 
@@ -75,7 +85,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 				'admin/content/components/share-content-page-modal___maak-deze-content-pagina-publiek'
 			)}
 			size="large"
-			onClose={onClose}
+			onClose={closeModal}
 			scrollable={false}
 		>
 			<ModalBody>
@@ -171,7 +181,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 									label={t(
 										'admin/content/components/share-content-page-modal___annuleren'
 									)}
-									onClick={() => onClose()}
+									onClick={() => closeModal()}
 								/>
 								<Button
 									type="primary"
