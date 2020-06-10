@@ -112,7 +112,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 			return formatDate(publish_at);
 		}
 
-		return 'Nee';
+		return t('Nee');
 	};
 	const description = ContentService.getDescription(contentPageInfo, 'full');
 	return (
@@ -191,11 +191,11 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							t('admin/content/views/content-detail___gepubliceerd')
 						)}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.publish_at) || 'N.v.t'}</p>,
+							<p>{formatDate(contentPageInfo.publish_at) || t('N.v.t')}</p>,
 							t('Wordt gepubliceerd op')
 						)}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.depublish_at) || 'N.v.t.'}</p>,
+							<p>{formatDate(contentPageInfo.depublish_at) || t('N.v.t.')}</p>,
 							t('Wordt gedepubliceerd op')
 						)}
 						{renderDetailRow(
