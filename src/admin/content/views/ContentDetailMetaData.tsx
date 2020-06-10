@@ -112,6 +112,14 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 			return formatDate(publish_at);
 		}
 
+		if (publish_at && moment().isAfter(moment(publish_at))) {
+			return formatDate(publish_at);
+		}
+
+		if (depublish_at && moment().isBefore(moment(depublish_at))) {
+			return t('Ja');
+		}
+
 		return t('Nee');
 	};
 	const description = ContentService.getDescription(contentPageInfo, 'full');
