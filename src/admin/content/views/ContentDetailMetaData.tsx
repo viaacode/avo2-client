@@ -1,4 +1,5 @@
 import { compact, get } from 'lodash';
+import moment from 'moment';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -14,6 +15,7 @@ import {
 } from '@viaa/avo2-components';
 
 import Html from '../../../shared/components/Html/Html';
+import { formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import {
@@ -25,7 +27,6 @@ import { UserService } from '../../users/user.service';
 import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentPageInfo } from '../content.types';
-import { formatDate } from '../../../shared/helpers';
 
 interface ContentDetailMetaDataProps {
 	contentPageInfo: ContentPageInfo;
@@ -96,6 +97,23 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 		);
 	};
 
+	const definePublishedAt = (contentPageInfo: ContentPageInfo) => {
+		const { published_at, publish_at, depublish_at } = contentPageInfo;
+
+		if (published_at) {
+			return formatDate(published_at);
+		}
+
+		if (
+			publish_at &&
+			depublish_at &&
+			moment().isBetween(moment(publish_at), moment(depublish_at))
+		) {
+			return formatDate(publish_at);
+		}
+
+		return 'Nee';
+	};
 	const description = ContentService.getDescription(contentPageInfo, 'full');
 	return (
 		<Container mode="vertical" size="small">
@@ -167,14 +185,9 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 								'updated_at',
 								t('admin/content/views/content-detail___laatst-bewerkt'),
 							],
-							['publish_at', t('admin/content/views/content-detail___gepubliceerd')],
-							[
-								'depublish_at',
-								t('admin/content/views/content-detail___gedepubliceerd'),
-							],
 						])}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.published_at) || 'Nee'}</p>,
+							<p>{definePublishedAt(contentPageInfo)}</p>,
 							t('admin/content/views/content-detail___gepubliceerd')
 						)}
 						{renderDetailRow(

@@ -285,7 +285,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		<ButtonToolbar>
 			<Button
 				type="secondary"
-				icon={get(contentPageInfo, 'is_public') === true ? 'unlock-3' : 'lock'}
+				icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
 				label={t('admin/content/views/content-detail___publiceren')}
 				title={t(
 					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
