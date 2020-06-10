@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { compact, flatten, get } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactElement,

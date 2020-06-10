@@ -1,11 +1,9 @@
 import moment from 'moment';
 
-import { Avo } from '@viaa/avo2-types';
-
-import { DbContent } from '../content.types';
+import { ContentPageInfo } from '../content.types';
 
 export const getPublishedState = (
-	contentPage: Avo.Content.Content | DbContent | Partial<DbContent> | undefined | null
+	contentPage: ContentPageInfo | Partial<ContentPageInfo> | undefined | null
 ) => {
 	if (!contentPage) {
 		return 'private';
@@ -25,7 +23,7 @@ export const getPublishedState = (
 };
 
 export const isPublic = (
-	contentPage: Avo.Content.Content | DbContent | Partial<DbContent> | undefined | null
+	contentPage: ContentPageInfo | Partial<ContentPageInfo> | undefined | null
 ) => {
 	if (!contentPage) {
 		return false;
