@@ -27,7 +27,7 @@ export const INITIAL_QUOTE_BLOCK_STATE = (): DefaultContentBlockState =>
 export const QUOTE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/quote___quote'),
-	type: ContentBlockType.Intro,
+	type: ContentBlockType.Quote,
 	components: {
 		state: INITIAL_QUOTE_COMPONENTS_STATE(),
 		fields: {
