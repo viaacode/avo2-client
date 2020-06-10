@@ -62,7 +62,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			<div className="m-resizable-panels">
 				<ResizablePanels
 					displayDirection="row"
-					panelsSize={[260]}
+					panelsSize={[300]}
 					sizeUnitMeasure="px"
 					resizerSize="15px"
 				>
