@@ -25,6 +25,7 @@ import { UserService } from '../../users/user.service';
 import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentPageInfo } from '../content.types';
+import { formatDate } from '../../../shared/helpers';
 
 interface ContentDetailMetaDataProps {
 	contentPageInfo: ContentPageInfo;
@@ -172,6 +173,18 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 								t('admin/content/views/content-detail___gedepubliceerd'),
 							],
 						])}
+						{renderDetailRow(
+							<p>{formatDate(contentPageInfo.published_at) || 'Nee'}</p>,
+							t('admin/content/views/content-detail___gepubliceerd')
+						)}
+						{renderDetailRow(
+							<p>{formatDate(contentPageInfo.publish_at) || 'N.v.t'}</p>,
+							t('Wordt gepubliceerd op')
+						)}
+						{renderDetailRow(
+							<p>{formatDate(contentPageInfo.depublish_at) || 'N.v.t.'}</p>,
+							t('Wordt gedepubliceerd op')
+						)}
 						{renderDetailRow(
 							<TagList
 								swatches={false}
