@@ -4,3 +4,7 @@
 .zEWidget-launcher {
 	z-index: $g-c-global-navbar-z !important;
 }
+
+.react-datepicker-popper {
+	z-index: $g-c-modal-z;
+}
