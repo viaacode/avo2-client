@@ -3,7 +3,7 @@ import React from 'react';
 
 import DraggableList from './DraggableList';
 
-const mockElements = [<div>Element 1</div>, <div>Element 2</div>];
+const mockElements = [<div key="elem-1">Element 1</div>, <div key="elem-2">Element 2</div>];
 
 describe('<DraggableList />', () => {
 	it('Should be able to render', () => {
