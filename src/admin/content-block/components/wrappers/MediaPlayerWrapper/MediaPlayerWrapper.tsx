@@ -69,7 +69,11 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			console.error(
 				new CustomError('Failed to fetch item info from the database', err, { item })
 			);
-			ToastService.danger(t('Het ophalen van het fragment is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/content-block/components/wrappers/media-player-wrapper/media-player-wrapper___het-ophalen-van-het-fragment-is-mislukt'
+				)
+			);
 		}
 	}, [item, poster, t]);
 

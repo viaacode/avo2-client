@@ -235,7 +235,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		],
 	}),
 	...hasPermissions(['EDIT_CONTENT_PAGE_LABELS'], 'OR', userPermissions, {
-		label: i18n.t('Content pagina labels'),
+		label: i18n.t('admin/admin___content-pagina-labels'),
 		location: ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
 		key: 'content-page-labels',
 		exact: false,

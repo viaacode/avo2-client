@@ -44,7 +44,9 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			color: FOREGROUND_COLOR_FIELD(i18n.t('Titel kleur')),
+			color: FOREGROUND_COLOR_FIELD(
+				i18n.t('admin/content-block/helpers/generators/heading___titel-kleur')
+			),
 			type: {
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,

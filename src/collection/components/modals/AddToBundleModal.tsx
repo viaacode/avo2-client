@@ -228,7 +228,6 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			size="medium"
 			isOpen={isOpen}
 			onClose={onClose}
-			scrollable
 		>
 			<ModalBody>
 				<div className="c-modal__body-add-collection">

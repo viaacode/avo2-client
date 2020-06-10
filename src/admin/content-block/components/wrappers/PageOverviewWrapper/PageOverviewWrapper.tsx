@@ -18,6 +18,7 @@ import { Avo } from '@viaa/avo2-types';
 import { getUserGroupIds } from '../../../../../authentication/authentication.service';
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
@@ -60,16 +61,16 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	),
 	itemsPerPage = 20,
 	history,
-	location,
 	user,
 }) => {
 	const [t] = useTranslation();
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
-	const [pages, setPages] = useState<ContentPageInfo[]>([]);
-	const [pageCount, setPageCount] = useState<number>(1);
+	const [pages, setPages] = useState<ContentPageInfo[] | null>(null);
+	const [pageCount, setPageCount] = useState<number | null>(null);
 	const [focusedPageId, setFocusedPageId] = useState<number | undefined>(undefined);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
@@ -94,7 +95,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const getLabelFilter = useCallback((): any[] => {
 		const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
-		const blockLabelIds = ((get(contentTypeAndTabs, 'selectedLabels') ||
+		const blockLabelIds = ((contentTypeAndTabs.selectedLabels ||
 			[]) as Avo.ContentPage.Label[]).map(labelObj => labelObj.id);
 		if (selectedLabelIds.length) {
 			// The user selected some block labels at the top of the page overview component
@@ -117,7 +118,10 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			];
 		}
 		return [];
-	}, [selectedTabs, contentTypeAndTabs]);
+		// Deep compare by value and not by ref
+		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedTabs, JSON.stringify(contentTypeAndTabs.selectedLabels)]);
 
 	const fetchPages = useCallback(async () => {
 		try {
@@ -164,11 +168,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 					},
 				})
 			);
-			ToastService.danger(
-				t(
+			setLoadingInfo({
+				state: 'error',
+				message: t(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-de-paginas-is-mislukt'
-				)
-			);
+				),
+			});
 		}
 	}, [
 		itemStyle,
@@ -176,7 +181,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		debouncedItemsPerPage,
 		setPages,
 		setPageCount,
-		contentTypeAndTabs,
+		contentTypeAndTabs.selectedContentType,
 		getLabelFilter,
 		user,
 		t,
@@ -184,7 +189,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const checkFocusedFilterAndPage = useCallback(async () => {
 		try {
-			const queryParams = queryString.parse(location.search);
+			const queryParams = queryString.parse(window.location.search);
 			const hasLabel = queryParams.label && isString(queryParams.label);
 			const hasItem = queryParams.item && isString(queryParams.item);
 			if (hasLabel) {
@@ -204,29 +209,31 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 				}
 				setFocusedPageId(contentPage.id);
 			}
-			if (hasItem || hasLabel) {
-				// Clear query params to avoid inf loop
-				history.push(location.pathname);
-			}
 		} catch (err) {
 			console.error('Failed to fetch content page by path', err, {
-				queryParams: location.search,
+				queryParams: window.location.search,
 			});
-			ToastService.danger(t('Het ophalen van het te focussen item is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/content-block/components/wrappers/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-het-te-focussen-item-is-mislukt'
+				)
+			);
 		}
-	}, [
-		location.search,
-		setFocusedPageId,
-		contentTypeAndTabs.selectedLabels,
-		t,
-		history,
-		location.pathname,
-	]);
+	}, [setFocusedPageId, contentTypeAndTabs.selectedLabels, t]);
 
 	useEffect(() => {
 		fetchPages();
+	}, [fetchPages]);
+
+	useEffect(() => {
 		checkFocusedFilterAndPage();
-	}, [fetchPages, checkFocusedFilterAndPage]);
+	}, [checkFocusedFilterAndPage]);
+
+	useEffect(() => {
+		if (pages && pageCount) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [pages, pageCount]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
 		setCurrentPage(pageIndex);
@@ -237,34 +244,49 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		setCurrentPage(0);
 	};
 
+	const renderPageOverviewBlock = () => {
+		if (!pageCount || !pages) {
+			return null;
+		}
+		return (
+			<BlockPageOverview
+				tabs={contentTypeAndTabs.selectedLabels}
+				selectedTabs={selectedTabs}
+				onSelectedTabsChanged={handleSelectedTabsChanged}
+				currentPage={currentPage}
+				onCurrentPageChanged={handleCurrentPageChanged}
+				pageCount={pageCount}
+				pages={pages.map(dbToPageOverviewContentPage)}
+				tabStyle={tabStyle}
+				itemStyle={itemStyle}
+				allowMultiple={allowMultiple}
+				centerHeader={centerHeader}
+				showTitle={showTitle}
+				showDescription={showDescription}
+				showDate={showDate}
+				dateString={t(
+					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___geplaatst-in-label-op-date'
+				)}
+				allLabel={t(
+					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___alle'
+				)}
+				noLabel={t(
+					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
+				)}
+				buttonLabel={buttonLabel}
+				activePageId={focusedPageId}
+				navigate={(buttonAction: ButtonAction) =>
+					navigateToContentType(buttonAction, history)
+				}
+			/>
+		);
+	};
+
 	return (
-		<BlockPageOverview
-			tabs={contentTypeAndTabs.selectedLabels}
-			selectedTabs={selectedTabs}
-			onSelectedTabsChanged={handleSelectedTabsChanged}
-			currentPage={currentPage}
-			onCurrentPageChanged={handleCurrentPageChanged}
-			pageCount={pageCount}
-			pages={pages.map(dbToPageOverviewContentPage)}
-			tabStyle={tabStyle}
-			itemStyle={itemStyle}
-			allowMultiple={allowMultiple}
-			centerHeader={centerHeader}
-			showTitle={showTitle}
-			showDescription={showDescription}
-			showDate={showDate}
-			dateString={t(
-				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___geplaatst-in-label-op-date'
-			)}
-			allLabel={t(
-				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___alle'
-			)}
-			noLabel={t(
-				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
-			)}
-			buttonLabel={buttonLabel}
-			activePageId={focusedPageId}
-			navigate={(buttonAction: ButtonAction) => navigateToContentType(buttonAction, history)}
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			dataObject={pages}
+			render={renderPageOverviewBlock}
 		/>
 	);
 };

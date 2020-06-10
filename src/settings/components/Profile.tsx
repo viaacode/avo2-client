@@ -167,7 +167,6 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
 				})),
-				function: func, // This database field naming isn't ideal
 			});
 
 			// save newsletter subscription if checked
@@ -188,7 +187,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							user,
 						})
 					);
-					ToastService.danger(t('Het inschijven voor de nieuwsbrief is mislukt'));
+					ToastService.danger(
+						t(
+							'settings/components/profile___het-inschijven-voor-de-nieuwsbrief-is-mislukt'
+						)
+					);
 				}
 			}
 
@@ -389,7 +392,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 									<FormGroup>
 										<Checkbox
 											label={t(
-												'Ik ontvang graag per e-mail tips en inspiratie voor mijn lessen, vacatures, gratis workshops en nieuws van partners.'
+												'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
 											)}
 											checked={subscribeToNewsletter}
 											onChange={setSubscribeToNewsletter}

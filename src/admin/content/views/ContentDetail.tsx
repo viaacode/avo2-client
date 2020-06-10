@@ -105,7 +105,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			setLoadingInfo({
 				state: 'error',
 				message: notFound
-					? t('Een content pagina met dit id kon niet worden gevonden')
+					? t(
+							'admin/content/views/content-detail___een-content-pagina-met-dit-id-kon-niet-worden-gevonden'
+					  )
 					: t(
 							'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
 					  ),

@@ -39,6 +39,10 @@ push:
 	docker push ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION} 
 tag_int:
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int
+tag_dev:
+	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:dev
+rollout_dev:
+	bash  ./openshift/wait4rollout.sh dev
 rollout_int:
 	echo not implemented
 tag_staging:	login

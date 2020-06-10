@@ -36,7 +36,9 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps> = ({
 
 		return (
 			<>
-				{` ${t('in')} `}
+				{` ${t(
+					'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___in'
+				)} `}
 				{contentPageInfo.labels.map((labelObj, index) => {
 					if (index === contentPageInfo.labels.length - 1) {
 						return renderLabel(labelObj);
@@ -44,7 +46,10 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps> = ({
 					if (index === contentPageInfo.labels.length - 2) {
 						return (
 							<>
-								{renderLabel(labelObj)} {t('en')}{' '}
+								{renderLabel(labelObj)}{' '}
+								{t(
+									'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___en'
+								)}{' '}
 							</>
 						);
 					}
@@ -56,12 +61,17 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps> = ({
 
 	return (
 		<span>
-			{t('gepubliceerd op')}{' '}
+			{t(
+				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___gepubliceerd-op'
+			)}{' '}
 			{normalizeTimestamp(contentPageInfo.updated_at || contentPageInfo.created_at).format(
 				'DD MMMM YYYY'
 			)}
 			{renderLabels()}
-			{`${t(' | door')} `} {getProfileName(contentPageInfo.profile.user)}
+			{`${t(
+				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___door'
+			)} `}{' '}
+			{getProfileName(contentPageInfo.profile.user)}
 		</span>
 	);
 };
