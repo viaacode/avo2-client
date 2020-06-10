@@ -42,6 +42,7 @@ const full = {
 		td: ['colSpan', 'rowSpan'],
 		img: ['src'],
 		div: ['class', 'style'],
+		span: ['class', 'style'],
 	},
 };
 
