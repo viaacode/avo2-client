@@ -67,4 +67,5 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	data: Avo.Search.Search | null;
 	setPage: (page: number) => void;
 	bookmarkStatuses: BookmarkStatusLookup | null;
+	navigateUserRequestForm: () => void;
 }
