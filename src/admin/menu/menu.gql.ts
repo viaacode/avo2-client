@@ -65,7 +65,9 @@ export const UPDATE_MENU_ITEM_BY_ID = gql`
 export const INSERT_MENU_ITEM = gql`
 	mutation insertMenuItem($menuItem: app_content_nav_elements_insert_input!) {
 		insert_app_content_nav_elements(objects: [$menuItem]) {
-			affected_rows
+			returning {
+				id
+			}
 		}
 	}
 `;

@@ -24,6 +24,10 @@
 		background: $color-gray-50;
 		color: $color-gray-700;
 	}
+
+	.o-svg-icon + .c-nav__item-label {
+		margin-left: 5px;
+	}
 }
 
 .c-nav__item--i {

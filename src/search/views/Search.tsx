@@ -46,10 +46,10 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE, APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
-import { copyToClipboard, CustomError } from '../../shared/helpers';
+import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -79,6 +79,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	searchResultsError,
 	search,
 	user,
+	history,
 }) => {
 	const [t] = useTranslation();
 
@@ -390,6 +391,9 @@ const Search: FunctionComponent<SearchProps> = ({
 	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
+	const navigateToUserRequestForm = () =>
+		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+
 	const renderSearchPage = () => (
 		<Container className="c-search-view" mode="horizontal">
 			<Navbar>
@@ -534,6 +538,7 @@ const Search: FunctionComponent<SearchProps> = ({
 					pageCount={pageCount}
 					setPage={setPage}
 					bookmarkStatuses={bookmarkStatuses}
+					navigateUserRequestForm={navigateToUserRequestForm}
 				/>
 			)}
 		</Container>

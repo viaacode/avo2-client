@@ -145,21 +145,6 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const renderForm = () => {
 		return (
 			<>
-				<Spacer margin="bottom-large">
-					<Button
-						type="secondary"
-						onClick={history.goBack}
-						label={t(
-							'authentication/views/registration-flow/r-4-manual-registration___terug'
-						)}
-						title={t(
-							'user-item-request-form/views/user-item-request-form___keer-terug-naar-het-stamboek-scherm'
-						)}
-						ariaLabel={t(
-							'user-item-request-form/views/user-item-request-form___keer-terug-naar-het-stamboek-scherm'
-						)}
-					/>
-				</Spacer>
 				<BlockHeading type="h2">
 					<Trans i18nKey="user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan">
 						Niet gevonden wat je zocht? Vraag het aan!
