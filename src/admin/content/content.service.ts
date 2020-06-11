@@ -70,13 +70,13 @@ export class ContentService {
 			},
 		};
 
-		return convertBlocksToDatabaseFormat(
+		return (
 			(await performQuery(
 				query,
 				CONTENT_RESULT_PATH.GET,
 				'Failed to retrieve project content pages.'
 			)) || []
-		) as ContentPageInfo[];
+		);
 	}
 
 	public static async getContentItemsByTitle(
