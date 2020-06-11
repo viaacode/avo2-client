@@ -1,5 +1,5 @@
 import produce, { Draft } from 'immer';
-import { cloneDeep, isNil } from 'lodash-es';
+import { cloneDeep, isEqual, isNil } from 'lodash-es';
 import moment from 'moment';
 
 import { ValueOf } from '../../../../shared/types';
@@ -247,9 +247,18 @@ export const contentEditReducer = produce(
 
 			case ContentEditActionType.SET_CONTENT_BLOCK_ERROR:
 				const setContentBlockError = action as SetContentBlockError;
-				draft.currentContentPageInfo.contentBlockConfigs[
-					setContentBlockError.payload.configIndex
-				].errors = setContentBlockError.payload.errors;
+				if (
+					!isEqual(
+						action.payload.errors,
+						draft.currentContentPageInfo.contentBlockConfigs[
+							setContentBlockError.payload.configIndex
+						].errors
+					)
+				) {
+					draft.currentContentPageInfo.contentBlockConfigs[
+						setContentBlockError.payload.configIndex
+					].errors = setContentBlockError.payload.errors;
+				}
 				return;
 
 			default:
