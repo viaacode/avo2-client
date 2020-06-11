@@ -22,7 +22,7 @@ import {
 	FOREGROUND_COLOR_FIELD,
 	TEXT_FIELD,
 } from './defaults';
-import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
+import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 
 export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
 	title: '',
@@ -110,7 +110,7 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 			textBelowButtons: TEXT_FIELD(undefined, {
 				label: i18n.t('Text onder knoppen'),
 				editorProps: {
-					controls: WYSIWYG2_OPTIONS_FULL,
+					controls: WYSIWYG_OPTIONS_FULL,
 				},
 			}),
 

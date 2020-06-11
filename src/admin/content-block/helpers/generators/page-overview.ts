@@ -28,7 +28,7 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 	centerHeader: false,
 	headerBackgroundColor: Color.Transparent,
 	contentType: 'PROJECT',
-	itemStyle: 'LIST',
+	itemStyle: 'NEWS_LIST',
 	showTitle: true,
 	showDescription: true,
 	showDate: false,

@@ -52,7 +52,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	tabStyle = 'MENU_BAR',
 	allowMultiple = false,
 	centerHeader = false,
-	itemStyle = 'LIST',
+	itemStyle = 'NEWS_LIST',
 	showTitle = true,
 	showDescription = true,
 	showDate = false,

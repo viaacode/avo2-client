@@ -6,4 +6,4 @@ export {
 	WYSIWYG_OPTIONS_FULL,
 	WYSIWYG_OPTIONS_ALIGN,
 	WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN,
-} from './wysiwyg2';
+} from './wysiwyg';
