@@ -3,18 +3,18 @@ import { parse } from 'querystring';
 import React, {
 	createRef,
 	FunctionComponent,
+	MouseEvent,
 	ReactNode,
 	RefObject,
 	useEffect,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import { RouteComponentProps } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
 	BlockHeading,
-	Button,
 	Column,
 	convertToHtml,
 	ExpandableContainer,
@@ -57,7 +57,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	seekTime = 0,
 	canPlay = true,
 }) => {
-	const [t] = useTranslation();
+	const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}:[0-9]{2})/g;
 
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
@@ -101,45 +101,33 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		};
 	}, [videoRef]);
 
+	const isTimeCode = (text: string): boolean => {
+		return TIMESTAMP_REGEX.test(text);
+	};
+
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
 		setTime(seconds);
+	};
+
+	const handleDescriptionClicked = (evt: MouseEvent<HTMLDivElement>) => {
+		const clickedText = (evt.target as any).innerText;
+		if (isTimeCode(clickedText)) {
+			handleTimeLinkClicked(clickedText);
+		}
 	};
 
 	/**
 	 * Split string by time markers and adds links to those times into the output jsx code
 	 */
 	const formatTimestamps = (description: string = ''): ReactNode => {
-		const timestampRegex = /([0-9]{2}:[0-9]{2}:[0-9]{2}|\n)/g;
-		const parts: string[] = description.split(timestampRegex);
-		return parts.map((part: string, index: number) => {
-			if (part === '\n') {
-				return <br key={`description-new-line-${index}`} />;
-			}
+		const formattedDescription = description
+			.replace(/[\n\r]+/, '')
+			.replace(TIMESTAMP_REGEX, match => {
+				return `<span class="c-description-timecode">${match}</span>`;
+			});
 
-			if (timestampRegex.test(part)) {
-				return (
-					<Button
-						type="link"
-						key={`description-link-${index}`}
-						title={t(
-							'item/components/item-video-description___sprint-naar-tijdscode-code',
-							{ code: part }
-						)}
-						ariaLabel={t(
-							'item/components/item-video-description___sprint-naar-tijdscode-code',
-							{ code: part }
-						)}
-						className="u-clickable"
-						onClick={() => handleTimeLinkClicked(part)}
-					>
-						{part}
-					</Button>
-				);
-			}
-
-			return <Html key={`description-part-${index}`} content={part} type="span" />;
-		});
+		return <Html content={formattedDescription} type="div" sanitizePreset="full" />;
 	};
 
 	const renderMedia = () => (
@@ -189,7 +177,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 					<Column size="2-7" className="c-video-column">
 						{renderMedia()}
 					</Column>
-					<Column size="2-5">{renderDescription()}</Column>
+					<Column size="2-5">
+						<div onClick={handleDescriptionClicked}>{renderDescription()}</div>
+					</Column>
 				</>
 			) : (
 				<>
