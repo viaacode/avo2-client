@@ -1,5 +1,5 @@
 import { History, Location } from 'history';
-import { get } from 'lodash-es';
+import { get, trimEnd, trimStart } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
@@ -30,7 +30,7 @@ export function redirectToClientPage(path: string, history: History, fromPath?: 
 export function redirectToServerSmartschoolLogin(location: Location) {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + getFromPath(location);
+	const returnToUrl = getFullFromUrl(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
@@ -39,7 +39,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 export function redirectToServerKlascementLogin(location: Location) {
 	// Redirect to klascement login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + getFromPath(location);
+	const returnToUrl = getFullFromUrl(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
@@ -58,7 +58,7 @@ export function redirectToServerArchiefRegistrationIdp(location: Location, stamb
 export function redirectToServerLoginPage(location: Location) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + getFromPath(location);
+	const returnToUrl = getFullFromUrl(location);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
 		returnToUrl,
@@ -127,4 +127,14 @@ export function getFromPath(
 	return (
 		get(location, 'state.from.pathname', defaultPath) + get(location, 'state.from.search', '')
 	);
+}
+
+export function getFullFromUrl(
+	location: Location,
+	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
+) {
+	return `${trimEnd(getBaseUrl(location), '/')}/${trimStart(
+		getFromPath(location, defaultPath),
+		'/'
+	)}`;
 }
