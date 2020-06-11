@@ -19,7 +19,7 @@ import { getUserGroupIds } from '../../../../../authentication/authentication.se
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
-import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
+import { CustomError, navigate, navigateToContentType } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
 import { dataService, ToastService } from '../../../../../shared/services';
@@ -29,6 +29,7 @@ import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+import { ROUTE_PARTS } from '../../../../../shared/constants';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
@@ -275,6 +276,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 				)}
 				buttonLabel={buttonLabel}
 				activePageId={focusedPageId}
+				onLabelClicked={(label: string) =>
+					navigate(history, `/${ROUTE_PARTS.news}`, {}, `label=${label}`)
+				}
 				navigate={(buttonAction: ButtonAction) =>
 					navigateToContentType(buttonAction, history)
 				}
