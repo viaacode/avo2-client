@@ -125,7 +125,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 		app_assignment_responses(
 			where: {
 				owner_profile_ids: { _has_key: $owner_profile_id }
-				assignment: { is_deleted: { _eq: false }, _or: $filter }
+				assignment: { is_deleted: { _eq: false }, _and: $filter }
 			}
 			limit: $limit
 			offset: $offset

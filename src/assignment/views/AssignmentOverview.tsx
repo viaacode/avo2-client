@@ -128,7 +128,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
 				user,
-				canEditAssignments ? activeView === 'archived_assignments' : null, // Teachers can see archived assignments
+				canEditAssignments ? activeView === 'archived_assignments' : false, // Teachers can see archived assignments
 				canEditAssignments ? null : activeView === 'archived_assignments', // pupils can see assignments past deadline
 				TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn]
 					? (TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn] as Function)(sortOrder)
