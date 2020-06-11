@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="nl">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#000000" />
-		<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-		<link rel="preload" href="/fonts/montserrat-italic.woff2" as="font" crossorigin>
-		<link rel="preload" href="/fonts/montserrat-medium.woff2" as="font" crossorigin>
-		<link rel="preload" href="/fonts/avenir-lt-std-medium.woff2" as="font" crossorigin>
-		<title>React App</title>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#000000" />
+	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+	<link rel="preload" href="/fonts/montserrat-italic.woff2" as="font" crossorigin>
+	<link rel="preload" href="/fonts/montserrat-medium.woff2" as="font" crossorigin>
+	<link rel="preload" href="/fonts/avenir-lt-std-medium.woff2" as="font" crossorigin>
+	<title>React App</title>
 
-		<!-- Init .env variables -->
-		<script src="%PUBLIC_URL%/env-config.js"></script>
-	</head>
-	<body>
-		<!-- No-JS fallback -->
-		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<div id="root"></div>
+	<script id="Cookiebot"
+					src="https://consent.cookiebot.com/uc.js"
+					data-cbid="8fb68e92-94b2-4334-bc47-7bcda08bc9c7"
+					data-blockingmode="auto"
+					type="text/javascript"></script>
+	<!-- Init .env variables -->
+	<script src="%PUBLIC_URL%/env-config.js"></script>
+</head>
+<body>
+<!-- No-JS fallback -->
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
 
-		<!-- Detect old browsers-->
-		<script src="%PUBLIC_URL%/old-browser-detector.min.js"></script>
-		<script type="text/javascript">
-		var Detector = new oldBrowserDetector(null, function() {
-			// unsupported browser
-			window.open('/unsupported-browser.html');
-		});
+<!-- Detect old browsers-->
+<script src="%PUBLIC_URL%/old-browser-detector.min.js"></script>
+<script type="text/javascript">
+var Detector = new oldBrowserDetector(null, function() {
+	// unsupported browser
+	window.open('/unsupported-browser.html');
+});
 
 Detector.detect();
 </script>
