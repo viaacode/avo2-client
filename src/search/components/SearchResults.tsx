@@ -94,7 +94,10 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
 						)}
 					>
-						<Button label={t('Vraag een item aan')} onClick={navigateUserRequestForm} />
+						<Button
+							label={t('search/components/search-results___vraag-een-item-aan')}
+							onClick={navigateUserRequestForm}
+						/>
 					</Blankslate>
 				)}
 			</Container>
