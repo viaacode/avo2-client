@@ -127,7 +127,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				return `<span class="c-description-timecode">${match}</span>`;
 			});
 
-		return <Html content={formattedDescription} type="div" sanitizePreset="full" />;
+		return <Html content={formattedDescription} type="span" sanitizePreset="full" />;
 	};
 
 	const renderMedia = () => (
