@@ -76,7 +76,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
 	}); // TODO: Add type
-	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<RichEditorState>();
+	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<
+		RichEditorState | undefined
+	>(undefined);
 
 	const isCollection = type === 'collection';
 
@@ -113,6 +115,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		fragmentProp: keyof Avo.Collection.Fragment,
 		fragmentPropValue: any
 	) => {
+		if (fragmentProp === 'use_custom_fields') {
+			setDescriptionRichEditorState(undefined);
+		}
 		changeCollectionState({
 			index,
 			fragmentProp,
