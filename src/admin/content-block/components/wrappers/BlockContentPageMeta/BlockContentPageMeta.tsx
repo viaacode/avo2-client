@@ -36,7 +36,7 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps> = ({
 
 		return (
 			<>
-				{` ${t(
+				{`${t(
 					'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___in'
 				)} `}
 				{contentPageInfo.labels.map((labelObj, index) => {
@@ -65,12 +65,12 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps> = ({
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___gepubliceerd-op'
 			)}{' '}
 			{normalizeTimestamp(contentPageInfo.updated_at || contentPageInfo.created_at).format(
-				'DD MMMM YYYY'
-			)}
+				'D MMMM YYYY'
+			)}{' '}
 			{renderLabels()}
 			{`${t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___door'
-			)} `}{' '}
+			)}`}{' '}
 			{getProfileName(contentPageInfo.profile.user)}
 		</span>
 	);
