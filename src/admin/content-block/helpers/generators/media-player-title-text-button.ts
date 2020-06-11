@@ -47,17 +47,12 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	components: {
 		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE(),
 		fields: {
-			mediaTitle: TEXT_FIELD(
-				i18n.t(
-					'admin/content-block/helpers/generators/media-player-title-text-button___titel-is-verplicht'
+			mediaTitle: {
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___video-of-audio-item-toegankelijkheidstitel'
 				),
-				{
-					label: i18n.t(
-						'admin/content-block/helpers/generators/media-player-title-text-button___video-of-audio-item-toegankelijkheidstitel'
-					),
-					editorType: ContentBlockEditor.TextInput,
-				}
-			),
+				editorType: ContentBlockEditor.TextInput,
+			},
 			mediaItem: VIDEO_FIELD(),
 			mediaSrc: FILE_FIELD(undefined, {
 				label: i18n.t(
