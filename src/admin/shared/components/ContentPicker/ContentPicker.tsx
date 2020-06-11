@@ -128,8 +128,6 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			setSelectedType(selected as PickerTypeOption);
 			setSelectedItem(null);
 			propertyChanged('selectedItem', null);
-
-			fetchPickerOptions(null);
 		}
 	};
 
