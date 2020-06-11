@@ -1,4 +1,4 @@
-import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
+import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -36,7 +36,7 @@ export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 				i18n.t('admin/content-block/helpers/generators/rich-text___tekst-is-verplicht'),
 				{
 					editorProps: {
-						controls: [...WYSIWYG2_OPTIONS_FULL, 'media'],
+						controls: [...WYSIWYG_OPTIONS_FULL, 'media'],
 						fileType: 'CONTENT_BLOCK_IMAGE',
 					},
 				}

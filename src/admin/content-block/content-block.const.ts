@@ -12,7 +12,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { FileUpload } from '../../shared/components';
-import WYSIWYG2Wrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import WYSIWYGWrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import i18n from '../../shared/translations/i18n';
 import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
@@ -206,7 +206,7 @@ export const EDITOR_TYPES_MAP = {
 	TextArea,
 	TextInput,
 	UserGroupSelect,
-	WYSIWYG: WYSIWYG2Wrapper,
+	WYSIWYG: WYSIWYGWrapper,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -507,8 +507,12 @@ export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabS
 
 export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentItemStyle>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___lijst'),
-		value: 'LIST',
+		label: i18n.t('Nieuws lijst'),
+		value: 'NEWS_LIST',
+	},
+	{
+		label: i18n.t('Projecten lijst'),
+		value: 'PROJECT_LIST',
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___grid'),
