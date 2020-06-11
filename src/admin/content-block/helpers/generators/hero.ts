@@ -34,7 +34,12 @@ export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
 });
 
 export const INITIAL_HERO_BLOCK_STATE = (): DefaultContentBlockState => ({
-	...BLOCK_STATE_DEFAULTS(),
+	...BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'none',
+			bottom: 'none',
+		},
+	}),
 	backgroundColor: Color.NightBlue,
 });
 
