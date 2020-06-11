@@ -533,8 +533,14 @@ export class ContentService {
 					let htmlFromRichTextEditor = undefined;
 					if (value && value.toHTML && isFunction(value.toHTML)) {
 						htmlFromRichTextEditor = value.toHTML();
+						if (htmlFromRichTextEditor === '<p></p>') {
+							htmlFromRichTextEditor = '';
+						}
 					}
-					obj[htmlKey] = sanitizeHtml(htmlFromRichTextEditor || obj[htmlKey], 'full');
+					obj[htmlKey] = sanitizeHtml(
+						htmlFromRichTextEditor || obj[htmlKey] || '',
+						'full'
+					);
 					delete obj[key];
 				}
 			},

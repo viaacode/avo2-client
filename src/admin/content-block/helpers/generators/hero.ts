@@ -22,6 +22,7 @@ import {
 	FOREGROUND_COLOR_FIELD,
 	TEXT_FIELD,
 } from './defaults';
+import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
 
 export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
 	title: '',
@@ -105,6 +106,13 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					),
 				},
 			} as ContentBlockFieldGroup,
+
+			textBelowButtons: TEXT_FIELD(undefined, {
+				label: i18n.t('Text onder knoppen'),
+				editorProps: {
+					controls: WYSIWYG2_OPTIONS_FULL,
+				},
+			}),
 
 			src: FILE_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/hero___eigen-video-uploaden'),
