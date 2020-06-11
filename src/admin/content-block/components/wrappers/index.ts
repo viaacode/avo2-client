@@ -5,3 +5,4 @@ export { default as PageOverviewWrapper } from './PageOverviewWrapper/PageOvervi
 export { default as ProjectSpotlightWrapper } from './ProjectSpotlightWrapper/ProjectSpotlightWrapper';
 export { default as BlockGridWrapper } from './ImageGridWrapper/ImageGridWrapper';
 export { default as BlockContentPageMeta } from './BlockContentPageMeta/BlockContentPageMeta';
+export { default as HeroWrapper } from './HeroWrapper/HeroWrapper';

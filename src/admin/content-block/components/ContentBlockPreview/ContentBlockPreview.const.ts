@@ -2,7 +2,6 @@ import {
 	BlockButtons,
 	BlockCTAs,
 	BlockHeading,
-	BlockHero,
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
@@ -17,6 +16,7 @@ import { ContentBlockType } from '../../../shared/types';
 import {
 	BlockContentPageMeta,
 	BlockGridWrapper,
+	HeroWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
 	MediaPlayerWrapper,
@@ -46,7 +46,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.Spotlight]: BlockSpotlight,
-	[ContentBlockType.Hero]: BlockHero,
+	[ContentBlockType.Hero]: HeroWrapper,
 	[ContentBlockType.Search]: BlockSearch,
 	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
 });

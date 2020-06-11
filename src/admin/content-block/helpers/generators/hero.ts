@@ -1,6 +1,7 @@
 import { BlockHeroProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
@@ -22,7 +23,6 @@ import {
 	FOREGROUND_COLOR_FIELD,
 	TEXT_FIELD,
 } from './defaults';
-import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 
 export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
 	title: '',
