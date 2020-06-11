@@ -11,7 +11,12 @@ import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS } from './defaults';
 export const INITIAL_SEARCH_COMPONENTS_STATE = () => ({});
 
 export const INITIAL_SEARCH_BLOCK_STATE = (): DefaultContentBlockState => ({
-	...BLOCK_STATE_DEFAULTS(),
+	...BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'top-extra-large',
+			bottom: 'bottom-extra-large',
+		},
+	}),
 	backgroundColor: Color.Gray50,
 });
 

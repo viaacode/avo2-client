@@ -46,6 +46,8 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
+	console.log(componentState);
+
 	const blockRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
 	const blockStateProps: { [key: string]: any } = omit(blockState, IGNORE_BLOCK_LEVEL_PROPS);
