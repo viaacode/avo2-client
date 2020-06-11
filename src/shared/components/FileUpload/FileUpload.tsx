@@ -1,3 +1,5 @@
+import { isString } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -172,18 +174,24 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					</Spacer>
 				);
 			}
-			const urlInfo = getUrlInfo(url);
-			const fileName = urlInfo.fileName.substring(
-				0,
-				urlInfo.fileName.length - '-00000000-0000-0000-0000-000000000000'.length
-			);
+			let fileName: string | undefined;
+			if (url.includes('?')) {
+				const queryParams = queryString.parse(url.split('?').pop() || '');
+				if (queryParams && queryParams.name && isString(queryParams.name)) {
+					fileName = queryParams.name as string;
+				}
+			}
+			if (!fileName) {
+				const urlInfo = getUrlInfo(url.split('?')[0]);
+				fileName = `${urlInfo.fileName.substring(
+					0,
+					urlInfo.fileName.length - '-00000000-0000-0000-0000-000000000000'.length
+				)}.${urlInfo.extension}`;
+			}
+
 			return (
 				<Spacer margin="bottom-small" key={url}>
-					<Blankslate
-						title={`${fileName}.${urlInfo.extension}`}
-						icon="file"
-						className="a-upload-file-preview"
-					>
+					<Blankslate title={fileName} icon="file" className="a-upload-file-preview">
 						{renderDeleteButton(url)}
 					</Blankslate>
 				</Spacer>
