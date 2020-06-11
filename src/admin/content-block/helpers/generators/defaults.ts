@@ -3,8 +3,8 @@ import { isEmpty, isNil } from 'lodash-es';
 import { SelectOption } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import { WYSIWYG2WrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
+import { WYSIWYGWrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { UserGroupSelectProps } from '../../../shared/components';
 import {
@@ -127,9 +127,9 @@ export const TEXT_FIELD = (
 		return errorArray;
 	},
 	editorProps: {
-		controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
+		controls: [...WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
 		fileType: 'CONTENT_BLOCK_IMAGE',
-	} as Partial<WYSIWYG2WrapperProps>,
+	} as Partial<WYSIWYGWrapperProps>,
 	...propOverride,
 });
 

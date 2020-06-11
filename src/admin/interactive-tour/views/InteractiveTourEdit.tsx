@@ -44,8 +44,8 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import Html from '../../../shared/components/Html/Html';
-import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { ROUTE_PARTS, WYSIWYG2_OPTIONS_FULL } from '../../../shared/constants';
+import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { ROUTE_PARTS, WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitizeHtml, stripHtml } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
@@ -457,7 +457,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								)}
 								error={get(formErrors, `steps[${index}].content`)}
 							>
-								<WYSIWYG2Wrapper
+								<WYSIWYGWrapper
 									initialHtml={(step.content || '').toString()}
 									state={step.contentState}
 									onChange={newContentState => {
@@ -471,7 +471,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 											});
 										}
 									}}
-									controls={WYSIWYG2_OPTIONS_FULL}
+									controls={WYSIWYG_OPTIONS_FULL}
 									fileType="INTERACTIVE_TOUR_IMAGE"
 									id={`content_editor_${index}`}
 									placeholder={t(
