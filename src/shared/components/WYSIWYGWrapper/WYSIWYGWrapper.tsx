@@ -2,15 +2,15 @@ import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { WYSIWYG2, WYSIWYG2Media, WYSIWYG2Props, WYSIWYG2UploadInfo } from '@viaa/avo2-components';
+import { WYSIWYG, WYSIWYGMedia, WYSIWYGProps, WYSIWYGUploadInfo } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { WYSIWYG2_OPTIONS_DEFAULT } from '../../constants';
+import { WYSIWYG_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 
-export type WYSIWYG2WrapperProps = WYSIWYG2Props & {
+export type WYSIWYGWrapperProps = WYSIWYGProps & {
 	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload
 	ownerId?: string;
 };
@@ -20,7 +20,7 @@ export type WYSIWYG2WrapperProps = WYSIWYG2Props & {
  * @param props
  * @constructor
  */
-const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
+const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = props => {
 	const [t] = useTranslation();
 
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
@@ -28,16 +28,16 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 	if ((controls || []).includes('media') && !fileType) {
 		console.error(
 			new CustomError(
-				'Trying to initialize WYSIWYG2Wrapper component with media without fileType',
+				'Trying to initialize WYSIWYGWrapper component with media without fileType',
 				null,
 				props
 			)
 		);
 	}
 
-	const media: WYSIWYG2Media | undefined = fileType
+	const media: WYSIWYGMedia | undefined = fileType
 		? {
-				uploadFn: async (param: WYSIWYG2UploadInfo) => {
+				uploadFn: async (param: WYSIWYGUploadInfo) => {
 					try {
 						const url = await FileUploadService.uploadFile(
 							param.file,
@@ -75,9 +75,9 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 		: undefined;
 
 	return (
-		<WYSIWYG2
+		<WYSIWYG
 			{...rest}
-			controls={controls || WYSIWYG2_OPTIONS_DEFAULT}
+			controls={controls || WYSIWYG_OPTIONS_DEFAULT}
 			media={media}
 			state={state}
 			onChange={newState => {
@@ -89,4 +89,4 @@ const WYSIWYG2Wrapper: FunctionComponent<WYSIWYG2WrapperProps> = props => {
 	);
 };
 
-export default WYSIWYG2Wrapper;
+export default WYSIWYGWrapper;

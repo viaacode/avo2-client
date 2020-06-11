@@ -46,6 +46,7 @@ export type RouteId =
 	| 'SETTINGS_NOTIFICATIONS'
 	| 'COMPLETE_PROFILE'
 	| 'ACCEPT_CONDITIONS'
+	| 'COOKIE_POLICY'
 	| 'ERROR';
 
 // Routes should be ordered from least specific, to most specific
@@ -218,6 +219,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	ACCEPT_CONDITIONS: {
 		route: `/${ROUTE_PARTS.acceptConditions}`,
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
+	COOKIE_POLICY: {
+		route: `/${ROUTE_PARTS.cookiePolicy}`,
 		showInContentPicker: true,
 		showForInteractiveTour: false,
 	},

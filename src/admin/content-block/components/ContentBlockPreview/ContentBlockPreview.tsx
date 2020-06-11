@@ -2,10 +2,12 @@ import classnames from 'classnames';
 import { get, noop, omit } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
 
 import { navigateToContentType } from '../../../../shared/helpers';
+import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { ContentPageInfo } from '../../../content/content.types';
 import { Color, ContentBlockConfig } from '../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
@@ -19,7 +21,7 @@ import {
 } from './ContentBlockPreview.const';
 import './ContentBlockPreview.scss';
 
-interface ContentBlockPreviewProps extends RouteComponentProps {
+interface ContentBlockPreviewProps {
 	contentBlockConfig: ContentBlockConfig;
 	contentPageInfo: Partial<ContentPageInfo>;
 	onClick: () => void;
@@ -32,12 +34,15 @@ enum ContentWidthMap {
 	MEDIUM = 'medium',
 }
 
-const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
+const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
+	UserProps &
+	RouteComponentProps> = ({
 	contentBlockConfig,
 	contentPageInfo,
 	onClick = noop,
 	className,
 	history,
+	user,
 }) => {
 	const blockState = get(contentBlockConfig, 'block.state');
 	const componentState = get(contentBlockConfig, 'components.state');
@@ -82,9 +87,13 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		};
 	}
 
+	// Pass the content page object to the block
 	if (CONTENT_PAGE_ACCESS_BLOCKS.includes(contentBlockConfig.type)) {
-		// Pass the content page object to the block
-		blockStateProps.contentPageInfo = contentPageInfo;
+		// Set profile to current user for unsaved pages
+		blockStateProps.contentPageInfo = {
+			...contentPageInfo,
+			profile: contentPageInfo.profile || ({ ...get(user, 'profile', {}), user } as any),
+		};
 	}
 
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
@@ -136,4 +145,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	);
 };
 
-export default withRouter(ContentBlockPreview);
+export default compose(withRouter, withUser)(ContentBlockPreview) as FunctionComponent<
+	ContentBlockPreviewProps
+>;

@@ -1,7 +1,15 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
+import {
+	Blankslate,
+	Button,
+	Container,
+	Flex,
+	Pagination,
+	Spacer,
+	Spinner,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../collection/collection.service';
@@ -19,6 +27,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	pageCount,
 	setPage,
 	bookmarkStatuses,
+	navigateUserRequestForm,
 	...resultProps
 }) => {
 	const [t] = useTranslation();
@@ -84,7 +93,9 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 						title={t(
 							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
 						)}
-					/>
+					>
+						<Button label={t('Vraag een item aan')} onClick={navigateUserRequestForm} />
+					</Blankslate>
 				)}
 			</Container>
 		</Container>

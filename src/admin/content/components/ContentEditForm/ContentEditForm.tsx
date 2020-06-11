@@ -20,8 +20,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { FileUpload } from '../../../../shared/components';
-import WYSIWYG2Wrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
+import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
@@ -109,10 +109,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 			value: '',
 			disabled: true,
 		},
-		...contentTypes.map(contentType => ({
-			label: contentType.value,
-			value: contentType.value,
-		})),
+		...contentTypes,
 	];
 
 	// Methods
@@ -190,13 +187,13 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
 									)}
 								>
-									<WYSIWYG2Wrapper
+									<WYSIWYGWrapper
 										initialHtml={contentPageInfo.description_html || ''}
 										state={contentPageInfo.description_state || undefined}
 										onChange={(state: RichEditorState) =>
 											changeContentPageProp('description_state', state)
 										}
-										controls={WYSIWYG2_OPTIONS_FULL}
+										controls={WYSIWYG_OPTIONS_FULL}
 										fileType="CONTENT_PAGE_DESCRIPTION_IMAGE"
 										id="description"
 									/>

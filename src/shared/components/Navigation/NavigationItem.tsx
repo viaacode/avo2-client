@@ -51,14 +51,14 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					title={item.tooltip}
 				>
 					{item.icon && !isMobile && <Icon name={item.icon} />}
-					{item.label && <span>{item.label}</span>}
+					{item.label && <span className="c-nav__item-label">{item.label}</span>}
 					{item.icon && isMobile && <Icon name={item.icon} />}
 				</NavLink>
 			)}
 			{!!item.location && item.location.includes('//') && (
 				<a href={item.location} className={className} target={item.target || '_blank'}>
 					{item.icon && <Icon name={item.icon} />}
-					{item.label}
+					<span className="c-nav__item-label">{item.label}</span>
 				</a>
 			)}
 			{!!item.component && (
@@ -76,7 +76,7 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					<DropdownButton>
 						<div className={`${className} u-clickable`}>
 							{item.icon && <Icon name={item.icon} />}
-							{item.label}
+							<span className="c-nav__item-label">{item.label}</span>
 						</div>
 					</DropdownButton>
 					<DropdownContent>

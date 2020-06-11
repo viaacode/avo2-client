@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -64,15 +64,23 @@ export class MenuService {
 		}
 	}
 
-	public static async insertMenuItem(menuItem: Avo.Menu.Menu): Promise<void> {
+	public static async insertMenuItem(menuItem: Partial<Avo.Menu.Menu>): Promise<number> {
 		try {
-			await dataService.mutate({
+			const response = await dataService.mutate({
 				mutation: INSERT_MENU_ITEM,
 				variables: {
 					menuItem,
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			});
+			if (response.errors) {
+				throw new CustomError('GraphQL response contains errors', null, { response });
+			}
+			const id = get(response, 'data.insert_app_content_nav_elements.returning[0].id');
+			if (isNil(id)) {
+				throw new CustomError('Response does not contain inserted id', null, { response });
+			}
+			return id;
 		} catch (err) {
 			throw new CustomError('Failed to insert menu item', err, {
 				menuItem,

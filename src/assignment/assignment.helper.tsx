@@ -27,8 +27,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
-import WYSIWYG2Wrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG2_OPTIONS_FULL } from '../shared/constants';
+import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
 import { CustomError, navigate } from '../shared/helpers';
 import { dataService, ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
@@ -260,11 +260,11 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___opdracht')}
 							required
 						>
-							<WYSIWYG2Wrapper
+							<WYSIWYGWrapper
 								id="assignmentDescription"
 								initialHtml={assignment.description}
 								state={(assignment as any)['descriptionRichEditorState']}
-								controls={[...WYSIWYG2_OPTIONS_FULL, 'media']}
+								controls={[...WYSIWYG_OPTIONS_FULL, 'media']}
 								fileType="ASSIGNMENT_DESCRIPTION_IMAGE"
 								onChange={newState =>
 									setAssignmentProp('descriptionRichEditorState', newState)
