@@ -38,8 +38,9 @@ import {
 } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
-import { createDropdownMenuItem } from '../../../shared/helpers';
+import { createDropdownMenuItem, CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
@@ -79,6 +80,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
+	const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
 
 	const isCollection = type === 'collection';
 
@@ -110,6 +112,29 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	useEffect(() => {
 		setTempTitle(getTitle());
 	}, [fragment.use_custom_fields, getTitle]);
+
+	const fetchVideoPlayerTicket = useCallback(async () => {
+		try {
+			if (fragment.external_id && fragment.type === 'ITEM') {
+				setVideoSrc(await fetchPlayerTicket(fragment.external_id));
+			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch player ticket for fragment edit', err, {
+					fragment,
+				})
+			);
+			ToastService.danger(
+				t(
+					'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
+				)
+			);
+		}
+	}, [fragment.external_id]);
+
+	useEffect(() => {
+		fetchVideoPlayerTicket();
+	}, [fetchVideoPlayerTicket]);
 
 	const handleChangedValue = (
 		fragmentProp: keyof Avo.Collection.Fragment,
@@ -378,12 +403,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 							<Column size="3-6">
 								{!isCollection ? (
 									<FlowPlayerWrapper
-										item={{
-											...itemMetaData,
-											thumbnail_path:
-												fragment.thumbnail_path ||
-												itemMetaData.thumbnail_path,
-										}}
+										src={videoSrc}
+										poster={
+											fragment.thumbnail_path || itemMetaData.thumbnail_path
+										}
 										cuePoints={cuePoints}
 										canPlay={!isCutModalOpen && !isDeleteModalOpen}
 									/>
