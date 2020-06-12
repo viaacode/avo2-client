@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AspectRatioWrapper, formatDuration, Icon } from '@viaa/avo2-components';
+import { AspectRatioWrapper, FlowPlayer, formatDuration, Icon } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
@@ -12,7 +12,6 @@ import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 
-import { FlowPlayer } from './FlowPlayer/FlowPlayer';
 import './FlowPlayerWrapper.scss';
 
 export interface CuePoints {
