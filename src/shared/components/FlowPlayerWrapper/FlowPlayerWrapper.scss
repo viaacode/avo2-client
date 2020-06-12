@@ -9,6 +9,10 @@ $c-play-overlay-inner-bg: $color-gray-900;
 $c-spinner-fullscreen-holder-bg: rgba(#000, 0.5);
 $c-video-player-progress-inner-bg: $color-teal-bright;
 
+.c-video-player {
+	position: relative;
+}
+
 .c-video-player__overlay {
 	.c-video-player__thumbnail {
 		background-size: cover;
