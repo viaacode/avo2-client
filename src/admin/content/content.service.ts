@@ -7,7 +7,6 @@ import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
-import { convertBlocksToDatabaseFormat } from '../content-block/helpers';
 import { ContentBlockService } from '../content-block/services/content-block.service';
 import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
@@ -82,7 +81,7 @@ export class ContentService {
 	public static async getContentItemsByTitle(
 		title: string,
 		limit?: number
-	): Promise<ContentPageInfo[] | null> {
+	): Promise<ContentPageInfo[]> {
 		const query = {
 			query: GET_CONTENT_PAGES_BY_TITLE,
 			variables: {
@@ -92,13 +91,13 @@ export class ContentService {
 			},
 		};
 
-		return convertBlocksToDatabaseFormat(
+		return (
 			(await performQuery(
 				query,
 				CONTENT_RESULT_PATH.GET,
 				'Failed to retrieve content pages by title.'
 			)) || []
-		) as ContentPageInfo[];
+		);
 	}
 
 	public static async getProjectContentItemsByTitle(
