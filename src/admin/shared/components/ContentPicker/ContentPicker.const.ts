@@ -1,7 +1,6 @@
 import { ContentPickerType } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
-import { retrieveAnchorBlocks } from '../../helpers/content-picker/anchor-link';
 import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
 import {
 	retrieveContentPages,
@@ -76,13 +75,6 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 		label: i18n.t('admin/shared/components/content-picker/content-picker___gebruiker'),
 		disabled: false,
 		fetch: retrieveProfiles,
-		picker: 'SELECT',
-	},
-	{
-		value: 'ANCHOR_LINK',
-		label: i18n.t('admin/shared/components/content-picker/content-picker___anchors'),
-		disabled: false,
-		fetch: retrieveAnchorBlocks,
 		picker: 'SELECT',
 	},
 ];

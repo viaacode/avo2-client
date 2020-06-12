@@ -32,7 +32,7 @@ import {
 	WidthOption,
 } from '../shared/types';
 
-import { AlignSelect, ColorSelect, PaddingSelect } from './components';
+import { AlignSelect, AnchorLinkSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ANCHOR_LINKS_BLOCK_CONFIG,
 	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
@@ -207,6 +207,7 @@ export const EDITOR_TYPES_MAP = {
 	TextInput,
 	UserGroupSelect,
 	WYSIWYG: WYSIWYGWrapper,
+	AnchorLinkSelect,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
