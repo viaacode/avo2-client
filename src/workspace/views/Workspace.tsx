@@ -19,6 +19,7 @@ import {
 	Toolbar,
 	ToolbarLeft,
 	ToolbarRight,
+	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -245,56 +246,75 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
 	// Render
-	const renderFilter = () => {
-		const filter: TabFilter | null = get(getActiveTab(), 'filter', null);
+	const renderFilter = (filter: TabFilter) => {
+		const currentFilter = filter.options.find(
+			f => f.id === (activeFilter || filter.options[0].id)
+		);
 
-		if (filter) {
-			const currentFilter = filter.options.find(
-				f => f.id === (activeFilter || filter.options[0].id)
-			);
-
-			return (
-				<Form type="inline">
-					<FormGroup label={filter.label}>
-						<ControlledDropdown isOpen={false} placement="bottom-end">
-							<DropdownButton>
-								<div className="c-filter-dropdown c-filter-dropdown--no-bg">
-									<div className="c-filter-dropdown__label">
-										{currentFilter
-											? currentFilter.label
-											: filter.options[0].label}
-									</div>
-									<div className="c-filter-dropdown__options">
-										<Icon name="caret-down" />
-									</div>
+		return (
+			<Form type="inline">
+				<FormGroup label={filter.label}>
+					<ControlledDropdown isOpen={false} placement="bottom-end">
+						<DropdownButton>
+							<div className="c-filter-dropdown c-filter-dropdown--no-bg">
+								<div className="c-filter-dropdown__label">
+									{currentFilter ? currentFilter.label : filter.options[0].label}
 								</div>
-							</DropdownButton>
-							<DropdownContent>
-								<MenuContent
-									menuItems={filter.options}
-									onClick={handleMenuContentClick}
-								/>
-							</DropdownContent>
-						</ControlledDropdown>
-					</FormGroup>
-				</Form>
-			);
-		}
+								<div className="c-filter-dropdown__options">
+									<Icon name="caret-down" />
+								</div>
+							</div>
+						</DropdownButton>
+						<DropdownContent>
+							<MenuContent
+								menuItems={filter.options}
+								onClick={handleMenuContentClick}
+							/>
+						</DropdownContent>
+					</ControlledDropdown>
+				</FormGroup>
+			</Form>
+		);
 	};
 
 	const renderMobileTabs = () => {
 		return (
-			<Select
-				options={getNavTabs().map(
-					(navTab): SelectOption<string> => ({
-						label: navTab.label,
-						value: navTab.id.toString(),
-					})
-				)}
-				value={tabId || Object.keys(tabs)[0]}
-				onChange={goToTab}
-				className="c-tab-select"
-			/>
+			<Spacer margin="bottom">
+				<Select
+					options={getNavTabs().map(
+						(navTab): SelectOption<string> => ({
+							label: navTab.label,
+							value: navTab.id.toString(),
+						})
+					)}
+					value={tabId || Object.keys(tabs)[0]}
+					onChange={goToTab}
+					className="c-tab-select"
+				/>
+			</Spacer>
+		);
+	};
+
+	const renderNavTabs = () => {
+		return isMobileWidth() ? (
+			renderMobileTabs()
+		) : (
+			<Tabs tabs={getNavTabs()} onClick={goToTab} />
+		);
+	};
+
+	const renderToolbar = () => {
+		const filter = get(getActiveTab(), 'filter', null);
+
+		return filter ? (
+			<Toolbar autoHeight>
+				<ToolbarLeft>{renderNavTabs()}</ToolbarLeft>
+				<ToolbarRight>
+					<span>{renderFilter(filter)}</span>
+				</ToolbarRight>
+			</Toolbar>
+		) : (
+			renderNavTabs()
 		);
 	};
 
@@ -319,20 +339,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				</Container>
 
 				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								{isMobileWidth() ? (
-									renderMobileTabs()
-								) : (
-									<Tabs tabs={getNavTabs()} onClick={goToTab} />
-								)}
-							</ToolbarLeft>
-							<ToolbarRight>
-								<span>{renderFilter()}</span>
-							</ToolbarRight>
-						</Toolbar>
-					</Container>
+					<Container mode="horizontal">{renderToolbar()}</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">
