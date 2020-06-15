@@ -507,11 +507,11 @@ export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabS
 
 export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentItemStyle>[] = () => [
 	{
-		label: i18n.t('Nieuws lijst'),
+		label: i18n.t('admin/content-block/content-block___nieuws-lijst'),
 		value: 'NEWS_LIST',
 	},
 	{
-		label: i18n.t('Projecten lijst'),
+		label: i18n.t('admin/content-block/content-block___projecten-lijst'),
 		value: 'PROJECT_LIST',
 	},
 	{
