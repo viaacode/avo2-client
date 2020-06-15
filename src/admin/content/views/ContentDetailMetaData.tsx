@@ -107,12 +107,12 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 		if (
 			publish_at &&
 			depublish_at &&
-			moment().isBetween(moment(publish_at).subtract(1, 'd'), moment(depublish_at))
+			moment().isBetween(moment(publish_at), moment(depublish_at))
 		) {
 			return formatDate(publish_at);
 		}
 
-		if (!depublish_at && publish_at && moment().isAfter(moment(publish_at).subtract(1, 'd'))) {
+		if (!depublish_at && publish_at && moment().isAfter(moment(publish_at))) {
 			return formatDate(publish_at);
 		}
 
