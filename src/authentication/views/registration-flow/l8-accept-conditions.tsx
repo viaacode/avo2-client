@@ -15,6 +15,7 @@ import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
 import { ContentPageService } from '../../../shared/services/content-page-service';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { AppState } from '../../../store';
@@ -105,11 +106,18 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				true,
 				true
 			);
+			await CampaignMonitorService.updateNewsletterPreferences({
+				allActiveUsers: true,
+			} as any); // TODO remove cast after update to typings 2.20.0
 
 			getLoginState();
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to set accept conditions notification in the database')
+				new CustomError(
+					'Failed to set accept conditions notification in the database',
+					err,
+					{ user }
+				)
 			);
 			ToastService.danger(
 				t(

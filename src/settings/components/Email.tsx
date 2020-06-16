@@ -28,9 +28,9 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import Html from '../../shared/components/Html/Html';
 import { convertToNewsletterPreferenceUpdate, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
-import { NewsletterList, NewsletterPreferences, ReactAction } from '../../shared/types';
+import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
+import { NewsletterList, ReactAction } from '../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../settings.const';
-import { fetchNewsletterPreferences, updateNewsletterPreferences } from '../settings.service';
 
 export interface EmailProps {}
 
@@ -45,14 +45,16 @@ enum NewsletterPreferencesActionType {
 
 type NewsletterPreferencesAction = ReactAction<NewsletterPreferencesActionType>;
 
-const INITIAL_NEWSLETTER_PREFERENCES_STATE = () => ({
-	newsletter: false,
-	workshop: false,
-	ambassador: false,
-});
+const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): Avo.Newsletter.Preferences =>
+	({
+		newsletter: false,
+		workshop: false,
+		ambassador: false,
+		allActiveUsers: false,
+	} as any); // TODO remove cast after update to typings 2.20.0
 
 const newsletterPreferencesReducer = (
-	state: NewsletterPreferences,
+	state: Avo.Newsletter.Preferences,
 	action: NewsletterPreferencesAction
 ) => {
 	switch (action.type) {
@@ -73,17 +75,19 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [initialNewsletterPreferences, setInitialNewsletterPreferences] = useState<
-		NewsletterPreferences
+		Avo.Newsletter.Preferences
 	>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
 	const [newsletterPreferences, changeNewsletterPreferences] = useReducer<
-		Reducer<NewsletterPreferences, NewsletterPreferencesAction>
+		Reducer<Avo.Newsletter.Preferences, NewsletterPreferencesAction>
 	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
 	const newsletterLabels = GET_NEWSLETTER_LABELS();
 
 	const fetchEmailPreferences = useCallback(async () => {
 		try {
-			const preferences: NewsletterPreferences = await fetchNewsletterPreferences(user.mail);
+			const preferences: Avo.Newsletter.Preferences = await CampaignMonitorService.fetchNewsletterPreferences(
+				user.mail
+			);
 			setInitialNewsletterPreferences(preferences);
 			changeNewsletterPreferences({
 				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
@@ -104,7 +108,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 		fetchEmailPreferences();
 	}, [fetchEmailPreferences]);
 
-	const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
+	const onChangePreference = (preference: Partial<Avo.Newsletter.Preferences>) => {
 		changeNewsletterPreferences({
 			type: NewsletterPreferencesActionType.UPDATE_NEWSLETTER_PREFERENCES,
 			payload: preference,
@@ -122,9 +126,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 			if (convertedNewsletterPreferenceUpdate) {
 				setIsLoading(true);
 
-				await updateNewsletterPreferences(
-					`${user.first_name} ${user.last_name}`,
-					user.mail,
+				await CampaignMonitorService.updateNewsletterPreferences(
 					convertedNewsletterPreferenceUpdate
 				);
 
