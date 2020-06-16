@@ -20,5 +20,4 @@ export const GET_NEWSLETTER_LABELS = () => ({
 	ambassador: i18n.t(
 		'settings/settings___ik-krijg-graag-berichten-om-actief-mee-te-werken-aan-het-archief-voor-onderwijs'
 	),
-	allActiveUsers: 'Emails over het platform',
 });
