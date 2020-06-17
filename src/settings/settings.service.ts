@@ -1,57 +1,83 @@
+import { get } from 'lodash-es';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
+import { GET_CLASSIFICATIONS, GET_SUBJECTS } from '../shared/queries/lookup.gql';
+import { dataService } from '../shared/services';
 
-interface UpdateProfileValues {
-	educationLevels: {
-		profile_id: string;
-		key: string;
-	}[];
-	subjects: {
-		profile_id: string;
-		key: string;
-	}[];
-	organizations: {
-		profile_id: string;
-		organization_id: string;
-		unit_id: string | null;
-	}[];
-	alias: string;
-	alternativeEmail: string;
-	avatar: string | null;
-	bio: string | null;
-	location: string;
-	stamboek: string | null;
-}
+import { UpdateProfileValues } from './settings.types';
 
-export const updateProfileInfo = async (
-	profile: Avo.User.Profile | null,
-	variables: Partial<UpdateProfileValues>
-): Promise<void> => {
-	try {
-		if (!profile) {
-			return;
+export class SettingsService {
+	public static async updateProfileInfo(
+		profile: Avo.User.Profile | null,
+		variables: Partial<UpdateProfileValues>
+	): Promise<void> {
+		try {
+			if (!profile) {
+				return;
+			}
+			const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/profile`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(variables),
+			});
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError(
+					"Failed to update profile because response status wasn't in the valid range",
+					null,
+					{ response }
+				);
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update profile information', err, {
+				profile,
+				variables,
+			});
 		}
-		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/profile`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			credentials: 'include',
-			body: JSON.stringify(variables),
-		});
-		if (response.status < 200 || response.status >= 400) {
-			throw new CustomError(
-				"Failed to update profile because response status wasn't in the valid range",
-				null,
-				{ response }
-			);
-		}
-	} catch (err) {
-		throw new CustomError('Failed to update profile information', err, {
-			profile,
-			variables,
-		});
 	}
-};
+
+	public static async fetchSubjects(): Promise<string[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_SUBJECTS,
+			});
+
+			if (response.errors) {
+				throw new CustomError('GraphQL response contains errors', null, { response });
+			}
+
+			return ((get(response, 'data.lookup_enum_lom_classification', []) || []) as {
+				description: string;
+			}[]).map((item: { description: string }) => item.description);
+		} catch (err) {
+			throw new CustomError('Failed to get subjects from the database', err, {
+				query: 'GET_SUBJECTS',
+			});
+		}
+	}
+
+	public static async fetchEducationLevels(): Promise<string[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_CLASSIFICATIONS,
+			});
+
+			if (response.errors) {
+				throw new CustomError('GraphQL response contains errors', null, { response });
+			}
+
+			return ((get(response, 'data.lookup_enum_lom_context') || []) as {
+				description: string;
+			}[]).map((item: { description: string }) => item.description);
+		} catch (err) {
+			throw new CustomError('Failed to get education levels from the database', err, {
+				query: 'GET_CLASSIFICATIONS',
+			});
+		}
+	}
+}
