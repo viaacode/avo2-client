@@ -46,7 +46,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-service';
-import { GENERATE_SITE_TITLE, APP_PATH } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';

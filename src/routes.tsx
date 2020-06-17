@@ -5,7 +5,6 @@ import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
 import { renderBundleRoutes } from './bundle/bundle.routes';
 import { renderCollectionRoutes } from './collection/collection.routes';
-import { renderCookiePolicyRoutes } from './cookie-policy/cookie-policy.routes';
 import { renderDynamicRouteResolverRoutes } from './dynamic-route-resolver/dynamic-route-resolver.routes';
 import { renderErrorRoutes } from './error/error.routes';
 import { renderHomeRoutes } from './home/home.routes';
@@ -30,7 +29,6 @@ export const renderRoutes = () => (
 		{renderErrorRoutes()}
 		{renderUserItemRequestFormRoutes()}
 		{renderKlaarRoutes()}
-		{renderCookiePolicyRoutes()}
 		{/* This route needs to be the last one, since it handles all remaining routes */}
 		{renderDynamicRouteResolverRoutes()}
 	</Switch>

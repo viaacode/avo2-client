@@ -47,14 +47,18 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het laden van deze content pagina is mislukt'),
+					message: t(
+						'content-page/views/content-page___het-laden-van-deze-content-pagina-is-mislukt'
+					),
 				});
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to load content page', err, { props }));
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het laden van deze content pagina is mislukt'),
+				message: t(
+					'content-page/views/content-page___het-laden-van-deze-content-pagina-is-mislukt'
+				),
 			});
 		}
 	}, [props, t]);

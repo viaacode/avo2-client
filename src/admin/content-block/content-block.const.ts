@@ -32,7 +32,7 @@ import {
 	WidthOption,
 } from '../shared/types';
 
-import { AlignSelect, ColorSelect, PaddingSelect } from './components';
+import { AlignSelect, AnchorLinkSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ANCHOR_LINKS_BLOCK_CONFIG,
 	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
@@ -207,6 +207,7 @@ export const EDITOR_TYPES_MAP = {
 	TextInput,
 	UserGroupSelect,
 	WYSIWYG: WYSIWYGWrapper,
+	AnchorLinkSelect,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -507,11 +508,11 @@ export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabS
 
 export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentItemStyle>[] = () => [
 	{
-		label: i18n.t('Nieuws lijst'),
+		label: i18n.t('admin/content-block/content-block___nieuws-lijst'),
 		value: 'NEWS_LIST',
 	},
 	{
-		label: i18n.t('Projecten lijst'),
+		label: i18n.t('admin/content-block/content-block___projecten-lijst'),
 		value: 'PROJECT_LIST',
 	},
 	{
