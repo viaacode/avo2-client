@@ -7,7 +7,6 @@ import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
-import { convertBlocksToDatabaseFormat } from '../content-block/helpers';
 import { ContentBlockService } from '../content-block/services/content-block.service';
 import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
@@ -92,13 +91,13 @@ export class ContentService {
 			},
 		};
 
-		return convertBlocksToDatabaseFormat(
+		return (
 			(await performQuery(
 				query,
 				CONTENT_RESULT_PATH.GET,
 				'Failed to retrieve content pages by title.'
 			)) || []
-		) as ContentPageInfo[];
+		);
 	}
 
 	public static async getProjectContentItemsByTitle(
@@ -570,7 +569,7 @@ export class ContentService {
 	): Promise<string> => {
 		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
 		const contentPages = await ContentService.getContentItemsByTitle(`%${titleWithoutCopy}`);
-		const titles = (contentPages || []).map(c => c.title);
+		const titles = (contentPages || []).map(contentPage => contentPage.title);
 
 		let index = 0;
 		let candidateTitle: string;
