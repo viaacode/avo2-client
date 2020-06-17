@@ -569,7 +569,7 @@ export class ContentService {
 	): Promise<string> => {
 		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
 		const contentPages = await ContentService.getContentItemsByTitle(`%${titleWithoutCopy}`);
-		const titles = (contentPages || []).map(c => c.title);
+		const titles = (contentPages || []).map(contentPage => contentPage.title);
 
 		let index = 0;
 		let candidateTitle: string;
