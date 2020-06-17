@@ -1,3 +1,4 @@
+import { CustomError } from '../../../../shared/helpers';
 import { ContentService } from '../../../content/content.service';
 import { ContentPageInfo } from '../../../content/content.types';
 import { PickerSelectItem } from '../../types';
@@ -9,11 +10,18 @@ export const retrieveContentPages = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
-	const contentItems: ContentPageInfo[] | null = title
-		? await ContentService.getContentItemsByTitle(`%${title}%`, limit)
-		: await ContentService.getContentItems(limit);
+	try {
+		const contentItems: ContentPageInfo[] | null = title
+			? await ContentService.getContentItemsByTitle(`%${title}%`, limit)
+			: await ContentService.getContentItems(limit);
 
-	return parseContentPages(contentItems || []);
+		return parseContentPages(contentItems || []);
+	} catch (err) {
+		throw new CustomError('Failed to fetch content pages for content picker', err, {
+			title,
+			limit,
+		});
+	}
 };
 
 // Fetch content items of type PROJECT from GQL

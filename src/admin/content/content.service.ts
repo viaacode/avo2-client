@@ -81,7 +81,7 @@ export class ContentService {
 	public static async getContentItemsByTitle(
 		title: string,
 		limit?: number
-	): Promise<ContentPageInfo[] | null> {
+	): Promise<ContentPageInfo[]> {
 		const query = {
 			query: GET_CONTENT_PAGES_BY_TITLE,
 			variables: {
