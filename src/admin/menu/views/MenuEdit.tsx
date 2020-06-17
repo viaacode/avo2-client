@@ -24,6 +24,7 @@ import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ValueOf } from '../../../shared/types';
+import { ADMIN_PATH } from '../../admin.const';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -281,12 +282,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			};
 
 			if (pageType === 'create') {
-				await MenuService.insertMenuItem({
+				const id = await MenuService.insertMenuItem({
 					...menuItem,
 					// Get description from existing items or use form description field
 					description: get(menuItems, '[0].description', menuForm.description),
 					position: menuItems.length,
-				} as any); // TODO: Replace any by Avo.Menu.Menu at typings 2.16.0
+				});
+				navigate(history, ADMIN_PATH.MENU_ITEM_EDIT, {
+					id,
+					menu: menuForm.placement as string,
+				});
 				ToastService.success(
 					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
 					false

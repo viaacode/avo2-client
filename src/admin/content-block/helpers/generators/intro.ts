@@ -1,4 +1,4 @@
-import { WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
+import { WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -41,7 +41,7 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 					editorType: ContentBlockEditor.WYSIWYG,
 					editorProps: {
-						controls: [...WYSIWYG2_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
+						controls: [...WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
 						fileType: 'CONTENT_BLOCK_IMAGE',
 					},
 				}

@@ -1,4 +1,4 @@
-import { WYSIWYG2_OPTIONS_FULL } from '../../../../shared/constants';
+import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
@@ -54,7 +54,7 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 					),
 					{
 						editorProps: {
-							controls: [...WYSIWYG2_OPTIONS_FULL, 'media'],
+							controls: [...WYSIWYG_OPTIONS_FULL, 'media'],
 							fileType: 'CONTENT_BLOCK_IMAGE',
 						},
 					}

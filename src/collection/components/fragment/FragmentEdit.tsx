@@ -36,8 +36,8 @@ import {
 	DeleteObjectModal,
 	FlowPlayerWrapper,
 } from '../../../shared/components';
-import WYSIWYG2Wrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG2_OPTIONS_AUTHOR, WYSIWYG2_OPTIONS_DEFAULT } from '../../../shared/constants';
+import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { CollectionAction } from '../CollectionOrBundleEdit';
@@ -76,7 +76,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
 	}); // TODO: Add type
-	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<RichEditorState>();
+	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<
+		RichEditorState | undefined
+	>(undefined);
 
 	const isCollection = type === 'collection';
 
@@ -113,6 +115,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		fragmentProp: keyof Avo.Collection.Fragment,
 		fragmentPropValue: any
 	) => {
+		if (fragmentProp === 'use_custom_fields') {
+			setDescriptionRichEditorState(undefined);
+		}
 		changeCollectionState({
 			index,
 			fragmentProp,
@@ -279,12 +284,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
-							<WYSIWYG2Wrapper
+							<WYSIWYGWrapper
 								id={`description_${fragment.id}`}
 								controls={
 									allowedToAddLinks
-										? WYSIWYG2_OPTIONS_AUTHOR
-										: WYSIWYG2_OPTIONS_DEFAULT
+										? WYSIWYG_OPTIONS_AUTHOR
+										: WYSIWYG_OPTIONS_DEFAULT
 								}
 								placeholder={t(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'

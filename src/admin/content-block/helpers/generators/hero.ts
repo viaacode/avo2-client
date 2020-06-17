@@ -1,6 +1,7 @@
 import { BlockHeroProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
@@ -33,7 +34,12 @@ export const INITIAL_HERO_COMPONENTS_STATE = (): Partial<BlockHeroProps> => ({
 });
 
 export const INITIAL_HERO_BLOCK_STATE = (): DefaultContentBlockState => ({
-	...BLOCK_STATE_DEFAULTS(),
+	...BLOCK_STATE_DEFAULTS({
+		padding: {
+			top: 'none',
+			bottom: 'none',
+		},
+	}),
 	backgroundColor: Color.NightBlue,
 });
 
@@ -105,6 +111,13 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					),
 				},
 			} as ContentBlockFieldGroup,
+
+			textBelowButtons: TEXT_FIELD(undefined, {
+				label: i18n.t('Text onder knoppen'),
+				editorProps: {
+					controls: WYSIWYG_OPTIONS_FULL,
+				},
+			}),
 
 			src: FILE_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/hero___eigen-video-uploaden'),

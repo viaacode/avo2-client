@@ -128,8 +128,6 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			setSelectedType(selected as PickerTypeOption);
 			setSelectedItem(null);
 			propertyChanged('selectedItem', null);
-
-			fetchPickerOptions(null);
 		}
 	};
 
@@ -281,11 +279,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	);
 
 	const renderTextInputPicker = () => (
-		<TextInput
-			value={input}
-			onChange={onChangeInput}
-			placeholder={get(currentTypeObject, 'placeholder')}
-		/>
+		<TextInput value={input} onChange={onChangeInput} placeholder={selectedType.placeholder} />
 	);
 
 	const renderLinkTargetControl = () => {

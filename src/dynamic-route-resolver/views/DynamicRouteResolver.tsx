@@ -10,7 +10,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { ItemsService } from '../../admin/items/items.service';
-import { UserService } from '../../admin/users/user.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { getLoginStateAction } from '../../authentication/store/actions';
@@ -117,16 +116,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				PermissionService.hasPerm(loginState.userInfo, PermissionName.SEARCH)
 			) {
 				history.push(generateSearchLinkString('serie', 'KLAAR', 'broadcastDate', 'desc'));
-				return;
-			}
-
-			// Special route exception
-			// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
-			if (
-				pathname === APP_PATH.LOGGED_IN_HOME.route &&
-				UserService.getUserRole(loginState.userInfo) === 'leerling'
-			) {
-				history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 				return;
 			}
 
