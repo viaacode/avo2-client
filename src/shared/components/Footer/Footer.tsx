@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
-import { Container } from '@viaa/avo2-components';
+import { Container, Spacer } from '@viaa/avo2-components';
 
 import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -69,8 +69,31 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 	return (
 		<footer className="c-global-footer">
 			<Container mode="horizontal" className="c-global-footer__inner">
-				<ul>{mapNavItems(getPrimaryNavigationItems())}</ul>
-				<ul>{mapNavItems(getSecondaryNavigationItems())}</ul>
+				<ul>
+					<li>
+						<a href="https://meemoo.be/nl" title={t('meemoo')}>
+							<span className="c-nav__item-label">{t('Een initiatief van')}</span>
+							<Spacer margin="left-small">
+								<img src="/images/meemoo-logo.png" alt={t('logo van meemoo')} />
+							</Spacer>
+						</a>
+					</li>
+					{mapNavItems(getPrimaryNavigationItems())}
+				</ul>
+				<ul>
+					{mapNavItems(getSecondaryNavigationItems())}
+					<li>
+						<a href="https://www.vlaanderen.be/" title={t('vlaamse overheid')}>
+							<span className="c-nav__item-label">{t('Gesteund door')}</span>
+							<Spacer margin="left-small">
+								<img
+									src="/images/vlaanderen-logo.png"
+									alt={t('logo van vlaamse overheid')}
+								/>
+							</Spacer>
+						</a>
+					</li>
+				</ul>
 			</Container>
 		</footer>
 	);
