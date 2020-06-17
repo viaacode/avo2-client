@@ -39,14 +39,14 @@ import { CustomError } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
+import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import {
 	fetchCities,
 	fetchEducationOrganizations,
 } from '../../shared/services/education-organizations-service';
-import { NewsletterPreferences } from '../../shared/types';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
-import { updateNewsletterPreferences, updateProfileInfo } from '../settings.service';
+import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
@@ -171,15 +171,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 			// save newsletter subscription if checked
 			if (subscribeToNewsletter) {
-				const preferences: Partial<NewsletterPreferences> = {
+				const preferences: Partial<Avo.Newsletter.Preferences> = {
 					newsletter: true,
 				};
 				try {
-					await updateNewsletterPreferences(
-						`${user.first_name} ${user.last_name}`,
-						user.mail,
-						preferences
-					);
+					await CampaignMonitorService.updateNewsletterPreferences(preferences);
 				} catch (err) {
 					console.error(
 						new CustomError('Failed to subscribe to newsletter', err, {
