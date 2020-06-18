@@ -51,7 +51,7 @@ export class SettingsService {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			return ((get(response, 'data.lookup_enum_lom_classification', []) || []) as {
+			return ((get(response, 'data.lookup_enum_lom_context', []) || []) as {
 				description: string;
 			}[]).map((item: { description: string }) => item.description);
 		} catch (err) {
@@ -71,7 +71,7 @@ export class SettingsService {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			return ((get(response, 'data.lookup_enum_lom_context') || []) as {
+			return ((get(response, 'data.lookup_enum_lom_classification') || []) as {
 				description: string;
 			}[]).map((item: { description: string }) => item.description);
 		} catch (err) {

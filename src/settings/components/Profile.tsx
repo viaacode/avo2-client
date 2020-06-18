@@ -45,6 +45,26 @@ import { EducationOrganisationService } from '../../shared/services/education-or
 import { OrganisationService } from '../../shared/services/organizations-service';
 import store from '../../store';
 import { SettingsService } from '../settings.service';
+import { UpdateProfileValues } from '../settings.types';
+
+type FieldPermissionKey =
+	| 'SUBJECTS'
+	| 'EDUCATION_LEVEL'
+	| 'EDUCATIONAL_ORGANISATION'
+	| 'ORGANISATION';
+
+interface FieldPermission {
+	VIEW: boolean;
+	EDIT: boolean;
+	REQUIRED: boolean;
+}
+
+interface FieldPermissions {
+	SUBJECTS: FieldPermission;
+	EDUCATION_LEVEL: FieldPermission;
+	EDUCATIONAL_ORGANISATION: FieldPermission;
+	ORGANISATION: FieldPermission;
+}
 
 export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
@@ -98,22 +118,76 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [func, setFunc] = useState<string | null>(get(getProfile(user, true), 'function', null));
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
-	const [allEducationLevels, setAllEducationLevels] = useState<string[]>([]);
-	const [allSubjects, setAllSubjects] = useState<string[]>([]);
+	const [allEducationLevels, setAllEducationLevels] = useState<string[] | null>(null);
+	const [allSubjects, setAllSubjects] = useState<string[] | null>(null);
 	const [allOrganisations, setAllOrganisations] = useState<
-		Partial<Avo.Organization.Organization>[]
-	>([]);
-	const [organisation, setOrganisation] = useState<string>(
+		Partial<Avo.Organization.Organization>[] | null
+	>(null);
+	const [companyId, setCompanyId] = useState<string | null>(
 		get(getProfile(user, true), 'company_id', null)
 	);
+	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
 
 	useEffect(() => {
-		if (
-			PermissionService.hasPerm(
-				user,
-				PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
-			)
-		) {
+		setPermissions({
+			SUBJECTS: {
+				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE),
+				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_SUBJECTS_ON_PROFILE_PAGE
+				),
+			},
+			EDUCATION_LEVEL: {
+				VIEW: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_EDUCATION_LEVEL_ON_PROFILE_PAGE
+				),
+				EDIT: PermissionService.hasPerm(
+					user,
+					PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE
+				),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_EDUCATION_LEVEL_ON_PROFILE_PAGE
+				),
+			},
+			EDUCATIONAL_ORGANISATION: {
+				VIEW: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+				),
+				EDIT: PermissionService.hasPerm(
+					user,
+					PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+				),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+				),
+			},
+			ORGANISATION: {
+				VIEW: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_ORGANISATION_ON_PROFILE_PAGE
+				),
+				EDIT: PermissionService.hasPerm(
+					user,
+					PermissionName.EDIT_ORGANISATION_ON_PROFILE_PAGE
+				),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_ORGANISATION_ON_PROFILE_PAGE
+				),
+			},
+		});
+	}, [user]);
+
+	useEffect(() => {
+		if (!permissions) {
+			return;
+		}
+		if (permissions.EDUCATIONAL_ORGANISATION.EDIT) {
 			EducationOrganisationService.fetchCities()
 				.then(setCities)
 				.catch(err => {
@@ -123,15 +197,15 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					);
 				});
 		}
-		if (PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE)) {
+		if (permissions.SUBJECTS.EDIT) {
 			SettingsService.fetchSubjects()
 				.then(setAllSubjects)
 				.catch(err => {
 					console.error(new CustomError('Failed to get subjects from the database', err));
-					ToastService.danger(t('Het ophalen van de ovakken is mislukt'));
+					ToastService.danger(t('Het ophalen van de vakken is mislukt'));
 				});
 		}
-		if (PermissionService.hasPerm(user, PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE)) {
+		if (permissions.EDUCATION_LEVEL.EDIT) {
 			SettingsService.fetchEducationLevels()
 				.then(setAllEducationLevels)
 				.catch(err => {
@@ -142,7 +216,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				});
 		}
 
-		if (PermissionService.hasPerm(user, PermissionName.EDIT_ORGANISATION_ON_PROFILE_PAGE)) {
+		// TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
+		// Waiting for: https://meemoo.atlassian.net/browse/DEV-985
+		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
 			OrganisationService.fetchAllOrganisations()
 				.then(setAllOrganisations)
 				.catch(err => {
@@ -152,7 +228,15 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					ToastService.danger(t('Het ophalen van de organisaties is mislukt'));
 				});
 		}
-	}, [t, user, setCities, setAllSubjects, setAllEducationLevels, setAllOrganisations]);
+	}, [
+		permissions,
+		t,
+		user,
+		setCities,
+		setAllSubjects,
+		setAllEducationLevels,
+		setAllOrganisations,
+	]);
 
 	useEffect(() => {
 		(async () => {
@@ -191,11 +275,52 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		})();
 	}, [organizationsCache, selectedOrganizations, selectedCity]);
 
+	const areRequiredFieldsFilledIn = (profileInfo: Partial<UpdateProfileValues>) => {
+		if (!permissions) {
+			return false;
+		}
+		const errors = [];
+		let filledIn = true;
+		if (
+			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
+			(!profileInfo.subjects || !profileInfo.subjects.length)
+		) {
+			errors.push(t('Vakken zijn verplicht'));
+			filledIn = false;
+		}
+		if (
+			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
+			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
+		) {
+			errors.push(t('Opleidingsniveau is verplicht'));
+			filledIn = false;
+		}
+		if (
+			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
+			(!profileInfo.organizations || !profileInfo.organizations.length)
+		) {
+			errors.push(t('Educatieve organisatie is verplicht'));
+			filledIn = false;
+		}
+		if (
+			permissions.ORGANISATION.REQUIRED &&
+			!profileInfo.company_id &&
+			!isCompleteProfileStep
+		) {
+			errors.push(t('Organisatie is verplicht'));
+			filledIn = false;
+		}
+		if (errors.length) {
+			ToastService.danger(errors);
+		}
+		return filledIn;
+	};
+
 	const saveProfileChanges = async () => {
 		try {
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
-			await SettingsService.updateProfileInfo(getProfile(user), {
+			const newProfileInfo = {
 				alias,
 				avatar,
 				bio,
@@ -212,8 +337,13 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
 				})),
-				company_id: organisation,
-			});
+				company_id: companyId || undefined,
+			};
+			if (!areRequiredFieldsFilledIn(newProfileInfo)) {
+				setIsSaving(false);
+				return;
+			}
+			await SettingsService.updateProfileInfo(getProfile(user), newProfileInfo);
 
 			// save newsletter subscription if checked
 			if (subscribeToNewsletter) {
@@ -310,14 +440,6 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		];
 	};
 
-	const areAllRequiredFieldFilledIn = (): boolean =>
-		selectedSubjects &&
-		selectedSubjects.length > 0 &&
-		selectedEducationLevels &&
-		selectedEducationLevels.length > 0 &&
-		selectedOrganizations &&
-		selectedOrganizations.length > 0;
-
 	const renderSubjectsField = (editable: boolean, required: boolean) => {
 		return (
 			<FormGroup
@@ -331,7 +453,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						placeholder={t(
 							'settings/components/profile___selecteer-de-vakken-die-u-geeft'
 						)}
-						options={allSubjects.map(subject => ({
+						options={(allSubjects || []).map(subject => ({
 							label: subject,
 							value: subject,
 						}))}
@@ -364,7 +486,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						placeholder={t(
 							'settings/components/profile___selecteer-een-opleidingsniveau'
 						)}
-						options={allEducationLevels.map(edLevel => ({
+						options={(allEducationLevels || []).map(edLevel => ({
 							label: edLevel,
 							value: edLevel,
 						}))}
@@ -374,13 +496,26 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						}
 					/>
 				) : (
-					<TagList
-						tags={selectedEducationLevels.map(
-							(subject): TagOption => ({ id: subject.value, label: subject.label })
-						)}
-						swatches={false}
-						closable={false}
-					/>
+					<>
+						<TagList
+							tags={selectedEducationLevels.map(
+								(subject): TagOption => ({
+									id: subject.value,
+									label: subject.label,
+								})
+							)}
+							swatches={false}
+							closable={false}
+						/>
+						<Spacer margin="top-small">
+							<Alert
+								type="info"
+								message={t(
+									'Wil je jouw onderwijsniveau aanpassen? Neem dan contact op via de Feedbackknop'
+								)}
+							/>
+						</Spacer>
+					</>
 				)}
 			</FormGroup>
 		);
@@ -392,7 +527,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				{editable ? (
 					<Select
 						options={compact(
-							allOrganisations.map(org => {
+							(allOrganisations || []).map(org => {
 								if (!org.name || !org.or_id) {
 									return null;
 								}
@@ -402,11 +537,16 @@ const Profile: FunctionComponent<ProfileProps> = ({
 								};
 							})
 						)}
-						value={organisation}
-						onChange={setOrganisation}
+						value={companyId}
+						onChange={setCompanyId}
 					/>
+				) : !companyId ? (
+					'-'
 				) : (
-					organisation
+					get(
+						(allOrganisations || []).find(org => org.or_id === companyId),
+						'name'
+					) || t('Onbekende organisatie')
 				)}
 			</FormGroup>
 		);
@@ -516,7 +656,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					<Button
 						label={t('settings/components/profile___inloggen')}
 						type="primary"
-						disabled={!areAllRequiredFieldFilledIn() || isSaving}
+						disabled={isSaving}
 						onClick={saveProfileChanges}
 					/>
 				</Container>
@@ -524,37 +664,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		);
 	};
 
-	const PERMISSIONS = {
-		SUBJECTS: [
-			PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE,
-			PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE,
-			PermissionName.REQUIRED_SUBJECTS_ON_PROFILE_PAGE,
-		],
-		EDUCATION_LEVEL: [
-			PermissionName.VIEW_EDUCATION_LEVEL_ON_PROFILE_PAGE,
-			PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE,
-			PermissionName.REQUIRED_EDUCATION_LEVEL_ON_PROFILE_PAGE,
-		],
-		EDUCATIONAL_ORGANISATION: [
-			PermissionName.VIEW_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE,
-			PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE,
-			PermissionName.REQUIRED_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE,
-		],
-		ORGANISATION: [
-			PermissionName.VIEW_ORGANISATION_ON_PROFILE_PAGE,
-			PermissionName.EDIT_ORGANISATION_ON_PROFILE_PAGE,
-			PermissionName.REQUIRED_ORGANISATION_ON_PROFILE_PAGE,
-		],
-	};
-
 	const renderFieldVisibleOrRequired = (
-		permissionName: keyof typeof PERMISSIONS,
+		permissionName: FieldPermissionKey,
 		renderFunc: (editable: boolean, required: boolean) => ReactNode
 	) => {
-		if (PermissionService.hasPerm(user, PERMISSIONS[permissionName][0])) {
+		if (!permissions) {
+			return null;
+		}
+		if (permissions[permissionName].VIEW) {
 			return renderFunc(
-				PermissionService.hasPerm(user, PERMISSIONS[permissionName][1]),
-				PermissionService.hasPerm(user, PERMISSIONS[permissionName][2])
+				permissions[permissionName].EDIT,
+				permissions[permissionName].REQUIRED
 			);
 		}
 		return null;
@@ -648,14 +768,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 										<Button
 											label={t('settings/components/profile___opslaan')}
 											type="primary"
-											disabled={!areAllRequiredFieldFilledIn() || isSaving}
-											title={
-												areAllRequiredFieldFilledIn()
-													? ''
-													: t(
-															'settings/components/profile___gelieve-alle-verplichte-velden-in-te-vullen'
-													  )
-											}
+											disabled={isSaving}
 											onClick={saveProfileChanges}
 										/>
 									</Form>
