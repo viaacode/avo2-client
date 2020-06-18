@@ -55,8 +55,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 
 			setEducationLevels(
 				educationLevels.map((item: any) => ({
-					value: item.description,
-					label: item.description,
+					value: item,
+					label: item,
 				}))
 			);
 		} catch (err) {
