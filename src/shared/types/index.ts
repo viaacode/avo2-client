@@ -1,18 +1,13 @@
 import { ReactElement } from 'react';
 
 import { IconName } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 export enum KeyCode {
 	Enter = 13,
 }
 
-export interface NewsletterPreferences {
-	newsletter: boolean;
-	workshop: boolean;
-	ambassador: boolean;
-}
-
-export type NewsletterList = keyof NewsletterPreferences;
+export type NewsletterList = keyof Avo.Newsletter.Preferences;
 
 export type NavigationItemInfo = {
 	label: string | ReactElement;

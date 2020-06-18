@@ -93,7 +93,7 @@ export const INSERT_PERMISSIONS_GROUP = gql`
 `;
 
 export const UPDATE_PERMISSIONS_GROUP = gql`
-	mutation insertPermissionGroup(
+	mutation updatePermissionGroup(
 		$permissionGroup: users_permission_groups_set_input!
 		$permissionGroupId: Int!
 	) {

@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-import { ContentPickerProps } from '../../../shared/components/ContentPicker/ContentPicker';
 import {
 	AnchorLinksBlockComponentState,
 	AnchorLinksBlockState,
@@ -52,13 +51,8 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				},
 			},
 			buttonAction: {
-				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
-				editorType: ContentBlockEditor.ContentPicker,
-				editorProps: {
-					allowedTypes: ['ANCHOR_LINK'],
-					hideTargetSwitch: true,
-					hideTypeDropdown: true,
-				} as ContentPickerProps,
+				label: i18n.t('Link'),
+				editorType: ContentBlockEditor.AnchorLinkSelect,
 			},
 		},
 	},

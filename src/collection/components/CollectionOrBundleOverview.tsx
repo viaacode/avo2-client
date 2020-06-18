@@ -426,6 +426,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		];
 	};
 
+	const renderPagination = () => (
+		<Pagination
+			pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
+			currentPage={page}
+			onPageChange={setPage}
+		/>
+	);
+
 	const renderTable = (collections: Avo.Collection.Collection[]) => (
 		<>
 			<Table
@@ -441,11 +449,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
-			<Pagination
-				pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-				currentPage={page}
-				onPageChange={setPage}
-			/>
+			<Spacer margin="top-large">{renderPagination()}</Spacer>
 		</>
 	);
 

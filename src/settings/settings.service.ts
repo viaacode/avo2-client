@@ -2,7 +2,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
-import { NewsletterPreferences } from '../shared/types';
 
 interface UpdateProfileValues {
 	educationLevels: {
@@ -53,50 +52,6 @@ export const updateProfileInfo = async (
 		throw new CustomError('Failed to update profile information', err, {
 			profile,
 			variables,
-		});
-	}
-};
-
-export const fetchNewsletterPreferences = async (email: string) => {
-	try {
-		const response = await fetchWithLogout(
-			`${getEnv('PROXY_URL')}/campaign-monitor/preferences?email=${email}`,
-			{
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			}
-		);
-
-		return response.json();
-	} catch (err) {
-		throw new CustomError('Failed to fetch newsletter preferences', err, {
-			email,
-		});
-	}
-};
-
-export const updateNewsletterPreferences = async (
-	name: string,
-	email: string,
-	preferences: Partial<NewsletterPreferences>
-) => {
-	try {
-		await fetchWithLogout(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			credentials: 'include',
-			body: JSON.stringify({ name, email, preferences }),
-		});
-	} catch (err) {
-		throw new CustomError('Failed to update newsletter preferences', err, {
-			name,
-			email,
-			preferences,
 		});
 	}
 };
