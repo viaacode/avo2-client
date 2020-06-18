@@ -195,6 +195,7 @@ export enum ContentBlockEditor {
 	Checkbox = 'Checkbox',
 	ColorSelect = 'ColorSelect',
 	ContentPicker = 'ContentPicker',
+	AnchorLinkSelect = 'AnchorLinkSelect',
 	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
 	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',

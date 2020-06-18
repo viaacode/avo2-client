@@ -23,6 +23,7 @@ const basic = {
 	],
 	allowedAttributes: {
 		span: ['style'],
+		p: ['style'],
 	},
 };
 

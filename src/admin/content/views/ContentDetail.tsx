@@ -54,6 +54,7 @@ import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
+import { isPublic } from '../helpers/get-published-state';
 
 import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
@@ -170,8 +171,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					...newContentPage,
 				});
 
+				setContentPageInfo({
+					...contentPageInfo,
+					...newContentPage,
+				} as ContentPageInfo);
+
 				ToastService.success(
-					newContentPage.is_public
+					isPublic(newContentPage)
 						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
 						: t(
 								'admin/content/views/content-detail___de-content-pagina-is-nu-niet-meer-publiek'
@@ -192,6 +198,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				false
 			);
 		}
+
 		setIsShareModalOpen(false);
 	};
 
@@ -278,7 +285,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		<ButtonToolbar>
 			<Button
 				type="secondary"
-				icon={get(contentPageInfo, 'is_public') === true ? 'unlock-3' : 'lock'}
+				icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
 				label={t('admin/content/views/content-detail___publiceren')}
 				title={t(
 					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'

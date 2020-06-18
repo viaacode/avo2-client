@@ -1,11 +1,18 @@
 import { ReactElement } from 'react';
 
-import { MenuItemInfo } from '@viaa/avo2-components';
+import { IconName, MenuItemInfo } from '@viaa/avo2-components';
 
-type TabView = {
+export type TabView = {
 	component: () => ReactElement;
 	filter?: TabFilter;
 };
+
+export interface NavTab {
+	active: boolean;
+	icon: IconName;
+	id: string;
+	label: string;
+}
 
 export type TabFilter = {
 	label: string;

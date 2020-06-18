@@ -9,7 +9,6 @@ import {
 	ButtonGroup,
 	ButtonToolbar,
 	Checkbox,
-	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -507,9 +506,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 		switch (colKey) {
 			case 'title':
-				return (
+				const renderTitle = () => (
 					<Flex>
-						<Spacer margin={'right-small'}>
+						<Spacer margin="right">
 							<Icon name="clipboard" subtle />
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
@@ -520,6 +519,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							</h3>
 						</div>
 					</Flex>
+				);
+
+				return isMobileWidth() ? (
+					<Spacer margin="bottom-small">{renderTitle()}</Spacer>
+				) : (
+					renderTitle()
 				);
 
 			case 'assignment_type':
@@ -539,18 +544,34 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return <TagList tags={tagOptions} swatches closable={false} />;
 
 			case 'author':
-				return renderAvatar(get(assignment, 'profile', null), {
+				const profile = get(assignment, 'profile', null);
+				const avatarOptions = {
 					includeRole: false,
 					dark: true,
 					abbreviatedName: true,
-					small: true,
-				});
+					small: isMobileWidth(),
+				};
+
+				return isMobileWidth() ? (
+					<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
+				) : (
+					renderAvatar(profile, avatarOptions)
+				);
 
 			case 'class_room':
 				return cellData;
 
 			case 'deadline_at':
-				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+				return isMobileWidth() ? (
+					<Flex>
+						<Spacer margin="right">
+							<Icon name="clock" subtle />
+						</Spacer>
+						<span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>
+					</Flex>
+				) : (
+					<span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>
+				);
 
 			case 'assignment_responses':
 				return (
@@ -823,26 +844,24 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderEmptyFallback = () => (
-		<Container mode="vertical" size="small">
-			<Container mode="horizontal">
-				{renderHeader()}
-				<ErrorView icon={getEmptyFallbackIcon()} message={getEmptyFallbackTitle()}>
-					<p>{getEmptyFallbackDescription()}</p>
-					{canEditAssignments && (
-						<Spacer margin="top">
-							<Button
-								type="primary"
-								icon="search"
-								label={t(
-									'assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht'
-								)}
-								onClick={onClickCreate}
-							/>
-						</Spacer>
-					)}
-				</ErrorView>
-			</Container>
-		</Container>
+		<>
+			{renderHeader()}
+			<ErrorView icon={getEmptyFallbackIcon()} message={getEmptyFallbackTitle()}>
+				<p>{getEmptyFallbackDescription()}</p>
+				{canEditAssignments && (
+					<Spacer margin="top">
+						<Button
+							type="primary"
+							icon="search"
+							label={t(
+								'assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht'
+							)}
+							onClick={onClickCreate}
+						/>
+					</Spacer>
+				)}
+			</ErrorView>
+		</>
 	);
 
 	const renderAssignmentsView = () => {
@@ -853,79 +872,77 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			return renderEmptyFallback();
 		}
 		return (
-			<Container mode="vertical" size="small">
-				<Container mode="horizontal">
-					{renderHeader()}
-					<Table
-						columns={columns}
-						data={assignments}
-						emptyStateMessage={
-							filterString
-								? t(
-										'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
-								  )
-								: activeView === 'archived_assignments'
-								? t(
-										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
-								  )
-								: t(
-										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
-								  )
-						}
-						renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
-							renderCell(rowData, colKey as AssignmentOverviewTableColumns)
-						}
-						rowKey="id"
-						variant="styled"
-						onColumnClick={columnId =>
-							handleColumnClick(columnId as AssignmentOverviewTableColumns)
-						}
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-						useCards={isMobileWidth()}
+			<>
+				{renderHeader()}
+				<Table
+					columns={columns}
+					data={assignments}
+					emptyStateMessage={
+						filterString
+							? t(
+									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+							  )
+							: activeView === 'archived_assignments'
+							? t(
+									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
+							  )
+							: t(
+									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
+							  )
+					}
+					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
+					}
+					rowKey="id"
+					variant="styled"
+					onColumnClick={columnId =>
+						handleColumnClick(columnId as AssignmentOverviewTableColumns)
+					}
+					sortColumn={sortColumn}
+					sortOrder={sortOrder}
+					useCards={isMobileWidth()}
+				/>
+				<Spacer margin="top-large">
+					<Pagination
+						pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}
+						currentPage={page}
+						onPageChange={setPage}
 					/>
-					<Spacer margin="top-large">
-						<Pagination
-							pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}
-							currentPage={page}
-							onPageChange={setPage}
-						/>
-					</Spacer>
+				</Spacer>
 
-					<DeleteObjectModal
-						title={t(
-							'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
-						)}
-						body={t(
-							'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-						)}
-						isOpen={isDeleteAssignmentModalOpen}
-						onClose={handleDeleteModalClose}
-						deleteObjectCallback={() =>
-							deleteCurrentAssignment(get(markedAssignment, 'id', null))
-						}
-					/>
+				<DeleteObjectModal
+					title={t(
+						'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+					)}
+					body={t(
+						'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
+					isOpen={isDeleteAssignmentModalOpen}
+					onClose={handleDeleteModalClose}
+					deleteObjectCallback={() =>
+						deleteCurrentAssignment(get(markedAssignment, 'id', null))
+					}
+				/>
 
-					<InputModal
-						title={t('assignment/views/assignment-overview___dupliceer-taak')}
-						inputLabel={t(
-							'assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam'
-						)}
-						inputValue={get(markedAssignment, 'title', '')}
-						inputPlaceholder={t(
-							'assignment/views/assignment-overview___titel-van-de-nieuwe-taak'
-						)}
-						isOpen={isDuplicateAssignmentModalOpen}
-						onClose={handleDuplicateModalClose}
-						inputCallback={(newTitle: string) =>
-							attemptDuplicateAssignment(newTitle, markedAssignment)
-						}
-						emptyMessage={t(
-							'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'
-						)}
-					/>
-				</Container>
-			</Container>
+				<InputModal
+					title={t('assignment/views/assignment-overview___dupliceer-taak')}
+					inputLabel={t(
+						'assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam'
+					)}
+					inputValue={get(markedAssignment, 'title', '')}
+					inputPlaceholder={t(
+						'assignment/views/assignment-overview___titel-van-de-nieuwe-taak'
+					)}
+					isOpen={isDuplicateAssignmentModalOpen}
+					onClose={handleDuplicateModalClose}
+					inputCallback={(newTitle: string) =>
+						attemptDuplicateAssignment(newTitle, markedAssignment)
+					}
+					emptyMessage={t(
+						'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'
+					)}
+				/>
+			</>
 		);
 	};
 

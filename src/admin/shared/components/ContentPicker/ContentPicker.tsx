@@ -100,10 +100,14 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				}
 				return items;
 			} catch (err) {
-				throw new CustomError('[Content Picker] - Failed to inflate.', err, {
-					keyword,
-					selectedType,
-				});
+				console.error(
+					new CustomError('[Content Picker] - Failed to inflate.', err, {
+						keyword,
+						selectedType,
+					})
+				);
+				ToastService.danger('Het ophalen van de opties is mislukt', false);
+				return [];
 			}
 		},
 		[selectedType, hasAppliedInitialItem, initialValue]

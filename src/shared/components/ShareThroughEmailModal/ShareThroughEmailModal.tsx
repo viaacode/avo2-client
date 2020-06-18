@@ -14,10 +14,9 @@ import {
 } from '@viaa/avo2-components';
 
 import { copyToClipboard } from '../../helpers';
-import { shareThroughEmail } from '../../helpers/share-through-email';
 import { ToastService } from '../../services';
+import { CampaignMonitorService, EmailTemplateType } from '../../services/campaign-monitor-service';
 
-import { EmailTemplateType } from './share-through-email.types';
 import './ShareThroughEmailModal.scss';
 
 interface AddToCollectionModalProps {
@@ -54,7 +53,12 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const sendEmail = async () => {
 		try {
 			setIsProcessing(true);
-			await shareThroughEmail(emailAddress, emailLinkTitle, emailLinkHref, type);
+			await CampaignMonitorService.shareThroughEmail(
+				emailAddress,
+				emailLinkTitle,
+				emailLinkHref,
+				type
+			);
 			ToastService.success(
 				t(
 					'shared/components/share-through-email-modal/share-through-email-modal___de-email-is-verstuurd'
