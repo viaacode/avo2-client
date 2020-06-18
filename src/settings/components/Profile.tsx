@@ -1,5 +1,5 @@
-import { get, pullAllBy, remove, uniq } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { compact, get, pullAllBy, remove, uniq } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
@@ -18,6 +18,7 @@ import {
 	Spacer,
 	TagInfo,
 	TagList,
+	TagOption,
 	TagsInput,
 	TextArea,
 	TextInput,
@@ -30,23 +31,40 @@ import {
 	getProfileAlias,
 	getProfileId,
 } from '../../authentication/helpers/get-profile-info';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { DataQueryComponent, FileUpload } from '../../shared/components';
+import { FileUpload } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
-import {
-	fetchCities,
-	fetchEducationOrganizations,
-} from '../../shared/services/education-organizations-service';
-import { ContextAndClassificationData } from '../../shared/types/lookup';
+import { EducationOrganisationService } from '../../shared/services/education-organizations-service';
+import { OrganisationService } from '../../shared/services/organizations-service';
 import store from '../../store';
-import { updateProfileInfo } from '../settings.service';
+import { SettingsService } from '../settings.service';
+import { UpdateProfileValues } from '../settings.types';
+
+type FieldPermissionKey =
+	| 'SUBJECTS'
+	| 'EDUCATION_LEVEL'
+	| 'EDUCATIONAL_ORGANISATION'
+	| 'ORGANISATION';
+
+interface FieldPermission {
+	VIEW: boolean;
+	EDIT: boolean;
+	REQUIRED: boolean;
+}
+
+interface FieldPermissions {
+	SUBJECTS: FieldPermission;
+	EDUCATION_LEVEL: FieldPermission;
+	EDUCATIONAL_ORGANISATION: FieldPermission;
+	ORGANISATION: FieldPermission;
+}
 
 export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
@@ -100,17 +118,125 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [func, setFunc] = useState<string | null>(get(getProfile(user, true), 'function', null));
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
+	const [allEducationLevels, setAllEducationLevels] = useState<string[] | null>(null);
+	const [allSubjects, setAllSubjects] = useState<string[] | null>(null);
+	const [allOrganisations, setAllOrganisations] = useState<
+		Partial<Avo.Organization.Organization>[] | null
+	>(null);
+	const [companyId, setCompanyId] = useState<string | null>(
+		get(getProfile(user, true), 'company_id', null)
+	);
+	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
 
 	useEffect(() => {
-		fetchCities()
-			.then(setCities)
-			.catch(err => {
-				console.error('Failed to get cities', err);
-				ToastService.danger(
-					t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
-				);
-			});
-	}, [t]);
+		setPermissions({
+			SUBJECTS: {
+				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE),
+				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_SUBJECTS_ON_PROFILE_PAGE
+				),
+			},
+			EDUCATION_LEVEL: {
+				VIEW: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_EDUCATION_LEVEL_ON_PROFILE_PAGE
+				),
+				EDIT: PermissionService.hasPerm(
+					user,
+					PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE
+				),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_EDUCATION_LEVEL_ON_PROFILE_PAGE
+				),
+			},
+			EDUCATIONAL_ORGANISATION: {
+				VIEW: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+				),
+				EDIT: PermissionService.hasPerm(
+					user,
+					PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+				),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+				),
+			},
+			ORGANISATION: {
+				VIEW: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_ORGANISATION_ON_PROFILE_PAGE
+				),
+				EDIT: PermissionService.hasPerm(
+					user,
+					PermissionName.EDIT_ORGANISATION_ON_PROFILE_PAGE
+				),
+				REQUIRED: PermissionService.hasPerm(
+					user,
+					PermissionName.REQUIRED_ORGANISATION_ON_PROFILE_PAGE
+				),
+			},
+		});
+	}, [user]);
+
+	useEffect(() => {
+		if (!permissions) {
+			return;
+		}
+		if (permissions.EDUCATIONAL_ORGANISATION.EDIT) {
+			EducationOrganisationService.fetchCities()
+				.then(setCities)
+				.catch(err => {
+					console.error(new CustomError('Failed to get cities', err));
+					ToastService.danger(
+						t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
+					);
+				});
+		}
+		if (permissions.SUBJECTS.EDIT) {
+			SettingsService.fetchSubjects()
+				.then(setAllSubjects)
+				.catch(err => {
+					console.error(new CustomError('Failed to get subjects from the database', err));
+					ToastService.danger(t('Het ophalen van de vakken is mislukt'));
+				});
+		}
+		if (permissions.EDUCATION_LEVEL.EDIT) {
+			SettingsService.fetchEducationLevels()
+				.then(setAllEducationLevels)
+				.catch(err => {
+					console.error(
+						new CustomError('Failed to get education levels from database', err)
+					);
+					ToastService.danger(t('Het ophalen van de opleidingsniveaus is mislukt'));
+				});
+		}
+
+		// TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
+		// Waiting for: https://meemoo.atlassian.net/browse/DEV-985
+		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
+			OrganisationService.fetchAllOrganisations()
+				.then(setAllOrganisations)
+				.catch(err => {
+					console.error(
+						new CustomError('Failed to get organisations from database', err)
+					);
+					ToastService.danger(t('Het ophalen van de organisaties is mislukt'));
+				});
+		}
+	}, [
+		permissions,
+		t,
+		user,
+		setCities,
+		setAllSubjects,
+		setAllEducationLevels,
+		setAllOrganisations,
+	]);
 
 	useEffect(() => {
 		(async () => {
@@ -121,13 +247,16 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				}
 				setOrganizationsLoadingState('loading');
 				const [city, zipCode] = selectedCity.split(/[()]/g).map(s => s.trim());
-				let orgs: Avo.EducationOrganization.Organization[] = [];
+				let orgs: Avo.EducationOrganization.Organization[];
 				if (organizationsCache[selectedCity]) {
 					// get from cache
 					orgs = [...organizationsCache[selectedCity]];
 				} else {
 					// fetch from server
-					orgs = await fetchEducationOrganizations(city, zipCode);
+					orgs = await EducationOrganisationService.fetchEducationOrganizations(
+						city,
+						zipCode
+					);
 					setOrganizationsCache({
 						...organizationsCache,
 						...{ [selectedCity]: orgs },
@@ -146,11 +275,52 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		})();
 	}, [organizationsCache, selectedOrganizations, selectedCity]);
 
+	const areRequiredFieldsFilledIn = (profileInfo: Partial<UpdateProfileValues>) => {
+		if (!permissions) {
+			return false;
+		}
+		const errors = [];
+		let filledIn = true;
+		if (
+			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
+			(!profileInfo.subjects || !profileInfo.subjects.length)
+		) {
+			errors.push(t('Vakken zijn verplicht'));
+			filledIn = false;
+		}
+		if (
+			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
+			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
+		) {
+			errors.push(t('Opleidingsniveau is verplicht'));
+			filledIn = false;
+		}
+		if (
+			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
+			(!profileInfo.organizations || !profileInfo.organizations.length)
+		) {
+			errors.push(t('Educatieve organisatie is verplicht'));
+			filledIn = false;
+		}
+		if (
+			permissions.ORGANISATION.REQUIRED &&
+			!profileInfo.company_id &&
+			!isCompleteProfileStep
+		) {
+			errors.push(t('Organisatie is verplicht'));
+			filledIn = false;
+		}
+		if (errors.length) {
+			ToastService.danger(errors);
+		}
+		return filledIn;
+	};
+
 	const saveProfileChanges = async () => {
 		try {
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
-			await updateProfileInfo(getProfile(user), {
+			const newProfileInfo = {
 				alias,
 				avatar,
 				bio,
@@ -167,7 +337,13 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
 				})),
-			});
+				company_id: companyId || undefined,
+			};
+			if (!areRequiredFieldsFilledIn(newProfileInfo)) {
+				setIsSaving(false);
+				return;
+			}
+			await SettingsService.updateProfileInfo(getProfile(user), newProfileInfo);
 
 			// save newsletter subscription if checked
 			if (subscribeToNewsletter) {
@@ -264,151 +440,247 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		];
 	};
 
-	const areAllRequiredFieldFilledIn = (): boolean =>
-		selectedSubjects &&
-		selectedSubjects.length > 0 &&
-		selectedEducationLevels &&
-		selectedEducationLevels.length > 0 &&
-		selectedOrganizations &&
-		selectedOrganizations.length > 0;
-
-	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (
-		<>
+	const renderSubjectsField = (editable: boolean, required: boolean) => {
+		return (
 			<FormGroup
 				label={t('settings/components/profile___vakken')}
 				labelFor="subjects"
-				required
+				required={required}
 			>
-				<TagsInput
-					id="subjects"
-					placeholder={t('settings/components/profile___selecteer-de-vakken-die-u-geeft')}
-					options={subjects.map(subject => ({
-						label: subject,
-						value: subject,
-					}))}
-					value={selectedSubjects}
-					onChange={selectedValues => setSelectedSubjects(selectedValues || [])}
-				/>
+				{editable ? (
+					<TagsInput
+						id="subjects"
+						placeholder={t(
+							'settings/components/profile___selecteer-de-vakken-die-u-geeft'
+						)}
+						options={(allSubjects || []).map(subject => ({
+							label: subject,
+							value: subject,
+						}))}
+						value={selectedSubjects}
+						onChange={selectedValues => setSelectedSubjects(selectedValues || [])}
+					/>
+				) : (
+					<TagList
+						tags={selectedSubjects.map(
+							(subject): TagOption => ({ id: subject.value, label: subject.label })
+						)}
+						swatches={false}
+						closable={false}
+					/>
+				)}
 			</FormGroup>
+		);
+	};
+
+	const renderEducationLevelsField = (editable: boolean, required: boolean) => {
+		return (
 			<FormGroup
 				label={t('settings/components/profile___onderwijsniveau')}
 				labelFor="educationLevel"
-				required
+				required={required}
 			>
-				<TagsInput
-					id="educationLevel"
-					placeholder={t('settings/components/profile___selecteer-een-opleidingsniveau')}
-					options={educationLevels.map(edLevel => ({
-						label: edLevel,
-						value: edLevel,
-					}))}
-					value={selectedEducationLevels}
-					onChange={selectedValues => setSelectedEducationLevels(selectedValues || [])}
-				/>
+				{editable ? (
+					<TagsInput
+						id="educationLevel"
+						placeholder={t(
+							'settings/components/profile___selecteer-een-opleidingsniveau'
+						)}
+						options={(allEducationLevels || []).map(edLevel => ({
+							label: edLevel,
+							value: edLevel,
+						}))}
+						value={selectedEducationLevels}
+						onChange={selectedValues =>
+							setSelectedEducationLevels(selectedValues || [])
+						}
+					/>
+				) : (
+					<>
+						<TagList
+							tags={selectedEducationLevels.map(
+								(subject): TagOption => ({
+									id: subject.value,
+									label: subject.label,
+								})
+							)}
+							swatches={false}
+							closable={false}
+						/>
+						<Spacer margin="top-small">
+							<Alert
+								type="info"
+								message={t(
+									'Wil je jouw onderwijsniveau aanpassen? Neem dan contact op via de Feedbackknop'
+								)}
+							/>
+						</Spacer>
+					</>
+				)}
 			</FormGroup>
+		);
+	};
+
+	const renderOrganisationField = (editable: boolean, required: boolean) => {
+		return (
+			<FormGroup label={t('Organisatie')} labelFor="organisation" required={required}>
+				{editable ? (
+					<Select
+						options={compact(
+							(allOrganisations || []).map(org => {
+								if (!org.name || !org.or_id) {
+									return null;
+								}
+								return {
+									label: org.name,
+									value: org.or_id,
+								};
+							})
+						)}
+						value={companyId}
+						onChange={setCompanyId}
+					/>
+				) : !companyId ? (
+					'-'
+				) : (
+					get(
+						(allOrganisations || []).find(org => org.or_id === companyId),
+						'name'
+					) || t('Onbekende organisatie')
+				)}
+			</FormGroup>
+		);
+	};
+
+	const renderEducationOrganisationsField = (editable: boolean, required: boolean) => {
+		return (
 			<FormGroup
 				label={t('settings/components/profile___school-organisatie')}
-				labelFor="organization"
-				required
+				labelFor="educationalOrganizations"
+				required={required}
 			>
-				<TagList
-					closable
-					swatches={false}
-					tags={selectedOrganizations.map(org => ({
-						label: org.label,
-						id: org.label,
-					}))}
-					onTagClosed={removeOrganization}
-				/>
-				<Spacer margin="top-small">
-					<Select
-						options={[
-							{
-								label: t('settings/components/profile___voeg-een-organisatie-toe'),
-								value: '',
-							},
-							...cities.map(c => ({ label: c, value: c })),
-						]}
-						value={selectedCity || ''}
-						onChange={onSelectedCityChanged}
-					/>
-				</Spacer>
-				<Spacer margin="top-small">
-					{organizationsLoadingState === 'loading' && (
-						<Alert
-							type="spinner"
-							message={t(
-								'settings/components/profile___bezig-met-ophalen-van-organisaties'
-							)}
+				{editable ? (
+					<>
+						<TagList
+							closable
+							swatches={false}
+							tags={selectedOrganizations.map(org => ({
+								label: org.label,
+								id: org.label,
+							}))}
+							onTagClosed={removeOrganization}
 						/>
-					)}
-					{!!selectedCity && organizationsLoadingState === 'loaded' && (
-						<Select
-							options={getOrganizationOptions()}
-							value={''}
-							onChange={onSelectedOrganizationChanged}
-						/>
-					)}
-				</Spacer>
-			</FormGroup>
-		</>
-	);
-
-	const renderProfile = (data: ContextAndClassificationData) => {
-		const educationLevels: string[] = (get(data, 'lookup_enum_lom_context', []) as {
-			description: string;
-		}[]).map((item: { description: string }) => item.description);
-		const subjects: string[] = (get(data, 'lookup_enum_lom_classification', []) as {
-			description: string;
-		}[]).map((item: { description: string }) => item.description);
-
-		if (isCompleteProfileStep) {
-			// Render profile for the complete profile step of the registration process
-			return (
-				<Container mode="horizontal" size="medium">
-					<Container mode="vertical">
-						<BlockHeading type="h1">
-							<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
-								Je bent er bijna. Vervolledig nog je profiel.
-							</Trans>
-						</BlockHeading>
-						<Spacer margin="top-large">
-							<Alert type="info">
-								<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
-									We gebruiken deze info om je gepersonaliseerde content te tonen.
-								</Trans>
-							</Alert>
+						<Spacer margin="top-small">
+							<Select
+								options={[
+									{
+										label: t(
+											'settings/components/profile___voeg-een-organisatie-toe'
+										),
+										value: '',
+									},
+									...cities.map(c => ({ label: c, value: c })),
+								]}
+								value={selectedCity || ''}
+								onChange={onSelectedCityChanged}
+							/>
 						</Spacer>
-						<Form type="standard">
-							<Spacer margin={['top-large', 'bottom-large']}>
-								{renderRequiredFields(subjects, educationLevels)}
-							</Spacer>
-							{get(user, 'role.name') === 'lesgever' && (
-								<Spacer margin="bottom">
-									<FormGroup>
-										<Checkbox
-											label={t(
-												'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
-											)}
-											checked={subscribeToNewsletter}
-											onChange={setSubscribeToNewsletter}
-										/>
-									</FormGroup>
-								</Spacer>
+						<Spacer margin="top-small">
+							{organizationsLoadingState === 'loading' && (
+								<Alert
+									type="spinner"
+									message={t(
+										'settings/components/profile___bezig-met-ophalen-van-organisaties'
+									)}
+								/>
 							)}
-						</Form>
-						<Button
-							label={t('settings/components/profile___inloggen')}
-							type="primary"
-							disabled={!areAllRequiredFieldFilledIn() || isSaving}
-							onClick={saveProfileChanges}
-						/>
-					</Container>
+							{!!selectedCity && organizationsLoadingState === 'loaded' && (
+								<Select
+									options={getOrganizationOptions()}
+									value={''}
+									onChange={onSelectedOrganizationChanged}
+								/>
+							)}
+						</Spacer>
+					</>
+				) : (
+					<TagList
+						closable={false}
+						swatches={false}
+						tags={selectedOrganizations.map(org => ({
+							label: org.label,
+							id: org.label,
+						}))}
+					/>
+				)}
+			</FormGroup>
+		);
+	};
+
+	const renderCompleteProfilePage = () => {
+		return (
+			<Container mode="horizontal" size="medium">
+				<Container mode="vertical">
+					<BlockHeading type="h1">
+						<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
+							Je bent er bijna. Vervolledig nog je profiel.
+						</Trans>
+					</BlockHeading>
+					<Spacer margin="top-large">
+						<Alert type="info">
+							<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
+								We gebruiken deze info om je gepersonaliseerde content te tonen.
+							</Trans>
+						</Alert>
+					</Spacer>
+					<Form type="standard">
+						<Spacer margin={['top-large', 'bottom-large']}>
+							{renderSubjectsField(true, true)}
+							{renderEducationLevelsField(true, true)}
+							{renderEducationOrganisationsField(true, true)}
+						</Spacer>
+						{get(user, 'role.name') === 'lesgever' && (
+							<Spacer margin="bottom">
+								<FormGroup>
+									<Checkbox
+										label={t(
+											'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
+										)}
+										checked={subscribeToNewsletter}
+										onChange={setSubscribeToNewsletter}
+									/>
+								</FormGroup>
+							</Spacer>
+						)}
+					</Form>
+					<Button
+						label={t('settings/components/profile___inloggen')}
+						type="primary"
+						disabled={isSaving}
+						onClick={saveProfileChanges}
+					/>
 				</Container>
+			</Container>
+		);
+	};
+
+	const renderFieldVisibleOrRequired = (
+		permissionName: FieldPermissionKey,
+		renderFunc: (editable: boolean, required: boolean) => ReactNode
+	) => {
+		if (!permissions) {
+			return null;
+		}
+		if (permissions[permissionName].VIEW) {
+			return renderFunc(
+				permissions[permissionName].EDIT,
+				permissions[permissionName].REQUIRED
 			);
 		}
+		return null;
+	};
 
-		// Render profile for the settings page
+	const renderProfilePage = () => {
 		return (
 			<>
 				<Container mode="vertical">
@@ -477,18 +749,26 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												/>
 											</FormGroup>
 										</>
-										{renderRequiredFields(subjects, educationLevels)}
+										{renderFieldVisibleOrRequired(
+											'SUBJECTS',
+											renderSubjectsField
+										)}
+										{renderFieldVisibleOrRequired(
+											'EDUCATION_LEVEL',
+											renderEducationLevelsField
+										)}
+										{renderFieldVisibleOrRequired(
+											'EDUCATIONAL_ORGANISATION',
+											renderEducationOrganisationsField
+										)}
+										{renderFieldVisibleOrRequired(
+											'ORGANISATION',
+											renderOrganisationField
+										)}
 										<Button
 											label={t('settings/components/profile___opslaan')}
 											type="primary"
-											disabled={!areAllRequiredFieldFilledIn() || isSaving}
-											title={
-												areAllRequiredFieldFilledIn()
-													? ''
-													: t(
-															'settings/components/profile___gelieve-alle-verplichte-velden-in-te-vullen'
-													  )
-											}
+											disabled={isSaving}
 											onClick={saveProfileChanges}
 										/>
 									</Form>
@@ -522,6 +802,16 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		);
 	};
 
+	const renderPage = () => {
+		if (isCompleteProfileStep) {
+			// Render profile for the complete profile step of the registration process
+			return renderCompleteProfilePage();
+		}
+
+		// Render profile for the settings page
+		return renderProfilePage();
+	};
+
 	return (
 		<>
 			<MetaTags>
@@ -537,11 +827,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					)}
 				/>
 			</MetaTags>
-			<DataQueryComponent
-				query={GET_CLASSIFICATIONS_AND_SUBJECTS}
-				renderData={renderProfile}
-				actionButtons={['home']}
-			/>
+			{renderPage()}
 		</>
 	);
 };
