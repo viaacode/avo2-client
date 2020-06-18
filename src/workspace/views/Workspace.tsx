@@ -15,11 +15,11 @@ import {
 	Navbar,
 	Select,
 	SelectOption,
+	Spacer,
 	Tabs,
 	Toolbar,
 	ToolbarLeft,
 	ToolbarRight,
-	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -45,7 +45,7 @@ import {
 	GET_TABS,
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
-import { TabFilter, TabViewMap } from '../workspace.types';
+import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
 import './Workspace.scss';
@@ -277,14 +277,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		);
 	};
 
-	const renderMobileTabs = () => {
+	const renderMobileTabs = (tabs: NavTab[]) => {
 		return (
 			<Spacer margin="bottom">
 				<Select
-					options={getNavTabs().map(
-						(navTab): SelectOption<string> => ({
-							label: navTab.label,
-							value: navTab.id.toString(),
+					options={tabs.map(
+						(tab: NavTab): SelectOption<string> => ({
+							label: tab.label,
+							value: tab.id.toString(),
 						})
 					)}
 					value={tabId || Object.keys(tabs)[0]}
@@ -295,30 +295,29 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		);
 	};
 
-	const renderNavTabs = () => {
-		return isMobileWidth() ? (
-			renderMobileTabs()
-		) : (
-			<Tabs tabs={getNavTabs()} onClick={goToTab} />
-		);
+	const renderNavTabs = (tabs: NavTab[]) => {
+		return isMobileWidth() ? renderMobileTabs(tabs) : <Tabs tabs={tabs} onClick={goToTab} />;
 	};
 
-	const renderToolbar = () => {
-		const filter = get(getActiveTab(), 'filter', null);
+	const renderToolbar = (tabs: NavTab[], activeTab: TabView) => {
+		const filter = get(activeTab, 'filter', null);
 
 		return filter ? (
 			<Toolbar autoHeight>
-				<ToolbarLeft>{renderNavTabs()}</ToolbarLeft>
+				{tabs.length > 1 && <ToolbarLeft>{renderNavTabs(tabs)}</ToolbarLeft>}
 				<ToolbarRight>
 					<span>{renderFilter(filter)}</span>
 				</ToolbarRight>
 			</Toolbar>
 		) : (
-			renderNavTabs()
+			tabs.length > 1 && renderNavTabs(tabs)
 		);
 	};
 
 	const renderTabsAndContent = () => {
+		const tabs = getNavTabs() as NavTab[];
+		const activeTab: TabView = getActiveTab();
+
 		return (
 			<div className="m-workspace">
 				<Container background="alt" mode="vertical" size="small">
@@ -339,11 +338,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				</Container>
 
 				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">{renderToolbar()}</Container>
+					<Container mode="horizontal">{renderToolbar(tabs, activeTab)}</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{getActiveTab().component()}</Container>
+					<Container mode="horizontal">{activeTab.component()}</Container>
 				</Container>
 			</div>
 		);
