@@ -261,7 +261,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
-			<Spacer margin="top">
+			<Spacer margin="top-large">
 				<Pagination
 					pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
 					currentPage={page}
