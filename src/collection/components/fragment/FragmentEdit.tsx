@@ -121,7 +121,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch player ticket for fragment edit', err, {
-					fragment,
+					id: fragment.external_id,
 				})
 			);
 			ToastService.danger(
@@ -130,7 +130,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				)
 			);
 		}
-	}, [fragment.external_id]);
+	}, [fragment.external_id, t]);
 
 	useEffect(() => {
 		fetchVideoPlayerTicket();
