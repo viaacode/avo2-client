@@ -68,7 +68,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 
 	useEffect(() => {
 		retrieveEducationLevels();
-	}, []);
+	}, [retrieveEducationLevels]);
 
 	const getValidationErrors = (): string[] => {
 		const requiredError = 'is verplicht';

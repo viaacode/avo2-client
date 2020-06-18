@@ -1,5 +1,3 @@
-import { ApolloQueryResult } from 'apollo-boost';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,13 +16,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SettingsService } from '../../settings/settings.service';
 import { FileUpload } from '../../shared/components';
 import WYSIWYGWrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_DEFAULT_NO_TITLES } from '../../shared/constants/wysiwyg';
 import { CustomError, sanitizeHtml } from '../../shared/helpers';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
-import { dataService } from '../../shared/services';
-import { ContextAndClassificationData } from '../../shared/types/lookup';
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
@@ -55,32 +51,26 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	const isCollection = type === 'collection';
 
 	useEffect(() => {
-		dataService
-			.query({
-				query: GET_CLASSIFICATIONS_AND_SUBJECTS,
-			})
-			.then((response: ApolloQueryResult<ContextAndClassificationData>) => {
-				setEducationLevels(
-					get(response, 'data.lookup_enum_lom_context', []).map((item: any) => ({
-						value: item.description,
-						label: item.description,
+		Promise.all([SettingsService.fetchSubjects(), SettingsService.fetchEducationLevels()])
+			.then((response: [string[], string[]]) => {
+				setSubjects(
+					response[0].map(subject => ({
+						value: subject,
+						label: subject,
 					}))
 				);
-				setSubjects(
-					get(response, 'data.lookup_enum_lom_classification', []).map((item: any) => ({
-						value: item.description,
-						label: item.description,
+				setEducationLevels(
+					response[1].map(educationLevel => ({
+						value: educationLevel,
+						label: educationLevel,
 					}))
 				);
 			})
 			.catch(err => {
 				console.error(
 					new CustomError(
-						'Failed to get classifications and subjects from the database',
-						err,
-						{
-							query: 'GET_CLASSIFICATIONS_AND_SUBJECTS',
-						}
+						'Failed to get education levels and subjects from the database',
+						err
 					)
 				);
 			});

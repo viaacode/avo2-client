@@ -21,6 +21,7 @@ export const GET_USER_BY_ID = gql`
 			created_at
 			bio
 			alternative_email
+			company_id
 			profile_user_groups {
 				groups {
 					id
@@ -90,6 +91,7 @@ export const GET_USERS = gql`
 			created_at
 			bio
 			alternative_email
+			company_id
 		}
 		users_profiles_aggregate(
 			where: {
