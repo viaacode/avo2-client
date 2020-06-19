@@ -4,7 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
-import { GET_CLASSIFICATIONS, GET_SUBJECTS } from '../shared/queries/lookup.gql';
+import { GET_EDUCATION_LEVELS, GET_SUBJECTS } from '../shared/queries/lookup.gql';
 import { dataService } from '../shared/services';
 
 import { UpdateProfileValues } from './settings.types';
@@ -51,7 +51,7 @@ export class SettingsService {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			return ((get(response, 'data.lookup_enum_lom_context', []) || []) as {
+			return ((get(response, 'data.lookup_enum_lom_classification', []) || []) as {
 				description: string;
 			}[]).map((item: { description: string }) => item.description);
 		} catch (err) {
@@ -64,19 +64,19 @@ export class SettingsService {
 	public static async fetchEducationLevels(): Promise<string[]> {
 		try {
 			const response = await dataService.query({
-				query: GET_CLASSIFICATIONS,
+				query: GET_EDUCATION_LEVELS,
 			});
 
 			if (response.errors) {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			return ((get(response, 'data.lookup_enum_lom_classification') || []) as {
+			return ((get(response, 'data.lookup_enum_lom_context') || []) as {
 				description: string;
 			}[]).map((item: { description: string }) => item.description);
 		} catch (err) {
 			throw new CustomError('Failed to get education levels from the database', err, {
-				query: 'GET_CLASSIFICATIONS',
+				query: 'GET_EDUCATION_LEVELS',
 			});
 		}
 	}
