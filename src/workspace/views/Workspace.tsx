@@ -15,6 +15,7 @@ import {
 	Navbar,
 	Select,
 	SelectOption,
+	Spacer,
 	Tabs,
 	Toolbar,
 	ToolbarLeft,
@@ -44,7 +45,7 @@ import {
 	GET_TABS,
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
-import { TabFilter, TabViewMap } from '../workspace.types';
+import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
 import './Workspace.scss';
@@ -245,60 +246,78 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
 	// Render
-	const renderFilter = () => {
-		const filter: TabFilter | null = get(getActiveTab(), 'filter', null);
+	const renderFilter = (filter: TabFilter) => {
+		const currentFilter = filter.options.find(
+			f => f.id === (activeFilter || filter.options[0].id)
+		);
 
-		if (filter) {
-			const currentFilter = filter.options.find(
-				f => f.id === (activeFilter || filter.options[0].id)
-			);
-
-			return (
-				<Form type="inline">
-					<FormGroup label={filter.label}>
-						<ControlledDropdown isOpen={false} placement="bottom-end">
-							<DropdownButton>
-								<div className="c-filter-dropdown c-filter-dropdown--no-bg">
-									<div className="c-filter-dropdown__label">
-										{currentFilter
-											? currentFilter.label
-											: filter.options[0].label}
-									</div>
-									<div className="c-filter-dropdown__options">
-										<Icon name="caret-down" />
-									</div>
+		return (
+			<Form type="inline">
+				<FormGroup label={filter.label}>
+					<ControlledDropdown isOpen={false} placement="bottom-end">
+						<DropdownButton>
+							<div className="c-filter-dropdown c-filter-dropdown--no-bg">
+								<div className="c-filter-dropdown__label">
+									{currentFilter ? currentFilter.label : filter.options[0].label}
 								</div>
-							</DropdownButton>
-							<DropdownContent>
-								<MenuContent
-									menuItems={filter.options}
-									onClick={handleMenuContentClick}
-								/>
-							</DropdownContent>
-						</ControlledDropdown>
-					</FormGroup>
-				</Form>
-			);
-		}
+								<div className="c-filter-dropdown__options">
+									<Icon name="caret-down" />
+								</div>
+							</div>
+						</DropdownButton>
+						<DropdownContent>
+							<MenuContent
+								menuItems={filter.options}
+								onClick={handleMenuContentClick}
+							/>
+						</DropdownContent>
+					</ControlledDropdown>
+				</FormGroup>
+			</Form>
+		);
 	};
 
-	const renderMobileTabs = () => {
+	const renderMobileTabs = (tabs: NavTab[]) => {
 		return (
-			<Select
-				options={getNavTabs().map(
-					(navTab): SelectOption<string> => ({
-						label: navTab.label,
-						value: navTab.id.toString(),
-					})
-				)}
-				value={tabId || Object.keys(tabs)[0]}
-				onChange={goToTab}
-				className="c-tab-select"
-			/>
+			<Spacer margin="bottom">
+				<Select
+					options={tabs.map(
+						(tab: NavTab): SelectOption<string> => ({
+							label: tab.label,
+							value: tab.id.toString(),
+						})
+					)}
+					value={tabId || Object.keys(tabs)[0]}
+					onChange={goToTab}
+					className="c-tab-select"
+				/>
+			</Spacer>
+		);
+	};
+
+	const renderNavTabs = (tabs: NavTab[]) => {
+		return isMobileWidth() ? renderMobileTabs(tabs) : <Tabs tabs={tabs} onClick={goToTab} />;
+	};
+
+	const renderToolbar = (tabs: NavTab[], activeTab: TabView) => {
+		const filter = get(activeTab, 'filter', null);
+
+		return filter ? (
+			<Toolbar autoHeight>
+				{tabs.length > 1 && <ToolbarLeft>{renderNavTabs(tabs)}</ToolbarLeft>}
+				<ToolbarRight>
+					<span>{renderFilter(filter)}</span>
+				</ToolbarRight>
+			</Toolbar>
+		) : (
+			tabs.length > 1 && renderNavTabs(tabs)
 		);
 	};
 
 	const renderTabsAndContent = () => {
+		const tabs = getNavTabs() as NavTab[];
+		const activeTab: TabView = getActiveTab();
+
 		return (
 			<div className="m-workspace">
 				<Container background="alt" mode="vertical" size="small">
@@ -319,24 +338,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				</Container>
 
 				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								{isMobileWidth() ? (
-									renderMobileTabs()
-								) : (
-									<Tabs tabs={getNavTabs()} onClick={goToTab} />
-								)}
-							</ToolbarLeft>
-							<ToolbarRight>
-								<span>{renderFilter()}</span>
-							</ToolbarRight>
-						</Toolbar>
-					</Container>
+					<Container mode="horizontal">{renderToolbar(tabs, activeTab)}</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{getActiveTab().component()}</Container>
+					<Container mode="horizontal">{activeTab.component()}</Container>
 				</Container>
 			</div>
 		);

@@ -1,5 +1,5 @@
 import { Tickets } from 'node-zendesk';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -7,11 +7,15 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import {
 	BlockHeading,
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	FormGroup,
 	Grid,
 	Icon,
+	Spacer,
+	TagInfo,
+	TagsInput,
 	TextArea,
 	TextInput,
 	Tooltip,
@@ -22,7 +26,9 @@ import {
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import Html from '../../../shared/components/Html/Html';
 import { ROUTE_PARTS } from '../../../shared/constants';
+import { CustomError } from '../../../shared/helpers';
 import { ToastService, ZendeskService } from '../../../shared/services';
+import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
@@ -39,6 +45,30 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	const [profession, setProfession] = useState<string>('');
 	const [reason, setReason] = useState<string>('');
 	const [hasBeenSent, setHasBeenSent] = useState<boolean>(false);
+	const [acceptedPrivacyConditions, setAcceptedPrivacyConditions] = useState<boolean>(false);
+	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>([]);
+	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
+
+	const retrieveEducationLevels = useCallback(async () => {
+		try {
+			const educationLevels = await fetchEducationLevels();
+
+			setEducationLevels(
+				educationLevels.map((item: any) => ({
+					value: item,
+					label: item,
+				}))
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to get education levels from the database', err));
+
+			ToastService.danger(t('Onderwijsniveaus konden niet worden opgehaald.'));
+		}
+	}, [setEducationLevels, t]);
+
+	useEffect(() => {
+		retrieveEducationLevels();
+	}, [retrieveEducationLevels]);
 
 	const getValidationErrors = (): string[] => {
 		const requiredError = 'is verplicht';
@@ -87,6 +117,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				)} ${requiredError}`
 			);
 		}
+		if (!acceptedPrivacyConditions) {
+			errors.push(
+				t('Je moet de privacy voorwaarden accepteren om manueel toegang aan te vragen.')
+			);
+		}
 		return errors;
 	};
 
@@ -109,6 +144,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						organization,
 						profession,
 						reason,
+						educationLevels: selectedEducationLevels,
 					}),
 					html_body: `<dl>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${firstName}</dd>
@@ -116,6 +152,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${selectedEducationLevels}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
 </dl>`,
 					public: false,
@@ -151,17 +188,19 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	const renderForm = () => {
 		return (
 			<>
-				<Button
-					type="secondary"
-					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
-					icon="arrow-left"
-					title={t(
-						'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
-					)}
-					ariaLabel={t(
-						'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
-					)}
-				/>
+				<Spacer margin="bottom-large">
+					<Button
+						type="secondary"
+						onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
+						icon="arrow-left"
+						title={t(
+							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
+						)}
+						ariaLabel={t(
+							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
+						)}
+					/>
+				</Spacer>
 				<BlockHeading type="h2">
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
 						Vraag een account aan op het Archief voor Onderwijs
@@ -243,6 +282,18 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						</FormGroup>
 						<FormGroup
 							label={t(
+								'collection/views/collection-edit-meta-data___onderwijsniveau'
+							)}
+							labelFor="classificationId"
+						>
+							<TagsInput
+								options={educationLevels}
+								value={selectedEducationLevels}
+								onChange={(values: TagInfo[]) => setSelectedEducationLevels(values)}
+							/>
+						</FormGroup>
+						<FormGroup
+							label={t(
 								'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
 							)}
 							labelFor="reason"
@@ -252,6 +303,28 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								id="reason"
 								value={reason}
 								onChange={setReason}
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Checkbox
+								label={
+									<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring">
+										Ik aanvaard de&nbsp;
+										<a
+											href="//meemoo.be/nl/privacybeleid"
+											target="_blank"
+											rel="noopener noreferrer"
+											title={t(
+												'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
+											)}
+										>
+											privacyverklaring
+										</a>
+										.
+									</Trans>
+								}
+								checked={acceptedPrivacyConditions}
+								onChange={setAcceptedPrivacyConditions}
 							/>
 						</FormGroup>
 						<Button type="primary" onClick={onSend}>

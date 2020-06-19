@@ -107,9 +107,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	}, [storedProfile, setLoadingInfo]);
 
 	const getLdapDashboardUrl = () => {
-		const userLdapUuid = get(storedProfile, 'idpmaps[0].idp_user_id');
-		if (userLdapUuid) {
-			return `${getEnv('LDAP_DASHBOARD_PEOPLE_URL')}/${userLdapUuid}`;
+		const ipdMapEntry = (get(storedProfile, 'user.idpmaps') || []).find(
+			(idpMap: { idp: string; idp_user_id: string }) => idpMap.idp === 'HETARCHIEF'
+		);
+		if (ipdMapEntry) {
+			return `${getEnv('LDAP_DASHBOARD_PEOPLE_URL')}/${ipdMapEntry.idp_user_id}`;
 		}
 		return null;
 	};

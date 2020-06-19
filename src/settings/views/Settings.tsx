@@ -12,6 +12,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { InteractiveTour } from '../../shared/components';
@@ -35,10 +36,14 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 	});
 
 	const tabHeaders = [
-		generateTabHeader(PROFILE_ID, 'Profiel'),
-		generateTabHeader(ACCOUNT_ID, 'Account'),
-		generateTabHeader(EMAIL_ID, 'E-mail voorkeuren'),
-		generateTabHeader(NOTIFICATIONS_ID, 'Notifications'),
+		generateTabHeader(PROFILE_ID, t('Profiel')),
+		generateTabHeader(ACCOUNT_ID, t('Account')),
+		...(PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)
+			? [generateTabHeader(EMAIL_ID, t('E-mail voorkeuren'))]
+			: []),
+		...(PermissionService.hasPerm(props.user, PermissionName.VIEW_NOTIFICATIONS_PAGE)
+			? [generateTabHeader(NOTIFICATIONS_ID, t('Notifications'))]
+			: []),
 	];
 
 	const tabContents = {

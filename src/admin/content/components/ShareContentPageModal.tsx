@@ -20,6 +20,7 @@ import {
 
 import { ToastService } from '../../../shared/services';
 import { ContentPageInfo } from '../content.types';
+import { getPublishedState } from '../helpers/get-published-state';
 
 type publishOption = 'private' | 'public' | 'timebound';
 
@@ -38,11 +39,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [selectedOption, setSelectedOption] = useState<publishOption>(
-		contentPage.is_public
-			? contentPage.publish_at || contentPage.depublish_at
-				? 'timebound'
-				: 'public'
-			: 'private'
+		getPublishedState(contentPage)
 	);
 	const [publishAt, setPublishAt] = useState<string | null>(contentPage.publish_at);
 	const [depublishAt, setDepublishAt] = useState<string | null>(contentPage.depublish_at);
@@ -66,8 +63,18 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 		}
 	};
 
+	const resetModal = () => {
+		setSelectedOption(getPublishedState(contentPage));
+		setPublishAt(contentPage.publish_at);
+		setDepublishAt(contentPage.depublish_at);
+	};
+
 	const closeModal = (newContent?: Partial<ContentPageInfo>) => {
-		setValidationError(undefined);
+		if (!newContent) {
+			resetModal();
+		} else {
+			setValidationError(undefined);
+		}
 		onClose(newContent);
 	};
 
@@ -78,7 +85,8 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 				'admin/content/components/share-content-page-modal___maak-deze-content-pagina-publiek'
 			)}
 			size="large"
-			onClose={onClose}
+			onClose={closeModal}
+			scrollable={false}
 		>
 			<ModalBody>
 				<p>
@@ -173,7 +181,7 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 									label={t(
 										'admin/content/components/share-content-page-modal___annuleren'
 									)}
-									onClick={() => onClose()}
+									onClick={() => closeModal()}
 								/>
 								<Button
 									type="primary"

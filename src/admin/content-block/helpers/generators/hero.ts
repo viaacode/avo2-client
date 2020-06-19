@@ -113,7 +113,7 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 			} as ContentBlockFieldGroup,
 
 			textBelowButtons: TEXT_FIELD(undefined, {
-				label: i18n.t('Text onder knoppen'),
+				label: i18n.t('admin/content-block/helpers/generators/hero___text-onder-knoppen'),
 				editorProps: {
 					controls: WYSIWYG_OPTIONS_FULL,
 				},
