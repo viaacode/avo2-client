@@ -317,13 +317,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						<Button
 							icon={isPublic(rowData) ? 'unlock-3' : 'lock'}
 							size="small"
-							title={t(
-								'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-							)}
-							ariaLabel={t(
-								'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-							)}
+							title={
+								isPublic(rowData)
+									? t('Deze pagina is publiek')
+									: t('Deze pagina is privé')
+							}
 							type="secondary"
+							disabled
 						/>
 						<Button
 							icon="edit"
