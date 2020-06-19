@@ -489,6 +489,8 @@
   "admin/content/views/content-overview___content-beheer-overview-pagina-titel": "Content beheer overview pagina titel",
   "admin/content/views/content-overview___content-overzicht": "Content overzicht",
   "admin/content/views/content-overview___content-toevoegen": "Content toevoegen",
+  "admin/content/views/content-overview___deze-pagina-is-prive": "Deze pagina is privé",
+  "admin/content/views/content-overview___deze-pagina-is-publiek": "Deze pagina is publiek",
   "admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters": "Er is geen content gevonden die voldoet aan de opgegeven filters.",
   "admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt": "Er is nog geen content aangemaakt",
   "admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd": "Het content item is succesvol verwijderd",

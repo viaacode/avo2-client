@@ -326,8 +326,12 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							size="small"
 							title={
 								isPublic(rowData)
-									? t('Deze pagina is publiek')
-									: t('Deze pagina is privé')
+									? t(
+											'admin/content/views/content-overview___deze-pagina-is-publiek'
+									  )
+									: t(
+											'admin/content/views/content-overview___deze-pagina-is-prive'
+									  )
 							}
 							type="secondary"
 							disabled
