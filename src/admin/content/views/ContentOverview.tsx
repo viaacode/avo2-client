@@ -53,6 +53,7 @@ import { UserService } from '../../users/user.service';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentPageInfo, ContentTableState } from '../content.types';
+import { isPublic } from '../helpers/get-published-state';
 import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
@@ -311,6 +312,17 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							size="small"
 							title={t('admin/content/views/content-overview___preview-content')}
 							ariaLabel={t('admin/content/views/content-overview___preview-content')}
+							type="secondary"
+						/>
+						<Button
+							icon={isPublic(rowData) ? 'unlock-3' : 'lock'}
+							size="small"
+							title={t(
+								'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+							)}
+							ariaLabel={t(
+								'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+							)}
 							type="secondary"
 						/>
 						<Button
