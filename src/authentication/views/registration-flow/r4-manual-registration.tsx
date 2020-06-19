@@ -129,10 +129,16 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		let ticket: Tickets.CreateModel | undefined;
 		try {
 			const errors = getValidationErrors();
+
 			if (errors.length) {
 				ToastService.danger(errors);
 				return;
 			}
+
+			const parsedEducationLevels = selectedEducationLevels
+				.map(selectedEducationLevel => selectedEducationLevel.label)
+				.join(', ');
+
 			// create zendesk ticket
 			ticket = {
 				comment: {
@@ -152,7 +158,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${selectedEducationLevels}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${parsedEducationLevels}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
 </dl>`,
 					public: false,
