@@ -136,7 +136,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			}
 
 			const parsedEducationLevels = selectedEducationLevels
-				.map(selectedEducationLevel => `${selectedEducationLevel.label}`)
+				.map(selectedEducationLevel => selectedEducationLevel.label)
 				.join(', ');
 
 			// create zendesk ticket
