@@ -36,13 +36,13 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 	});
 
 	const tabHeaders = [
-		generateTabHeader(PROFILE_ID, t('Profiel')),
-		generateTabHeader(ACCOUNT_ID, t('Account')),
+		generateTabHeader(PROFILE_ID, t('settings/views/settings___profiel')),
+		generateTabHeader(ACCOUNT_ID, t('settings/views/settings___account')),
 		...(PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)
-			? [generateTabHeader(EMAIL_ID, t('E-mail voorkeuren'))]
+			? [generateTabHeader(EMAIL_ID, t('settings/views/settings___e-mail-voorkeuren'))]
 			: []),
 		...(PermissionService.hasPerm(props.user, PermissionName.VIEW_NOTIFICATIONS_PAGE)
-			? [generateTabHeader(NOTIFICATIONS_ID, t('Notifications'))]
+			? [generateTabHeader(NOTIFICATIONS_ID, t('settings/views/settings___notifications'))]
 			: []),
 	];
 

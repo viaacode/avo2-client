@@ -202,7 +202,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				.then(setAllSubjects)
 				.catch(err => {
 					console.error(new CustomError('Failed to get subjects from the database', err));
-					ToastService.danger(t('Het ophalen van de vakken is mislukt'));
+					ToastService.danger(
+						t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
+					);
 				});
 		}
 		if (permissions.EDUCATION_LEVEL.EDIT) {
@@ -212,7 +214,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					console.error(
 						new CustomError('Failed to get education levels from database', err)
 					);
-					ToastService.danger(t('Het ophalen van de opleidingsniveaus is mislukt'));
+					ToastService.danger(
+						t(
+							'settings/components/profile___het-ophalen-van-de-opleidingsniveaus-is-mislukt'
+						)
+					);
 				});
 		}
 
@@ -225,7 +231,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					console.error(
 						new CustomError('Failed to get organisations from database', err)
 					);
-					ToastService.danger(t('Het ophalen van de organisaties is mislukt'));
+					ToastService.danger(
+						t(
+							'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt'
+						)
+					);
 				});
 		}
 	}, [
@@ -285,21 +295,21 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.subjects || !profileInfo.subjects.length)
 		) {
-			errors.push(t('Vakken zijn verplicht'));
+			errors.push(t('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
 		) {
-			errors.push(t('Opleidingsniveau is verplicht'));
+			errors.push(t('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.organizations || !profileInfo.organizations.length)
 		) {
-			errors.push(t('Educatieve organisatie is verplicht'));
+			errors.push(t('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (
@@ -307,7 +317,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			!profileInfo.company_id &&
 			!isCompleteProfileStep
 		) {
-			errors.push(t('Organisatie is verplicht'));
+			errors.push(t('settings/components/profile___organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (errors.length) {
@@ -511,7 +521,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							<Alert
 								type="info"
 								message={t(
-									'Wil je jouw onderwijsniveau aanpassen? Neem dan contact op via de Feedbackknop'
+									'settings/components/profile___wil-je-jouw-onderwijsniveau-aanpassen-neem-dan-contact-op-via-de-feedbackknop'
 								)}
 							/>
 						</Spacer>
@@ -523,7 +533,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const renderOrganisationField = (editable: boolean, required: boolean) => {
 		return (
-			<FormGroup label={t('Organisatie')} labelFor="organisation" required={required}>
+			<FormGroup
+				label={t('settings/components/profile___organisatie')}
+				labelFor="organisation"
+				required={required}
+			>
 				{editable ? (
 					<Select
 						options={compact(
@@ -546,7 +560,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					get(
 						(allOrganisations || []).find(org => org.or_id === companyId),
 						'name'
-					) || t('Onbekende organisatie')
+					) || t('settings/components/profile___onbekende-organisatie')
 				)}
 			</FormGroup>
 		);

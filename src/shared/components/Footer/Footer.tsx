@@ -71,10 +71,18 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 			<Container mode="horizontal" className="c-global-footer__inner">
 				<ul>
 					<li>
-						<a href="https://meemoo.be/nl" title={t('meemoo')}>
-							<span className="c-nav__item-label">{t('Een initiatief van')}</span>
+						<a
+							href="https://meemoo.be/nl"
+							title={t('shared/components/footer/footer___meemoo')}
+						>
+							<span className="c-nav__item-label">
+								{t('shared/components/footer/footer___een-initiatief-van')}
+							</span>
 							<Spacer margin="left-small">
-								<img src="/images/meemoo-logo.png" alt={t('logo van meemoo')} />
+								<img
+									src="/images/meemoo-logo.png"
+									alt={t('shared/components/footer/footer___logo-van-meemoo')}
+								/>
 							</Spacer>
 						</a>
 					</li>
@@ -83,12 +91,19 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 				<ul>
 					{mapNavItems(getSecondaryNavigationItems())}
 					<li>
-						<a href="https://www.vlaanderen.be/" title={t('vlaamse overheid')}>
-							<span className="c-nav__item-label">{t('Gesteund door')}</span>
+						<a
+							href="https://www.vlaanderen.be/"
+							title={t('shared/components/footer/footer___vlaamse-overheid')}
+						>
+							<span className="c-nav__item-label">
+								{t('shared/components/footer/footer___gesteund-door')}
+							</span>
 							<Spacer margin="left-small">
 								<img
 									src="/images/vlaanderen-logo.png"
-									alt={t('logo van vlaamse overheid')}
+									alt={t(
+										'shared/components/footer/footer___logo-van-vlaamse-overheid'
+									)}
 								/>
 							</Spacer>
 						</a>
