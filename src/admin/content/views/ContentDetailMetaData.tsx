@@ -117,10 +117,10 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 		}
 
 		if (!publish_at && depublish_at && moment().isBefore(moment(depublish_at))) {
-			return t('Ja');
+			return t('admin/content/views/content-detail-meta-data___ja');
 		}
 
-		return t('Nee');
+		return t('admin/content/views/content-detail-meta-data___nee');
 	};
 	const description = ContentService.getDescription(contentPageInfo, 'full');
 	return (
@@ -199,12 +199,22 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							t('admin/content/views/content-detail___gepubliceerd')
 						)}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.publish_at) || t('N.v.t')}</p>,
-							t('Wordt gepubliceerd op')
+							<p>
+								{formatDate(contentPageInfo.publish_at) ||
+									t('admin/content/views/content-detail-meta-data___n-v-t')}
+							</p>,
+							t(
+								'admin/content/views/content-detail-meta-data___wordt-gepubliceerd-op'
+							)
 						)}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.depublish_at) || t('N.v.t.')}</p>,
-							t('Wordt gedepubliceerd op')
+							<p>
+								{formatDate(contentPageInfo.depublish_at) ||
+									t('admin/content/views/content-detail-meta-data___n-v-t')}
+							</p>,
+							t(
+								'admin/content/views/content-detail-meta-data___wordt-gedepubliceerd-op'
+							)
 						)}
 						{renderDetailRow(
 							<TagList

@@ -62,7 +62,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		} catch (err) {
 			console.error(new CustomError('Failed to get education levels from the database', err));
 
-			ToastService.danger(t('Onderwijsniveaus konden niet worden opgehaald.'));
+			ToastService.danger(
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus-konden-niet-worden-opgehaald'
+				)
+			);
 		}
 	}, [setEducationLevels, t]);
 
@@ -119,7 +123,9 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		}
 		if (!acceptedPrivacyConditions) {
 			errors.push(
-				t('Je moet de privacy voorwaarden accepteren om manueel toegang aan te vragen.')
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___je-moet-de-privacy-voorwaarden-accepteren-om-manueel-toegang-aan-te-vragen'
+				)
 			);
 		}
 		return errors;
