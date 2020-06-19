@@ -289,6 +289,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return getFullName(profile) || '-';
 			case 'role':
 				return UserService.getUserRoleLabel(profile) || '-';
+			case 'content_type':
+				return (
+					get(
+						contentTypes.find(type => type.value === rowData.content_type),
+						'label'
+					) || '-'
+				);
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
