@@ -12,6 +12,7 @@ export const GET_USER_BY_ID = gql`
 				idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
 					id
 					idp_user_id
+					idp
 				}
 			}
 			avatar
