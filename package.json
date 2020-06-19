@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.38.0",
+	"version": "0.39.0",
 	"private": true,
 	"scripts": {
 		"preinstall": "npx npm-force-resolutions",
