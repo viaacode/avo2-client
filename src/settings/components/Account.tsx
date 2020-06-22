@@ -24,6 +24,7 @@ import {
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { getEnv } from '../../shared/helpers';
 
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
@@ -35,7 +36,8 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
 		// with the user already logged in and a redirect url back to this webpage after the user saves their changes
-		return 'https://account.hetarchief.be/';
+		console.log('LDAP_ACCOUNT_EDIT_URL', getEnv('LDAP_ACCOUNT_EDIT_URL'));
+		return getEnv('LDAP_ACCOUNT_EDIT_URL');
 	};
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {

@@ -5,6 +5,7 @@ interface Window {
 		FLOW_PLAYER_ID: string;
 		ZENDESK_KEY: string;
 		LDAP_DASHBOARD_PEOPLE_URL: string;
+		LDAP_ACCOUNT_EDIT_URL: string;
 		PORT: string;
 		NODE_ENV: string;
 		ENV: 'local' | 'qas' | 'production';
