@@ -2,6 +2,9 @@ import { compact, get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import {
 	Alert,
@@ -33,17 +36,21 @@ import {
 } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
+import {
+	getLoginResponse,
+	getLoginStateAction,
+	setLoginSuccess,
+} from '../../authentication/store/actions';
+import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
-import withUser from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { EducationOrganisationService } from '../../shared/services/education-organizations-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
-import store from '../../store';
+import store, { AppState } from '../../store';
 import { SettingsService } from '../settings.service';
 import { UpdateProfileValues } from '../settings.types';
 
@@ -70,12 +77,9 @@ export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
 }
 
-const Profile: FunctionComponent<ProfileProps> = ({
-	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
-	history,
-	location,
-	user,
-}) => {
+const Profile: FunctionComponent<ProfileProps & {
+	getLoginState: () => Dispatch;
+}> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
 	const [t] = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
@@ -187,7 +191,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		if (!permissions) {
 			return;
 		}
-		if (permissions.EDUCATIONAL_ORGANISATION.EDIT) {
+		if (permissions.EDUCATIONAL_ORGANISATION.EDIT || isCompleteProfileStep) {
 			EducationOrganisationService.fetchCities()
 				.then(setCities)
 				.catch(err => {
@@ -197,9 +201,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					);
 				});
 		}
-		if (permissions.SUBJECTS.EDIT) {
+		if (permissions.SUBJECTS.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchSubjects()
-				.then(setAllSubjects)
+				.then((subjects: string[]) => {
+					setAllSubjects(subjects);
+				})
 				.catch(err => {
 					console.error(new CustomError('Failed to get subjects from the database', err));
 					ToastService.danger(
@@ -207,9 +213,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					);
 				});
 		}
-		if (permissions.EDUCATION_LEVEL.EDIT) {
+		if (permissions.EDUCATION_LEVEL.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchEducationLevels()
-				.then(setAllEducationLevels)
+				.then((educationLevels: string[]) => {
+					setAllEducationLevels(educationLevels);
+				})
 				.catch(err => {
 					console.error(
 						new CustomError('Failed to get education levels from database', err)
@@ -354,6 +362,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				return;
 			}
 			await SettingsService.updateProfileInfo(getProfile(user), newProfileInfo);
+
+			if (isCompleteProfileStep) {
+				// Refetch user permissions since education level can change user group
+				getLoginState();
+			}
 
 			// save newsletter subscription if checked
 			if (subscribeToNewsletter) {
@@ -846,4 +859,14 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	);
 };
 
-export default withUser(Profile) as FunctionComponent<ProfileProps>;
+const mapStateToProps = (state: AppState) => ({
+	user: selectUser(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getLoginState: () => dispatch(getLoginStateAction() as any),
+	};
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));
