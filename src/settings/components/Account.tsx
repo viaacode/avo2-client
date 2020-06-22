@@ -33,12 +33,9 @@ export interface AccountProps extends RouteComponentProps {
 const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
 
-	const getSsumAccountEditPage = () => {
-		// TODO replace this with a call to a proxy server route that forwards to the ssum page
-		// with the user already logged in and a redirect url back to this webpage after the user saves their changes
-		console.log('LDAP_ACCOUNT_EDIT_URL', getEnv('LDAP_ACCOUNT_EDIT_URL'));
-		return getEnv('LDAP_ACCOUNT_EDIT_URL');
-	};
+	// TODO replace this with a call to a proxy server route that forwards to the ssum page
+	// with the user already logged in and a redirect url back to this webpage after the user saves their changes
+	const getSsumAccountEditPage = () => getEnv('LDAP_ACCOUNT_EDIT_URL');
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
