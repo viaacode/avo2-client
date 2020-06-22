@@ -35,7 +35,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 
 	// TODO replace this with a call to a proxy server route that forwards to the ssum page
 	// with the user already logged in and a redirect url back to this webpage after the user saves their changes
-	const getSsumAccountEditPage = () => getEnv('LDAP_ACCOUNT_EDIT_URL');
+	const getSsumAccountEditPage = () => getEnv('SSUM_ACCOUNT_EDIT_URL');
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
