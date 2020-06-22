@@ -35,7 +35,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 		onClick: () => setActiveTab(id),
 	});
 
-	const tabHeaders = [
+	const getTabHeaders = () => [
 		generateTabHeader(PROFILE_ID, t('settings/views/settings___profiel')),
 		generateTabHeader(ACCOUNT_ID, t('settings/views/settings___account')),
 		...(PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)
@@ -102,7 +102,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 				<Container mode="horizontal">
 					<Toolbar autoHeight>
 						<ToolbarLeft>
-							<Tabs tabs={tabHeaders} onClick={goToTab} />
+							<Tabs tabs={getTabHeaders()} onClick={goToTab} />
 						</ToolbarLeft>
 					</Toolbar>
 				</Container>
