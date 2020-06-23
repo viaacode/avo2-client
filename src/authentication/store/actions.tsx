@@ -66,13 +66,12 @@ export const getLoginStateAction = () => {
 
 			// Check if session is about to expire and show warning toast
 			// Redirect to login page when session actually expires
-			if ((loginStateResponse as any).sessionExpiresAt) {
-				// TODO remove cast after updating to typings v2.17.0
+			if (loginStateResponse.sessionExpiresAt) {
 				if (checkSessionTimeoutTimerId) {
 					clearInterval(checkSessionTimeoutTimerId);
 				}
 				checkSessionTimeoutTimerId = window.setInterval(
-					() => checkIfSessionExpires((loginStateResponse as any).sessionExpiresAt),
+					() => checkIfSessionExpires(loginStateResponse.sessionExpiresAt),
 					5 * 60 * 1000
 				);
 			}

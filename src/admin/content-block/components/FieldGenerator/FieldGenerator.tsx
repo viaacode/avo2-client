@@ -80,7 +80,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 		fieldOrFieldGroupInstance: ContentBlockField | ContentBlockFieldGroup,
 		currentState: any = []
 	) => {
-		switch ((fieldOrFieldGroupInstance as any).type) {
+		switch ((fieldOrFieldGroupInstance as ContentBlockFieldGroup).type) {
 			case 'fieldGroup':
 				const fieldGroup: ContentBlockFieldGroup = fieldOrFieldGroupInstance as ContentBlockFieldGroup;
 
