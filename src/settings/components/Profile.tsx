@@ -2,6 +2,9 @@ import { compact, get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import {
 	Alert,
@@ -33,17 +36,21 @@ import {
 } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
+import {
+	getLoginResponse,
+	getLoginStateAction,
+	setLoginSuccess,
+} from '../../authentication/store/actions';
+import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
-import withUser from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { EducationOrganisationService } from '../../shared/services/education-organizations-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
-import store from '../../store';
+import store, { AppState } from '../../store';
 import { SettingsService } from '../settings.service';
 import { UpdateProfileValues } from '../settings.types';
 
@@ -70,12 +77,9 @@ export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
 }
 
-const Profile: FunctionComponent<ProfileProps> = ({
-	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
-	history,
-	location,
-	user,
-}) => {
+const Profile: FunctionComponent<ProfileProps & {
+	getLoginState: () => Dispatch;
+}> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
 	const [t] = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
@@ -187,7 +191,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		if (!permissions) {
 			return;
 		}
-		if (permissions.EDUCATIONAL_ORGANISATION.EDIT) {
+		if (permissions.EDUCATIONAL_ORGANISATION.EDIT || isCompleteProfileStep) {
 			EducationOrganisationService.fetchCities()
 				.then(setCities)
 				.catch(err => {
@@ -197,22 +201,32 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					);
 				});
 		}
-		if (permissions.SUBJECTS.EDIT) {
+		if (permissions.SUBJECTS.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchSubjects()
-				.then(setAllSubjects)
+				.then((subjects: string[]) => {
+					setAllSubjects(subjects);
+				})
 				.catch(err => {
 					console.error(new CustomError('Failed to get subjects from the database', err));
-					ToastService.danger(t('Het ophalen van de vakken is mislukt'));
+					ToastService.danger(
+						t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
+					);
 				});
 		}
-		if (permissions.EDUCATION_LEVEL.EDIT) {
+		if (permissions.EDUCATION_LEVEL.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchEducationLevels()
-				.then(setAllEducationLevels)
+				.then((educationLevels: string[]) => {
+					setAllEducationLevels(educationLevels);
+				})
 				.catch(err => {
 					console.error(
 						new CustomError('Failed to get education levels from database', err)
 					);
-					ToastService.danger(t('Het ophalen van de opleidingsniveaus is mislukt'));
+					ToastService.danger(
+						t(
+							'settings/components/profile___het-ophalen-van-de-opleidingsniveaus-is-mislukt'
+						)
+					);
 				});
 		}
 
@@ -225,7 +239,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					console.error(
 						new CustomError('Failed to get organisations from database', err)
 					);
-					ToastService.danger(t('Het ophalen van de organisaties is mislukt'));
+					ToastService.danger(
+						t(
+							'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt'
+						)
+					);
 				});
 		}
 	}, [
@@ -285,21 +303,21 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.subjects || !profileInfo.subjects.length)
 		) {
-			errors.push(t('Vakken zijn verplicht'));
+			errors.push(t('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
 		) {
-			errors.push(t('Opleidingsniveau is verplicht'));
+			errors.push(t('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.organizations || !profileInfo.organizations.length)
 		) {
-			errors.push(t('Educatieve organisatie is verplicht'));
+			errors.push(t('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (
@@ -307,7 +325,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			!profileInfo.company_id &&
 			!isCompleteProfileStep
 		) {
-			errors.push(t('Organisatie is verplicht'));
+			errors.push(t('settings/components/profile___organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (errors.length) {
@@ -344,6 +362,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				return;
 			}
 			await SettingsService.updateProfileInfo(getProfile(user), newProfileInfo);
+
+			if (isCompleteProfileStep) {
+				// Refetch user permissions since education level can change user group
+				getLoginState();
+			}
 
 			// save newsletter subscription if checked
 			if (subscribeToNewsletter) {
@@ -511,7 +534,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							<Alert
 								type="info"
 								message={t(
-									'Wil je jouw onderwijsniveau aanpassen? Neem dan contact op via de Feedbackknop'
+									'settings/components/profile___wil-je-jouw-onderwijsniveau-aanpassen-neem-dan-contact-op-via-de-feedbackknop'
 								)}
 							/>
 						</Spacer>
@@ -523,7 +546,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const renderOrganisationField = (editable: boolean, required: boolean) => {
 		return (
-			<FormGroup label={t('Organisatie')} labelFor="organisation" required={required}>
+			<FormGroup
+				label={t('settings/components/profile___organisatie')}
+				labelFor="organisation"
+				required={required}
+			>
 				{editable ? (
 					<Select
 						options={compact(
@@ -546,7 +573,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					get(
 						(allOrganisations || []).find(org => org.or_id === companyId),
 						'name'
-					) || t('Onbekende organisatie')
+					) || t('settings/components/profile___onbekende-organisatie')
 				)}
 			</FormGroup>
 		);
@@ -832,4 +859,14 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	);
 };
 
-export default withUser(Profile) as FunctionComponent<ProfileProps>;
+const mapStateToProps = (state: AppState) => ({
+	user: selectUser(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getLoginState: () => dispatch(getLoginStateAction() as any),
+	};
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

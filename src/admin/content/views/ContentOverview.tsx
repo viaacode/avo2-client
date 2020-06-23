@@ -53,6 +53,7 @@ import { UserService } from '../../users/user.service';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentPageInfo, ContentTableState } from '../content.types';
+import { isPublic } from '../helpers/get-published-state';
 import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
@@ -289,6 +290,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return getFullName(profile) || '-';
 			case 'role':
 				return UserService.getUserRoleLabel(profile) || '-';
+			case 'content_type':
+				return (
+					get(
+						contentTypes.find(type => type.value === rowData.content_type),
+						'label'
+					) || '-'
+				);
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
@@ -312,6 +320,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							title={t('admin/content/views/content-overview___preview-content')}
 							ariaLabel={t('admin/content/views/content-overview___preview-content')}
 							type="secondary"
+						/>
+						<Button
+							icon={isPublic(rowData) ? 'unlock-3' : 'lock'}
+							size="small"
+							title={
+								isPublic(rowData)
+									? t(
+											'admin/content/views/content-overview___deze-pagina-is-publiek'
+									  )
+									: t(
+											'admin/content/views/content-overview___deze-pagina-is-prive'
+									  )
+							}
+							type="secondary"
+							disabled
 						/>
 						<Button
 							icon="edit"

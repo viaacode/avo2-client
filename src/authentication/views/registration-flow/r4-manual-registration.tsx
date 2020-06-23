@@ -62,7 +62,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		} catch (err) {
 			console.error(new CustomError('Failed to get education levels from the database', err));
 
-			ToastService.danger(t('Onderwijsniveaus konden niet worden opgehaald.'));
+			ToastService.danger(
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus-konden-niet-worden-opgehaald'
+				)
+			);
 		}
 	}, [setEducationLevels, t]);
 
@@ -119,7 +123,9 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		}
 		if (!acceptedPrivacyConditions) {
 			errors.push(
-				t('Je moet de privacy voorwaarden accepteren om manueel toegang aan te vragen.')
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___je-moet-de-privacy-voorwaarden-accepteren-om-manueel-toegang-aan-te-vragen'
+				)
 			);
 		}
 		return errors;
@@ -129,10 +135,16 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		let ticket: Tickets.CreateModel | undefined;
 		try {
 			const errors = getValidationErrors();
+
 			if (errors.length) {
 				ToastService.danger(errors);
 				return;
 			}
+
+			const parsedEducationLevels = selectedEducationLevels
+				.map(selectedEducationLevel => selectedEducationLevel.label)
+				.join(', ');
+
 			// create zendesk ticket
 			ticket = {
 				comment: {
@@ -152,7 +164,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${selectedEducationLevels}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${parsedEducationLevels}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
 </dl>`,
 					public: false,
