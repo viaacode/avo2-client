@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import { ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../../../../collection/collection.types';
@@ -21,6 +21,7 @@ import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
 
+import { BlockMediaList } from './BlockMediaList/BlockMediaList'; // TODO replace with components version after PR review
 import { ResolvedItemOrCollection } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
