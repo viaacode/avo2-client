@@ -95,7 +95,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 		const videoStill: string = hasNoCut
 			? itemMetaData.thumbnail_path
-			: await VideoStillService.getVideoStill(fragment.external_id, startTime || 0);
+			: await VideoStillService.getVideoStill(fragment.external_id, (startTime || 0) * 1000);
 
 		changeCollectionState({
 			index,

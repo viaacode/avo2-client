@@ -253,6 +253,8 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					buildLink(ADMIN_PATH.PERMISSION_GROUP_EDIT, { id: permissionGroupId }),
 					history
 				);
+			} else {
+				initOrFetchPermissionGroup();
 			}
 		} catch (err) {
 			console.error(
