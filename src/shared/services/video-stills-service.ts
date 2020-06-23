@@ -33,6 +33,12 @@ export class VideoStillService {
 		}
 	}
 
+	/**
+	 * Get video still for video with external id after start time
+	 * @param externalId id of the video
+	 * @param startTime video frame closest to this timestamp in milliseconds
+	 * @return url to frame from video
+	 */
 	public static async getVideoStill(externalId: string, startTime: number): Promise<string> {
 		const stills = await this.getVideoStills([{ externalId, startTime }]);
 		return stills[0].previewImagePath;
