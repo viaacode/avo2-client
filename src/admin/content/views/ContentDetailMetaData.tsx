@@ -27,6 +27,7 @@ import { UserService } from '../../users/user.service';
 import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentPageInfo } from '../content.types';
+import { useContentTypes } from '../hooks';
 
 interface ContentDetailMetaDataProps {
 	contentPageInfo: ContentPageInfo;
@@ -36,6 +37,8 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	contentPageInfo,
 }) => {
 	const [t] = useTranslation();
+
+	const [contentTypes] = useContentTypes();
 
 	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 
@@ -117,10 +120,10 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 		}
 
 		if (!publish_at && depublish_at && moment().isBefore(moment(depublish_at))) {
-			return t('Ja');
+			return t('admin/content/views/content-detail-meta-data___ja');
 		}
 
-		return t('Nee');
+		return t('admin/content/views/content-detail-meta-data___nee');
 	};
 	const description = ContentService.getDescription(contentPageInfo, 'full');
 	return (
@@ -162,16 +165,21 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 									'admin/content/views/content-detail-meta-data___seo-beschrijving'
 								),
 							],
-							[
-								'content_type',
-								t('admin/content/views/content-detail___content-type'),
-							],
 							['path', t('admin/content/views/content-detail___pad')],
 							[
 								'is_protected',
 								t('admin/content/views/content-detail___beschermde-pagina'),
 							],
 						])}
+						{renderDetailRow(
+							get(
+								contentTypes.find(
+									type => type.value === contentPageInfo.content_type
+								),
+								'label'
+							) || '-',
+							t('admin/content/views/content-detail___content-type')
+						)}
 						{renderDetailRow(
 							getContentPageWidthLabel(contentPageInfo),
 							t('admin/content/views/content-detail___breedte')
@@ -199,12 +207,22 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							t('admin/content/views/content-detail___gepubliceerd')
 						)}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.publish_at) || t('N.v.t')}</p>,
-							t('Wordt gepubliceerd op')
+							<p>
+								{formatDate(contentPageInfo.publish_at) ||
+									t('admin/content/views/content-detail-meta-data___n-v-t')}
+							</p>,
+							t(
+								'admin/content/views/content-detail-meta-data___wordt-gepubliceerd-op'
+							)
 						)}
 						{renderDetailRow(
-							<p>{formatDate(contentPageInfo.depublish_at) || t('N.v.t.')}</p>,
-							t('Wordt gedepubliceerd op')
+							<p>
+								{formatDate(contentPageInfo.depublish_at) ||
+									t('admin/content/views/content-detail-meta-data___n-v-t')}
+							</p>,
+							t(
+								'admin/content/views/content-detail-meta-data___wordt-gedepubliceerd-op'
+							)
 						)}
 						{renderDetailRow(
 							<TagList

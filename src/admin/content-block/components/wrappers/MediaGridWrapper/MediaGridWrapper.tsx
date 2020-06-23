@@ -8,7 +8,12 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../../../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
-import { CustomError, formatDate, navigateToContentType } from '../../../../../shared/helpers';
+import {
+	CustomError,
+	formatDate,
+	isMobileWidth,
+	navigateToContentType,
+} from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
@@ -155,6 +160,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				ctaBackgroundImage={ctaBackgroundImage}
 				ctaWidth={ctaWidth}
 				ctaButtonAction={ctaButtonAction}
+				fullWidth={isMobileWidth()}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
 				navigate={(buttonAction: any) =>
 					buttonAction

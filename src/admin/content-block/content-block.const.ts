@@ -193,6 +193,7 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 
 export const EDITOR_TYPES_MAP = {
 	AlignSelect,
+	AnchorLinkSelect,
 	Checkbox,
 	ColorSelect,
 	ContentPicker,
@@ -207,7 +208,6 @@ export const EDITOR_TYPES_MAP = {
 	TextInput,
 	UserGroupSelect,
 	WYSIWYG: WYSIWYGWrapper,
-	AnchorLinkSelect,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {

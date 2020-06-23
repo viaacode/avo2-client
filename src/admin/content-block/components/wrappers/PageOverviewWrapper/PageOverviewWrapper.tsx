@@ -19,6 +19,7 @@ import { getUserGroupIds } from '../../../../../authentication/authentication.se
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
+import { ROUTE_PARTS } from '../../../../../shared/constants';
 import { CustomError, navigate, navigateToContentType } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
@@ -29,7 +30,6 @@ import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
-import { ROUTE_PARTS } from '../../../../../shared/constants';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;

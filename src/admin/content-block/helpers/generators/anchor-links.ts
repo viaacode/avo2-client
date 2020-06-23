@@ -51,7 +51,7 @@ export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				},
 			},
 			buttonAction: {
-				label: i18n.t('Link'),
+				label: i18n.t('admin/content-block/helpers/generators/anchor-links___link'),
 				editorType: ContentBlockEditor.AnchorLinkSelect,
 			},
 		},
