@@ -40,7 +40,8 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 
 	const retrieveMediaItem = useCallback(async () => {
 		try {
-			if (item) {
+			if (item && !src) {
+				// !src since the proxy can resolve the src already for users without an account
 				// Video from MAM
 				const mediaItemTemp = await ItemsService.fetchItemByExternalId(
 					item.value.toString()
@@ -61,7 +62,7 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 				)
 			);
 		}
-	}, [item, poster, t]);
+	}, [item, src, poster, t]);
 
 	useEffect(() => {
 		retrieveMediaItem();

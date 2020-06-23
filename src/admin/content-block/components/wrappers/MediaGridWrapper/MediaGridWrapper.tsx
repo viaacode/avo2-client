@@ -2,6 +2,7 @@ import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -15,17 +16,20 @@ import {
 	navigateToContentType,
 } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
+import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
 
-interface MediaGridWrapperProps extends MediaGridBlockState, RouteComponentProps {
+interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 	elements: { mediaItem: ButtonAction }[];
 	results: (Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>)[];
 }
 
-const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
+const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
+	RouteComponentProps &
+	UserProps> = ({
 	title,
 	buttonLabel,
 	buttonAction,
@@ -46,6 +50,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	elements,
 	results,
 	history,
+	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -66,15 +71,17 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				setResolvedResults(results);
 				return;
 			}
-			// If we get no results, but we do get elements, then the block is loaded in preview mode,
-			// and we should resolve the results ourselves using a separate route on the server
-			setResolvedResults(
-				await ContentPageService.resolveMediaItems(
-					get(searchQuery, 'value') as string | undefined,
-					parseIntOrDefault<undefined>(searchQueryLimit, undefined),
-					elements.filter(element => !isEmpty(element) && element.mediaItem)
-				)
-			);
+			if (user) {
+				// If we are logged in and get no results, but we do get elements, then the block is loaded in preview mode,
+				// and we should resolve the results ourselves using a separate route on the server
+				setResolvedResults(
+					await ContentPageService.resolveMediaItems(
+						get(searchQuery, 'value') as string | undefined,
+						parseIntOrDefault<undefined>(searchQueryLimit, undefined),
+						elements.filter(element => !isEmpty(element) && element.mediaItem)
+					)
+				);
+			}
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -84,7 +91,16 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				actionButtons: [],
 			});
 		}
-	}, [results, elements, searchQuery, searchQueryLimit, setResolvedResults, setLoadingInfo, t]);
+	}, [
+		results,
+		elements,
+		user,
+		searchQuery,
+		searchQueryLimit,
+		setResolvedResults,
+		setLoadingInfo,
+		t,
+	]);
 
 	useEffect(() => {
 		resolveMediaResults();
@@ -186,4 +202,6 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	);
 };
 
-export default withRouter(MediaGridWrapper);
+export default compose(withRouter, withUser)(MediaGridWrapper) as FunctionComponent<
+	MediaGridWrapperProps
+>;
