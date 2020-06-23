@@ -6,6 +6,7 @@
 
 	.o-form-group {
 		margin-bottom: 20px;
+		white-space: pre-wrap; // needed to preserve whitespace before and after links inside translations
 	}
 
 	.o-form-group__controls {
