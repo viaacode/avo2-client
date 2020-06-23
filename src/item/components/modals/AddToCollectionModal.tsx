@@ -53,9 +53,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	itemMetaData,
 	isOpen,
 	onClose,
-	history,
-	location,
-	match,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -369,9 +366,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<ItemVideoDescription
 									itemMetaData={itemMetaData}
-									history={history}
-									location={location}
-									match={match}
 									showTitle
 									showDescription
 									canPlay={isOpen}

@@ -8,6 +8,7 @@ import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-componen
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../../../../collection/collection.types';
+import { ItemVideoDescription } from '../../../../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import {
 	CustomError,
@@ -20,11 +21,13 @@ import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
 
+import { ResolvedItemOrCollection } from './MediaGridWrapper.types';
+
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 	elements: { mediaItem: ButtonAction }[];
-	results: (Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>)[];
+	results: ResolvedItemOrCollection[];
 }
 
 const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
@@ -44,6 +47,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 	ctaBackgroundColor,
 	ctaBackgroundImage,
 	ctaWidth,
+	openMediaInModal,
 	ctaButtonAction,
 	searchQuery,
 	searchQueryLimit,
@@ -55,9 +59,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [resolvedResults, setResolvedResults] = useState<
-		(Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>)[] | null
-	>(null);
+	const [resolvedResults, setResolvedResults] = useState<ResolvedItemOrCollection[] | null>(null);
 
 	const resolveMediaResults = useCallback(async () => {
 		try {
@@ -113,7 +115,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 	}, [resolvedResults]);
 
 	const mapCollectionOrItemData = (
-		itemOrCollection: Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>,
+		itemOrCollection: ResolvedItemOrCollection,
 		index: number
 	): MediaListItem => {
 		const isItem =
@@ -149,12 +151,32 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 					target: get(searchQuery, 'target') || '_self',
 				} as ButtonAction),
 			title: itemOrCollection.title || '',
+			description: itemOrCollection.description || '',
+			issued: get(itemOrCollection, 'issued') || '',
+			organisation: itemOrCollection.organisation || '',
 			thumbnail: {
 				label: itemLabel,
 				meta: isItem ? itemDuration : `${collectionItems} items`,
 				src: itemOrCollection.thumbnail_path || '',
 			},
-		};
+			src: itemOrCollection.src,
+		} as any; // TODO remove cast after update to components v1.47.0
+	};
+
+	const renderPlayerModalBody = (item: MediaListItem) => {
+		return (
+			!!item &&
+			!!(item as any).src && ( // TODO remove cast after update to components v1.47.0
+				<ItemVideoDescription
+					src={(item as any).src} // TODO remove cast after update to components v1.47.0
+					poster={get(item, 'thumbnail.src')}
+					itemMetaData={(item as unknown) as Avo.Item.Item}
+					verticalLayout
+					showTitle
+					collapseDescription={false}
+				/>
+			)
+		);
 	};
 
 	// Render
@@ -175,6 +197,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 				ctaBackgroundColor={ctaBackgroundColor}
 				ctaBackgroundImage={ctaBackgroundImage}
 				ctaWidth={ctaWidth}
+				openMediaInModal={openMediaInModal}
 				ctaButtonAction={ctaButtonAction}
 				fullWidth={isMobileWidth()}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
@@ -189,6 +212,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 								);
 						  }
 				}
+				renderPlayerModalBody={renderPlayerModalBody}
 			/>
 		);
 	};
