@@ -8,6 +8,7 @@ const CI_ENV_VARIABLES = {
 	FLOW_PLAYER_ID: process.env.FLOW_PLAYER_ID,
 	ZENDESK_KEY: process.env.ZENDESK_KEY,
 	LDAP_DASHBOARD_PEOPLE_URL: process.env.LDAP_DASHBOARD_PEOPLE_URL,
+	SSUM_ACCOUNT_EDIT_URL: process.env.SSUM_ACCOUNT_EDIT_URL,
 };
 
 let envVariables = {};

@@ -26,6 +26,8 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { getEnv } from '../../shared/helpers';
 
+const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL');
+
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
 }
@@ -35,7 +37,6 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 
 	// TODO replace this with a call to a proxy server route that forwards to the ssum page
 	// with the user already logged in and a redirect url back to this webpage after the user saves their changes
-	const getSsumAccountEditPage = () => getEnv('SSUM_ACCOUNT_EDIT_URL');
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
@@ -132,7 +133,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 														tools.
 													</Trans>
 													<br />
-													<a href={getSsumAccountEditPage()}>
+													<a href={ssumAccountEditPage}>
 														<Trans i18nKey="settings/components/account___beheer-je-account-gegevens">
 															Beheer je account gegevens
 														</Trans>
