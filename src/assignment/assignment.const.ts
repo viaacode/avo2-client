@@ -1,9 +1,9 @@
 import { DocumentNode } from 'graphql';
 
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
 import { GET_ITEM_BY_EXTERNAL_ID } from '../admin/items/items.gql';
-import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { ROUTE_PARTS } from '../shared/constants';
 
 import { AssignmentOverviewTableColumns } from './assignment.types';
@@ -11,22 +11,18 @@ import { AssignmentOverviewTableColumns } from './assignment.types';
 export const ITEMS_PER_PAGE = 20;
 
 export const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: {
+	[contentType in AssignmentContentLabel]: {
 		query: DocumentNode;
 		resultPath: string;
 		getVariables: (id: string) => any;
 	};
 } = {
-	COLLECTIE: {
-		query: GET_COLLECTION_BY_ID,
-		resultPath: 'app_collections[0]',
-		getVariables: (id: string) => ({ id }),
-	},
 	ITEM: {
 		query: GET_ITEM_BY_EXTERNAL_ID,
 		resultPath: 'app_item_meta[0]',
 		getVariables: (id: string) => ({ externalId: id }),
 	},
+	COLLECTIE: {} as any,
 	ZOEKOPDRACHT: {
 		// TODO implement search query saving and usage
 		// query: GET_SEARCH_QUERY_BY_ID,

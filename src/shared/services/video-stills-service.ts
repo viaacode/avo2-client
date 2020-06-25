@@ -1,4 +1,4 @@
-import { compact, uniq } from 'lodash-es';
+import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -64,17 +64,12 @@ export class VideoStillService {
 		);
 		const cutVideoFragments = videoFragments.filter(
 			fragment =>
-				fragment.start_oc !== 0 ||
+				(fragment.start_oc !== 0 && !isNil(fragment.start_oc)) ||
 				(fragment.item_meta &&
+					!isNil(fragment.end_oc) &&
 					fragment.end_oc !== toSeconds((fragment.item_meta as Avo.Item.Item).duration))
 		);
-		const uncutVideoFragments = videoFragments.filter(
-			fragment =>
-				(!fragment.start_oc && !fragment.end_oc) ||
-				(fragment.start_oc === 0 &&
-					fragment.item_meta &&
-					fragment.end_oc === toSeconds((fragment.item_meta as Avo.Item.Item).duration))
-		);
+		const uncutVideoFragments = without(videoFragments, ...cutVideoFragments);
 		const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
 			cutVideoFragments.map(fragment => ({
 				externalId: fragment.external_id,
