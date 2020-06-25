@@ -248,6 +248,7 @@ const Profile: FunctionComponent<ProfileProps & {
 		}
 	}, [
 		permissions,
+		isCompleteProfileStep,
 		t,
 		user,
 		setCities,
@@ -368,26 +369,23 @@ const Profile: FunctionComponent<ProfileProps & {
 				getLoginState();
 			}
 
-			// save newsletter subscription if checked
+			const preferences: Partial<Avo.Newsletter.Preferences> = {
+				allActiveUsers: true, // Update user info in campaign monitor after changes to profile have been saved
+			} as any;
 			if (subscribeToNewsletter) {
-				const preferences: Partial<Avo.Newsletter.Preferences> = {
-					newsletter: true,
-				};
-				try {
-					await CampaignMonitorService.updateNewsletterPreferences(preferences);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to subscribe to newsletter', err, {
-							preferences,
-							user,
-						})
-					);
-					ToastService.danger(
-						t(
-							'settings/components/profile___het-inschijven-voor-de-nieuwsbrief-is-mislukt'
-						)
-					);
-				}
+				// subscribe to newsletter if checked
+				preferences.newsletter = true;
+			}
+			try {
+				await CampaignMonitorService.updateNewsletterPreferences(preferences);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to updateNewsletterPreferences', err, {
+						preferences,
+						user,
+					})
+				);
+				ToastService.danger(t('Het updaten van de nieuwsbrief voorkeuren is mislukt'));
 			}
 
 			// Refresh the login state, so the profile info will be up to date
