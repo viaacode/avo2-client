@@ -391,7 +391,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS(user).map((tab: TabProps) => ({
+	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS(user, isCollection).map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));

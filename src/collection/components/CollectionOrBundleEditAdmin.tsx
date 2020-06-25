@@ -204,7 +204,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 								<Column size="3-7">
 									{PermissionService.hasPerm(
 										user,
-										PermissionName.EDIT_COLLECTION_LABELS
+										isCollection
+											? PermissionName.EDIT_COLLECTION_LABELS
+											: PermissionName.EDIT_BUNDLE_LABELS
 									) && (
 										<FormGroup
 											label={t(
@@ -227,7 +229,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 									)}
 									{PermissionService.hasPerm(
 										user,
-										PermissionName.EDIT_COLLECTION_AUTHOR
+										isCollection
+											? PermissionName.EDIT_COLLECTION_AUTHOR
+											: PermissionName.EDIT_BUNDLE_AUTHOR
 									) && (
 										<FormGroup
 											label={t(
