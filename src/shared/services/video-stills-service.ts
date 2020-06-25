@@ -94,7 +94,7 @@ export class VideoStillService {
 				),
 				// One audio thumbnail
 				...(audioFragments[0] && audioFragments[0].item_meta
-					? [audioFragments[0].item_meta.thumbnail_path]
+					? ['/images/audio-still.svg']
 					: []),
 			])
 		);
