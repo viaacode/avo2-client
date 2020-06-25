@@ -177,10 +177,10 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											)}
 											labelFor="longDescriptionId"
 											error={getValidationFeedbackForShortDescription(
-												(collection as any).description_long,
+												collection.description_long,
 												MAX_LONG_DESCRIPTION_LENGTH,
 												true
-											)} // TODO: Remove as any when typings update releases, 2.17.0
+											)}
 										>
 											<WYSIWYGWrapper
 												id="longDescriptionId"
@@ -189,7 +189,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 														? WYSIWYG_OPTIONS_DEFAULT_NO_TITLES
 														: WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION
 												}
-												initialHtml={(collection as any).description_long} // TODO: Remove as any when typings update releases, 2.17.0
+												initialHtml={collection.description_long || ''}
 												state={descriptionLongEditorState}
 												onChange={setDescriptionLongEditorState}
 												onBlur={() =>
@@ -199,8 +199,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 														collectionPropValue: sanitizeHtml(
 															descriptionLongEditorState
 																? descriptionLongEditorState.toHTML()
-																: (collection as any)
-																		.description_long,
+																: collection.description_long || '',
 															'link'
 														),
 													})
@@ -208,9 +207,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											/>
 											<label>
 												{getValidationFeedbackForShortDescription(
-													(collection as any).description_long,
+													collection.description_long,
 													MAX_LONG_DESCRIPTION_LENGTH
-												) /* TODO: Remove as any when typings update releases, 2.17. */}
+												)}
 											</label>
 										</FormGroup>
 									)}
