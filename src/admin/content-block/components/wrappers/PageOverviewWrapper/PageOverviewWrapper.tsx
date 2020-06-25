@@ -128,6 +128,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		try {
 			const userGroupIds: number[] = getUserGroupIds(user);
 
+			const now = new Date().toISOString();
 			const response = await dataService.query({
 				query:
 					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
@@ -145,6 +146,15 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 								})),
 							},
 							...getLabelFilter(),
+							// publish state
+							{
+								_or: [
+									{ is_public: { _eq: true } },
+									{ publish_at: { _eq: null }, depublish_at: { _gte: now } },
+									{ publish_at: { _lte: now }, depublish_at: { _eq: null } },
+									{ publish_at: { _lte: now }, depublish_at: { _gte: now } },
+								],
+							},
 						],
 					},
 					offset: currentPage * debouncedItemsPerPage,
