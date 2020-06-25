@@ -28,7 +28,7 @@ import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
+import { WYSIWYG_OPTIONS_FULL, DEFAULT_AUDIO_STILL } from '../shared/constants';
 import { CustomError, navigate } from '../shared/helpers';
 import { dataService, ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
@@ -172,7 +172,11 @@ export class AssignmentHelper {
 						<Thumbnail
 							className="m-content-thumbnail"
 							category={toEnglishContentType(dutchLabel)}
-							src={get(content, 'thumbnail_path') || undefined}
+							src={
+								(get(content, 'type.label') === 'audio'
+									? DEFAULT_AUDIO_STILL
+									: get(content, 'thumbnail_path')) || undefined
+							}
 						/>
 					</Spacer>
 					<FlexItem>
