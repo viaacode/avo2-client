@@ -13,6 +13,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../collection/collection.service';
+import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
@@ -60,7 +61,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 
 	const renderSearchResultItem = (result: Avo.Search.ResultItem, index: number) => {
 		if (result.administrative_type === 'audio') {
-			result.thumbnail_path = '/images/audio-still.svg';
+			result.thumbnail_path = DEFAULT_AUDIO_STILL;
 		}
 
 		return (

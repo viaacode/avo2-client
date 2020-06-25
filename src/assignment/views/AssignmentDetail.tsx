@@ -36,6 +36,7 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
+import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -291,6 +292,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					/>
 				);
 			case 'ITEM':
+				if (get(assignmentContent, 'item_meta.type.label') === 'audio') {
+					assignmentContent.thumbnail_path = DEFAULT_AUDIO_STILL;
+				}
+
 				return (
 					<ItemVideoDescription
 						itemMetaData={assignmentContent as Avo.Item.Item}

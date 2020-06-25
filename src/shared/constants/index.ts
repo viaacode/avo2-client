@@ -7,3 +7,4 @@ export {
 	WYSIWYG_OPTIONS_ALIGN,
 	WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN,
 } from './wysiwyg';
+export const DEFAULT_AUDIO_STILL = '/images/audio-still.svg';
