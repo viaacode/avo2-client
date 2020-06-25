@@ -16,10 +16,12 @@ import { ToastService } from '../../../../../shared/services';
 import { ItemsService } from '../../../../items/items.service';
 
 interface MediaPlayerWrapperProps {
-	title: string;
 	item?: ButtonAction;
 	src?: string;
 	poster?: string;
+	title: string;
+	issued?: string;
+	organisation?: Avo.Organization.Organization;
 	width?: string;
 	autoplay?: boolean;
 }
@@ -29,6 +31,8 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 	src,
 	poster,
 	title,
+	issued,
+	organisation,
 	width,
 	autoplay,
 }) => {
@@ -40,7 +44,8 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 
 	const retrieveMediaItem = useCallback(async () => {
 		try {
-			if (item) {
+			if (item && !src) {
+				// !src since the proxy can resolve the src already for users without an account
 				// Video from MAM
 				const mediaItemTemp = await ItemsService.fetchItemByExternalId(
 					item.value.toString()
@@ -61,7 +66,7 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 				)
 			);
 		}
-	}, [item, poster, t]);
+	}, [item, src, poster, t]);
 
 	useEffect(() => {
 		retrieveMediaItem();
@@ -83,12 +88,12 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			>
 				<FlowPlayerWrapper
 					item={
-						mediaItem
-							? {
-									...mediaItem,
-									title: title || get(mediaItem, 'title') || '',
-							  }
-							: undefined
+						{
+							...(mediaItem || {}),
+							title: title || get(mediaItem, 'title') || '',
+							issued: issued || get(mediaItem, 'issued') || '',
+							organisation: organisation || get(mediaItem, 'organisation') || '',
+						} as any
 					}
 					src={src}
 					poster={videoStill}
