@@ -2,11 +2,11 @@ import queryString from 'query-string';
 
 import { ButtonAction } from '@viaa/avo2-components';
 
+import { ResolvedItemOrCollection } from '../../admin/content-block/components/wrappers/MediaGridWrapper/MediaGridWrapper.types';
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { convertToContentPageInfo } from '../../admin/content/helpers/parsers';
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
-import { ResolvedItemOrCollection } from '../../admin/content-block/components/wrappers/MediaGridWrapper/MediaGridWrapper.types';
 
 export class ContentPageService {
 	/**
