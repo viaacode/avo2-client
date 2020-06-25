@@ -1,4 +1,4 @@
-import { ContentPickerType, MultiRangeProps } from '@viaa/avo2-components';
+import { CheckboxProps, ContentPickerType, MultiRangeProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
@@ -125,6 +125,12 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					step: 1,
 					showNumber: true,
 				} as MultiRangeProps,
+			},
+			openMediaInModal: {
+				editorType: ContentBlockEditor.Checkbox,
+				editorProps: {
+					label: i18n.t('Media items openen in een popup'),
+				} as CheckboxProps,
 			},
 			ctaTitle: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-titel'),

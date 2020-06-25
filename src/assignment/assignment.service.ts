@@ -212,7 +212,16 @@ export class AssignmentService {
 		assignment: Avo.Assignment.Assignment
 	): Promise<Avo.Assignment.Content | null> {
 		if (assignment.content_id && assignment.content_label) {
-			const queryInfo = CONTENT_LABEL_TO_QUERY[assignment.content_label];
+			if (assignment.content_label === 'COLLECTIE' && assignment.content_id) {
+				return (
+					(await CollectionService.fetchCollectionOrBundleWithItemsById(
+						assignment.content_id,
+						'collection'
+					)) || null
+				);
+			}
+			const queryInfo =
+				CONTENT_LABEL_TO_QUERY[assignment.content_label as AssignmentContentLabel];
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 				query: queryInfo.query,
 				variables: queryInfo.getVariables(assignment.content_id),
@@ -669,6 +678,7 @@ export class AssignmentService {
 			const assignmentContent: Avo.Assignment.Content | null = await AssignmentService.fetchAssignmentContent(
 				tempAssignment
 			);
+
 			return {
 				assignmentContent,
 				assignment: tempAssignment,

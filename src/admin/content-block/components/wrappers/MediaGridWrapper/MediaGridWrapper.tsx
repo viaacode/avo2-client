@@ -2,11 +2,13 @@ import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import { ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../../../../collection/collection.types';
+import { ItemVideoDescription } from '../../../../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import {
 	CustomError,
@@ -15,17 +17,23 @@ import {
 	navigateToContentType,
 } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
+import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
 
-interface MediaGridWrapperProps extends MediaGridBlockState, RouteComponentProps {
+import { BlockMediaList } from './BlockMediaList/BlockMediaList'; // TODO replace with components version after PR review
+import { ResolvedItemOrCollection } from './MediaGridWrapper.types';
+
+interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 	elements: { mediaItem: ButtonAction }[];
-	results: (Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>)[];
+	results: ResolvedItemOrCollection[];
 }
 
-const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
+const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
+	RouteComponentProps &
+	UserProps> = ({
 	title,
 	buttonLabel,
 	buttonAction,
@@ -40,19 +48,19 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	ctaBackgroundColor,
 	ctaBackgroundImage,
 	ctaWidth,
+	openMediaInModal,
 	ctaButtonAction,
 	searchQuery,
 	searchQueryLimit,
 	elements,
 	results,
 	history,
+	user,
 }) => {
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [resolvedResults, setResolvedResults] = useState<
-		(Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>)[] | null
-	>(null);
+	const [resolvedResults, setResolvedResults] = useState<ResolvedItemOrCollection[] | null>(null);
 
 	const resolveMediaResults = useCallback(async () => {
 		try {
@@ -66,15 +74,17 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				setResolvedResults(results);
 				return;
 			}
-			// If we get no results, but we do get elements, then the block is loaded in preview mode,
-			// and we should resolve the results ourselves using a separate route on the server
-			setResolvedResults(
-				await ContentPageService.resolveMediaItems(
-					get(searchQuery, 'value') as string | undefined,
-					parseIntOrDefault<undefined>(searchQueryLimit, undefined),
-					elements.filter(element => !isEmpty(element) && element.mediaItem)
-				)
-			);
+			if (user) {
+				// If we are logged in and get no results, but we do get elements, then the block is loaded in preview mode,
+				// and we should resolve the results ourselves using a separate route on the server
+				setResolvedResults(
+					await ContentPageService.resolveMediaItems(
+						get(searchQuery, 'value') as string | undefined,
+						parseIntOrDefault<undefined>(searchQueryLimit, undefined),
+						elements.filter(element => !isEmpty(element) && element.mediaItem)
+					)
+				);
+			}
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -84,7 +94,16 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				actionButtons: [],
 			});
 		}
-	}, [results, elements, searchQuery, searchQueryLimit, setResolvedResults, setLoadingInfo, t]);
+	}, [
+		results,
+		elements,
+		user,
+		searchQuery,
+		searchQueryLimit,
+		setResolvedResults,
+		setLoadingInfo,
+		t,
+	]);
 
 	useEffect(() => {
 		resolveMediaResults();
@@ -97,7 +116,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	}, [resolvedResults]);
 
 	const mapCollectionOrItemData = (
-		itemOrCollection: Partial<Avo.Item.Item> | Partial<Avo.Collection.Collection>,
+		itemOrCollection: ResolvedItemOrCollection,
 		index: number
 	): MediaListItem => {
 		const isItem =
@@ -133,12 +152,32 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 					target: get(searchQuery, 'target') || '_self',
 				} as ButtonAction),
 			title: itemOrCollection.title || '',
+			description: itemOrCollection.description || '',
+			issued: get(itemOrCollection, 'issued') || '',
+			organisation: itemOrCollection.organisation || '',
 			thumbnail: {
 				label: itemLabel,
 				meta: isItem ? itemDuration : `${collectionItems} items`,
 				src: itemOrCollection.thumbnail_path || '',
 			},
-		};
+			src: itemOrCollection.src,
+		} as any; // TODO remove cast after update to components v1.47.0
+	};
+
+	const renderPlayerModalBody = (item: MediaListItem) => {
+		return (
+			!!item &&
+			!!(item as any).src && ( // TODO remove cast after update to components v1.47.0
+				<ItemVideoDescription
+					src={(item as any).src} // TODO remove cast after update to components v1.47.0
+					poster={get(item, 'thumbnail.src')}
+					itemMetaData={(item as unknown) as Avo.Item.Item}
+					verticalLayout
+					showTitle
+					collapseDescription={false}
+				/>
+			)
+		);
 	};
 
 	// Render
@@ -159,6 +198,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				ctaBackgroundColor={ctaBackgroundColor}
 				ctaBackgroundImage={ctaBackgroundImage}
 				ctaWidth={ctaWidth}
+				openMediaInModal={openMediaInModal}
 				ctaButtonAction={ctaButtonAction}
 				fullWidth={isMobileWidth()}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
@@ -173,6 +213,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 								);
 						  }
 				}
+				renderPlayerModalBody={renderPlayerModalBody}
 			/>
 		);
 	};
@@ -186,4 +227,6 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	);
 };
 
-export default withRouter(MediaGridWrapper);
+export default compose(withRouter, withUser)(MediaGridWrapper) as FunctionComponent<
+	MediaGridWrapperProps
+>;

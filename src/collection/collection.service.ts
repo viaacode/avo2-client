@@ -276,14 +276,7 @@ export class CollectionService {
 				newCollection
 			);
 
-			await dataService.mutate({
-				mutation: UPDATE_COLLECTION,
-				variables: {
-					id: cleanedCollection.id,
-					collection: cleanedCollection,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await this.updateCollectionProperties(newCollection.id, cleanedCollection);
 
 			// Update collection labels
 			const initialLabels: string[] = this.getLabels(initialCollection).map(
@@ -320,6 +313,29 @@ export class CollectionService {
 			return null;
 		}
 	}
+
+	public static updateCollectionProperties = async (
+		id: string,
+		collection: Partial<Avo.Collection.Collection>
+	) => {
+		try {
+			await dataService.mutate({
+				mutation: UPDATE_COLLECTION,
+				variables: {
+					id,
+					collection,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to update collection properties', err, {
+					id,
+					collection,
+				})
+			);
+		}
+	};
 
 	/**
 	 * Delete collection by id.

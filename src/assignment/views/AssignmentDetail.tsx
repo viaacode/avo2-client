@@ -295,9 +295,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					<ItemVideoDescription
 						itemMetaData={assignmentContent as Avo.Item.Item}
 						showDescription={content_layout === AssignmentLayout.PlayerAndText}
-						location={location}
-						match={match}
-						{...rest}
 					/>
 				);
 			default:

@@ -53,9 +53,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	itemMetaData,
 	isOpen,
 	onClose,
-	history,
-	location,
-	match,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -154,10 +151,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			collection_uuid: collection.id,
 			item_meta: itemMetaData,
 			type: 'ITEM',
-			thumbnail_path: await VideoStillService.getVideoStill(
-				externalId,
-				fragmentStartTime * 1000
-			),
+			thumbnail_path: !!fragmentStartTime
+				? await VideoStillService.getVideoStill(externalId, fragmentStartTime * 1000)
+				: null,
 		};
 	};
 
@@ -369,9 +365,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<ItemVideoDescription
 									itemMetaData={itemMetaData}
-									history={history}
-									location={location}
-									match={match}
 									showTitle
 									showDescription
 									canPlay={isOpen}
