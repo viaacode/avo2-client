@@ -26,6 +26,8 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { getEnv } from '../../shared/helpers';
 
+// TODO replace this with a call to a proxy server route that forwards to the ssum page
+// with the user already logged in and a redirect url back to this webpage after the user saves their changes
 const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL');
 
 export interface AccountProps extends RouteComponentProps {
@@ -34,9 +36,6 @@ export interface AccountProps extends RouteComponentProps {
 
 const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
-
-	// TODO replace this with a call to a proxy server route that forwards to the ssum page
-	// with the user already logged in and a redirect url back to this webpage after the user saves their changes
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
