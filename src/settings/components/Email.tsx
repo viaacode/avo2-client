@@ -134,12 +134,14 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 					...initialNewsletterPreferences,
 					...newsletterPreferences,
 				});
+
 				ToastService.success(
 					t('settings/components/email___je-voorkeuren-zijn-opgeslagen')
 				);
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to update newsletter preferences', err));
+
 			ToastService.danger(
 				t(
 					'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-geupdatet'
@@ -182,7 +184,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 									(newsletterKey: NewsletterList) => (
 										<Checkbox
 											key={`newsletter_${newsletterKey}`}
-											label={newsletterLabels[newsletterKey]}
+											label={(newsletterLabels as any)[newsletterKey]}
 											checked={newsletterPreferences[newsletterKey]}
 											onChange={() => {
 												onChangePreference({

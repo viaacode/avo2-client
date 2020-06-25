@@ -13,6 +13,7 @@ describe('login > store > selectors', () => {
 			data: {
 				message: LoginMessage.LOGGED_IN,
 				userInfo: {} as Avo.User.User,
+				acceptedConditions: true,
 				sessionExpiresAt: moment()
 					.add(1, 'days')
 					.toString(),

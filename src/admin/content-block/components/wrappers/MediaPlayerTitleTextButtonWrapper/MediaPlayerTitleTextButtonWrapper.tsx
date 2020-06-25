@@ -11,16 +11,19 @@ import {
 	Grid,
 	IconName,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../../shared/helpers';
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
 import MediaPlayerWrapper from '../MediaPlayerWrapper/MediaPlayerWrapper';
 
 interface MediaPlayerTitleTextButtonWrapperProps extends RouteComponentProps {
-	mediaTitle: string;
 	mediaItem: ButtonAction;
 	mediaSrc?: string;
 	mediaPoster?: string;
+	mediaTitle: string;
+	mediaIssued?: string;
+	mediaOrganisation?: Avo.Organization.Organization;
 	mediaAutoplay?: boolean;
 	headingType: HeadingTypeOption;
 	headingTitle: string;
@@ -37,6 +40,8 @@ export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWra
 	mediaSrc,
 	mediaPoster,
 	mediaTitle,
+	mediaIssued,
+	mediaOrganisation,
 	headingTitle,
 	headingType,
 	content,
@@ -57,6 +62,8 @@ export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWra
 					autoplay={mediaAutoplay}
 					src={mediaSrc}
 					poster={mediaPoster}
+					issued={mediaIssued}
+					organisation={mediaOrganisation}
 				/>
 			</Column>
 			<Column size="2-5" className={`u-text-${align}`}>

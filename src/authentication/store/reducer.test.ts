@@ -26,6 +26,7 @@ describe('login > store > reducer', () => {
 		const payload: Avo.Auth.LoginResponse = {
 			message: LoginMessage.LOGGED_IN,
 			userInfo: {} as any,
+			acceptedConditions: true,
 			sessionExpiresAt: moment()
 				.add(1, 'days')
 				.toString(),

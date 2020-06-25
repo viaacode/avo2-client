@@ -10,8 +10,9 @@ import React, {
 	useState,
 } from 'react';
 import { Trans } from 'react-i18next';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { compose } from 'redux';
 
 import {
 	BlockHeading,
@@ -19,6 +20,7 @@ import {
 	convertToHtml,
 	ExpandableContainer,
 	Grid,
+	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -27,35 +29,44 @@ import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import Html from '../../shared/components/Html/Html';
 import { parseDuration } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 
 import './ItemVideoDescription.scss';
 
-interface ItemVideoDescriptionProps extends RouteComponentProps {
+interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
 	showDescription?: boolean;
+	collapseDescription?: boolean;
 	showTitle?: boolean;
 	title?: string;
 	description?: string;
+	src?: string;
+	poster?: string;
 	cuePoints?: CuePoints;
 	seekTime?: number;
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
+	verticalLayout?: boolean;
 	onTitleClicked?: () => void;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
+const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteComponentProps> = ({
 	itemMetaData,
-	location,
 	showTitle = false,
 	showDescription = true,
+	collapseDescription = true,
 	title = itemMetaData.title,
 	description = itemMetaData.description,
-	onTitleClicked,
+	src,
+	poster,
 	cuePoints,
 	seekTime = 0,
 	canPlay = true,
+	verticalLayout = false,
+	onTitleClicked,
+	location,
 }) => {
 	const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}:[0-9]{2})/g;
 
@@ -130,25 +141,22 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		return <Html content={formattedDescription} type="span" sanitizePreset="full" />;
 	};
 
-	const renderMedia = () => (
-		<FlowPlayerWrapper
-			item={itemMetaData}
-			canPlay={canPlay}
-			cuePoints={cuePoints}
-			seekTime={time}
-		/>
-	);
+	const renderMedia = () => {
+		return (
+			<FlowPlayerWrapper
+				src={src}
+				poster={poster}
+				item={itemMetaData}
+				canPlay={canPlay}
+				cuePoints={cuePoints}
+				seekTime={time}
+			/>
+		);
+	};
 
-	const renderDescription = () => (
-		<Scrollbar
-			style={{
-				width: '100%',
-				height: `${videoHeight}px`, // Height of button
-				overflowY: 'auto',
-			}}
-		>
-			{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
-			<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
+	const renderDescription = () => {
+		return (
+			<>
 				{showTitle ? (
 					<BlockHeading
 						type="h3"
@@ -166,28 +174,53 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 					</BlockHeading>
 				)}
 				<p className="c-content">{formatTimestamps(convertToHtml(description))}</p>
-			</ExpandableContainer>
-		</Scrollbar>
-	);
+			</>
+		);
+	};
+
+	const renderDescriptionWrapper = () => {
+		if (collapseDescription) {
+			return (
+				<Scrollbar
+					style={{
+						width: '100%',
+						height: `${videoHeight}px`, // Height of button
+						overflowY: 'auto',
+					}}
+				>
+					{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
+					<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
+						{renderDescription()}
+					</ExpandableContainer>
+				</Scrollbar>
+			);
+		} else {
+			return renderDescription();
+		}
+	};
 
 	return (
 		<Grid className="c-item-video-description">
 			{showDescription ? (
 				<>
-					<Column size="2-7" className="c-video-column">
+					<Column size={verticalLayout ? '2-12' : '2-7'} className="c-video-column">
 						{renderMedia()}
 					</Column>
-					<Column size="2-5">
-						<div onClick={handleDescriptionClicked}>{renderDescription()}</div>
+					<Column size={verticalLayout ? '2-12' : '2-5'}>
+						<Spacer margin={verticalLayout ? ['top'] : []}>
+							<div onClick={handleDescriptionClicked}>
+								{renderDescriptionWrapper()}
+							</div>
+						</Spacer>
 					</Column>
 				</>
 			) : (
 				<>
-					<Column size="2-3">
+					<Column size={verticalLayout ? '2-12' : '2-3'}>
 						<></>
 					</Column>
-					<Column size="2-6">{renderMedia()}</Column>
-					<Column size="2-3">
+					<Column size={verticalLayout ? '2-12' : '2-6'}>{renderMedia()}</Column>
+					<Column size={verticalLayout ? '2-12' : '2-3'}>
 						<></>
 					</Column>
 				</>
@@ -196,4 +229,6 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	);
 };
 
-export default ItemVideoDescription;
+export default compose(withRouter, withUser)(ItemVideoDescription) as FunctionComponent<
+	ItemVideoDescriptionProps
+>;

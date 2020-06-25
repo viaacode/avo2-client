@@ -662,7 +662,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	const renderBundle = () => {
-		const { is_public, thumbnail_path, title, description_long } = bundle as any; // TODO: Replace any by Avo.Collection.Collection when typings update releases, 2.17.0
+		const {
+			is_public,
+			thumbnail_path,
+			title,
+			description_long,
+		} = bundle as Avo.Collection.Collection;
 
 		if (!isFirstRender) {
 			setIsFirstRender(true);
@@ -710,7 +715,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<ToolbarItem>{renderActions()}</ToolbarItem>
 									</ToolbarRight>
 								</Toolbar>
-								<Html className="c-body-1 c-content" content={description_long} />
+								<Html
+									className="c-body-1 c-content"
+									content={description_long || ''}
+								/>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
 										<Avatar
