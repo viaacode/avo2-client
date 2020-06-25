@@ -33,7 +33,6 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	showDescription,
 	linkToItems,
 	history,
-	...rest
 }) => {
 	if (get(collectionFragment, 'item_meta.type.label') === 'audio') {
 		collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL;
@@ -84,12 +83,10 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				'description'
 			)}
 			onTitleClicked={getTitleClickedHandler()}
-			history={history}
 			cuePoints={{
 				start: collectionFragment.start_oc,
 				end: collectionFragment.end_oc,
 			}}
-			{...rest}
 		/>
 	) : (
 		<BlockIntro

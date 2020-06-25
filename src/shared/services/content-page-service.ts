@@ -6,6 +6,7 @@ import { ContentPageInfo } from '../../admin/content/content.types';
 import { convertToContentPageInfo } from '../../admin/content/helpers/parsers';
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
+import { ResolvedItemOrCollection } from '../../admin/content-block/components/wrappers/MediaGridWrapper/MediaGridWrapper.types';
 
 export class ContentPageService {
 	/**
@@ -49,7 +50,7 @@ export class ContentPageService {
 					mediaItem: ButtonAction;
 			  }[]
 			| undefined
-	): Promise<any[]> {
+	): Promise<ResolvedItemOrCollection[]> {
 		let url: string | undefined;
 		let body: any | undefined;
 		try {

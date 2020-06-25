@@ -31,6 +31,7 @@ export interface FileUploadProps {
 	assetType: Avo.FileUpload.AssetType;
 	ownerId: string;
 	urls: string[] | null;
+	disabled?: boolean;
 	onChange: (urls: string[]) => void;
 }
 
@@ -42,6 +43,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	assetType,
 	ownerId,
 	urls,
+	disabled = false,
 	onChange,
 }) => {
 	const [t] = useTranslation();
@@ -132,6 +134,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	};
 
 	const renderDeleteButton = (url: string) => {
+		if (disabled) {
+			return null;
+		}
 		return (
 			<Button
 				className="a-delete-button"
@@ -203,45 +208,46 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	return (
 		<div className="c-file-upload">
 			{renderFilesPreview()}
-			{!isProcessing ? (
-				<Flex>
-					{!!icon && (
-						<FlexItem shrink>
-							<Icon size="large" name={icon} />
+			{!disabled &&
+				(!isProcessing ? (
+					<Flex>
+						{!!icon && (
+							<FlexItem shrink>
+								<Icon size="large" name={icon} />
+							</FlexItem>
+						)}
+						<FlexItem className="c-file-upload-button-and-input">
+							<Button
+								label={
+									label ||
+									(allowMulti
+										? i18n.t(
+												'shared/components/file-upload/file-upload___selecteer-bestanden'
+										  )
+										: i18n.t(
+												'shared/components/file-upload/file-upload___selecteer-een-bestand'
+										  ))
+								}
+								ariaLabel={label}
+								type="secondary"
+								autoHeight
+							/>
+							<input
+								type="file"
+								title={t(
+									'shared/components/file-upload/file-upload___kies-een-bestand'
+								)}
+								multiple={allowMulti}
+								onChange={evt =>
+									!!evt.target.files &&
+									uploadSelectedFile(Array.from(evt.target.files))
+								}
+							/>
 						</FlexItem>
-					)}
-					<FlexItem className="c-file-upload-button-and-input">
-						<Button
-							label={
-								label ||
-								(allowMulti
-									? i18n.t(
-											'shared/components/file-upload/file-upload___selecteer-bestanden'
-									  )
-									: i18n.t(
-											'shared/components/file-upload/file-upload___selecteer-een-bestand'
-									  ))
-							}
-							ariaLabel={label}
-							type="secondary"
-							autoHeight
-						/>
-						<input
-							type="file"
-							title={t(
-								'shared/components/file-upload/file-upload___kies-een-bestand'
-							)}
-							multiple={allowMulti}
-							onChange={evt =>
-								!!evt.target.files &&
-								uploadSelectedFile(Array.from(evt.target.files))
-							}
-						/>
-					</FlexItem>
-				</Flex>
-			) : (
-				<Spinner size="large" />
-			)}
+					</Flex>
+				) : (
+					<Spinner size="large" />
+				))}
 		</div>
 	);
 };

@@ -71,13 +71,7 @@ import './ItemDetail.scss';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({
-	history,
-	match,
-	location,
-	user,
-	...rest
-}) => {
+const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
 
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
@@ -357,15 +351,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					<Container mode="horizontal">
 						<ItemVideoDescription
 							itemMetaData={item}
-							history={history}
-							location={location}
-							match={match}
 							canPlay={
 								!isOpenAddToCollectionModal &&
 								!isShareThroughEmailModalOpen &&
 								!isReportItemModalOpen
 							}
-							{...rest}
 						/>
 						<Grid>
 							<Column size="2-7">

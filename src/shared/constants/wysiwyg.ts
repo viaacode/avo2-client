@@ -99,3 +99,17 @@ export const WYSIWYG_OPTIONS_DEFAULT_NO_TITLES: (WYSIWYGControl[] | WYSIWYGContr
 	'separator',
 	'remove-styles',
 ];
+
+export const WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+	'bold',
+	'italic',
+	'strike-through',
+	'underline',
+	'separator',
+	'remove-styles',
+	'separator',
+	'link',
+	'separator',
+	'undo',
+	'redo',
+];

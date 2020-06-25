@@ -391,7 +391,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS().map((tab: TabProps) => ({
+	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS(user, isCollection).map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));
@@ -871,7 +871,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		if (
 			PermissionService.hasPerm(
 				user,
-				isCollection ? PermissionName.EDIT_ANY_COLLECTIONS : PermissionName.EDIT_ANY_BUNDLES
+				isCollection
+					? PermissionName.ADD_ITEM_TO_COLLECTION_BY_PID
+					: PermissionName.ADD_COLLECTION_TO_BUNDLE_BY_ID
 			)
 		) {
 			COLLECTION_DROPDOWN_ITEMS.push(
