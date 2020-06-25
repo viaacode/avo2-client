@@ -629,6 +629,12 @@ const Profile: FunctionComponent<ProfileProps & {
 								/>
 							)}
 						</Spacer>
+						<Alert
+							type="info"
+							message={t(
+								'Vind je je onderwijsinstelling niet? Contacteer ons via de feedback knop'
+							)}
+						/>
 					</>
 				) : (
 					<TagList
