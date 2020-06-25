@@ -324,6 +324,7 @@ export const cleanCollectionBeforeSave = (
 		'updated_by',
 		'collection_labels',
 		'relations',
+		'id',
 	];
 
 	return omit(collection, propertiesToDelete);
