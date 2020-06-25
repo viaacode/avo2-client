@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';
 import { Action, Dispatch } from 'redux';
@@ -66,12 +67,13 @@ export const getLoginStateAction = () => {
 
 			// Check if session is about to expire and show warning toast
 			// Redirect to login page when session actually expires
-			if (loginStateResponse.sessionExpiresAt) {
+			const expiresAt = get(loginStateResponse, 'sessionExpiresAt');
+			if (expiresAt) {
 				if (checkSessionTimeoutTimerId) {
 					clearInterval(checkSessionTimeoutTimerId);
 				}
 				checkSessionTimeoutTimerId = window.setInterval(
-					() => checkIfSessionExpires(loginStateResponse.sessionExpiresAt),
+					() => checkIfSessionExpires(expiresAt),
 					5 * 60 * 1000
 				);
 			}
