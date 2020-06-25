@@ -182,7 +182,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 									(newsletterKey: NewsletterList) => (
 										<Checkbox
 											key={`newsletter_${newsletterKey}`}
-											label={newsletterLabels[newsletterKey]}
+											label={(newsletterLabels as any)[newsletterKey]}
 											checked={newsletterPreferences[newsletterKey]}
 											onChange={() => {
 												onChangePreference({
