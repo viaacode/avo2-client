@@ -60,7 +60,12 @@ export class AssignmentHelper {
 				);
 
 				assignmentContentResponse = get(response, `data.${queryInfo.resultPath}`);
-				if (!assignmentContentResponse) {
+
+				if (assignmentContentResponse) {
+					if (get(assignmentContentResponse, 'type.label') === 'audio') {
+						assignmentContentResponse.thumbnail_path = DEFAULT_AUDIO_STILL;
+					}
+				} else {
 					console.error('Failed to fetch the assignment content', {
 						response,
 						...queryParams,
@@ -70,6 +75,7 @@ export class AssignmentHelper {
 					);
 				}
 			}
+
 			return assignmentContentResponse;
 		} catch (err) {
 			console.error(

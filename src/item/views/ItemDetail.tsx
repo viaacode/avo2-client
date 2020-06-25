@@ -48,7 +48,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import { LANGUAGES, DEFAULT_AUDIO_STILL } from '../../shared/constants';
+import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
 	CustomError,
@@ -286,10 +286,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 		}
 		const englishContentType: EnglishContentType =
 			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
-
-		if (get(item, 'type.label') === 'audio') {
-			item.thumbnail_path = DEFAULT_AUDIO_STILL;
-		}
 
 		return (
 			<>
