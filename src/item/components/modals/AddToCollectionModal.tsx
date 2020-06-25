@@ -154,10 +154,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			collection_uuid: collection.id,
 			item_meta: itemMetaData,
 			type: 'ITEM',
-			thumbnail_path: await VideoStillService.getVideoStill(
-				externalId,
-				fragmentStartTime * 1000
-			),
+			thumbnail_path: !!fragmentStartTime
+				? await VideoStillService.getVideoStill(externalId, fragmentStartTime * 1000)
+				: null,
 		};
 	};
 
