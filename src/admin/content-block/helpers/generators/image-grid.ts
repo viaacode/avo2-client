@@ -28,7 +28,7 @@ export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSt
 		buttonType: 'primary',
 		buttonTitle: '',
 		action: undefined,
-	},
+	} as any,
 ];
 
 export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockGridWrapperProps &
