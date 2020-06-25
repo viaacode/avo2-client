@@ -19,7 +19,6 @@ import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/serv
 import { SearchResultsProps } from '../search.types';
 
 import SearchResultItem from './SearchResultItem';
-import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 
 const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	currentPage,
@@ -59,21 +58,15 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		);
 	};
 
-	const renderSearchResultItem = (result: Avo.Search.ResultItem, index: number) => {
-		if (result.administrative_type === 'audio') {
-			result.thumbnail_path = DEFAULT_AUDIO_STILL;
-		}
-
-		return (
-			<SearchResultItem
-				{...resultProps}
-				key={`search-result-item-${index}`}
-				result={result}
-				collectionLabelLookup={collectionLabels}
-				isBookmarked={getIsBookmarked(result)}
-			/>
-		);
-	};
+	const renderSearchResultItem = (result: Avo.Search.ResultItem, index: number) => (
+		<SearchResultItem
+			{...resultProps}
+			key={`search-result-item-${index}`}
+			result={result}
+			collectionLabelLookup={collectionLabels}
+			isBookmarked={getIsBookmarked(result)}
+		/>
+	);
 
 	return (
 		<Container mode="vertical">

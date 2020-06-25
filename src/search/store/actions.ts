@@ -2,6 +2,7 @@ import { Action, Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
 import { fetchSearchResults } from '../search.service';
 
@@ -24,7 +25,7 @@ const getSearchResults = (
 		dispatch(setSearchResultsLoading());
 
 		try {
-			const response = await fetchSearchResults(
+			const data = await fetchSearchResults(
 				orderProperty,
 				orderDirection,
 				from,
@@ -32,8 +33,6 @@ const getSearchResults = (
 				filters,
 				filterOptionSearch
 			);
-
-			const data = await response.json();
 
 			if (data.statusCode) {
 				console.error(
@@ -50,10 +49,22 @@ const getSearchResults = (
 						2
 					)
 				);
+
 				return dispatch(setSearchResultsError());
 			}
 
-			return dispatch(setSearchResultsSuccess(data as Avo.Search.Search));
+			const processedData = {
+				...data,
+				results: data.results.map((result: Avo.Search.ResultItem) => {
+					if (result.administrative_type === 'audio') {
+						result.thumbnail_path = DEFAULT_AUDIO_STILL;
+					}
+
+					return result;
+				}),
+			};
+
+			return dispatch(setSearchResultsSuccess(processedData as Avo.Search.Search));
 		} catch (e) {
 			return dispatch(setSearchResultsError());
 		}
