@@ -194,9 +194,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 					</ExpandableContainer>
 				</Scrollbar>
 			);
-		} else {
-			return renderDescription();
 		}
+
+		return renderDescription();
 	};
 
 	return (

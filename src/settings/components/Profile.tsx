@@ -385,7 +385,11 @@ const Profile: FunctionComponent<ProfileProps & {
 						user,
 					})
 				);
-				ToastService.danger(t('Het updaten van de nieuwsbrief voorkeuren is mislukt'));
+				ToastService.danger(
+					t(
+						'settings/components/profile___het-updaten-van-de-nieuwsbrief-voorkeuren-is-mislukt'
+					)
+				);
 			}
 
 			// Refresh the login state, so the profile info will be up to date
@@ -630,7 +634,7 @@ const Profile: FunctionComponent<ProfileProps & {
 						<Alert
 							type="info"
 							message={t(
-								'Vind je je onderwijsinstelling niet? Contacteer ons via de feedback knop'
+								'settings/components/profile___vind-je-je-onderwijsinstelling-niet-contacteer-ons-via-de-feedback-knop'
 							)}
 						/>
 					</>

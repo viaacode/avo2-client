@@ -129,7 +129,9 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			openMediaInModal: {
 				editorType: ContentBlockEditor.Checkbox,
 				editorProps: {
-					label: i18n.t('Media items openen in een popup'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/media-grid___media-items-openen-in-een-popup'
+					),
 				} as CheckboxProps,
 			},
 			ctaTitle: TEXT_FIELD('', {
