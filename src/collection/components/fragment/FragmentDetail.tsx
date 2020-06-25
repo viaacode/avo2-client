@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { BlockIntro } from '@viaa/avo2-components';
@@ -7,6 +8,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers';
 import { getFragmentProperty } from '../../helpers';
 
@@ -32,6 +34,10 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	linkToItems,
 	history,
 }) => {
+	if (get(collectionFragment, 'item_meta.type.label') === 'audio') {
+		collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL;
+	}
+
 	const getTitleClickedHandler = () => {
 		if (
 			linkToItems &&

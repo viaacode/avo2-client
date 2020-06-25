@@ -3,6 +3,7 @@ import { compact, isNil, uniq, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeString } from '../../collection/collection.types';
+import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError, getEnv, toSeconds } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
@@ -88,9 +89,7 @@ export class VideoStillService {
 					fragment => fragment.item_meta && fragment.item_meta.thumbnail_path
 				),
 				// One audio thumbnail
-				...(audioFragments[0] && audioFragments[0].item_meta
-					? [audioFragments[0].item_meta.thumbnail_path]
-					: []),
+				...(audioFragments[0] && audioFragments[0].item_meta ? [DEFAULT_AUDIO_STILL] : []),
 			])
 		);
 	}

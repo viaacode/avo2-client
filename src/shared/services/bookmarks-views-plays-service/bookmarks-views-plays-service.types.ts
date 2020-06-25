@@ -39,6 +39,11 @@ export interface AppItemBookmark {
 		issued: string;
 		item: {
 			external_id: string;
+			item_meta: {
+				type: {
+					label: string;
+				};
+			};
 		};
 		view_counts: {
 			count: number;

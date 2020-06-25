@@ -58,6 +58,16 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		);
 	};
 
+	const renderSearchResultItem = (result: Avo.Search.ResultItem, index: number) => (
+		<SearchResultItem
+			{...resultProps}
+			key={`search-result-item-${index}`}
+			result={result}
+			collectionLabelLookup={collectionLabels}
+			isBookmarked={getIsBookmarked(result)}
+		/>
+	);
+
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
@@ -68,15 +78,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 				) : data && data.results && data.count !== 0 ? (
 					<>
 						<ul className="c-search-result-list">
-							{data.results.map((result, index) => (
-								<SearchResultItem
-									{...resultProps}
-									key={`search-result-item-${index}`}
-									result={result}
-									collectionLabelLookup={collectionLabels}
-									isBookmarked={getIsBookmarked(result)}
-								/>
-							))}
+							{data.results.map(renderSearchResultItem)}
 						</ul>
 						<Spacer margin="large">
 							<Pagination

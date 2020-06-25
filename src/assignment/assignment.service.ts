@@ -31,6 +31,7 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
+import { DEFAULT_AUDIO_STILL } from '../shared/constants';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -231,6 +232,10 @@ export class AssignmentService {
 
 			if (!newAssignmentContent) {
 				throw new CustomError('NOT_FOUND');
+			}
+
+			if (get(newAssignmentContent, 'type.label') === 'audio') {
+				newAssignmentContent.thumbnail_path = DEFAULT_AUDIO_STILL;
 			}
 
 			return newAssignmentContent;

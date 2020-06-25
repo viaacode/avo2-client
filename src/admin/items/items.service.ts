@@ -2,6 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { CustomError, performQuery } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
@@ -170,7 +171,13 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			return get(response, 'data.app_item_meta[0]') || null;
+			const item = get(response, 'data.app_item_meta[0]') || null;
+
+			if (get(item, 'type.label') === 'audio') {
+				item.thumbnail_path = DEFAULT_AUDIO_STILL;
+			}
+
+			return item;
 		} catch (err) {
 			throw new CustomError('Failed to get item by external id', err, {
 				externalId,
