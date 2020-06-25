@@ -177,6 +177,11 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 				issued
 				item {
 					external_id
+					item_meta {
+						type {
+							label
+						}
+					}
 				}
 				view_counts {
 					count

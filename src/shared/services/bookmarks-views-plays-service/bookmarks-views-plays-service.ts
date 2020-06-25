@@ -30,6 +30,7 @@ import {
 	EventInitAction,
 	GetBookmarksForUserResponse,
 } from './bookmarks-views-plays-service.types';
+import { DEFAULT_AUDIO_STILL } from '../../constants';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
@@ -209,6 +210,12 @@ export class BookmarksViewsPlaysService {
 				if (!itemBookmark.bookmarkedItem) {
 					return null;
 				}
+
+				const thumbnailPath =
+					itemBookmark.bookmarkedItem.item.item_meta.type.label === 'audio'
+						? DEFAULT_AUDIO_STILL
+						: itemBookmark.bookmarkedItem.thumbnail_path;
+
 				return {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
@@ -217,7 +224,7 @@ export class BookmarksViewsPlaysService {
 						.toDate()
 						.getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
-					contentThumbnailPath: itemBookmark.bookmarkedItem.thumbnail_path,
+					contentThumbnailPath: thumbnailPath,
 					contentCreatedAt: normalizeTimestamp(itemBookmark.bookmarkedItem.issued)
 						.toDate()
 						.getTime(),
