@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -24,8 +23,8 @@ import { getProfileName } from '../../../authentication/helpers/get-profile-info
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import i18n from '../../../shared/translations/i18n';
-import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
+import { CollectionService } from '../../collection.service';
 
 interface PublishCollectionModalProps extends DefaultSecureRouteProps {
 	isOpen: boolean;
@@ -56,7 +55,6 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
-	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 
 	const isCollection = () => {
 		return collection.type_id === 3;
@@ -92,12 +90,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 				is_public: isCollectionPublic,
 				published_at: new Date().toISOString(),
 			};
-			await triggerCollectionPropertyUpdate({
-				variables: {
-					id: collection.id,
-					collection: newCollectionProps,
-				},
-			});
+			await CollectionService.updateCollectionProperties(collection.id, newCollectionProps);
 			setValidationError(undefined);
 			ToastService.success(
 				isCollection()

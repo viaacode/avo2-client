@@ -31,7 +31,6 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	showDescription,
 	linkToItems,
 	history,
-	...rest
 }) => {
 	const getTitleClickedHandler = () => {
 		if (
@@ -78,12 +77,10 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				'description'
 			)}
 			onTitleClicked={getTitleClickedHandler()}
-			history={history}
 			cuePoints={{
 				start: collectionFragment.start_oc,
 				end: collectionFragment.end_oc,
 			}}
-			{...rest}
 		/>
 	) : (
 		<BlockIntro

@@ -104,6 +104,23 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 
+	const getRelatedCollections = useCallback(async () => {
+		try {
+			setRelatedCollections(await getRelatedItems(collectionId, 'collections', 4));
+		} catch (err) {
+			console.error('Failed to get related items', err, {
+				collectionId,
+				index: 'collections',
+				limit: 4,
+			});
+			ToastService.danger(
+				t(
+					'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
+				)
+			);
+		}
+	}, [setRelatedCollections, t, collectionId]);
+
 	useEffect(() => {
 		setCollectionId(match.params.id);
 	}, [match.params.id]);
@@ -150,6 +167,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
 					history
 				);
+				return;
 			}
 
 			const rawPermissions = await Promise.all([
@@ -206,6 +224,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				return;
 			}
 
+			getRelatedCollections();
+
 			BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
 			try {
 				setBookmarkViewPlayCounts(
@@ -251,30 +271,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				icon: 'alert-triangle',
 			});
 		}
-	}, [collectionId, t, user, history]);
+	}, [collectionId, getRelatedCollections, t, user, history]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
 	}, [checkPermissionsAndGetCollection]);
-
-	useEffect(() => {
-		getRelatedItems(collectionId, 'collections', 4)
-			.then(relatedItems => {
-				setRelatedCollections(relatedItems);
-			})
-			.catch(err => {
-				console.error('Failed to get related items', err, {
-					collectionId,
-					index: 'collections',
-					limit: 4,
-				});
-				ToastService.danger(
-					t(
-						'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
-					)
-				);
-			});
-	}, [setRelatedCollections, t, collectionId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {

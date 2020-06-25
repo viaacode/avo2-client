@@ -361,6 +361,7 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaBackgroundColor?: string;
 	ctaBackgroundImage?: string;
 	ctaWidth?: string;
+	openMediaInModal?: boolean;
 	ctaButtonAction?: ButtonAction;
 	navigate?: (buttonAction?: ButtonAction) => void;
 	searchQuery?: ButtonAction;

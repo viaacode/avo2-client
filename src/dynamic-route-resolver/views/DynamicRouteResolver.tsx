@@ -113,7 +113,8 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			// /klaar/archief: redirect teachers to search page with klaar filter
 			if (
 				pathname === '/klaar/archief' &&
-				PermissionService.hasPerm(loginState.userInfo, PermissionName.SEARCH)
+				(loginState as any).userInfo &&
+				PermissionService.hasPerm((loginState as any).userInfo, PermissionName.SEARCH)
 			) {
 				history.push(generateSearchLinkString('serie', 'KLAAR', 'broadcastDate', 'desc'));
 				return;

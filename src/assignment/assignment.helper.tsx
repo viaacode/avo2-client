@@ -429,19 +429,17 @@ export class AssignmentHelper {
 								<p>
 									<Trans i18nKey="assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten">
 										Hulp nodig bij het maken van opdrachten?
-									</Trans>
-									<br />
-									Bekijk onze{' '}
-									<a
-										href="http://google.com"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										<Trans i18nKey="assignment/views/assignment-edit___screencast">
+										<br />
+										Bekijk onze{' '}
+										<a
+											href="http://google.com"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
 											screencast
-										</Trans>
-									</a>
-									.
+										</a>
+										.
+									</Trans>
 								</p>
 							</div>
 						</Alert>

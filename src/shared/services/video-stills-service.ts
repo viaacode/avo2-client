@@ -1,4 +1,4 @@
-import { compact, uniq } from 'lodash-es';
+import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -33,6 +33,12 @@ export class VideoStillService {
 		}
 	}
 
+	/**
+	 * Get video still for video with external id after start time
+	 * @param externalId id of the video
+	 * @param startTime video frame closest to this timestamp in milliseconds
+	 * @return url to frame from video
+	 */
 	public static async getVideoStill(externalId: string, startTime: number): Promise<string> {
 		const stills = await this.getVideoStills([{ externalId, startTime }]);
 		return stills[0].previewImagePath;
@@ -57,17 +63,12 @@ export class VideoStillService {
 		);
 		const cutVideoFragments = videoFragments.filter(
 			fragment =>
-				fragment.start_oc !== 0 ||
+				(fragment.start_oc !== 0 && !isNil(fragment.start_oc)) ||
 				(fragment.item_meta &&
+					!isNil(fragment.end_oc) &&
 					fragment.end_oc !== toSeconds((fragment.item_meta as Avo.Item.Item).duration))
 		);
-		const uncutVideoFragments = videoFragments.filter(
-			fragment =>
-				(!fragment.start_oc && !fragment.end_oc) ||
-				(fragment.start_oc === 0 &&
-					fragment.item_meta &&
-					fragment.end_oc === toSeconds((fragment.item_meta as Avo.Item.Item).duration))
-		);
+		const uncutVideoFragments = without(videoFragments, ...cutVideoFragments);
 		const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
 			cutVideoFragments.map(fragment => ({
 				externalId: fragment.external_id,
