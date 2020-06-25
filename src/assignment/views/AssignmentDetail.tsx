@@ -292,7 +292,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					/>
 				);
 			case 'ITEM':
-				if (get(assignmentContent, 'item_meta.type.label') === 'audio') {
+				if (get(assignmentContent, 'type.label') === 'audio') {
 					assignmentContent.thumbnail_path = DEFAULT_AUDIO_STILL;
 				}
 
