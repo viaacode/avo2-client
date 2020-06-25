@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, some } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -87,11 +87,19 @@ export enum PermissionName {
 	REQUIRED_SUBJECTS_ON_PROFILE_PAGE = 'REQUIRED_SUBJECTS_ON_PROFILE_PAGE',
 	VIEW_NEWSLETTERS_PAGE = 'VIEW_NEWSLETTERS_PAGE',
 	VIEW_NOTIFICATIONS_PAGE = 'VIEW_NOTIFICATIONS_PAGE',
+	EDIT_COLLECTION_AUTHOR = 'EDIT_COLLECTION_AUTHOR',
+	EDIT_COLLECTION_LABELS = 'EDIT_COLLECTION_LABELS',
 }
 
 export class PermissionService {
 	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {
 		return this.getUserPermissions(user).includes(permName);
+	}
+	public static hasAtLeastOnePerm(
+		user: Avo.User.User | undefined,
+		permNames: PermissionName[]
+	): boolean {
+		return some(permNames, permName => this.getUserPermissions(user).includes(permName));
 	}
 
 	public static getUserPermissions(user: Avo.User.User | undefined): PermissionName[] {

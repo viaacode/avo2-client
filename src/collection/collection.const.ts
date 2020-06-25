@@ -1,8 +1,10 @@
 import { TabProps } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
+import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import i18n from '../shared/translations/i18n';
 
-export const GET_COLLECTION_EDIT_TABS = (): TabProps[] => [
+export const GET_COLLECTION_EDIT_TABS = (user: Avo.User.User | undefined): TabProps[] => [
 	{
 		id: 'inhoud',
 		label: i18n.t('collection/collection___inhoud'),
@@ -13,11 +15,18 @@ export const GET_COLLECTION_EDIT_TABS = (): TabProps[] => [
 		label: i18n.t('collection/collection___publicatiedetails'),
 		icon: 'file-text',
 	},
-	{
-		id: 'admin',
-		label: i18n.t('collection/collection___beheer'),
-		icon: 'settings',
-	},
+	...(PermissionService.hasAtLeastOnePerm(user, [
+		PermissionName.EDIT_COLLECTION_LABELS,
+		PermissionName.EDIT_COLLECTION_AUTHOR,
+	])
+		? [
+				{
+					id: 'admin',
+					label: i18n.t('collection/collection___beheer'),
+					icon: 'settings',
+				} as TabProps,
+		  ]
+		: []),
 ];
 
 export const STILL_DIMENSIONS = {

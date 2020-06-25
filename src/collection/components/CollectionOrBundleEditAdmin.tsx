@@ -20,10 +20,12 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { buildLink, CustomError } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { CollectionService } from '../collection.service';
 import { QualityLabel } from '../collection.types';
@@ -45,11 +47,8 @@ interface CollectionOrBundleEditAdminProps {
 	history: H.History;
 }
 
-const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdminProps> = ({
-	collection,
-	changeCollectionState,
-	history,
-}) => {
+const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdminProps &
+	UserProps> = ({ collection, changeCollectionState, history, user }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -203,47 +202,57 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<FormGroup
-										label={t(
-											'collection/components/collection-or-bundle-edit-admin___kwaliteitslabels'
-										)}
-									>
-										{!!qualityLabels && (
-											<TagsInput
-												options={qualityLabels}
-												value={getCollectionLabels()}
-												onChange={(values: TagInfo[]) =>
-													updateCollectionMultiProperty(
-														values,
-														'collection_labels'
-													)
-												}
+									{PermissionService.hasPerm(
+										user,
+										PermissionName.EDIT_COLLECTION_LABELS
+									) && (
+										<FormGroup
+											label={t(
+												'collection/components/collection-or-bundle-edit-admin___kwaliteitslabels'
+											)}
+										>
+											{!!qualityLabels && (
+												<TagsInput
+													options={qualityLabels}
+													value={getCollectionLabels()}
+													onChange={(values: TagInfo[]) =>
+														updateCollectionMultiProperty(
+															values,
+															'collection_labels'
+														)
+													}
+												/>
+											)}
+										</FormGroup>
+									)}
+									{PermissionService.hasPerm(
+										user,
+										PermissionName.EDIT_COLLECTION_AUTHOR
+									) && (
+										<FormGroup
+											label={t(
+												'collection/components/collection-or-bundle-edit-admin___eigenaar'
+											)}
+											required
+										>
+											<ContentPicker
+												initialValue={owner}
+												hideTargetSwitch
+												hideTypeDropdown
+												allowedTypes={['PROFILE']}
+												onSelect={(value: PickerItem | null) => {
+													if (!value) {
+														return;
+													}
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'owner_profile_id',
+														collectionPropValue: value.value,
+													});
+												}}
 											/>
-										)}
-									</FormGroup>
-									<FormGroup
-										label={t(
-											'collection/components/collection-or-bundle-edit-admin___eigenaar'
-										)}
-										required
-									>
-										<ContentPicker
-											initialValue={owner}
-											hideTargetSwitch
-											hideTypeDropdown
-											allowedTypes={['PROFILE']}
-											onSelect={(value: PickerItem | null) => {
-												if (!value) {
-													return;
-												}
-												changeCollectionState({
-													type: 'UPDATE_COLLECTION_PROP',
-													collectionProp: 'owner_profile_id',
-													collectionPropValue: value.value,
-												});
-											}}
-										/>
-									</FormGroup>
+										</FormGroup>
+									)}
 								</Column>
 								<Column size="3-5">
 									<></>
@@ -253,7 +262,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 							{/* Show bundles that contain this collection */}
 							{isCollection && (
 								<>
-									<Spacer margin="top-extra-large">
+									<Spacer margin={['top-extra-large', 'bottom-small']}>
 										<BlockHeading type="h2">
 											{t(
 												'collection/components/collection-or-bundle-edit-admin___bundels-die-deze-collectie-bevatten'
@@ -312,4 +321,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 	);
 };
 
-export default CollectionOrBundleEditAdmin;
+export default withUser(CollectionOrBundleEditAdmin) as FunctionComponent<
+	CollectionOrBundleEditAdminProps
+>;
