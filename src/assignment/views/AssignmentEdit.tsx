@@ -55,7 +55,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				}
 
 				// Fetch the content if the assignment has content
-				const tempAssignmentContent = await AssignmentHelper.fetchAssignmentContent(
+				const tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
 					tempAssignment
 				);
 
