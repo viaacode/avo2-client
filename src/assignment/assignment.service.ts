@@ -7,6 +7,7 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { CollectionService } from '../collection/collection.service';
+import { DEFAULT_AUDIO_STILL } from '../shared/constants';
 import { CustomError } from '../shared/helpers';
 import {
 	ApolloCacheManager,
@@ -31,7 +32,6 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
-import { DEFAULT_AUDIO_STILL } from '../shared/constants';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -210,7 +210,7 @@ export class AssignmentService {
 	}
 
 	public static async fetchAssignmentContent(
-		assignment: Avo.Assignment.Assignment
+		assignment: Partial<Avo.Assignment.Assignment>
 	): Promise<Avo.Assignment.Content | null> {
 		if (assignment.content_id && assignment.content_label) {
 			if (assignment.content_label === 'COLLECTIE' && assignment.content_id) {

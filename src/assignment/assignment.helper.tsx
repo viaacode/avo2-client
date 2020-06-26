@@ -1,4 +1,3 @@
-import { ApolloQueryResult } from 'apollo-boost';
 import { History } from 'history';
 import { get, isNil } from 'lodash-es';
 import React from 'react';
@@ -28,67 +27,18 @@ import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG_OPTIONS_FULL, DEFAULT_AUDIO_STILL } from '../shared/constants';
-import { CustomError, navigate } from '../shared/helpers';
-import { dataService, ToastService } from '../shared/services';
+import { DEFAULT_AUDIO_STILL, WYSIWYG_OPTIONS_FULL } from '../shared/constants';
+import { navigate } from '../shared/helpers';
+import { ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../workspace/workspace.const';
 
-import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from './assignment.const';
+import { CONTENT_LABEL_TO_ROUTE_PARTS } from './assignment.const';
 import { AssignmentService } from './assignment.service';
 import { AssignmentLayout } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
 
 export class AssignmentHelper {
-	/**
-	 * Load the contentof the assignment
-	 */
-	public static async fetchAssignmentContent(assignment: Partial<Avo.Assignment.Assignment>) {
-		try {
-			let assignmentContentResponse: Avo.Assignment.Content | undefined = undefined;
-			if (assignment.content_id && assignment.content_label) {
-				// The assignment doesn't have content linked to it
-				// Fetch the content from the network
-				const queryInfo =
-					CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel];
-				const queryParams = {
-					query: queryInfo.query,
-					variables: queryInfo.getVariables(assignment.content_id),
-				};
-				const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
-					queryParams
-				);
-
-				assignmentContentResponse = get(response, `data.${queryInfo.resultPath}`);
-
-				if (assignmentContentResponse) {
-					if (get(assignmentContentResponse, 'type.label') === 'audio') {
-						assignmentContentResponse.thumbnail_path = DEFAULT_AUDIO_STILL;
-					}
-				} else {
-					console.error('Failed to fetch the assignment content', {
-						response,
-						...queryParams,
-					});
-					ToastService.danger(
-						i18n.t('assignment/assignment___de-opdracht-inhoud-is-verwijderd')
-					);
-				}
-			}
-
-			return assignmentContentResponse;
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to fetch assigmnment content', err, { assignment })
-			);
-			ToastService.danger(
-				i18n.t(
-					'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
-				)
-			);
-		}
-	}
-
 	public static async attemptDuplicateAssignment(
 		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment>,
@@ -163,7 +113,7 @@ export class AssignmentHelper {
 
 	private static renderContentLink(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		content: Avo.Assignment.Content | undefined,
+		content: Avo.Assignment.Content | null,
 		user: Avo.User.User
 	) {
 		const dutchLabel = get(
@@ -241,7 +191,7 @@ export class AssignmentHelper {
 
 	public static renderAssignmentForm(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		assignmentContent: Avo.Assignment.Content | undefined,
+		assignmentContent: Avo.Assignment.Content | null,
 		assignmentLabels: Avo.Assignment.Label[],
 		user: Avo.User.User,
 		setAssignmentProp: (

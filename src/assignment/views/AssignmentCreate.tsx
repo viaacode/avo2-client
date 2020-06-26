@@ -61,7 +61,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -89,7 +89,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		const initAssignmentData = async () => {
 			try {
 				const tempAssignment = initAssignmentsByQueryParams();
-				setAssignmentContent(await AssignmentHelper.fetchAssignmentContent(tempAssignment));
+				setAssignmentContent(
+					await AssignmentService.fetchAssignmentContent(tempAssignment)
+				);
 				setBothAssignments(tempAssignment);
 			} catch (err) {
 				setLoadingInfo({

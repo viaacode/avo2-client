@@ -255,7 +255,6 @@ const Profile: FunctionComponent<ProfileProps & {
 		setAllSubjects,
 		setAllEducationLevels,
 		setAllOrganisations,
-		isCompleteProfileStep,
 	]);
 
 	useEffect(() => {
