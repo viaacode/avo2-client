@@ -124,6 +124,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
 	};
 
+	const isPupil = (): boolean => {
+		return get(storedProfile, 'profile_user_groups[0].groups[0].id') === 4; // Leerling user group
+	};
+
 	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
 		return (
 			<Table horizontal variant="invisible" className="c-table_detail-page">
@@ -277,7 +281,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
-					{canBanUser() && (
+					{canBanUser() && isPupil() && (
 						<Button
 							type="danger"
 							label={t('admin/users/views/user-detail___bannen')}
