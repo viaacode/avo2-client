@@ -173,10 +173,26 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
 					[
-						{ name: PermissionName.VIEW_COLLECTIONS },
+						{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
 						{
 							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
 							obj: collectionId,
+						},
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{
+							name: PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS,
+						},
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{
+							name: PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS,
 						},
 					],
 					user
@@ -202,18 +218,43 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 			]);
 			const permissionObj = {
-				canViewCollections: rawPermissions[0],
-				canEditCollections: rawPermissions[1],
-				canDeleteCollections: rawPermissions[2],
-				canCreateCollections: rawPermissions[3],
-				canViewItems: rawPermissions[4],
+				canViewCollection: rawPermissions[0],
+				canViewPublishedCollections: rawPermissions[1],
+				canViewUnpublishedCollections: rawPermissions[2],
+				canEditCollections: rawPermissions[3],
+				canDeleteCollections: rawPermissions[4],
+				canCreateCollections: rawPermissions[5],
+				canViewItems: rawPermissions[6],
 			};
+
+			if (
+				!permissionObj.canViewCollection &&
+				!permissionObj.canViewPublishedCollections &&
+				!permissionObj.canViewUnpublishedCollections
+			) {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+					),
+					icon: 'search',
+				});
+			}
+
 			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				uuid,
 				'collection'
 			);
 
-			if (!collectionObj) {
+			if (
+				!collectionObj ||
+				(!permissionObj.canViewCollection &&
+					collectionObj.is_public &&
+					!permissionObj.canViewPublishedCollections) ||
+				(!permissionObj.canViewCollection &&
+					!collectionObj.is_public &&
+					!permissionObj.canViewUnpublishedCollections)
+			) {
 				setLoadingInfo({
 					state: 'error',
 					message: t(
@@ -467,11 +508,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			createDropdownMenuItem(
-				'addToBundle',
-				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
-				'plus'
-			),
+			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
+				? [
+						createDropdownMenuItem(
+							'addToBundle',
+							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+							'plus'
+						),
+				  ]
+				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
