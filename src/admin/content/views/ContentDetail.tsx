@@ -58,6 +58,10 @@ import { isPublic } from '../helpers/get-published-state';
 
 import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 
 export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
 export const CONTENT_PAGE_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -203,11 +207,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	const CONTENT_DROPDOWN_ITEMS = [
-		createDropdownMenuItem(
-			'duplicate',
-			t('collection/views/collection-detail___dupliceer'),
-			'copy'
-		),
+		...(PermissionService.hasPerm(user, PermissionName.CREATE_CONTENT_PAGES)
+			? [
+					createDropdownMenuItem(
+						'duplicate',
+						t('collection/views/collection-detail___dupliceer'),
+						'copy'
+					),
+			  ]
+			: []),
 		...(!isContentProtected || (isContentProtected && isAdminUser)
 			? [
 					createDropdownMenuItem(
