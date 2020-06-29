@@ -271,7 +271,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	const checkPermissionsAndGetBundle = useCallback(async () => {
 		try {
 			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
 				PermissionService.hasPermissions(
 					[
 						{
@@ -317,11 +316,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 			]);
 			const permissionObj = {
-				canView: rawPermissions[0],
-				canEdit: rawPermissions[1],
-				canDelete: rawPermissions[2],
-				canCreate: rawPermissions[3],
-				canViewItems: rawPermissions[4],
+				canEdit: rawPermissions[0],
+				canDelete: rawPermissions[1],
+				canCreate: rawPermissions[2],
+				canViewItems: rawPermissions[3],
 			};
 			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				collectionId,
