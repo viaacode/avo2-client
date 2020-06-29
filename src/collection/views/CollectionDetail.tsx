@@ -492,16 +492,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		];
 		return (
 			<ButtonToolbar>
-				<Button
-					label={t('collection/views/collection-detail___maak-opdracht')}
-					type="secondary"
-					icon="clipboard"
-					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
-					title={t(
-						'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
-					)}
-					onClick={() => executeAction('createAssignment')}
-				/>
+				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+					<Button
+						label={t('collection/views/collection-detail___maak-opdracht')}
+						type="secondary"
+						icon="clipboard"
+						ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
+						title={t(
+							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
+						)}
+						onClick={() => executeAction('createAssignment')}
+					/>
+				)}
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
@@ -592,11 +594,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			createDropdownMenuItem(
-				'createAssignment',
-				t('collection/views/collection-detail___maak-opdracht'),
-				'clipboard'
-			),
+			...(PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
+				? [
+						createDropdownMenuItem(
+							'createAssignment',
+							t('collection/views/collection-detail___maak-opdracht'),
+							'clipboard'
+						),
+				  ]
+				: []),
 			...(permissions.canEditCollections
 				? [
 						createDropdownMenuItem(

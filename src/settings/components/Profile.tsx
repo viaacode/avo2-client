@@ -614,7 +614,7 @@ const Profile: FunctionComponent<ProfileProps & {
 								onChange={onSelectedCityChanged}
 							/>
 						</Spacer>
-						<Spacer margin="top-small">
+						<Spacer margin={['top-small', 'bottom-small']}>
 							{organizationsLoadingState === 'loading' && (
 								<Alert
 									type="spinner"
