@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isNil } from 'lodash-es';
+import { fromPairs, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -23,6 +23,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -69,6 +70,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
+	const [permissions, setPermissions] = useState<{
+		[collectionId: string]: { canEdit?: boolean; canDelete?: boolean };
+	}>({});
 
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<string | null>(null);
@@ -89,15 +93,82 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const fetchCollections = useCallback(async () => {
 		try {
-			setCollections(
-				await CollectionService.fetchCollectionsByOwner(
-					user,
-					page * ITEMS_PER_PAGE,
-					ITEMS_PER_PAGE,
-					{ [sortColumn]: sortOrder },
-					isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle
+			const collections = await CollectionService.fetchCollectionsByOwner(
+				user,
+				page * ITEMS_PER_PAGE,
+				ITEMS_PER_PAGE,
+				{ [sortColumn]: sortOrder },
+				isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle
+			);
+
+			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
+			let perms: boolean[][];
+			if (isCollection) {
+				perms = await Promise.all(
+					(collections || []).map((collection: Avo.Collection.Collection) => {
+						const editPermission = PermissionService.hasPermissions(
+							[
+								{
+									name: PermissionName.EDIT_OWN_COLLECTIONS,
+									obj: collection,
+								},
+								PermissionName.EDIT_ANY_COLLECTIONS,
+							],
+							user
+						);
+						const deletePermission = PermissionService.hasPermissions(
+							[
+								{
+									name: PermissionName.DELETE_OWN_COLLECTIONS,
+									obj: collection,
+								},
+								PermissionName.DELETE_ANY_COLLECTIONS,
+							],
+							user
+						);
+						return Promise.all([editPermission, deletePermission]);
+					})
+				);
+			} else {
+				// bundles
+				perms = await Promise.all(
+					collections.map((bundle: Avo.Collection.Collection) => {
+						const editPermission = PermissionService.hasPermissions(
+							[
+								{
+									name: PermissionName.EDIT_OWN_BUNDLES,
+									obj: bundle,
+								},
+								PermissionName.EDIT_ANY_BUNDLES,
+							],
+							user
+						);
+						const deletePermission = PermissionService.hasPermissions(
+							[
+								{
+									name: PermissionName.DELETE_OWN_BUNDLES,
+									obj: bundle,
+								},
+								PermissionName.DELETE_ANY_BUNDLES,
+							],
+							user
+						);
+						return Promise.all([editPermission, deletePermission]);
+					})
+				);
+			}
+			setPermissions(
+				fromPairs(
+					perms.map((permsForCollection: boolean[], index: number) => [
+						collections[index].id,
+						{
+							canEdit: permsForCollection[0],
+							canDelete: permsForCollection[1],
+						},
+					])
 				)
 			);
+			setCollections(collections);
 		} catch (err) {
 			console.error('Failed to fetch collections', err, {});
 			setLoadingInfo({
@@ -227,12 +298,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderActions = (collectionId: string) => {
 		const ROW_DROPDOWN_ITEMS = [
-			createDropdownMenuItem(
-				'edit',
-				t('collection/views/collection-overview___bewerk'),
-				'edit2'
-			),
-			...(isCollection
+			...(permissions[collectionId] && permissions[collectionId].canEdit
+				? [
+						createDropdownMenuItem(
+							'edit',
+							t('collection/views/collection-overview___bewerk'),
+							'edit2'
+						),
+				  ]
+				: []),
+			...(isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
 				? [
 						createDropdownMenuItem(
 							'createAssignment',
@@ -241,10 +316,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						),
 				  ]
 				: []),
-			createDropdownMenuItem(
-				'delete',
-				t('collection/views/collection-overview___verwijderen')
-			),
+			...(permissions[collectionId] && permissions[collectionId].canDelete
+				? [
+						createDropdownMenuItem(
+							'delete',
+							t('collection/views/collection-overview___verwijderen')
+						),
+				  ]
+				: []),
 		];
 
 		// Listeners
@@ -269,6 +348,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					return null;
 			}
 		};
+
+		if (!ROW_DROPDOWN_ITEMS.length) {
+			return null;
+		}
 
 		return (
 			<ButtonToolbar>
