@@ -344,16 +344,23 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
 							type="secondary"
 						/>
-						<Button
-							icon="delete"
-							onClick={() => openModal(rowData)}
-							size="small"
-							title={t('admin/content/views/content-overview___verwijder-content')}
-							ariaLabel={t(
-								'admin/content/views/content-overview___verwijder-content'
-							)}
-							type="danger-hover"
-						/>
+						{PermissionService.hasPerm(
+							user,
+							PermissionName.DELETE_ANY_CONTENT_PAGES
+						) && (
+							<Button
+								icon="delete"
+								onClick={() => openModal(rowData)}
+								size="small"
+								title={t(
+									'admin/content/views/content-overview___verwijder-content'
+								)}
+								ariaLabel={t(
+									'admin/content/views/content-overview___verwijder-content'
+								)}
+								type="danger-hover"
+							/>
+						)}
 					</ButtonToolbar>
 				);
 
@@ -377,16 +384,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						eaque!
 					</Trans>
 				</p>
-				<Spacer margin="top">
-					<Button
-						icon="plus"
-						label={t('admin/content/views/content-overview___content-toevoegen')}
-						title={t(
-							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
-						)}
-						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
-					/>
-				</Spacer>
+				{PermissionService.hasPerm(user, PermissionName.CREATE_CONTENT_PAGES) && (
+					<Spacer margin="top">
+						<Button
+							icon="plus"
+							label={t('admin/content/views/content-overview___content-toevoegen')}
+							title={t(
+								'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
+							)}
+							onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+						/>
+					</Spacer>
+				)}
 			</ErrorView>
 		);
 	};
@@ -448,13 +457,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	return (
 		<AdminLayout pageTitle={t('admin/content/views/content-overview___content-overzicht')}>
 			<AdminLayoutTopBarRight>
-				<Button
-					label={t('admin/content/views/content-overview___content-toevoegen')}
-					title={t(
-						'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
-					)}
-					onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
-				/>
+				{PermissionService.hasPerm(user, PermissionName.CREATE_CONTENT_PAGES) && (
+					<Button
+						label={t('admin/content/views/content-overview___content-toevoegen')}
+						title={t(
+							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
+						)}
+						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+					/>
+				)}
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>

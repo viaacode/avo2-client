@@ -14,6 +14,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.types';
@@ -35,7 +39,6 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
-	getDateRangeFilters,
 	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
@@ -53,6 +56,7 @@ interface CollectionsOrBundlesOverviewProps extends DefaultSecureRouteProps {}
 const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOverviewProps> = ({
 	history,
 	location,
+	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -101,7 +105,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					},
 				])
 			);
-			andFilters.push(...getBooleanFilters(filters, ['is_public']));
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
@@ -125,7 +128,31 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					],
 				});
 			}
-			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+			andFilters.push(...getBooleanFilters(filters, ['is_public']));
+
+			// Only show published/unpublished collections/bundles based on permissions
+			if (
+				(isCollection &&
+					!PermissionService.hasPerm(
+						user,
+						PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
+					)) ||
+				(!isCollection &&
+					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
+			) {
+				andFilters.push({ is_public: { _eq: false } });
+			}
+			if (
+				(isCollection &&
+					!PermissionService.hasPerm(
+						user,
+						PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
+					)) ||
+				(!isCollection &&
+					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
+			) {
+				andFilters.push({ is_public: { _eq: true } });
+			}
 			andFilters.push({
 				type_id: {
 					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
@@ -161,7 +188,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
-	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, t]);
+	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
 
 	const fetchUserRoles = useCallback(async () => {
 		try {

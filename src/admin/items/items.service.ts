@@ -2,8 +2,8 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { CustomError, performQuery } from '../../shared/helpers';
+import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
@@ -26,9 +26,11 @@ export class ItemsService {
 	) {
 		const getOrderFunc: Function | undefined =
 			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
+
 		if (getOrderFunc) {
 			return [getOrderFunc(sortOrder)];
 		}
+
 		return [{ [sortColumn]: sortOrder }];
 	}
 
@@ -46,10 +48,12 @@ export class ItemsService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: ItemsService.getOrderObject(sortColumn, sortOrder),
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_ITEMS_WITH_FILTERS,
 			});
+
 			const items = get(response, 'data.app_item_meta');
 			const itemCount = get(response, 'data.app_item_meta_aggregate.aggregate.count');
 
@@ -74,17 +78,21 @@ export class ItemsService {
 			variables = {
 				uuid,
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_ITEM_BY_UUID,
 			});
-			const item = get(response, 'data.app_item_meta[0]');
 
-			if (!item) {
+			const rawItem = get(response, 'data.app_item_meta[0]');
+
+			if (!rawItem) {
 				throw new CustomError('Response does not contain an item', null, {
 					response,
 				});
 			}
+
+			const item = addDefaultAudioStillToItem(rawItem);
 
 			return item;
 		} catch (err) {
@@ -171,11 +179,7 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			const item = get(response, 'data.app_item_meta[0]') || null;
-
-			if (get(item, 'type.label') === 'audio') {
-				item.thumbnail_path = DEFAULT_AUDIO_STILL;
-			}
+			const item = addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
 
 			return item;
 		} catch (err) {
@@ -231,9 +235,11 @@ export class ItemsService {
 			);
 
 			let items = get(response, 'itemsByExternalId', []);
+
 			if (items.length === 0) {
 				items = get(response, 'itemsByTitle', []);
 			}
+
 			return items;
 		} catch (err) {
 			throw new CustomError('Failed to fetch items by title or external id', err, {
