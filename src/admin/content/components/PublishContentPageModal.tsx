@@ -24,13 +24,13 @@ import { getPublishedState } from '../helpers/get-published-state';
 
 type publishOption = 'private' | 'public' | 'timebound';
 
-interface ShareContentPageModalProps {
+interface PublishContentPageModalProps {
 	isOpen: boolean;
 	onClose: (contentPage?: Partial<ContentPageInfo>) => any;
 	contentPage: ContentPageInfo;
 }
 
-const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
+const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> = ({
 	onClose,
 	isOpen,
 	contentPage,
@@ -199,4 +199,4 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 	);
 };
 
-export default ShareContentPageModal;
+export default PublishContentPageModal;

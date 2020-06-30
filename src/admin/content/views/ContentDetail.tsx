@@ -25,6 +25,10 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
@@ -49,7 +53,7 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
-import ShareContentPageModal from '../components/ShareContentPageModal';
+import PublishContentPageModal from '../components/PublishContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
@@ -58,10 +62,6 @@ import { isPublic } from '../helpers/get-published-state';
 
 import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
 
 export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
 export const CONTENT_PAGE_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -77,7 +77,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [contentPageInfo, setContentPageInfo] = useState<ContentPageInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
@@ -203,7 +203,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			);
 		}
 
-		setIsShareModalOpen(false);
+		setIsPublishModalOpen(false);
 	};
 
 	const CONTENT_DROPDOWN_ITEMS = [
@@ -288,18 +288,23 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	const renderContentActions = () => (
 		<ButtonToolbar>
-			<Button
-				type="secondary"
-				icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
-				label={t('admin/content/views/content-detail___publiceren')}
-				title={t(
-					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-				)}
-				ariaLabel={t(
-					'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-				)}
-				onClick={() => setIsShareModalOpen(true)}
-			/>
+			{((PermissionService.hasPerm(user, PermissionName.PUBLISH_ANY_CONTENT_PAGE) &&
+				!isPublic(contentPageInfo)) ||
+				(PermissionService.hasPerm(user, PermissionName.UNPUBLISH_ANY_CONTENT_PAGE) &&
+					isPublic(contentPageInfo))) && (
+				<Button
+					type="secondary"
+					icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
+					label={t('admin/content/views/content-detail___publiceren')}
+					title={t(
+						'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+					)}
+					ariaLabel={t(
+						'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+					)}
+					onClick={() => setIsPublishModalOpen(true)}
+				/>
+			)}
 			<Button
 				type="secondary"
 				icon="eye"
@@ -409,9 +414,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						}
 					/>
 					{!!contentPageInfo && (
-						<ShareContentPageModal
+						<PublishContentPageModal
 							contentPage={contentPageInfo}
-							isOpen={isShareModalOpen}
+							isOpen={isPublishModalOpen}
 							onClose={handleShareModalClose}
 						/>
 					)}
