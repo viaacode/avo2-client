@@ -344,16 +344,23 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
 							type="secondary"
 						/>
-						<Button
-							icon="delete"
-							onClick={() => openModal(rowData)}
-							size="small"
-							title={t('admin/content/views/content-overview___verwijder-content')}
-							ariaLabel={t(
-								'admin/content/views/content-overview___verwijder-content'
-							)}
-							type="danger-hover"
-						/>
+						{PermissionService.hasPerm(
+							user,
+							PermissionName.DELETE_ANY_CONTENT_PAGES
+						) && (
+							<Button
+								icon="delete"
+								onClick={() => openModal(rowData)}
+								size="small"
+								title={t(
+									'admin/content/views/content-overview___verwijder-content'
+								)}
+								ariaLabel={t(
+									'admin/content/views/content-overview___verwijder-content'
+								)}
+								type="danger-hover"
+							/>
+						)}
 					</ButtonToolbar>
 				);
 
