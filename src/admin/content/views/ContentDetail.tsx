@@ -207,11 +207,15 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	const CONTENT_DROPDOWN_ITEMS = [
-		createDropdownMenuItem(
-			'duplicate',
-			t('collection/views/collection-detail___dupliceer'),
-			'copy'
-		),
+		...(PermissionService.hasPerm(user, PermissionName.CREATE_CONTENT_PAGES)
+			? [
+					createDropdownMenuItem(
+						'duplicate',
+						t('collection/views/collection-detail___dupliceer'),
+						'copy'
+					),
+			  ]
+			: []),
 		...((!isContentProtected || (isContentProtected && isAdminUser)) &&
 		PermissionService.hasPerm(user, PermissionName.DELETE_ANY_CONTENT_PAGES)
 			? [
