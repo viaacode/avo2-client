@@ -7,8 +7,8 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { CollectionService } from '../collection/collection.service';
-import { DEFAULT_AUDIO_STILL } from '../shared/constants';
 import { CustomError } from '../shared/helpers';
+import { addDefaultAudioStillToItem } from '../shared/helpers/default-still';
 import {
 	ApolloCacheManager,
 	AssignmentLabelsService,
@@ -234,11 +234,7 @@ export class AssignmentService {
 				throw new CustomError('NOT_FOUND');
 			}
 
-			if (get(newAssignmentContent, 'type.label') === 'audio') {
-				newAssignmentContent.thumbnail_path = DEFAULT_AUDIO_STILL;
-			}
-
-			return newAssignmentContent;
+			return addDefaultAudioStillToItem(newAssignmentContent);
 		}
 
 		return null;

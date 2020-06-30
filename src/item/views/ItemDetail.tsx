@@ -380,26 +380,33 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															setIsOpenAddToCollectionModal(true)
 														}
 													/>
-													<Button
-														type="tertiary"
-														icon="clipboard"
-														label={t('item/views/item___maak-opdracht')}
-														ariaLabel={t(
-															'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
-														)}
-														title={t(
-															'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
-														)}
-														onClick={() =>
-															history.push(
-																generateAssignmentCreateLink(
-																	'KIJK',
-																	item.external_id,
-																	'ITEM'
+													{PermissionService.hasPerm(
+														user,
+														PermissionName.CREATE_ASSIGNMENTS
+													) && (
+														<Button
+															type="tertiary"
+															icon="clipboard"
+															label={t(
+																'item/views/item___maak-opdracht'
+															)}
+															ariaLabel={t(
+																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
+															)}
+															title={t(
+																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
+															)}
+															onClick={() =>
+																history.push(
+																	generateAssignmentCreateLink(
+																		'KIJK',
+																		item.external_id,
+																		'ITEM'
+																	)
 																)
-															)
-														}
-													/>
+															}
+														/>
+													)}
 												</Flex>
 											</ButtonToolbar>
 										</Spacer>

@@ -3,6 +3,7 @@ import { compact, fromPairs, get, groupBy } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { DEFAULT_AUDIO_STILL } from '../../constants';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import i18n from '../../translations/i18n';
 import { ApolloCacheManager, dataService } from '../data-service';
@@ -30,7 +31,6 @@ import {
 	EventInitAction,
 	GetBookmarksForUserResponse,
 } from './bookmarks-views-plays-service.types';
-import { DEFAULT_AUDIO_STILL } from '../../constants';
 
 export class BookmarksViewsPlaysService {
 	public static async action(

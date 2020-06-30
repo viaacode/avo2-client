@@ -114,7 +114,26 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
 			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{
+							name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
+						},
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{
+							name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
+						},
+					],
+					user
+				),
 				PermissionService.hasPermissions(
 					[
 						{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
@@ -133,18 +152,41 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 			]);
 			const permissionObj = {
-				canViewBundles: rawPermissions[0],
-				canEditBundles: rawPermissions[1],
-				canDeleteBundles: rawPermissions[2],
-				canCreateBundles: rawPermissions[3],
-				canViewItems: rawPermissions[4],
+				canViewBundle: rawPermissions[0],
+				canViewPublishedBundles: rawPermissions[1],
+				canViewUnpublishedBundles: rawPermissions[2],
+				canEditBundles: rawPermissions[3],
+				canDeleteBundles: rawPermissions[4],
+				canCreateBundles: rawPermissions[5],
+				canViewItems: rawPermissions[6],
 			};
+
+			if (
+				!permissionObj.canViewBundle &&
+				!permissionObj.canViewPublishedBundles &&
+				!permissionObj.canViewUnpublishedBundles
+			) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
+					icon: 'search',
+				});
+			}
+
 			const bundleObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				bundleId,
 				'bundle'
 			);
 
-			if (!bundleObj) {
+			if (
+				!bundleObj ||
+				(!permissionObj.canViewBundle &&
+					bundleObj.is_public &&
+					!permissionObj.canViewPublishedBundles) ||
+				(!permissionObj.canViewBundle &&
+					!bundleObj.is_public &&
+					!permissionObj.canViewUnpublishedBundles)
+			) {
 				setLoadingInfo({
 					state: 'error',
 					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),

@@ -216,7 +216,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					),
 			  ]
 			: []),
-		...(!isContentProtected || (isContentProtected && isAdminUser)
+		...((!isContentProtected || (isContentProtected && isAdminUser)) &&
+		PermissionService.hasPerm(user, PermissionName.DELETE_ANY_CONTENT_PAGES)
 			? [
 					createDropdownMenuItem(
 						'delete',
