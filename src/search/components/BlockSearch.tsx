@@ -12,7 +12,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
-	Flex,
+	// Flex,
 	MenuSearchResultContent,
 	MenuSearchResultItemInfo,
 	Spacer,
@@ -177,25 +177,27 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 							</DropdownContent>
 						</Dropdown>
 					</Spacer>
-					<Spacer margin="large">
-						<p className="c-body-1">
-							<Trans i18nKey="home/views/home___vind-inspiratie-voor-specifieke-vakken-en-domeinen">
-								Vind inspiratie voor specifieke vakken en domeinen:
-							</Trans>
-						</p>
-						<Flex className="c-button-toolbar" orientation="horizontal" center>
-							{/* TODO link to content page */}
-							<Button
-								label={t('home/views/home___basisonderwijs')}
-								type="secondary"
-							/>
-							{/* TODO link to content page */}
-							<Button
-								label={t('home/views/home___secundair-onderwijs')}
-								type="secondary"
-							/>
-						</Flex>
-					</Spacer>
+					{/* TODO: Disabled feature
+					 	<Spacer margin="large">
+							<p className="c-body-1">
+								<Trans i18nKey="home/views/home___vind-inspiratie-voor-specifieke-vakken-en-domeinen">
+									Vind inspiratie voor specifieke vakken en domeinen:
+								</Trans>
+							</p>
+							<Flex className="c-button-toolbar" orientation="horizontal" center>
+								TODO link to content page
+								<Button
+									label={t('home/views/home___basisonderwijs')}
+									type="secondary"
+								/>
+								TODO link to content page
+								<Button
+									label={t('home/views/home___secundair-onderwijs')}
+									type="secondary"
+								/>
+							</Flex>
+						</Spacer>
+					*/}
 				</div>
 			</Spacer>
 		</Container>
