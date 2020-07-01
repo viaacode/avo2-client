@@ -147,6 +147,13 @@
 
 		ul, ol {
 			margin: 0;
+			padding-left: 2.25rem;
+		}
+
+		ul {
+			li {
+				list-style: circle;
+			}
 		}
 	}
 
