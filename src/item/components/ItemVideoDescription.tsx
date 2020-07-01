@@ -80,7 +80,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 		// If this happens sooner, the time will be ignored by the video player
 		const queryParams = parse(location.search);
 
-		setTime(parseInt((queryParams.time as string) || String(seekTime), 10));
+		setTime(parseInt((queryParams.time as string) || String(seekTime || 0), 10));
 	}, [location.search, setTime, seekTime]);
 
 	useEffect(() => {

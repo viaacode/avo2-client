@@ -16,6 +16,7 @@ import {
 	Flex,
 	FlexItem,
 	Grid,
+	HeaderContentType,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -777,15 +778,34 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								<Toolbar autoHeight>
 									<ToolbarLeft>
 										<ToolbarItem>
-											<span className="c-overline u-text-muted">
-												{is_public
-													? t(
-															'bundle/views/bundle-detail___openbare-bundel'
-													  )
-													: t(
-															'bundle/views/bundle-detail___prive-bundel'
-													  )}
-											</span>
+											<MetaData spaced={true} category="bundle">
+												<MetaDataItem>
+													<HeaderContentType
+														category="bundle"
+														label={
+															is_public
+																? t(
+																		'bundle/views/bundle-detail___openbare-bundel'
+																  )
+																: t(
+																		'bundle/views/bundle-detail___prive-bundel'
+																  )
+														}
+													/>
+												</MetaDataItem>
+												<MetaDataItem
+													icon="eye"
+													label={String(
+														bookmarkViewPlayCounts.viewCount || 0
+													)}
+												/>
+												<MetaDataItem
+													icon="bookmark"
+													label={String(
+														bookmarkViewPlayCounts.bookmarkCount || 0
+													)}
+												/>
+											</MetaData>
 											<Spacer margin="top-small">
 												<h1 className="c-h1 u-m-0">{title}</h1>
 											</Spacer>
