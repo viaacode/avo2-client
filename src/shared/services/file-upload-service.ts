@@ -68,28 +68,23 @@ export class FileUploadService {
 		ownerId: string
 	): Promise<string> {
 		let url: string | undefined;
-		let body: Avo.FileUpload.UploadAssetInfo | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/assets/upload`;
-			const content = await this.fileToBase64(file);
-			if (!content) {
-				throw new CustomError("Failed to upload file: file doesn't have any content", null);
-			}
-			body = {
-				content,
-				ownerId,
-				filename: file.name,
-				mimeType: file.type,
-				type: assetType as any,
-			};
+
+			const formData = new FormData();
+			formData.append('ownerId', ownerId);
+			formData.append('filename', file.name);
+			formData.append('mimeType', file.type);
+			formData.append('type', assetType as any);
+			formData.append('content', file, file.name);
 
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
+					// 'content-type': 'multipart/form-data',
 				},
 				credentials: 'include',
-				body: JSON.stringify(body),
+				body: formData,
 			});
 
 			const data: Avo.FileUpload.AssetInfo | any = await response.json();
@@ -102,7 +97,7 @@ export class FileUploadService {
 			}
 			return data.url;
 		} catch (err) {
-			throw new CustomError('Failed to upload file', err, { file, url, body });
+			throw new CustomError('Failed to upload file', err, { file, url });
 		}
 	}
 

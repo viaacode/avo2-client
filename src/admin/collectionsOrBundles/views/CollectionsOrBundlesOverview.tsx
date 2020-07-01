@@ -175,7 +175,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to get users from the database', err, { tableState })
+				new CustomError('Failed to get collections from the database', err, { tableState })
 			);
 			setLoadingInfo({
 				state: 'error',
