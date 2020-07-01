@@ -100,66 +100,63 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 				/>
 			</MetaTags>
 			<Container mode="vertical">
-				<Container mode="horizontal">
-					<Spacer margin="bottom">
-						<Grid>
-							<Column size="3-7">
+				<Spacer margin="bottom">
+					<Grid>
+						<Column size="3-7">
+							<Form type="standard">
 								<Form type="standard">
-									<Form type="standard">
-										<BlockHeading type="h3">
-											<Trans i18nKey="settings/components/account___account">
-												Account
-											</Trans>
-										</BlockHeading>
-										<FormGroup label={t('settings/components/account___email')}>
-											<span>{get(user, 'mail')}</span>
-										</FormGroup>
-										<Spacer margin="top-large">
-											<Alert type="info">
-												<span>
-													<h4 className="c-h4">
-														<Trans i18nKey="settings/components/account___viaa-identiteitsmanagement-systeem">
-															VIAA identiteitsmanagement systeem
-														</Trans>
-													</h4>
-													<Trans i18nKey="settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem">
-														Jouw account wordt beheerd in een centraal
-														identiteitsmanagementsysteem dat je toelaat
-														om met dezelfde gegevens op meerdere
-														VIAA-websites en applicaties in te loggen.{' '}
-														<br /> Wijzigingen aan deze gegevens worden
-														dus doorgevoerd in al deze websites en
-														tools.
-													</Trans>
-													<br />
-													<a href={ssumAccountEditPage}>
-														<Trans i18nKey="settings/components/account___beheer-je-account-gegevens">
-															Beheer je account gegevens
-														</Trans>
-													</a>
-												</span>
-											</Alert>
-										</Spacer>
-									</Form>
-
-									<div className="c-hr" />
-
-									<FormGroup
-										label={t(
-											'settings/components/account___koppel-je-account-met-andere-platformen'
-										)}
-									>
-										<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
-										<div>{renderIdpLinkControls('KLASCEMENT')}</div>
+									<BlockHeading type="h3">
+										<Trans i18nKey="settings/components/account___account">
+											Account
+										</Trans>
+									</BlockHeading>
+									<FormGroup label={t('settings/components/account___email')}>
+										<span>{get(user, 'mail')}</span>
 									</FormGroup>
+									<Spacer margin="top-large">
+										<Alert type="info">
+											<span>
+												<h4 className="c-h4">
+													<Trans i18nKey="settings/components/account___viaa-identiteitsmanagement-systeem">
+														VIAA identiteitsmanagement systeem
+													</Trans>
+												</h4>
+												<Trans i18nKey="settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem">
+													Jouw account wordt beheerd in een centraal
+													identiteitsmanagementsysteem dat je toelaat om
+													met dezelfde gegevens op meerdere VIAA-websites
+													en applicaties in te loggen. <br /> Wijzigingen
+													aan deze gegevens worden dus doorgevoerd in al
+													deze websites en tools.
+												</Trans>
+												<br />
+												<a href={ssumAccountEditPage}>
+													<Trans i18nKey="settings/components/account___beheer-je-account-gegevens">
+														Beheer je account gegevens
+													</Trans>
+												</a>
+											</span>
+										</Alert>
+									</Spacer>
 								</Form>
-							</Column>
-							<Column size="3-5">
-								<></>
-							</Column>
-						</Grid>
-					</Spacer>
-				</Container>
+
+								<div className="c-hr" />
+
+								<FormGroup
+									label={t(
+										'settings/components/account___koppel-je-account-met-andere-platformen'
+									)}
+								>
+									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
+									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
+								</FormGroup>
+							</Form>
+						</Column>
+						<Column size="3-5">
+							<></>
+						</Column>
+					</Grid>
+				</Spacer>
 			</Container>
 		</>
 	);

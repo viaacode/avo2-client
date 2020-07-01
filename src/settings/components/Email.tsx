@@ -154,60 +154,60 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 
 	return (
 		<Container mode="vertical">
-			<Container mode="horizontal">
-				<MetaTags>
-					<title>
-						{GENERATE_SITE_TITLE(
-							t('settings/components/email___nieuwsbrief-voorkeuren-pagina-titel')
-						)}
-					</title>
-					<meta
-						name="description"
-						content={t(
-							'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving'
-						)}
-					/>
-				</MetaTags>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/email___nieuwsbrief-voorkeuren-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving'
+					)}
+				/>
+			</MetaTags>
+			<Spacer margin="bottom-small">
 				<BlockHeading type="h3">
 					{t('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}
 				</BlockHeading>
-				<Html
-					content={t(
-						'settings/components/email___e-mail-nieuwsbrief-voorkeuren-beschrijving'
-					)}
-				/>
-				<Spacer margin="top">
-					<Form>
-						<FormGroup labelFor="newsletter" required>
-							<CheckboxGroup>
-								{(keys(newsletterLabels) as any).map(
-									(newsletterKey: NewsletterList) => (
-										<Checkbox
-											key={`newsletter_${newsletterKey}`}
-											label={(newsletterLabels as any)[newsletterKey]}
-											checked={newsletterPreferences[newsletterKey]}
-											onChange={() => {
-												onChangePreference({
-													[newsletterKey]: !newsletterPreferences[
-														newsletterKey
-													],
-												});
-											}}
-										/>
-									)
-								)}
-							</CheckboxGroup>
-						</FormGroup>
-					</Form>
-				</Spacer>
-				<Spacer margin="top">
-					{isLoading ? (
-						<Spinner />
-					) : (
-						<Button label="Opslaan" type="primary" onClick={onSavePreferences} />
-					)}
-				</Spacer>
-			</Container>
+			</Spacer>
+			<Html
+				content={t(
+					'settings/components/email___e-mail-nieuwsbrief-voorkeuren-beschrijving'
+				)}
+			/>
+			<Spacer margin="top">
+				<Form>
+					<FormGroup labelFor="newsletter" required>
+						<CheckboxGroup>
+							{(keys(newsletterLabels) as any).map(
+								(newsletterKey: NewsletterList) => (
+									<Checkbox
+										key={`newsletter_${newsletterKey}`}
+										label={(newsletterLabels as any)[newsletterKey]}
+										checked={newsletterPreferences[newsletterKey]}
+										onChange={() => {
+											onChangePreference({
+												[newsletterKey]: !newsletterPreferences[
+													newsletterKey
+												],
+											});
+										}}
+									/>
+								)
+							)}
+						</CheckboxGroup>
+					</FormGroup>
+				</Form>
+			</Spacer>
+			<Spacer margin="top">
+				{isLoading ? (
+					<Spinner />
+				) : (
+					<Button label="Opslaan" type="primary" onClick={onSavePreferences} />
+				)}
+			</Spacer>
 		</Container>
 	);
 };
