@@ -1,4 +1,4 @@
-import { get, isString } from 'lodash-es';
+import { isString } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,21 +15,33 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getUserGroupIds } from '../../../../../authentication/authentication.service';
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
-import { CustomError, navigate, navigateToContentType } from '../../../../../shared/helpers';
+import {
+	CustomError,
+	getEnv,
+	navigate,
+	navigateToContentType,
+} from '../../../../../shared/helpers';
+import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
-import { dataService, ToastService } from '../../../../../shared/services';
+import { ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
-import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+
+export interface ContentPageOverviewParams {
+	withBlock: boolean;
+	contentType: string;
+	labelIds: number[];
+	offset: number;
+	limit: number;
+}
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
@@ -94,85 +106,35 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		};
 	};
 
-	const getLabelFilter = useCallback((): any[] => {
-		const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
-		const blockLabelIds = ((contentTypeAndTabs.selectedLabels ||
-			[]) as Avo.ContentPage.Label[]).map(labelObj => labelObj.id);
-		if (selectedLabelIds.length) {
-			// The user selected some block labels at the top of the page overview component
-			return [
-				{
-					content_content_labels: {
-						content_label: { id: { _in: selectedLabelIds } },
-					},
-				},
-			];
-		}
-		if (blockLabelIds.length) {
-			// If the "all" label is selected, we want to get content pages with any of the block labels
-			return [
-				{
-					content_content_labels: {
-						content_label: { id: { _in: blockLabelIds } },
-					},
-				},
-			];
-		}
-		return [];
-		// Deep compare by value and not by ref
-		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedTabs, JSON.stringify(contentTypeAndTabs.selectedLabels)]);
-
 	const fetchPages = useCallback(async () => {
 		try {
-			const userGroupIds: number[] = getUserGroupIds(user);
-
-			const now = new Date().toISOString();
-			const response = await dataService.query({
-				query:
-					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
-				variables: {
-					where: {
-						_and: [
-							{
-								// Get content pages with the selected content type
-								content_type: { _eq: contentTypeAndTabs.selectedContentType },
-							},
-							{
-								// Get pages that are visible to the current user
-								_or: userGroupIds.map(userGroupId => ({
-									user_group_ids: { _contains: userGroupId },
-								})),
-							},
-							...getLabelFilter(),
-							// publish state
-							{
-								_or: [
-									{ is_public: { _eq: true } },
-									{ publish_at: { _eq: null }, depublish_at: { _gte: now } },
-									{ publish_at: { _lte: now }, depublish_at: { _eq: null } },
-									{ publish_at: { _lte: now }, depublish_at: { _gte: now } },
-								],
-							},
-						],
-					},
-					offset: currentPage * debouncedItemsPerPage,
-					limit: debouncedItemsPerPage,
+			const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
+			const blockLabelIds = ((contentTypeAndTabs.selectedLabels ||
+				[]) as Avo.ContentPage.Label[]).map(labelObj => labelObj.id);
+			const body: ContentPageOverviewParams = {
+				withBlock: itemStyle === 'ACCORDION',
+				contentType: contentTypeAndTabs.selectedContentType,
+				labelIds:
+					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
+				offset: currentPage * debouncedItemsPerPage,
+				limit: debouncedItemsPerPage,
+			};
+			const reply = await fetchWithLogout(`${getEnv('PROXY_URL')}/content-pages/overview`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
+				body: JSON.stringify(body),
 			});
-			const dbPages = get(response, 'data.app_content', []);
-			setPages(convertToContentPageInfos(dbPages));
-			setPageCount(
-				Math.ceil(
-					get(response, 'data.app_content_aggregate.aggregate.count', 0) /
-						debouncedItemsPerPage
-				)
-			);
+
+			const response = await reply.json();
+			setPages(convertToContentPageInfos(response.pages));
+			setPageCount(Math.ceil(response.count / debouncedItemsPerPage));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch pages', err, {
-					query: 'GET_CONTENT',
+					query: 'GET_CONTENT_PAGES',
 					variables: {
 						offset: currentPage * debouncedItemsPerPage,
 						limit: debouncedItemsPerPage,
@@ -193,7 +155,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		setPages,
 		setPageCount,
 		contentTypeAndTabs.selectedContentType,
-		getLabelFilter,
 		user,
 		t,
 	]);
