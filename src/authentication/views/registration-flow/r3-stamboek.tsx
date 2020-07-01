@@ -83,17 +83,10 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						</Trans>
 					</p>
 					<Spacer margin="top-small">
-						{/* TODO add links to help article */}
 						<Alert type="info">
-							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a
-								onClick={() =>
-									ToastService.info(
-										t(
-											'authentication/views/registration-flow/r-3-stamboek___nog-niet-geimplementeerd'
-										)
-									)
-								}
+								href="/faq-lesgever/waarom-lerarenkaart-of-stamboeknummer"
+								target="_blank"
 							>
 								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
 									Waarom hebben jullie mijn stamboeknummer nodig?
