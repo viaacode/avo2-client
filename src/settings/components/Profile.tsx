@@ -717,123 +717,114 @@ const Profile: FunctionComponent<ProfileProps & {
 
 	const renderProfilePage = () => {
 		return (
-			<>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						<Spacer margin="bottom">
-							<Grid>
-								<Column size="3-7">
-									<Form type="standard">
-										<>
-											<FormGroup
-												label={t('settings/components/profile___nickname')}
-												labelFor="alias"
-											>
-												<TextInput
-													id="alias"
-													placeholder={t(
-														'settings/components/profile___een-unieke-gebruikersnaam'
-													)}
-													value={alias || ''}
-													onChange={setAlias}
-												/>
-											</FormGroup>
-											<FormGroup
-												label={t('settings/components/profile___functie')}
-												labelFor="func"
-											>
-												<TextInput
-													id="func"
-													placeholder={t(
-														'settings/components/profile___bv-leerkracht-basis-onderwijs'
-													)}
-													value={func || ''}
-													onChange={setFunc}
-												/>
-											</FormGroup>
-											<FormGroup
-												label={t(
-													'settings/components/profile___profielfoto'
-												)}
-												labelFor="profilePicture"
-											>
-												<FileUpload
-													label={t(
-														'settings/components/profile___upload-een-profiel-foto'
-													)}
-													urls={avatar ? [avatar] : []}
-													allowMulti={false}
-													assetType="PROFILE_AVATAR"
-													ownerId={get(user, 'profile.id')}
-													onChange={urls => setAvatar(urls[0])}
-												/>
-											</FormGroup>
-											<FormGroup
-												label={t('settings/components/profile___bio')}
-												labelFor="bio"
-											>
-												<TextArea
-													name="bio"
-													id="bio"
-													height="medium"
-													placeholder={t(
-														'settings/components/profile___een-korte-beschrijving-van-jezelf'
-													)}
-													value={bio || ''}
-													onChange={setBio}
-												/>
-											</FormGroup>
-										</>
-										{renderFieldVisibleOrRequired(
-											'SUBJECTS',
-											renderSubjectsField
-										)}
-										{renderFieldVisibleOrRequired(
-											'EDUCATION_LEVEL',
-											renderEducationLevelsField
-										)}
-										{renderFieldVisibleOrRequired(
-											'EDUCATIONAL_ORGANISATION',
-											renderEducationOrganisationsField
-										)}
-										{renderFieldVisibleOrRequired(
-											'ORGANISATION',
-											renderOrganisationField
-										)}
-										<Button
-											label={t('settings/components/profile___opslaan')}
-											type="primary"
-											disabled={isSaving}
-											onClick={saveProfileChanges}
+			<Container mode="vertical">
+				<Spacer margin="bottom">
+					<Grid>
+						<Column size="3-7">
+							<Form type="standard">
+								<>
+									<FormGroup
+										label={t('settings/components/profile___nickname')}
+										labelFor="alias"
+									>
+										<TextInput
+											id="alias"
+											placeholder={t(
+												'settings/components/profile___een-unieke-gebruikersnaam'
+											)}
+											value={alias || ''}
+											onChange={setAlias}
 										/>
-									</Form>
-								</Column>
-								<Column size="3-5">
-									<>
-										{/*<Box>*/}
-										{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
-										{/*	/!* TODO replace with components from component repo *!/*/}
-										{/*	<div className="c-progress-bar" />*/}
-										{/*</Box>*/}
-										<Spacer margin={['top', 'bottom']}>
-											<Box>
-												<p>
-													<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
-														Vul hier wat info over jezelf in! Deze
-														informatie wordt getoond op jouw persoonlijk
-														profiel. Je kan voor elk veld aanduiden of
-														je deze informatie wil delen of niet.
-													</Trans>
-												</p>
-											</Box>
-										</Spacer>
-									</>
-								</Column>
-							</Grid>
-						</Spacer>
-					</Container>
-				</Container>
-			</>
+									</FormGroup>
+									<FormGroup
+										label={t('settings/components/profile___functie')}
+										labelFor="func"
+									>
+										<TextInput
+											id="func"
+											placeholder={t(
+												'settings/components/profile___bv-leerkracht-basis-onderwijs'
+											)}
+											value={func || ''}
+											onChange={setFunc}
+										/>
+									</FormGroup>
+									<FormGroup
+										label={t('settings/components/profile___profielfoto')}
+										labelFor="profilePicture"
+									>
+										<FileUpload
+											label={t(
+												'settings/components/profile___upload-een-profiel-foto'
+											)}
+											urls={avatar ? [avatar] : []}
+											allowMulti={false}
+											assetType="PROFILE_AVATAR"
+											ownerId={get(user, 'profile.id')}
+											onChange={urls => setAvatar(urls[0])}
+										/>
+									</FormGroup>
+									<FormGroup
+										label={t('settings/components/profile___bio')}
+										labelFor="bio"
+									>
+										<TextArea
+											name="bio"
+											id="bio"
+											height="medium"
+											placeholder={t(
+												'settings/components/profile___een-korte-beschrijving-van-jezelf'
+											)}
+											value={bio || ''}
+											onChange={setBio}
+										/>
+									</FormGroup>
+								</>
+								{renderFieldVisibleOrRequired('SUBJECTS', renderSubjectsField)}
+								{renderFieldVisibleOrRequired(
+									'EDUCATION_LEVEL',
+									renderEducationLevelsField
+								)}
+								{renderFieldVisibleOrRequired(
+									'EDUCATIONAL_ORGANISATION',
+									renderEducationOrganisationsField
+								)}
+								{renderFieldVisibleOrRequired(
+									'ORGANISATION',
+									renderOrganisationField
+								)}
+								<Button
+									label={t('settings/components/profile___opslaan')}
+									type="primary"
+									disabled={isSaving}
+									onClick={saveProfileChanges}
+								/>
+							</Form>
+						</Column>
+						<Column size="3-5">
+							<>
+								{/*<Box>*/}
+								{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
+								{/*	/!* TODO replace with components from component repo *!/*/}
+								{/*	<div className="c-progress-bar" />*/}
+								{/*</Box>*/}
+								<Spacer margin={['top', 'bottom']}>
+									<Box>
+										<p>
+											<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
+												Vul hier wat info over jezelf in! Deze informatie
+												wordt getoond op jouw persoonlijk profiel. Je kan
+												voor elk veld aanduiden of je deze informatie wil
+												delen of niet.
+											</Trans>
+										</p>
+									</Box>
+								</Spacer>
+							</>
+						</Column>
+					</Grid>
+				</Spacer>
+			</Container>
 		);
 	};
 
