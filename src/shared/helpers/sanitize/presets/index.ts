@@ -44,6 +44,12 @@ const full = {
 		img: ['src'],
 		div: ['class', 'style'],
 		span: ['class', 'style'],
+		h1: ['class', 'style'],
+		h2: ['class', 'style'],
+		h3: ['class', 'style'],
+		h4: ['class', 'style'],
+		h5: ['class', 'style'],
+		h6: ['class', 'style'],
 	},
 };
 
