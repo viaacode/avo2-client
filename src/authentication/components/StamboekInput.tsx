@@ -122,6 +122,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			// eg: 3256
 			// or: 43457876543-34
 			if (/^[0-9]{0,10}$/g.test(cleanedStamboekNumber)) {
+				onChange('');
 				setStamboekValidationStatus('INCOMPLETE');
 				return;
 			}
@@ -135,15 +136,19 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					onChange(stamboekNumber);
 					setStamboekValidationStatus('VALID');
 				} else if (validationStatus === 'ALREADY_IN_USE') {
+					onChange('');
 					setStamboekValidationStatus('ALREADY_IN_USE');
 				} else {
 					// 'INVALID' server response
+					onChange('');
 					setStamboekValidationStatus('INVALID_NUMBER');
 				}
 			} else {
+				onChange('');
 				setStamboekValidationStatus('INVALID_FORMAT');
 			}
 		} catch (err) {
+			onChange('');
 			setStamboekValidationStatus('SERVER_ERROR');
 		}
 	};
