@@ -27,6 +27,11 @@ export const GET_CONTENT_PAGES = gql`
 			is_public
 			path
 			profile {
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 				user: usersByuserId {
 					first_name
 					last_name
@@ -141,6 +146,11 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 			is_public
 			path
 			profile {
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 				user: usersByuserId {
 					first_name
 					last_name
@@ -197,6 +207,11 @@ export const GET_CONTENT_BY_ID = gql`
 			is_public
 			path
 			profile {
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 				user: usersByuserId {
 					first_name
 					last_name

@@ -164,6 +164,11 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 						id
 					}
 					avatar
+					organisation {
+						logo_url
+						name
+						or_id
+					}
 					id
 				}
 			}
@@ -230,6 +235,11 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			owner_profile_id
 			profile {
 				id
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 				user: usersByuserId {
 					id
 					role {

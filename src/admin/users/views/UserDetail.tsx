@@ -4,15 +4,7 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import {
-	Accordion,
-	Avatar,
-	Button,
-	ButtonToolbar,
-	Container,
-	Spacer,
-	Table,
-} from '@viaa/avo2-components';
+import { Accordion, Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -23,7 +15,7 @@ import {
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, getEnv } from '../../../shared/helpers';
+import { buildLink, CustomError, getEnv, renderAvatar } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import {
@@ -238,10 +230,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							{renderDetailRow(
-								<Avatar
-									image={get(storedProfile, 'profile.avatar')}
-									size="large"
-								/>,
+								renderAvatar(storedProfile, { small: false }),
 								t('admin/users/views/user-detail___avatar')
 							)}
 							{renderSimpleDetailRows(storedProfile, [

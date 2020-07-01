@@ -67,8 +67,12 @@ export const GET_COLLECTION_BY_ID = gql`
 				}
 				created_at
 				updated_at
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 			}
-			organisation_id
 			is_public
 			external_id
 			depublish_at
@@ -220,6 +224,11 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				alias
 				alternative_email
 				avatar
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 				created_at
 				stamboek
 				updated_at

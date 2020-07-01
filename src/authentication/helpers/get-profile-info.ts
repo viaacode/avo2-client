@@ -77,12 +77,13 @@ export function getProfileAlias(user: Avo.User.User | undefined): string {
 }
 
 export function getProfileAvatar(user: Avo.User.User | undefined): string {
-	if (!user) {
+	const profile = get(user, 'profile');
+	if (!profile) {
 		throw new CustomError(
-			'Failed to get profile avatar because the logged in user is undefined'
+			'Failed to get profile avatar because the logged in user/profile is undefined'
 		);
 	}
-	return get(user, 'profile.avatar', '');
+	return get(profile, 'organisation.logo_url') || get(profile, 'avatar') || undefined;
 }
 
 export function getProfileInitials(user: Avo.User.User | undefined): string {
