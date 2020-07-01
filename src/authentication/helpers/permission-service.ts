@@ -1,7 +1,9 @@
-import { get, some } from 'lodash-es';
+import { get, isString, some } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentService } from '../../admin/content/content.service';
+import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
 
@@ -159,22 +161,42 @@ export class PermissionService {
 		// Check if user has the requested permission
 		const profileId = getProfileId(user);
 		if (!userPermissions.includes(permissionName)) {
+			// If the user doesn't have the permission, then we don't even need to check if the user is the owner of the object.
 			return false;
+		}
+		if (!obj) {
+			// Eg: Check if user has permission to view own collections, without checking a specific collection
+			// This is used to show the workspace overview, since there only the owner's collections are shown
+			return true;
 		}
 		// Special checks on top of name being in the permission list
 		switch (permissionName) {
 			case PermissionName.EDIT_OWN_COLLECTIONS:
-				const collection = await CollectionService.fetchCollectionOrBundleById(
-					obj,
-					'collection'
-				);
+			case PermissionName.PUBLISH_OWN_COLLECTIONS:
+			case PermissionName.DELETE_OWN_COLLECTIONS:
+			case PermissionName.VIEW_OWN_COLLECTIONS:
+				const collection = isString(obj)
+					? await CollectionService.fetchCollectionOrBundleById(obj, 'collection')
+					: obj;
 				const collectionOwnerId = get(collection, 'owner_profile_id');
 				return !!profileId && !!collectionOwnerId && profileId === collectionOwnerId;
 
 			case PermissionName.EDIT_OWN_BUNDLES:
-				const bundle = await CollectionService.fetchCollectionOrBundleById(obj, 'bundle');
+			case PermissionName.PUBLISH_OWN_BUNDLES:
+			case PermissionName.DELETE_OWN_BUNDLES:
+			case PermissionName.VIEW_OWN_BUNDLES:
+				const bundle = isString(obj)
+					? await CollectionService.fetchCollectionOrBundleById(obj, 'bundle')
+					: obj;
 				const bundleOwnerId = get(bundle, 'owner_profile_id');
 				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;
+
+			case PermissionName.EDIT_OWN_CONTENT_PAGES:
+				const contentPage: ContentPageInfo = isString(obj)
+					? await ContentService.fetchContentPageByPath(obj)
+					: obj;
+				const contentPageOwnerId = get(contentPage, 'user_profile_id');
+				return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;
 
 			case PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT:
 				return this.checkViewItemsLinkedToAssignment(user, obj, 'ITEM');

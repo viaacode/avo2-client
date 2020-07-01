@@ -93,8 +93,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
-			canEditCollections: boolean;
-			canDeleteCollections: boolean;
+			canEditCollection: boolean;
+			canPublishCollection: boolean;
+			canDeleteCollection: boolean;
 			canCreateCollections: boolean;
 			canViewItems: boolean;
 		}>
@@ -206,6 +207,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				),
 				PermissionService.hasPermissions(
 					[
+						{ name: PermissionName.PUBLISH_OWN_COLLECTIONS, obj: collectionId },
+						{ name: PermissionName.PUBLISH_ALL_COLLECTIONS },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
 						{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
 						{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 					],
@@ -221,10 +229,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canViewCollection: rawPermissions[0],
 				canViewPublishedCollections: rawPermissions[1],
 				canViewUnpublishedCollections: rawPermissions[2],
-				canEditCollections: rawPermissions[3],
-				canDeleteCollections: rawPermissions[4],
-				canCreateCollections: rawPermissions[5],
-				canViewItems: rawPermissions[6],
+				canEditCollection: rawPermissions[3],
+				canPublishCollection: rawPermissions[4],
+				canDeleteCollection: rawPermissions[5],
+				canCreateCollections: rawPermissions[6],
+				canViewItems: rawPermissions[7],
 			};
 
 			if (
@@ -387,7 +396,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				setIsShareThroughEmailModalOpen(true);
 				break;
 
-			case 'openShareCollectionModal':
+			case 'openPublishCollectionModal':
 				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
 
@@ -526,7 +535,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canDeleteCollections
+			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
 							'delete',
@@ -549,7 +558,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => executeAction('createAssignment')}
 					/>
 				)}
-				{permissions.canEditCollections && (
+				{permissions.canPublishCollection && (
 					<Button
 						type="secondary"
 						title={
@@ -571,7 +580,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								  )
 						}
 						icon={collection && collection.is_public ? 'unlock-3' : 'lock'}
-						onClick={() => executeAction('openShareCollectionModal')}
+						onClick={() => executeAction('openPublishCollectionModal')}
 					/>
 				)}
 				<ToggleButton
@@ -611,7 +620,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</DropdownContent>
 				</ControlledDropdown>
-				{permissions.canEditCollections && (
+				{permissions.canEditCollection && (
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
@@ -630,7 +639,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			...(permissions.canEditCollections
+			...(permissions.canEditCollection
 				? [
 						createDropdownMenuItem(
 							'editCollection',
@@ -648,10 +657,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canEditCollections
+			...(permissions.canPublishCollection
 				? [
 						createDropdownMenuItem(
-							'openShareCollectionModal',
+							'openPublishCollectionModal',
 							t('collection/views/collection-detail___delen'),
 							'plus'
 						),
@@ -669,11 +678,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				t('collection/views/collection-detail___deel'),
 				'share-2'
 			),
-			createDropdownMenuItem(
-				'addToBundle',
-				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
-				'plus'
-			),
+			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
+				? [
+						createDropdownMenuItem(
+							'addToBundle',
+							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+							'plus'
+						),
+				  ]
+				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
@@ -683,7 +696,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canDeleteCollections
+			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
 							'delete',

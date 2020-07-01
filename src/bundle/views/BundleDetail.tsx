@@ -84,9 +84,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [relatedItems, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
-			canViewBundles: boolean;
-			canEditBundles: boolean;
-			canDeleteBundles: boolean;
+			canViewBundle: boolean;
+			canViewPublishedBundles: boolean;
+			canViewUnpublishedBundles: boolean;
+			canEditBundle: boolean;
+			canPublishBundle: boolean;
+			canDeleteBundle: boolean;
 			canCreateBundles: boolean;
 			canViewItems: boolean;
 		}>
@@ -143,6 +146,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				),
 				PermissionService.hasPermissions(
 					[
+						{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
+						{ name: PermissionName.PUBLISH_ALL_BUNDLES },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
 						{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
 						{ name: PermissionName.DELETE_ANY_BUNDLES },
 					],
@@ -155,10 +165,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canViewBundle: rawPermissions[0],
 				canViewPublishedBundles: rawPermissions[1],
 				canViewUnpublishedBundles: rawPermissions[2],
-				canEditBundles: rawPermissions[3],
-				canDeleteBundles: rawPermissions[4],
-				canCreateBundles: rawPermissions[5],
-				canViewItems: rawPermissions[6],
+				canEditBundle: rawPermissions[3],
+				canPublishBundle: rawPermissions[4],
+				canDeleteBundle: rawPermissions[5],
+				canCreateBundles: rawPermissions[6],
+				canViewItems: rawPermissions[7],
 			};
 
 			if (
@@ -343,7 +354,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				await onDuplicateBundle();
 				break;
 
-			case 'openShareModal':
+			case 'openPublishModal':
 				setIsPublishModalOpen(true);
 				break;
 
@@ -485,15 +496,70 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		});
 	}
 
+	const renderActionDropdown = () => {
+		const BUNDLE_DROPDOWN_ITEMS = [
+			...(permissions.canCreateBundles
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('bundle/views/bundle-detail___dupliceer'),
+							'copy'
+						),
+				  ]
+				: []),
+			...(permissions.canDeleteBundle
+				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
+				: []),
+		];
+
+		if (!BUNDLE_DROPDOWN_ITEMS.length) {
+			return null;
+		}
+
+		return (
+			<ControlledDropdown
+				isOpen={isOptionsMenuOpen}
+				menuWidth="fit-content"
+				onOpen={() => setIsOptionsMenuOpen(true)}
+				onClose={() => setIsOptionsMenuOpen(false)}
+				placement="bottom-end"
+			>
+				<DropdownButton>
+					<Button
+						type="secondary"
+						icon="more-horizontal"
+						ariaLabel={t('collection/views/collection-detail___meer-opties')}
+						title={t('collection/views/collection-detail___meer-opties')}
+					/>
+				</DropdownButton>
+				<DropdownContent>
+					<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
+				</DropdownContent>
+			</ControlledDropdown>
+		);
+	};
+
 	const renderActions = () => {
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
-				createDropdownMenuItem('edit', t('bundle/views/bundle-detail___bewerken'), 'edit'),
-				createDropdownMenuItem(
-					'openShareModal',
-					t('bundle/views/bundle-detail___delen'),
-					'lock'
-				),
+				...(permissions.canEditBundle
+					? [
+							createDropdownMenuItem(
+								'edit',
+								t('bundle/views/bundle-detail___bewerken'),
+								'edit'
+							),
+					  ]
+					: []),
+				...(permissions.canPublishBundle
+					? [
+							createDropdownMenuItem(
+								'openPublishModal',
+								t('bundle/views/bundle-detail___delen'),
+								'lock'
+							),
+					  ]
+					: []),
 				createDropdownMenuItem(
 					'toggleBookmark',
 					bookmarkViewPlayCounts.isBookmarked
@@ -515,7 +581,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							),
 					  ]
 					: []),
-				...(permissions.canDeleteBundles
+				...(permissions.canDeleteBundle
 					? [
 							createDropdownMenuItem(
 								'delete',
@@ -546,44 +612,34 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				</ControlledDropdown>
 			);
 		}
-		const BUNDLE_DROPDOWN_ITEMS = [
-			...(permissions.canCreateBundles
-				? [
-						createDropdownMenuItem(
-							'duplicate',
-							t('bundle/views/bundle-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions.canDeleteBundles
-				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
-				: []),
-		];
 		const isPublic = bundle && bundle.is_public;
 		return (
 			<ButtonToolbar>
-				<Button
-					title={
-						isPublic
-							? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
-							: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
-					}
-					ariaLabel={
-						isPublic
-							? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
-							: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
-					}
-					icon={isPublic ? 'unlock-3' : 'lock'}
-					onClick={() => executeAction('openShareModal')}
-					type="secondary"
-				/>
-				<Button
-					label={t('bundle/views/bundle-detail___bewerken')}
-					title={t('bundle/views/bundle-detail___pas-de-bundel-aan')}
-					onClick={() => executeAction('edit')}
-					type="primary"
-				/>
+				{permissions.canPublishBundle && (
+					<Button
+						title={
+							isPublic
+								? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
+								: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
+						}
+						ariaLabel={
+							isPublic
+								? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
+								: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
+						}
+						icon={isPublic ? 'unlock-3' : 'lock'}
+						onClick={() => executeAction('openPublishModal')}
+						type="secondary"
+					/>
+				)}
+				{permissions.canEditBundle && (
+					<Button
+						label={t('bundle/views/bundle-detail___bewerken')}
+						title={t('bundle/views/bundle-detail___pas-de-bundel-aan')}
+						onClick={() => executeAction('edit')}
+						type="primary"
+					/>
+				)}
 				<ToggleButton
 					title={t('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
@@ -599,25 +655,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
 					onClick={() => executeAction('openShareThroughEmailModal')}
 				/>
-				<ControlledDropdown
-					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
-					</DropdownContent>
-				</ControlledDropdown>
+				{renderActionDropdown()}
 				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
