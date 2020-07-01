@@ -405,6 +405,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					setIsSaving(false);
 				}, 0);
 			} else {
+				getLoginState();
 				ToastService.success(t('settings/components/profile___opgeslagen'));
 				setIsSaving(false);
 			}
