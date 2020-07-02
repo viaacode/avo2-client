@@ -26,6 +26,7 @@ import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
+import Html from '../shared/components/Html/Html';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
 import { navigate } from '../shared/helpers';
@@ -382,21 +383,12 @@ export class AssignmentHelper {
 						<hr className="c-hr" />
 						<Alert type="info">
 							<div className="c-content c-content--no-m">
-								<p>
-									<Trans i18nKey="assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten">
-										Hulp nodig bij het maken van opdrachten?
-										<br />
-										Bekijk onze{' '}
-										<a
-											href="http://google.com"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											screencast
-										</a>
-										.
-									</Trans>
-								</p>
+								<Html
+									content={i18n.t(
+										'assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten'
+									)}
+									sanitizePreset={'link'}
+								/>
 							</div>
 						</Alert>
 					</Form>
