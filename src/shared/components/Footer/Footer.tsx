@@ -42,11 +42,11 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 	}, [history, t, user]);
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, history, match, t);
+		return mapNavElementsToNavigationItems(primaryNavItems, t);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(secondaryNavItems, history, match, t);
+		return mapNavElementsToNavigationItems(secondaryNavItems, t);
 	};
 
 	const mapNavItems = (navItems: NavigationItemInfo[]) => {

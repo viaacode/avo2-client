@@ -98,7 +98,7 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 	};
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, history, match, t);
+		return mapNavElementsToNavigationItems(primaryNavItems, t);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
@@ -107,8 +107,6 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 		const dynamicNavItems: NavigationItemInfo[] = mapNavElementsToNavigationItems(
 			secondaryNavItems,
-			history,
-			match,
 			t
 		);
 

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Container, Flex, FlexItem } from '@viaa/avo2-components';
 
@@ -8,11 +8,11 @@ import { getFromPath } from '../helpers/redirects';
 import LoginOptions from './LoginOptions';
 import './LoginOptionsDropdown.scss';
 
-export interface LoginOptionsDropdownProps extends RouteComponentProps {
+export interface LoginOptionsDropdownProps {
 	closeDropdown?: () => void;
 }
 
-const LoginOptionsDropdown: FunctionComponent<LoginOptionsDropdownProps> = ({
+const LoginOptionsDropdown: FunctionComponent<LoginOptionsDropdownProps & RouteComponentProps> = ({
 	history,
 	location,
 	match,
@@ -37,4 +37,4 @@ const LoginOptionsDropdown: FunctionComponent<LoginOptionsDropdownProps> = ({
 	);
 };
 
-export default LoginOptionsDropdown;
+export default withRouter(LoginOptionsDropdown);

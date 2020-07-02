@@ -1,9 +1,7 @@
-import * as H from 'history';
 import { TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent } from 'react';
-import { match as Match } from 'react-router';
+import React from 'react';
 
 import LoginOptionsDropdown from '../../authentication/components/LoginOptionsDropdown';
 import PupilOrTeacherDropdown from '../../authentication/components/PupilOrTeacherDropdown';
@@ -13,7 +11,7 @@ import { NavigationItemInfo } from '../types';
 
 import { buildLink } from './link';
 
-const NAVIGATION_COMPONENTS: { [componentLabel: string]: FunctionComponent<any> } = {
+const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
 	'<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
 	'<LoginOptionsDropdown>': LoginOptionsDropdown,
 };
@@ -45,23 +43,21 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 
 export function mapNavElementsToNavigationItems(
 	navItems: AppContentNavElement[],
-	history: H.History,
-	match: Match<any>,
 	t: TFunction
 ): NavigationItemInfo[] {
 	return sortBy(navItems, 'position').map(
 		(navItem: AppContentNavElement): NavigationItemInfo => {
-			const location: string = getLocation(navItem, t);
+			const navLocation: string = getLocation(navItem, t);
 
-			if (NAVIGATION_COMPONENTS[location]) {
+			if (NAVIGATION_COMPONENTS[navLocation]) {
 				// Show component when clicking this nav item
-				const Component = NAVIGATION_COMPONENTS[location];
+				const Component = NAVIGATION_COMPONENTS[navLocation];
 
 				return {
 					label: navItem.label,
 					icon: navItem.icon_name,
 					tooltip: navItem.tooltip,
-					component: <Component history={history} location={location} match={match} />,
+					component: <Component />,
 					key: `nav-item-${navItem.id}`,
 				};
 			}
