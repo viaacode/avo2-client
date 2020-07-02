@@ -143,6 +143,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				),
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		itemStyle,
 		currentPage,
@@ -150,7 +151,10 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		setPages,
 		setPageCount,
 		contentTypeAndTabs.selectedContentType,
-		contentTypeAndTabs.selectedLabels,
+		// Deep compare by value and not by ref
+		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		JSON.stringify(contentTypeAndTabs.selectedLabels),
 		selectedTabs,
 		t,
 	]);
