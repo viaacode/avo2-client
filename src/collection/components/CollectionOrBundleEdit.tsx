@@ -313,7 +313,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					],
 					user
 				),
-				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+					user
+				),
 			]);
 			const permissionObj = {
 				canEdit: rawPermissions[0],

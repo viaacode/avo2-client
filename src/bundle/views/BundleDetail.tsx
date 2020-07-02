@@ -160,7 +160,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					user
 				),
 				PermissionService.hasPermissions([{ name: PermissionName.CREATE_BUNDLES }], user),
-				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+					user
+				),
 			]);
 			const permissionObj = {
 				canViewBundle: rawPermissions[0],

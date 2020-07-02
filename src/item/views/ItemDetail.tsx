@@ -115,7 +115,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			try {
 				const hasPermission: boolean = await PermissionService.hasPermissions(
 					[
-						PermissionName.VIEW_ITEMS,
+						PermissionName.VIEW_ANY_PUBLISHED_ITEMS,
 						{
 							name: PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
 							obj: match.params.id,
