@@ -28,6 +28,8 @@ export const GET_USER_BY_ID = gql`
 				name
 				or_id
 			}
+			is_exception
+			title
 			profile_user_groups {
 				groups {
 					id
@@ -103,6 +105,8 @@ export const GET_USERS = gql`
 				name
 				or_id
 			}
+			is_exception
+			title
 		}
 		users_profiles_aggregate(
 			where: {

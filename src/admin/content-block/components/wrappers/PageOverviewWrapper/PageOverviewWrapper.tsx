@@ -2,8 +2,7 @@ import { isString } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
-import { compose } from 'redux';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	BlockPageOverview,
@@ -15,7 +14,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
@@ -26,7 +24,6 @@ import {
 	navigateToContentType,
 } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
-import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
 import { ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
@@ -56,8 +53,7 @@ interface PageOverviewWrapperProps {
 	itemsPerPage?: number;
 }
 
-const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
-	DefaultSecureRouteProps> = ({
+const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteComponentProps> = ({
 	contentTypeAndTabs = {
 		selectedContentType: 'PROJECT',
 		selectedLabels: [],
@@ -74,7 +70,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	),
 	itemsPerPage = 20,
 	history,
-	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -155,7 +150,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 		setPages,
 		setPageCount,
 		contentTypeAndTabs.selectedContentType,
-		user,
+		contentTypeAndTabs.selectedLabels,
+		selectedTabs,
 		t,
 	]);
 
@@ -266,6 +262,4 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	);
 };
 
-export default compose(withRouter, withUser)(PageOverviewWrapper) as FunctionComponent<
-	PageOverviewWrapperProps
->;
+export default withRouter(PageOverviewWrapper);
