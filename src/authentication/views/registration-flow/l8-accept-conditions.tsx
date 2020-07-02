@@ -108,7 +108,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			);
 			await CampaignMonitorService.updateNewsletterPreferences({
 				allActiveUsers: true,
-			} as any); // TODO remove cast after update to typings 2.20.0
+			});
 
 			getLoginState();
 		} catch (err) {
