@@ -23,6 +23,11 @@ export const GET_USER_BY_ID = gql`
 			bio
 			alternative_email
 			company_id
+			organisation {
+				logo_url
+				name
+				or_id
+			}
 			profile_user_groups {
 				groups {
 					id
@@ -93,6 +98,11 @@ export const GET_USERS = gql`
 			bio
 			alternative_email
 			company_id
+			organisation {
+				logo_url
+				name
+				or_id
+			}
 		}
 		users_profiles_aggregate(
 			where: {

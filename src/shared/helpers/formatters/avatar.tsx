@@ -6,17 +6,19 @@ import { Avo } from '@viaa/avo2-types';
 
 import { UserService } from '../../../admin/users/user.service';
 
-const getProfile = (obj: Avo.User.Profile | Avo.User.User | null | undefined) => {
+const getProfile = (
+	obj: Avo.User.Profile | Avo.User.User | null | undefined
+): Avo.User.Profile | null => {
 	if (!obj) {
 		return null;
 	}
 	if ((obj as Avo.User.Profile).user) {
-		return obj;
+		return (obj as unknown) as Avo.User.Profile;
 	}
 	return {
 		...((obj as Avo.User.User).profile || {}),
 		user: obj as Avo.User.User,
-	};
+	} as Avo.User.Profile;
 };
 
 export const getInitialChar = (value: string | undefined | null) => (value ? value[0] : '');
@@ -30,14 +32,20 @@ export const getFullName = (userOrProfile: Avo.User.Profile | Avo.User.User | nu
 		return null;
 	}
 
-	return `${get(getProfile(userOrProfile), 'user.first_name')} ${get(
-		getProfile(userOrProfile),
-		'user.last_name'
-	)}`;
+	const profile = getProfile(userOrProfile);
+
+	const firstName = get(profile, 'user.first_name');
+	const lastName = get(profile, 'user.last_name');
+	const organisationName = get(profile, 'organisation.name');
+
+	return `${firstName} ${lastName}${organisationName ? ` (${organisationName})` : ''}`;
 };
 
 export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
 	`${get(profile, 'user.first_name', '')[0]}. ${get(profile, 'user.last_name')}`;
+
+export const getAvatarImage = (profile: Avo.User.Profile | null) =>
+	get(profile, 'organisation.logo_url') || get(profile, 'avatar') || undefined;
 
 export const getAvatarProps = (
 	profile: Avo.User.Profile | null,
@@ -55,14 +63,14 @@ export const getAvatarProps = (
 
 	return {
 		...(options.small ? { size: 'small' } : {}),
-		image: get(profile, 'avatar') || undefined,
+		image: getAvatarImage(profile),
 		name: nameAndRole,
 		initials: getInitials(profile),
 	};
 };
 
 export const renderAvatar = (
-	profile: Avo.User.Profile | null,
+	userOrProfile: Avo.User.User | Avo.User.Profile | null,
 	options: {
 		includeRole?: boolean;
 		small?: boolean;
@@ -70,6 +78,7 @@ export const renderAvatar = (
 		dark?: boolean;
 	} = {}
 ): ReactNode | null => {
+	const profile = getProfile(userOrProfile);
 	if (!profile) {
 		return null;
 	}

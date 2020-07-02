@@ -18,6 +18,11 @@ export const GET_COLLECTIONS = gql`
 			created_at
 			profile {
 				id
+				organisation {
+					logo_url
+					name
+					or_id
+				}
 				user: usersByuserId {
 					id
 					first_name

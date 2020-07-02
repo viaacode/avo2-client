@@ -5,7 +5,6 @@ import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 
 import {
-	Avatar,
 	BlockHeading,
 	Button,
 	ButtonToolbar,
@@ -59,6 +58,7 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 	isMobileWidth,
+	renderAvatar,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
@@ -753,13 +753,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			setIsFirstRender(true);
 		}
 
-		const organisationName = get(
-			bundle,
-			'organisation.name',
-			t('bundle/views/bundle-detail___onbekende-uitgever')
-		);
-		const organisationLogo = get(bundle, 'organisation.logo_url', null);
-
 		return (
 			<>
 				<Container mode="vertical" background="alt" className="m-bundle-detail-header">
@@ -801,11 +794,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								/>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
-										<Avatar
-											image={organisationLogo}
-											title={organisationName}
-											dark
-										/>
+										{renderAvatar(user, { dark: true })}
 									</FlexItem>
 								</Flex>
 							</Column>
