@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 
@@ -8,14 +8,12 @@ import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { redirectToClientPage } from '../helpers/redirects';
 
-export interface PupilOrTeacherDropdownProps extends RouteComponentProps {
+export interface PupilOrTeacherDropdownProps {
 	closeDropdown?: () => void;
 }
 
-const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = ({
-	history,
-	closeDropdown = () => {},
-}) => {
+const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps &
+	RouteComponentProps> = ({ history, closeDropdown = () => {} }) => {
 	const [t] = useTranslation();
 
 	return (
@@ -74,4 +72,4 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 	);
 };
 
-export default PupilOrTeacherDropdown;
+export default withRouter(PupilOrTeacherDropdown);
