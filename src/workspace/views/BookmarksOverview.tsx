@@ -205,7 +205,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 							{fromNow(contentCreatedAt)}
 						</span>
 					</MetaDataItem>
-					<MetaDataItem icon="eye" label={String(contentViews)} />
+					<MetaDataItem icon="eye" label={String(contentViews || 0)} />
 				</MetaData>
 			</div>
 		</div>

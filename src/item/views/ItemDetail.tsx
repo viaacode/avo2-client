@@ -310,11 +310,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						<ButtonToolbar>
 							<MetaData category={englishContentType}>
 								<MetaDataItem
-									label={String(bookmarkViewPlayCounts.viewCount)}
+									label={String(bookmarkViewPlayCounts.viewCount || 0)}
 									icon="eye"
 								/>
 								<MetaDataItem
-									label={String(bookmarkViewPlayCounts.bookmarkCount)}
+									label={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 									icon="bookmark"
 								/>
 							</MetaData>

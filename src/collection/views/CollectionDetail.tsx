@@ -749,8 +749,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					title={title}
 					category="collection"
 					showMetaData
-					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount)}
-					views={String(bookmarkViewPlayCounts.viewCount)}
+					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
 					<HeaderButtons>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}

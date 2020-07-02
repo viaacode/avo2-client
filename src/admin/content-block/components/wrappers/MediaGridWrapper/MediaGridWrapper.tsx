@@ -137,7 +137,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 		return {
 			category: isItem ? itemLabel : 'collection',
 			metadata: [
-				{ icon: 'eye', label: String(viewCount) },
+				{ icon: 'eye', label: String(viewCount || 0) },
 				{ label: formatDate(itemOrCollection.created_at) },
 			],
 			buttonLabel: element.buttonLabel,
