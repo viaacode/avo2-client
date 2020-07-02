@@ -395,7 +395,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 									{!!profile && (
 										<ToolbarItem>
 											{renderAvatar(profile, {
-												includeRole: true,
 												small: true,
 												dark: true,
 											})}
