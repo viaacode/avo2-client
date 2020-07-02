@@ -153,6 +153,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			) {
 				andFilters.push({ is_public: { _eq: true } });
 			}
+
 			andFilters.push({
 				type_id: {
 					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,

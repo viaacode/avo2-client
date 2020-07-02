@@ -25,10 +25,14 @@ import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 
 interface ItemsOverviewProps extends DefaultSecureRouteProps {}
 
-const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
+const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user }) => {
 	const [t] = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
@@ -65,6 +69,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 					'published_at',
 				])
 			);
+
+			// Only show published/unpublished items based on permissions
+			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
+				andFilters.push({ is_published: { _eq: false } });
+			}
+			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS)) {
+				andFilters.push({ is_published: { _eq: true } });
+			}
+
 			if (filters.type && filters.type.length) {
 				andFilters.push({ type: { label: { _in: filters.type } } });
 			}
