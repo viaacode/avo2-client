@@ -4,8 +4,6 @@ import React, { ReactNode } from 'react';
 import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { UserService } from '../../../admin/users/user.service';
-
 const getProfile = (
 	obj: Avo.User.Profile | Avo.User.User | null | undefined
 ): Avo.User.Profile | null => {
@@ -50,7 +48,6 @@ export const getAvatarImage = (profile: Avo.User.Profile | null) =>
 export const getAvatarProps = (
 	profile: Avo.User.Profile | null,
 	options: {
-		includeRole?: boolean;
 		small?: boolean;
 		abbreviatedName?: boolean;
 	} = {}
@@ -58,13 +55,11 @@ export const getAvatarProps = (
 	const name: string = options.abbreviatedName
 		? getAbbreviatedFullName(profile)
 		: getFullName(profile) || '';
-	const role = UserService.getUserRoleLabel(profile);
-	const nameAndRole: string = options.includeRole && role ? `${name} (${role})` : name;
 
 	return {
+		name,
 		...(options.small ? { size: 'small' } : {}),
 		image: getAvatarImage(profile),
-		name: nameAndRole,
 		initials: getInitials(profile),
 	};
 };
@@ -72,7 +67,6 @@ export const getAvatarProps = (
 export const renderAvatar = (
 	userOrProfile: Avo.User.User | Avo.User.Profile | null,
 	options: {
-		includeRole?: boolean;
 		small?: boolean;
 		abbreviatedName?: boolean;
 		dark?: boolean;
@@ -90,7 +84,6 @@ export const renderAvatar = (
 export const renderAvatars = (
 	profiles: Avo.User.Profile[],
 	options: {
-		includeRole?: boolean;
 		small?: boolean;
 		abbreviatedName?: boolean;
 	} = {}
