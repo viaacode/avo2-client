@@ -104,7 +104,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				),
 			});
 		}
-	}, [setLoadingInfo, setItems, setItemCount, tableState, t]);
+	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
 	useEffect(() => {
 		fetchItems();
