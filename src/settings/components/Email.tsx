@@ -45,13 +45,12 @@ enum NewsletterPreferencesActionType {
 
 type NewsletterPreferencesAction = ReactAction<NewsletterPreferencesActionType>;
 
-const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): Avo.Newsletter.Preferences =>
-	({
-		newsletter: false,
-		workshop: false,
-		ambassador: false,
-		allActiveUsers: false,
-	} as any); // TODO remove cast after update to typings 2.20.0
+const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): Avo.Newsletter.Preferences => ({
+	newsletter: false,
+	workshop: false,
+	ambassador: false,
+	allActiveUsers: false,
+});
 
 const newsletterPreferencesReducer = (
 	state: Avo.Newsletter.Preferences,
