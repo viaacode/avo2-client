@@ -254,8 +254,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 								['bio', t('admin/users/views/user-detail___bio')],
 								['function', t('admin/users/views/user-detail___functie')],
 								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
-								['title', t('Oormerk')],
-								['is_exception', t('Uitzonderingsaccount')],
+								['title', t('admin/users/views/user-detail___oormerk')],
+								[
+									'is_exception',
+									t('admin/users/views/user-detail___uitzonderingsaccount'),
+								],
 							])}
 						</tbody>
 					</Table>
