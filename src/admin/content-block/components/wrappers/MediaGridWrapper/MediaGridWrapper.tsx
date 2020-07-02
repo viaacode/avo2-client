@@ -142,14 +142,14 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 			buttonLabel: element.buttonLabel,
 			buttonType: element.buttonType,
 			buttonIcon: element.buttonIcon,
-			buttonAction:
-				element.buttonAction || // Default link can be overridden by the user
+			itemAction:
 				element.mediaItem ||
 				({
 					type: isItem ? 'ITEM' : isCollection ? 'COLLECTION' : 'BUNDLE',
 					value: itemOrCollection.external_id,
 					target: get(searchQuery, 'target') || '_self',
 				} as ButtonAction),
+			buttonAction: element.buttonAction,
 			title: itemOrCollection.title || '',
 			description: itemOrCollection.description || '',
 			issued: get(itemOrCollection, 'issued') || '',
