@@ -110,10 +110,12 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											Account
 										</Trans>
 									</BlockHeading>
-									<FormGroup label={t('Voornaam')}>
+									<FormGroup label={t('settings/components/account___voornaam')}>
 										<span>{get(user, 'first_name')}</span>
 									</FormGroup>
-									<FormGroup label={t('Achternaam')}>
+									<FormGroup
+										label={t('settings/components/account___achternaam')}
+									>
 										<span>{get(user, 'last_name')}</span>
 									</FormGroup>
 									<FormGroup label={t('settings/components/account___email')}>
