@@ -546,7 +546,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'author':
 				const profile = get(assignment, 'profile', null);
 				const avatarOptions = {
-					includeRole: false,
 					dark: true,
 					abbreviatedName: true,
 					small: isMobileWidth(),

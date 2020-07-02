@@ -755,9 +755,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<HeaderButtons>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderButtons>
-					<HeaderAvatar>
-						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
-					</HeaderAvatar>
+					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">

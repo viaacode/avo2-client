@@ -1055,9 +1055,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					<HeaderButtons>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderButtons>
-					<HeaderAvatar>
-						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
-					</HeaderAvatar>
+					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
 				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
