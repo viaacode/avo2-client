@@ -54,6 +54,8 @@ import store, { AppState } from '../../store';
 import { SettingsService } from '../settings.service';
 import { UpdateProfileValues } from '../settings.types';
 
+import './Profile.scss';
+
 type FieldPermissionKey =
 	| 'SUBJECTS'
 	| 'EDUCATION_LEVEL'
@@ -403,6 +405,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					setIsSaving(false);
 				}, 0);
 			} else {
+				getLoginState();
 				ToastService.success(t('settings/components/profile___opgeslagen'));
 				setIsSaving(false);
 			}
@@ -749,21 +752,34 @@ const Profile: FunctionComponent<ProfileProps & {
 											onChange={setFunc}
 										/>
 									</FormGroup>
-									<FormGroup
-										label={t('settings/components/profile___profielfoto')}
-										labelFor="profilePicture"
-									>
-										<FileUpload
-											label={t(
-												'settings/components/profile___upload-een-profiel-foto'
-											)}
-											urls={avatar ? [avatar] : []}
-											allowMulti={false}
-											assetType="PROFILE_AVATAR"
-											ownerId={get(user, 'profile.id')}
-											onChange={urls => setAvatar(urls[0])}
+									{!get(user, 'profile.organisation') && (
+										<FormGroup
+											label={t('settings/components/profile___profielfoto')}
+											labelFor="profilePicture"
+										>
+											<FileUpload
+												label={t(
+													'settings/components/profile___upload-een-profiel-foto'
+												)}
+												urls={compact([avatar])}
+												allowMulti={false}
+												assetType="PROFILE_AVATAR"
+												ownerId={get(user, 'profile.id')}
+												onChange={urls => setAvatar(urls[0])}
+											/>
+										</FormGroup>
+									)}
+									{!!get(user, 'profile.organisation.logo_url') && (
+										<div
+											className="c-logo-preview"
+											style={{
+												backgroundImage: `url(${get(
+													user,
+													'profile.organisation.logo_url'
+												)})`,
+											}}
 										/>
-									</FormGroup>
+									)}
 									<FormGroup
 										label={t('settings/components/profile___bio')}
 										labelFor="bio"
