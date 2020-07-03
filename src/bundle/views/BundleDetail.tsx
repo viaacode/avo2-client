@@ -52,6 +52,7 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
+import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -60,6 +61,7 @@ import {
 	fromNow,
 	generateContentLinkString,
 	generateSearchLinks,
+	getFullName,
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
@@ -902,6 +904,16 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					)}
 				</title>
 				<meta name="description" content={get(bundle, 'description') || ''} />
+				<JsonLd
+					url={window.location.href}
+					title={get(bundle, 'title', '')}
+					description={get(bundle, 'description')}
+					image={get(bundle, 'thumbnail_path')}
+					isOrganisation={!!get(bundle, 'profile.organisation')}
+					author={getFullName(get(bundle, 'profile'))}
+					publishedAt={get(bundle, 'published_at')}
+					updatedAt={get(bundle, 'updated_at')}
+				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				render={renderBundle}
