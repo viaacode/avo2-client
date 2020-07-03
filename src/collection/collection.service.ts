@@ -23,7 +23,6 @@ import {
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
-	GET_COLLECTION_ID_BY_AVO1_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
@@ -806,36 +805,6 @@ export class CollectionService {
 			return null;
 		}
 	}
-
-	public static getCollectionIdByAvo1Id = async (id: string) => {
-		try {
-			if (isUuid(id)) {
-				return id;
-			}
-
-			const response = await dataService.query({
-				query: GET_COLLECTION_ID_BY_AVO1_ID,
-				variables: {
-					avo1Id: id,
-				},
-			});
-
-			if (!response) {
-				return null;
-			}
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collections[0].id', null);
-		} catch (err) {
-			throw new CustomError('Failed to get collection id by avo1 id', err, {
-				id,
-				query: 'GET_COLLECTION_ID_BY_AVO1_ID',
-			});
-		}
-	};
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a collection of this user

@@ -67,6 +67,7 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
+import { isUuid } from '../../shared/helpers/uuid';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -137,7 +138,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
-			const uuid = await CollectionService.getCollectionIdByAvo1Id(collectionId);
+			let uuid;
+			if (isUuid(collectionId)) {
+				uuid = collectionId;
+			} else {
+				uuid = await CollectionService.fetchUuidByAvo1Id(collectionId);
+			}
 
 			if (!uuid) {
 				setLoadingInfo({
@@ -754,7 +760,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			<>
 				<div
 					className={classnames(
-						'm-collection-detail-header',
+						'm-collection-detail',
 						showLoginPopup ? 'hide-behind-login-popup' : ''
 					)}
 				>
