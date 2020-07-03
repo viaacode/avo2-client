@@ -8,6 +8,8 @@ import { Dispatch } from 'redux';
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import BundleDetail from '../../bundle/views/BundleDetail';
+import { CollectionDetail } from '../../collection/views';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { AppState } from '../../store';
@@ -112,6 +114,14 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 							/>
 						);
 					}
+					const Component = component;
+					return <Component {...props} user={user} />;
+				}
+
+				// Exception so search engines can index these pages
+				// - CollectionDetail
+				// - BundleDetail
+				if (component === CollectionDetail || component === BundleDetail) {
 					const Component = component;
 					return <Component {...props} user={user} />;
 				}

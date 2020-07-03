@@ -1,4 +1,5 @@
-import { get, isEmpty } from 'lodash-es';
+import classnames from 'classnames';
+import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -33,6 +34,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import RegisterOrRegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	ControlledDropdown,
@@ -104,6 +106,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -125,20 +128,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	useEffect(() => {
 		setCollectionId(match.params.id);
 	}, [match.params.id]);
-
-	useEffect(() => {
-		trackEvents(
-			{
-				object: collectionId,
-				object_type: 'collections',
-				message: `Gebruiker ${getProfileName(
-					user
-				)} heeft de pagina voor collectie ${collectionId} bekeken`,
-				action: 'view',
-			},
-			user
-		);
-	});
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
@@ -239,18 +228,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canViewItems: rawPermissions[7],
 			};
 
+			let showPopup = false;
 			if (
 				!permissionObj.canViewCollection &&
 				!permissionObj.canViewPublishedCollections &&
 				!permissionObj.canViewUnpublishedCollections
 			) {
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-					),
-					icon: 'search',
-				});
+				showPopup = true;
 			}
 
 			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
@@ -258,15 +242,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				'collection'
 			);
 
-			if (
-				!collectionObj ||
-				(!permissionObj.canViewCollection &&
-					collectionObj.is_public &&
-					!permissionObj.canViewPublishedCollections) ||
-				(!permissionObj.canViewCollection &&
-					!collectionObj.is_public &&
-					!permissionObj.canViewUnpublishedCollections)
-			) {
+			if (!collectionObj) {
 				setLoadingInfo({
 					state: 'error',
 					message: t(
@@ -277,35 +253,63 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				return;
 			}
 
-			getRelatedCollections();
+			if (
+				(!permissionObj.canViewCollection &&
+					collectionObj.is_public &&
+					!permissionObj.canViewPublishedCollections) ||
+				(!permissionObj.canViewCollection &&
+					!collectionObj.is_public &&
+					!permissionObj.canViewUnpublishedCollections)
+			) {
+				showPopup = true;
+			}
 
-			BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
-			try {
-				setBookmarkViewPlayCounts(
-					await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+			// Do not trigger events when a search engine loads this page
+			if (!showPopup) {
+				trackEvents(
+					{
+						object: collectionId,
+						object_type: 'collections',
+						message: `Gebruiker ${getProfileName(
+							user
+						)} heeft de pagina voor collectie ${collectionId} bekeken`,
+						action: 'view',
+					},
+					user
 				);
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to get getCollectionCounts', err, {
-						uuid: collectionObj.id,
-					})
-				);
-				ToastService.danger(
-					t(
-						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+
+				getRelatedCollections();
+
+				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
+				try {
+					setBookmarkViewPlayCounts(
+						await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get getCollectionCounts', err, {
+							uuid: collectionObj.id,
+						})
+					);
+					ToastService.danger(
+						t(
+							'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+						)
+					);
+				}
+
+				// Get published bundles that contain this collection
+				setPublishedBundles(
+					await CollectionService.getPublishedBundlesContainingCollection(
+						collectionObj.id
 					)
 				);
 			}
 
-			// Get published bundles that contain this collection
-			const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
-				collectionObj.id
-			);
-
+			setShowLoginPopup(showPopup);
 			setCollectionId(uuid);
 			setPermissions(permissionObj);
 			setCollection(collectionObj || null);
-			setPublishedBundles(publishedBundlesList);
 		} catch (err) {
 			console.error(
 				new CustomError(
@@ -324,19 +328,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				icon: 'alert-triangle',
 			});
 		}
-	}, [collectionId, getRelatedCollections, t, user, history]);
+	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, user, history]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
-		if (!isEmpty(permissions) && collection) {
+		if (!isEmpty(permissions) && collection && !isNil(showLoginPopup)) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [permissions, collection, setLoadingInfo]);
+	}, [permissions, collection, setLoadingInfo, showLoginPopup]);
 
 	// Listeners
 	const onEditCollection = () => {
@@ -748,198 +752,228 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		} = collection as Avo.Collection.Collection;
 		return (
 			<>
-				<Header
-					title={title}
-					category="collection"
-					showMetaData
-					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-					views={String(bookmarkViewPlayCounts.viewCount || 0)}
+				<div
+					className={classnames(
+						'm-collection-detail-header',
+						showLoginPopup ? 'hide-behind-login-popup' : ''
+					)}
 				>
-					<HeaderButtons>
-						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
-					</HeaderButtons>
-					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
-				</Header>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						<FragmentList
-							collectionFragments={collection_fragments}
-							showDescription
-							linkToItems={permissions.canViewItems || false}
-							canPlay={
-								!isAddToBundleModalOpen &&
-								!isDeleteModalOpen &&
-								!isPublishModalOpen &&
-								!isShareThroughEmailModalOpen
-							}
-							history={history}
-							location={location}
-							match={match}
-							user={user}
-						/>
-					</Container>
-				</Container>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						<h3 className="c-h3">
-							<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">
-								Info over deze collectie
-							</Trans>
-						</h3>
-						<Grid>
-							<Column size="3-3">
-								<Spacer margin="top">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
-											Onderwijsniveau
-										</Trans>
-									</p>
-									<p className="c-body-1">
-										{lom_context && lom_context.length ? (
-											generateSearchLinks(id, 'educationLevel', lom_context)
-										) : (
-											<span className="u-d-block">-</span>
-										)}
-									</p>
-								</Spacer>
-							</Column>
-							<Column size="3-3">
-								<Spacer margin="top">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-											Laatst aangepast
-										</Trans>
-									</p>
-									<p className="c-body-1">{formatDate(updated_at)}</p>
-								</Spacer>
-							</Column>
-							<Column size="3-6">
-								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___ordering">
-										Ordering
-									</Trans>
-								</p>
-								{!!get(collection, 'relations', []).length && (
-									<p className="c-body-1">
-										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-											Deze collectie is een kopie van:
-										</Trans>{' '}
-										{(get(collection, 'relations', []) as any[]).map(
-											(relation: any) => {
-												return (
-													<Link
-														key={`copy-of-link-${relation.object_meta.id}`}
-														to={buildLink(
-															APP_PATH.COLLECTION_DETAIL.route,
-															{ id: relation.object_meta.id }
-														)}
-													>
-														{relation.object_meta.title}
-													</Link>
-												);
-											}
-										)}
-									</p>
-								)}
-								{!!publishedBundles.length && (
-									<p className="c-body-1">
-										<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-											Deze collectie is deel van een bundel:
-										</Trans>{' '}
-										{publishedBundles.map((bundle, index) => {
-											return (
-												<>
-													{index !== 0 &&
-														!!publishedBundles.length &&
-														', '}
-													<Link
-														to={buildLink(
-															APP_PATH.BUNDLE_DETAIL.route,
-															{
-																id: bundle.id,
-															}
-														)}
-													>
-														{bundle.title}
-													</Link>
-												</>
-											);
-										})}
-									</p>
-								)}
-							</Column>
-							<Column size="3-3">
-								<Spacer margin="top">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___vakken">
-											Vakken
-										</Trans>
-									</p>
-									<p className="c-body-1">
-										{lom_classification && lom_classification.length ? (
-											generateSearchLinks(id, 'subject', lom_classification)
-										) : (
-											<span className="u-d-block">-</span>
-										)}
-									</p>
-								</Spacer>
-							</Column>
-						</Grid>
-						<hr className="c-hr" />
-						{!!relatedItems && !!relatedItems.length && (
-							<>
-								<BlockHeading type="h3">
-									<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
-										Bekijk ook
-									</Trans>
-								</BlockHeading>
-								<Grid className="c-media-card-list">{renderRelatedContent()}</Grid>
-							</>
+					<Header
+						title={title}
+						category="collection"
+						showMetaData
+						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+						views={String(bookmarkViewPlayCounts.viewCount || 0)}
+					>
+						{!showLoginPopup && (
+							<HeaderButtons>
+								{isMobileWidth()
+									? renderHeaderButtonsMobile()
+									: renderHeaderButtons()}
+							</HeaderButtons>
 						)}
+						<HeaderAvatar>
+							{profile && renderAvatar(profile, { dark: true })}
+						</HeaderAvatar>
+					</Header>
+					<Container mode="vertical">
+						<Container mode="horizontal">
+							<FragmentList
+								collectionFragments={collection_fragments}
+								showDescription
+								linkToItems={permissions.canViewItems || false}
+								canPlay={
+									!isAddToBundleModalOpen &&
+									!isDeleteModalOpen &&
+									!isPublishModalOpen &&
+									!isShareThroughEmailModalOpen
+								}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+							/>
+						</Container>
 					</Container>
-				</Container>
-				{!!collection && (
-					<PublishCollectionModal
-						collection={collection}
-						isOpen={isPublishModalOpen}
-						onClose={(newCollection: Avo.Collection.Collection | undefined) => {
-							setIsPublishModalOpen(false);
-							if (newCollection) {
-								setCollection(newCollection);
-							}
-						}}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
+					<Container mode="vertical">
+						<Container mode="horizontal">
+							<h3 className="c-h3">
+								<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">
+									Info over deze collectie
+								</Trans>
+							</h3>
+							<Grid>
+								<Column size="3-3">
+									<Spacer margin="top">
+										<p className="u-text-bold">
+											<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
+												Onderwijsniveau
+											</Trans>
+										</p>
+										<p className="c-body-1">
+											{lom_context && lom_context.length ? (
+												generateSearchLinks(
+													id,
+													'educationLevel',
+													lom_context
+												)
+											) : (
+												<span className="u-d-block">-</span>
+											)}
+										</p>
+									</Spacer>
+								</Column>
+								<Column size="3-3">
+									<Spacer margin="top">
+										<p className="u-text-bold">
+											<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
+												Laatst aangepast
+											</Trans>
+										</p>
+										<p className="c-body-1">{formatDate(updated_at)}</p>
+									</Spacer>
+								</Column>
+								<Column size="3-6">
+									<p className="u-text-bold">
+										<Trans i18nKey="collection/views/collection-detail___ordering">
+											Ordering
+										</Trans>
+									</p>
+									{!!get(collection, 'relations', []).length && (
+										<p className="c-body-1">
+											<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+												Deze collectie is een kopie van:
+											</Trans>{' '}
+											{(get(collection, 'relations', []) as any[]).map(
+												(relation: any) => {
+													return (
+														<Link
+															key={`copy-of-link-${relation.object_meta.id}`}
+															to={buildLink(
+																APP_PATH.COLLECTION_DETAIL.route,
+																{ id: relation.object_meta.id }
+															)}
+														>
+															{relation.object_meta.title}
+														</Link>
+													);
+												}
+											)}
+										</p>
+									)}
+									{!!publishedBundles.length && (
+										<p className="c-body-1">
+											<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+												Deze collectie is deel van een bundel:
+											</Trans>{' '}
+											{publishedBundles.map((bundle, index) => {
+												return (
+													<>
+														{index !== 0 &&
+															!!publishedBundles.length &&
+															', '}
+														<Link
+															to={buildLink(
+																APP_PATH.BUNDLE_DETAIL.route,
+																{
+																	id: bundle.id,
+																}
+															)}
+														>
+															{bundle.title}
+														</Link>
+													</>
+												);
+											})}
+										</p>
+									)}
+								</Column>
+								<Column size="3-3">
+									<Spacer margin="top">
+										<p className="u-text-bold">
+											<Trans i18nKey="collection/views/collection-detail___vakken">
+												Vakken
+											</Trans>
+										</p>
+										<p className="c-body-1">
+											{lom_classification && lom_classification.length ? (
+												generateSearchLinks(
+													id,
+													'subject',
+													lom_classification
+												)
+											) : (
+												<span className="u-d-block">-</span>
+											)}
+										</p>
+									</Spacer>
+								</Column>
+							</Grid>
+							<hr className="c-hr" />
+							{!!relatedItems && !!relatedItems.length && (
+								<>
+									<BlockHeading type="h3">
+										<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
+											Bekijk ook
+										</Trans>
+									</BlockHeading>
+									<Grid className="c-media-card-list">
+										{renderRelatedContent()}
+									</Grid>
+								</>
+							)}
+						</Container>
+					</Container>
+				</div>
+				{!showLoginPopup && (
+					<>
+						{!!collection && (
+							<PublishCollectionModal
+								collection={collection}
+								isOpen={isPublishModalOpen}
+								onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+									setIsPublishModalOpen(false);
+									if (newCollection) {
+										setCollection(newCollection);
+									}
+								}}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+							/>
+						)}
+						{collectionId !== undefined && (
+							<AddToBundleModal
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+								collection={collection as Avo.Collection.Collection}
+								collectionId={collectionId as string}
+								isOpen={isAddToBundleModalOpen}
+								onClose={() => setIsAddToBundleModalOpen(false)}
+							/>
+						)}
+						<DeleteCollectionModal
+							collectionId={(collection as Avo.Collection.Collection).id}
+							isOpen={isDeleteModalOpen}
+							onClose={() => setIsDeleteModalOpen(false)}
+							deleteObjectCallback={onDeleteCollection}
+						/>
+						<ShareThroughEmailModal
+							modalTitle={t(
+								'collection/views/collection-detail___deel-deze-collectie'
+							)}
+							type="collection"
+							emailLinkHref={window.location.href}
+							emailLinkTitle={(collection as Avo.Collection.Collection).title}
+							isOpen={isShareThroughEmailModalOpen}
+							onClose={() => setIsShareThroughEmailModalOpen(false)}
+						/>
+					</>
 				)}
-				{collectionId !== undefined && (
-					<AddToBundleModal
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-						collection={collection as Avo.Collection.Collection}
-						collectionId={collectionId as string}
-						isOpen={isAddToBundleModalOpen}
-						onClose={() => setIsAddToBundleModalOpen(false)}
-					/>
-				)}
-				<DeleteCollectionModal
-					collectionId={(collection as Avo.Collection.Collection).id}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={onDeleteCollection}
-				/>
-				<ShareThroughEmailModal
-					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}
-					type="collection"
-					emailLinkHref={window.location.href}
-					emailLinkTitle={(collection as Avo.Collection.Collection).title}
-					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => setIsShareThroughEmailModalOpen(false)}
-				/>
+				{showLoginPopup && <RegisterOrRegisterOrLogin />}
 			</>
 		);
 	};

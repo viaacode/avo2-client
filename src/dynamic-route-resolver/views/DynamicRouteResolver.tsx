@@ -18,13 +18,12 @@ import {
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
-import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
+import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
-import { dataService } from '../../shared/services';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
 
@@ -87,13 +86,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					} // else keep analysing
 
 					// Check if id matches a bundle id
-					const bundleResponse = await dataService.query({
-						query: GET_COLLECTIONS_BY_AVO1_ID,
-						variables: {
-							avo1Id,
-						},
-					});
-					const bundleUuid: string | undefined = get(bundleResponse, 'data.items[0].id');
+					const bundleUuid = await CollectionService.fetchUuidByAvo1Id(avo1Id);
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
 						history.push(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }));

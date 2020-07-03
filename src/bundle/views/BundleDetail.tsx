@@ -1,4 +1,5 @@
-import { get, isEmpty } from 'lodash-es';
+import classnames from 'classnames';
+import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -36,6 +37,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import RegisterOrRegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
@@ -100,20 +102,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-
-	useEffect(() => {
-		trackEvents(
-			{
-				object: bundleId,
-				object_type: 'bundels',
-				message: `Gebruiker ${getProfileName(
-					user
-				)} heeft de pagina voor collectie ${bundleId} bekeken`,
-				action: 'view',
-			},
-			user
-		);
-	}, [bundleId, relatedItems, t, user]);
+	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
@@ -176,16 +165,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canViewItems: rawPermissions[7],
 			};
 
+			let showPopup = false;
 			if (
 				!permissionObj.canViewBundle &&
 				!permissionObj.canViewPublishedBundles &&
 				!permissionObj.canViewUnpublishedBundles
 			) {
-				setLoadingInfo({
-					state: 'error',
-					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
-					icon: 'search',
-				});
+				showPopup = true;
 			}
 
 			const bundleObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
@@ -193,15 +179,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				'bundle'
 			);
 
-			if (
-				!bundleObj ||
-				(!permissionObj.canViewBundle &&
-					bundleObj.is_public &&
-					!permissionObj.canViewPublishedBundles) ||
-				(!permissionObj.canViewBundle &&
-					!bundleObj.is_public &&
-					!permissionObj.canViewUnpublishedBundles)
-			) {
+			if (!bundleObj) {
 				setLoadingInfo({
 					state: 'error',
 					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
@@ -210,39 +188,83 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				return;
 			}
 
-			BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, user);
-
-			// Get view counts for each fragment
-			try {
-				setViewCountsById(
-					await BookmarksViewsPlaysService.getMultipleViewCounts(
-						bundleObj.collection_fragments.map(fragment => fragment.external_id),
-						'collection'
-					)
-				);
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to get counts for bundle fragments', err, {})
-				);
+			if (
+				(!permissionObj.canViewBundle &&
+					bundleObj.is_public &&
+					!permissionObj.canViewPublishedBundles) ||
+				(!permissionObj.canViewBundle &&
+					!bundleObj.is_public &&
+					!permissionObj.canViewUnpublishedBundles)
+			) {
+				showPopup = true;
 			}
 
-			try {
-				setBookmarkViewPlayCounts(
-					await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
+			// Do not trigger events when a search engine loads this page
+			if (!showPopup) {
+				trackEvents(
+					{
+						object: bundleId,
+						object_type: 'bundels',
+						message: `Gebruiker ${getProfileName(
+							user
+						)} heeft de pagina voor collectie ${bundleId} bekeken`,
+						action: 'view',
+					},
+					user
 				);
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to get getCollectionCounts for bundle', err, {
-						uuid: bundleId,
+
+				BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, user);
+
+				// Get view counts for each fragment
+				try {
+					setViewCountsById(
+						await BookmarksViewsPlaysService.getMultipleViewCounts(
+							bundleObj.collection_fragments.map(fragment => fragment.external_id),
+							'collection'
+						)
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get counts for bundle fragments', err, {})
+					);
+				}
+
+				try {
+					setBookmarkViewPlayCounts(
+						await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get getCollectionCounts for bundle', err, {
+							uuid: bundleId,
+						})
+					);
+					ToastService.danger(
+						t(
+							'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+						)
+					);
+				}
+
+				getRelatedItems(bundleId, 'bundles', 4)
+					.then(relatedItems => {
+						setRelatedBundles(relatedItems);
 					})
-				);
-				ToastService.danger(
-					t(
-						'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-					)
-				);
+					.catch(err => {
+						console.error('Failed to get related items', err, {
+							bundleId,
+							type: 'bundles',
+							limit: 4,
+						});
+						ToastService.danger(
+							t(
+								'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
+							)
+						);
+					});
 			}
 
+			setShowLoginPopup(showPopup);
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
 		};
@@ -265,34 +287,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				icon: 'alert-triangle',
 			});
 		});
-	}, [user, bundleId, setLoadingInfo, t]);
+	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, t]);
 
 	useEffect(() => {
-		if (!isEmpty(permissions) && bundle) {
+		if (!isEmpty(permissions) && bundle && !isNil(showLoginPopup)) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [permissions, bundle, setLoadingInfo]);
-
-	useEffect(() => {
-		getRelatedItems(bundleId, 'bundles', 4)
-			.then(relatedItems => {
-				setRelatedBundles(relatedItems);
-			})
-			.catch(err => {
-				console.error('Failed to get related items', err, {
-					bundleId,
-					type: 'bundles',
-					limit: 4,
-				});
-				ToastService.danger(
-					t(
-						'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
-					)
-				);
-			});
-	}, [setRelatedBundles, t, bundleId]);
+	}, [permissions, bundle, setLoadingInfo, showLoginPopup]);
 
 	// Listeners
 	const onEditBundle = () => {
@@ -759,114 +762,129 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		return (
 			<>
-				<Container mode="vertical" background="alt" className="m-bundle-detail-header">
-					<Container mode="horizontal">
-						<Grid>
-							<Column size="3-2">
-								<Spacer margin={isMobileWidth() ? 'none' : 'right-large'}>
-									<Thumbnail
-										category="bundle"
-										src={thumbnail_path || undefined}
-									/>
-								</Spacer>
-							</Column>
-							<Column size="3-10">
-								<Toolbar autoHeight>
-									<ToolbarLeft>
-										<ToolbarItem>
-											<MetaData spaced={true} category="bundle">
-												<MetaDataItem>
-													<HeaderContentType
-														category="bundle"
-														label={
-															is_public
-																? t(
-																		'bundle/views/bundle-detail___openbare-bundel'
-																  )
-																: t(
-																		'bundle/views/bundle-detail___prive-bundel'
-																  )
-														}
+				<div
+					className={classnames(
+						'm-bundle-detail',
+						showLoginPopup ? 'hide-behind-login-popup' : ''
+					)}
+				>
+					<Container mode="vertical" background="alt" className="m-bundle-detail-header">
+						<Container mode="horizontal">
+							<Grid>
+								<Column size="3-2">
+									<Spacer margin={isMobileWidth() ? 'none' : 'right-large'}>
+										<Thumbnail
+											category="bundle"
+											src={thumbnail_path || undefined}
+										/>
+									</Spacer>
+								</Column>
+								<Column size="3-10">
+									<Toolbar autoHeight>
+										<ToolbarLeft>
+											<ToolbarItem>
+												<MetaData spaced={true} category="bundle">
+													<MetaDataItem>
+														<HeaderContentType
+															category="bundle"
+															label={
+																is_public
+																	? t(
+																			'bundle/views/bundle-detail___openbare-bundel'
+																	  )
+																	: t(
+																			'bundle/views/bundle-detail___prive-bundel'
+																	  )
+															}
+														/>
+													</MetaDataItem>
+													<MetaDataItem
+														icon="eye"
+														label={String(
+															bookmarkViewPlayCounts.viewCount || 0
+														)}
 													/>
-												</MetaDataItem>
-												<MetaDataItem
-													icon="eye"
-													label={String(
-														bookmarkViewPlayCounts.viewCount || 0
-													)}
-												/>
-												<MetaDataItem
-													icon="bookmark"
-													label={String(
-														bookmarkViewPlayCounts.bookmarkCount || 0
-													)}
-												/>
-											</MetaData>
-											<Spacer margin="top-small">
-												<h1 className="c-h1 u-m-0">{title}</h1>
-											</Spacer>
-										</ToolbarItem>
-									</ToolbarLeft>
-									<ToolbarRight>
-										<ToolbarItem>{renderActions()}</ToolbarItem>
-									</ToolbarRight>
-								</Toolbar>
-								<Html
-									className="c-body-1 c-content"
-									content={description_long || ''}
-								/>
-								<Flex spaced="regular" wrap>
-									<FlexItem className="c-avatar-and-text">
-										{renderAvatar(user, { dark: true })}
-									</FlexItem>
-								</Flex>
-							</Column>
-						</Grid>
+													<MetaDataItem
+														icon="bookmark"
+														label={String(
+															bookmarkViewPlayCounts.bookmarkCount ||
+																0
+														)}
+													/>
+												</MetaData>
+												<Spacer margin="top-small">
+													<h1 className="c-h1 u-m-0">{title}</h1>
+												</Spacer>
+											</ToolbarItem>
+										</ToolbarLeft>
+										{!showLoginPopup && (
+											<ToolbarRight>
+												<ToolbarItem>{renderActions()}</ToolbarItem>
+											</ToolbarRight>
+										)}
+									</Toolbar>
+									<Html
+										className="c-body-1 c-content"
+										content={description_long || ''}
+									/>
+									<Flex spaced="regular" wrap>
+										<FlexItem className="c-avatar-and-text">
+											{renderAvatar(user, { dark: true })}
+										</FlexItem>
+									</Flex>
+								</Column>
+							</Grid>
+						</Container>
 					</Container>
-				</Container>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						<div className="c-media-card-list">
-							<Grid>{renderCollectionFragments()}</Grid>
-						</div>
+					<Container mode="vertical">
+						<Container mode="horizontal">
+							<div className="c-media-card-list">
+								<Grid>{renderCollectionFragments()}</Grid>
+							</div>
+						</Container>
 					</Container>
-				</Container>
-				{renderMetaDataAndRelated()}
-				{!!bundle && (
-					<PublishCollectionModal
-						collection={bundle}
-						isOpen={isPublishModalOpen}
-						onClose={(newBundle: Avo.Collection.Collection | undefined) => {
-							setIsPublishModalOpen(false);
-							if (newBundle) {
-								setBundle(newBundle);
-							}
-						}}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
+					{renderMetaDataAndRelated()}
+					{!!bundle && (
+						<PublishCollectionModal
+							collection={bundle}
+							isOpen={isPublishModalOpen}
+							onClose={(newBundle: Avo.Collection.Collection | undefined) => {
+								setIsPublishModalOpen(false);
+								if (newBundle) {
+									setBundle(newBundle);
+								}
+							}}
+							history={history}
+							location={location}
+							match={match}
+							user={user}
+						/>
+					)}
+				</div>
+				{!showLoginPopup && (
+					<>
+						<DeleteObjectModal
+							title={t(
+								'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
+							)}
+							body={t(
+								'bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+							)}
+							isOpen={isDeleteModalOpen}
+							onClose={() => setIsDeleteModalOpen(false)}
+							deleteObjectCallback={onDeleteBundle}
+						/>
+						<ShareThroughEmailModal
+							modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}
+							type="bundle"
+							emailLinkHref={window.location.href}
+							emailLinkTitle={(bundle as Avo.Collection.Collection).title}
+							isOpen={isShareThroughEmailModalOpen}
+							onClose={() => setIsShareThroughEmailModalOpen(false)}
+						/>
+					</>
 				)}
-				<DeleteObjectModal
-					title={t(
-						'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
-					)}
-					body={t(
-						'bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={onDeleteBundle}
-				/>
-				<ShareThroughEmailModal
-					modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}
-					type="bundle"
-					emailLinkHref={window.location.href}
-					emailLinkTitle={(bundle as Avo.Collection.Collection).title}
-					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => setIsShareThroughEmailModalOpen(false)}
-				/>
+				{showLoginPopup && <RegisterOrRegisterOrLogin />}
 			</>
 		);
 	};

@@ -1,3 +1,11 @@
+.m-collection-detail {
+	&.hide-behind-login-popup {
+		opacity: 0;
+		max-height: 0;
+		overflow: hidden;
+	}
+}
+
 .c-collection-list__item {
 	margin-bottom: 3.2rem;
 	padding-bottom: 3.2rem;

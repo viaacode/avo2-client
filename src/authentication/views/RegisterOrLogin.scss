@@ -1,5 +1,13 @@
 @import '../../styles/settings/colors';
 
+.c-register-login-view {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
 .c-register-login-view__modal {
 	background-image: url('/images/login-bg.jpg');
 	background-size: cover;
