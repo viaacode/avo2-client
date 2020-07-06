@@ -43,6 +43,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -56,6 +57,7 @@ import {
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
+import { isUuid } from '../../shared/helpers/uuid';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -68,8 +70,6 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
-import { isUuid } from '../../shared/helpers/uuid';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
