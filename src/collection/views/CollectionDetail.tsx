@@ -760,6 +760,30 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		} = collection as Avo.Collection.Collection;
 		return (
 			<>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(
+								collection,
+								'title',
+								t(
+									'collection/views/collection-detail___collectie-detail-titel-fallback'
+								)
+							)
+						)}
+					</title>
+					<meta name="description" content={get(collection, 'description') || ''} />
+				</MetaTags>
+				<JsonLd
+					url={window.location.href}
+					title={get(collection, 'title', '')}
+					description={get(collection, 'description')}
+					image={get(collection, 'thumbnail_path')}
+					isOrganisation={!!get(collection, 'profile.organisation')}
+					author={getFullName(get(collection, 'profile'))}
+					publishedAt={get(collection, 'published_at')}
+					updatedAt={get(collection, 'updated_at')}
+				/>
 				<div
 					className={classnames(
 						'm-collection-detail',
@@ -988,30 +1012,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	return (
 		<>
-			<MetaTags>
-				<title>
-					{GENERATE_SITE_TITLE(
-						get(
-							collection,
-							'title',
-							t(
-								'collection/views/collection-detail___collectie-detail-titel-fallback'
-							)
-						)
-					)}
-				</title>
-				<meta name="description" content={get(collection, 'description') || ''} />
-				<JsonLd
-					url={window.location.href}
-					title={get(collection, 'title', '')}
-					description={get(collection, 'description')}
-					image={get(collection, 'thumbnail_path')}
-					isOrganisation={!!get(collection, 'profile.organisation')}
-					author={getFullName(get(collection, 'profile'))}
-					publishedAt={get(collection, 'published_at')}
-					updatedAt={get(collection, 'updated_at')}
-				/>
-			</MetaTags>
 			<LoadingErrorLoadedComponent
 				render={renderCollection}
 				dataObject={permissions}

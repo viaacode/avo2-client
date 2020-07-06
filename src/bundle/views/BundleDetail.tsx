@@ -764,6 +764,28 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		return (
 			<>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(
+								bundle,
+								'title',
+								t('bundle/views/bundle-detail___bundel-detail-titel-fallback')
+							)
+						)}
+					</title>
+					<meta name="description" content={get(bundle, 'description') || ''} />
+				</MetaTags>
+				<JsonLd
+					url={window.location.href}
+					title={get(bundle, 'title')}
+					description={get(bundle, 'description')}
+					image={get(bundle, 'thumbnail_path')}
+					isOrganisation={!!get(bundle, 'profile.organisation')}
+					author={getFullName(get(bundle, 'profile'))}
+					publishedAt={get(bundle, 'published_at')}
+					updatedAt={get(bundle, 'updated_at')}
+				/>
 				<div
 					className={classnames(
 						'm-bundle-detail',
@@ -893,28 +915,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	return (
 		<>
-			<MetaTags>
-				<title>
-					{GENERATE_SITE_TITLE(
-						get(
-							bundle,
-							'title',
-							t('bundle/views/bundle-detail___bundel-detail-titel-fallback')
-						)
-					)}
-				</title>
-				<meta name="description" content={get(bundle, 'description') || ''} />
-				<JsonLd
-					url={window.location.href}
-					title={get(bundle, 'title', '')}
-					description={get(bundle, 'description')}
-					image={get(bundle, 'thumbnail_path')}
-					isOrganisation={!!get(bundle, 'profile.organisation')}
-					author={getFullName(get(bundle, 'profile'))}
-					publishedAt={get(bundle, 'published_at')}
-					updatedAt={get(bundle, 'updated_at')}
-				/>
-			</MetaTags>
 			<LoadingErrorLoadedComponent
 				render={renderBundle}
 				dataObject={permissions}
