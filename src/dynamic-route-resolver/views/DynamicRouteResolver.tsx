@@ -27,7 +27,7 @@ import { buildLink, CustomError, generateSearchLinkString } from '../../shared/h
 import { dataService } from '../../shared/services';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
-import { REDIRECTS } from '../dynamic-route-resolver.const';
+import { GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
 
@@ -73,12 +73,13 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			const pathname = location.pathname;
 
 			// Check if path is avo1 path that needs to be redirected
+			const redirects = GET_REDIRECTS();
 			const pathWithHash = pathname + location.hash;
-			const key: string | undefined = keys(REDIRECTS).find(key =>
+			const key: string | undefined = keys(redirects).find(key =>
 				new RegExp(`^${key}$`, 'gi').test(pathWithHash)
 			);
-			if (key && REDIRECTS[key]) {
-				window.location.href = REDIRECTS[key];
+			if (key && redirects[key]) {
+				window.location.href = redirects[key];
 				return;
 			}
 

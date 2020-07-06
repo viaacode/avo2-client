@@ -10,7 +10,6 @@ import { renderDynamicRouteResolverRoutes } from './dynamic-route-resolver/dynam
 import { renderErrorRoutes } from './error/error.routes';
 import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
-import { renderKlaarRoutes } from './klaar/klaar.routes';
 import { renderSearchRoutes } from './search/search.routes';
 import { renderSettingsRoutes } from './settings/settings.routes';
 import { renderUserItemRequestFormRoutes } from './user-item-request-form/user-item-request-form.routes';
@@ -29,7 +28,6 @@ export const renderRoutes = () => (
 		{renderSettingsRoutes()}
 		{renderErrorRoutes()}
 		{renderUserItemRequestFormRoutes()}
-		{renderKlaarRoutes()}
 		{renderCookieBotRoutes()}
 		{/* This route needs to be the last one, since it handles all remaining routes */}
 		{renderDynamicRouteResolverRoutes()}
