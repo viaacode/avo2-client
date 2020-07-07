@@ -817,7 +817,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								/>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
-										{renderAvatar(user, { dark: true })}
+										{!!bundle &&
+											!!bundle.profile &&
+											renderAvatar(bundle.profile, { dark: true })}
 									</FlexItem>
 								</Flex>
 							</Column>
