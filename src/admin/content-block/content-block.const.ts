@@ -300,6 +300,33 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	},
 ];
 
+export const GET_HERO_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
+	{
+		label: i18n.t('admin/content-block/content-block___nachtblauw'),
+		value: Color.NightBlue,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___zachtblauw'),
+		value: Color.SoftBlue,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
+		value: Color.Teal,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
+		value: Color.TealBright,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___oceaangroen'),
+		value: Color.OceanGreen,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
+		value: Color.Yellow,
+	},
+];
+
 // TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
 export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
