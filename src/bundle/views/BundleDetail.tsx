@@ -852,53 +852,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										className="c-body-1 c-content"
 										content={description_long || ''}
 									/>
-								</Column>
-								<Column size="3-10">
-									<Toolbar autoHeight>
-										<ToolbarLeft>
-											<ToolbarItem>
-												<MetaData spaced={true} category="bundle">
-													<MetaDataItem>
-														<HeaderContentType
-															category="bundle"
-															label={
-																is_public
-																	? t(
-																			'bundle/views/bundle-detail___openbare-bundel'
-																	  )
-																	: t(
-																			'bundle/views/bundle-detail___prive-bundel'
-																	  )
-															}
-														/>
-													</MetaDataItem>
-													<MetaDataItem
-														icon="eye"
-														label={String(
-															bookmarkViewPlayCounts.viewCount || 0
-														)}
-													/>
-													<MetaDataItem
-														icon="bookmark"
-														label={String(
-															bookmarkViewPlayCounts.bookmarkCount ||
-																0
-														)}
-													/>
-												</MetaData>
-												<Spacer margin="top-small">
-													<h1 className="c-h1 u-m-0">{title}</h1>
-												</Spacer>
-											</ToolbarItem>
-										</ToolbarLeft>
-										<ToolbarRight>
-											<ToolbarItem>{renderActions()}</ToolbarItem>
-										</ToolbarRight>
-									</Toolbar>
-									<Html
-										className="c-body-1 c-content"
-										content={description_long || ''}
-									/>
 									<Flex spaced="regular" wrap>
 										<FlexItem className="c-avatar-and-text">
 											{!!bundle &&
