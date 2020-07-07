@@ -1,4 +1,4 @@
-import { debounce, get, reverse, toPairs } from 'lodash-es';
+import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Joyride, { CallBackProps } from 'react-joyride';
@@ -33,8 +33,8 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	const [routeId, setRouteId] = useState<RouteId | null>(null);
 
 	const mapSteps = (dbSteps: Avo.InteractiveTour.Step[]): Avo.InteractiveTour.Step[] => {
-		return dbSteps.map(
-			(dbStep): Avo.InteractiveTour.Step => {
+		return compact(
+			dbSteps.map((dbStep): Avo.InteractiveTour.Step | null => {
 				const mappedStep: Partial<Avo.InteractiveTour.Step> = {};
 				if (!dbStep.target) {
 					mappedStep.placement = 'center';
@@ -45,8 +45,14 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				mappedStep.disableBeacon = true;
 				mappedStep.title = dbStep.title;
 				mappedStep.content = <Html content={dbStep.content as string} type="div" />;
+
+				// Remove steps for which the target isn't found
+				if (!document.querySelector(mappedStep.target)) {
+					return null;
+				}
+
 				return mappedStep as Avo.InteractiveTour.Step;
-			}
+			})
 		);
 	};
 
