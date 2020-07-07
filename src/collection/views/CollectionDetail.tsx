@@ -247,7 +247,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				uuid,
-				'collection'
+				'collection',
+				undefined
 			);
 
 			if (!collectionObj) {
