@@ -9,6 +9,7 @@ import { Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
+import { getPublishedDate } from '../../admin/content/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -18,13 +19,19 @@ import {
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
-import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
+import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
-import { dataService } from '../../shared/services';
+import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import {
+	buildLink,
+	CustomError,
+	generateSearchLinkString,
+	getFullName,
+	stripHtml,
+} from '../../shared/helpers';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
 import { GET_REDIRECTS } from '../dynamic-route-resolver.const';
@@ -99,13 +106,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					} // else keep analysing
 
 					// Check if id matches a bundle id
-					const bundleResponse = await dataService.query({
-						query: GET_COLLECTIONS_BY_AVO1_ID,
-						variables: {
-							avo1Id,
-						},
-					});
-					const bundleUuid: string | undefined = get(bundleResponse, 'data.items[0].id');
+					const bundleUuid = await CollectionService.fetchUuidByAvo1Id(avo1Id);
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
 						history.push(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }));
@@ -209,19 +210,29 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				);
 			}
 
+			const description =
+				get(routeInfo.data, 'seo_description') ||
+				get(routeInfo.data, 'description') ||
+				(get(routeInfo.data, 'description_html')
+					? stripHtml(get(routeInfo.data, 'description_html'))
+					: null) ||
+				'';
 			return (
 				<>
 					<MetaTags>
 						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
-						<meta
-							name="description"
-							content={
-								get(routeInfo.data, 'seo_description') ||
-								get(routeInfo.data, 'description') ||
-								''
-							}
-						/>
+						<meta name="description" content={description} />
 					</MetaTags>
+					<JsonLd
+						url={window.location.href}
+						title={get(routeInfo.data, 'title', '')}
+						description={description}
+						image={get(routeInfo.data, 'thumbnail_path')}
+						isOrganisation={!!get(routeInfo.data, 'profile.organisation')}
+						author={getFullName(get(routeInfo.data, 'profile'))}
+						publishedAt={getPublishedDate(routeInfo.data)}
+						updatedAt={get(routeInfo.data, 'updated_at')}
+					/>
 					<ContentPage contentPageInfo={routeInfo.data} />
 				</>
 			);

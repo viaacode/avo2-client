@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	BlockHeading,
@@ -23,9 +23,9 @@ import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 
 import './RegisterOrLogin.scss';
 
-export interface RegisterOrLoginProps extends RouteComponentProps {}
+export interface RegisterOrLoginProps {}
 
-const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
+const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
 	history,
 	location,
 	match,
@@ -129,4 +129,4 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	);
 };
 
-export default RegisterOrRegisterOrLogin;
+export default withRouter(RegisterOrRegisterOrLogin);
