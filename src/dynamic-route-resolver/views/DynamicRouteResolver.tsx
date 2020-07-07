@@ -9,6 +9,7 @@ import { Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
+import { getPublishedDate } from '../../admin/content/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -23,7 +24,14 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
+import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import {
+	buildLink,
+	CustomError,
+	generateSearchLinkString,
+	getFullName,
+	stripHtml,
+} from '../../shared/helpers';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
 
@@ -190,19 +198,29 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				);
 			}
 
+			const description =
+				get(routeInfo.data, 'seo_description') ||
+				get(routeInfo.data, 'description') ||
+				(get(routeInfo.data, 'description_html')
+					? stripHtml(get(routeInfo.data, 'description_html'))
+					: null) ||
+				'';
 			return (
 				<>
 					<MetaTags>
 						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
-						<meta
-							name="description"
-							content={
-								get(routeInfo.data, 'seo_description') ||
-								get(routeInfo.data, 'description') ||
-								''
-							}
-						/>
+						<meta name="description" content={description} />
 					</MetaTags>
+					<JsonLd
+						url={window.location.href}
+						title={get(routeInfo.data, 'title', '')}
+						description={description}
+						image={get(routeInfo.data, 'thumbnail_path')}
+						isOrganisation={!!get(routeInfo.data, 'profile.organisation')}
+						author={getFullName(get(routeInfo.data, 'profile'))}
+						publishedAt={getPublishedDate(routeInfo.data)}
+						updatedAt={get(routeInfo.data, 'updated_at')}
+					/>
 					<ContentPage contentPageInfo={routeInfo.data} />
 				</>
 			);
