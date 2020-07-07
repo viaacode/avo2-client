@@ -32,6 +32,14 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 }) => {
 	const [t] = useTranslation();
 
+	const getRedirectAfterLogin = () => {
+		if (location.pathname === `/${ROUTE_PARTS.registerOrLogin}`) {
+			return getFromPath(location);
+		} else {
+			return location.pathname + location.hash + location.search;
+		}
+	};
+
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
@@ -116,7 +124,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 											history={history}
 											location={location}
 											match={match}
-											redirectAfterLogin={getFromPath(location)}
+											redirectAfterLogin={getRedirectAfterLogin()}
 										/>
 									</FlexItem>
 								</Flex>
