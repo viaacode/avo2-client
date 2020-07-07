@@ -34,9 +34,9 @@ export interface SearchResults {
 }
 
 export interface FilterState {
-	filters: Partial<Avo.Search.Filters>;
-	orderProperty: Avo.Search.OrderProperty;
-	orderDirection: Avo.Search.OrderDirection;
+	filters?: Partial<Avo.Search.Filters>;
+	orderProperty?: Avo.Search.OrderProperty;
+	orderDirection?: Avo.Search.OrderDirection;
 }
 
 export interface SearchFilterControlsProps {

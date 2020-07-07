@@ -258,15 +258,8 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const deleteAllFilters = () => {
-		setFilterState(
-			{
-				...filterState,
-				filters: {
-					...DEFAULT_FILTER_STATE,
-				},
-			},
-			urlUpdateType
-		);
+		setSearchTerms('');
+		setFilterState({}, urlUpdateType);
 	};
 
 	const setPage = async (pageIndex: number): Promise<void> => {
@@ -513,7 +506,7 @@ const Search: FunctionComponent<SearchProps> = ({
 							</div>
 						</Spacer>
 						<SearchFilterControls
-							filterState={filterState.filters}
+							filterState={filterState.filters || DEFAULT_FILTER_STATE}
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
 						/>
