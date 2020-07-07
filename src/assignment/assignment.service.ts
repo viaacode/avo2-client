@@ -217,7 +217,8 @@ export class AssignmentService {
 				return (
 					(await CollectionService.fetchCollectionOrBundleWithItemsById(
 						assignment.content_id,
-						'collection'
+						'collection',
+						assignment.id
 					)) || null
 				);
 			}

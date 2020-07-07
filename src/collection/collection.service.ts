@@ -658,18 +658,22 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
+	 * @param assignmentId Collection can be fetched if it's not public and you're not the owner,
+	 *        but if it is linked to an assignment that you're trying to view
 	 *
 	 * @returns Collection or bundle.
 	 */
 	public static async fetchCollectionOrBundleWithItemsById(
 		collectionId: string,
-		type: 'collection' | 'bundle'
+		type: 'collection' | 'bundle',
+		assignmentId: number | undefined
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					id: collectionId,
 					type,
+					assignmentId,
 				})}`,
 				{
 					method: 'GET',
