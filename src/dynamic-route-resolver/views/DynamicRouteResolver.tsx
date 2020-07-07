@@ -156,7 +156,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				icon: 'search',
 			});
 		}
-	}, [loginState, location.pathname, setRouteInfo, setLoadingInfo, history, t]);
+	}, [loginState, location.pathname, location.hash, setRouteInfo, setLoadingInfo, history, t]);
 
 	// Check if current user is logged in
 	useEffect(() => {
