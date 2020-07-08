@@ -19,6 +19,10 @@ export class EducationOrganisationService {
 				credentials: 'include',
 			});
 
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Status code invalid', null, { response });
+			}
+
 			return await response.json();
 		} catch (err) {
 			throw new CustomError('Failed to get cities', err, { url });
