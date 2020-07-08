@@ -8,6 +8,7 @@ import { Accordion, Button, ButtonToolbar, Container, Spacer, Table } from '@via
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -24,6 +25,7 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import { GET_USER_BY_ID } from '../user.gql';
 import {
 	RawPermissionLink,
@@ -117,7 +119,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	};
 
 	const isPupil = (): boolean => {
-		return get(storedProfile, 'profile_user_groups[0].groups[0].id') === 4; // Leerling user group
+		return getUserGroupId(storedProfile) === SpecialUserGroup.Pupil;
 	};
 
 	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
@@ -153,7 +155,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const rawUserGroups: RawUserGroupLink[] = get(storedProfile, 'profile_user_groups', []);
+		const rawUserGroups: RawUserGroupLink[] = get(storedProfile, 'profile_user_group', []);
 
 		rawUserGroups.forEach(profileUserGroup => {
 			profileUserGroup.groups.forEach(group => {

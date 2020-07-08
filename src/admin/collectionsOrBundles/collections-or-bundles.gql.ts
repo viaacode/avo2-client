@@ -23,14 +23,16 @@ export const GET_COLLECTIONS = gql`
 					name
 					or_id
 				}
+				profile_user_group {
+					groups {
+						label
+						id
+					}
+				}
 				user: usersByuserId {
 					id
 					first_name
 					last_name
-					role {
-						id
-						label
-					}
 				}
 			}
 			view_counts_aggregate {
@@ -53,9 +55,13 @@ export const GET_COLLECTIONS = gql`
 					id
 					first_name
 					last_name
-					role {
-						id
-						label
+					profile {
+						profile_user_group {
+							groups {
+								label
+								id
+							}
+						}
 					}
 				}
 			}

@@ -2,7 +2,8 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError, getFullName } from '../../shared/helpers';
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { CustomError, getFullName, getProfile } from '../../shared/helpers';
 import store from '../../store';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
@@ -27,7 +28,33 @@ export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): 
 	return get(user, 'last_name') || defaultName;
 };
 
-export function getProfile(
+export const getUserGroupLabel = (
+	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
+): string => {
+	if (!userOrProfile) {
+		throw new CustomError(
+			'Failed to get profile user group label because the provided profile is undefined'
+		);
+	}
+
+	const profile = getProfile(userOrProfile);
+	return get(profile, 'profile_user_group.groups[0].label') || '';
+};
+
+export const getUserGroupId = (
+	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
+): number => {
+	if (!userOrProfile) {
+		throw new CustomError(
+			'Failed to get profile user group label because the provided profile is undefined'
+		);
+	}
+
+	const profile = getProfile(userOrProfile);
+	return get(profile, 'profile_user_group.groups[0].id') || '';
+};
+
+export function getProfileFromUser(
 	user: Avo.User.User | undefined,
 	silent: boolean = false
 ): Avo.User.Profile | null {
@@ -60,7 +87,7 @@ export function getProfileName(user: Avo.User.User | undefined): string {
 	if (!user) {
 		throw new CustomError('Failed to get profile name because the logged in user is undefined');
 	}
-	const profileName = getFullName(user);
+	const profileName = getFullName(user as any);
 	if (!profileName) {
 		throw new CustomError('No profile name could be found for the logged in user');
 	}
@@ -95,20 +122,15 @@ export function getProfileInitials(user: Avo.User.User | undefined): string {
 	return getFirstName(user, 'X')[0] + getLastName(user, 'X')[0];
 }
 
-export function getProfileStamboekNumber(user: Avo.User.User | undefined): string | null {
-	if (!user) {
-		throw new CustomError(
-			'Failed to get profile stamboek number because the logged in user is undefined'
-		);
-	}
-	return get(user, 'user.profile.stamboek', null);
-}
-
 export function isProfileComplete(user: Avo.User.User): boolean {
 	const profile = get(user, 'profile');
 
 	// Only teachers have to fill in their profile for now
-	if (get(user, 'role.name') !== 'lesgever') {
+	const userGroupId = getUserGroupId(get(user, 'profile'));
+	if (
+		userGroupId !== SpecialUserGroup.Teacher &&
+		userGroupId !== SpecialUserGroup.TeacherSecondary
+	) {
 		return true;
 	}
 

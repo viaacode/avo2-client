@@ -25,6 +25,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -53,6 +54,7 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
+import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import PublishContentPageModal from '../components/PublishContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
@@ -88,7 +90,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	);
 
 	// Computed
-	const isAdminUser = get(user, 'role.name', null) === 'admin';
+	const isAdminUser = getUserGroupId(user as any) === SpecialUserGroup.Admin;
 	const isContentProtected = get(contentPageInfo, 'is_protected', false);
 	const pageTitle = `Content: ${get(contentPageInfo, 'title', '')}`;
 	const description = contentPageInfo ? ContentService.getDescription(contentPageInfo) : '';

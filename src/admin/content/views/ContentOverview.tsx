@@ -15,6 +15,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -49,7 +50,6 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { UserService } from '../../users/user.service';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentPageInfo, ContentTableState } from '../content.types';
@@ -98,8 +98,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							},
 							{
 								profile: {
-									usersByuserId: {
-										role: { label: { _ilike: queryWordWildcard } },
+									profile_user_group: {
+										groups: { label: { _ilike: queryWordWildcard } },
 									},
 								},
 							},
@@ -193,7 +193,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			},
 		},
 		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
-		{ id: 'role', label: i18n.t('admin/content/content___rol'), sortable: true },
+		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol'), sortable: true },
 		{
 			id: 'created_at',
 			label: i18n.t('admin/content/content___aangemaakt'),
@@ -286,10 +286,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						{truncateTableValue(title)}
 					</Link>
 				);
+
 			case 'author':
 				return getFullName(profile) || '-';
-			case 'role':
-				return UserService.getUserRoleLabel(profile) || '-';
+
+			case 'author_user_group':
+				return profile ? getUserGroupLabel(profile) || '-' : '-';
+
 			case 'content_type':
 				return (
 					get(
@@ -297,11 +300,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						'label'
 					) || '-'
 				);
+
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
+
 			case 'actions':
 				return (
 					<ButtonToolbar>

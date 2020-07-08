@@ -240,12 +240,14 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					name
 					or_id
 				}
-				user: usersByuserId {
-					id
-					role {
+				profile_user_group {
+					groups {
 						label
 						id
 					}
+				}
+				user: usersByuserId {
+					id
 					first_name
 					last_name
 				}
