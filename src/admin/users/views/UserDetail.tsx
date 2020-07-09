@@ -15,7 +15,7 @@ import {
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, getEnv, renderAvatar } from '../../../shared/helpers';
+import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import {
@@ -33,7 +33,7 @@ import {
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
+const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }) => {
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -270,7 +270,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 
 	const renderUserDetailPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
 			pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
 		>
 			<AdminLayoutTopBarRight>
