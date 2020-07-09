@@ -3,7 +3,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import {
 	BlockHeading,
-	BlockRichText,
 	Button,
 	ButtonAction,
 	ButtonType,
@@ -16,6 +15,7 @@ import { Avo } from '@viaa/avo2-types';
 import { navigateToContentType } from '../../../../../shared/helpers';
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
 import MediaPlayerWrapper from '../MediaPlayerWrapper/MediaPlayerWrapper';
+import RichTextWrapper from '../RichTextWrapper/RichTextWrapper';
 
 interface MediaPlayerTitleTextButtonWrapperProps extends RouteComponentProps {
 	mediaItem: ButtonAction;
@@ -68,7 +68,7 @@ export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWra
 			</Column>
 			<Column size="2-5" className={`u-text-${align}`}>
 				<BlockHeading type={headingType}>{headingTitle}</BlockHeading>
-				<BlockRichText elements={{ content }} />
+				<RichTextWrapper elements={{ content }} />
 				{buttonAction && (
 					<Button
 						icon={buttonIcon}
