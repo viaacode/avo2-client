@@ -16,14 +16,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-interface TopbarProps extends RouteComponentProps {
+interface TopbarProps {
 	onClickBackButton?: () => void;
 	title?: string;
 	center?: ReactNode;
 	right?: ReactNode;
 }
 
-export const TopBarComponent: FunctionComponent<TopbarProps> = ({
+export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProps> = ({
 	onClickBackButton,
 	title,
 	center,
@@ -66,4 +66,4 @@ export const TopBarComponent: FunctionComponent<TopbarProps> = ({
 	);
 };
 
-export const TopBar = withRouter(TopBarComponent);
+export const TopBar = (withRouter(TopBarComponent) as unknown) as FunctionComponent<TopbarProps>;

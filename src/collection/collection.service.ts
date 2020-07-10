@@ -671,9 +671,9 @@ export class CollectionService {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
-					id: collectionId,
 					type,
 					assignmentId,
+					id: collectionId,
 				})}`,
 				{
 					method: 'GET',
@@ -688,10 +688,10 @@ export class CollectionService {
 			}
 			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError('invalid status code', null, {
-					statusCode: response.status,
 					collectionId,
 					type,
 					response,
+					statusCode: response.status,
 				});
 			}
 			return await response.json();

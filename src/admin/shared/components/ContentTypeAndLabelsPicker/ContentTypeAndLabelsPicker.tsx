@@ -21,7 +21,7 @@ import { useContentTypes } from '../../../content/hooks';
 
 export interface ContentTypeAndLabelsValue {
 	selectedContentType: Avo.ContentPage.Type;
-	selectedLabels: Avo.ContentPage.Label[];
+	selectedLabels: Avo.ContentPage.Label[] | null;
 }
 
 export interface ContentTypeAndLabelsProps {
@@ -33,7 +33,7 @@ export interface ContentTypeAndLabelsProps {
 export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsProps> = ({
 	value = {
 		selectedContentType: 'PROJECT',
-		selectedLabels: [],
+		selectedLabels: null,
 	},
 	onChange,
 	errors,
@@ -64,7 +64,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 	const handleContentTypeChanged = (selectedValue: string) => {
 		onChange({
 			selectedContentType: selectedValue as Avo.ContentPage.Type,
-			selectedLabels: get(value, 'selectedLabels', []),
+			selectedLabels: null,
 		});
 	};
 
@@ -94,36 +94,39 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 				/>
 			</Column>
 			<Column size="3">
-				<TagsInput
-					options={(labels || []).map(
-						(labelObj): SelectOption<number> => ({
-							label: labelObj.label,
-							value: labelObj.id,
-						})
-					)}
-					allowMulti
-					allowCreate={false}
-					value={compact(
-						((value.selectedLabels || []) as LabelObj[]).map(
-							(labelObj: LabelObj): SelectOption<number> => ({
+				{/* Force reload tagInput when content type changes */}
+				<div key={(value.selectedLabels || []).length}>
+					<TagsInput
+						options={(labels || []).map(
+							(labelObj): SelectOption<number> => ({
 								label: labelObj.label,
 								value: labelObj.id,
 							})
-						)
-					)}
-					onChange={handleLabelsChanged}
-					disabled={!value || !value.selectedContentType}
-					isLoading={isLoading}
-					placeholder={
-						!value || !value.selectedContentType
-							? t(
-									'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___kies-eerst-een-content-type'
-							  )
-							: t(
-									'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
-							  )
-					}
-				/>
+						)}
+						allowMulti
+						allowCreate={false}
+						value={compact(
+							(value.selectedLabels || []).map(
+								(labelObj: LabelObj): SelectOption<number> => ({
+									label: labelObj.label,
+									value: labelObj.id,
+								})
+							)
+						)}
+						onChange={handleLabelsChanged}
+						disabled={!value || !value.selectedContentType}
+						isLoading={isLoading}
+						placeholder={
+							!value || !value.selectedContentType
+								? t(
+										'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___kies-eerst-een-content-type'
+								  )
+								: t(
+										'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
+								  )
+						}
+					/>
+				</div>
 			</Column>
 		</Grid>
 	);

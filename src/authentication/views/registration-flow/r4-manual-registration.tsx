@@ -29,7 +29,6 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
-import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
 
@@ -203,7 +202,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				<Spacer margin="bottom-large">
 					<Button
 						type="secondary"
-						onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
+						onClick={history.goBack}
 						icon="arrow-left"
 						title={t(
 							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
@@ -325,7 +324,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 										<a
 											href="//meemoo.be/nl/privacybeleid"
 											target="_blank"
-											rel="noopener noreferrer"
 											title={t(
 												'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
 											)}

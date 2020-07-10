@@ -274,7 +274,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					orgs = [...organizationsCache[selectedCity]];
 				} else {
 					// fetch from server
-					orgs = await EducationOrganisationService.fetchEducationOrganizations(
+					orgs = await EducationOrganisationService.fetchEducationOrganisations(
 						city,
 						zipCode
 					);
