@@ -86,7 +86,6 @@ export const CONTENT_PAGE_ACCESS_BLOCKS = [ContentBlockType.ContentPageMeta];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
 	'backgroundColor',
-	'headerBackgroundColor',
 	'blockType',
 	'elements',
 	'padding',

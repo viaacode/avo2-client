@@ -275,12 +275,12 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 		value: Color.Gray50,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: Color.NightBlue,
-	},
-	{
 		label: i18n.t('admin/content-block/content-block___zachtblauw'),
 		value: Color.SoftBlue,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___nachtblauw'),
+		value: Color.NightBlue,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
