@@ -202,7 +202,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				<Spacer margin="bottom-large">
 					<Button
 						type="secondary"
-						onClick={() => history.goBack()}
+						onClick={history.goBack}
 						icon="arrow-left"
 						title={t(
 							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'

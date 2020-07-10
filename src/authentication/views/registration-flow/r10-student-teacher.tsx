@@ -35,7 +35,7 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 					<Spacer margin="bottom-large">
 						<Button
 							type="secondary"
-							onClick={() => history.goBack()}
+							onClick={history.goBack}
 							icon="arrow-left"
 							title={t(
 								'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
