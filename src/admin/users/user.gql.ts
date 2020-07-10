@@ -42,7 +42,7 @@ export const GET_USER_BY_ID = gql`
 				unit_id
 				organization_id
 			}
-			profile_user_groups {
+			profile_user_group {
 				groups {
 					id
 					label
@@ -142,15 +142,6 @@ export const GET_USERS = gql`
 			aggregate {
 				count
 			}
-		}
-	}
-`;
-
-export const GET_USER_ROLES = gql`
-	query getUserRoles {
-		shared_user_roles {
-			label
-			id
 		}
 	}
 `;

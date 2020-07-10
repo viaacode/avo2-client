@@ -32,13 +32,15 @@ export const GET_CONTENT_PAGES = gql`
 					name
 					or_id
 				}
+				profile_user_group {
+					groups {
+						label
+						id
+					}
+				}
 				user: usersByuserId {
 					first_name
 					last_name
-					role {
-						id
-						label
-					}
 				}
 			}
 			publish_at
@@ -151,13 +153,15 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 					name
 					or_id
 				}
+				profile_user_group {
+					groups {
+						label
+						id
+					}
+				}
 				user: usersByuserId {
 					first_name
 					last_name
-					role {
-						id
-						label
-					}
 				}
 			}
 			publish_at
@@ -212,13 +216,15 @@ export const GET_CONTENT_BY_ID = gql`
 					name
 					or_id
 				}
+				profile_user_group {
+					groups {
+						label
+						id
+					}
+				}
 				user: usersByuserId {
 					first_name
 					last_name
-					role {
-						id
-						label
-					}
 				}
 			}
 			publish_at

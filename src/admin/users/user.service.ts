@@ -6,7 +6,7 @@ import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import { GET_USER_BY_ID, GET_USER_ROLES, GET_USERS, UPDATE_USER_BLOCKED_STATUS } from './user.gql';
+import { GET_USER_BY_ID, GET_USERS, UPDATE_USER_BLOCKED_STATUS } from './user.gql';
 import { UserOverviewTableCol } from './user.types';
 
 export class UserService {
@@ -90,54 +90,6 @@ export class UserService {
 				query: 'GET_USERS',
 			});
 		}
-	}
-
-	public static async getUserRoles(): Promise<Avo.User.Role[]> {
-		try {
-			const response = await dataService.query({
-				query: GET_USER_ROLES,
-			});
-			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
-					response,
-				});
-			}
-			const roles = get(response, 'data.shared_user_roles');
-
-			if (!roles) {
-				throw new CustomError('Response does not contain any roles', null, {
-					response,
-				});
-			}
-
-			return roles;
-		} catch (err) {
-			throw new CustomError('Failed to get user roles from the database', err, {
-				query: 'GET_USER_ROLES',
-			});
-		}
-	}
-
-	/**
-	 * Get user role name from user of profile object
-	 * @param userOrProfile
-	 * @returns userRole eg: leerling, lesgever, admin, ...  See database for all options: shared.user_roles
-	 */
-	public static getUserRole(
-		userOrProfile: Avo.User.User | Avo.User.Profile | undefined | null
-	): string | null {
-		return get(userOrProfile, 'role.name') || get(userOrProfile, 'user.role.name') || null;
-	}
-
-	/**
-	 * Get user role label from user of profile object
-	 * @param userOrProfile
-	 * @returns userRole eg: Leerling, Lesgever, Beheerder, ...  See database for all options: shared.user_roles
-	 */
-	public static getUserRoleLabel(
-		userOrProfile: Avo.User.User | Avo.User.Profile | undefined | null
-	): string | null {
-		return get(userOrProfile, 'role.label') || get(userOrProfile, 'user.role.label') || null;
 	}
 
 	public static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {

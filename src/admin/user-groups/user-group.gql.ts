@@ -30,7 +30,7 @@ export const GET_USER_GROUP_BY_ID = gql`
 	}
 `;
 
-export const GET_USER_GROUPS = gql`
+export const GET_USER_GROUPS_WITH_FILTERS = gql`
 	query getUserGroups(
 		$limit: Int!
 		$offset: Int!

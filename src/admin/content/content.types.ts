@@ -22,7 +22,7 @@ export type ContentOverviewTableCols =
 	| 'title'
 	| 'content_type'
 	| 'author'
-	| 'role'
+	| 'author_user_group'
 	| 'publish_at'
 	| 'depublish_at'
 	| 'created_at'

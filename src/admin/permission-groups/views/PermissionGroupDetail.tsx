@@ -20,7 +20,6 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { dataService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,

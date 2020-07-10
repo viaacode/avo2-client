@@ -54,3 +54,10 @@ export const GET_PERMISSION_GROUP_TABLE_COLS: () => TableColumn[] = () => [
 	},
 	{ id: 'actions', label: '' },
 ];
+
+export enum SpecialUserGroup {
+	Admin = 1,
+	Teacher = 2,
+	TeacherSecondary = 3,
+	Pupil = 4,
+}
