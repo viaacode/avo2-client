@@ -1,13 +1,23 @@
-import { get, sortBy } from 'lodash-es';
+import { compact, get, sortBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { Accordion, Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
+import {
+	Accordion,
+	Button,
+	ButtonToolbar,
+	Container,
+	Spacer,
+	Table,
+	TagList,
+	TagOption,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -15,8 +25,9 @@ import {
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, getEnv, renderAvatar } from '../../../shared/helpers';
-import { dataService, ToastService } from '../../../shared/services';
+import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
+import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -24,7 +35,8 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { GET_USER_BY_ID } from '../user.gql';
+import { SpecialUserGroup } from '../../user-groups/user-group.const';
+import { UserService } from '../user.service';
 import {
 	RawPermissionLink,
 	RawUserGroupLink,
@@ -33,41 +45,36 @@ import {
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
+const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }) => {
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [eduOrgNames, setEduOrgNames] = useState<string[]>([]);
 
 	const [t] = useTranslation();
 
 	const fetchProfileById = useCallback(async () => {
 		try {
-			const response = await dataService.query({
-				query: GET_USER_BY_ID,
-				variables: {
-					id: match.params.id,
-				},
-			});
-			const dbProfile = get(response, 'data.users_profiles[0]');
-			if (!dbProfile) {
-				console.error(
-					new CustomError('Response from graphql is empty', null, {
-						response,
-						query: 'GET_USER_BY_ID',
-						variables: {
-							id: match.params.id,
-						},
-					})
-				);
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
-					),
-				});
-				return;
-			}
-			setStoredProfile(dbProfile);
+			const profile = await UserService.getProfileById(match.params.id);
+
+			const eduOrgs: {
+				unit_id: string;
+				organization_id: string;
+			}[] = get(profile, 'profile_organizations') || [];
+			setEduOrgNames(
+				compact(
+					await Promise.all(
+						eduOrgs.map(eduOrg =>
+							EducationOrganisationService.fetchEducationOrganisationName(
+								eduOrg.organization_id,
+								eduOrg.unit_id
+							)
+						)
+					)
+				)
+			);
+
+			setStoredProfile(profile);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get user by id', err, {
@@ -117,7 +124,36 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	};
 
 	const isPupil = (): boolean => {
-		return get(storedProfile, 'profile_user_groups[0].groups[0].id') === 4; // Leerling user group
+		return getUserGroupId(storedProfile) === SpecialUserGroup.Pupil;
+	};
+
+	const toggleBlockedStatus = async () => {
+		try {
+			const userId = get(storedProfile, 'user.uid');
+			const isBlocked = get(storedProfile, 'user.is_blocked') || false;
+			if (userId) {
+				await UserService.updateBlockStatus(userId, !isBlocked);
+				fetchProfileById();
+				ToastService.success(
+					isBlocked ? t('Gebruiker is gedeblokkeerd') : t('Gebruiker is geblokkeerd'),
+					false
+				);
+			} else {
+				ToastService.danger(
+					t(
+						'Het updaten van de gebruiker is mislukt omdat zijn id niet kon worden gevonden'
+					),
+					false
+				);
+			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to update is_blocked field for user', err, {
+					profile: storedProfile,
+				})
+			);
+			ToastService.danger(t('Het updaten van de gebruiker is mislukt'), false);
+		}
 	};
 
 	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
@@ -153,7 +189,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const rawUserGroups: RawUserGroupLink[] = get(storedProfile, 'profile_user_groups', []);
+		const rawUserGroups: RawUserGroupLink[] = get(storedProfile, 'profile_user_group', []);
 
 		rawUserGroups.forEach(profileUserGroup => {
 			profileUserGroup.groups.forEach(group => {
@@ -259,7 +295,50 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 									'is_exception',
 									t('admin/users/views/user-detail___uitzonderingsaccount'),
 								],
+								['user.is_blocked', t('Geblokkeerd')],
 							])}
+							{renderDetailRow(
+								<TagList
+									tags={get(
+										storedProfile,
+										'profile_classifications',
+										[] as any[]
+									).map(
+										(subject: { key: string }): TagOption => ({
+											id: subject.key,
+											label: subject.key,
+										})
+									)}
+									swatches={false}
+									closable={false}
+								/>,
+								t('Vakken')
+							)}
+							{renderDetailRow(
+								<TagList
+									tags={get(storedProfile, 'profile_contexts', [] as any[]).map(
+										(educationLevel: { key: string }): TagOption => ({
+											id: educationLevel.key,
+											label: educationLevel.key,
+										})
+									)}
+									swatches={false}
+									closable={false}
+								/>,
+								t("Opleidingsniveau's")
+							)}
+							{renderDetailRow(
+								<TagList
+									closable={false}
+									swatches={false}
+									tags={eduOrgNames.map(eduOrgName => ({
+										label: eduOrgName,
+										id: eduOrgName,
+									}))}
+								/>,
+								t('Educatieve organisaties')
+							)}
+							{renderDetailRow(get(storedProfile, 'organisation.name'), t('Bedrijf'))}
 						</tbody>
 					</Table>
 					{renderPermissionLists()}
@@ -268,53 +347,50 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 		);
 	};
 
-	const renderUserDetailPage = () => (
-		<AdminLayout
-			showBackButton
-			pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
-		>
-			<AdminLayoutTopBarRight>
-				<ButtonToolbar>
-					{canBanUser() && isPupil() && (
-						<Button
-							type="danger"
-							label={t('admin/users/views/user-detail___bannen')}
-							title={t(
-								'admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform'
-							)}
-							ariaLabel={t(
-								'admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform'
-							)}
-							onClick={() =>
-								ToastService.info(
-									t('settings/components/profile___nog-niet-geimplementeerd'),
-									false
-								)
-							}
-						/>
-					)}
-					<Button
-						label={t('admin/users/views/user-detail___beheer-in-account-manager')}
-						ariaLabel={t(
-							'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+	const renderUserDetailPage = () => {
+		const isBlocked = get(storedProfile, 'user.is_blocked');
+		const blockButtonTooltip = isBlocked
+			? t('Laat deze gebruiker terug toe op het AvO platform')
+			: t('admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform');
+		return (
+			<AdminLayout
+				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
+				pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+			>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						{canBanUser() && isPupil() && (
+							<Button
+								type={isBlocked ? 'primary' : 'danger'}
+								label={isBlocked ? t('Deblokkeren') : t('Blokkeren')}
+								title={blockButtonTooltip}
+								ariaLabel={blockButtonTooltip}
+								onClick={() => toggleBlockedStatus()}
+							/>
 						)}
-						disabled={!getLdapDashboardUrl()}
-						title={
-							getLdapDashboardUrl()
-								? t(
-										'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
-								  )
-								: t(
-										'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
-								  )
-						}
-						onClick={handleLdapDashboardClick}
-					/>
-				</ButtonToolbar>
-			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
-		</AdminLayout>
-	);
+						<Button
+							label={t('admin/users/views/user-detail___beheer-in-account-manager')}
+							ariaLabel={t(
+								'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+							)}
+							disabled={!getLdapDashboardUrl()}
+							title={
+								getLdapDashboardUrl()
+									? t(
+											'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+									  )
+									: t(
+											'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
+									  )
+							}
+							onClick={handleLdapDashboardClick}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
+			</AdminLayout>
+		);
+	};
 
 	return (
 		<>

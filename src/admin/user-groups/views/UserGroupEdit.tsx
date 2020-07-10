@@ -33,6 +33,7 @@ import { buildLink, CustomError, formatDate, navigate } from '../../../shared/he
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { PermissionGroupService } from '../../permission-groups/permission-group.service';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -283,14 +284,10 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				userGroupId
 			);
 
-			if (isCreatePage) {
-				redirectToClientPage(
-					buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, { id: userGroupId }),
-					history
-				);
-			} else {
-				await initOrFetchUserGroup();
-			}
+			redirectToClientPage(
+				buildLink(USER_GROUP_PATH.USER_GROUP_DETAIL, { id: userGroupId }),
+				history
+			);
 			ToastService.success(
 				t('admin/user-groups/views/user-group-edit___de-gebruikersgroep-is-opgeslagen'),
 				false
@@ -499,7 +496,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		}
 		return (
 			<AdminLayout
-				showBackButton
+				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_GROUP_OVERVIEW)}
 				pageTitle={t('admin/user-groups/views/user-group-edit___gebruikersgroep-aanpassen')}
 			>
 				{' '}

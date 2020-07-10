@@ -2,17 +2,13 @@ import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 
-import { getMockRouterProps } from '../../../../shared/mocks/route-components-props-mock';
-
 import { TopBar } from './TopBar';
 
 describe('<TopBar />', () => {
-	const mockProps = getMockRouterProps({});
-
 	it('Should be able to render', () => {
 		mount(
 			<MemoryRouter>
-				<TopBar showBackButton {...mockProps} />
+				<TopBar onClickBackButton={() => window.history.back()} />
 			</MemoryRouter>
 		);
 	});
@@ -20,7 +16,7 @@ describe('<TopBar />', () => {
 	it('Should set the correct className', () => {
 		const topBarComponent = mount(
 			<MemoryRouter>
-				<TopBar showBackButton {...mockProps} />
+				<TopBar onClickBackButton={() => window.history.back()} />
 			</MemoryRouter>
 		);
 		expect(
@@ -34,12 +30,12 @@ describe('<TopBar />', () => {
 	it('Should render a back button based on `showBackButton` prop', () => {
 		const topBarComponentWithButton = mount(
 			<MemoryRouter>
-				<TopBar showBackButton {...mockProps} />
+				<TopBar onClickBackButton={() => window.history.back()} />
 			</MemoryRouter>
 		);
 		const topBarComponentWithoutButton = mount(
 			<MemoryRouter>
-				<TopBar showBackButton={false} {...mockProps} />
+				<TopBar />
 			</MemoryRouter>
 		);
 		// Not sure why .find returns 2 buttons, since the html only contains one

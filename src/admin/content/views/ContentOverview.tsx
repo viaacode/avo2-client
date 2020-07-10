@@ -15,6 +15,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -49,7 +50,6 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { UserService } from '../../users/user.service';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentPageInfo, ContentTableState } from '../content.types';
@@ -98,8 +98,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							},
 							{
 								profile: {
-									usersByuserId: {
-										role: { label: { _ilike: queryWordWildcard } },
+									profile_user_group: {
+										groups: { label: { _ilike: queryWordWildcard } },
 									},
 								},
 							},
@@ -193,7 +193,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			},
 		},
 		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
-		{ id: 'role', label: i18n.t('admin/content/content___rol'), sortable: true },
+		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol'), sortable: true },
 		{
 			id: 'created_at',
 			label: i18n.t('admin/content/content___aangemaakt'),
@@ -282,14 +282,17 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		switch (columnId) {
 			case 'title':
 				return (
-					<Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>
+					<Link to={buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, { id })}>
 						{truncateTableValue(title)}
 					</Link>
 				);
+
 			case 'author':
 				return getFullName(profile) || '-';
-			case 'role':
-				return UserService.getUserRoleLabel(profile) || '-';
+
+			case 'author_user_group':
+				return profile ? getUserGroupLabel(profile) || '-' : '-';
+
 			case 'content_type':
 				return (
 					get(
@@ -297,17 +300,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						'label'
 					) || '-'
 				);
+
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
+
 			case 'actions':
 				return (
 					<ButtonToolbar>
 						<Button
 							icon="info"
-							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
+							onClick={() =>
+								navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, { id })
+							}
 							size="small"
 							title={t('admin/content/views/content-overview___bekijk-content')}
 							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
@@ -338,7 +345,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						/>
 						<Button
 							icon="edit"
-							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+							onClick={() =>
+								navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })
+							}
 							size="small"
 							title={t('admin/content/views/content-overview___pas-content-aan')}
 							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
@@ -392,7 +401,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							title={t(
 								'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 							)}
-							onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+							onClick={() => history.push(CONTENT_PATH.CONTENT_PAGE_CREATE)}
 						/>
 					</Spacer>
 				)}
@@ -463,7 +472,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						title={t(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
-						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+						onClick={() => history.push(CONTENT_PATH.CONTENT_PAGE_CREATE)}
 					/>
 				)}
 			</AdminLayoutTopBarRight>

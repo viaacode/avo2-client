@@ -24,6 +24,7 @@ import {
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
 import { MenuService } from '../menu.service';
@@ -204,7 +205,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
 				false
 			);
-			handleNavigate(MENU_PATH.MENU);
+			handleNavigate(MENU_PATH.MENU_OVERVIEW);
 			return null;
 		}
 
@@ -212,12 +213,16 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		const isLast = (i: number) => i === menuItems.length - 1;
 
 		return (
-			<AdminLayout className="c-menu-detail" showBackButton pageTitle={startCase(menuId)}>
+			<AdminLayout
+				onClickBackButton={() => navigate(history, ADMIN_PATH.MENU_OVERVIEW)}
+				className="c-menu-detail"
+				pageTitle={startCase(menuId)}
+			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
 						<Button
 							label={t('admin/menu/views/menu-detail___annuleer')}
-							onClick={() => handleNavigate(MENU_PATH.MENU)}
+							onClick={() => handleNavigate(MENU_PATH.MENU_OVERVIEW)}
 							type="tertiary"
 						/>
 						<Button

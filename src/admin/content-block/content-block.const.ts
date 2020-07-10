@@ -275,12 +275,12 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 		value: Color.Gray50,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: Color.NightBlue,
-	},
-	{
 		label: i18n.t('admin/content-block/content-block___zachtblauw'),
 		value: Color.SoftBlue,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___nachtblauw'),
+		value: Color.NightBlue,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
@@ -347,7 +347,13 @@ export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	},
 ];
 
-export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [Color.NightBlue, Color.Teal];
+export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [
+	Color.NightBlue,
+	Color.Teal,
+	Color.TealBright,
+	Color.OceanGreen,
+	Color.Yellow,
+];
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{

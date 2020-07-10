@@ -35,9 +35,8 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 	const getRedirectAfterLogin = () => {
 		if (location.pathname === `/${ROUTE_PARTS.registerOrLogin}`) {
 			return getFromPath(location);
-		} else {
-			return location.pathname + location.hash + location.search;
 		}
+		return location.pathname + location.hash + location.search;
 	};
 
 	return (

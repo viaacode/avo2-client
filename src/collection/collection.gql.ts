@@ -40,6 +40,12 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 				stamboek
 				updated_at
+				profile_user_group {
+					groups {
+						label
+						id
+					}
+				}
 				user_id
 				user: usersByuserId {
 					id
@@ -51,11 +57,6 @@ export const GET_COLLECTION_BY_ID = gql`
 					mail
 					uid
 					updated_at
-					role {
-						id
-						name
-						label
-					}
 				}
 				created_at
 				updated_at
@@ -81,9 +82,13 @@ export const GET_COLLECTION_BY_ID = gql`
 					id
 					first_name
 					last_name
-					role {
-						id
-						label
+					profile {
+						profile_user_group {
+							groups {
+								label
+								id
+							}
+						}
 					}
 				}
 			}
@@ -206,9 +211,13 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 					id
 					first_name
 					last_name
-					role {
-						id
-						label
+					profile {
+						profile_user_group {
+							groups {
+								label
+								id
+							}
+						}
 					}
 				}
 			}

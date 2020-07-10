@@ -48,6 +48,7 @@ import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWra
 import { ROUTE_PARTS, WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitizeHtml, stripHtml } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -293,16 +294,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				interactiveTourId = match.params.id;
 			}
 
-			if (isCreatePage) {
-				redirectToClientPage(
-					buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
-						id: interactiveTourId,
-					}),
-					history
-				);
-			} else {
-				await initOrFetchInteractiveTour();
-			}
+			redirectToClientPage(
+				buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
+					id: interactiveTourId,
+				}),
+				history
+			);
 			ToastService.success(
 				t(
 					'admin/interactive-tour/views/interactive-tour-edit___de-interactive-tour-is-opgeslagen'
@@ -650,7 +647,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	// Render
 	const renderPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
 			pageTitle={t(
 				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
 			)}

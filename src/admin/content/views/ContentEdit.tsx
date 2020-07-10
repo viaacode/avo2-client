@@ -27,6 +27,7 @@ import {
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { validateContentBlockField } from '../../shared/helpers';
 import {
@@ -301,7 +302,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
 				false
 			);
-			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: insertedOrUpdatedContent.id });
+			navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, {
+				id: insertedOrUpdatedContent.id,
+			});
 		} catch (err) {
 			console.error(new CustomError('Failed to save content page ', err));
 			ToastService.danger(
@@ -361,9 +364,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const navigateBack = () => {
 		if (pageType === PageType.Create) {
-			history.push(CONTENT_PATH.CONTENT);
+			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
 		} else {
-			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id });
+			navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, { id });
 		}
 	};
 
@@ -485,7 +488,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const renderEditContentPage = () => {
 		return (
 			<div onPaste={onPasteContentBlock}>
-				<AdminLayout showBackButton pageTitle={pageTitle}>
+				<AdminLayout
+					onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
+					pageTitle={pageTitle}
+				>
 					<AdminLayoutTopBarRight>
 						<ButtonToolbar>
 							<Button

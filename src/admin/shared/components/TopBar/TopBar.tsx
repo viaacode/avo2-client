@@ -16,17 +16,16 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-interface TopbarProps extends RouteComponentProps {
-	showBackButton?: boolean;
+interface TopbarProps {
+	onClickBackButton?: () => void;
 	title?: string;
 	center?: ReactNode;
 	right?: ReactNode;
 }
 
-export const TopBarComponent: FunctionComponent<TopbarProps> = ({
-	showBackButton = false,
+export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProps> = ({
+	onClickBackButton,
 	title,
-	history,
 	center,
 	right,
 }) => {
@@ -39,7 +38,7 @@ export const TopBarComponent: FunctionComponent<TopbarProps> = ({
 					<ToolbarLeft>
 						<ToolbarItem>
 							<Flex center>
-								{showBackButton && (
+								{!!onClickBackButton && (
 									<Spacer margin="right">
 										<Button
 											className="c-top-bar__back"
@@ -50,7 +49,7 @@ export const TopBarComponent: FunctionComponent<TopbarProps> = ({
 											title={t(
 												'admin/shared/components/top-bar/top-bar___ga-terug-naar-het-vorig-scherm'
 											)}
-											onClick={history.goBack}
+											onClick={onClickBackButton}
 											type="borderless"
 										/>
 									</Spacer>
@@ -67,4 +66,4 @@ export const TopBarComponent: FunctionComponent<TopbarProps> = ({
 	);
 };
 
-export const TopBar = withRouter(TopBarComponent);
+export const TopBar = (withRouter(TopBarComponent) as unknown) as FunctionComponent<TopbarProps>;
