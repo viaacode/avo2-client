@@ -261,70 +261,62 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 };
 
 // Options
+const transparentOption = {
+	label: i18n.t('admin/content-block/content-block___geen'),
+	value: Color.Transparent,
+};
+const whiteOption = {
+	label: i18n.t('admin/content-block/content-block___wit'),
+	value: Color.White,
+};
+const gray50Option = {
+	label: i18n.t('admin/content-block/content-block___grijs'),
+	value: Color.Gray50,
+};
+const softBlueOption = {
+	label: i18n.t('admin/content-block/content-block___zachtblauw'),
+	value: Color.SoftBlue,
+};
+const nightBlueOption = {
+	label: i18n.t('admin/content-block/content-block___nachtblauw'),
+	value: Color.NightBlue,
+};
+const tealOption = {
+	label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
+	value: Color.Teal,
+};
+const tealBrightOption = {
+	label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
+	value: Color.TealBright,
+};
+const oceanGreenOption = {
+	label: i18n.t('admin/content-block/content-block___oceaangroen'),
+	value: Color.OceanGreen,
+};
+const yellowOption = {
+	label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
+	value: Color.Yellow,
+};
+
 export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
-	{
-		label: i18n.t('admin/content-block/content-block___geen'),
-		value: Color.Transparent,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___wit'),
-		value: Color.White,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___grijs'),
-		value: Color.Gray50,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___zachtblauw'),
-		value: Color.SoftBlue,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: Color.NightBlue,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
-		value: Color.Teal,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
-		value: Color.TealBright,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___oceaangroen'),
-		value: Color.OceanGreen,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
-		value: Color.Yellow,
-	},
+	transparentOption,
+	whiteOption,
+	gray50Option,
+	softBlueOption,
+	nightBlueOption,
+	tealOption,
+	tealBrightOption,
+	oceanGreenOption,
+	yellowOption,
 ];
 
 export const GET_HERO_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
-	{
-		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: Color.NightBlue,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___zachtblauw'),
-		value: Color.SoftBlue,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
-		value: Color.Teal,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
-		value: Color.TealBright,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___oceaangroen'),
-		value: Color.OceanGreen,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
-		value: Color.Yellow,
-	},
+	softBlueOption,
+	nightBlueOption,
+	tealOption,
+	tealBrightOption,
+	oceanGreenOption,
+	yellowOption,
 ];
 
 // TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
