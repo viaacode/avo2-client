@@ -8,6 +8,7 @@ import { APP_PATH } from '../../constants';
 import { getEnv } from '../../shared/helpers';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
+import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 
 /**
  *
@@ -20,6 +21,16 @@ export function redirectToClientPage(path: string, history: History, fromPath?: 
 	} else {
 		history.push(path);
 	}
+}
+
+export function redirectToErrorPage(props: ErrorViewQueryParams, location: Location) {
+	const baseUrl = getBaseUrl(location);
+	window.location.href = `${baseUrl}/error?${queryString.stringify(props)}`;
+}
+
+export function redirectToLoggedOutHome(location: Location) {
+	const baseUrl = getBaseUrl(location);
+	window.location.href = baseUrl;
 }
 
 /**

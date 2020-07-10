@@ -13,6 +13,7 @@ import { getPublishedDate } from '../../admin/content/helpers/get-published-stat
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToErrorPage } from '../../authentication/helpers/redirects';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,
@@ -169,15 +170,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					loginState,
 				})
 			);
-			setLoadingInfo({
-				state: 'error',
-				message: t(
-					'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
-				),
-				actionButtons: ['home', 'helpdesk'],
-			});
+			redirectToErrorPage(
+				{
+					message: t(
+						'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
+					),
+					actionButtons: ['home', 'helpdesk'],
+				},
+				location
+			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, t]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, t, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
