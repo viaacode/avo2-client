@@ -14,7 +14,10 @@ import {
 	DEFAULT_BUTTON_PROPS,
 	DefaultContentBlockState,
 } from '../../../shared/types';
-import { GET_BUTTON_TYPE_OPTIONS } from '../../content-block.const';
+import {
+	GET_BUTTON_TYPE_OPTIONS,
+	GET_HERO_BACKGROUND_COLOR_OPTIONS,
+} from '../../content-block.const';
 
 import {
 	BLOCK_FIELD_DEFAULTS,
@@ -153,6 +156,14 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 		state: INITIAL_HERO_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
+			backgroundColor: {
+				label: i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur'),
+				editorType: ContentBlockEditor.ColorSelect,
+				editorProps: {
+					options: GET_HERO_BACKGROUND_COLOR_OPTIONS(),
+					defaultValue: GET_HERO_BACKGROUND_COLOR_OPTIONS()[0],
+				},
+			},
 		},
 	},
 });
