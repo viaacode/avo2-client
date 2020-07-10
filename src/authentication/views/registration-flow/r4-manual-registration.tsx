@@ -327,6 +327,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 											title={t(
 												'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
 											)}
+											rel="noopener noreferrer"
 										>
 											privacyverklaring
 										</a>
