@@ -74,7 +74,6 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 						<a
 							href="https://meemoo.be/nl"
 							title={t('shared/components/footer/footer___meemoo')}
-							rel="noopener noreferrer"
 						>
 							<span className="c-nav__item-label">
 								{t('shared/components/footer/footer___een-initiatief-van')}
