@@ -320,7 +320,13 @@ export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	},
 ];
 
-export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [Color.NightBlue, Color.Teal];
+export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [
+	Color.NightBlue,
+	Color.Teal,
+	Color.TealBright,
+	Color.OceanGreen,
+	Color.Yellow,
+];
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
