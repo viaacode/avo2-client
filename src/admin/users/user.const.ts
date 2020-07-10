@@ -7,7 +7,7 @@ import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { UserOverviewTableCol } from './user.types';
 
 export const USER_PATH = {
-	USER: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}`,
+	USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}`,
 	USER_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}/:id`,
 };
 
