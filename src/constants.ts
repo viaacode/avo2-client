@@ -104,12 +104,12 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	LOGGED_OUT_HOME: {
 		route: '/',
-		showInContentPicker: true,
+		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
 	LOGGED_IN_HOME: {
 		route: `/${ROUTE_PARTS.loggedInHome}`,
-		showInContentPicker: true,
+		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
 	ITEM_DETAIL: {
@@ -184,8 +184,8 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	SETTINGS: {
 		route: `/${ROUTE_PARTS.settings}`,
-		showInContentPicker: true,
-		showForInteractiveTour: true,
+		showInContentPicker: false,
+		showForInteractiveTour: false,
 	},
 	SETTINGS_TAB: {
 		route: `/${ROUTE_PARTS.settings}/:tabId`,

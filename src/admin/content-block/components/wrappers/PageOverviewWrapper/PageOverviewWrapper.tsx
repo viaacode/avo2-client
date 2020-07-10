@@ -56,7 +56,7 @@ interface PageOverviewWrapperProps {
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteComponentProps> = ({
 	contentTypeAndTabs = {
 		selectedContentType: 'PROJECT',
-		selectedLabels: [],
+		selectedLabels: null,
 	},
 	tabStyle = 'MENU_BAR',
 	allowMultiple = false,
@@ -165,7 +165,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			const hasLabel = queryParams.label && isString(queryParams.label);
 			const hasItem = queryParams.item && isString(queryParams.item);
 			if (hasLabel) {
-				const labelObj = contentTypeAndTabs.selectedLabels.find(
+				const labelObj = (contentTypeAndTabs.selectedLabels || []).find(
 					l => l.label === queryParams.label
 				);
 				if (labelObj) {
@@ -222,7 +222,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		}
 		return (
 			<BlockPageOverview
-				tabs={contentTypeAndTabs.selectedLabels}
+				tabs={contentTypeAndTabs.selectedLabels || []}
 				selectedTabs={selectedTabs}
 				onSelectedTabsChanged={handleSelectedTabsChanged}
 				currentPage={currentPage}
