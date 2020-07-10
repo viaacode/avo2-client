@@ -117,7 +117,11 @@ export function redirectToExternalPage(link: string, target: '_blank' | string |
 }
 
 export function getBaseUrl(location: Location): string {
-	return window.location.href.split(location.pathname)[0];
+	if (location.pathname === '/') {
+		return trimEnd(window.location.href, '/');
+	} else {
+		return trimEnd(window.location.href.split(location.pathname)[0], '/');
+	}
 }
 
 export function getFromPath(
@@ -133,8 +137,5 @@ export function getFullFromUrl(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ) {
-	return `${trimEnd(getBaseUrl(location), '/')}/${trimStart(
-		getFromPath(location, defaultPath),
-		'/'
-	)}`;
+	return `${getBaseUrl(location)}/${trimStart(getFromPath(location, defaultPath), '/')}`;
 }
