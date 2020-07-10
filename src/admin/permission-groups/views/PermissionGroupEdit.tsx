@@ -85,8 +85,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to get permission group by id', err, {
-						query: 'GET_PERMISSION_GROUP_BY_ID',
-						variables: { id: match.params.id },
+						id: match.params.id,
 					})
 				);
 				setLoadingInfo({

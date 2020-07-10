@@ -52,7 +52,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
-		'label'
+		'label',
+		'asc'
 	);
 
 	const [t] = useTranslation();
