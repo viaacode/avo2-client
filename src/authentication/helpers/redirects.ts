@@ -38,10 +38,21 @@ export function redirectToLoggedOutHome(location: Location) {
  * Server redirect functions
  *
  **/
+export function redirectToServerLoginPage(location: Location) {
+	// Redirect to login form
+	// Url to return to after authentication is completed and server stored auth object in session
+	const returnToUrl = getRedirectAfterLogin(location);
+	// Not logged in, we need to redirect the user to the SAML identity server login page
+	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
+		returnToUrl,
+		stamboekNumber: localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
+	})}`;
+}
+
 export function redirectToServerSmartschoolLogin(location: Location) {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getFullFromUrl(location);
+	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
@@ -50,7 +61,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 export function redirectToServerKlascementLogin(location: Location) {
 	// Redirect to klascement login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getFullFromUrl(location);
+	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
@@ -64,17 +75,6 @@ export function redirectToServerArchiefRegistrationIdp(location: Location, stamb
 			stamboekNumber,
 		}
 	)}`;
-}
-
-export function redirectToServerLoginPage(location: Location) {
-	// Redirect to login form
-	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getFullFromUrl(location);
-	// Not logged in, we need to redirect the user to the SAML identity server login page
-	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
-		returnToUrl,
-		stamboekNumber: localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
-	})}`;
 }
 
 export function redirectToServerLogoutPage(location: Location, routeAfterLogout: string) {
@@ -139,14 +139,20 @@ export function getFromPath(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
-	return (
-		get(location, 'state.from.pathname', defaultPath) + get(location, 'state.from.search', '')
-	);
+	const from =
+		get(location, 'state.from.pathname', defaultPath) + get(location, 'state.from.search', '');
+	return `/${trimStart(from, '/')}`;
 }
 
-export function getFullFromUrl(
+export function getRedirectAfterLogin(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ) {
-	return `${getBaseUrl(location)}/${trimStart(getFromPath(location, defaultPath), '/')}`;
+	const base = getBaseUrl(location);
+	const from = getFromPath(location, defaultPath);
+	if (from === '/') {
+		return `${base}${defaultPath}`;
+	} else {
+		return `${base}${from}`;
+	}
 }
