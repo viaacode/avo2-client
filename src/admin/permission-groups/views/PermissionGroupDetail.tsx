@@ -18,8 +18,10 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
+import { dataService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
@@ -169,7 +171,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 		}
 		return (
 			<AdminLayout
-				showBackButton
+				onClickBackButton={() => navigate(history, ADMIN_PATH.PERMISSION_GROUP_OVERVIEW)}
 				pageTitle={t(
 					'admin/permission-groups/views/permission-group-detail___permissie-groep-details'
 				)}

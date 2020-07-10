@@ -247,14 +247,10 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				),
 				false
 			);
-			if (isCreatePage) {
-				redirectToClientPage(
-					buildLink(ADMIN_PATH.PERMISSION_GROUP_EDIT, { id: permissionGroupId }),
-					history
-				);
-			} else {
-				initOrFetchPermissionGroup();
-			}
+			redirectToClientPage(
+				buildLink(ADMIN_PATH.PERMISSION_GROUP_DETAIL, { id: permissionGroupId }),
+				history
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save permission group', err, {
@@ -431,7 +427,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	// Render
 	const renderPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.PERMISSION_GROUP_OVERVIEW)}
 			pageTitle={
 				isCreatePage
 					? t(

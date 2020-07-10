@@ -489,6 +489,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							<Thumbnail
 								category="collection"
 								src={collection.thumbnail_path || undefined}
+								meta={`${get(
+									collection,
+									'collection_fragments_aggregate.aggregate.count',
+									0
+								)} items`}
+								label="collectie"
 							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>

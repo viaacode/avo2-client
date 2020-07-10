@@ -23,7 +23,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
@@ -276,7 +276,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 
 	const renderUserDetailPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.USER_GROUP_OVERVIEW)}
 			pageTitle={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
 		>
 			<AdminLayoutTopBarRight>

@@ -18,14 +18,14 @@ interface AdminLayoutProps {
 	children?: ReactNode;
 	className?: string;
 	pageTitle?: string;
-	showBackButton?: boolean;
+	onClickBackButton?: () => void;
 }
 
 const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 	children,
 	className,
 	pageTitle,
-	showBackButton,
+	onClickBackButton,
 }) => {
 	const actions = useSlot(AdminLayoutActions, children);
 	const body = useSlot(AdminLayoutBody, children);
@@ -36,7 +36,7 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 	return (
 		<div className={classnames('l-admin', { 'l-admin--with-actions': !!actions })}>
 			<TopBar
-				showBackButton={showBackButton}
+				onClickBackButton={onClickBackButton}
 				title={pageTitle}
 				center={topBarCenter}
 				right={topBarRight}

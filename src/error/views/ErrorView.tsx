@@ -1,4 +1,4 @@
-import { omit, uniq } from 'lodash-es';
+import { isArray, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,10 +20,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import {
-	redirectToClientPage,
+	redirectToLoggedOutHome,
 	redirectToServerLogoutPage,
 } from '../../authentication/helpers/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
 
@@ -49,7 +49,6 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	message,
 	icon,
 	children = null,
-	history,
 	location,
 	actionButtons = [],
 }) => {
@@ -79,8 +78,12 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
-		...(queryParams.actionButtons
-			? (queryParams.actionButtons as string).split(',').map(button => button.trim())
+		...(isArray(queryParams.actionButtons) ? queryParams.actionButtons : []),
+		...(isString(queryParams.actionButtons)
+			? queryParams.actionButtons
+					.split(',')
+					.map(button => button.trim())
+					.filter(button => !!button)
 			: []),
 	]);
 
@@ -96,7 +99,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	}
 
 	const goToHome = () => {
-		redirectToClientPage(APP_PATH.LOGGED_OUT_HOME.route, history);
+		redirectToLoggedOutHome(location);
 	};
 
 	return (
