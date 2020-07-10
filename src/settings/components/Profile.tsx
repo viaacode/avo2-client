@@ -613,7 +613,7 @@ const Profile: FunctionComponent<ProfileProps & {
 										),
 										value: '',
 									},
-									...cities.map(c => ({ label: c, value: c })),
+									...(cities || []).map(c => ({ label: c, value: c })),
 								]}
 								value={selectedCity || ''}
 								onChange={onSelectedCityChanged}
