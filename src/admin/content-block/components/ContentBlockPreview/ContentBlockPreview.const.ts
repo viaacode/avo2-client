@@ -7,7 +7,6 @@ import {
 	BlockIntro,
 	BlockKlaar,
 	BlockQuote,
-	BlockRichText,
 	BlockSpotlight,
 } from '@viaa/avo2-components';
 
@@ -23,6 +22,7 @@ import {
 	PageOverviewWrapper,
 	ProjectSpotlightWrapper,
 } from '../wrappers';
+import RichTextWrapper from '../wrappers/RichTextWrapper/RichTextWrapper';
 
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.AnchorLinks]: BlockButtons,
@@ -42,9 +42,9 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
 	[ContentBlockType.ProjectsSpotlight]: ProjectSpotlightWrapper,
 	[ContentBlockType.Quote]: BlockQuote,
-	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
-	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
-	[ContentBlockType.RichText]: BlockRichText,
+	[ContentBlockType.RichTextTwoColumns]: RichTextWrapper,
+	[ContentBlockType.RichTextTwoColumns]: RichTextWrapper,
+	[ContentBlockType.RichText]: RichTextWrapper,
 	[ContentBlockType.Spotlight]: BlockSpotlight,
 	[ContentBlockType.Hero]: HeroWrapper,
 	[ContentBlockType.Search]: BlockSearch,
@@ -86,7 +86,6 @@ export const CONTENT_PAGE_ACCESS_BLOCKS = [ContentBlockType.ContentPageMeta];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
 	'backgroundColor',
-	'headerBackgroundColor',
 	'blockType',
 	'elements',
 	'padding',

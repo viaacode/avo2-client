@@ -28,9 +28,10 @@ import {
 } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError, sanitizeHtml } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -425,7 +426,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 		return (
 			<AdminLayout
-				showBackButton
+				onClickBackButton={() => navigate(history, ADMIN_PATH.ITEMS_OVERVIEW)}
 				pageTitle={`${t('admin/items/views/item-detail___item-details')}: ${item.title}`}
 			>
 				<AdminLayoutTopBarRight>

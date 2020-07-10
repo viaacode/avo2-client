@@ -5,10 +5,12 @@ export const GET_USER_BY_ID = gql`
 		users_profiles(offset: 0, limit: 1, where: { id: { _eq: $id } }) {
 			id
 			user: usersByuserId {
+				uid
 				id
 				first_name
 				last_name
 				mail
+				is_blocked
 				idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
 					id
 					idp_user_id
@@ -30,6 +32,16 @@ export const GET_USER_BY_ID = gql`
 			}
 			is_exception
 			title
+			profile_classifications {
+				key
+			}
+			profile_contexts {
+				key
+			}
+			profile_organizations {
+				unit_id
+				organization_id
+			}
 			profile_user_group {
 				groups {
 					id
@@ -130,6 +142,14 @@ export const GET_USERS = gql`
 			aggregate {
 				count
 			}
+		}
+	}
+`;
+
+export const UPDATE_USER_BLOCKED_STATUS = gql`
+	mutation updateUserBlockedStatus($userId: uuid!, $isBlocked: Boolean!) {
+		update_shared_users(where: { uid: { _eq: $userId } }, _set: { is_blocked: $isBlocked }) {
+			affected_rows
 		}
 	}
 `;

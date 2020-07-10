@@ -23,7 +23,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
@@ -52,7 +52,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
-		'label'
+		'label',
+		'asc'
 	);
 
 	const [t] = useTranslation();
@@ -275,7 +276,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 
 	const renderUserDetailPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.USER_GROUP_OVERVIEW)}
 			pageTitle={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
 		>
 			<AdminLayoutTopBarRight>

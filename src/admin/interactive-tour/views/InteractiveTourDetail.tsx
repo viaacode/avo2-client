@@ -21,7 +21,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import {
@@ -170,7 +170,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 
 	const renderUserDetailPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
 			pageTitle={t(
 				'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
 			)}

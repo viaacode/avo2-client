@@ -70,7 +70,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					),
 					false
 				);
-				history.push(MENU_PATH.MENU);
+				history.push(MENU_PATH.MENU_OVERVIEW);
 			}
 		});
 	}, [history, menuName, menuParentId, t]);
@@ -351,7 +351,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				menu: menuParentId,
 			});
 		} else {
-			navigate(history, MENU_PATH.MENU);
+			navigate(history, MENU_PATH.MENU_OVERVIEW);
 		}
 	};
 
@@ -361,7 +361,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout showBackButton pageTitle={pageTitle}>
+		<AdminLayout
+			onClickBackButton={() => navigate(history, ADMIN_PATH.MENU_OVERVIEW)}
+			pageTitle={pageTitle}
+		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button

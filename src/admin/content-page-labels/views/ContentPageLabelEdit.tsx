@@ -161,17 +161,10 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				),
 				false
 			);
-			if (isCreatePage) {
-				redirectToClientPage(
-					buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_EDIT, { id: contentPageLabelId }),
-					history
-				);
-			} else {
-				redirectToClientPage(
-					buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabelId }),
-					history
-				);
-			}
+			redirectToClientPage(
+				buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabelId }),
+				history
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save content page label', err, {
@@ -244,7 +237,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	// Render
 	const renderPage = () => (
 		<AdminLayout
-			showBackButton
+			onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW)}
 			pageTitle={
 				isCreatePage
 					? t(

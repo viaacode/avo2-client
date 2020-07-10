@@ -62,7 +62,7 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 			{
 				navItem: {
 					label: i18n.t('admin/admin___gebruikers'),
-					location: ADMIN_PATH.USER,
+					location: ADMIN_PATH.USER_OVERVIEW,
 					key: 'users',
 					exact: false,
 				},
@@ -151,7 +151,7 @@ function hasPermissions(
 async function getContentPageDetailRouteByPath(path: string): Promise<string | undefined> {
 	try {
 		const page = await ContentService.fetchContentPageByPath(path);
-		return buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: page.id });
+		return buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, { id: page.id });
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
 		ToastService.danger(
@@ -168,13 +168,13 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 	...getUserNavItems(userPermissions),
 	...hasPermissions(['EDIT_NAVIGATION_BARS'], 'OR', userPermissions, {
 		label: i18n.t('admin/admin___navigatie'),
-		location: ADMIN_PATH.MENU,
+		location: ADMIN_PATH.MENU_OVERVIEW,
 		key: 'navigatie',
 		exact: false,
 	}),
 	...hasPermissions(['EDIT_ANY_CONTENT_PAGES', 'EDIT_OWN_CONTENT_PAGES'], 'OR', userPermissions, {
 		label: i18n.t('admin/admin___content-paginas'),
-		location: ADMIN_PATH.CONTENT,
+		location: ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 		key: 'content',
 		exact: false,
 		subLinks: [

@@ -282,7 +282,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		switch (columnId) {
 			case 'title':
 				return (
-					<Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>
+					<Link to={buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, { id })}>
 						{truncateTableValue(title)}
 					</Link>
 				);
@@ -312,7 +312,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					<ButtonToolbar>
 						<Button
 							icon="info"
-							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
+							onClick={() =>
+								navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, { id })
+							}
 							size="small"
 							title={t('admin/content/views/content-overview___bekijk-content')}
 							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
@@ -343,7 +345,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						/>
 						<Button
 							icon="edit"
-							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+							onClick={() =>
+								navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })
+							}
 							size="small"
 							title={t('admin/content/views/content-overview___pas-content-aan')}
 							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
@@ -397,7 +401,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							title={t(
 								'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 							)}
-							onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+							onClick={() => history.push(CONTENT_PATH.CONTENT_PAGE_CREATE)}
 						/>
 					</Spacer>
 				)}
@@ -468,7 +472,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						title={t(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
-						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+						onClick={() => history.push(CONTENT_PATH.CONTENT_PAGE_CREATE)}
 					/>
 				)}
 			</AdminLayoutTopBarRight>

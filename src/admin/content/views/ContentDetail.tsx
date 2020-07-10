@@ -48,6 +48,7 @@ import {
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	AdminLayout,
 	AdminLayoutBody,
@@ -140,7 +141,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			update: ApolloCacheManager.clearContentCache,
 		})
 			.then(() => {
-				history.push(CONTENT_PATH.CONTENT);
+				history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
 				ToastService.success(
 					t(
 						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
@@ -257,7 +258,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					}
 
 					redirectToClientPage(
-						buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: duplicateContentPage.id }),
+						buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, {
+							id: duplicateContentPage.id,
+						}),
 						history
 					);
 
@@ -320,7 +323,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			<Button
 				label={t('admin/content/views/content-detail___bewerken')}
 				title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
-				onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+				onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
 			/>
 			<ControlledDropdown
 				isOpen={isOptionsMenuOpen}
@@ -373,7 +376,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	return (
-		<AdminLayout showBackButton pageTitle={pageTitle}>
+		<AdminLayout
+			onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
+			pageTitle={pageTitle}
+		>
 			<AdminLayoutTopBarRight>{renderContentActions()}</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
 				<Navbar background="alt" placement="top" autoHeight>
