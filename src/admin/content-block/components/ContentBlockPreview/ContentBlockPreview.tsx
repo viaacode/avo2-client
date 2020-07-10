@@ -113,7 +113,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 	return (
 		<div
 			className={classnames('c-content-block', className)}
-			style={{ backgroundColor: blockState.backgroundColor }}
+			style={{
+				backgroundColor: blockState.backgroundColor,
+				...(blockState.headerBackgroundColor !== Color.Transparent ? { zIndex: 1 } : {}),
+			}}
 			id={blockState.anchor}
 			data-anchor={blockState.anchor}
 			ref={blockRef}
