@@ -57,15 +57,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					? files.filter(file => !allowedTypes.includes(file.type))
 					: [];
 				if (notAllowedFiles.length) {
-					const allowedExtensions = allowedTypes
-						.map((type: string) => type.split('/').pop() || type)
-						.join(', ');
 					ToastService.danger(
 						t(
-							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten-allowed-extensions',
-							{
-								allowedExtensions,
-							}
+							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten'
 						)
 					);
 					return;

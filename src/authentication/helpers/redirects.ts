@@ -5,10 +5,10 @@ import queryString from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
+import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { getEnv } from '../../shared/helpers';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
-import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 
 /**
  *
@@ -29,8 +29,7 @@ export function redirectToErrorPage(props: ErrorViewQueryParams, location: Locat
 }
 
 export function redirectToLoggedOutHome(location: Location) {
-	const baseUrl = getBaseUrl(location);
-	window.location.href = baseUrl;
+	window.location.href = getBaseUrl(location);
 }
 
 /**
@@ -130,9 +129,8 @@ export function redirectToExternalPage(link: string, target: '_blank' | string |
 export function getBaseUrl(location: Location): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');
-	} else {
-		return trimEnd(window.location.href.split(location.pathname)[0], '/');
 	}
+	return trimEnd(window.location.href.split(location.pathname)[0], '/');
 }
 
 export function getFromPath(
@@ -152,7 +150,6 @@ export function getRedirectAfterLogin(
 	const from = getFromPath(location, defaultPath);
 	if (from === '/') {
 		return `${base}${defaultPath}`;
-	} else {
-		return `${base}${from}`;
 	}
+	return `${base}${from}`;
 }

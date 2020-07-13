@@ -23,7 +23,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import { isMobileWidth } from '../../shared/helpers';
-import { isPhoto } from '../../shared/helpers/files';
+import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
 import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
 import { ToastService, ZendeskService } from '../../shared/services';
 
@@ -197,7 +197,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 								urls={attachmentUrl ? [attachmentUrl] : []}
 								onChange={attachments => setAttachmentUrl(attachments[0])}
 								ownerId=""
-								allowedTypes={[]} // allow all types
+								allowedTypes={DOC_TYPES}
 								allowMulti={false}
 								label={t(
 									'user-item-request-form/views/user-item-request-form___selecteer-een-betand-word-excel-max-xxx-mb'

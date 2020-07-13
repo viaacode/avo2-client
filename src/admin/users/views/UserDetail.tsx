@@ -135,13 +135,15 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				await UserService.updateBlockStatus(userId, !isBlocked);
 				fetchProfileById();
 				ToastService.success(
-					isBlocked ? t('Gebruiker is gedeblokkeerd') : t('Gebruiker is geblokkeerd'),
+					isBlocked
+						? t('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
+						: t('admin/users/views/user-detail___gebruiker-is-geblokkeerd'),
 					false
 				);
 			} else {
 				ToastService.danger(
 					t(
-						'Het updaten van de gebruiker is mislukt omdat zijn id niet kon worden gevonden'
+						'admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt-omdat-zijn-id-niet-kon-worden-gevonden'
 					),
 					false
 				);
@@ -152,7 +154,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					profile: storedProfile,
 				})
 			);
-			ToastService.danger(t('Het updaten van de gebruiker is mislukt'), false);
+			ToastService.danger(
+				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt'),
+				false
+			);
 		}
 	};
 
@@ -295,7 +300,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									'is_exception',
 									t('admin/users/views/user-detail___uitzonderingsaccount'),
 								],
-								['user.is_blocked', t('Geblokkeerd')],
+								[
+									'user.is_blocked',
+									t('admin/users/views/user-detail___geblokkeerd'),
+								],
 							])}
 							{renderDetailRow(
 								<TagList
@@ -312,7 +320,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									swatches={false}
 									closable={false}
 								/>,
-								t('Vakken')
+								t('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(
 								<TagList
@@ -325,7 +333,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									swatches={false}
 									closable={false}
 								/>,
-								t("Opleidingsniveau's")
+								t('admin/users/views/user-detail___opleidingsniveaus')
 							)}
 							{renderDetailRow(
 								<TagList
@@ -336,9 +344,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 										id: eduOrgName,
 									}))}
 								/>,
-								t('Educatieve organisaties')
+								t('admin/users/views/user-detail___educatieve-organisaties')
 							)}
-							{renderDetailRow(get(storedProfile, 'organisation.name'), t('Bedrijf'))}
+							{renderDetailRow(
+								get(storedProfile, 'organisation.name'),
+								t('admin/users/views/user-detail___bedrijf')
+							)}
 						</tbody>
 					</Table>
 					{renderPermissionLists()}
@@ -350,7 +361,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const renderUserDetailPage = () => {
 		const isBlocked = get(storedProfile, 'user.is_blocked');
 		const blockButtonTooltip = isBlocked
-			? t('Laat deze gebruiker terug toe op het AvO platform')
+			? t(
+					'admin/users/views/user-detail___laat-deze-gebruiker-terug-toe-op-het-av-o-platform'
+			  )
 			: t('admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform');
 		return (
 			<AdminLayout
@@ -362,7 +375,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						{canBanUser() && isPupil() && (
 							<Button
 								type={isBlocked ? 'primary' : 'danger'}
-								label={isBlocked ? t('Deblokkeren') : t('Blokkeren')}
+								label={
+									isBlocked
+										? t('admin/users/views/user-detail___deblokkeren')
+										: t('admin/users/views/user-detail___blokkeren')
+								}
 								title={blockButtonTooltip}
 								ariaLabel={blockButtonTooltip}
 								onClick={() => toggleBlockedStatus()}

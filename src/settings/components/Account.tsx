@@ -126,17 +126,23 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											onClick={() =>
 												redirectToExternalPage(ssumAccountEditPage, null)
 											}
-											label={t('Wijzig accountgegevens')}
+											label={t(
+												'settings/components/account___wijzig-accountgegevens'
+											)}
 										/>
 									</Spacer>
-									<BlockHeading type="h3">{t('Wachtwoord')}</BlockHeading>
+									<BlockHeading type="h3">
+										{t('settings/components/account___wachtwoord')}
+									</BlockHeading>
 									<Spacer margin="top">
 										<Button
 											type="secondary"
 											onClick={() =>
 												redirectToExternalPage(ssumPasswordEditPage, null)
 											}
-											label={t('Wijzig wachtwoord')}
+											label={t(
+												'settings/components/account___wijzig-wachtwoord'
+											)}
 										/>
 									</Spacer>
 									<Spacer margin="top-large">
