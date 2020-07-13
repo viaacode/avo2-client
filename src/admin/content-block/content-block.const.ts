@@ -340,6 +340,7 @@ export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 ];
 
 export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [
+	Color.SoftBlue,
 	Color.NightBlue,
 	Color.Teal,
 	Color.TealBright,
