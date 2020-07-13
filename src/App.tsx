@@ -5,7 +5,6 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-import Zendesk from 'react-zendesk';
 import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
@@ -14,8 +13,8 @@ import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
+import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
-import { getEnv } from './shared/helpers';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
@@ -57,7 +56,7 @@ const App: FunctionComponent<AppProps> = props => {
 						)}
 						{renderRoutes()}
 						{props.location.pathname !== APP_PATH.LOGIN.route && <Footer {...props} />}
-						<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} />
+						<ZendeskWrapper />
 					</>
 				)}
 			</div>
