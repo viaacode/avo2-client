@@ -59,10 +59,7 @@ function getFormattedKey(filePath: string, key: string) {
 }
 
 function getFormattedTranslation(translation: string) {
-	return translation
-		.trim()
-		.replace(/\t\t(\t)+/g, ' ')
-		.replace(/(\s?(\\n|\\r)\s?)+/g, ' ');
+	return translation.trim().replace(/\t\t(\t)+/g, ' ');
 }
 
 async function getFilesByGlob(globPattern: string): Promise<string[]> {
@@ -266,10 +263,7 @@ async function updateTranslations() {
 		combinedTranslations[key] = onlineTranslations[key] || newTranslations[key];
 	});
 
-	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2).replace(
-		/\s*(\\n|\\r)+\s*/g, // replace new line chars with a single space
-		' '
-	);
+	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2);
 	checkTranslationsForKeysAsValue(nlJsonContent); // Throws error if any key is found as a value
 
 	fs.writeFileSync(
