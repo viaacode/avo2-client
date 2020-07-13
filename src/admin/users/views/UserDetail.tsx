@@ -37,11 +37,7 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import { UserService } from '../user.service';
-import {
-	RawPermissionLink,
-	RawUserGroupLink,
-	RawUserGroupPermissionGroupLink,
-} from '../user.types';
+import { RawPermissionLink, RawUserGroup, RawUserGroupPermissionGroupLink } from '../user.types';
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -194,35 +190,37 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const rawUserGroups: RawUserGroupLink[] = get(storedProfile, 'profile_user_group', []);
+		const profileUserGroup: RawUserGroup[] = get(
+			storedProfile,
+			'profile_user_group.groups',
+			[]
+		);
 
-		rawUserGroups.forEach(profileUserGroup => {
-			profileUserGroup.groups.forEach(group => {
-				userGroups.push({
-					id: group.id,
-					label: group.label,
+		profileUserGroup.forEach(group => {
+			userGroups.push({
+				id: group.id,
+				label: group.label,
+			});
+			const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
+				group,
+				'group_user_permission_groups',
+				[]
+			);
+			rawPermissionGroups.forEach(permissionGroup => {
+				permissionGroups.push({
+					id: permissionGroup.permission_group.id,
+					label: permissionGroup.permission_group.label,
 				});
-				const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
-					group,
-					'group_user_permission_groups',
-					[]
+				const rawPermissions: RawPermissionLink[] = get(
+					permissionGroup.permission_group,
+					'permission_group_user_permissions'
 				);
-				rawPermissionGroups.forEach(permissionGroup => {
-					permissionGroups.push({
-						id: permissionGroup.permission_group.id,
-						label: permissionGroup.permission_group.label,
-					});
-					const rawPermissions: RawPermissionLink[] = get(
-						permissionGroup.permission_group,
-						'permission_group_user_permissions'
-					);
-					rawPermissions.map(permission =>
-						permissions.push({
-							id: permission.permission.id,
-							label: permission.permission.label,
-						})
-					);
-				});
+				rawPermissions.map(permission =>
+					permissions.push({
+						id: permission.permission.id,
+						label: permission.permission.label,
+					})
+				);
 			});
 		});
 
