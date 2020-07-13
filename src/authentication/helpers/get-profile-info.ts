@@ -44,6 +44,9 @@ export const getUserGroupLabel = (
 export const getUserGroupId = (
 	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
 ): number => {
+	if (get(userOrProfile, 'userGroupIds[0]')) {
+		return get(userOrProfile, 'userGroupIds[0]');
+	}
 	if (!userOrProfile) {
 		throw new CustomError(
 			'Failed to get profile user group label because the provided profile is undefined'
@@ -51,7 +54,12 @@ export const getUserGroupId = (
 	}
 
 	const profile = getProfile(userOrProfile);
-	return get(profile, 'profile_user_group.groups[0].id') || '';
+	const userGroupId =
+		get(profile, 'userGroupIds') || get(profile, 'profile_user_group.groups[0].id') || '';
+	if (!userGroupId) {
+		console.error('Failed to get user group id from profile');
+	}
+	return userGroupId;
 };
 
 export function getProfileFromUser(
