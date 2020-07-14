@@ -24,6 +24,7 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 	'/aanmelden-op-het-archief-voor-onderwijs-met-smartschool': '/faq-lesgever',
 	'/aanmelden-op-het-archief-voor-onderwijs-met-klascement': '/faq-lesgever',
 	'/wat-zijn-collecties': '/faq-lesgever/wat-zijn-collecties',
+	'/alles-over-collecties': '/faq-lesgever/wat-zijn-collecties',
 
 	'/klaar.json': `${getEnv('PROXY_URL')}/klaar/klaar.json`,
 	'/sitemap.xml': `${getEnv('PROXY_URL')}/sitemap`,
