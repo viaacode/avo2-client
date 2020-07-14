@@ -77,7 +77,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 			if (headerBgRef && headerBgRef.current) {
 				headerBgRef.current.style.height = getHeaderHeight();
 			}
-		}, 1000);
+		}, 300);
 
 		return () => {
 			clearInterval(timerId);
