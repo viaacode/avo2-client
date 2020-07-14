@@ -134,7 +134,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			if (!initialContentPageLabel || !contentPageLabel) {
 				ToastService.danger(
 					t(
-						'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-de-permissie-groep-is-mislukt-omdat-de-permissie-groep-nog-niet-is-geladen'
+						'Het opslaan van het content pagina label is mislukt omdat het label nog niet is geladen'
 					),
 					false
 				);
