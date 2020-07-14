@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	BlockHeading,
@@ -23,14 +23,21 @@ import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 
 import './RegisterOrLogin.scss';
 
-export interface RegisterOrLoginProps extends RouteComponentProps {}
+export interface RegisterOrLoginProps {}
 
-const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
+const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
 	history,
 	location,
 	match,
 }) => {
 	const [t] = useTranslation();
+
+	const getRedirectAfterLogin = () => {
+		if (location.pathname === `/${ROUTE_PARTS.registerOrLogin}`) {
+			return getFromPath(location);
+		}
+		return location.pathname + location.hash + location.search;
+	};
 
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
@@ -116,7 +123,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 											history={history}
 											location={location}
 											match={match}
-											redirectAfterLogin={getFromPath(location)}
+											redirectAfterLogin={getRedirectAfterLogin()}
 										/>
 									</FlexItem>
 								</Flex>
@@ -129,4 +136,4 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	);
 };
 
-export default RegisterOrRegisterOrLogin;
+export default withRouter(RegisterOrRegisterOrLogin);

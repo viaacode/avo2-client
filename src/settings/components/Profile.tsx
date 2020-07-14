@@ -30,8 +30,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import {
-	getProfile,
 	getProfileAlias,
+	getProfileFromUser,
 	getProfileId,
 } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -118,10 +118,12 @@ const Profile: FunctionComponent<ProfileProps & {
 	);
 	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
 	const [avatar, setAvatar] = useState<string | null>(
-		get(getProfile(user, true), 'avatar', null)
+		get(getProfileFromUser(user, true), 'avatar', null)
 	);
-	const [bio, setBio] = useState<string | null>(get(getProfile(user, true), 'bio', null));
-	const [func, setFunc] = useState<string | null>(get(getProfile(user, true), 'function', null));
+	const [bio, setBio] = useState<string | null>(get(getProfileFromUser(user, true), 'bio', null));
+	const [func, setFunc] = useState<string | null>(
+		get(getProfileFromUser(user, true), 'function', null)
+	);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 	const [allEducationLevels, setAllEducationLevels] = useState<string[] | null>(null);
@@ -130,7 +132,7 @@ const Profile: FunctionComponent<ProfileProps & {
 		Partial<Avo.Organization.Organization>[] | null
 	>(null);
 	const [companyId, setCompanyId] = useState<string | null>(
-		get(getProfile(user, true), 'company_id', null)
+		get(getProfileFromUser(user, true), 'company_id', null)
 	);
 	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
 
@@ -274,7 +276,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					orgs = [...organizationsCache[selectedCity]];
 				} else {
 					// fetch from server
-					orgs = await EducationOrganisationService.fetchEducationOrganizations(
+					orgs = await EducationOrganisationService.fetchEducationOrganisations(
 						city,
 						zipCode
 					);
@@ -364,7 +366,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				setIsSaving(false);
 				return;
 			}
-			await SettingsService.updateProfileInfo(getProfile(user), newProfileInfo);
+			await SettingsService.updateProfileInfo(getProfileFromUser(user), newProfileInfo);
 
 			if (isCompleteProfileStep) {
 				// Refetch user permissions since education level can change user group
@@ -611,7 +613,7 @@ const Profile: FunctionComponent<ProfileProps & {
 										),
 										value: '',
 									},
-									...cities.map(c => ({ label: c, value: c })),
+									...(cities || []).map(c => ({ label: c, value: c })),
 								]}
 								value={selectedCity || ''}
 								onChange={onSelectedCityChanged}

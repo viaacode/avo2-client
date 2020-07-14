@@ -60,3 +60,10 @@ export function formatDate(timestamp: DateLikeNullable) {
 		.toDate()
 		.toLocaleDateString();
 }
+
+export function toIsoDate(timestamp: DateLikeNullable) {
+	if (!timestamp) {
+		return '';
+	}
+	return normalizeTimestamp(timestamp).format('YYYY-MM-DD');
+}

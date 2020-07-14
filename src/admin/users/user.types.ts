@@ -17,10 +17,6 @@ export interface UserTableState extends FilterableTableState {
 	created_at: string;
 }
 
-export interface RawUserGroupLink {
-	groups: RawUserGroup[];
-}
-
 export interface RawUserGroup {
 	id: number;
 	label: string;

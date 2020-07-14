@@ -31,6 +31,8 @@ import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+import { Color } from '../../../../shared/types';
+import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../../content-block.const';
 
 export interface ContentPageOverviewParams {
 	withBlock: boolean;
@@ -51,12 +53,13 @@ interface PageOverviewWrapperProps {
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
+	headerBackgroundColor: Color;
 }
 
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteComponentProps> = ({
 	contentTypeAndTabs = {
 		selectedContentType: 'PROJECT',
-		selectedLabels: [],
+		selectedLabels: null,
 	},
 	tabStyle = 'MENU_BAR',
 	allowMultiple = false,
@@ -69,6 +72,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___lees-meer'
 	),
 	itemsPerPage = 20,
+	headerBackgroundColor,
 	history,
 }) => {
 	const [t] = useTranslation();
@@ -165,7 +169,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			const hasLabel = queryParams.label && isString(queryParams.label);
 			const hasItem = queryParams.item && isString(queryParams.item);
 			if (hasLabel) {
-				const labelObj = contentTypeAndTabs.selectedLabels.find(
+				const labelObj = (contentTypeAndTabs.selectedLabels || []).find(
 					l => l.label === queryParams.label
 				);
 				if (labelObj) {
@@ -217,18 +221,19 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	};
 
 	const renderPageOverviewBlock = () => {
-		if (!pageCount || !pages) {
-			return null;
-		}
 		return (
 			<BlockPageOverview
-				tabs={contentTypeAndTabs.selectedLabels}
+				tabs={contentTypeAndTabs.selectedLabels || []}
+				darkTabs={
+					!!headerBackgroundColor &&
+					GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(headerBackgroundColor)
+				}
 				selectedTabs={selectedTabs}
 				onSelectedTabsChanged={handleSelectedTabsChanged}
 				currentPage={currentPage}
 				onCurrentPageChanged={handleCurrentPageChanged}
-				pageCount={pageCount}
-				pages={pages.map(dbToPageOverviewContentPage)}
+				pageCount={pageCount || 1}
+				pages={(pages || []).map(dbToPageOverviewContentPage)}
 				tabStyle={tabStyle}
 				itemStyle={itemStyle}
 				allowMultiple={allowMultiple}

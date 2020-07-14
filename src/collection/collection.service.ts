@@ -1,12 +1,13 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
+import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
-import { CustomError, performQuery } from '../shared/helpers';
+import { CustomError, getEnv, performQuery } from '../shared/helpers';
+import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { RelationService } from '../shared/services/relation-service/relation.service';
@@ -22,14 +23,12 @@ import {
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
-	GET_COLLECTION_ID_BY_AVO1_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
 	GET_COLLECTIONS_BY_ID,
 	GET_COLLECTIONS_BY_OWNER,
 	GET_COLLECTIONS_BY_TITLE,
-	GET_ITEMS_BY_IDS,
 	GET_QUALITY_LABELS,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
@@ -659,81 +658,43 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
+	 * @param assignmentId Collection can be fetched if it's not public and you're not the owner,
+	 *        but if it is linked to an assignment that you're trying to view
 	 *
 	 * @returns Collection or bundle.
 	 */
 	public static async fetchCollectionOrBundleWithItemsById(
 		collectionId: string,
-		type: 'collection' | 'bundle'
-	): Promise<Avo.Collection.Collection | undefined> {
+		type: 'collection' | 'bundle',
+		assignmentId: number | undefined
+	): Promise<Avo.Collection.Collection | null> {
 		try {
-			// retrieve collection or bundle by id
-			const collectionOrBundle = await this.fetchCollectionOrBundleById(collectionId, type);
-
-			// handle empty response
-			if (!collectionOrBundle) {
-				return undefined;
-			}
-
-			// retrieve items/collections for each collection_fragment that has an external_id set
-			const ids: string[] = compact(
-				(collectionOrBundle.collection_fragments || []).map((collectionFragment, index) => {
-					// reset positions to a list of ordered integers, db ensures sorting on previoous positin
-					collectionFragment.position = index;
-
-					// return external id if set
-					if (collectionFragment.type !== 'TEXT') {
-						return collectionFragment.external_id;
-					}
-
-					return null;
-				})
+			const response = await fetchWithLogout(
+				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
+					type,
+					assignmentId,
+					id: collectionId,
+				})}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
 			);
-
-			try {
-				// retrieve items of collection or bundle
-				const response = await dataService.query({
-					query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
-					variables: { ids },
-				});
-
-				// Add infos to each fragment under the item_meta property
-				const itemInfos: (Avo.Collection.Collection | Avo.Item.Item)[] = get(
-					response,
-					'data.items',
-					[]
-				);
-				collectionOrBundle.collection_fragments.forEach(fragment => {
-					const itemInfo = itemInfos.find(
-						item =>
-							fragment.external_id ===
-							(type === 'collection' ? item.external_id : item.id)
-					);
-
-					if (itemInfo) {
-						fragment.item_meta = itemInfo;
-						if (!fragment.use_custom_fields) {
-							fragment.custom_description = itemInfo.description;
-							fragment.custom_title = itemInfo.title;
-						}
-					}
-				});
-
-				return collectionOrBundle;
-			} catch (err) {
-				// handle error
-				const customError = new CustomError(
-					'Failed to get fragments inside the collection',
-					err,
-					{
-						ids,
-					}
-				);
-
-				console.error(customError);
-
-				throw customError;
+			if (response.status === 404) {
+				return null;
 			}
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('invalid status code', null, {
+					collectionId,
+					type,
+					response,
+					statusCode: response.status,
+				});
+			}
+			return await response.json();
 		} catch (err) {
 			throw new CustomError('Failed to get collection or bundle with items', err, {
 				collectionId,
@@ -848,36 +809,6 @@ export class CollectionService {
 			return null;
 		}
 	}
-
-	public static getCollectionIdByAvo1Id = async (id: string) => {
-		try {
-			if (isUuid(id)) {
-				return id;
-			}
-
-			const response = await dataService.query({
-				query: GET_COLLECTION_ID_BY_AVO1_ID,
-				variables: {
-					avo1Id: id,
-				},
-			});
-
-			if (!response) {
-				return null;
-			}
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collections[0].id', null);
-		} catch (err) {
-			throw new CustomError('Failed to get collection id by avo1 id', err, {
-				id,
-				query: 'GET_COLLECTION_ID_BY_AVO1_ID',
-			});
-		}
-	};
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a collection of this user
@@ -1095,6 +1026,37 @@ export class CollectionService {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
 				query: 'GET_COLLECTIONS_BY_OWNER',
+			});
+		}
+	}
+
+	public static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
+		try {
+			const response = await fetchWithLogout(
+				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
+					id: avo1Id,
+				})}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError(
+					'Failed to get external_id from /collections/fetch-uuid-by-avo1-id',
+					null,
+					{
+						response,
+					}
+				);
+			}
+			return get(await response.json(), 'uuid') || null;
+		} catch (err) {
+			throw new CustomError('Failed to get collection or bundle uuid by avo1 id', err, {
+				avo1Id,
 			});
 		}
 	}

@@ -25,6 +25,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -47,12 +48,14 @@ import {
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	AdminLayout,
 	AdminLayoutBody,
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
+import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import PublishContentPageModal from '../components/PublishContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
@@ -88,7 +91,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	);
 
 	// Computed
-	const isAdminUser = get(user, 'role.name', null) === 'admin';
+	const isAdminUser = getUserGroupId(user as any) === SpecialUserGroup.Admin;
 	const isContentProtected = get(contentPageInfo, 'is_protected', false);
 	const pageTitle = `Content: ${get(contentPageInfo, 'title', '')}`;
 	const description = contentPageInfo ? ContentService.getDescription(contentPageInfo) : '';
@@ -138,7 +141,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			update: ApolloCacheManager.clearContentCache,
 		})
 			.then(() => {
-				history.push(CONTENT_PATH.CONTENT);
+				history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
 				ToastService.success(
 					t(
 						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
@@ -255,7 +258,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					}
 
 					redirectToClientPage(
-						buildLink(CONTENT_PATH.CONTENT_DETAIL, { id: duplicateContentPage.id }),
+						buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, {
+							id: duplicateContentPage.id,
+						}),
 						history
 					);
 
@@ -318,7 +323,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			<Button
 				label={t('admin/content/views/content-detail___bewerken')}
 				title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
-				onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+				onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
 			/>
 			<ControlledDropdown
 				isOpen={isOptionsMenuOpen}
@@ -371,7 +376,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	return (
-		<AdminLayout showBackButton pageTitle={pageTitle}>
+		<AdminLayout
+			onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
+			pageTitle={pageTitle}
+		>
 			<AdminLayoutTopBarRight>{renderContentActions()}</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
 				<Navbar background="alt" placement="top" autoHeight>

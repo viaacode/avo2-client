@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { get, noop, omit } from 'lodash-es';
-import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
+import React, { FunctionComponent, RefObject, useCallback, useEffect, useRef } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -52,33 +52,37 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
 	const blockRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+	const headerBgRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
 	const blockStateProps: { [key: string]: any } = omit(blockState, IGNORE_BLOCK_LEVEL_PROPS);
 
-	const [headerHeight, setHeaderHeight] = useState<string>('0');
-
-	const updateHeaderHeight = () => {
+	const getHeaderHeight = useCallback(() => {
 		if (!blockRef.current) {
-			setHeaderHeight('0');
-			return;
+			return '0';
 		}
 		const header = blockRef.current.querySelector('.c-content-page-overview-block__header');
 		if (!header) {
-			setHeaderHeight('0');
-			return;
+			return '0';
 		}
 		const height = header.getBoundingClientRect().height || 0;
-		setHeaderHeight(`${height + 16}px`);
-	};
+		return `${height + 16}px`;
+	}, [blockRef]);
 
 	useEffect(() => {
-		if (blockState.headerBackgroundColor) {
-			// Header background color div has to be resized when the window resizes
-			window.addEventListener('resize', updateHeaderHeight);
+		if (blockState.headerBackgroundColor === Color.Transparent) {
+			return;
 		}
-	}, [blockState.headerBackgroundColor]);
 
-	useEffect(updateHeaderHeight, [blockRef.current, blockState, componentState]);
+		const timerId = setInterval(() => {
+			if (headerBgRef && headerBgRef.current) {
+				headerBgRef.current.style.height = getHeaderHeight();
+			}
+		}, 1000);
+
+		return () => {
+			clearInterval(timerId);
+		};
+	}, [blockState.headerBackgroundColor, getHeaderHeight, headerBgRef]);
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type)) {
 		// Pass the navigate function to the block
@@ -101,7 +105,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 	return (
 		<div
 			className={classnames('c-content-block', className)}
-			style={{ backgroundColor: blockState.backgroundColor }}
+			style={{
+				backgroundColor: blockState.backgroundColor,
+				...(blockState.headerBackgroundColor !== Color.Transparent ? { zIndex: 1 } : {}),
+			}}
 			id={blockState.anchor}
 			data-anchor={blockState.anchor}
 			ref={blockRef}
@@ -124,9 +131,9 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 				{blockState.headerBackgroundColor !== Color.Transparent && (
 					<div
 						className="c-content-block__header-bg-color"
+						ref={headerBgRef}
 						style={{
 							backgroundColor: blockState.headerBackgroundColor,
-							height: headerHeight,
 						}}
 					/>
 				)}

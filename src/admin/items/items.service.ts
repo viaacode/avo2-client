@@ -1,14 +1,15 @@
 import { get } from 'lodash-es';
+import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError, performQuery } from '../../shared/helpers';
+import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
+import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
-	GET_EXTERNAL_ID_BY_MEDIAMOSA_ID,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEMS,
@@ -194,22 +195,33 @@ export class ItemsService {
 		mediamosaId: string
 	): Promise<string | null> {
 		try {
-			const response = await dataService.query({
-				query: GET_EXTERNAL_ID_BY_MEDIAMOSA_ID,
-				variables: {
-					mediamosaId,
-				},
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
+			const response = await fetchWithLogout(
+				`${getEnv(
+					'PROXY_URL'
+				)}/collections/fetch-external-id-by-mediamosa-id?${queryString.stringify({
+					id: mediamosaId,
+				})}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError(
+					'Failed to get external_id from /collections/fetch-external-id-by-mediamosa-id',
+					null,
+					{
+						response,
+					}
+				);
 			}
-
-			return get(response, 'data.migrate_reference_ids[0].external_id') || null;
+			return get(response.json(), 'externalId') || null;
 		} catch (err) {
-			throw new CustomError('Failed to get item by media mosa id (avo1 id)', err, {
+			throw new CustomError('Failed to get external_id by mediamosa id (avo1 id)', err, {
 				mediamosaId,
-				query: 'GET_EXTERNAL_ID_BY_MEDIAMOSA_ID',
 			});
 		}
 	}

@@ -326,7 +326,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			};
 			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
 				collectionId,
-				type
+				type,
+				undefined
 			);
 
 			if (!collectionObj) {

@@ -118,10 +118,10 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 									<a
 										href="//meemoo.be/nl/privacybeleid"
 										target="_blank"
-										rel="noopener noreferrer"
 										title={t(
 											'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
 										)}
+										rel="noopener noreferrer"
 									>
 										privacyverklaring
 									</a>

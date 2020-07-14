@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, keys } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -9,24 +9,33 @@ import { Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
+import { getPublishedDate } from '../../admin/content/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToErrorPage } from '../../authentication/helpers/redirects';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
-import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
+import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
-import { dataService } from '../../shared/services';
+import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import {
+	buildLink,
+	CustomError,
+	generateSearchLinkString,
+	getFullName,
+	stripHtml,
+} from '../../shared/helpers';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
+import { GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
 
@@ -71,6 +80,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			const pathname = location.pathname;
 
+			// Check if path is avo1 path that needs to be redirected
+			const redirects = GET_REDIRECTS();
+			const pathWithHash = pathname + location.hash;
+			const key: string | undefined = keys(redirects).find(key =>
+				new RegExp(`^${key}$`, 'gi').test(pathWithHash)
+			);
+			if (key && redirects[key]) {
+				window.location.href = redirects[key];
+				return;
+			}
+
 			// Check if path is an old media url
 			if (/\/media\/[^/]+\/[^/]+/g.test(pathname)) {
 				const avo1Id = (pathname.split('/').pop() || '').trim();
@@ -87,13 +107,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					} // else keep analysing
 
 					// Check if id matches a bundle id
-					const bundleResponse = await dataService.query({
-						query: GET_COLLECTIONS_BY_AVO1_ID,
-						variables: {
-							avo1Id,
-						},
-					});
-					const bundleUuid: string | undefined = get(bundleResponse, 'data.items[0].id');
+					const bundleUuid = await CollectionService.fetchUuidByAvo1Id(avo1Id);
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
 						history.push(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }));
@@ -143,7 +157,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				icon: 'search',
 			});
 		}
-	}, [loginState, location.pathname, setRouteInfo, setLoadingInfo, history, t]);
+	}, [loginState, location.pathname, location.hash, setRouteInfo, setLoadingInfo, history, t]);
 
 	// Check if current user is logged in
 	useEffect(() => {
@@ -156,15 +170,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					loginState,
 				})
 			);
-			setLoadingInfo({
-				state: 'error',
-				message: t(
-					'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
-				),
-				actionButtons: ['home', 'helpdesk'],
-			});
+			redirectToErrorPage(
+				{
+					message: t(
+						'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
+					),
+					actionButtons: ['home', 'helpdesk'],
+				},
+				location
+			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, t]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, t, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
@@ -197,19 +213,29 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				);
 			}
 
+			const description =
+				get(routeInfo.data, 'seo_description') ||
+				get(routeInfo.data, 'description') ||
+				(get(routeInfo.data, 'description_html')
+					? stripHtml(get(routeInfo.data, 'description_html'))
+					: null) ||
+				'';
 			return (
 				<>
 					<MetaTags>
 						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
-						<meta
-							name="description"
-							content={
-								get(routeInfo.data, 'seo_description') ||
-								get(routeInfo.data, 'description') ||
-								''
-							}
-						/>
+						<meta name="description" content={description} />
 					</MetaTags>
+					<JsonLd
+						url={window.location.href}
+						title={get(routeInfo.data, 'title', '')}
+						description={description}
+						image={get(routeInfo.data, 'thumbnail_path')}
+						isOrganisation={!!get(routeInfo.data, 'profile.organisation')}
+						author={getFullName(get(routeInfo.data, 'profile'))}
+						publishedAt={getPublishedDate(routeInfo.data)}
+						updatedAt={get(routeInfo.data, 'updated_at')}
+					/>
 					<ContentPage contentPageInfo={routeInfo.data} />
 				</>
 			);

@@ -1,14 +1,6 @@
 import { gql } from 'apollo-boost';
 
 // TODO: Reduce to only what we need.
-export const GET_COLLECTION_ID_BY_AVO1_ID = gql`
-	query getCollectionIdByAvo1Id($avo1Id: String!) {
-		app_collections(where: { avo1_id: { _eq: $avo1Id } }) {
-			id
-		}
-	}
-`;
-
 export const GET_COLLECTION_BY_ID = gql`
 	query getCollectionById($id: uuid!) {
 		app_collections(where: { id: { _eq: $id } }) {
@@ -48,6 +40,12 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 				stamboek
 				updated_at
+				profile_user_group {
+					groups {
+						label
+						id
+					}
+				}
 				user_id
 				user: usersByuserId {
 					id
@@ -59,11 +57,6 @@ export const GET_COLLECTION_BY_ID = gql`
 					mail
 					uid
 					updated_at
-					role {
-						id
-						name
-						label
-					}
 				}
 				created_at
 				updated_at
@@ -89,9 +82,13 @@ export const GET_COLLECTION_BY_ID = gql`
 					id
 					first_name
 					last_name
-					role {
-						id
-						label
+					profile {
+						profile_user_group {
+							groups {
+								label
+								id
+							}
+						}
 					}
 				}
 			}
@@ -104,29 +101,6 @@ export const GET_COLLECTION_BY_ID = gql`
 					id
 					title
 				}
-			}
-		}
-	}
-`;
-
-export const GET_ITEMS_BY_IDS = gql`
-	query getCollectionsByIds($ids: [bpchar!]!) {
-		items: app_item_meta(where: { external_id: { _in: $ids } }) {
-			id
-			uid
-			external_id
-			duration
-			title
-			description
-			thumbnail_path
-			issued
-			type {
-				id
-				label
-			}
-			organisation {
-				name
-				logo_url
 			}
 		}
 	}
@@ -237,9 +211,13 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 					id
 					first_name
 					last_name
-					role {
-						id
-						label
+					profile {
+						profile_user_group {
+							groups {
+								label
+								id
+							}
+						}
 					}
 				}
 			}

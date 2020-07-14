@@ -14,6 +14,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -43,7 +44,7 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { UserService } from '../../users/user.service';
+import { useUserGroups } from '../../user-groups/hooks';
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -64,8 +65,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionCount, setCollectionCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
-	const [userRoles, setUserRoles] = useState<Avo.User.Role[]>([]);
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
+	const [userGroups] = useUserGroups();
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -90,7 +91,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					},
 					{
 						profile: {
-							usersByuserId: { role: { label: { _ilike: queryWordWildcard } } },
+							author_user_group: { groups: { label: { _ilike: queryWordWildcard } } },
 						},
 					},
 					{
@@ -108,8 +109,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
-					['author_role'],
-					['profile.usersByuserId.role.id']
+					['author_user_group'],
+					['profile.profile_user_group.groups.id']
 				)
 			);
 			if (filters.collection_labels && filters.collection_labels.length) {
@@ -191,19 +192,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
 
-	const fetchUserRoles = useCallback(async () => {
-		try {
-			setUserRoles(await UserService.getUserRoles());
-		} catch (err) {
-			console.error(new CustomError('Failed to get users roles from the database', err));
-			ToastService.danger(
-				t(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-gebruiker-rollen-is-mislukt'
-				)
-			);
-		}
-	}, [setUserRoles, t]);
-
 	const fetchCollectionLabels = useCallback(async () => {
 		try {
 			setCollectionLabels(await CollectionService.fetchQualityLabels());
@@ -219,9 +207,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-		fetchUserRoles();
 		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchUserRoles, fetchCollectionLabels]);
+	}, [fetchCollectionsOrBundles, fetchCollectionLabels]);
 
 	useEffect(() => {
 		if (collections) {
@@ -231,11 +218,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 	}, [setLoadingInfo, collections]);
 
-	const userRoleOptions = userRoles.map(
+	const userGroupOptions = userGroups.map(
 		(option): CheckboxOption => ({
 			id: String(option.id),
 			label: option.label,
-			checked: get(tableState, 'author_role', [] as string[]).includes(String(option.id)),
+			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+				String(option.id)
+			),
 		})
 	);
 
@@ -272,12 +261,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			sortable: true,
 		},
 		{
-			id: 'author_role',
+			id: 'author_user_group',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
 			sortable: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
-				options: userRoleOptions,
+				options: userGroupOptions,
 			},
 		},
 		{
@@ -415,11 +404,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	) => {
 		switch (columnId) {
 			case 'author':
-				const user: Avo.User.User | undefined = get(rowData, 'profile.usersByuserId');
+				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
 				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
 
-			case 'author_role':
-				return UserService.getUserRoleLabel(get(rowData, 'profile')) || '-';
+			case 'author_user_group':
+				return getUserGroupLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(
@@ -571,6 +560,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
+					rowKey={'id'}
 				/>
 			</>
 		);

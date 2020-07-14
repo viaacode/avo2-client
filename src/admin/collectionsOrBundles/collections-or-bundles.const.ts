@@ -11,6 +11,10 @@ export const COLLECTIONS_OR_BUNDLES_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
+const nullsLast = (order: Avo.Search.OrderDirection) => {
+	return order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first');
+};
+
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	{
 		[columnId in CollectionsOrBundlesOverviewTableCols]: (
@@ -21,8 +25,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	author: (order: Avo.Search.OrderDirection) => ({
 		profile: { usersByuserId: { last_name: order } },
 	}),
-	author_role: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { role: { label: order } } },
+	author_user_group: (order: Avo.Search.OrderDirection) => ({
+		profile: { profile_user_group: { groups: { label: nullsLast(order) } } },
 	}),
 	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
 		updated_by: { usersByuserId: { last_name: order } },
@@ -30,28 +34,28 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	views: (order: Avo.Search.OrderDirection) => ({
 		view_counts_aggregate: {
 			sum: {
-				count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+				count: nullsLast(order),
 			},
 		},
 	}),
 	bookmarks: (order: Avo.Search.OrderDirection) => ({
 		collection_bookmarks_aggregate: {
-			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+			count: nullsLast(order),
 		},
 	}),
 	copies: (order: Avo.Search.OrderDirection) => ({
 		relations_aggregate: {
-			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+			count: nullsLast(order),
 		},
 	}),
 	in_bundle: (order: Avo.Search.OrderDirection) => ({
 		relations_aggregate: {
-			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+			count: nullsLast(order),
 		},
 	}),
 	in_assignment: (order: Avo.Search.OrderDirection) => ({
 		relations_aggregate: {
-			count: order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first'),
+			count: nullsLast(order),
 		},
 	}),
 };
