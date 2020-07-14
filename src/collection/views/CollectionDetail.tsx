@@ -784,6 +784,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					author={getFullName(get(collection, 'profile'))}
 					publishedAt={get(collection, 'published_at')}
 					updatedAt={get(collection, 'updated_at')}
+					keywords={[
+						...get(collection, 'lom_classification'),
+						...get(collection, 'lom_context'),
+					]}
 				/>
 				<div
 					className={classnames(
