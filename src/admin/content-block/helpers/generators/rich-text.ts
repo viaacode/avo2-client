@@ -2,12 +2,14 @@ import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
+	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	RichTextBlockComponentState,
 } from '../../../shared/types';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { CheckboxProps } from '@viaa/avo2-components';
 
 export const INITIAL_RICH_TEXT_COMPONENTS_STATE = (): RichTextBlockComponentState => ({
 	content: '',
@@ -45,6 +47,14 @@ export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 	},
 	block: {
 		state: INITIAL_RICH_TEXT_BLOCK_STATE(),
-		fields: BLOCK_FIELD_DEFAULTS(),
+		fields: {
+			limitWidth: {
+				editorType: ContentBlockEditor.Checkbox,
+				editorProps: {
+					label: i18n.t('Limiteer breedte tot 800px'),
+				} as CheckboxProps,
+			},
+			...BLOCK_FIELD_DEFAULTS(),
+		},
 	},
 });

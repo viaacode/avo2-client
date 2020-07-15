@@ -20,11 +20,14 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 	'/cookieverklaring': '/cookiebeleid',
 	'/privacyverklaring': '/privacy-voorwaarden',
 	'/hulp#.*': '/hulp',
+	'/faq': '/faq-lesgever',
 	'/faq#.*': '/faq-lesgever',
 	'/aanmelden-op-het-archief-voor-onderwijs-met-smartschool': '/faq-lesgever',
 	'/aanmelden-op-het-archief-voor-onderwijs-met-klascement': '/faq-lesgever',
-	'/wat-zijn-collecties': '/faq-lesgever/wat-zijn-collecties',
-	'/alles-over-collecties': '/faq-lesgever/wat-zijn-collecties',
+	'/wat-zijn-collecties': '/faq-lesgever?item=/faq-lesgever/wat-zijn-collecties',
+	'/alles-over-collecties': '/faq-lesgever?item=/faq-lesgever/wat-zijn-collecties',
+	'/barend-van-heusden-aan-het-woord-over-cultuur-de-spiegel':
+		'/nieuws/barend-van-heusden-aan-het-woord-over-cultuur-de-spiegel',
 
 	'/klaar.json': `${getEnv('PROXY_URL')}/klaar/klaar.json`,
 	'/sitemap.xml': `${getEnv('PROXY_URL')}/sitemap`,
