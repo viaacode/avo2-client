@@ -56,28 +56,31 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 
 	const blockStateProps: { [key: string]: any } = omit(blockState, IGNORE_BLOCK_LEVEL_PROPS);
 
-	const getHeaderHeight = useCallback(() => {
+	const getHeaderHeight = useCallback((): string | null => {
 		if (!blockRef.current) {
-			return '0';
+			return null;
 		}
-		const header = blockRef.current.querySelector('.c-content-page-overview-block__header');
+		const header: HTMLElement | null = blockRef.current.querySelector(
+			'.c-content-page-overview-block__header'
+		);
 		if (!header) {
-			return '0';
+			return null;
 		}
+		header.style.opacity = '1';
 		const height = header.getBoundingClientRect().height || 0;
-		return `${height + 16}px`;
+		if (height) {
+			return `${height + 16}px`;
+		}
+		return '0';
 	}, [blockRef]);
 
 	useEffect(() => {
-		if (blockState.headerBackgroundColor === Color.Transparent) {
-			return;
-		}
-
 		const timerId = setInterval(() => {
 			if (headerBgRef && headerBgRef.current) {
-				headerBgRef.current.style.height = getHeaderHeight();
+				const height = getHeaderHeight();
+				headerBgRef.current.style.height = height || '0';
 			}
-		}, 1000);
+		}, 300);
 
 		return () => {
 			clearInterval(timerId);
@@ -128,15 +131,13 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 					get(blockState, 'padding.bottom', 'none'),
 				]}
 			>
-				{blockState.headerBackgroundColor !== Color.Transparent && (
-					<div
-						className="c-content-block__header-bg-color"
-						ref={headerBgRef}
-						style={{
-							backgroundColor: blockState.headerBackgroundColor,
-						}}
-					/>
-				)}
+				<div
+					className="c-content-block__header-bg-color"
+					ref={headerBgRef}
+					style={{
+						backgroundColor: blockState.headerBackgroundColor,
+					}}
+				/>
 				{blockState.fullWidth ? (
 					<PreviewComponent {...componentStateProps} {...blockStateProps} />
 				) : (
