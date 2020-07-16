@@ -1,9 +1,8 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { ItemsService } from '../../../items/items.service';
-import { PickerSelectItem } from '../../types';
-
-import { parsePickerItem } from './parse-picker';
+import { ItemsService } from '../../../../items/items.service';
+import { PickerSelectItem } from '../../../types';
+import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch content items from GQL
 export const retrieveItems = async (

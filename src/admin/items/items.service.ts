@@ -12,9 +12,9 @@ import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.c
 import {
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
-	GET_ITEMS,
-	GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	GET_ITEMS_WITH_FILTERS,
+	GET_PUBLIC_ITEMS,
+	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
 } from './items.gql';
@@ -160,11 +160,15 @@ export class ItemsService {
 
 	public static async fetchItems(limit?: number): Promise<Avo.Item.Item[] | null> {
 		const query = {
-			query: GET_ITEMS,
+			query: GET_PUBLIC_ITEMS,
 			variables: { limit },
 		};
 
-		return performQuery(query, 'data.app_item_meta', 'Failed to retrieve items.');
+		return performQuery(
+			query,
+			'data.app_item_meta',
+			'Failed to retrieve items. GET_PUBLIC_ITEMS'
+		);
 	}
 
 	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item | null> {
@@ -232,7 +236,7 @@ export class ItemsService {
 	): Promise<Avo.Item.Item[]> {
 		try {
 			const query = {
-				query: GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+				query: GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 				variables: {
 					limit,
 					title: `%${titleOrExternalId}%`,
@@ -257,6 +261,7 @@ export class ItemsService {
 			throw new CustomError('Failed to fetch items by title or external id', err, {
 				titleOrExternalId,
 				limit,
+				query: 'GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID',
 			});
 		}
 	}
