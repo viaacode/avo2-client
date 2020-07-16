@@ -785,8 +785,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					publishedAt={get(collection, 'published_at')}
 					updatedAt={get(collection, 'updated_at')}
 					keywords={[
-						...get(collection, 'lom_classification'),
-						...get(collection, 'lom_context'),
+						...(get(collection, 'lom_classification') || []),
+						...(get(collection, 'lom_context') || []),
 					]}
 				/>
 				<div
