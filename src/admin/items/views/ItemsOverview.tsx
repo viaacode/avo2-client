@@ -14,7 +14,11 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	CheckboxOption,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
@@ -23,6 +27,7 @@ import FilterTable, { getFilters } from '../../shared/components/FilterTable/Fil
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
+	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
@@ -39,6 +44,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
+	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 
 	// methods
 	const fetchItems = useCallback(async () => {
@@ -58,6 +64,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				)
 			);
 			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
+			andFilters.push(...getMultiOptionFilters(filters, ['series']));
 			andFilters.push(
 				...getDateRangeFilters(filters, [
 					'created_at',
@@ -106,9 +113,26 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		}
 	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
+	const fetchAllSeries = useCallback(async () => {
+		try {
+			setSeriesOptions(
+				((await ItemsService.fetchAllSeries()) || []).map(
+					(serie: string): CheckboxOption => ({ id: serie, label: serie, checked: false })
+				)
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to load all item series from the database', err));
+			ToastService.danger(t('Het ophalen van de Reeks opties is mislukt'));
+		}
+	}, [setSeriesOptions]);
+
 	useEffect(() => {
 		fetchItems();
 	}, [fetchItems]);
+
+	useEffect(() => {
+		fetchAllSeries();
+	}, [fetchAllSeries]);
 
 	useEffect(() => {
 		if (items) {
@@ -218,7 +242,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		return (
 			<>
 				<FilterTable
-					columns={GET_ITEM_OVERVIEW_TABLE_COLS()}
+					columns={GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [])}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>

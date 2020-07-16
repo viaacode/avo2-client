@@ -10,6 +10,7 @@ import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
+	GET_DISTINCT_SERIES,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEMS,
@@ -257,6 +258,22 @@ export class ItemsService {
 			throw new CustomError('Failed to fetch items by title or external id', err, {
 				titleOrExternalId,
 				limit,
+			});
+		}
+	}
+
+	public static async fetchAllSeries(): Promise<string[]> {
+		try {
+			const response = await performQuery(
+				{ query: GET_DISTINCT_SERIES },
+				'data.app_item_meta',
+				'Failed to retrieve distinct series'
+			);
+
+			return (response || []).map((item: { series: string }) => item.series);
+		} catch (err) {
+			throw new CustomError('Failed to fetch distinct series from the database', err, {
+				query: 'GET_DISTINCT_SERIES',
 			});
 		}
 	}
