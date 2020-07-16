@@ -411,10 +411,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
-				const lastEditUser: Avo.User.User | undefined = get(
-					rowData,
-					'updated_by.usersByuserId'
-				);
+				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
 				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
 
 			case 'is_public':
