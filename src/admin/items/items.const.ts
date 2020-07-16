@@ -113,10 +113,10 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 
 export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{ id: 'title', label: i18n.t('admin/items/items___titel') },
-	{ id: 'pid', label: i18n.t('admin/items/items___reeks'), sortable: true },
+	{ id: 'pid', label: i18n.t('admin/items/items___pid'), sortable: true },
 	{
 		id: 'updated_at',
-		label: i18n.t('Geupdate op (MAM)'),
+		label: i18n.t('Aangepast op (MAM)'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},

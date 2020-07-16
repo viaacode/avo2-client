@@ -60,3 +60,10 @@ export interface ItemsTableState extends FilterableTableState {
 	updated_at: string;
 	views: number;
 }
+
+export interface UnpublishedItem {
+	id: number;
+	pid: string;
+	title: string;
+	updated_at: string;
+}

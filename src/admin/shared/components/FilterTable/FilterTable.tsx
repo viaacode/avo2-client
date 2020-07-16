@@ -89,6 +89,9 @@ interface FilterTableProps extends RouteComponentProps {
 	onTableStateChanged: (tableState: { [id: string]: any }) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
+	showCheckboxes?: boolean;
+	selectedItems?: any[];
+	onSelectionChanged?: (selectedItems: any[]) => void;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -104,6 +107,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	onTableStateChanged,
 	rowKey = 'id',
 	variant = 'bordered',
+	showCheckboxes,
+	onSelectionChanged,
+	selectedItems,
 }) => {
 	const [t] = useTranslation();
 
@@ -280,6 +286,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						variant={variant}
 						sortColumn={tableState.sort_column}
 						sortOrder={tableState.sort_order}
+						showCheckboxes={showCheckboxes}
+						onSelectionChanged={onSelectionChanged}
+						selectedItems={selectedItems}
 					/>
 					<Spacer margin="top-large">
 						<Pagination

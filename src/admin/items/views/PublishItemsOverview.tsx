@@ -3,24 +3,34 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Container } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
 
-import { GENERATE_SITE_TITLE } from '../../../constants';
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
-import { ItemsTableState, UnpublishedItemsOverviewTableCols } from '../items.types';
+import {
+	ItemsTableState,
+	UnpublishedItem,
+	UnpublishedItemsOverviewTableCols,
+} from '../items.types';
 
-const PublishItemsOverview: FunctionComponent = () => {
+interface PublishItemsOverviewProps extends DefaultSecureRouteProps {}
+
+const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();
 
-	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
+	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
+	const [selectedItems, setSelectedItems] = useState<UnpublishedItem[]>([]);
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
@@ -83,8 +93,47 @@ const PublishItemsOverview: FunctionComponent = () => {
 		}
 	}, [setLoadingInfo, items]);
 
+	const navigateToItemDetail = (externalId: string | undefined) => {
+		if (!externalId) {
+			ToastService.danger(
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid'),
+				false
+			);
+			return;
+		}
+		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
+		redirectToClientPage(link, history);
+	};
+
+	const navigateToAdminItemDetail = (uuid: string | undefined) => {
+		if (!uuid) {
+			ToastService.danger(
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid'),
+				false
+			);
+			return;
+		}
+		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
+		redirectToClientPage(link, history);
+	};
+
+	const publishSelection = () => {
+		if (!selectedItems.length) {
+			ToastService.info(
+				t('Selecteer eerst enkele items die je wil publiceren dmv de checkboxes'),
+				false
+			);
+			return;
+		}
+		ToastService.info(t('Nog niet geimplementeerd'), false);
+	};
+
+	const triggerMamSync = () => {
+		ToastService.info(t('Nog niet geimplementeerd'), false);
+	};
+
 	const renderTableCell = (
-		rowData: Partial<Avo.Item.Item>,
+		rowData: Partial<UnpublishedItem>,
 		columnId: UnpublishedItemsOverviewTableCols
 	) => {
 		switch (columnId) {
@@ -96,6 +145,36 @@ const PublishItemsOverview: FunctionComponent = () => {
 				return get(rowData, columnId, '-');
 
 			case 'actions':
+				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
+				const itemUid: string | undefined = get(rowData, 'item_meta.uid');
+				if (itemExternalId) {
+					return (
+						<ButtonToolbar>
+							<Button
+								type="secondary"
+								icon="eye"
+								onClick={() => navigateToItemDetail(itemExternalId)}
+								title={t(
+									'admin/items/views/items-overview___bekijk-item-in-de-website'
+								)}
+								ariaLabel={t(
+									'admin/items/views/items-overview___bekijk-item-in-de-website'
+								)}
+							/>
+							<Button
+								type="secondary"
+								icon="edit"
+								onClick={() => navigateToAdminItemDetail(itemUid)}
+								title={t(
+									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+								)}
+								ariaLabel={t(
+									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+								)}
+							/>
+						</ButtonToolbar>
+					);
+				}
 				return null;
 
 			default:
@@ -125,7 +204,7 @@ const PublishItemsOverview: FunctionComponent = () => {
 					columns={GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS()}
 					data={items}
 					dataCount={itemCount}
-					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
+					renderCell={(rowData: Partial<UnpublishedItem>, columnId: string) =>
 						renderTableCell(rowData, columnId as UnpublishedItemsOverviewTableCols)
 					}
 					searchTextPlaceholder={t('Zoeken op titel, pid')}
@@ -135,7 +214,14 @@ const PublishItemsOverview: FunctionComponent = () => {
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
-					rowKey="uid"
+					rowKey="pid"
+					showCheckboxes
+					selectedItems={items.filter(item =>
+						selectedItems.map(item => item.pid).includes(item.pid)
+					)}
+					onSelectionChanged={newSelection => {
+						setSelectedItems(newSelection);
+					}}
 				/>
 			</>
 		);
@@ -143,10 +229,29 @@ const PublishItemsOverview: FunctionComponent = () => {
 
 	return (
 		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						icon="external-link"
+						type="danger"
+						label={t('Publiceren')}
+						onClick={publishSelection}
+					/>
+					<Button
+						icon="download"
+						type="danger"
+						label={t('Synchroniseren met MAM')}
+						title={t(
+							'Kopieer nieuwe en aangepaste items van het MAM naar de AVO database'
+						)}
+						onClick={triggerMamSync}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
-						{GENERATE_SITE_TITLE(t('unpublished item beheer overview pagina titel'))}
+						{GENERATE_SITE_TITLE(t('publiceer items beheer overview pagina titel'))}
 					</title>
 					<meta
 						name="description"

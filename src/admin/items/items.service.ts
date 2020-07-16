@@ -19,7 +19,11 @@ import {
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
 } from './items.gql';
-import { ItemsOverviewTableCols, UnpublishedItemsOverviewTableCols } from './items.types';
+import {
+	ItemsOverviewTableCols,
+	UnpublishedItem,
+	UnpublishedItemsOverviewTableCols,
+} from './items.types';
 
 export class ItemsService {
 	private static getOrderObject(
@@ -79,7 +83,7 @@ export class ItemsService {
 		sortColumn: UnpublishedItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		where: any
-	): Promise<[Avo.Item.Item[], number]> {
+	): Promise<[UnpublishedItem[], number]> {
 		let variables: any;
 		try {
 			variables = {
@@ -219,9 +223,7 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			const item = addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
-
-			return item;
+			return addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
 		} catch (err) {
 			throw new CustomError('Failed to get item by external id', err, {
 				externalId,

@@ -62,6 +62,11 @@ export const GET_UNPUBLISHED_ITEMS_WITH_FILTERS = gql`
 			pid
 			updated_at
 			title: json(path: "Dynamic.dc_title")
+			item_meta {
+				id
+				external_id
+				uid
+			}
 		}
 		shared_items_aggregate {
 			aggregate {
