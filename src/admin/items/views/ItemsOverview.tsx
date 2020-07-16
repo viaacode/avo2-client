@@ -60,7 +60,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
 			andFilters.push(
 				...getDateRangeFilters(filters, [
-					'created_at',
 					'updated_at',
 					'issued',
 					'expiry_date',
@@ -144,7 +143,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 
 	const renderTableCell = (rowData: Partial<Avo.Item.Item>, columnId: ItemsOverviewTableCols) => {
 		switch (columnId) {
-			case 'created_at':
 			case 'updated_at':
 			case 'depublish_at':
 			case 'expiry_date':

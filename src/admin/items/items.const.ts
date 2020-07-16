@@ -43,12 +43,6 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 		filterType: 'DateRangeDropdown',
 	},
 	{
-		id: 'created_at',
-		label: i18n.t('admin/items/items___aangemaakt'),
-		sortable: true,
-		filterType: 'DateRangeDropdown',
-	},
-	{
 		id: 'type',
 		label: i18n.t('admin/items/items___type'),
 		sortable: true,
