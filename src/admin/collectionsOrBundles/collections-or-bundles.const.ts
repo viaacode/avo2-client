@@ -39,8 +39,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		},
 	}),
 	bookmarks: (order: Avo.Search.OrderDirection) => ({
-		collection_bookmarks_aggregate: {
-			count: nullsLast(order),
+		counts: {
+			bookmarks: nullsLast(order),
 		},
 	}),
 	copies: (order: Avo.Search.OrderDirection) => ({
@@ -49,13 +49,13 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		},
 	}),
 	in_bundle: (order: Avo.Search.OrderDirection) => ({
-		relations_aggregate: {
-			count: nullsLast(order),
+		counts: {
+			in_collection: nullsLast(order),
 		},
 	}),
 	in_assignment: (order: Avo.Search.OrderDirection) => ({
-		relations_aggregate: {
-			count: nullsLast(order),
+		counts: {
+			in_assignment: nullsLast(order),
 		},
 	}),
 };
