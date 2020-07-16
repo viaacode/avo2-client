@@ -27,6 +27,13 @@ export type ItemsOverviewTableCols =
 	| 'views'
 	| 'actions';
 
+export type UnpublishedItemsOverviewTableCols =
+	| 'title'
+	| 'pid'
+	| 'updated_at'
+	| 'status'
+	| 'actions';
+
 export interface ItemsTableState extends FilterableTableState {
 	created_at: string;
 	depublish_at: string;
