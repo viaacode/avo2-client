@@ -1,9 +1,8 @@
-import { CustomError } from '../../../../shared/helpers';
-import { ContentService } from '../../../content/content.service';
-import { ContentPageInfo } from '../../../content/content.types';
-import { PickerSelectItem } from '../../types';
-
-import { parsePickerItem } from './parse-picker';
+import { CustomError } from '../../../../../shared/helpers';
+import { ContentService } from '../../../../content/content.service';
+import { ContentPageInfo } from '../../../../content/content.types';
+import { PickerSelectItem } from '../../../types';
+import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch content items from GQL
 export const retrieveContentPages = async (

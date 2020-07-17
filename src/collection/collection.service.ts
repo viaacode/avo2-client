@@ -24,11 +24,11 @@ import {
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
-	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_ID,
 	GET_COLLECTIONS_BY_OWNER,
-	GET_COLLECTIONS_BY_TITLE,
+	GET_PUBLIC_COLLECTIONS,
+	GET_PUBLIC_COLLECTIONS_BY_ID,
+	GET_PUBLIC_COLLECTIONS_BY_TITLE,
 	GET_QUALITY_LABELS,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
@@ -448,7 +448,7 @@ export class CollectionService {
 		try {
 			// retrieve collections
 			const response = await dataService.query({
-				query: GET_COLLECTIONS,
+				query: GET_PUBLIC_COLLECTIONS,
 				variables: { limit, typeId },
 			});
 
@@ -456,7 +456,7 @@ export class CollectionService {
 		} catch (err) {
 			// handle error
 			const customError = new CustomError('Het ophalen van de collecties is mislukt.', err, {
-				query: 'GET_COLLECTIONS',
+				query: 'GET_PUBLIC_COLLECTIONS',
 				variables: { limit },
 			});
 
@@ -487,7 +487,9 @@ export class CollectionService {
 				(await performQuery(
 					{
 						variables,
-						query: isUuidFormat ? GET_COLLECTIONS_BY_ID : GET_COLLECTIONS_BY_TITLE,
+						query: isUuidFormat
+							? GET_PUBLIC_COLLECTIONS_BY_ID
+							: GET_PUBLIC_COLLECTIONS_BY_TITLE,
 					},
 					'data.app_collections',
 					'Failed to retrieve items by title or external id.'
@@ -495,7 +497,7 @@ export class CollectionService {
 			);
 		} catch (err) {
 			throw new CustomError('Failed to fetch collections or bundles', err, {
-				query: 'GET_COLLECTIONS_BY_TITLE_OR_ID',
+				query: 'GET_PUBLIC_COLLECTIONS_BY_ID or GET_PUBLIC_COLLECTIONS_BY_TITLE',
 				variables: { titleOrId, isCollection, limit },
 			});
 		}

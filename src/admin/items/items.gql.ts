@@ -120,21 +120,25 @@ export const UPDATE_ITEM_NOTES = gql`
 	}
 `;
 
-export const GET_ITEMS = gql`
+export const GET_PUBLIC_ITEMS = gql`
 	query getItems($limit: Int!) {
-		app_item_meta(order_by: { title: asc }, limit: $limit) {
+		app_item_meta(
+			order_by: { title: asc }
+			limit: $limit
+			where: { is_published: { _eq: true } }
+		) {
 			external_id
 			title
 		}
 	}
 `;
 
-export const GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
+export const GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
 	query getItemsByTitleOrExternalId($title: String!, $externalId: bpchar!, $limit: Int!) {
 		itemsByTitle: app_item_meta(
 			order_by: { title: asc }
 			limit: $limit
-			where: { title: { _ilike: $title } }
+			where: { title: { _ilike: $title }, is_published: { _eq: true } }
 		) {
 			external_id
 			title
@@ -142,7 +146,7 @@ export const GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
 		itemsByExternalId: app_item_meta(
 			order_by: { title: asc }
 			limit: $limit
-			where: { external_id: { _eq: $externalId } }
+			where: { external_id: { _eq: $externalId }, is_published: { _eq: true } }
 		) {
 			external_id
 			title

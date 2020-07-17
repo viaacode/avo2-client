@@ -1,9 +1,8 @@
 import { compact, sortBy } from 'lodash-es';
 
-import { APP_PATH, RouteId } from '../../../../constants';
-import { PickerSelectItem } from '../../types';
-
-import { parsePickerItem } from './parse-picker';
+import { APP_PATH, RouteId } from '../../../../../constants';
+import { PickerSelectItem } from '../../../types';
+import { parsePickerItem } from '../helpers/parse-picker';
 
 // Return InternalLinkItems items from APP_PATH
 export const retrieveInternalLinks = async (

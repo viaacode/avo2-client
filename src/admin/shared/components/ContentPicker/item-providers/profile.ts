@@ -1,10 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../../../shared/helpers';
-import { UserService } from '../../../users/user.service';
-import { PickerSelectItem } from '../../types';
-
-import { parsePickerItem } from './parse-picker';
+import { CustomError } from '../../../../../shared/helpers';
+import { UserService } from '../../../../users/user.service';
+import { PickerSelectItem } from '../../../types';
+import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch profiles from GQL
 export const retrieveProfiles = async (
