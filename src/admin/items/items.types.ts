@@ -1,7 +1,6 @@
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type ItemsOverviewTableCols =
-	| 'created_at'
 	| 'depublish_at'
 	| 'description'
 	| 'duration'
@@ -28,7 +27,6 @@ export type ItemsOverviewTableCols =
 	| 'actions';
 
 export interface ItemsTableState extends FilterableTableState {
-	created_at: string;
 	depublish_at: string;
 	description: string;
 	duration: string;
