@@ -10,6 +10,8 @@ import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 
+import './WYSIWYGWrapper.scss';
+
 export type WYSIWYGWrapperProps = WYSIWYGProps & {
 	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload
 	ownerId?: string;
