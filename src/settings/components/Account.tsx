@@ -138,7 +138,13 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 										<Button
 											type="secondary"
 											onClick={() =>
-												redirectToExternalPage(ssumPasswordEditPage, null)
+												redirectToExternalPage(
+													`${ssumPasswordEditPage}&email=${get(
+														user,
+														'mail'
+													)}`,
+													null
+												)
 											}
 											label={t(
 												'settings/components/account___wijzig-wachtwoord'

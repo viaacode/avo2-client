@@ -35,18 +35,6 @@ export const GET_COLLECTIONS = gql`
 					last_name
 				}
 			}
-			view_counts_aggregate {
-				aggregate {
-					sum {
-						count
-					}
-				}
-			}
-			collection_bookmarks_aggregate {
-				aggregate {
-					count(distinct: false)
-				}
-			}
 			lom_context
 			lom_classification
 			updated_by {
@@ -69,19 +57,13 @@ export const GET_COLLECTIONS = gql`
 				id
 				label
 			}
-			copies: relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
-				aggregate {
-					count
-				}
+			counts {
+				bookmarks
+				in_assignment
+				in_collection
+				views
 			}
-			in_bundle: relations_aggregate(where: { predicate: { _eq: "USED_IN_COLLECTION" } }) {
-				aggregate {
-					count
-				}
-			}
-			in_assignment: relations_aggregate(
-				where: { predicate: { _eq: "USED_IN_ASSIGNMENT" } }
-			) {
+			relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
 				aggregate {
 					count
 				}
