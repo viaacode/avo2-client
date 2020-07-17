@@ -27,8 +27,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 };
 
 export const GET_ITEM_OVERVIEW_TABLE_COLS: (
-	seriesOptions: CheckboxOption[]
-) => FilterableColumn[] = (seriesOptions: CheckboxOption[]) => [
+	seriesOptions: CheckboxOption[],
+	cpOptions: CheckboxOption[]
+) => FilterableColumn[] = (seriesOptions: CheckboxOption[], cpOptions: CheckboxOption[]) => [
 	{ id: 'external_id', label: i18n.t('admin/items/items___pid'), sortable: true },
 	{ id: 'title', label: i18n.t('admin/items/items___titel'), sortable: true },
 	{
@@ -70,7 +71,15 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 			] as CheckboxOption[],
 		},
 	},
-	{ id: 'organisation', label: i18n.t('admin/items/items___cp'), sortable: true },
+	{
+		id: 'organisation',
+		label: i18n.t('admin/items/items___cp'),
+		sortable: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: cpOptions,
+		},
+	},
 	{ id: 'views', label: i18n.t('admin/items/items___views'), sortable: true },
 	{
 		id: 'is_published',
