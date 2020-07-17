@@ -14,15 +14,21 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	CheckboxOption,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { OrganisationService } from '../../../shared/services/organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
+	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
@@ -39,6 +45,8 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
+	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
+	const [cpOptions, setCpOptions] = useState<CheckboxOption[] | null>(null);
 
 	// methods
 	const fetchItems = useCallback(async () => {
@@ -51,13 +59,14 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 						{ external_id: { _eq: query } },
 						{ title: { _ilike: queryWordWildcard } },
 						{ description: { _ilike: queryWordWildcard } },
-						{ organisation: { name: { _ilike: queryWordWildcard } } },
-						{ series: { _ilike: queryWordWildcard } },
 						{ lom_keywords: { _contains: queryWord } },
 					]
 				)
 			);
 			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
+			andFilters.push(
+				...getMultiOptionFilters(filters, ['series', 'organisation'], ['series', 'org_id'])
+			);
 			andFilters.push(
 				...getDateRangeFilters(filters, [
 					'updated_at',
@@ -105,9 +114,47 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		}
 	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
+	const fetchAllSeries = useCallback(async () => {
+		try {
+			setSeriesOptions(
+				((await ItemsService.fetchAllSeries()) || []).map(
+					(serie: string): CheckboxOption => ({ id: serie, label: serie, checked: false })
+				)
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to load all item series from the database', err));
+			ToastService.danger(t('Het ophalen van de Reeks opties is mislukt'));
+		}
+	}, [setSeriesOptions, t]);
+
+	const fetchAllCps = useCallback(async () => {
+		try {
+			setCpOptions(
+				((await OrganisationService.fetchAllOrganisations()) || []).map(
+					(org: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+						id: org.or_id as string,
+						label: org.name as string,
+						checked: false,
+					})
+				)
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to load all CPs from the database', err));
+			ToastService.danger(t('Het ophalen van de content providers is mislukt'));
+		}
+	}, [setCpOptions, t]);
+
 	useEffect(() => {
 		fetchItems();
 	}, [fetchItems]);
+
+	useEffect(() => {
+		fetchAllSeries();
+	}, [fetchAllSeries]);
+
+	useEffect(() => {
+		fetchAllCps();
+	}, [fetchAllCps]);
 
 	useEffect(() => {
 		if (items) {
@@ -216,7 +263,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		return (
 			<>
 				<FilterTable
-					columns={GET_ITEM_OVERVIEW_TABLE_COLS()}
+					columns={GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], cpOptions || [])}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>

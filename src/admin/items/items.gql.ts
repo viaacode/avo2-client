@@ -201,3 +201,11 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 		}
 	}
 `;
+
+export const GET_DISTINCT_SERIES = gql`
+	query getDistinctSeries {
+		app_item_meta(distinct_on: series, where: { series: { _is_null: false } }) {
+			series
+		}
+	}
+`;
