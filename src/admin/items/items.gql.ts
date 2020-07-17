@@ -47,6 +47,11 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 				}
 			}
 		}
+		app_item_meta_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
 	}
 `;
 
