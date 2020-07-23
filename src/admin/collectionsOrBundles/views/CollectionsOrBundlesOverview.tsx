@@ -90,11 +90,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						},
 					},
 					{
-						profile: {
-							author_user_group: { groups: { label: { _ilike: queryWordWildcard } } },
-						},
-					},
-					{
 						updated_by: {
 							usersByuserId: { first_name: { _ilike: queryWordWildcard } },
 						},
@@ -263,7 +258,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		{
 			id: 'author_user_group',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
-			sortable: true,
+			// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
+			// sortable: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: userGroupOptions,
