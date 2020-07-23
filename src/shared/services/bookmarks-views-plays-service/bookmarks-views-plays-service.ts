@@ -225,9 +225,11 @@ export class BookmarksViewsPlaysService {
 						.getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
 					contentThumbnailPath: thumbnailPath,
-					contentCreatedAt: normalizeTimestamp(itemBookmark.bookmarkedItem.issued)
-						.toDate()
-						.getTime(),
+					contentCreatedAt: itemBookmark.bookmarkedItem.issued
+						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued)
+								.toDate()
+								.getTime()
+						: null,
 					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
 				};
 			}
