@@ -68,6 +68,12 @@ import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
+const {
+	EDIT_ANY_CONTENT_PAGES,
+	EDIT_OWN_CONTENT_PAGES,
+	EDIT_PROTECTED_PAGE_STATUS,
+} = PermissionName;
+
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
 	const { id } = match.params;
 
@@ -90,6 +96,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
+
+	const hasPerm = (permission: PermissionName) => PermissionService.hasPerm(user, permission);
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -134,7 +142,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			''
 		)}`;
 	}
-	const isAdminUser = PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS);
+	const isAdminUser = hasPerm(EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
 	const openDeleteModal = (configIndex: number) => {
@@ -486,6 +494,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	};
 
 	const renderEditContentPage = () => {
+		const contentPageOwner = contentPageState.initialContentPageInfo.user_profile_id;
+		const isOwner = contentPageOwner ? get(user, 'profile.id') === contentPageOwner : true;
+		const isAllowedToSave =
+			hasPerm(EDIT_ANY_CONTENT_PAGES) || (hasPerm(EDIT_OWN_CONTENT_PAGES) && isOwner);
+
 		return (
 			<div onPaste={onPasteContentBlock}>
 				<AdminLayout
@@ -499,11 +512,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 								onClick={navigateBack}
 								type="tertiary"
 							/>
-							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
+							{isAllowedToSave && (
+								<Button
+									disabled={isSaving}
+									label={t('admin/content/views/content-edit___opslaan')}
+									onClick={handleSave}
+								/>
+							)}
 						</ButtonToolbar>
 					</AdminLayoutTopBarRight>
 					<AdminLayoutHeader>
