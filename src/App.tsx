@@ -1,6 +1,6 @@
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory, Location } from 'history';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
@@ -25,6 +25,13 @@ import './styles/main.scss';
 const history = createBrowserHistory();
 wrapHistory(history, {
 	smoothScroll: true,
+	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
+		// We don't want to set focus when only the hash changes
+		return (
+			previousLocation.pathname !== nextLocation.pathname ||
+			previousLocation.search !== nextLocation.search
+		);
+	},
 });
 
 interface AppProps extends RouteComponentProps {}
