@@ -1,4 +1,4 @@
-import { Tickets } from 'node-zendesk';
+import { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -131,7 +131,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	};
 
 	const onSend = async () => {
-		let ticket: Tickets.CreateModel | undefined;
+		let ticket: Requests.CreateModel | undefined;
 		try {
 			const errors = getValidationErrors();
 
@@ -149,18 +149,12 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				comment: {
 					url: window.location.href,
 					body: JSON.stringify({
-						firstName,
-						lastName,
-						email,
 						organization,
 						profession,
 						reason,
 						educationLevels: selectedEducationLevels,
 					}),
 					html_body: `<dl>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${firstName}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___achternaam">Achternaam</Trans></dt><dd>${lastName}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${parsedEducationLevels}</dd>
@@ -171,6 +165,10 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				subject: t(
 					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
 				),
+				requester: {
+					email,
+					name: `${firstName} ${lastName}`,
+				},
 			};
 			await ZendeskService.createTicket(ticket);
 			ToastService.success(

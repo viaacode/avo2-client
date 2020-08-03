@@ -17,7 +17,6 @@ import {
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
-import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
@@ -27,6 +26,7 @@ import {
 } from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 import './ContentPicker.scss';
+import { parseSearchQuery } from './helpers/parse-picker';
 
 export interface ContentPickerProps {
 	allowedTypes?: ContentPickerType[];

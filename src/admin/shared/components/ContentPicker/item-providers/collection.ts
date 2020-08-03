@@ -1,18 +1,12 @@
 import { ContentPickerType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { CollectionService } from '../../../../collection/collection.service';
-import { ContentTypeNumber } from '../../../../collection/collection.types';
-import { PickerSelectItem } from '../../types';
-
-import { parsePickerItem } from './parse-picker';
+import { CollectionService } from '../../../../../collection/collection.service';
+import { ContentTypeNumber } from '../../../../../collection/collection.types';
+import { PickerSelectItem } from '../../../types';
+import { parsePickerItem } from '../helpers/parse-picker';
 
 // TODO: move fetchBundles and fetchBundlesByTitle to a separate bundle service, not collection service.
-const {
-	fetchBundlesByTitleOrId,
-	fetchCollectionsOrBundles,
-	fetchCollectionsByTitleOrId,
-} = CollectionService;
 
 // fetch collections by title-wildcard
 export const retrieveCollections = async (
@@ -20,8 +14,8 @@ export const retrieveCollections = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const collections: Avo.Collection.Collection[] | null = titleOrId
-		? await fetchCollectionsByTitleOrId(titleOrId, limit)
-		: await fetchCollectionsOrBundles(limit, ContentTypeNumber.collection);
+		? await CollectionService.fetchCollectionsByTitleOrId(titleOrId, limit)
+		: await CollectionService.fetchCollectionsOrBundles(limit, ContentTypeNumber.collection);
 
 	return parseCollections('COLLECTION', collections || []);
 };
@@ -32,8 +26,8 @@ export const retrieveBundles = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const bundles: Avo.Collection.Collection[] | null = titleOrId
-		? await fetchBundlesByTitleOrId(titleOrId, limit)
-		: await fetchCollectionsOrBundles(limit, ContentTypeNumber.bundle);
+		? await CollectionService.fetchBundlesByTitleOrId(titleOrId, limit)
+		: await CollectionService.fetchCollectionsOrBundles(limit, ContentTypeNumber.bundle);
 
 	return parseCollections('BUNDLE', bundles || []);
 };
