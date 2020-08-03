@@ -162,7 +162,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				icon: 'lock',
 			});
 		}
-	}, [fetchAssignmentAndContent, t]);
+	}, [fetchAssignmentAndContent, user, t]);
 
 	useEffect(() => {
 		if (assignment) {
