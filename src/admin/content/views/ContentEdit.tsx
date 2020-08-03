@@ -104,10 +104,33 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			if (isNil(id)) {
 				return;
 			}
+			if (
+				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!PermissionService.hasPerm(user, PermissionName.EDIT_OWN_CONTENT_PAGES)
+			) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					icon: 'lock',
+				});
+				return;
+			}
+			const contentPageObj = await ContentService.getContentPageById(id);
+			if (
+				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				contentPageObj.user_profile_id !== getProfileId(user)
+			) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					icon: 'lock',
+				});
+				return;
+			}
 			changeContentPageState({
 				type: ContentEditActionType.SET_CONTENT_PAGE,
 				payload: {
-					contentPageInfo: await ContentService.getContentPageById(id),
+					contentPageInfo: contentPageObj,
 					replaceInitial: true,
 				},
 			});
@@ -120,7 +143,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				false
 			);
 		}
-	}, [id, t]);
+	}, [id, user, t]);
 
 	useEffect(() => {
 		fetchContentPage();

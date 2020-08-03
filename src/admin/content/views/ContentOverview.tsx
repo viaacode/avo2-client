@@ -82,7 +82,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	const [t] = useTranslation();
 
-	const hasPerm = (permission: PermissionName) => PermissionService.hasPerm(user, permission);
+	const hasPerm = useCallback(
+		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
+		[user]
+	);
 
 	const fetchContentPages = useCallback(async () => {
 		try {
@@ -170,7 +173,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				icon: 'alert-triangle',
 			});
 		}
-	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, t]);
+	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, hasPerm, t]);
 
 	useEffect(() => {
 		fetchContentPages();

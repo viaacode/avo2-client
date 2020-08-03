@@ -107,7 +107,29 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	const fetchContentPageById = useCallback(async () => {
 		try {
-			setContentPageInfo(await ContentService.getContentPageById(id));
+			if (
+				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!PermissionService.hasPerm(user, PermissionName.EDIT_OWN_CONTENT_PAGES)
+			) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					icon: 'lock',
+				});
+				return;
+			}
+			const contentPageObj = await ContentService.getContentPageById(id);
+			if (!contentPageObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'De content pagina kon niet worden gevonden of je hebt geen rechten om deze te bekijken'
+					),
+					icon: 'lock',
+				});
+				return;
+			}
+			setContentPageInfo(contentPageObj);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content page by id', err, {
@@ -130,7 +152,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				icon: notFound ? 'search' : 'alert-triangle',
 			});
 		}
-	}, [setContentPageInfo, setLoadingInfo, t, id]);
+	}, [setContentPageInfo, setLoadingInfo, user, t, id]);
 
 	useEffect(() => {
 		fetchContentPageById();
