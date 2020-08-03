@@ -411,10 +411,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
-				const lastEditUser: Avo.User.User | undefined = get(
-					rowData,
-					'updated_by.usersByuserId'
-				);
+				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
 				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
 
 			case 'is_public':
@@ -423,19 +420,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
 			case 'views':
-				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
+				return get(rowData, 'counts.views') || '0';
 
 			case 'bookmarks':
-				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'copies.aggregate.count') || '0';
+				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
 
 			case 'in_bundle':
-				return get(rowData, 'in_bundle.aggregate.count') || '0';
+				return get(rowData, 'counts.in_collection') || '0';
 
 			case 'in_assignment':
-				return get(rowData, 'in_assignment.aggregate.count') || '0';
+				return get(rowData, 'counts.in_assignment') || '0';
 
 			case 'created_at':
 			case 'updated_at':

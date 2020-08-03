@@ -175,6 +175,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	};
 
 	const renderFilters = () => {
+		const page = tableState.page | 0;
+		const from = page * itemsPerPage + 1;
+		const to = Math.min(page * itemsPerPage + itemsPerPage, dataCount);
 		return (
 			<>
 				<Spacer margin="bottom">
@@ -197,6 +200,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								onClick={() => handleTableStateChanged(searchTerm, 'query')}
 							/>
 						</FormGroup>
+						<Spacer margin="left-small">
+							<p className="c-body-1 u-text-muted">
+								{from}-{to} van {dataCount} resultaten
+							</p>
+						</Spacer>
 					</Form>
 				</Spacer>
 
@@ -293,7 +301,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 					<Spacer margin="top-large">
 						<Pagination
 							pageCount={Math.ceil(dataCount / itemsPerPage)}
-							currentPage={tableState.page}
+							currentPage={tableState.page || 0}
 							onPageChange={newPage => handleTableStateChanged(newPage, 'page')}
 						/>
 					</Spacer>
