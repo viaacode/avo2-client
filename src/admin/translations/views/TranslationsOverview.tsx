@@ -1,5 +1,5 @@
-import { flatten, fromPairs, get, groupBy, map } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
@@ -21,7 +21,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
 	const [translations, setTranslations] = useState<Translation[]>([]);
 
-	useEffect(() => {
+	const getTranslations = useCallback(async () => {
 		fetchTranslations()
 			.then((translationsState: TranslationsState[]) => {
 				const translationRows = convertTranslationsToData(translationsState);
@@ -39,6 +39,10 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			});
 	}, [t]);
 
+	useEffect(() => {
+		getTranslations();
+	}, [getTranslations]);
+
 	const onChangeTranslations = (updatedTranslations: Translation[]) => {
 		setTranslations(updatedTranslations);
 	};
@@ -47,14 +51,43 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		// convert translations to db format and save translations
 		const promises: any = [];
 
-		convertDataToTranslations(translations).forEach((context: any) => {
+		const freshTranslations = convertTranslationsToData(await fetchTranslations());
+
+		const updatedTranslations = freshTranslations.map((freshTranslation: [string, string]): [
+			string,
+			string
+		] => {
+			const initialTranslation = initialTranslations.find(
+				trans => trans[0] === freshTranslation[0]
+			);
+			const currentTranslation = translations.find(trans => trans[0] === freshTranslation[0]);
+
+			if (isNil(currentTranslation)) {
+				// This translation has been added to the database but didn't exist yet when the page was loaded
+				return freshTranslation;
+			}
+
+			if (
+				!isNil(initialTranslation) &&
+				!isNil(currentTranslation) &&
+				initialTranslation[1] !== currentTranslation[1]
+			) {
+				// This translation has changed since the page was loaded
+				return currentTranslation;
+			}
+
+			// This translation has not changed, we write the fresh value from the database back to the database
+			return freshTranslation;
+		});
+
+		convertDataToTranslations(updatedTranslations).forEach((context: any) => {
 			promises.push(updateTranslations(context.name, context));
 		});
 
 		try {
 			await Promise.all(promises);
 
-			setInitialTranslations(translations);
+			await getTranslations();
 
 			ToastService.success(
 				t(
