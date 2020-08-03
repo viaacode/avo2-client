@@ -155,8 +155,8 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 				is_archived
 				is_deleted
 				title
-				owner_profile_id
 				created_at
+				owner_profile_id
 				profile {
 					user: usersByuserId {
 						first_name
