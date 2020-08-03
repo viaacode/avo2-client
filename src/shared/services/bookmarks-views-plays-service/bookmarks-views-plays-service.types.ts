@@ -14,7 +14,7 @@ export interface BookmarkInfo {
 	contentType: EventContentType;
 	contentTitle: string;
 	contentThumbnailPath: string | null | undefined;
-	contentCreatedAt: number;
+	contentCreatedAt: number | null;
 	contentViews: number;
 }
 
