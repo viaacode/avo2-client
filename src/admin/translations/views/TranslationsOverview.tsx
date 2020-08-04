@@ -53,7 +53,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 
 		const freshTranslations = convertTranslationsToData(await fetchTranslations());
 
-		const updatedTranslations = freshTranslations.map((freshTranslation: [string, string]): [
+		const updatedTranslations = freshTranslations.map((freshTranslation: Translation): [
 			string,
 			string
 		] => {
@@ -106,7 +106,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		}
 	};
 
-	const convertTranslationsToData = (translations: TranslationsState[]): [string, string][] => {
+	const convertTranslationsToData = (translations: TranslationsState[]): Translation[] => {
 		// convert translations to state format
 		return flatten(
 			translations.map((context: TranslationsState) => {
