@@ -232,6 +232,7 @@ export const GET_CONTENT_BY_ID = gql`
 			title
 			updated_at
 			user_group_ids
+			user_profile_id
 			content_content_labels {
 				content_label {
 					label
