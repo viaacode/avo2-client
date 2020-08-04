@@ -792,7 +792,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					author={getFullName(get(bundle, 'profile'))}
 					publishedAt={get(bundle, 'published_at')}
 					updatedAt={get(bundle, 'updated_at')}
-					keywords={[...get(bundle, 'lom_classification'), ...get(bundle, 'lom_context')]}
+					keywords={[
+						...(get(bundle, 'lom_classification') || []),
+						...(get(bundle, 'lom_context') || []),
+					]}
 				/>
 				<div
 					className={classnames(

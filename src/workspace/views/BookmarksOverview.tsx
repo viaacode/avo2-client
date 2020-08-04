@@ -156,8 +156,8 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	};
 
 	// Render functions
-	const getDetailLink = (contentType: EventContentType, contentLinkId: string) => {
-		return buildLink(
+	const getDetailLink = (contentType: EventContentType, contentLinkId: string) =>
+		buildLink(
 			{
 				item: APP_PATH.ITEM_DETAIL.route,
 				collection: APP_PATH.COLLECTION_DETAIL.route,
@@ -167,7 +167,6 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				id: contentLinkId,
 			}
 		);
-	};
 
 	const renderThumbnail = ({
 		contentLinkId,
@@ -201,9 +200,11 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={contentType}>
 					<MetaDataItem>
-						<span title={`Aangemaakt: ${formatDate(contentCreatedAt)}`}>
-							{fromNow(contentCreatedAt)}
-						</span>
+						{contentCreatedAt && (
+							<span title={`Aangemaakt: ${formatDate(contentCreatedAt)}`}>
+								{fromNow(contentCreatedAt)}
+							</span>
+						)}
 					</MetaDataItem>
 					<MetaDataItem icon="eye" label={String(contentViews || 0)} />
 				</MetaData>
@@ -211,20 +212,18 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		</div>
 	);
 
-	const renderDeleteAction = (bookmarkInfo: BookmarkInfo) => {
-		return (
-			<Button
-				title={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-				ariaLabel={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-				icon="delete"
-				type="danger-hover"
-				onClick={() => {
-					setBookmarkToDelete(bookmarkInfo);
-					setIsDeleteModalOpen(true);
-				}}
-			/>
-		);
-	};
+	const renderDeleteAction = (bookmarkInfo: BookmarkInfo) => (
+		<Button
+			title={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+			ariaLabel={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+			icon="delete"
+			type="danger-hover"
+			onClick={() => {
+				setBookmarkToDelete(bookmarkInfo);
+				setIsDeleteModalOpen(true);
+			}}
+		/>
+	);
 
 	const renderCell = (bookmarkInfo: BookmarkInfo, colKey: string) => {
 		switch (colKey as keyof BookmarkInfo | 'actions') {
