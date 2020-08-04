@@ -172,13 +172,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
-						{
-							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
-							obj: collectionId,
-						},
-					],
+					{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
 					user
 				),
 				PermissionService.hasPermissions(
