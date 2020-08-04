@@ -121,7 +121,8 @@
 		"avo2-proxy-server": "0.21.0"
 	},
 	"resolutions": {
-		"immutable": "3.8.2"
+		"immutable": "3.8.2",
+		"oaf-routing": "4.0.1"
 	},
 	"browserslist": {
 		"production": [
