@@ -242,9 +242,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 									.filter((option: CheckboxOption) => checkedStates[option.id])
 									.map((option: CheckboxOption) => (
 										<div className="c-checkbox-dropdown__checked__item">
-											<Spacer margin="right-small">
-												<p key={option.id}>{option.label}</p>
-											</Spacer>
+											<p key={option.id}>{option.label}</p>
 											<Button
 												icon="x"
 												onClick={() =>
