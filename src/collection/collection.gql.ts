@@ -193,6 +193,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			}
 			title
 			publish_at
+			owner_profile_id
 			profile {
 				id
 				alias

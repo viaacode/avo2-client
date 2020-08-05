@@ -60,6 +60,13 @@ import './ContentOverview.scss';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
+const {
+	EDIT_ANY_CONTENT_PAGES,
+	DELETE_ANY_CONTENT_PAGES,
+	EDIT_PROTECTED_PAGE_STATUS,
+	CREATE_CONTENT_PAGES,
+} = PermissionName;
+
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
 	const [contentPages, setContentPages] = useState<ContentPageInfo[] | null>(null);
@@ -74,6 +81,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [contentTypes] = useContentTypes();
 
 	const [t] = useTranslation();
+
+	const hasPerm = useCallback(
+		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
+		[user]
+	);
 
 	const fetchContentPages = useCallback(async () => {
 		try {
@@ -127,7 +139,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				andFilters.push(...getMultiOptionFilters(filters, ['content_type']));
 
 				// When you get to this point we assume you already have either the EDIT_ANY_CONTENT_PAGES or EDIT_OWN_CONTENT_PAGES permission
-				if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES)) {
+				if (!hasPerm(EDIT_ANY_CONTENT_PAGES)) {
 					// Add filter to only allow the content pages for which the user is the author
 					andFilters.push({ user_profile_id: { _eq: get(user, 'profile.id') } });
 				}
@@ -161,7 +173,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				icon: 'alert-triangle',
 			});
 		}
-	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, t]);
+	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, hasPerm, t]);
 
 	useEffect(() => {
 		fetchContentPages();
@@ -252,7 +264,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const openModal = (content: ContentPageInfo): void => {
 		if (content.is_protected) {
 			// Only allow admins to delete protected content
-			if (PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS)) {
+			if (hasPerm(EDIT_PROTECTED_PAGE_STATUS)) {
 				setContentToDelete(content);
 				setIsConfirmModalOpen(true);
 			} else {
@@ -353,10 +365,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
 							type="secondary"
 						/>
-						{PermissionService.hasPerm(
-							user,
-							PermissionName.DELETE_ANY_CONTENT_PAGES
-						) && (
+						{hasPerm(DELETE_ANY_CONTENT_PAGES) && (
 							<Button
 								icon="delete"
 								onClick={() => openModal(rowData)}
@@ -393,7 +402,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						eaque!
 					</Trans>
 				</p>
-				{PermissionService.hasPerm(user, PermissionName.CREATE_CONTENT_PAGES) && (
+				{hasPerm(CREATE_CONTENT_PAGES) && (
 					<Spacer margin="top">
 						<Button
 							icon="plus"
@@ -466,7 +475,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	return (
 		<AdminLayout pageTitle={t('admin/content/views/content-overview___content-overzicht')}>
 			<AdminLayoutTopBarRight>
-				{PermissionService.hasPerm(user, PermissionName.CREATE_CONTENT_PAGES) && (
+				{hasPerm(CREATE_CONTENT_PAGES) && (
 					<Button
 						label={t('admin/content/views/content-overview___content-toevoegen')}
 						title={t(

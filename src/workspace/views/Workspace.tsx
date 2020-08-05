@@ -80,7 +80,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, user),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_BUNDLES, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
-			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENT_RESPONSE, null, user),
+			PermissionService.hasPermission(PermissionName.VIEW_ASSIGNMENTS, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
 		])
 			.then(response => {

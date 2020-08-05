@@ -71,6 +71,14 @@ export const CONTENT_PAGE_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
+const {
+	EDIT_ANY_CONTENT_PAGES,
+	EDIT_OWN_CONTENT_PAGES,
+	DELETE_ANY_CONTENT_PAGES,
+	UNPUBLISH_ANY_CONTENT_PAGE,
+	PUBLISH_ANY_CONTENT_PAGE,
+} = PermissionName;
+
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, user }) => {
 	const { id } = match.params;
 
@@ -90,15 +98,38 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		GET_CONTENT_DETAIL_TABS()[0].id
 	);
 
-	// Computed
 	const isAdminUser = getUserGroupId(user as any) === SpecialUserGroup.Admin;
 	const isContentProtected = get(contentPageInfo, 'is_protected', false);
 	const pageTitle = `Content: ${get(contentPageInfo, 'title', '')}`;
 	const description = contentPageInfo ? ContentService.getDescription(contentPageInfo) : '';
 
+	const hasPerm = (permission: PermissionName) => PermissionService.hasPerm(user, permission);
+
 	const fetchContentPageById = useCallback(async () => {
 		try {
-			setContentPageInfo(await ContentService.getContentPageById(id));
+			if (
+				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!PermissionService.hasPerm(user, PermissionName.EDIT_OWN_CONTENT_PAGES)
+			) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					icon: 'lock',
+				});
+				return;
+			}
+			const contentPageObj = await ContentService.getContentPageById(id);
+			if (!contentPageObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'De content pagina kon niet worden gevonden of je hebt geen rechten om deze te bekijken'
+					),
+					icon: 'lock',
+				});
+				return;
+			}
+			setContentPageInfo(contentPageObj);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content page by id', err, {
@@ -121,7 +152,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				icon: notFound ? 'search' : 'alert-triangle',
 			});
 		}
-	}, [setContentPageInfo, setLoadingInfo, t, id]);
+	}, [setContentPageInfo, setLoadingInfo, user, t, id]);
 
 	useEffect(() => {
 		fetchContentPageById();
@@ -216,7 +247,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			'copy'
 		),
 		...((!isContentProtected || (isContentProtected && isAdminUser)) &&
-		PermissionService.hasPerm(user, PermissionName.DELETE_ANY_CONTENT_PAGES)
+		hasPerm(DELETE_ANY_CONTENT_PAGES)
 			? [
 					createDropdownMenuItem(
 						'delete',
@@ -291,61 +322,70 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	};
 
-	const renderContentActions = () => (
-		<ButtonToolbar>
-			{((PermissionService.hasPerm(user, PermissionName.PUBLISH_ANY_CONTENT_PAGE) &&
-				!isPublic(contentPageInfo)) ||
-				(PermissionService.hasPerm(user, PermissionName.UNPUBLISH_ANY_CONTENT_PAGE) &&
-					isPublic(contentPageInfo))) && (
-				<Button
-					type="secondary"
-					icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
-					label={t('admin/content/views/content-detail___publiceren')}
-					title={t(
-						'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-					)}
-					ariaLabel={t(
-						'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
-					)}
-					onClick={() => setIsPublishModalOpen(true)}
-				/>
-			)}
-			<Button
-				type="secondary"
-				icon="eye"
-				label={t('admin/content/views/content-detail___preview')}
-				title={t('admin/content/views/content-detail___bekijk-deze-pagina-in-de-website')}
-				ariaLabel={t(
-					'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
-				)}
-				onClick={handlePreviewClicked}
-			/>
-			<Button
-				label={t('admin/content/views/content-detail___bewerken')}
-				title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
-				onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
-			/>
-			<ControlledDropdown
-				isOpen={isOptionsMenuOpen}
-				menuWidth="fit-content"
-				onOpen={() => setIsOptionsMenuOpen(true)}
-				onClose={() => setIsOptionsMenuOpen(false)}
-				placement="bottom-end"
-			>
-				<DropdownButton>
+	const renderContentActions = () => {
+		const contentPageOwner = get(contentPageInfo, 'user_profile_id');
+		const isOwner = get(user, 'profile.id') === contentPageOwner;
+		const isAllowedToEdit =
+			hasPerm(EDIT_ANY_CONTENT_PAGES) || (hasPerm(EDIT_OWN_CONTENT_PAGES) && isOwner);
+
+		return (
+			<ButtonToolbar>
+				{((hasPerm(PUBLISH_ANY_CONTENT_PAGE) && !isPublic(contentPageInfo)) ||
+					(hasPerm(UNPUBLISH_ANY_CONTENT_PAGE) && isPublic(contentPageInfo))) && (
 					<Button
 						type="secondary"
-						icon="more-horizontal"
-						ariaLabel={t('collection/views/collection-detail___meer-opties')}
-						title={t('collection/views/collection-detail___meer-opties')}
+						icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
+						label={t('admin/content/views/content-detail___publiceren')}
+						title={t(
+							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+						)}
+						ariaLabel={t(
+							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
+						)}
+						onClick={() => setIsPublishModalOpen(true)}
 					/>
-				</DropdownButton>
-				<DropdownContent>
-					<MenuContent menuItems={CONTENT_DROPDOWN_ITEMS} onClick={executeAction} />
-				</DropdownContent>
-			</ControlledDropdown>
-		</ButtonToolbar>
-	);
+				)}
+				<Button
+					type="secondary"
+					icon="eye"
+					label={t('admin/content/views/content-detail___preview')}
+					title={t(
+						'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+					)}
+					ariaLabel={t(
+						'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
+					)}
+					onClick={handlePreviewClicked}
+				/>
+				{isAllowedToEdit && (
+					<Button
+						label={t('admin/content/views/content-detail___bewerken')}
+						title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
+						onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
+					/>
+				)}
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={CONTENT_DROPDOWN_ITEMS} onClick={executeAction} />
+					</DropdownContent>
+				</ControlledDropdown>
+			</ButtonToolbar>
+		);
+	};
 
 	// Render
 	const renderContentDetail = (contentPageInfo: ContentPageInfo | null): ReactElement | null => {

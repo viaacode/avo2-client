@@ -94,7 +94,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
+		null
+	);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
@@ -120,6 +122,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				index: 'collections',
 				limit: 4,
 			});
+
 			ToastService.danger(
 				t(
 					'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
@@ -140,12 +143,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
-			let uuid;
-			if (isUuid(collectionId)) {
-				uuid = collectionId;
-			} else {
-				uuid = await CollectionService.fetchUuidByAvo1Id(collectionId);
-			}
+			const uuid = isUuid(collectionId)
+				? collectionId
+				: await CollectionService.fetchUuidByAvo1Id(collectionId);
 
 			if (!uuid) {
 				setLoadingInfo({
@@ -155,6 +155,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					),
 					icon: 'alert-triangle',
 				});
+
 				return;
 			}
 
@@ -165,18 +166,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
 					history
 				);
+
 				return;
 			}
 
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
-						{
-							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
-							obj: collectionId,
-						},
-					],
+					{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
 					user
 				),
 				PermissionService.hasPermissions(
@@ -225,6 +221,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				),
 			]);
+
 			const permissionObj = {
 				canViewCollection: rawPermissions[0],
 				canViewPublishedCollections: rawPermissions[1],
@@ -237,6 +234,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			};
 
 			let showPopup = false;
+
 			if (
 				!permissionObj.canViewCollection &&
 				!permissionObj.canViewPublishedCollections &&
@@ -287,7 +285,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				);
 
-				getRelatedCollections();
+				if (collectionObj.is_public) {
+					getRelatedCollections();
+				}
 
 				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
 				try {
@@ -496,7 +496,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	// Render functions
 	const renderRelatedContent = () => {
-		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+		return (relatedCollections || []).map((relatedItem: Avo.Search.ResultItem) => {
 			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedItem;
 			const category = toEnglishContentType(relatedItem.administrative_type);
 
@@ -878,19 +878,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</Spacer>
 								</Column>
 								<Column size="3-6">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___ordering">
-											Ordering
-										</Trans>
-									</p>
-									{!!get(collection, 'relations', []).length && (
-										<p className="c-body-1">
-											<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-												Deze collectie is een kopie van:
-											</Trans>{' '}
-											{(get(collection, 'relations', []) as any[]).map(
-												(relation: any) => {
-													return (
+									<Spacer margin="top">
+										<p className="u-text-bold">
+											<Trans i18nKey="collection/views/collection-detail___ordering">
+												Ordering
+											</Trans>
+										</p>
+										{!!get(collection, 'relations', []).length && (
+											<p className="c-body-1">
+												<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+													Deze collectie is een kopie van:
+												</Trans>
+												{(get(collection, 'relations', []) as any[]).map(
+													(relation: any) => (
 														<Link
 															key={`copy-of-link-${relation.object_meta.id}`}
 															to={buildLink(
@@ -900,18 +900,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 														>
 															{relation.object_meta.title}
 														</Link>
-													);
-												}
-											)}
-										</p>
-									)}
-									{!!publishedBundles.length && (
-										<p className="c-body-1">
-											<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-												Deze collectie is deel van een bundel:
-											</Trans>{' '}
-											{publishedBundles.map((bundle, index) => {
-												return (
+													)
+												)}
+											</p>
+										)}
+										{!!publishedBundles.length && (
+											<p className="c-body-1">
+												<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+													Deze collectie is deel van een bundel:
+												</Trans>
+												{publishedBundles.map((bundle, index) => (
 													<>
 														{index !== 0 &&
 															!!publishedBundles.length &&
@@ -927,10 +925,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 															{bundle.title}
 														</Link>
 													</>
-												);
-											})}
-										</p>
-									)}
+												))}
+											</p>
+										)}
+									</Spacer>
 								</Column>
 								<Column size="3-3">
 									<Spacer margin="top">
@@ -953,9 +951,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</Spacer>
 								</Column>
 							</Grid>
-							<hr className="c-hr" />
-							{!!relatedItems && !!relatedItems.length && (
+							{!!relatedCollections && !!relatedCollections.length && (
 								<>
+									<hr className="c-hr" />
 									<BlockHeading type="h3">
 										<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
 											Bekijk ook
@@ -977,6 +975,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								isOpen={isPublishModalOpen}
 								onClose={(newCollection: Avo.Collection.Collection | undefined) => {
 									setIsPublishModalOpen(false);
+
 									if (newCollection) {
 										setCollection(newCollection);
 									}
