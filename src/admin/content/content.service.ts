@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
@@ -331,20 +332,6 @@ export class ContentService {
 		}
 	}
 
-	private static getOrderObject(
-		sortColumn: ContentOverviewTableCols,
-		sortOrder: Avo.Search.OrderDirection
-	) {
-		const getOrderFunc: Function | undefined =
-			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn as ContentOverviewTableCols];
-
-		if (getOrderFunc) {
-			return [getOrderFunc(sortOrder)];
-		}
-
-		return [{ [sortColumn]: sortOrder }];
-	}
-
 	public static async fetchContentPages(
 		page: number,
 		sortColumn: ContentOverviewTableCols,
@@ -357,7 +344,11 @@ export class ContentService {
 				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
-				orderBy: ContentService.getOrderObject(sortColumn, sortOrder),
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 			};
 
 			const response = await dataService.query({

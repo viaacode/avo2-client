@@ -24,7 +24,7 @@ export const GET_COLLECTIONS = gql`
 					name
 					or_id
 				}
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id
@@ -45,7 +45,7 @@ export const GET_COLLECTIONS = gql`
 					first_name
 					last_name
 					profile {
-						profile_user_group {
+						profile_user_groups {
 							groups {
 								label
 								id

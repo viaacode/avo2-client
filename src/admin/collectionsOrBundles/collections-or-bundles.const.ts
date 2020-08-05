@@ -11,10 +11,6 @@ export const COLLECTIONS_OR_BUNDLES_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-const nullsLast = (order: Avo.Search.OrderDirection) => {
-	return order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first');
-};
-
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	{
 		[columnId in CollectionsOrBundlesOverviewTableCols]: (
@@ -35,28 +31,28 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	views: (order: Avo.Search.OrderDirection) => ({
 		view_counts_aggregate: {
 			sum: {
-				count: nullsLast(order),
+				count: order,
 			},
 		},
 	}),
 	bookmarks: (order: Avo.Search.OrderDirection) => ({
 		counts: {
-			bookmarks: nullsLast(order),
+			bookmarks: order,
 		},
 	}),
 	copies: (order: Avo.Search.OrderDirection) => ({
 		relations_aggregate: {
-			count: nullsLast(order),
+			count: order,
 		},
 	}),
 	in_bundle: (order: Avo.Search.OrderDirection) => ({
 		counts: {
-			in_collection: nullsLast(order),
+			in_collection: order,
 		},
 	}),
 	in_assignment: (order: Avo.Search.OrderDirection) => ({
 		counts: {
-			in_assignment: nullsLast(order),
+			in_assignment: order,
 		},
 	}),
 };

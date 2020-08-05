@@ -33,7 +33,7 @@ export const GET_CONTENT_PAGES = gql`
 					name
 					or_id
 				}
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id
@@ -151,7 +151,7 @@ export const GET_CONTENT_BY_ID = gql`
 					name
 					or_id
 				}
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id

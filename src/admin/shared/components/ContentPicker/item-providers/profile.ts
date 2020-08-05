@@ -13,7 +13,7 @@ export const retrieveProfiles = async (
 	try {
 		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
 			0,
-			'updated_at',
+			'last_access_at',
 			'desc',
 			name || '',
 			limit
