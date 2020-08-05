@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import { Dictionary } from 'lodash';
 import { clone, compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -98,11 +99,17 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		await closeDropdownOrModal();
 	};
 
-	const handleCheckboxToggled = async (newCheckedState: boolean, toggledCheckboxId: string) =>
+	const getCheckedOptions = (options: CheckboxOption[], checkedStates: Dictionary<boolean>) => {
+		return options.filter((option: CheckboxOption) => checkedStates[option.id]);
+	};
+
+	const handleCheckboxToggled = async (newCheckedState: boolean, toggledCheckboxId: string) => {
 		setCheckedStates({
 			...checkedStates,
 			[toggledCheckboxId]: newCheckedState,
 		});
+		getCheckedOptions(options, checkedStates);
+	};
 
 	const openDropdownOrModal = async () => {
 		await resetInternalCheckboxStates();
@@ -225,6 +232,29 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 					{/*	/>*/}
 					{/*</ModalHeaderRight>*/}
 					<ModalBody>
+						{!!options.filter((option: CheckboxOption) => checkedStates[option.id])
+							.length && (
+							<div className="c-checkbox-dropdown__checked">
+								<p className="c-checkbox-dropdown__checked__label">
+									Actieve filters:
+								</p>
+								{options
+									.filter((option: CheckboxOption) => checkedStates[option.id])
+									.map((option: CheckboxOption) => (
+										<div className="c-checkbox-dropdown__checked__item">
+											<Spacer margin="right-small">
+												<p key={option.id}>{option.label}</p>
+											</Spacer>
+											<Button
+												icon="x"
+												onClick={() =>
+													handleCheckboxToggled(false, option.id)
+												}
+											/>
+										</div>
+									))}
+							</div>
+						)}
 						<Spacer>
 							<Form>
 								<Grid>
