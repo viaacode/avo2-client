@@ -583,11 +583,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						: t('bundle/views/bundle-detail___maak-bladwijzer'),
 					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 				),
-				createDropdownMenuItem(
-					'openShareThroughEmailModal',
-					t('bundle/views/bundle-detail___share-bundel'),
-					'share-2'
-				),
+				...(!!bundle && bundle.is_public
+					? [
+							createDropdownMenuItem(
+								'openShareThroughEmailModal',
+								t('bundle/views/bundle-detail___share-bundel'),
+								'share-2'
+							),
+					  ]
+					: []),
 				...(permissions.canCreateBundles
 					? [
 							createDropdownMenuItem(
@@ -664,13 +668,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
-				<Button
-					title={t('bundle/views/bundle-detail___share-bundel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
-					onClick={() => executeAction('openShareThroughEmailModal')}
-				/>
+				{isPublic && (
+					<Button
+						title={t('bundle/views/bundle-detail___share-bundel')}
+						type="secondary"
+						icon="share-2"
+						ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+						onClick={() => executeAction('openShareThroughEmailModal')}
+					/>
+				)}
 				{renderActionDropdown()}
 				<InteractiveTour showButton />
 			</ButtonToolbar>
