@@ -69,7 +69,9 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				]
 			)
 		);
-		andFilters.push(...getBooleanFilters(filters, ['is_blocked']));
+		andFilters.push(
+			...getBooleanFilters(filters, ['is_blocked'], ['usersByuserId.is_blocked'])
+		);
 		andFilters.push(
 			...getMultiOptionFilters(
 				filters,
@@ -156,7 +158,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 			case 'is_blocked':
 				const isBlocked = get(rowData, 'user.is_blocked');
-				return isBlocked ? 'Nee' : 'Ja'; // Invert to show "active" state
+				return isBlocked ? 'Ja' : 'Nee';
 
 			case 'stamboek':
 				return stamboek || '-';

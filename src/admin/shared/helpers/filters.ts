@@ -1,4 +1,4 @@
-import { compact, isArray, set } from 'lodash-es';
+import { compact, isArray, isNil, set } from 'lodash-es';
 
 export function getQueryFilter(
 	query: string | undefined,
@@ -48,7 +48,7 @@ function setNestedValues(
 	return compact(
 		props.map((prop: string, index: number) => {
 			const value = (filters as any)[prop];
-			if (value && (!isArray(value) || value.length)) {
+			if (!isNil(value) && (!isArray(value) || value.length)) {
 				const response = {};
 				return set(response, nestedProps ? nestedProps[index] : prop, getValue(value));
 			}

@@ -30,7 +30,12 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		},
 	},
 	{ id: 'oormerk', label: i18n.t('Oormerk'), sortable: true },
-	{ id: 'is_blocked', label: i18n.t('Actief'), sortable: true },
+	{
+		id: 'is_blocked',
+		label: i18n.t('Geblokkeerd'),
+		sortable: true,
+		filterType: 'BooleanCheckboxDropdown',
+	},
 	{ id: 'stamboek', label: i18n.t('admin/users/user___stamboek'), sortable: true },
 	{ id: 'organisation', label: i18n.t('Organisatie'), sortable: true },
 	{
