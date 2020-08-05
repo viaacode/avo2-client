@@ -22,6 +22,7 @@ import {
 	ModalFooterRight,
 	Spacer,
 	TagList,
+	TextInput,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
@@ -72,6 +73,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	// State
 	const [checkedStates, setCheckedStates] = useState(optionsFromPairs);
 	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [searchKeyword, setSearchKeyword] = useState<string>('');
 
 	// Methods
 	const getSelectedTags = (): Tag[] =>
@@ -199,10 +201,13 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	};
 
 	const renderModalControl = () => {
-		const oneThird = Math.ceil(options.length / 3);
-		const firstColumnOptions = options.slice(0, oneThird);
-		const secondColumnOptions = options.slice(oneThird, oneThird * 2);
-		const thirdColumnOptions = options.slice(oneThird * 2);
+		const filteredOptions = options.filter((option: CheckboxOption) =>
+			option.label.includes(searchKeyword)
+		);
+		const oneThird = Math.ceil(filteredOptions.length / 3);
+		const firstColumnOptions = filteredOptions.slice(0, oneThird);
+		const secondColumnOptions = filteredOptions.slice(oneThird, oneThird * 2);
+		const thirdColumnOptions = filteredOptions.slice(oneThird * 2);
 
 		// TODO: add search in checkbox modal components
 		// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
@@ -223,15 +228,17 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 					scrollable
 				>
 					{/* TODO: add search in checkbox modal components */}
-					{/*<ModalHeaderRight>*/}
-					{/*	<TextInput*/}
-					{/*		placeholder={t(*/}
-					{/*			'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'*/}
-					{/*		)}*/}
-					{/*		icon="search"*/}
-					{/*	/>*/}
+
 					{/*</ModalHeaderRight>*/}
 					<ModalBody>
+						<TextInput
+							placeholder={t(
+								'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'
+							)}
+							icon="search"
+							value={searchKeyword}
+							onChange={value => setSearchKeyword(value)}
+						/>
 						{!!options.filter((option: CheckboxOption) => checkedStates[option.id])
 							.length && (
 							<div className="c-checkbox-dropdown__checked">
