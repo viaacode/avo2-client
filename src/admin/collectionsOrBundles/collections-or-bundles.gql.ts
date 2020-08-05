@@ -16,6 +16,7 @@ export const GET_COLLECTIONS = gql`
 			is_public
 			is_deleted
 			created_at
+			owner_profile_id
 			profile {
 				id
 				organisation {
