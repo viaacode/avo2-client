@@ -13,10 +13,7 @@ import { getPublishedDate } from '../../admin/content/helpers/get-published-stat
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import {
-	redirectToErrorPage,
-	redirectToLoggedInHome,
-} from '../../authentication/helpers/redirects';
+import { redirectToErrorPage } from '../../authentication/helpers/redirects';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,
