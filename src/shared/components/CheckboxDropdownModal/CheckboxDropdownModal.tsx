@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import { Dictionary } from 'lodash';
 import { clone, compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -101,16 +100,11 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		await closeDropdownOrModal();
 	};
 
-	const getCheckedOptions = (options: CheckboxOption[], checkedStates: Dictionary<boolean>) => {
-		return options.filter((option: CheckboxOption) => checkedStates[option.id]);
-	};
-
 	const handleCheckboxToggled = async (newCheckedState: boolean, toggledCheckboxId: string) => {
 		setCheckedStates({
 			...checkedStates,
 			[toggledCheckboxId]: newCheckedState,
 		});
-		getCheckedOptions(options, checkedStates);
 	};
 
 	const openDropdownOrModal = async () => {
