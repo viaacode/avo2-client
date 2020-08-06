@@ -207,7 +207,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				trackEvents(
 					{
 						object: bundleId,
-						object_type: 'bundels',
+						object_type: 'bundle',
 						message: `Gebruiker ${getProfileName(
 							user
 						)} heeft de pagina voor collectie ${bundleId} bekeken`,
@@ -308,6 +308,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const onDeleteBundle = async () => {
 		try {
 			await CollectionService.deleteCollection(bundleId);
+
+			trackEvents(
+				{
+					object: bundleId,
+					object_type: 'collection',
+					message: `${getProfileName(user)} heeft een bundel verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
@@ -336,6 +347,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				COLLECTION_COPY,
 				COLLECTION_COPY_REGEX
 			);
+
+			trackEvents(
+				{
+					object: String(bundle.id),
+					object_type: 'bundle',
+					message: `Gebruiker ${getProfileName(user)} heeft een bundel geducpliceerd`,
+					action: 'copy',
+				},
+				user
+			);
+
 			redirectToClientPage(
 				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateBundle.id }),
 				history

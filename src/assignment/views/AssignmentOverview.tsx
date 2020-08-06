@@ -32,6 +32,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -55,6 +56,7 @@ import {
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -272,6 +274,17 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return;
 			}
 			await AssignmentService.deleteAssignment(assignmentId);
+
+			trackEvents(
+				{
+					object: String(assignmentId),
+					object_type: 'assignment',
+					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+
 			await fetchAssignments();
 			onUpdate();
 			ToastService.success(

@@ -276,7 +276,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				trackEvents(
 					{
 						object: collectionId,
-						object_type: 'collections',
+						object_type: 'collection',
 						message: `Gebruiker ${getProfileName(
 							user
 						)} heeft de pagina voor collectie ${collectionId} bekeken`,
@@ -378,6 +378,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						COLLECTION_COPY,
 						COLLECTION_COPY_REGEX
 					);
+
+					trackEvents(
+						{
+							object: collection.id,
+							object_type: 'collection',
+							message: `${getProfileName(user)} heeft een collectie gedupliceerd`,
+							action: 'copy',
+						},
+						user
+					);
+
 					redirectToClientPage(
 						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
 						history
@@ -481,6 +492,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const onDeleteCollection = async (): Promise<void> => {
 		try {
 			await CollectionService.deleteCollection(collectionId);
+
+			trackEvents(
+				{
+					object: collectionId,
+					object_type: 'collection',
+					message: `${getProfileName(user)} heeft een collectie verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')

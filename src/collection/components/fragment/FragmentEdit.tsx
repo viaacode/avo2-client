@@ -31,6 +31,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
@@ -39,7 +40,10 @@ import {
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { toDutchContentType } from '../../collection.types';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
@@ -57,7 +61,7 @@ interface FragmentEditProps {
 	allowedToAddLinks: boolean;
 }
 
-const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
+const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	type,
 	index,
 	collectionId,
@@ -67,6 +71,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	setOpenOptionsId,
 	fragment,
 	allowedToAddLinks,
+	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -148,6 +153,19 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			index,
 			type: 'DELETE_FRAGMENT',
 		});
+
+		const objectType = type === 'collection' ? 'bundle' : 'collection';
+		trackEvents(
+			{
+				object: collectionId,
+				object_type: objectType,
+				message: `Gebruiker ${getProfileName(user)} heeft een ${
+					objectType === 'collection' ? 'fragment' : 'collectie'
+				} uit een ${toDutchContentType(objectType)} verwijderd`,
+				action: 'delete',
+			},
+			user
+		);
 
 		ToastService.success(
 			!isCollection
@@ -453,4 +471,4 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 	);
 }
 
-export default React.memo(FragmentEdit, areEqual);
+export default React.memo(withUser(FragmentEdit) as FunctionComponent<FragmentEditProps>, areEqual);
