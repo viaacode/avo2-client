@@ -25,23 +25,7 @@
 		&__label {
 			margin-left: 8px;
 			margin-bottom: 8px;
-		}
-
-		&__item {
-			margin-left: 8px;
-			margin-right: 8px;
-			margin-bottom: 8px;
-			display: flex;
-			flex-wrap: wrap;
-
-			background-color: $color-gray-100;
-
 			align-items: center;
-
-			p {
-				padding-left: 8px;
-				padding-right: 8px;
-			}
 		}
 	}
 }

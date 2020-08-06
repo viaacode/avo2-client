@@ -227,9 +227,6 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 					onClose={closeDropdownOrModal}
 					scrollable
 				>
-					{/* TODO: add search in checkbox modal components */}
-
-					{/*</ModalHeaderRight>*/}
 					<ModalBody>
 						<TextInput
 							placeholder={t(
@@ -242,25 +239,17 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 						{!!options.filter((option: CheckboxOption) => checkedStates[option.id])
 							.length && (
 							<div className="c-checkbox-dropdown__checked">
-								<p className="c-checkbox-dropdown__checked__label">
-									Actieve filters:
-								</p>
-								{options
-									.filter((option: CheckboxOption) => checkedStates[option.id])
-									.map((option: CheckboxOption) => (
-										<div className="c-checkbox-dropdown__checked__item">
-											<p key={option.id}>{option.label}</p>
-											<Button
-												icon="x"
-												onClick={() =>
-													handleCheckboxToggled(false, option.id)
-												}
-											/>
-										</div>
-									))}
+								<TagList
+									tags={options.filter(
+										(option: CheckboxOption) => checkedStates[option.id]
+									)}
+									swatches={false}
+									closable={true}
+									onTagClosed={id => handleCheckboxToggled(false, id.toString())}
+								/>
 							</div>
 						)}
-						<Spacer>
+						<Spacer className="c-checkbox-dropdown__list">
 							<Form>
 								<Grid>
 									<Column size="2-4">
