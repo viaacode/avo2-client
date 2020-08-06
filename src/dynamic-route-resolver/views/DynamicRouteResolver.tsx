@@ -13,7 +13,10 @@ import { getPublishedDate } from '../../admin/content/helpers/get-published-stat
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToErrorPage } from '../../authentication/helpers/redirects';
+import {
+	redirectToErrorPage,
+	redirectToLoggedInHome,
+} from '../../authentication/helpers/redirects';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,
@@ -88,6 +91,12 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			if (key && redirects[key]) {
 				window.location.href = redirects[key];
+				return;
+			}
+
+			if (pathname === '/' && loginState.message === 'LOGGED_IN') {
+				// Redirect the logged out homepage to the logged in homepage is the user is logged in
+				history.push('/start');
 				return;
 			}
 
