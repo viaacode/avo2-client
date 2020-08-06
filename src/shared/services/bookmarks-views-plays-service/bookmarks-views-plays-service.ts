@@ -1,5 +1,6 @@
 import { compact, fromPairs, get, groupBy } from 'lodash-es';
 
+import { EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
@@ -220,6 +221,8 @@ export class BookmarksViewsPlaysService {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: 'item',
+					contentCategory: itemBookmark.bookmarkedItem.item.item_meta.type
+						.label as EnglishContentType,
 					createdAt: normalizeTimestamp(itemBookmark.created_at)
 						.toDate()
 						.getTime(),

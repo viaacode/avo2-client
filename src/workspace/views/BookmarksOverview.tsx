@@ -173,13 +173,15 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		contentType,
 		contentTitle,
 		contentThumbnailPath,
+		contentCategory,
 	}: BookmarkInfo) => (
 		<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
 			<Thumbnail
 				alt="thumbnail"
-				category={contentType}
+				category={contentCategory || contentType}
 				className="m-collection-overview-thumbnail"
 				src={contentThumbnailPath || undefined}
+				// overrideShowCategory={true} TODO: Enable when components 1.53 releases
 			/>
 		</Link>
 	);
