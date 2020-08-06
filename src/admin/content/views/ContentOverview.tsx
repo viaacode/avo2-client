@@ -502,7 +502,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
+					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent
 							loadingInfo={loadingInfo}
 							dataObject={contentPages}

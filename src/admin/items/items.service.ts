@@ -159,7 +159,7 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItems(limit?: number): Promise<Avo.Item.Item[] | null> {
+	public static async fetchPublicItems(limit?: number): Promise<Avo.Item.Item[] | null> {
 		const query = {
 			query: GET_PUBLIC_ITEMS,
 			variables: { limit },
@@ -231,7 +231,7 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItemsByTitleOrExternalId(
+	public static async fetchPublicItemsByTitleOrExternalId(
 		titleOrExternalId: string,
 		limit?: number
 	): Promise<Avo.Item.Item[]> {
