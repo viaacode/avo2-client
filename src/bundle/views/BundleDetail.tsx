@@ -503,7 +503,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									label={String(viewCountsById[fragment.external_id] || 0)}
 									icon="eye"
 								/>
-								<MetaDataItem label={fromNow(collection.updated_at)} />
+								<MetaDataItem label={formatDate(collection.updated_at)} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
