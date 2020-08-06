@@ -202,7 +202,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 					<MetaDataItem>
 						{contentCreatedAt && (
 							<span title={`Aangemaakt: ${formatDate(contentCreatedAt)}`}>
-								{fromNow(contentCreatedAt)}
+								{formatDate(contentCreatedAt)}
 							</span>
 						)}
 					</MetaDataItem>
