@@ -48,8 +48,8 @@ export function formatTimestamp(timestamp: DateLikeNullable) {
 		return '';
 	}
 	return normalizeTimestamp(timestamp)
-		.toDate()
-		.toLocaleString();
+		.local()
+		.format('DD-MM-YYYY HH:mm:ss');
 }
 
 export function formatDate(timestamp: DateLikeNullable) {
@@ -57,8 +57,8 @@ export function formatDate(timestamp: DateLikeNullable) {
 		return '';
 	}
 	return normalizeTimestamp(timestamp)
-		.toDate()
-		.toLocaleDateString();
+		.local()
+		.format('DD-MM-YYYY');
 }
 
 export function toIsoDate(timestamp: DateLikeNullable) {

@@ -60,7 +60,14 @@ import {
 	sanitizeHtml,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import {
+	ApolloCacheManager,
+	BookmarksViewsPlaysService,
+	dataService,
+	ToastService,
+} from '../../shared/services';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
@@ -153,6 +160,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			canViewItems: boolean;
 		}>
 	>({});
+	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -340,6 +350,24 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 						: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
+				return;
+			}
+
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts', err, {
+						uuid: collectionObj.id,
+					})
+				);
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
 			}
 
 			setPermissions(permissionObj);
@@ -1053,8 +1081,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					onClickTitle={() => setIsRenameModalOpen(true)}
 					category={type}
 					showMetaData
-					bookmarks="0" // TODO: Real bookmark count
-					views="0" // TODO: Real view count
+					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
 					<HeaderButtons>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}

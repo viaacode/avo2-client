@@ -99,7 +99,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 						'shared/components/share-through-email-modal/share-through-email-modal___waarschuwing-deel-link-via-email'
 					)}
 				</p>
-				<Spacer margin="top-large">
+				<Spacer margin={['top-large', 'bottom-large']}>
 					<Box backgroundColor="gray" condensed>
 						<Flex wrap justify="between" align="baseline">
 							<FlexItem className="u-truncate c-share-through-email-modal__link">
