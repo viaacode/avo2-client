@@ -11,6 +11,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	Icon,
 	Spacer,
 	Table,
 	TagInfo,
@@ -32,11 +33,12 @@ import { QualityLabel } from '../collection.types';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
 
-type BundleColumnId = 'title' | 'author' | 'organization' | 'actions';
+type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
 const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
 	title: 'title',
 	author: 'profile.user.last_name',
+	is_public: 'is_public',
 	organization: 'profile.profile_organizations[0].organization_id',
 	actions: '',
 };
@@ -159,6 +161,21 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 					return '-';
 				}
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+
+			case 'is_public':
+				return (
+					<div
+						title={
+							rowData.is_public
+								? t('collection/components/collection-or-bundle-overview___publiek')
+								: t(
+										'collection/components/collection-or-bundle-overview___niet-publiek'
+								  )
+						}
+					>
+						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
+					</div>
+				);
 
 			case 'organization':
 				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
@@ -289,6 +306,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 														'collection/components/collection-or-bundle-edit-admin___auteur'
 													),
 													id: 'author',
+													sortable: true,
+												},
+												{
+													label: t('admin/items/items___publiek'),
+													id: 'is_public',
 													sortable: true,
 												},
 												{
