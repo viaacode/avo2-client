@@ -560,6 +560,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				  ]
 				: []),
 		];
+		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
 				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
@@ -578,7 +579,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Button
 						type="secondary"
 						title={
-							collection && collection.is_public
+							isPublic
 								? t(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
@@ -587,7 +588,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								  )
 						}
 						ariaLabel={
-							collection && collection.is_public
+							isPublic
 								? t(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
@@ -595,7 +596,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={collection && collection.is_public ? 'unlock-3' : 'lock'}
+						icon={isPublic ? 'unlock-3' : 'lock'}
 						onClick={() => executeAction('openPublishCollectionModal')}
 					/>
 				)}
@@ -607,13 +608,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
-				<Button
-					title={t('collection/views/collection-detail___deel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('collection/views/collection-detail___deel')}
-					onClick={() => executeAction('openShareThroughEmail')}
-				/>
+				{isPublic && (
+					<Button
+						title={t('collection/views/collection-detail___deel')}
+						type="secondary"
+						icon="share-2"
+						ariaLabel={t('collection/views/collection-detail___deel')}
+						onClick={() => executeAction('openShareThroughEmail')}
+					/>
+				)}
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
@@ -689,11 +692,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					: t('collection/views/collection-detail___maak-bladwijzer'),
 				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 			),
-			createDropdownMenuItem(
-				'openShareThroughEmail',
-				t('collection/views/collection-detail___deel'),
-				'share-2'
-			),
+			...(!!collection && collection.is_public
+				? [
+						createDropdownMenuItem(
+							'openShareThroughEmail',
+							t('collection/views/collection-detail___deel'),
+							'share-2'
+						),
+				  ]
+				: []),
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
