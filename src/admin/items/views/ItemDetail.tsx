@@ -212,7 +212,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
-				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
+				return get(rowData, 'profile.organisation.name', '-');
 
 			case 'actions':
 				return (

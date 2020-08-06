@@ -385,9 +385,8 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 					id
 				}
 				id
-				profile_organizations {
-					organization_id
-					unit_id
+				organisation {
+					name
 				}
 			}
 		}
