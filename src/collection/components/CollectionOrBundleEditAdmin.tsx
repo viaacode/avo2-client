@@ -162,6 +162,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				}
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
+			case 'organization':
+				return get(rowData, 'profile.organisation.name', '-');
+
 			case 'is_public':
 				return (
 					<div
@@ -176,9 +179,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
 					</div>
 				);
-
-			case 'organization':
-				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
 
 			case 'actions':
 				return (
@@ -309,14 +309,14 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													sortable: true,
 												},
 												{
-													label: t('admin/items/items___publiek'),
-													id: 'is_public',
-													sortable: true,
-												},
-												{
 													label: 'Organisatie',
 													id: 'organization',
 													sortable: false,
+												},
+												{
+													label: t('admin/items/items___publiek'),
+													id: 'is_public',
+													sortable: true,
 												},
 												{ label: '', id: 'actions', sortable: false },
 											]}

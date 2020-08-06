@@ -213,6 +213,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				}
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
+			case 'organization':
+				return get(rowData, 'profile.organisation.name', '-');
+
 			case 'is_public':
 				return (
 					<div
@@ -227,9 +230,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
 					</div>
 				);
-
-			case 'organization':
-				return get(rowData, 'profile.organisation.name', '-');
 
 			case 'actions':
 				return (
@@ -388,12 +388,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									id: 'author',
 									sortable: true,
 								},
+								{ label: 'Organisatie', id: 'organization', sortable: false },
 								{
 									label: t('admin/items/items___publiek'),
 									id: 'is_public',
 									sortable: true,
 								},
-								{ label: 'Organisatie', id: 'organization', sortable: false },
 								{ label: '', id: 'actions', sortable: false },
 							]}
 							data={collectionsContainingItem}
