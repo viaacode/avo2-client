@@ -77,3 +77,33 @@ export const GET_COLLECTIONS = gql`
 		}
 	}
 `;
+
+export const BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS = gql`
+	mutation bulkUpdatePublishSTateForCollections($isPublic: Boolean!, $collectionIds: [uuid!]!) {
+		update_app_collections(
+			where: { id: { _in: $collectionIds } }
+			_set: { is_public: $isPublic }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_UPDATE_AUTHOR_FOR_COLLECTIONS = gql`
+	mutation bulkUpdateAuthorForCollections($authorId: uuid!, $collectionIds: [uuid!]!) {
+		update_app_collections(
+			where: { id: { _in: $collectionIds } }
+			_set: { author_uid: $authorId }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_DELETE_COLLECTIONS = gql`
+	mutation bulkDeleteCollections($collectionIds: [uuid!]!) {
+		update_app_collections(where: { id: { _in: $collectionIds } }, _set: { is_deleted: true }) {
+			affected_rows
+		}
+	}
+`;
