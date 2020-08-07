@@ -197,9 +197,9 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	const renderModalControl = () => {
 		const filteredOptions = options.filter((option: CheckboxOption) =>
 			option.label
-				.replace(' ', '')
+				.replace(/ /g, '')
 				.toLowerCase()
-				.includes(searchKeyword.replace(' ', '').toLowerCase())
+				.includes(searchKeyword.replace(/ /g, '').toLowerCase())
 		);
 		const oneThird = Math.ceil(filteredOptions.length / 3);
 		const firstColumnOptions = filteredOptions.slice(0, oneThird);
