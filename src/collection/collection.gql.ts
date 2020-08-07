@@ -378,6 +378,7 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 		app_collections(where: { collection_fragments: { external_id: { _eq: $fragmentId } } }) {
 			id
 			title
+			is_public
 			profile {
 				user: usersByuserId {
 					first_name
