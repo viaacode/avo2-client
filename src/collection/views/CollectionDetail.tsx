@@ -762,10 +762,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			profile,
 			collection_fragments,
 			lom_context,
+			created_at,
 			updated_at,
 			title,
 			lom_classification,
 		} = collection as Avo.Collection.Collection;
+		const hasCopies = !!get(collection, 'relations', []).length;
+		const hasParentBundles = !!publishedBundles.length;
+
 		return (
 			<>
 				<MetaTags>
@@ -865,73 +869,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												<span className="u-d-block">-</span>
 											)}
 										</p>
-									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-												Laatst aangepast
-											</Trans>
-										</p>
-										<p className="c-body-1">{formatDate(updated_at)}</p>
-									</Spacer>
-								</Column>
-								<Column size="3-6">
-									<Spacer margin="top">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___ordering">
-												Ordering
-											</Trans>
-										</p>
-										{!!get(collection, 'relations', []).length && (
-											<p className="c-body-1">
-												<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-													Deze collectie is een kopie van:
-												</Trans>
-												{(get(collection, 'relations', []) as any[]).map(
-													(relation: any) => (
-														<Link
-															key={`copy-of-link-${relation.object_meta.id}`}
-															to={buildLink(
-																APP_PATH.COLLECTION_DETAIL.route,
-																{ id: relation.object_meta.id }
-															)}
-														>
-															{relation.object_meta.title}
-														</Link>
-													)
-												)}
-											</p>
-										)}
-										{!!publishedBundles.length && (
-											<p className="c-body-1">
-												<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-													Deze collectie is deel van een bundel:
-												</Trans>
-												{publishedBundles.map((bundle, index) => (
-													<>
-														{index !== 0 &&
-															!!publishedBundles.length &&
-															', '}
-														<Link
-															to={buildLink(
-																APP_PATH.BUNDLE_DETAIL.route,
-																{
-																	id: bundle.id,
-																}
-															)}
-														>
-															{bundle.title}
-														</Link>
-													</>
-												))}
-											</p>
-										)}
-									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top">
 										<p className="u-text-bold">
 											<Trans i18nKey="collection/views/collection-detail___vakken">
 												Vakken
@@ -950,6 +887,75 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										</p>
 									</Spacer>
 								</Column>
+								<Column size="3-3">
+									<Spacer margin="top">
+										<p className="u-text-bold">{t('Aangemaakt op')}</p>
+										<p className="c-body-1">{formatDate(created_at)}</p>
+										<p className="u-text-bold">
+											{t(
+												'collection/views/collection-detail___laatst-aangepast'
+											)}
+										</p>
+										<p className="c-body-1">{formatDate(updated_at)}</p>
+									</Spacer>
+								</Column>
+								{(hasCopies || hasParentBundles) && (
+									<Column size="3-6">
+										<Spacer margin="top">
+											<p className="u-text-bold">
+												<Trans i18nKey="collection/views/collection-detail___ordering">
+													Ordering
+												</Trans>
+											</p>
+											{hasCopies && (
+												<p className="c-body-1">
+													<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+														Deze collectie is een kopie van:
+													</Trans>
+													{(get(
+														collection,
+														'relations',
+														[]
+													) as any[]).map((relation: any) => (
+														<Link
+															key={`copy-of-link-${relation.object_meta.id}`}
+															to={buildLink(
+																APP_PATH.COLLECTION_DETAIL.route,
+																{ id: relation.object_meta.id }
+															)}
+														>
+															{relation.object_meta.title}
+														</Link>
+													))}
+												</p>
+											)}
+											{hasParentBundles && (
+												<p className="c-body-1">
+													<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+														Deze collectie is deel van een bundel:
+													</Trans>
+													{publishedBundles.map((bundle, index) => (
+														<>
+															{index !== 0 &&
+																!!publishedBundles.length &&
+																', '}
+															<Link
+																to={buildLink(
+																	APP_PATH.BUNDLE_DETAIL.route,
+																	{
+																		id: bundle.id,
+																	}
+																)}
+															>
+																{bundle.title}
+															</Link>
+														</>
+													))}
+												</p>
+											)}
+										</Spacer>
+									</Column>
+								)}
 							</Grid>
 							{!!relatedCollections && !!relatedCollections.length && (
 								<>

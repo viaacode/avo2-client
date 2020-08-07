@@ -91,6 +91,12 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				return;
 			}
 
+			if (pathname === '/' && loginState.message === 'LOGGED_IN') {
+				// Redirect the logged out homepage to the logged in homepage is the user is logged in
+				history.push('/start');
+				return;
+			}
+
 			// Check if path is an old media url
 			if (/\/media\/[^/]+\/[^/]+/g.test(pathname)) {
 				const avo1Id = (pathname.split('/').pop() || '').trim();
