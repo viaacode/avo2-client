@@ -19,6 +19,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileId } from '../../../../authentication/helpers/get-profile-info';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../../authentication/helpers/permission-service';
 import { FileUpload } from '../../../../shared/components';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
@@ -38,10 +43,6 @@ import {
 import { ContentEditAction } from '../../helpers/reducers';
 
 import './ContentEditForm.scss';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../authentication/helpers/permission-service';
 
 interface ContentEditFormProps {
 	contentTypes: SelectOption<Avo.ContentPage.Type>[];
@@ -154,7 +155,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 					type: 'PROFILE',
 					value: ownerId,
 			  }
-			: undefined;
+			: {
+					label: `${get(user, 'first_name')} ${get(user, 'last_name')} (${get(
+						user,
+						'mail'
+					)})`,
+					type: 'PROFILE',
+					value: getProfileId(user),
+			  };
 	return (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
@@ -271,32 +279,33 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							{PermissionService.hasPerm(
 								user,
 								PermissionName.EDIT_CONTENT_PAGE_AUTHOR
-							) && (
-								<Column size="12">
-									<FormGroup
-										error={formErrors.user_profile_id}
-										label={t('admin/content/views/content-detail___auteur')}
-										required
-									>
-										<ContentPicker
-											initialValue={owner}
-											hideTargetSwitch
-											hideTypeDropdown
-											placeholder={t('Selecteer een auteur')}
-											allowedTypes={['PROFILE']}
-											onSelect={(value: PickerItem | null) => {
-												if (!value) {
-													return;
-												}
-												changeContentPageProp(
-													'user_profile_id',
-													value.value
-												);
-											}}
-										/>
-									</FormGroup>
-								</Column>
-							)}
+							) &&
+								!!user && (
+									<Column size="12">
+										<FormGroup
+											error={formErrors.user_profile_id}
+											label={t('admin/content/views/content-detail___auteur')}
+											required
+										>
+											<ContentPicker
+												initialValue={owner}
+												hideTargetSwitch
+												hideTypeDropdown
+												placeholder={t('Selecteer een auteur')}
+												allowedTypes={['PROFILE']}
+												onSelect={(value: PickerItem | null) => {
+													if (!value) {
+														return;
+													}
+													changeContentPageProp(
+														'user_profile_id',
+														value.value
+													);
+												}}
+											/>
+										</FormGroup>
+									</Column>
+								)}
 							<Column size="3-6">
 								<FormGroup
 									error={formErrors.content_type}

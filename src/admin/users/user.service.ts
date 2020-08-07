@@ -41,15 +41,15 @@ export class UserService {
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any,
+		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[Avo.User.Profile[], number]> {
 		let variables: any;
 		try {
 			variables = {
-				where,
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
+				...(where ? { where } : {}),
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
