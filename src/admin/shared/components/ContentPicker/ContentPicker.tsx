@@ -17,6 +17,7 @@ import {
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
+import i18n from '../../../../shared/translations/i18n';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
@@ -32,6 +33,7 @@ export interface ContentPickerProps {
 	allowedTypes?: ContentPickerType[];
 	initialValue?: PickerItem;
 	onSelect: (value: PickerItem | null) => void;
+	placeholder?: string;
 	hideTypeDropdown?: boolean;
 	hideTargetSwitch?: boolean;
 	errors?: string | string[];
@@ -41,6 +43,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
 	initialValue,
 	onSelect,
+	placeholder = i18n.t(
+		'admin/shared/components/content-picker/content-picker___selecteer-een-item'
+	),
 	hideTypeDropdown = false,
 	hideTargetSwitch = false,
 	errors = [],
@@ -262,12 +267,8 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		<AsyncSelect
 			{...REACT_SELECT_DEFAULT_OPTIONS}
 			id="content-picker-item"
-			placeholder={t(
-				'admin/shared/components/content-picker/content-picker___selecteer-een-item'
-			)}
-			aria-label={t(
-				'admin/shared/components/content-picker/content-picker___selecteer-een-item'
-			)}
+			placeholder={placeholder}
+			aria-label={placeholder}
 			loadOptions={fetchPickerOptions}
 			onChange={onSelectItem}
 			value={selectedItem}
