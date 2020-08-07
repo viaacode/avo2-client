@@ -10,8 +10,8 @@ export const retrieveItems = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const items: Avo.Item.Item[] | null = titleOrExternalId
-		? await ItemsService.fetchItemsByTitleOrExternalId(titleOrExternalId, limit)
-		: await ItemsService.fetchItems(limit);
+		? await ItemsService.fetchPublicItemsByTitleOrExternalId(titleOrExternalId, limit)
+		: await ItemsService.fetchPublicItems(limit);
 
 	return parseItems(items || []);
 };
