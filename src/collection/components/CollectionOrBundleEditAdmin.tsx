@@ -15,6 +15,7 @@ import {
 	Table,
 	TagInfo,
 	TagsInput,
+	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -23,7 +24,7 @@ import { PickerItem } from '../../admin/shared/types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import { buildLink, CustomError } from '../../shared/helpers';
+import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
@@ -202,6 +203,30 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
+									<FormGroup
+										label={t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
+										)}
+									>
+										<TextInput
+											disabled
+											value={getFullName(collection.updated_by) || '-'}
+										/>
+									</FormGroup>
+									<FormGroup
+										label={t(
+											'admin/collections-or-bundles/collections-or-bundles___aangepast-op'
+										)}
+									>
+										<TextInput
+											disabled
+											value={
+												collection.updated_at
+													? formatTimestamp(collection.updated_at)
+													: '-'
+											}
+										/>
+									</FormGroup>
 									{PermissionService.hasPerm(
 										user,
 										isCollection
