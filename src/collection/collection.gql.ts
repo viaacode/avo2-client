@@ -193,6 +193,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			}
 			title
 			publish_at
+			owner_profile_id
 			profile {
 				id
 				alias
@@ -347,6 +348,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 		$title: String!
 		$description: String!
 		$collectionId: uuid!
+		$typeId: Int
 	) {
 		collectionByTitle: app_collections(
 			where: {
@@ -354,6 +356,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 				is_deleted: { _eq: false }
 				is_public: { _eq: true }
 				id: { _neq: $collectionId }
+				type_id: { _eq: $typeId }
 			}
 			limit: 1
 		) {
@@ -365,6 +368,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 				is_deleted: { _eq: false }
 				is_public: { _eq: true }
 				id: { _neq: $collectionId }
+				type_id: { _eq: $typeId }
 			}
 			limit: 1
 		) {

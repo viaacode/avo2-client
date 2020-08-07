@@ -1,4 +1,4 @@
-import { capitalize, compact, get, startCase } from 'lodash-es';
+import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -37,6 +37,17 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		);
 	};
 
+	const getMetaData = () => {
+		if (result.administrative_type === 'video' || result.administrative_type === 'audio') {
+			const duration = trimStart(result.duration_time, '0:');
+			if (duration.includes(':')) {
+				return duration;
+			}
+			return `0:${duration}`;
+		}
+		return ''; // TODO wait for https://meemoo.atlassian.net/browse/AVO-1107
+	};
+
 	return (
 		<SearchResult
 			key={`search-result-${result.id}`}
@@ -66,6 +77,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 						category={toEnglishContentType(result.administrative_type)}
 						src={result.thumbnail_path}
 						label={result.administrative_type}
+						meta={getMetaData()}
 					/>
 				</Link>
 			</SearchResultThumbnail>
