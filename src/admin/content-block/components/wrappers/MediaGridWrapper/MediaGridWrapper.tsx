@@ -7,7 +7,10 @@ import { compose } from 'redux';
 import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentTypeNumber } from '../../../../../collection/collection.types';
+import {
+	ContentTypeString,
+	toEnglishContentType,
+} from '../../../../../collection/collection.types';
 import { ItemVideoDescription } from '../../../../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import {
@@ -118,12 +121,11 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 		itemOrCollection: ResolvedItemOrCollection,
 		index: number
 	): MediaListItem => {
-		const isItem =
-			get(itemOrCollection, 'type.label') === 'video' ||
-			get(itemOrCollection, 'type.label') === 'audio';
-		const isCollection = get(itemOrCollection, 'type.id') === ContentTypeNumber.collection;
-		const itemDuration = get(itemOrCollection, 'duration', 0);
 		const itemLabel = get(itemOrCollection, 'type.label', 'item');
+		const isItem =
+			itemLabel === ContentTypeString.video || itemLabel === ContentTypeString.audio;
+		const isCollection = itemLabel === ContentTypeString.collection;
+		const itemDuration = get(itemOrCollection, 'duration', 0);
 		const collectionItems = get(
 			itemOrCollection,
 			'collection_fragments_aggregate.aggregate.count',
@@ -134,7 +136,11 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
 		return {
-			category: isItem ? itemLabel : 'collection',
+			category: isItem
+				? itemLabel
+				: isCollection
+				? toEnglishContentType(ContentTypeString.collection)
+				: toEnglishContentType(ContentTypeString.bundle),
 			metadata: [
 				{ icon: 'eye', label: String(viewCount || 0) },
 				{ label: formatDate(itemOrCollection.created_at) },
@@ -146,7 +152,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 				element.mediaItem ||
 				({
 					type: isItem ? 'ITEM' : isCollection ? 'COLLECTION' : 'BUNDLE',
-					value: itemOrCollection.external_id,
+					value: itemOrCollection.external_id || itemOrCollection.id,
 					target: get(searchQuery, 'target') || '_self',
 				} as ButtonAction),
 			buttonAction: element.buttonAction,
@@ -156,7 +162,9 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 			organisation: itemOrCollection.organisation || '',
 			thumbnail: {
 				label: itemLabel,
-				meta: isItem ? itemDuration : `${collectionItems} items`,
+				meta: isItem
+					? itemDuration
+					: `${collectionItems} ${isCollection ? 'items' : 'collecties'}`,
 				src: itemOrCollection.thumbnail_path || '',
 			},
 			src: itemOrCollection.src,

@@ -160,6 +160,7 @@ export const GET_CONTENT_BY_ID = gql`
 				user: usersByuserId {
 					first_name
 					last_name
+					mail
 				}
 			}
 			publish_at
