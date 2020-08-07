@@ -9,8 +9,7 @@ import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 import { NotificationService } from './notification-service';
 
-const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 60 * 1000; // 2 min
-// const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks
+const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks
 
 export interface TourInfo {
 	id: number;
