@@ -21,9 +21,9 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getFullName } from '../../../shared/helpers/formatters';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
-import { getFullName } from '../../../shared/helpers/formatters';
 
 interface ReportItemModalProps {
 	externalId: string;

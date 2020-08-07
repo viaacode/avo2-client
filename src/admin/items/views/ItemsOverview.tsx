@@ -123,7 +123,9 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to load all item series from the database', err));
-			ToastService.danger(t('Het ophalen van de Reeks opties is mislukt'));
+			ToastService.danger(
+				t('admin/items/views/items-overview___het-ophalen-van-de-reeks-opties-is-mislukt')
+			);
 		}
 	}, [setSeriesOptions, t]);
 
@@ -140,7 +142,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to load all CPs from the database', err));
-			ToastService.danger(t('Het ophalen van de content providers is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/items/views/items-overview___het-ophalen-van-de-content-providers-is-mislukt'
+				)
+			);
 		}
 	}, [setCpOptions, t]);
 

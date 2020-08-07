@@ -25,6 +25,8 @@ import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
+import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
+import { PickerItem } from '../../../shared/types';
 import { DEFAULT_PAGES_WIDTH, GET_CONTENT_WIDTH_OPTIONS } from '../../content.const';
 import { ContentService } from '../../content.service';
 import {
@@ -36,6 +38,10 @@ import {
 import { ContentEditAction } from '../../helpers/reducers';
 
 import './ContentEditForm.scss';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../../authentication/helpers/permission-service';
 
 interface ContentEditFormProps {
 	contentTypes: SelectOption<Avo.ContentPage.Type>[];
@@ -137,6 +143,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	};
 
 	// Render
+	const ownerId = get(contentPageInfo, 'user_profile_id');
+	const owner: PickerItem | undefined =
+		contentPageInfo.profile && ownerId
+			? {
+					label: `${get(contentPageInfo, 'profile.user.first_name')} ${get(
+						contentPageInfo,
+						'profile.user.last_name'
+					)} (${get(contentPageInfo, 'profile.user.mail')})`,
+					type: 'PROFILE',
+					value: ownerId,
+			  }
+			: undefined;
 	return (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
@@ -250,6 +268,35 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
+							{PermissionService.hasPerm(
+								user,
+								PermissionName.EDIT_CONTENT_PAGE_AUTHOR
+							) && (
+								<Column size="12">
+									<FormGroup
+										error={formErrors.user_profile_id}
+										label={t('admin/content/views/content-detail___auteur')}
+										required
+									>
+										<ContentPicker
+											initialValue={owner}
+											hideTargetSwitch
+											hideTypeDropdown
+											placeholder={t('Selecteer een auteur')}
+											allowedTypes={['PROFILE']}
+											onSelect={(value: PickerItem | null) => {
+												if (!value) {
+													return;
+												}
+												changeContentPageProp(
+													'user_profile_id',
+													value.value
+												);
+											}}
+										/>
+									</FormGroup>
+								</Column>
+							)}
 							<Column size="3-6">
 								<FormGroup
 									error={formErrors.content_type}

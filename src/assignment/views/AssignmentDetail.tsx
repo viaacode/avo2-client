@@ -58,10 +58,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	const [assignmentContent, setAssignmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
 	>();
-	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
-	const [canCreateAssignmentResponse, setCanCreateAssignmentResponse] = useState<boolean | null>(
-		null
-	);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	const [t] = useTranslation();
@@ -121,17 +117,19 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				return;
 			}
 
-			// Create an assignmentResponse object to track the student viewing and finishing the assignment
-			// Currently we wait for this to complete
-			// so we can set the created assignment response on the tempAssignment object,
-			// so we don't need to do a refetch of the original assignment
-			const assignmentResponse = await AssignmentService.createAssignmentResponseObject(
-				response.assignment,
-				user
-			);
+			if (PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE)) {
+				// Create an assignmentResponse object to track the student viewing and finishing the assignment
+				// Currently we wait for this to complete
+				// so we can set the created assignment response on the tempAssignment object,
+				// so we don't need to do a refetch of the original assignment
+				const assignmentResponse = await AssignmentService.createAssignmentResponseObject(
+					response.assignment,
+					user
+				);
 
-			if (assignmentResponse) {
-				response.assignment.assignment_responses = [assignmentResponse];
+				if (assignmentResponse) {
+					response.assignment.assignment_responses = [assignmentResponse];
+				}
 			}
 
 			setAssignment(response.assignment);
@@ -152,24 +150,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		}
 	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user]);
 
-	const checkPermissions = useCallback(async () => {
-		setCanEditAssignments(
-			await PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
-		);
-		setCanCreateAssignmentResponse(
-			await PermissionService.hasPermissions(PermissionName.CREATE_ASSIGNMENT_RESPONSE, user)
-		);
-	}, [setCanEditAssignments, setCanCreateAssignmentResponse, user]);
-
 	useEffect(() => {
-		checkPermissions();
-	}, [checkPermissions]);
-
-	useEffect(() => {
-		if (isNil(canCreateAssignmentResponse)) {
-			return;
-		}
-		if (canCreateAssignmentResponse) {
+		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
 			fetchAssignmentAndContent();
 		} else {
 			setLoadingInfo({
@@ -180,7 +162,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				icon: 'lock',
 			});
 		}
-	}, [canCreateAssignmentResponse, fetchAssignmentAndContent, t]);
+	}, [fetchAssignmentAndContent, user, t]);
 
 	useEffect(() => {
 		if (assignment) {
@@ -400,7 +382,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 											})}
 										</ToolbarItem>
 									)}
-									{canEditAssignments && (
+									{PermissionService.hasPerm(
+										user,
+										PermissionName.EDIT_ASSIGNMENTS
+									) && (
 										<ToolbarItem>
 											<Dropdown
 												isOpen={isActionsDropdownOpen}
