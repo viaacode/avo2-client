@@ -525,7 +525,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									label={String(viewCountsById[fragment.external_id] || 0)}
 									icon="eye"
 								/>
-								<MetaDataItem label={fromNow(collection.updated_at)} />
+								<MetaDataItem label={formatDate(collection.updated_at)} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
@@ -712,6 +712,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		const {
 			id,
 			lom_context,
+			created_at,
 			updated_at,
 			lom_classification,
 		} = bundle as Avo.Collection.Collection;
@@ -738,10 +739,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<span className="u-d-block">-</span>
 									)}
 								</p>
-							</Spacer>
-						</Column>
-						<Column size="3-3">
-							<Spacer margin="top">
 								<p className="u-text-bold">
 									<Trans i18nKey="collection/views/collection-detail___vakken">
 										Vakken
@@ -758,10 +755,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</Column>
 						<Column size="3-3">
 							<Spacer margin="top">
+								<p className="u-text-bold">{t('Aangemaakt op')}</p>
+								<p className="c-body-1">{formatDate(created_at)}</p>
 								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-										Laatst aangepast
-									</Trans>
+									{t('collection/views/collection-detail___laatst-aangepast')}
 								</p>
 								<p className="c-body-1">{formatDate(updated_at)}</p>
 							</Spacer>
