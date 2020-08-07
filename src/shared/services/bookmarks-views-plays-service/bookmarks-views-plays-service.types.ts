@@ -13,8 +13,7 @@ export interface BookmarkInfo {
 	createdAt: number;
 	contentId: string;
 	contentLinkId: string;
-	contentType: EventContentType;
-	contentCategory?: EnglishContentType;
+	contentType: EnglishContentType;
 	contentTitle: string;
 	contentThumbnailPath: string | null | undefined;
 	contentCreatedAt: number | null;

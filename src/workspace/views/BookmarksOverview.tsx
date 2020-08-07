@@ -32,6 +32,7 @@ import {
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service';
 import {
 	BookmarkInfo,
 	EventContentType,
@@ -123,7 +124,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			await BookmarksViewsPlaysService.toggleBookmark(
 				bookmarkToDelete.contentId,
 				user,
-				bookmarkToDelete.contentType,
+				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkToDelete.contentType],
 				true
 			);
 
@@ -173,15 +174,17 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		contentType,
 		contentTitle,
 		contentThumbnailPath,
-		contentCategory,
 	}: BookmarkInfo) => (
-		<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
+		<Link
+			to={getDetailLink(CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[contentType], contentLinkId)}
+			title={contentTitle}
+		>
 			<Thumbnail
 				alt="thumbnail"
-				category={contentCategory || contentType}
+				category={contentType}
 				className="m-collection-overview-thumbnail"
 				src={contentThumbnailPath || undefined}
-				// overrideShowCategory={true} TODO: Enable when components 1.53 releases
+				// showCategoryIcon TODO: Enable when components 1.53 releases
 			/>
 		</Link>
 	);
@@ -195,7 +198,13 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	}: BookmarkInfo) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
+				<Link
+					to={getDetailLink(
+						CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[contentType],
+						contentLinkId
+					)}
+					title={contentTitle}
+				>
 					{truncateTableValue(contentTitle)}
 				</Link>
 			</h3>

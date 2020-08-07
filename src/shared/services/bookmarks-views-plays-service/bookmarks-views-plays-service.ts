@@ -220,8 +220,7 @@ export class BookmarksViewsPlaysService {
 				return {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
-					contentType: 'item',
-					contentCategory: itemBookmark.bookmarkedItem.item.item_meta.type
+					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
 						.label as EnglishContentType,
 					createdAt: normalizeTimestamp(itemBookmark.created_at)
 						.toDate()
