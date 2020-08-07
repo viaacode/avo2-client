@@ -21,6 +21,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	filterState,
 	handleFilterFieldChange,
 	multiOptions,
+	onSearch,
 }) => {
 	const [t] = useTranslation();
 
@@ -93,6 +94,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					onChange={async (values: string[]) => {
 						await handleFilterFieldChange(values, propertyName);
 					}}
+					onSearch={onSearch}
 				/>
 			</li>
 		);

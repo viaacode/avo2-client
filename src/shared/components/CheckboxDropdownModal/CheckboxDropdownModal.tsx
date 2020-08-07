@@ -53,6 +53,7 @@ export interface CheckboxDropdownModalProps {
 	options: CheckboxOption[];
 	disabled?: boolean;
 	onChange: (checkedOptions: string[], id: string) => void;
+	onSearch?: (aggId: string) => void;
 }
 
 export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
@@ -61,6 +62,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	options,
 	disabled,
 	onChange,
+	onSearch,
 }) => {
 	const [t] = useTranslation();
 
@@ -206,12 +208,6 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		const secondColumnOptions = filteredOptions.slice(oneThird, oneThird * 2);
 		const thirdColumnOptions = filteredOptions.slice(oneThird * 2);
 
-		// TODO: add search in checkbox modal components
-		// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
-		// 	const searchResponse: Avo.Search.Search = await executeSearch();
-		// 	return searchResponse.aggregations[propertyName];
-		// }
-
 		return (
 			<>
 				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
@@ -231,7 +227,13 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 							)}
 							icon="search"
 							value={searchKeyword}
-							onChange={value => setSearchKeyword(value)}
+							onChange={value => {
+								setSearchKeyword(value);
+
+								if (onSearch) {
+									onSearch(id);
+								}
+							}}
 						/>
 						{!!options.filter((option: CheckboxOption) => checkedStates[option.id])
 							.length && (
