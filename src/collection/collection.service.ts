@@ -932,12 +932,13 @@ export class CollectionService {
 	static async getCollectionByTitleOrDescription(
 		title: string,
 		description: string | null,
-		collectionId: string
+		collectionId: string,
+		typeId: ContentTypeNumber
 	): Promise<{ byTitle: boolean; byDescription: boolean }> {
 		try {
 			const response = await dataService.query({
 				query: GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
-				variables: { title, description, collectionId },
+				variables: { title, description, collectionId, typeId },
 			});
 
 			if (response.errors) {
