@@ -94,7 +94,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
+		null
+	);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
@@ -120,6 +122,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				index: 'collections',
 				limit: 4,
 			});
+
 			ToastService.danger(
 				t(
 					'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
@@ -140,12 +143,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
-			let uuid;
-			if (isUuid(collectionId)) {
-				uuid = collectionId;
-			} else {
-				uuid = await CollectionService.fetchUuidByAvo1Id(collectionId);
-			}
+			const uuid = isUuid(collectionId)
+				? collectionId
+				: await CollectionService.fetchUuidByAvo1Id(collectionId);
 
 			if (!uuid) {
 				setLoadingInfo({
@@ -155,6 +155,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					),
 					icon: 'alert-triangle',
 				});
+
 				return;
 			}
 
@@ -165,18 +166,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
 					history
 				);
+
 				return;
 			}
 
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
-						{
-							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
-							obj: collectionId,
-						},
-					],
+					{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
 					user
 				),
 				PermissionService.hasPermissions(
@@ -225,6 +221,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				),
 			]);
+
 			const permissionObj = {
 				canViewCollection: rawPermissions[0],
 				canViewPublishedCollections: rawPermissions[1],
@@ -237,6 +234,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			};
 
 			let showPopup = false;
+
 			if (
 				!permissionObj.canViewCollection &&
 				!permissionObj.canViewPublishedCollections &&
@@ -287,7 +285,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				);
 
-				getRelatedCollections();
+				if (collectionObj.is_public) {
+					getRelatedCollections();
+				}
 
 				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
 				try {
@@ -496,7 +496,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	// Render functions
 	const renderRelatedContent = () => {
-		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+		return (relatedCollections || []).map((relatedItem: Avo.Search.ResultItem) => {
 			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedItem;
 			const category = toEnglishContentType(relatedItem.administrative_type);
 
@@ -560,6 +560,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				  ]
 				: []),
 		];
+		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
 				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
@@ -578,7 +579,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Button
 						type="secondary"
 						title={
-							collection && collection.is_public
+							isPublic
 								? t(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
@@ -587,7 +588,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								  )
 						}
 						ariaLabel={
-							collection && collection.is_public
+							isPublic
 								? t(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
@@ -595,7 +596,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={collection && collection.is_public ? 'unlock-3' : 'lock'}
+						icon={isPublic ? 'unlock-3' : 'lock'}
 						onClick={() => executeAction('openPublishCollectionModal')}
 					/>
 				)}
@@ -607,13 +608,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
-				<Button
-					title={t('collection/views/collection-detail___deel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('collection/views/collection-detail___deel')}
-					onClick={() => executeAction('openShareThroughEmail')}
-				/>
+				{isPublic && (
+					<Button
+						title={t('collection/views/collection-detail___deel')}
+						type="secondary"
+						icon="share-2"
+						ariaLabel={t('collection/views/collection-detail___deel')}
+						onClick={() => executeAction('openShareThroughEmail')}
+					/>
+				)}
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
@@ -689,11 +692,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					: t('collection/views/collection-detail___maak-bladwijzer'),
 				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 			),
-			createDropdownMenuItem(
-				'openShareThroughEmail',
-				t('collection/views/collection-detail___deel'),
-				'share-2'
-			),
+			...(!!collection && collection.is_public
+				? [
+						createDropdownMenuItem(
+							'openShareThroughEmail',
+							t('collection/views/collection-detail___deel'),
+							'share-2'
+						),
+				  ]
+				: []),
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
@@ -755,10 +762,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			profile,
 			collection_fragments,
 			lom_context,
+			created_at,
 			updated_at,
 			title,
 			lom_classification,
 		} = collection as Avo.Collection.Collection;
+		const hasCopies = !!get(collection, 'relations', []).length;
+		const hasParentBundles = !!publishedBundles.length;
+
 		return (
 			<>
 				<MetaTags>
@@ -858,75 +869,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												<span className="u-d-block">-</span>
 											)}
 										</p>
-									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-												Laatst aangepast
-											</Trans>
-										</p>
-										<p className="c-body-1">{formatDate(updated_at)}</p>
-									</Spacer>
-								</Column>
-								<Column size="3-6">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___ordering">
-											Ordering
-										</Trans>
-									</p>
-									{!!get(collection, 'relations', []).length && (
-										<p className="c-body-1">
-											<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-												Deze collectie is een kopie van:
-											</Trans>{' '}
-											{(get(collection, 'relations', []) as any[]).map(
-												(relation: any) => {
-													return (
-														<Link
-															key={`copy-of-link-${relation.object_meta.id}`}
-															to={buildLink(
-																APP_PATH.COLLECTION_DETAIL.route,
-																{ id: relation.object_meta.id }
-															)}
-														>
-															{relation.object_meta.title}
-														</Link>
-													);
-												}
-											)}
-										</p>
-									)}
-									{!!publishedBundles.length && (
-										<p className="c-body-1">
-											<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-												Deze collectie is deel van een bundel:
-											</Trans>{' '}
-											{publishedBundles.map((bundle, index) => {
-												return (
-													<>
-														{index !== 0 &&
-															!!publishedBundles.length &&
-															', '}
-														<Link
-															to={buildLink(
-																APP_PATH.BUNDLE_DETAIL.route,
-																{
-																	id: bundle.id,
-																}
-															)}
-														>
-															{bundle.title}
-														</Link>
-													</>
-												);
-											})}
-										</p>
-									)}
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top">
 										<p className="u-text-bold">
 											<Trans i18nKey="collection/views/collection-detail___vakken">
 												Vakken
@@ -945,10 +887,79 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										</p>
 									</Spacer>
 								</Column>
+								<Column size="3-3">
+									<Spacer margin="top">
+										<p className="u-text-bold">{t('Aangemaakt op')}</p>
+										<p className="c-body-1">{formatDate(created_at)}</p>
+										<p className="u-text-bold">
+											{t(
+												'collection/views/collection-detail___laatst-aangepast'
+											)}
+										</p>
+										<p className="c-body-1">{formatDate(updated_at)}</p>
+									</Spacer>
+								</Column>
+								{(hasCopies || hasParentBundles) && (
+									<Column size="3-6">
+										<Spacer margin="top">
+											<p className="u-text-bold">
+												<Trans i18nKey="collection/views/collection-detail___ordering">
+													Ordering
+												</Trans>
+											</p>
+											{hasCopies && (
+												<p className="c-body-1">
+													<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+														Deze collectie is een kopie van:
+													</Trans>
+													{(get(
+														collection,
+														'relations',
+														[]
+													) as any[]).map((relation: any) => (
+														<Link
+															key={`copy-of-link-${relation.object_meta.id}`}
+															to={buildLink(
+																APP_PATH.COLLECTION_DETAIL.route,
+																{ id: relation.object_meta.id }
+															)}
+														>
+															{relation.object_meta.title}
+														</Link>
+													))}
+												</p>
+											)}
+											{hasParentBundles && (
+												<p className="c-body-1">
+													<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+														Deze collectie is deel van een bundel:
+													</Trans>
+													{publishedBundles.map((bundle, index) => (
+														<>
+															{index !== 0 &&
+																!!publishedBundles.length &&
+																', '}
+															<Link
+																to={buildLink(
+																	APP_PATH.BUNDLE_DETAIL.route,
+																	{
+																		id: bundle.id,
+																	}
+																)}
+															>
+																{bundle.title}
+															</Link>
+														</>
+													))}
+												</p>
+											)}
+										</Spacer>
+									</Column>
+								)}
 							</Grid>
-							<hr className="c-hr" />
-							{!!relatedItems && !!relatedItems.length && (
+							{!!relatedCollections && !!relatedCollections.length && (
 								<>
+									<hr className="c-hr" />
 									<BlockHeading type="h3">
 										<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
 											Bekijk ook
@@ -970,6 +981,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								isOpen={isPublishModalOpen}
 								onClose={(newCollection: Avo.Collection.Collection | undefined) => {
 									setIsPublishModalOpen(false);
+
 									if (newCollection) {
 										setCollection(newCollection);
 									}

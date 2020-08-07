@@ -503,7 +503,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									label={String(viewCountsById[fragment.external_id] || 0)}
 									icon="eye"
 								/>
-								<MetaDataItem label={fromNow(collection.updated_at)} />
+								<MetaDataItem label={formatDate(collection.updated_at)} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
@@ -583,11 +583,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						: t('bundle/views/bundle-detail___maak-bladwijzer'),
 					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 				),
-				createDropdownMenuItem(
-					'openShareThroughEmailModal',
-					t('bundle/views/bundle-detail___share-bundel'),
-					'share-2'
-				),
+				...(!!bundle && bundle.is_public
+					? [
+							createDropdownMenuItem(
+								'openShareThroughEmailModal',
+								t('bundle/views/bundle-detail___share-bundel'),
+								'share-2'
+							),
+					  ]
+					: []),
 				...(permissions.canCreateBundles
 					? [
 							createDropdownMenuItem(
@@ -664,13 +668,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
-				<Button
-					title={t('bundle/views/bundle-detail___share-bundel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
-					onClick={() => executeAction('openShareThroughEmailModal')}
-				/>
+				{isPublic && (
+					<Button
+						title={t('bundle/views/bundle-detail___share-bundel')}
+						type="secondary"
+						icon="share-2"
+						ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+						onClick={() => executeAction('openShareThroughEmailModal')}
+					/>
+				)}
 				{renderActionDropdown()}
 				<InteractiveTour showButton />
 			</ButtonToolbar>
@@ -684,6 +690,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		const {
 			id,
 			lom_context,
+			created_at,
 			updated_at,
 			lom_classification,
 		} = bundle as Avo.Collection.Collection;
@@ -710,10 +717,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<span className="u-d-block">-</span>
 									)}
 								</p>
-							</Spacer>
-						</Column>
-						<Column size="3-3">
-							<Spacer margin="top">
 								<p className="u-text-bold">
 									<Trans i18nKey="collection/views/collection-detail___vakken">
 										Vakken
@@ -730,10 +733,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</Column>
 						<Column size="3-3">
 							<Spacer margin="top">
+								<p className="u-text-bold">{t('Aangemaakt op')}</p>
+								<p className="c-body-1">{formatDate(created_at)}</p>
 								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-										Laatst aangepast
-									</Trans>
+									{t('collection/views/collection-detail___laatst-aangepast')}
 								</p>
 								<p className="c-body-1">{formatDate(updated_at)}</p>
 							</Spacer>
@@ -792,7 +795,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					author={getFullName(get(bundle, 'profile'))}
 					publishedAt={get(bundle, 'published_at')}
 					updatedAt={get(bundle, 'updated_at')}
-					keywords={[...get(bundle, 'lom_classification'), ...get(bundle, 'lom_context')]}
+					keywords={[
+						...(get(bundle, 'lom_classification') || []),
+						...(get(bundle, 'lom_context') || []),
+					]}
 				/>
 				<div
 					className={classnames(

@@ -26,6 +26,7 @@ export const GET_CONTENT_PAGES = gql`
 			is_protected
 			is_public
 			path
+			user_profile_id
 			profile {
 				organisation {
 					logo_url
@@ -129,73 +130,6 @@ export const GET_CONTENT_PAGE_BY_PATH = gql`
 	}
 `;
 
-export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
-	query getContent(
-		$where: app_content_bool_exp
-		$offset: Int = 0
-		$limit: Int = 10
-		$orderBy: [app_content_order_by!] = {}
-	) {
-		app_content(where: $where, limit: $limit, offset: $offset, order_by: $orderBy) {
-			content_type
-			created_at
-			depublish_at
-			description
-			seo_description
-			id
-			thumbnail_path
-			is_protected
-			is_public
-			path
-			profile {
-				organisation {
-					logo_url
-					name
-					or_id
-				}
-				profile_user_group {
-					groups {
-						label
-						id
-					}
-				}
-				user: usersByuserId {
-					first_name
-					last_name
-				}
-			}
-			publish_at
-			published_at
-			title
-			updated_at
-			content_content_labels {
-				content_label {
-					label
-					id
-				}
-			}
-			contentBlockssBycontentId(order_by: { position: asc }) {
-				content_block_type
-				content_id
-				created_at
-				id
-				position
-				updated_at
-				variables
-				enum_content_block_type {
-					description
-					value
-				}
-			}
-		}
-		app_content_aggregate(where: $where) {
-			aggregate {
-				count
-			}
-		}
-	}
-`;
-
 export const GET_CONTENT_BY_ID = gql`
 	query getContentById($id: Int!) {
 		app_content(where: { id: { _eq: $id } }) {
@@ -210,6 +144,7 @@ export const GET_CONTENT_BY_ID = gql`
 			is_protected
 			is_public
 			path
+			user_profile_id
 			profile {
 				organisation {
 					logo_url
@@ -225,6 +160,7 @@ export const GET_CONTENT_BY_ID = gql`
 				user: usersByuserId {
 					first_name
 					last_name
+					mail
 				}
 			}
 			publish_at
@@ -232,6 +168,7 @@ export const GET_CONTENT_BY_ID = gql`
 			title
 			updated_at
 			user_group_ids
+			user_profile_id
 			content_content_labels {
 				content_label {
 					label

@@ -113,17 +113,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 		const checkPermissionsAndGetItem = async () => {
 			try {
-				const hasPermission: boolean = await PermissionService.hasPermissions(
-					[
-						PermissionName.VIEW_ANY_PUBLISHED_ITEMS,
-						{
-							name: PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
-							obj: match.params.id,
-						},
-					],
-					user
-				);
-				if (!hasPermission) {
+				if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
 					setLoadingInfo({
 						state: 'error',
 						message: t(

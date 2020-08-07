@@ -8,6 +8,7 @@ import { getProfileName } from '../../../../../authentication/helpers/get-profil
 import { ROUTE_PARTS } from '../../../../../shared/constants';
 import { normalizeTimestamp } from '../../../../../shared/helpers/formatters';
 import { ContentPageInfo } from '../../../../content/content.types';
+import { getPublishedDate } from '../../../../content/helpers/get-published-state';
 
 export interface BlockContentPageMetaProps {
 	contentPageInfo: ContentPageInfo;
@@ -59,14 +60,17 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps> = ({
 		);
 	};
 
+	const publishedDate = getPublishedDate(contentPageInfo);
 	return (
 		<span>
 			{t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___gepubliceerd-op'
 			)}{' '}
-			{normalizeTimestamp(contentPageInfo.updated_at || contentPageInfo.created_at).format(
-				'D MMMM YYYY'
-			)}{' '}
+			{publishedDate
+				? normalizeTimestamp(publishedDate)
+						.local()
+						.format('D MMMM YYYY')
+				: '-'}{' '}
 			{renderLabels()}
 			{`${t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___door'
