@@ -64,7 +64,7 @@ import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-pl
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionService } from '../collection.service';
-import { ContentTypeString, toEnglishContentType } from '../collection.types';
+import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
 import { FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
@@ -909,14 +909,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											</p>
 											{hasCopies && (
 												<p className="c-body-1">
-													<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-														Deze collectie is een kopie van:
-													</Trans>
+													{`${t(
+														'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
+													)} `}
 													{(get(
 														collection,
 														'relations',
 														[]
-													) as any[]).map((relation: any) => (
+													) as Relation[]).map((relation: Relation) => (
 														<Link
 															key={`copy-of-link-${relation.object_meta.id}`}
 															to={buildLink(
@@ -931,9 +931,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											)}
 											{hasParentBundles && (
 												<p className="c-body-1">
-													<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-														Deze collectie is deel van een bundel:
-													</Trans>
+													{`${t(
+														'collection/views/collection-detail___deze-collectie-is-deel-van-een-map'
+													)} `}
 													{publishedBundles.map((bundle, index) => (
 														<>
 															{index !== 0 &&
