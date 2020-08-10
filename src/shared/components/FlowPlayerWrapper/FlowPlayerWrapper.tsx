@@ -27,6 +27,7 @@ type FlowPlayerWrapperProps = {
 	cuePoints?: CuePoints;
 	seekTime?: number;
 	autoplay?: boolean;
+	onPlay?: () => void;
 };
 
 /**
@@ -88,7 +89,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				trackEvents(
 					{
 						object: item.external_id,
-						object_type: 'avo_item_pid',
+						object_type: 'item',
 						message: `Gebruiker ${getProfileName(props.user)} heeft het item ${
 							item.external_id
 						} afgespeeld`,
@@ -96,6 +97,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					},
 					props.user
 				);
+				if (props.onPlay) {
+					props.onPlay();
+				}
 			}
 			setTriggeredForUrl(src || null);
 		}
