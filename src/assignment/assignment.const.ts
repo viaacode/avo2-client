@@ -5,6 +5,7 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
 import { GET_ITEM_BY_EXTERNAL_ID } from '../admin/items/items.gql';
 import { ROUTE_PARTS } from '../shared/constants';
+import { EventObjectType } from '../shared/services/event-logging-service';
 
 import { AssignmentOverviewTableColumns } from './assignment.types';
 
@@ -40,11 +41,11 @@ export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 };
 
 export const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
+	[contentType in Avo.Assignment.ContentLabel]: EventObjectType;
 } = {
-	ITEM: 'avo_item_pid',
-	COLLECTIE: 'collections',
-	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
+	ITEM: 'item',
+	COLLECTIE: 'collection',
+	ZOEKOPDRACHT: 'search',
 };
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<

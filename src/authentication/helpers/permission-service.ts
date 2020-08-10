@@ -7,7 +7,7 @@ import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
 
-import { getProfileId } from './get-profile-info';
+import { getProfileId } from './get-profile-id';
 import {
 	GET_LINKED_COLLECTIONS,
 	GET_LINKED_ITEMS,
