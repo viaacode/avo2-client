@@ -15,7 +15,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
+import { getProfileId, getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -30,13 +30,15 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, getFullName } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import ChangeLabelsModal from '../../shared/components/ChangeLabelsModal/ChangeLabelsModal';
+import ChangeLabelsModal, {
+	AddOrRemove,
+} from '../../shared/components/ChangeLabelsModal/ChangeLabelsModal';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -137,6 +139,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				});
 			}
 			andFilters.push(...getBooleanFilters(filters, ['is_public']));
+			andFilters.push({ is_deleted: { _eq: false } });
 
 			// Only show published/unpublished collections/bundles based on permissions
 			if (
@@ -430,6 +433,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					: t('De gegeselecterde collecties zijn gedepubliceerd'),
 				false
 			);
+			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle publish state for collections', err, {
@@ -453,6 +457,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			);
 			setSelectedRows([]);
 			ToastService.success(t('De gegeselecterde collecties zijn verwijderd'), false);
+			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk delete collections', err, {
@@ -473,6 +478,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				t('De auteurs zijn aangepast voor de geselecterde collecties'),
 				false
 			);
+			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk update author for collections', err, {
@@ -483,9 +489,38 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 	};
 
-	const bulkChangeLabels = (labels: string[]) => {
-		console.error(labels);
-		ToastService.info(t('Nog niet geimplementeerd (AVO-810)'));
+	const bulkChangeLabels = async (addOrRemove: AddOrRemove, labels: string[]) => {
+		try {
+			if (addOrRemove === 'add') {
+				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
+					labels,
+					compact(selectedRows.map(collection => collection.id))
+				);
+				ToastService.success(
+					t('De labels zijn toegevoegd aan de geslecteerde collecties'),
+					false
+				);
+			} else {
+				// remove
+				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
+					labels,
+					compact(selectedRows.map(collection => collection.id))
+				);
+				ToastService.success(
+					t('De labels zijn verwijderd van de geslecteerde collecties'),
+					false
+				);
+			}
+			fetchCollectionsOrBundles();
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to bulk update labels of collections', err, {
+					addOrRemove,
+					labels,
+				})
+			);
+			ToastService.danger(t('Het aanpassen van de labels is mislukt'), false);
+		}
 	};
 
 	const navigateToCollectionEdit = (id: string | undefined) => {
@@ -703,6 +738,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					isOpen={changeAuthorModalOpen}
 					onClose={() => setChangeAuthorModalOpen(false)}
 					callback={(newAuthor: PickerItem) => bulkChangeAuthor(newAuthor.value)}
+					initialAuthor={{
+						label: getFullName(user as { profile: Avo.User.Profile }) as string,
+						value: getProfileId(user),
+						type: 'PROFILE',
+					}}
 				/>
 				<ChangeLabelsModal
 					isOpen={changeLabelsModalOpen}
@@ -711,8 +751,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						label: labelObj.description,
 						value: labelObj.value,
 					}))}
-					callback={(labels: TagInfo[]) =>
-						bulkChangeLabels(labels.map(labelObj => labelObj.value.toString()))
+					callback={(addOrRemove: AddOrRemove, labels: TagInfo[]) =>
+						bulkChangeLabels(
+							addOrRemove,
+							labels.map(labelObj => labelObj.value.toString())
+						)
 					}
 				/>
 			</>

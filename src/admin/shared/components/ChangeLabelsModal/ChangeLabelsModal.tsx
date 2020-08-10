@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next';
 import {
 	Button,
 	ButtonToolbar,
+	Form,
+	FormGroup,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
+	Select,
 	TagInfo,
 	TagsInput,
 	Toolbar,
@@ -16,12 +19,14 @@ import {
 
 import { PickerItem } from '../../types';
 
+export type AddOrRemove = 'add' | 'remove';
+
 interface ChangeLabelsModalProps {
 	initialAuthor?: PickerItem;
 	isOpen: boolean;
 	labels: TagInfo[];
 	onClose?: () => void;
-	callback: (newLabels: TagInfo[]) => void;
+	callback: (addOrRemove: AddOrRemove, selectedLabels: TagInfo[]) => void;
 }
 
 const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
@@ -32,30 +37,56 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [selectedLabels, setSelectedLabels] = useState<TagInfo[]>([]);
+	const [selectedLabels, setSelectedLabels] = useState<TagInfo[] | null>(null);
+	const [addOrRemove, setAddOrRemove] = useState<AddOrRemove>('add');
+
+	const handleClose = () => {
+		setSelectedLabels(null);
+		setAddOrRemove('add');
+		onClose();
+	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			title={t('Selecteer de nieuwe labels')}
-			size="small"
-			onClose={onClose}
-		>
+		<Modal isOpen={isOpen} title={t('Labels aanpassen')} size="small" onClose={handleClose}>
 			<ModalBody>
-				<TagsInput options={labels} value={selectedLabels} onChange={setSelectedLabels} />
+				<Form>
+					<FormGroup label={t('Labels toevoegen of verwijderen')}>
+						<Select
+							options={[
+								{ label: t('Toevoegen'), value: 'add' },
+								{ label: t('Verwijderen'), value: 'delete' },
+							]}
+							value={addOrRemove}
+							onChange={setAddOrRemove as (value: string) => void}
+						/>
+					</FormGroup>
+					<FormGroup label={t('Labels')}>
+						<TagsInput
+							options={labels}
+							value={selectedLabels || undefined}
+							onChange={setSelectedLabels}
+						/>
+					</FormGroup>
+				</Form>
 			</ModalBody>
 			<ModalFooterRight>
 				<Toolbar>
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label={t('Annuleren')} onClick={onClose} />
+								<Button
+									type="secondary"
+									label={t('Annuleren')}
+									onClick={handleClose}
+								/>
 								<Button
 									type="primary"
-									label={t('Toepassen')}
+									label={
+										addOrRemove === 'add' ? t('Toevoegen') : t('Verwijderen')
+									}
 									onClick={() => {
-										onClose();
-										callback(selectedLabels);
+										callback(addOrRemove, selectedLabels || []);
+										handleClose();
 									}}
 								/>
 							</ButtonToolbar>

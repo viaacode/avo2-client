@@ -30,10 +30,15 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [author, setAuthor] = useState<PickerItem | undefined>();
+	const [author, setAuthor] = useState<PickerItem | undefined>(initialAuthor);
+
+	const handleClose = () => {
+		onClose();
+		setAuthor(initialAuthor);
+	};
 
 	return (
-		<Modal isOpen={isOpen} title={t('Selecteer een auteur')} size="small" onClose={onClose}>
+		<Modal isOpen={isOpen} title={t('Selecteer een auteur')} size="small" onClose={handleClose}>
 			<ModalBody>
 				<ContentPicker
 					initialValue={initialAuthor || undefined}
@@ -51,15 +56,19 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label={t('Annuleren')} onClick={onClose} />
+								<Button
+									type="secondary"
+									label={t('Annuleren')}
+									onClick={handleClose}
+								/>
 								<Button
 									type="primary"
 									label={t('Toepassen')}
 									onClick={() => {
-										onClose();
 										if (author) {
 											callback(author);
 										}
+										handleClose();
 									}}
 								/>
 							</ButtonToolbar>
