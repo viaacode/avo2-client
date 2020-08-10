@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileId } from '../../../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../../../authentication/helpers/get-profile-id';
 import {
 	PermissionName,
 	PermissionService,
