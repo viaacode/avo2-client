@@ -228,21 +228,23 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Briefing(s)')}>
-										<TextArea
-											height="auto"
-											value={
-												(collection as any).briefing_id // TODO remove cast after update to typings v2.22
-											}
-											onChange={(newBriefing: string) =>
-												changeCollectionState({
-													type: 'UPDATE_COLLECTION_PROP',
-													collectionProp: 'briefing_id' as any, // TODO remove cast after update to typings v2.22
-													collectionPropValue: newBriefing,
-												})
-											}
-										/>
-									</FormGroup>
+									{isCollection && (
+										<FormGroup label={t('Briefing(s)')}>
+											<TextArea
+												height="auto"
+												value={
+													(collection as any).briefing_id // TODO remove cast after update to typings v2.22
+												}
+												onChange={(newBriefing: string) =>
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'briefing_id' as any, // TODO remove cast after update to typings v2.22
+														collectionPropValue: newBriefing,
+													})
+												}
+											/>
+										</FormGroup>
+									)}
 									{PermissionService.hasPerm(
 										user,
 										isCollection
