@@ -15,7 +15,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getProfileId, getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../../authentication/helpers/get-profile-id';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
