@@ -148,7 +148,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				)
 			);
 		}
-	}, [setTour, location.pathname, tourDisplayDates, updateTourDisplayDate, user]);
+	}, [setTour, location.pathname, tourDisplayDates, user]);
 
 	useEffect(() => {
 		checkIfTourExistsForCurrentPage();
