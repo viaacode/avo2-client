@@ -15,7 +15,15 @@ export const retrieveProfiles = async (
 			0,
 			'last_access_at',
 			'desc',
-			name || '',
+			!!name
+				? {
+						_or: [
+							{ usersByuserId: { first_name: { _ilike: `%${name}%` } } },
+							{ usersByuserId: { last_name: { _ilike: `%${name}%` } } },
+							{ usersByuserId: { mail: { _ilike: `%${name}%` } } },
+						],
+				  }
+				: undefined,
 			limit
 		);
 		return parseProfiles(response[0]);
