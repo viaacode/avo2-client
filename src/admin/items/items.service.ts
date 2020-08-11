@@ -214,7 +214,7 @@ export class ItemsService {
 					}
 				);
 			}
-			return get(response.json(), 'externalId') || null;
+			return get(await response.json(), 'externalId') || null;
 		} catch (err) {
 			throw new CustomError('Failed to get external_id by mediamosa id (avo1 id)', err, {
 				mediamosaId,
