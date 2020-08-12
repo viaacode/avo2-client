@@ -77,3 +77,51 @@ export const GET_COLLECTIONS = gql`
 		}
 	}
 `;
+
+export const BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS = gql`
+	mutation bulkUpdatePublishSTateForCollections($isPublic: Boolean!, $collectionIds: [uuid!]!) {
+		update_app_collections(
+			where: { id: { _in: $collectionIds } }
+			_set: { is_public: $isPublic }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_UPDATE_AUTHOR_FOR_COLLECTIONS = gql`
+	mutation bulkUpdateAuthorForCollections($authorId: uuid!, $collectionIds: [uuid!]!) {
+		update_app_collections(
+			where: { id: { _in: $collectionIds } }
+			_set: { owner_profile_id: $authorId }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_DELETE_COLLECTIONS = gql`
+	mutation bulkDeleteCollections($collectionIds: [uuid!]!) {
+		update_app_collections(where: { id: { _in: $collectionIds } }, _set: { is_deleted: true }) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_ADD_LABELS_TO_COLLECTIONS = gql`
+	mutation bulkAddLabelsToCollections($labels: [app_collection_labels_insert_input!]!) {
+		insert_app_collection_labels(objects: $labels) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_DELETE_LABELS_FROM_COLLECTIONS = gql`
+	mutation bulkDeleteLabelsFromCollections($labels: [String!]!, $collectionIds: [uuid!]!) {
+		delete_app_collection_labels(
+			where: { label: { _in: $labels }, collection_uuid: { _in: $collectionIds } }
+		) {
+			affected_rows
+		}
+	}
+`;
