@@ -48,6 +48,7 @@ interface ItemVideoDescriptionProps {
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	verticalLayout?: boolean;
 	onTitleClicked?: () => void;
+	onPlay?: () => void;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
@@ -67,6 +68,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	verticalLayout = false,
 	onTitleClicked,
 	location,
+	onPlay,
 }) => {
 	const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}:[0-9]{2})/g;
 
@@ -150,6 +152,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 				canPlay={canPlay}
 				cuePoints={cuePoints}
 				seekTime={time}
+				onPlay={onPlay}
 			/>
 		);
 	};

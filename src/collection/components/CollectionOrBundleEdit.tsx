@@ -60,21 +60,16 @@ import {
 	sanitizeHtml,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
-import {
-	ApolloCacheManager,
-	BookmarksViewsPlaysService,
-	dataService,
-	ToastService,
-} from '../../shared/services';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
-import { DELETE_COLLECTION } from '../collection.gql';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
+import { toDutchContentType } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
 
@@ -476,10 +471,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				trackEvents(
 					{
 						object: String(newCollection.id),
-						object_type: 'collections',
-						message: `Gebruiker ${getProfileName(user)} heeft de ${type} ${
-							newCollection.id
-						} bijgewerkt`,
+						object_type: type,
+						message: `Gebruiker ${getProfileName(user)} heeft een ${type} aangepast`,
 						action: 'edit',
 					},
 					user
@@ -575,21 +568,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				);
 				return;
 			}
-			await dataService.mutate({
-				mutation: DELETE_COLLECTION,
-				variables: {
-					id: collectionState.currentCollection.id,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await CollectionService.deleteCollection(collectionState.currentCollection.id);
 
 			trackEvents(
 				{
 					object: String(collectionState.currentCollection.id),
-					object_type: 'collections',
-					message: `Gebruiker ${getProfileName(user)} heeft de ${type} ${
-						collectionState.currentCollection.id
-					} verwijderd`,
+					object_type: type,
+					message: `Gebruiker ${getProfileName(user)} heeft een ${toDutchContentType(
+						type
+					)} verwijderd`,
 					action: 'delete',
 				},
 				user

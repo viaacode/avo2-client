@@ -47,7 +47,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 			redirectToServerArchiefRegistrationIdp(location, validStamboekNumber);
 		} else {
 			ToastService.danger(
-				'Je moet de privacy voorwaarden accepteren om een account te kunnen aanmaken'
+				t('Je moet de privacy voorwaarden accepteren om een account te kunnen aanmaken')
 			);
 		}
 	};

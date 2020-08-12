@@ -230,7 +230,8 @@ export const getDuplicateTitleOrDescriptionErrors = async (
 	const duplicates = await CollectionService.getCollectionByTitleOrDescription(
 		collection.title || '',
 		collection.description || '',
-		collection.id as string
+		collection.id as string,
+		collection.type_id as ContentTypeNumber
 	);
 
 	const errors = [];

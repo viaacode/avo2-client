@@ -29,6 +29,7 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 
 import './r4-manual-registration.scss';
 
@@ -171,6 +172,17 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				},
 			};
 			await ZendeskService.createTicket(ticket);
+
+			trackEvents(
+				{
+					object: '',
+					object_type: 'account',
+					message: `${firstName} ${lastName} heeft manueel een account aangevraagd via zendesk`,
+					action: 'request',
+				},
+				null
+			);
+
 			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'

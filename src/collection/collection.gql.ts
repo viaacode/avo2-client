@@ -40,7 +40,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 				stamboek
 				updated_at
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id
@@ -83,7 +83,7 @@ export const GET_COLLECTION_BY_ID = gql`
 					first_name
 					last_name
 					profile {
-						profile_user_group {
+						profile_user_groups {
 							groups {
 								label
 								id
@@ -213,7 +213,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 					first_name
 					last_name
 					profile {
-						profile_user_group {
+						profile_user_groups {
 							groups {
 								label
 								id
@@ -348,6 +348,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 		$title: String!
 		$description: String!
 		$collectionId: uuid!
+		$typeId: Int
 	) {
 		collectionByTitle: app_collections(
 			where: {
@@ -355,6 +356,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 				is_deleted: { _eq: false }
 				is_public: { _eq: true }
 				id: { _neq: $collectionId }
+				type_id: { _eq: $typeId }
 			}
 			limit: 1
 		) {
@@ -366,6 +368,7 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 				is_deleted: { _eq: false }
 				is_public: { _eq: true }
 				id: { _neq: $collectionId }
+				type_id: { _eq: $typeId }
 			}
 			limit: 1
 		) {

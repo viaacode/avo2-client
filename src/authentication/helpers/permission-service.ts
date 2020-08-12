@@ -7,7 +7,7 @@ import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
 
-import { getProfileId } from './get-profile-info';
+import { getProfileId } from './get-profile-id';
 import {
 	GET_LINKED_COLLECTIONS,
 	GET_LINKED_ITEMS,
@@ -80,7 +80,6 @@ export enum PermissionName {
 	EDIT_BUNDLE_AUTHOR = 'EDIT_BUNDLE_AUTHOR',
 	ADD_ITEM_TO_COLLECTION_BY_PID = 'ADD_ITEM_TO_COLLECTION_BY_PID',
 	ADD_COLLECTION_TO_BUNDLE_BY_ID = 'ADD_COLLECTION_TO_BUNDLE_BY_ID',
-
 	VIEW_OWN_COLLECTIONS = 'VIEW_OWN_COLLECTIONS',
 	VIEW_ANY_PUBLISHED_COLLECTIONS = 'VIEW_ANY_PUBLISHED_COLLECTIONS',
 	VIEW_ANY_UNPUBLISHED_COLLECTIONS = 'VIEW_ANY_UNPUBLISHED_COLLECTIONS',
@@ -89,6 +88,8 @@ export enum PermissionName {
 	VIEW_ANY_UNPUBLISHED_BUNDLES = 'VIEW_ANY_UNPUBLISHED_BUNDLES',
 	PUBLISH_ANY_CONTENT_PAGE = 'PUBLISH_ANY_CONTENT_PAGE',
 	UNPUBLISH_ANY_CONTENT_PAGE = 'UNPUBLISH_ANY_CONTENT_PAGE',
+
+	EDIT_CONTENT_PAGE_AUTHOR = 'EDIT_CONTENT_PAGE_AUTHOR',
 }
 
 export class PermissionService {

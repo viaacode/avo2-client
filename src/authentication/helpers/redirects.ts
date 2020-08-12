@@ -32,6 +32,10 @@ export function redirectToLoggedOutHome(location: Location) {
 	window.location.href = getBaseUrl(location);
 }
 
+export function redirectToLoggedInHome(location: Location) {
+	window.location.href = `${getBaseUrl(location)}/start`;
+}
+
 /**
  *
  * Server redirect functions

@@ -8,6 +8,7 @@ import { retrieveContentPages, retrieveProjectContentPages } from './item-provid
 import { retrieveInternalLinks } from './item-providers/internal-link';
 import { retrieveItems } from './item-providers/item';
 import { retrieveProfiles } from './item-providers/profile';
+import { retrieveAnchors } from './item-providers/anchors';
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{
@@ -75,6 +76,13 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 		fetch: retrieveProfiles,
 		picker: 'SELECT',
 	},
+	{
+		value: 'ANCHOR_LINK',
+		label: i18n.t('Anchors'),
+		disabled: false,
+		fetch: retrieveAnchors,
+		picker: 'SELECT',
+	},
 ];
 
 export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
@@ -84,6 +92,7 @@ export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
 	'BUNDLE',
 	'INTERNAL_LINK',
 	'EXTERNAL_LINK',
+	'ANCHOR_LINK',
 ];
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {
