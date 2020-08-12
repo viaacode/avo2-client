@@ -11,6 +11,8 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 
 .c-video-player {
 	position: relative;
+	border-radius: 0.4rem;
+	overflow: hidden;
 
 	.a-flowplayer__text {
 		color: $color-gray-200;
