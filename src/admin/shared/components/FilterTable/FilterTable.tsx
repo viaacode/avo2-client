@@ -87,6 +87,7 @@ interface FilterTableProps extends RouteComponentProps {
 	) => ReactNode;
 	className?: string;
 	onTableStateChanged: (tableState: { [id: string]: any }) => void;
+	onRowClick?: (rowData: any) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
 	showCheckboxes?: boolean;
@@ -105,6 +106,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	renderCell,
 	className,
 	onTableStateChanged,
+	onRowClick,
 	rowKey = 'id',
 	variant = 'bordered',
 	showCheckboxes,
@@ -289,6 +291,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						onColumnClick={columnId => {
 							handleSortOrderChanged(columnId);
 						}}
+						onRowClick={onRowClick}
 						renderCell={renderCell}
 						rowKey={rowKey}
 						variant={variant}

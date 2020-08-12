@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services';
 
 import {
@@ -13,18 +14,6 @@ import { GET_COLLECTIONS } from './collections-or-bundles.gql';
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
-	private static getOrderObject(
-		sortColumn: CollectionsOrBundlesOverviewTableCols,
-		sortOrder: Avo.Search.OrderDirection
-	) {
-		const getOrderFunc: Function | undefined =
-			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
-		if (getOrderFunc) {
-			return [getOrderFunc(sortOrder)];
-		}
-		return [{ [sortColumn]: sortOrder }];
-	}
-
 	public static async getCollections(
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
@@ -37,7 +26,11 @@ export class CollectionsOrBundlesService {
 				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
-				orderBy: CollectionsOrBundlesService.getOrderObject(sortColumn, sortOrder),
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 			};
 			const response = await dataService.query({
 				variables,

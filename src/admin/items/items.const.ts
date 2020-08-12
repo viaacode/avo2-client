@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxOption } from '../../shared/components';
+import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
@@ -40,7 +40,8 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: seriesOptions,
-		},
+			showMaxOptions: 40,
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'issued',
@@ -64,7 +65,8 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/items/items___video'), id: 'video' },
 				{ label: i18n.t('admin/items/items___audio'), id: 'audio' },
 			] as CheckboxOption[],
-		},
+			showMaxOptions: 40,
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'organisation',
@@ -73,7 +75,8 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: cpOptions,
-		},
+			showMaxOptions: 40,
+		} as CheckboxDropdownModalProps,
 	},
 	{ id: 'views', label: i18n.t('admin/items/items___views'), sortable: true },
 	{

@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
@@ -36,25 +37,11 @@ export class UserService {
 		}
 	}
 
-	private static getOrderObject(
-		sortColumn: UserOverviewTableCol,
-		sortOrder: Avo.Search.OrderDirection
-	) {
-		const getOrderFunc: Function | undefined =
-			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
-
-		if (getOrderFunc) {
-			return [getOrderFunc(sortOrder)];
-		}
-
-		return [{ [sortColumn]: sortOrder }];
-	}
-
 	public static async getProfiles(
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
-		queryText: string,
+		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[Avo.User.Profile[], number]> {
 		let variables: any;
@@ -62,8 +49,12 @@ export class UserService {
 			variables = {
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
-				orderBy: this.getOrderObject(sortColumn, sortOrder),
-				queryText: `%${queryText}%`,
+				...(where ? { where } : {}),
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 			};
 			const response = await dataService.query({
 				variables,

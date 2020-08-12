@@ -139,7 +139,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				trackEvents(
 					{
 						object: match.params.id,
-						object_type: 'avo_item_pid',
+						object_type: 'item',
 						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
 							match.params.id
 						} bezocht`,
@@ -228,6 +228,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
+	};
+
+	const trackOnPlay = () => {
+		trackEvents(
+			{
+				object: get(item, 'external_id', ''),
+				object_type: 'item',
+				message: `${getProfileName(user)} heeft een item afgespeeld`,
+				action: 'play',
+			},
+			user
+		);
 	};
 
 	const renderRelatedItems = () => {
@@ -346,6 +358,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								!isShareThroughEmailModalOpen &&
 								!isReportItemModalOpen
 							}
+							onPlay={trackOnPlay}
 						/>
 						<Grid>
 							<Column size="2-7">

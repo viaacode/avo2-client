@@ -74,6 +74,18 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 					ownerId: '',
 				} as FileUploadProps,
 			}),
+			annotationTitle: {
+				label: i18n.t('admin/content-block/helpers/generators/image___bijschift-titel'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			},
+			annotationText: {
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image___bijschrift-beschrijving'
+				),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			},
 			width: {
 				label: i18n.t('admin/content-block/helpers/generators/media-player___breedte'),
 				editorType: ContentBlockEditor.Select,

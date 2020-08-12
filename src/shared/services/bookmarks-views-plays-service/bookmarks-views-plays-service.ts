@@ -2,11 +2,13 @@ import { compact, fromPairs, get, groupBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentTypeNumber } from '../../../collection/collection.types';
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { ContentTypeNumber, toDutchContentType } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import i18n from '../../translations/i18n';
 import { ApolloCacheManager, dataService } from '../data-service';
+import { trackEvents } from '../event-logging-service';
 import { ToastService } from '../toast-service';
 
 import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
@@ -160,7 +162,7 @@ export class BookmarksViewsPlaysService {
 	 * @param contentId
 	 * @param user
 	 * @param type
-	 * @param isBookmarked
+	 * @param isBookmarked current state of the bookmark toggle before the desired action is executed
 	 * @return {boolean} returns true of the operation was successful, otherwise false
 	 */
 	public static async toggleBookmark(
@@ -184,6 +186,20 @@ export class BookmarksViewsPlaysService {
 				user,
 				false
 			);
+
+			if (!isBookmarked) {
+				trackEvents(
+					{
+						object: contentId,
+						object_type: type,
+						message: `${getProfileName(user)} heeft een ${toDutchContentType(
+							type
+						)} gebookmarked`,
+						action: 'bookmark',
+					},
+					user
+				);
+			}
 		} catch (err) {
 			throw new CustomError('Failed to bookmark/unbookmark the item', err, { contentId });
 		}

@@ -42,7 +42,7 @@ export const GET_USER_BY_ID = gql`
 				unit_id
 				organization_id
 			}
-			profile_user_group {
+			profile_user_groups {
 				groups {
 					id
 					label
@@ -69,30 +69,9 @@ export const GET_USERS = gql`
 		$offset: Int!
 		$limit: Int!
 		$orderBy: [users_profiles_order_by!]!
-		$queryText: String!
+		$where: users_profiles_bool_exp!
 	) {
-		users_profiles(
-			offset: $offset
-			limit: $limit
-			order_by: $orderBy
-			where: {
-				_or: [
-					{ stamboek: { _ilike: $queryText } }
-					{ alternative_email: { _ilike: $queryText } }
-					{ bio: { _ilike: $queryText } }
-					{ alias: { _ilike: $queryText } }
-					{
-						usersByuserId: {
-							_or: [
-								{ first_name: { _ilike: $queryText } }
-								{ last_name: { _ilike: $queryText } }
-								{ mail: { _ilike: $queryText } }
-							]
-						}
-					}
-				]
-			}
-		) {
+		users_profiles(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
 			id
 			user: usersByuserId {
 				first_name
@@ -103,6 +82,8 @@ export const GET_USERS = gql`
 					id
 				}
 				id
+				last_access_at
+				is_blocked
 			}
 			avatar
 			alias
@@ -119,26 +100,14 @@ export const GET_USERS = gql`
 			}
 			is_exception
 			title
-		}
-		users_profiles_aggregate(
-			where: {
-				_or: [
-					{ stamboek: { _ilike: $queryText } }
-					{ alternative_email: { _ilike: $queryText } }
-					{ bio: { _ilike: $queryText } }
-					{ alias: { _ilike: $queryText } }
-					{
-						usersByuserId: {
-							_or: [
-								{ first_name: { _ilike: $queryText } }
-								{ last_name: { _ilike: $queryText } }
-								{ mail: { _ilike: $queryText } }
-							]
-						}
-					}
-				]
+			profile_user_groups {
+				groups {
+					label
+					id
+				}
 			}
-		) {
+		}
+		users_profiles_aggregate(where: $where) {
 			aggregate {
 				count
 			}

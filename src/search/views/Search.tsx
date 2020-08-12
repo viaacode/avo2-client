@@ -62,6 +62,7 @@ import {
 import { AppState } from '../../store';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FILTER_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
+import { fetchSearchResults } from '../search.service';
 import {
 	FilterState,
 	SearchFilterFieldValues,
@@ -387,6 +388,32 @@ const Search: FunctionComponent<SearchProps> = ({
 	const navigateToUserRequestForm = () =>
 		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 
+	const onSearchInSearchFilter = async (id: string) => {
+		const orderProperty: Avo.Search.OrderProperty =
+			(filterState.orderProperty as Avo.Search.OrderProperty | undefined) ||
+			DEFAULT_SORT_ORDER.orderProperty;
+
+		const orderDirection: Avo.Search.OrderDirection =
+			(filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
+			DEFAULT_SORT_ORDER.orderDirection;
+
+		const response = await fetchSearchResults(
+			orderProperty,
+			orderDirection,
+			0,
+			0, // We are only interested in aggs
+			cleanupFilterState(filterState).filters,
+			{},
+			[id as Avo.Search.FilterProp],
+			1000
+		);
+
+		setMultiOptions({
+			...multiOptions,
+			...response.aggregations,
+		});
+	};
+
 	const renderSearchPage = () => (
 		<Container className="c-search-view" mode="horizontal">
 			<Navbar>
@@ -509,6 +536,7 @@ const Search: FunctionComponent<SearchProps> = ({
 							filterState={filterState.filters || DEFAULT_FILTER_STATE}
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
+							onSearch={onSearchInSearchFilter}
 						/>
 					</Spacer>
 				</Container>

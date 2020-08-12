@@ -23,7 +23,7 @@ const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> =
 	const [t] = useTranslation();
 
 	const getOptions = (): CheckboxOption[] => {
-		const statuses = [
+		return [
 			{
 				label: t(
 					'shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___ja'
@@ -39,7 +39,6 @@ const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> =
 				checked: isNil(value) ? false : !value,
 			},
 		];
-		return statuses;
 	};
 
 	// Methods

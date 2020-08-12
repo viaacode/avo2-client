@@ -1,15 +1,7 @@
 import { gql } from 'apollo-boost';
 
-export const GET_AVAILABLE_CONTENT_TYPES = gql`
-	{
-		app_content(distinct_on: content_type) {
-			content_type
-		}
-	}
-`;
-
 export const GET_CONTENT_PAGES = gql`
-	query getContent(
+	query getContentPages(
 		$where: app_content_bool_exp
 		$offset: Int = 0
 		$limit: Int = 10
@@ -33,7 +25,7 @@ export const GET_CONTENT_PAGES = gql`
 					name
 					or_id
 				}
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id
@@ -65,28 +57,48 @@ export const GET_CONTENT_PAGES = gql`
 	}
 `;
 
-export const GET_PROJECT_CONTENT_PAGES = gql`
-	query getContent($limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
-		app_content(where: { content_type: { _eq: PROJECT } }, limit: $limit, order_by: $orderBy) {
-			path
-			title
-		}
-	}
-`;
-
-export const GET_CONTENT_PAGES_BY_TITLE = gql`
-	query getContent($title: String!, $limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
-		app_content(where: { title: { _ilike: $title } }, limit: $limit, order_by: $orderBy) {
-			path
-			title
-		}
-	}
-`;
-
-export const GET_PROJECT_CONTENT_PAGES_BY_TITLE = gql`
-	query getContent($title: String!, $limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
+export const GET_PUBLIC_PROJECT_CONTENT_PAGES = gql`
+	query getPublicProjectContentPages($limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
 		app_content(
-			where: { title: { _ilike: $title }, content_type: { _eq: PROJECT } }
+			where: { content_type: { _eq: PROJECT }, is_public: { _eq: true } }
+			limit: $limit
+			order_by: $orderBy
+		) {
+			path
+			title
+		}
+	}
+`;
+
+export const GET_PUBLIC_CONTENT_PAGES_BY_TITLE = gql`
+	query getPublicContentPageByTitle(
+		$title: String!
+		$limit: Int = 20
+		$orderBy: [app_content_order_by!] = {}
+	) {
+		app_content(
+			where: { title: { _ilike: $title }, is_public: { _eq: true } }
+			limit: $limit
+			order_by: $orderBy
+		) {
+			path
+			title
+		}
+	}
+`;
+
+export const GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE = gql`
+	query getPublicProjectContentPagesByTitle(
+		$title: String!
+		$limit: Int = 20
+		$orderBy: [app_content_order_by!] = {}
+	) {
+		app_content(
+			where: {
+				title: { _ilike: $title }
+				content_type: { _eq: PROJECT }
+				is_public: { _eq: true }
+			}
 			limit: $limit
 			order_by: $orderBy
 		) {
@@ -151,7 +163,7 @@ export const GET_CONTENT_BY_ID = gql`
 					name
 					or_id
 				}
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id
