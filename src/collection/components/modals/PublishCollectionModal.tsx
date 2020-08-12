@@ -118,10 +118,10 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			trackEvents(
 				{
 					object: String(collection.id),
-					object_type: 'collections',
-					message: `Gebruiker ${getProfileName(user)} heeft de ${
+					object_type: isCollection() ? 'collection' : 'bundle',
+					message: `Gebruiker ${getProfileName(user)} heeft een ${
 						isCollection() ? 'collectie' : 'bundel'
-					} ${collection.id} ${isPublished ? 'gepubliceerd' : 'gedepubliceerd'}`,
+					} ${isPublished ? 'gepubliceerd' : 'gedepubliceerd'}`,
 					action: isPublished ? 'publish' : 'unpublish',
 				},
 				user

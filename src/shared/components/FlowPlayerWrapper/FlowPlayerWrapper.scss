@@ -11,6 +11,10 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 
 .c-video-player {
 	position: relative;
+
+	.a-flowplayer__text {
+		color: $color-gray-200;
+	}
 }
 
 .c-video-player__overlay {

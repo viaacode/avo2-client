@@ -18,6 +18,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
@@ -26,6 +27,7 @@ import { getFullName, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
 import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
 import { ToastService, ZendeskService } from '../../shared/services';
+import { trackEvents } from '../../shared/services/event-logging-service';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
 
@@ -121,6 +123,17 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				},
 			};
 			await ZendeskService.createTicket(ticket);
+
+			trackEvents(
+				{
+					object: description,
+					object_type: 'item',
+					message: `${getProfileName(user)} heeft een item aangevraagd`,
+					action: 'request',
+				},
+				user
+			);
+
 			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'

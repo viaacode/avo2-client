@@ -13,7 +13,7 @@ import MetaTags from 'react-meta-tags';
 import { Button, ButtonToolbar, Container, Navbar, Tabs } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import {
 	PermissionName,
 	PermissionService,

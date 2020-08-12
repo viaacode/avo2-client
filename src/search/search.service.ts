@@ -7,9 +7,11 @@ export const fetchSearchResults = async (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
 	orderDirection: Avo.Search.OrderDirection = 'desc',
 	from: number = 0,
-	size: number = 30,
+	size: number,
 	filters?: Partial<Avo.Search.Filters>,
-	filterOptionSearch?: Partial<Avo.Search.FilterOption>
+	filterOptionSearch?: Partial<Avo.Search.FilterOption>,
+	requestedAggs?: Avo.Search.FilterProp[],
+	aggsSize?: number
 ) => {
 	const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/search`, {
 		method: 'POST',
@@ -24,6 +26,8 @@ export const fetchSearchResults = async (
 			orderDirection,
 			from,
 			size,
+			requestedAggs,
+			aggsSize,
 		}),
 	});
 

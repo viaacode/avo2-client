@@ -21,8 +21,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { getFullName } from '../../../shared/helpers/formatters';
 import { ToastService, ZendeskService } from '../../../shared/services';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import i18n from '../../../shared/translations/i18n';
 
 interface ReportItemModalProps {
@@ -85,6 +87,19 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				},
 			};
 			await ZendeskService.createTicket(ticket as Requests.CreateModel);
+
+			trackEvents(
+				{
+					object: externalId,
+					object_type: 'item',
+					message: `${getProfileName(user)} heeft een item gerapporteerd wegens ${
+						GET_RADIO_BUTTON_LABELS()[reason]
+					}`,
+					action: 'report',
+				},
+				user
+			);
+
 			onClose();
 			ToastService.success(
 				t('item/components/modals/report-item-modal___het-item-is-gerapporteerd')
