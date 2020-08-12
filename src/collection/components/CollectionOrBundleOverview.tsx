@@ -298,7 +298,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				<MetaData category={type}>
 					<MetaDataItem>
 						<span title={`Aangemaakt: ${formatDate(collection.created_at)}`}>
-							{fromNow(collection.created_at)}
+							{formatDate(collection.created_at)}
 						</span>
 					</MetaDataItem>
 					<MetaDataItem
