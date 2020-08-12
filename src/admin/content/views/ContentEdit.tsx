@@ -145,6 +145,43 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	}, [id, user, t]);
 
+	const onPasteContentBlock = useCallback(
+		(e: any) => {
+			try {
+				if (e.clipboardData && e.clipboardData.getData) {
+					const pastedText = e.clipboardData.getData('text/plain');
+
+					if (pastedText.startsWith('{"block":')) {
+						const newConfig = JSON.parse(pastedText).block;
+						delete newConfig.id;
+						// Ensure block is added at the bottom of the page
+						newConfig.position = (
+							contentPageState.currentContentPageInfo.contentBlockConfigs || []
+						).length;
+						changeContentPageState({
+							type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
+							payload: newConfig,
+						});
+
+						ToastService.success(
+							t('admin/content/views/content-edit___de-blok-is-toegevoegd'),
+							false
+						);
+					}
+				}
+			} catch (err) {
+				console.error(new CustomError('Failed to paste content block', err));
+				ToastService.danger(
+					t(
+						'admin/content/views/content-edit___het-plakken-van-het-content-blok-is-mislukt'
+					),
+					false
+				);
+			}
+		},
+		[changeContentPageState, contentPageState.currentContentPageInfo.contentBlockConfigs, t]
+	);
+
 	useEffect(() => {
 		fetchContentPage();
 	}, [fetchContentPage]);
@@ -154,6 +191,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [contentPageState.currentContentPageInfo, isLoadingContentTypes]);
+
+	useEffect(() => {
+		document.body.addEventListener('paste', onPasteContentBlock);
+
+		return () => {
+			document.body.removeEventListener('paste', onPasteContentBlock);
+		};
+	}, [onPasteContentBlock]);
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
@@ -484,38 +529,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
-	const onPasteContentBlock = (e: any) => {
-		try {
-			if (e.clipboardData && e.clipboardData.getData) {
-				const pastedText = e.clipboardData.getData('text/plain');
-
-				if (pastedText.startsWith('{"block":')) {
-					const newConfig = JSON.parse(pastedText).block;
-					delete newConfig.id;
-					// Ensure block is added at the bottom of the page
-					newConfig.position = (
-						contentPageState.currentContentPageInfo.contentBlockConfigs || []
-					).length;
-					changeContentPageState({
-						type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
-						payload: newConfig,
-					});
-
-					ToastService.success(
-						t('admin/content/views/content-edit___de-blok-is-toegevoegd'),
-						false
-					);
-				}
-			}
-		} catch (err) {
-			console.error(new CustomError('Failed to paste content block', err));
-			ToastService.danger(
-				t('admin/content/views/content-edit___het-plakken-van-het-content-blok-is-mislukt'),
-				false
-			);
-		}
-	};
-
 	const renderEditContentPage = () => {
 		const contentPageOwner = contentPageState.initialContentPageInfo.user_profile_id;
 		const isOwner = contentPageOwner ? get(user, 'profile.id') === contentPageOwner : true;
@@ -523,7 +536,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			hasPerm(EDIT_ANY_CONTENT_PAGES) || (hasPerm(EDIT_OWN_CONTENT_PAGES) && isOwner);
 
 		return (
-			<div onPaste={onPasteContentBlock}>
+			<div>
 				<AdminLayout
 					onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
 					pageTitle={pageTitle}
