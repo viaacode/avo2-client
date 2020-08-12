@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { clone, compact, fromPairs } from 'lodash-es';
+import { clone, compact, fromPairs, take } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,6 +51,7 @@ export interface CheckboxDropdownModalProps {
 	label: string;
 	id: string;
 	options: CheckboxOption[];
+	showMaxOptions?: number;
 	disabled?: boolean;
 	onChange: (checkedOptions: string[], id: string) => void;
 	onSearch?: (aggId: string) => void;
@@ -60,6 +61,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	label,
 	id,
 	options,
+	showMaxOptions,
 	disabled,
 	onChange,
 	onSearch,
@@ -197,11 +199,14 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	};
 
 	const renderModalControl = () => {
-		const filteredOptions = options.filter((option: CheckboxOption) =>
-			option.label
-				.replace(/ /g, '')
-				.toLowerCase()
-				.includes(searchKeyword.replace(/ /g, '').toLowerCase())
+		const filteredOptions = take(
+			options.filter((option: CheckboxOption) =>
+				option.label
+					.replace(/ /g, '')
+					.toLowerCase()
+					.includes(searchKeyword.replace(/ /g, '').toLowerCase())
+			),
+			showMaxOptions || Number.POSITIVE_INFINITY // Limit number of items so the modal doesn't scroll on desktop
 		);
 		const oneThird = Math.ceil(filteredOptions.length / 3);
 		const firstColumnOptions = filteredOptions.slice(0, oneThird);

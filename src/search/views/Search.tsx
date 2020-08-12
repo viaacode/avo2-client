@@ -400,12 +400,11 @@ const Search: FunctionComponent<SearchProps> = ({
 		const response = await fetchSearchResults(
 			orderProperty,
 			orderDirection,
-			currentPage * ITEMS_PER_PAGE,
-			ITEMS_PER_PAGE,
+			0,
+			0, // We are only interested in aggs
 			cleanupFilterState(filterState).filters,
 			{},
 			[id as Avo.Search.FilterProp],
-			true,
 			1000
 		);
 
