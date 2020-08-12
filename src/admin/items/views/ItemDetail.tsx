@@ -9,6 +9,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Icon,
 	RichEditorState,
 	Spacer,
 	Table,
@@ -42,11 +43,12 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import { ItemsService } from '../items.service';
 
-type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
+type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
 const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
 	title: 'title',
 	author: 'profile.user.last_name',
+	is_public: 'is_public',
 	organization: 'profile.profile_organizations[0].organization_id',
 	actions: '',
 };
@@ -212,7 +214,22 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
-				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
+				return get(rowData, 'profile.organisation.name', '-');
+
+			case 'is_public':
+				return (
+					<div
+						title={
+							rowData.is_public
+								? t('collection/components/collection-or-bundle-overview___publiek')
+								: t(
+										'collection/components/collection-or-bundle-overview___niet-publiek'
+								  )
+						}
+					>
+						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
+					</div>
+				);
 
 			case 'actions':
 				return (
@@ -372,6 +389,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									sortable: true,
 								},
 								{ label: 'Organisatie', id: 'organization', sortable: false },
+								{
+									label: t('admin/items/items___publiek'),
+									id: 'is_public',
+									sortable: true,
+								},
 								{ label: '', id: 'actions', sortable: false },
 							]}
 							data={collectionsContainingItem}

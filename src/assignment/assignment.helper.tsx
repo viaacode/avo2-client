@@ -22,7 +22,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { getProfileId } from '../authentication/helpers/get-profile-id';
+import { getProfileName } from '../authentication/helpers/get-profile-info';
 import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
@@ -31,8 +32,8 @@ import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
 import { navigate } from '../shared/helpers';
 import { ToastService } from '../shared/services';
+import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
-import { ASSIGNMENTS_ID } from '../workspace/workspace.const';
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from './assignment.const';
 import { AssignmentService } from './assignment.service';
@@ -67,6 +68,16 @@ export class AssignmentHelper {
 				user
 			);
 
+			trackEvents(
+				{
+					object: String(assignment.id),
+					object_type: 'assignment',
+					message: `Gebruiker ${getProfileName(user)} heeft een opdracht gedupliceerd`,
+					action: 'copy',
+				},
+				user
+			);
+
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
@@ -80,34 +91,6 @@ export class AssignmentHelper {
 			console.error('Failed to copy the assignment', err);
 			ToastService.danger(
 				i18n.t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
-			);
-		}
-	}
-
-	public static async deleteCurrentAssignment(
-		assignment: Partial<Avo.Assignment.Assignment>,
-		history: History
-	) {
-		try {
-			if (typeof assignment.id === 'undefined') {
-				ToastService.danger(
-					i18n.t(
-						'assignment/views/assignment-edit___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
-					)
-				);
-				return;
-			}
-			await AssignmentService.deleteAssignment(assignment.id);
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
-			ToastService.success(
-				i18n.t('assignment/views/assignment-edit___de-opdracht-is-verwijderd')
-			);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				i18n.t(
-					'assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt'
-				)
 			);
 		}
 	}

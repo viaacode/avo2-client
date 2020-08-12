@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash-es';
+import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -40,9 +40,16 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, copyToClipboard, sanitizeHtml } from '../../shared/helpers';
+import {
+	buildLink,
+	copyToClipboard,
+	CustomError,
+	navigate,
+	sanitizeHtml,
+} from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
@@ -162,6 +169,17 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
+
+		trackEvents(
+			{
+				object: String(currentAssignment.id),
+				object_type: 'assignment',
+				message: `Gebruiker ${getProfileName(user)} heeft een opdracht url gekopieerd`,
+				action: 'share',
+			},
+			user
+		);
+
 		ToastService.success(
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
@@ -275,6 +293,17 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				assignmentLabels
 			);
 			setBothAssignments(assignment);
+
+			trackEvents(
+				{
+					object: String(assignment.id),
+					object_type: 'assignment',
+					message: `Gebruiker ${getProfileName(user)} heeft een opdracht aangepast`,
+					action: 'edit',
+				},
+				user
+			);
+
 			ToastService.success(
 				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
 			);
@@ -285,6 +314,49 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
 			);
 			setIsSaving(false);
+		}
+	};
+
+	const onDeleteAssignment = async () => {
+		try {
+			if (isNil(currentAssignment.id)) {
+				throw new CustomError('Assignment does not have an id', null, {
+					assignment: currentAssignment,
+				});
+			}
+			await AssignmentService.deleteAssignment(currentAssignment.id);
+
+			trackEvents(
+				{
+					object: String(currentAssignment.id),
+					object_type: 'assignment',
+					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
+			ToastService.success(
+				i18n.t('assignment/views/assignment-edit___de-opdracht-is-verwijderd')
+			);
+
+			trackEvents(
+				{
+					object: String(currentAssignment.id),
+					object_type: 'assignment',
+					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				i18n.t(
+					'assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -469,9 +541,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
-					deleteObjectCallback={() =>
-						AssignmentHelper.deleteCurrentAssignment(currentAssignment, history)
-					}
+					deleteObjectCallback={onDeleteAssignment}
 				/>
 
 				<InputModal

@@ -26,7 +26,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../../authentication/helpers/get-profile-id';
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import {
@@ -176,12 +177,12 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			trackEvents(
 				{
 					object: String(collection.id),
-					object_type: 'collections',
+					object_type: 'collection',
 					message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
 						fragments,
 						'[0].id'
-					)} toegevoegd aan collectie ${collection.id}`,
-					action: 'add_to_collection',
+					)} toegevoegd aan een collectie`,
+					action: 'add_to',
 				},
 				user
 			);
@@ -231,8 +232,19 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				newCollection
 			);
 
+			trackEvents(
+				{
+					object: insertedCollection.id || '',
+					object_type: 'collection',
+					message: `${getProfileName(user)} heeft een collectie aangemaakt`,
+					action: 'create',
+				},
+				user
+			);
+
 			// Add fragment to collection
 			await addItemToExistingCollection(insertedCollection);
+
 			await fetchCollections();
 			onClose();
 

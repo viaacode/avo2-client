@@ -4,10 +4,13 @@ export type UserOverviewTableCol =
 	| 'first_name'
 	| 'last_name'
 	| 'mail'
+	| 'user_group'
+	| 'oormerk' // Currently stored in the title field
+	| 'is_blocked'
 	| 'stamboek'
+	| 'organisation'
 	| 'created_at'
-	| 'updated_at'
-	| 'actions';
+	| 'last_access_at';
 
 export interface UserTableState extends FilterableTableState {
 	first_name: string;

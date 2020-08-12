@@ -5,7 +5,7 @@ import queryString from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
-import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
