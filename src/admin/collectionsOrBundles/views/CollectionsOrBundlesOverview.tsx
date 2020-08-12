@@ -25,6 +25,7 @@ import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
+	CheckboxDropdownModalProps,
 	CheckboxOption,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -263,7 +264,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: userGroupOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{
 			id: 'last_updated_by_profile',
@@ -301,7 +302,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: collectionLabelOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{
 			id: 'views',

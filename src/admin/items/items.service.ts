@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
@@ -22,20 +23,6 @@ import {
 import { ItemsOverviewTableCols } from './items.types';
 
 export class ItemsService {
-	private static getOrderObject(
-		sortColumn: ItemsOverviewTableCols,
-		sortOrder: Avo.Search.OrderDirection
-	) {
-		const getOrderFunc: Function | undefined =
-			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
-
-		if (getOrderFunc) {
-			return [getOrderFunc(sortOrder)];
-		}
-
-		return [{ [sortColumn]: sortOrder }];
-	}
-
 	public static async fetchItemsWithFilters(
 		page: number,
 		sortColumn: ItemsOverviewTableCols,
@@ -48,7 +35,11 @@ export class ItemsService {
 				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
-				orderBy: ItemsService.getOrderObject(sortColumn, sortOrder),
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 			};
 
 			const response = await dataService.query({
@@ -159,7 +150,7 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItems(limit?: number): Promise<Avo.Item.Item[] | null> {
+	public static async fetchPublicItems(limit?: number): Promise<Avo.Item.Item[] | null> {
 		const query = {
 			query: GET_PUBLIC_ITEMS,
 			variables: { limit },
@@ -231,7 +222,7 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItemsByTitleOrExternalId(
+	public static async fetchPublicItemsByTitleOrExternalId(
 		titleOrExternalId: string,
 		limit?: number
 	): Promise<Avo.Item.Item[]> {

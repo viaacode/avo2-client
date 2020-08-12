@@ -10,15 +10,10 @@ import { ContentBlockConfig } from '../../shared/types';
 import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
 import {
 	DELETE_CONTENT_BLOCK,
-	GET_CONTENT_BLOCKS_BY_CONTENT_ID,
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from '../content-block.gql';
-import {
-	convertBlocksToDatabaseFormat,
-	convertBlockToDatabaseFormat,
-	parseContentBlocks,
-} from '../helpers';
+import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
 	/**
@@ -131,46 +126,6 @@ export class ContentBlockService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
-				),
-				false
-			);
-
-			return null;
-		}
-	}
-	/**
-	 * Retrieve content blocks by content id.
-	 *
-	 * @param contentId content page identifier
-	 *
-	 * @return content blocks
-	 */
-	public static async fetchContentBlocksByContentId(
-		contentId: number
-	): Promise<ContentBlockConfig[] | null> {
-		try {
-			const response = await dataService.query({
-				query: GET_CONTENT_BLOCKS_BY_CONTENT_ID,
-				variables: { contentId },
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return parseContentBlocks(
-				get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.GET}`) || []
-			);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to fetch content blocks by content page id', err, {
-					contentId,
-				})
-			);
-
-			ToastService.danger(
-				i18n.t(
-					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-blocks'
 				),
 				false
 			);

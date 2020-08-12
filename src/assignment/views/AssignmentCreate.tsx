@@ -25,13 +25,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../authentication/helpers/get-profile-id';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,
-	DeleteObjectModal,
-	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -47,7 +46,6 @@ import {
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { CONTENT_LABEL_TO_EVENT_OBJECT_TYPE } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 
@@ -64,8 +62,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
-	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
 		{}
@@ -197,23 +193,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
-	const trackAddObjectToAssignment = (assignment: Avo.Assignment.Assignment) => {
-		if (!assignment.content_label || !assignment.content_id || !user) {
-			return;
-		}
-		trackEvents(
-			{
-				object: assignment.content_id,
-				object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-				message: `Gebruiker ${getProfileName(user)} heeft ${
-					CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
-				} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
-				action: 'view',
-			},
-			user
-		);
-	};
-
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
@@ -256,7 +235,17 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 			if (insertedAssignment) {
 				setBothAssignments(insertedAssignment);
-				trackAddObjectToAssignment(insertedAssignment);
+
+				trackEvents(
+					{
+						object: String(assignment.id),
+						object_type: 'assignment',
+						message: `Gebruiker ${getProfileName(user)} heeft een opdracht aangemaakt`,
+						action: 'create',
+					},
+					user
+				);
+
 				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
@@ -383,46 +372,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						</Toolbar>
 					</Container>
 				</Container>
-
-				<DeleteObjectModal
-					title={t(
-						'assignment/views/assignment-edit___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
-					)}
-					body={t(
-						'assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setDeleteModalOpen(false)}
-					deleteObjectCallback={() =>
-						AssignmentHelper.deleteCurrentAssignment(currentAssignment, history)
-					}
-				/>
-
-				<InputModal
-					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel={t(
-						'assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam'
-					)}
-					inputValue={currentAssignment.title}
-					inputPlaceholder={t(
-						'assignment/views/assignment-edit___titel-van-de-nieuwe-taak'
-					)}
-					isOpen={isDuplicateModalOpen}
-					onClose={() => setDuplicateModalOpen(false)}
-					inputCallback={(newTitle: string) =>
-						AssignmentHelper.attemptDuplicateAssignment(
-							newTitle,
-							currentAssignment,
-							setCurrentAssignment,
-							setLoadingInfo,
-							user,
-							history
-						)
-					}
-					emptyMessage={t(
-						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
-					)}
-				/>
 			</>
 		);
 	};

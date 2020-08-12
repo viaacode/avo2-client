@@ -28,7 +28,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../authentication/helpers/get-profile-id';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -38,6 +39,7 @@ import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../..
 import Html from '../../shared/components/Html/Html';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
@@ -131,6 +133,16 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					response.assignment.assignment_responses = [assignmentResponse];
 				}
 			}
+
+			trackEvents(
+				{
+					object: String(response.assignment.id),
+					object_type: 'assignment',
+					message: `Gebruiker ${getProfileName(user)} heeft een opdracht bekeken`,
+					action: 'view',
+				},
+				user
+			);
 
 			setAssignment(response.assignment);
 			setAssignmentContent(response.assignmentContent);
