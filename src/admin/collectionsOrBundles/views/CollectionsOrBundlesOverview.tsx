@@ -106,7 +106,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				...getMultiOptionFilters(
 					filters,
 					['author_user_group'],
-					['profile.profile_user_group.groups.id']
+					['profile.profile_user_groups[0].groups.id']
 				)
 			);
 			if (filters.collection_labels && filters.collection_labels.length) {
