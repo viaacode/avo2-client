@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, sortBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -51,9 +51,11 @@ export class SettingsService {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			return ((get(response, 'data.lookup_enum_lom_classification', []) || []) as {
+			const subjects = ((get(response, 'data.lookup_enum_lom_classification', []) || []) as {
 				description: string;
 			}[]).map((item: { description: string }) => item.description);
+
+			return sortBy(subjects, subject => subject.toLowerCase());
 		} catch (err) {
 			throw new CustomError('Failed to get subjects from the database', err, {
 				query: 'GET_SUBJECTS',
