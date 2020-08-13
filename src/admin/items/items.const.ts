@@ -82,7 +82,19 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		id: 'is_published',
 		label: i18n.t('admin/items/items___publiek'),
 		sortable: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				{
+					label: i18n.t('Gepubliceerd'),
+					id: 'published',
+				},
+				{
+					label: i18n.t('Gedepubliceerd'),
+					id: 'unpublished',
+				},
+			],
+		},
 	},
 	// {
 	// 	id: 'updated_at',

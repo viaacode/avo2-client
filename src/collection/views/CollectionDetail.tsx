@@ -874,7 +874,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</h3>
 							<Grid>
 								<Column size="3-3">
-									<Spacer margin="top">
+									<Spacer margin="top-large">
 										<p className="u-text-bold">
 											<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
 												Onderwijsniveau
@@ -891,6 +891,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												<span className="u-d-block">-</span>
 											)}
 										</p>
+									</Spacer>
+									<Spacer margin="top-large">
 										<p className="u-text-bold">
 											<Trans i18nKey="collection/views/collection-detail___vakken">
 												Vakken
@@ -910,9 +912,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</Spacer>
 								</Column>
 								<Column size="3-3">
-									<Spacer margin="top">
+									<Spacer margin="top-large">
 										<p className="u-text-bold">{t('Aangemaakt op')}</p>
 										<p className="c-body-1">{formatDate(created_at)}</p>
+									</Spacer>
+									<Spacer margin="top-large">
 										<p className="u-text-bold">
 											{t(
 												'collection/views/collection-detail___laatst-aangepast'
@@ -923,7 +927,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</Column>
 								{(hasCopies || hasParentBundles) && (
 									<Column size="3-6">
-										<Spacer margin="top">
+										<Spacer margin="top-large">
 											<p className="u-text-bold">
 												<Trans i18nKey="collection/views/collection-detail___ordering">
 													Ordering

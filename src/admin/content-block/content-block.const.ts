@@ -174,7 +174,7 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.Quote,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___links'),
+		label: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
 		value: ContentBlockType.AnchorLinks,
 	},
 	{

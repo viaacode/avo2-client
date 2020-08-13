@@ -11,6 +11,7 @@ import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
+	DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS,
 	GET_DISTINCT_SERIES,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
@@ -176,9 +177,7 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			const item = addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
-
-			return item;
+			return addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
 		} catch (err) {
 			throw new CustomError('Failed to get item by external id', err, {
 				externalId,
@@ -214,7 +213,7 @@ export class ItemsService {
 					}
 				);
 			}
-			return get(response.json(), 'externalId') || null;
+			return get(await response.json(), 'externalId') || null;
 		} catch (err) {
 			throw new CustomError('Failed to get external_id by mediamosa id (avo1 id)', err, {
 				mediamosaId,
@@ -271,6 +270,33 @@ export class ItemsService {
 			throw new CustomError('Failed to fetch distinct series from the database', err, {
 				query: 'GET_DISTINCT_SERIES',
 			});
+		}
+	}
+
+	public static async deleteItemFromCollectionsAndBookmarks(
+		itemUid: string,
+		itemExternalId: string
+	) {
+		try {
+			const response = await dataService.mutate({
+				mutation: DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS,
+				variables: {
+					itemUid,
+					itemExternalId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to delete item from collections, bookmarks and assignments in the database',
+				err,
+				{
+					query: 'DELETE_ITEM_FROM_COLLECTION_BOOKMARKS_AND_ASSIGNMENTS',
+				}
+			);
 		}
 	}
 }
