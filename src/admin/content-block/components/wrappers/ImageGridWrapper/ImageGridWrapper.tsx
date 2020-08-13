@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { AlignOptions, BlockGrid, ButtonAction, GridItem } from '@viaa/avo2-components';
+import { AlignOptions, BlockImageGrid, ButtonAction, GridItem } from '@viaa/avo2-components';
 
 import { BlockGridFormatOption, FillOption } from '../../../../shared/types';
 
@@ -31,7 +31,7 @@ const BlockGridWrapper: FunctionComponent<BlockGridWrapperProps> = ({
 	format = 'squareLarge',
 	...rest
 }) => {
-	return <BlockGrid {...formatLookup[format]} {...rest} />;
+	return <BlockImageGrid {...formatLookup[format]} {...rest} />;
 };
 
 export default BlockGridWrapper;
