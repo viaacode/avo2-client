@@ -719,14 +719,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					<h3 className="c-h3">
-						<Trans i18nKey="bundle/views/bundle-detail___over-deze-bundel">
-							Over deze bundel
-						</Trans>
-					</h3>
+					<h3 className="c-h3">{t('bundle/views/bundle-detail___over-deze-bundel')}</h3>
 					<Grid>
 						<Column size="3-3">
-							<Spacer margin="top">
+							<Spacer margin="top-large">
 								<p className="u-text-bold">
 									<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
 										Onderwijsniveau
@@ -739,6 +735,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<span className="u-d-block">-</span>
 									)}
 								</p>
+							</Spacer>
+							<Spacer margin="top-large">
 								<p className="u-text-bold">
 									<Trans i18nKey="collection/views/collection-detail___vakken">
 										Vakken
@@ -754,9 +752,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							</Spacer>
 						</Column>
 						<Column size="3-3">
-							<Spacer margin="top">
+							<Spacer margin="top-large">
 								<p className="u-text-bold">{t('Aangemaakt op')}</p>
 								<p className="c-body-1">{formatDate(created_at)}</p>
+							</Spacer>
+							<Spacer margin="top-large">
 								<p className="u-text-bold">
 									{t('collection/views/collection-detail___laatst-aangepast')}
 								</p>
