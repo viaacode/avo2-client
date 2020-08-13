@@ -43,3 +43,10 @@ export interface QualityLabel {
 	description: string;
 	value: string;
 }
+
+export interface Relation {
+	object_meta: {
+		id: string;
+		title: string;
+	};
+}
