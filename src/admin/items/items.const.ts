@@ -9,6 +9,7 @@ import { ItemsOverviewTableCols } from './items.types';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
+	PUBLISH_ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.publishItems}`,
 	ITEM_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}/:id`,
 };
 
@@ -135,5 +136,17 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	// { id: 'lom_keywords', label: i18n.t('admin/items/items___terfwoorden') },
 	// { id: 'lom_languages', label: i18n.t('admin/items/items___talen') },
 	// { id: 'lom_typicalagerange', label: i18n.t('admin/items/items___leeftijdsgroep') },
+	{ id: 'actions', label: '' },
+];
+
+export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
+	{ id: 'title', label: i18n.t('admin/items/items___titel') },
+	{ id: 'pid', label: i18n.t('admin/items/items___pid'), sortable: true },
+	{
+		id: 'updated_at',
+		label: i18n.t('Aangepast op (MAM)'),
+		sortable: true,
+		filterType: 'DateRangeDropdown',
+	},
 	{ id: 'actions', label: '' },
 ];

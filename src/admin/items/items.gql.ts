@@ -55,6 +55,32 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 	}
 `;
 
+export const GET_UNPUBLISHED_ITEMS_WITH_FILTERS = gql`
+	query getUnpublishedItemsWithFilters(
+		$where: shared_items_bool_exp!
+		$orderBy: [shared_items_order_by!]
+		$offset: Int!
+		$limit: Int!
+	) {
+		shared_items(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+			id
+			pid
+			updated_at
+			title: json(path: "Dynamic.dc_title")
+			item_meta {
+				id
+				external_id
+				uid
+			}
+		}
+		shared_items_aggregate {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
 export const GET_ITEM_BY_UUID = gql`
 	query getItemByUuid($uuid: uuid!) {
 		app_item_meta(where: { uid: { _eq: $uuid } }) {

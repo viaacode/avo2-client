@@ -9,7 +9,7 @@ import { renderAdminContentPageLabelRoutes } from './content-page-labels/content
 import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';
 import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour.routes';
-import { renderItemRoutes } from './items/items.routes';
+import { renderItemRoutes, renderPublishItemRoutes } from './items/items.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
 import { renderAdminPermissionGroupRoutes } from './permission-groups/permission-group.routes';
 import { renderAdminTranslationsRoutes } from './translations/translations.routes';
@@ -52,6 +52,7 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 			)}
 			{renderWithPermissions(renderAdminContentPageLabelRoutes, ['EDIT_CONTENT_PAGE_LABELS'])}
 			{renderWithPermissions(renderItemRoutes, ['VIEW_ITEMS_OVERVIEW'])}
+			{renderWithPermissions(renderPublishItemRoutes, ['VIEW_PUBLISH_ITEMS_OVERVIEW'])}
 			{renderWithPermissions(
 				renderCollectionOrBundleRoutes,
 				['VIEW_COLLECTIONS_OVERVIEW', 'VIEW_BUNDLES_OVERVIEW'],

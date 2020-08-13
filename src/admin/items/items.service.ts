@@ -16,12 +16,17 @@ import {
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEMS_WITH_FILTERS,
+	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
 	GET_PUBLIC_ITEMS,
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
 } from './items.gql';
-import { ItemsOverviewTableCols } from './items.types';
+import {
+	ItemsOverviewTableCols,
+	UnpublishedItem,
+	UnpublishedItemsOverviewTableCols,
+} from './items.types';
 
 export class ItemsService {
 	public static async fetchItemsWithFilters(
@@ -62,6 +67,44 @@ export class ItemsService {
 			throw new CustomError('Failed to get items from the database', err, {
 				variables,
 				query: 'GET_ITEMS_WITH_FILTERS',
+			});
+		}
+	}
+
+	public static async fetchUnpublishedItemsWithFilters(
+		page: number,
+		sortColumn: UnpublishedItemsOverviewTableCols,
+		sortOrder: Avo.Search.OrderDirection,
+		where: any
+	): Promise<[UnpublishedItem[], number]> {
+		let variables: any;
+		try {
+			variables = {
+				where,
+				offset: ITEMS_PER_PAGE * page,
+				limit: ITEMS_PER_PAGE,
+				orderBy: [{ [sortColumn]: sortOrder }],
+			};
+
+			const response = await dataService.query({
+				variables,
+				query: GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+			});
+
+			const items = get(response, 'data.shared_items');
+			const itemCount = get(response, 'data.shared_items_aggregate.aggregate.count');
+
+			if (!items) {
+				throw new CustomError('Response does not contain any items', null, {
+					response,
+				});
+			}
+
+			return [items, itemCount];
+		} catch (err) {
+			throw new CustomError('Failed to get shared items from the database', err, {
+				variables,
+				query: 'GET_UNPUBLISHED_ITEMS_WITH_FILTERS',
 			});
 		}
 	}

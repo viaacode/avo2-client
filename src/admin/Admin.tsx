@@ -46,6 +46,12 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}
+
+		// Remove zendesk when loading beheer after visiting the client side of the app
+		const zendeskWidget = document.querySelector('iframe#launcher');
+		if (zendeskWidget) {
+			zendeskWidget.remove();
+		}
 	}, [user, setLoadingInfo, t]);
 
 	useEffect(() => {
