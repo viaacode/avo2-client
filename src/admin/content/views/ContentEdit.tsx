@@ -146,10 +146,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	}, [id, user, t]);
 
 	const onPasteContentBlock = useCallback(
-		(e: any) => {
+		(evt: ClipboardEvent) => {
 			try {
-				if (e.clipboardData && e.clipboardData.getData) {
-					const pastedText = e.clipboardData.getData('text/plain');
+				if (evt.clipboardData && evt.clipboardData.getData) {
+					const pastedText = evt.clipboardData.getData('text/plain');
 
 					if (pastedText.startsWith('{"block":')) {
 						const newConfig = JSON.parse(pastedText).block;
