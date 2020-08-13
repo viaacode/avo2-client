@@ -37,7 +37,7 @@ pipeline {
     stages {
         stage('preamble') {
             steps {
-                
+
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
@@ -55,40 +55,47 @@ pipeline {
 
         stage('Docker build') {
             steps {
-                script {                   
+                script {
                         sh'''#!/bin/bash
-                        echo starting a build 
+                        echo starting a build
                         make -f ./openshift/Makefile build
-                        '''        
+                        '''
                 } // script
             } // steps
         } // stage
         stage('Run UNIT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
-                        echo "Running make unit_test ###DISABLED for build test####"                        
+                        echo "Running make unit_test ###DISABLED for build test####"
                         #make -f ./openshift/Makefile unit_test
                         '''
                     }// end script
                 }
-            }//end stage   
+            }//end stage
         stage('Push Image') {
-            steps {
-                script {
-                    sh'''#!/bin/bash
-                    echo "pushing image version $VERSION"
-                    make -f ./openshift/Makefile push 
-                    '''
-		        }// end script
-            }
+           waitUntil {
+				try {
+					steps {
+						script {
+							sh'''#!/bin/bash
+							echo "pushing image version $VERSION"
+							make -f ./openshift/Makefile push
+							'''
+						}// end script
+					}
+				} catch (error) {
+					input "Retry pushing image to registry?"
+					false
+				}
+           }
         }//end stage
- 
+
         stage('Tag DEV Image AND rollout DEV') {
                 steps {
                     script {
                         sh'''#!/bin/bash
-                        echo "tagging dev"                   
-                        make -f ./openshift/Makefile tag_dev 
+                        echo "tagging dev"
+                        make -f ./openshift/Makefile tag_dev
                         '''
                     }// end script
                     script {
@@ -97,9 +104,9 @@ pipeline {
                         echo "Waiting deploymentconfig to rollout"
                         make -f ./openshift/Makefile rollout_dev
                         '''
-                    }// end script               
+                    }// end script
                 }
-            }//end stage	
+            }//end stage
 
         stage('Tag QAS Image AND rollout QAS') {
                 steps {
@@ -117,7 +124,7 @@ pipeline {
         always {
             // following disabled , we dont record test data for now
             //junit 'ci-results/*.xml'
-            
+
             //archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
             //archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
             //archiveArtifacts artifacts: 'ci-results/*.xml', fingerprint: true
