@@ -247,12 +247,13 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		exact: false,
 	}),
 	...getMediaNavItems(userPermissions),
-	...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
-		label: i18n.t('Items publiceren'),
-		location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
-		key: 'publish-items',
-		exact: false,
-	}),
+	// TODO re-enable after task https://meemoo.atlassian.net/browse/AVO-358
+	// ...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
+	// 	label: i18n.t('Items publiceren'),
+	// 	location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
+	// 	key: 'publish-items',
+	// 	exact: false,
+	// }),
 	...hasPermissions(['EDIT_INTERACTIVE_TOURS'], 'OR', userPermissions, {
 		label: i18n.t('admin/admin___interactive-tours'),
 		location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,
