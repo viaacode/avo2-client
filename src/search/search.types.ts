@@ -46,6 +46,7 @@ export interface SearchFilterControlsProps {
 		propertyName: Avo.Search.FilterProp
 	) => void;
 	multiOptions: SearchFilterMultiOptions;
+	onSearch?: (aggId: string) => void;
 }
 
 interface SearchResultItemHandlers {

@@ -54,6 +54,13 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 		}
 	}, [userPermissions, navigationItems, setLoadingInfo]);
 
+	useEffect(() => {
+		const widget = document.querySelector('iframe#launcher');
+		if (widget) {
+			widget.remove();
+		}
+	}, []);
+
 	const renderAdminPage = () => {
 		if (!navigationItems || !userPermissions) {
 			return null;

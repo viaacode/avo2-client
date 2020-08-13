@@ -13,7 +13,6 @@ import {
 	IconName,
 	Spacer,
 	Spinner,
-	TagInfo,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -22,12 +21,12 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
-import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ValueOf } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
+import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
 import { MenuEditForm } from '../components';
 import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const';
 import { MenuService } from '../menu.service';
@@ -51,7 +50,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
-	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
+	const [allUserGroups] = useUserGroupOptions();
 
 	// Fetch menu items depending on menu parent param
 	// This is necessary for populating the menu parent options for our form
@@ -105,23 +104,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				});
 		}
 	}, [menuItemId, menuParentId]);
-
-	// Get labels of the userGroups, so we can show a readable error message
-	useEffect(() => {
-		fetchAllUserGroups()
-			.then(userGroups => {
-				setAllUserGroups(userGroups);
-			})
-			.catch((err: any) => {
-				console.error('Failed to get user groups', err);
-				ToastService.danger(
-					t(
-						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
-					),
-					false
-				);
-			});
-	}, [setAllUserGroups, t]);
 
 	const checkMenuItemContentPagePermissionsMismatch = useCallback(
 		(response: ApolloQueryResult<any>) => {

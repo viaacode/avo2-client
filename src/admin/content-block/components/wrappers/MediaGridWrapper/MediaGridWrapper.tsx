@@ -64,6 +64,10 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [resolvedResults, setResolvedResults] = useState<ResolvedItemOrCollection[] | null>(null);
 
+	// cache search results
+	const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null);
+	const [lastSearchQueryLimit, setLastSearchQueryLimit] = useState<number | null>(null);
+
 	const resolveMediaResults = useCallback(async () => {
 		try {
 			if (results && results.length) {
@@ -79,13 +83,40 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 			if (user) {
 				// If we are logged in and get no results, but we do get elements, then the block is loaded in preview mode,
 				// and we should resolve the results ourselves using a separate route on the server
-				setResolvedResults(
-					await ContentPageService.resolveMediaItems(
-						get(searchQuery, 'value') as string | undefined,
-						parseIntOrDefault<undefined>(searchQueryLimit, undefined),
+				const searchQueryLimitNumber =
+					parseIntOrDefault<undefined>(searchQueryLimit, undefined) || 8;
+				const searchQueryValue = get(searchQuery, 'value') as string | undefined;
+
+				if (
+					searchQueryValue !== lastSearchQuery ||
+					searchQueryLimitNumber > (lastSearchQueryLimit || 0)
+				) {
+					// Only fetch items from the server if the search query changed or if the number of items increased
+					setLastSearchQuery(searchQueryValue || null);
+					setLastSearchQueryLimit(searchQueryLimitNumber);
+					const searchResults = await ContentPageService.resolveMediaItems(
+						searchQueryValue,
+						searchQueryLimitNumber,
 						elements.filter(element => !isEmpty(element) && element.mediaItem)
-					)
-				);
+					);
+					if (
+						resolvedResults &&
+						resolvedResults.length &&
+						searchResults.length !== (searchQueryLimitNumber || 8)
+					) {
+						// older request that we should ignore
+						return;
+					}
+					setResolvedResults(searchResults);
+				} else if (
+					searchQueryValue === lastSearchQuery ||
+					searchQueryLimitNumber < (lastSearchQueryLimit || 0)
+				) {
+					// If the next query requests less items, we can resolve it without going to the server
+					// by just trimming the items in the cache
+					setResolvedResults((resolvedResults || []).slice(0, searchQueryLimitNumber));
+					setLastSearchQueryLimit(searchQueryLimitNumber);
+				}
 			}
 		} catch (err) {
 			setLoadingInfo({

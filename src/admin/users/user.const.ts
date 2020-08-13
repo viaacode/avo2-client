@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxOption } from '../../shared/components';
+import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
@@ -27,7 +27,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: userGroupOptions,
-		},
+		} as CheckboxDropdownModalProps,
 	},
 	{ id: 'oormerk', label: i18n.t('Oormerk'), sortable: true },
 	{

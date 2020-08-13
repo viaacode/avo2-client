@@ -120,6 +120,13 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					options: GET_FILL_OPTIONS(),
 				},
 			},
+			align: {
+				label: i18n.t('Alignatie'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: GET_ALIGN_OPTIONS(),
+				},
+			},
 			textAlign: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___text-alignatie'),
 				editorType: ContentBlockEditor.Select,

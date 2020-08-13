@@ -1,5 +1,5 @@
 import H from 'history';
-import { get, orderBy } from 'lodash-es';
+import { get, isNil, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,16 +11,19 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	Icon,
 	Spacer,
 	Table,
 	TagInfo,
 	TagsInput,
+	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
+import { AssignmentService } from '../../assignment/assignment.service';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -33,12 +36,21 @@ import { QualityLabel } from '../collection.types';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
 
-type BundleColumnId = 'title' | 'author' | 'organization' | 'actions';
+type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
+type AssignmentColumnId = 'title' | 'author' | 'is_archived' | 'actions';
 
 const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
 	title: 'title',
 	author: 'profile.user.last_name',
+	is_public: 'is_public',
 	organization: 'profile.profile_organizations[0].organization_id',
+	actions: '',
+};
+
+const columnIdToAssignmentPath: { [columnId in AssignmentColumnId]: string } = {
+	title: 'title',
+	author: 'profile.user.last_name',
+	is_archived: 'is_archived',
 	actions: '',
 };
 
@@ -54,11 +66,20 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 
 	// State
 	const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null);
+
 	const [bundlesContainingCollection, setBundlesContainingCollection] = useState<
 		Avo.Collection.Collection[] | undefined
 	>(undefined);
 	const [bundleSortColumn, setBundleSortColumn] = useState<string>('title');
 	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+
+	const [assignmentsContainingCollection, setAssignmentsContainingCollection] = useState<
+		Partial<Avo.Assignment.Assignment>[] | undefined
+	>(undefined);
+	const [assignmentSortColumn, setAssignmentSortColumn] = useState<string>('title');
+	const [assignmentSortOrder, setAssignmentSortOrder] = useState<Avo.Search.OrderDirection>(
+		'asc'
+	);
 
 	// Computed
 	const isCollection: boolean = collection.type_id === 3;
@@ -68,8 +89,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 			if (!collection) {
 				return;
 			}
-			const colls = await CollectionService.fetchCollectionsByFragmentId(collection.id);
-			setBundlesContainingCollection(colls);
+			setBundlesContainingCollection(
+				await CollectionService.fetchCollectionsByFragmentId(collection.id)
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get bundles containing collection', err, {
@@ -80,6 +102,29 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				t(
 					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-bundles-die-deze-collectie-bevatten-is-mislukt'
 				)
+			);
+		}
+	}, [setBundlesContainingCollection, t, collection]);
+
+	const fetchAssignmentsByCollectionUuid = useCallback(async () => {
+		try {
+			if (!collection) {
+				return;
+			}
+			setAssignmentsContainingCollection(
+				await AssignmentService.fetchAssignmentByContentIdAndType(
+					collection.id,
+					'COLLECTIE'
+				)
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get assignments containing collection', err, {
+					collection,
+				})
+			);
+			ToastService.danger(
+				t('Het ophalen van de opdrachten die deze collectie bevatten is mislukt')
 			);
 		}
 	}, [setBundlesContainingCollection, t, collection]);
@@ -105,6 +150,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 
 	useEffect(() => {
 		fetchBundlesByCollectionUuid();
+		fetchAssignmentsByCollectionUuid();
 		fetchQualityLabels();
 	}, [fetchBundlesByCollectionUuid, fetchQualityLabels]);
 
@@ -136,6 +182,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		redirectToClientPage(link, history);
 	};
 
+	const navigateToAssignmentDetail = (id: string) => {
+		const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id });
+		redirectToClientPage(link, history);
+	};
+
 	const handleBundleColumnClick = (columnId: BundleColumnId) => {
 		const sortOrder = bundleSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 		setBundleSortColumn(columnId);
@@ -144,6 +195,19 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 			orderBy(
 				bundlesContainingCollection,
 				[coll => get(coll, columnIdToBundlePath[columnId])],
+				[sortOrder]
+			)
+		);
+	};
+
+	const handleAssignmentColumnClick = (columnId: AssignmentColumnId) => {
+		const sortOrder = assignmentSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		setAssignmentSortColumn(columnId);
+		setAssignmentSortOrder(sortOrder);
+		setAssignmentsContainingCollection(
+			orderBy(
+				assignmentsContainingCollection,
+				[coll => get(coll, columnIdToAssignmentPath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -162,7 +226,22 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
-				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
+				return get(rowData, 'profile.organisation.name', '-');
+
+			case 'is_public':
+				return (
+					<div
+						title={
+							rowData.is_public
+								? t('collection/components/collection-or-bundle-overview___publiek')
+								: t(
+										'collection/components/collection-or-bundle-overview___niet-publiek'
+								  )
+						}
+					>
+						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
+					</div>
+				);
 
 			case 'actions':
 				return (
@@ -178,6 +257,43 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						onClick={evt => {
 							evt.stopPropagation();
 							navigateToBundleDetail(rowData.id as string);
+						}}
+					/>
+				);
+
+			default:
+				return rowData[columnId];
+		}
+	};
+
+	const renderAssignmentCell = (
+		rowData: Partial<Avo.Assignment.Assignment>,
+		columnId: AssignmentColumnId
+	): ReactNode => {
+		switch (columnId) {
+			case 'author':
+				const user = get(rowData, 'profile.user');
+				if (!user) {
+					return '-';
+				}
+				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+
+			case 'is_archived':
+				return rowData[columnId] ? t('Gearchiveerd') : t('Actief');
+
+			case 'actions':
+				return (
+					<Button
+						type="borderless"
+						icon="eye"
+						title={t('Ga naar de opdracht detail pagina')}
+						ariaLabel={t('Ga naar de opdracht detail pagina')}
+						onClick={evt => {
+							evt.stopPropagation();
+							if (isNil(rowData.id)) {
+								return;
+							}
+							navigateToAssignmentDetail(String(rowData.id) as string);
 						}}
 					/>
 				);
@@ -227,6 +343,23 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											}
 										/>
 									</FormGroup>
+									{isCollection && (
+										<FormGroup label={t('Briefing(s)')}>
+											<TextArea
+												height="auto"
+												value={
+													(collection as any).briefing_id // TODO remove cast after update to typings v2.22
+												}
+												onChange={(newBriefing: string) =>
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'briefing_id' as any, // TODO remove cast after update to typings v2.22
+														collectionPropValue: newBriefing,
+													})
+												}
+											/>
+										</FormGroup>
+									)}
 									{PermissionService.hasPerm(
 										user,
 										isCollection
@@ -321,12 +454,14 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													id: 'organization',
 													sortable: false,
 												},
+												{
+													label: t('admin/items/items___publiek'),
+													id: 'is_public',
+													sortable: true,
+												},
 												{ label: '', id: 'actions', sortable: false },
 											]}
 											data={bundlesContainingCollection}
-											emptyStateMessage={t(
-												'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
-											)}
 											onColumnClick={handleBundleColumnClick as any}
 											onRowClick={coll => navigateToBundleDetail(coll.id)}
 											renderCell={renderBundleCell as any}
@@ -339,6 +474,54 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 										t(
 											'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
 										)
+									)}
+								</>
+							)}
+
+							{/* Show assignments that contain this collection */}
+							{isCollection && (
+								<>
+									<Spacer margin={['top-extra-large', 'bottom-small']}>
+										<BlockHeading type="h2">
+											{t('Opdrachten die deze collectie bevatten')}
+										</BlockHeading>
+									</Spacer>
+									{!!assignmentsContainingCollection &&
+									!!assignmentsContainingCollection.length ? (
+										<Table
+											columns={[
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-admin___titel'
+													),
+													id: 'title',
+													sortable: true,
+												},
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-admin___auteur'
+													),
+													id: 'author',
+													sortable: true,
+												},
+												{
+													label: t('Status'),
+													id: 'is_archived',
+													sortable: true,
+												},
+												{ label: '', id: 'actions', sortable: false },
+											]}
+											data={assignmentsContainingCollection}
+											onColumnClick={handleAssignmentColumnClick as any}
+											onRowClick={coll => navigateToAssignmentDetail(coll.id)}
+											renderCell={renderAssignmentCell as any}
+											sortColumn={assignmentSortColumn}
+											sortOrder={assignmentSortOrder}
+											variant="bordered"
+											rowKey="id"
+										/>
+									) : (
+										t('Deze collectie is in geen enkele opdracht opgenomen')
 									)}
 								</>
 							)}

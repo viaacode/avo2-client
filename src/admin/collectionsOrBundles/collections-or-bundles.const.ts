@@ -23,7 +23,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 	// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
 	// author_user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	profile: { profile_user_group: { groups: { label: nullsLast(order) } } },
+	// 	profile: { profile_user_groups: { groups: { label: nullsLast(order) } } },
 	// }),
 	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
 		updated_by: { usersByuserId: { last_name: order } },

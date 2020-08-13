@@ -26,6 +26,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -101,11 +102,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				}
 
 				// Fetch the content if the assignment has content
-				const tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
-					tempAssignment
-				);
+				let tempAssignmentContent: AssignmentContent | null = null;
+				try {
+					tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
+						tempAssignment
+					);
 
-				setAssignmentContent(tempAssignmentContent);
+					setAssignmentContent(tempAssignmentContent);
+				} catch (err) {
+					if (err.message !== 'NOT_FOUND') {
+						console.error(
+							new CustomError('Failed to fetch assignment content', err, {
+								assignment: tempAssignment,
+							})
+						);
+						ToastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
+					}
+
+					setAssignmentContent(null);
+				}
+
 				setBothAssignments({
 					...tempAssignment,
 					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),

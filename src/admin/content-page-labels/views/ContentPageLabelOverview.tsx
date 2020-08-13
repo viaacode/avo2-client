@@ -9,6 +9,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
+	CheckboxDropdownModalProps,
 	CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -128,7 +129,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: contentTypeOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{
 			id: 'created_at',
