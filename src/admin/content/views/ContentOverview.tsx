@@ -23,6 +23,7 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
+	CheckboxDropdownModalProps,
 	CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -202,7 +203,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: contentTypeOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
 		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol'), sortable: true },

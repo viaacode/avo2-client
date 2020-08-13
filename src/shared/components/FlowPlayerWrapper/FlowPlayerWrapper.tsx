@@ -23,6 +23,8 @@ type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
 	src?: string;
 	poster?: string;
+	annotationTitle?: string;
+	annotationText?: string;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
 	seekTime?: number;
@@ -157,6 +159,14 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 								)}`}
 							</div>
 						)}
+				</div>
+			)}
+			{(!!props.annotationTitle || !!props.annotationText) && (
+				<div className="a-block-image__annotation">
+					{props.annotationTitle && <h3>&#169; {props.annotationTitle}</h3>}
+					{props.annotationText && (
+						<p className="a-flowplayer__text">{props.annotationText}</p>
+					)}
 				</div>
 			)}
 		</div>

@@ -63,7 +63,21 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 					]
 				)
 			);
-			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
+			andFilters.push(...getBooleanFilters(filters, ['is_deleted']));
+			if (filters.is_published) {
+				const orFilters = [];
+				if (filters.is_published.includes('published')) {
+					orFilters.push({ is_published: { _eq: true } });
+				}
+				if (filters.is_published.includes('unpublished')) {
+					orFilters.push({ is_published: { _eq: false } });
+				}
+				// TODO add unpublished-merge, unpublished-pancarte https://meemoo.atlassian.net/browse/AVO-274
+
+				if (orFilters.length) {
+					andFilters.push({ _or: orFilters });
+				}
+			}
 			andFilters.push(
 				...getMultiOptionFilters(filters, ['series', 'organisation'], ['series', 'org_id'])
 			);
@@ -212,10 +226,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 
 			case 'views':
 				return get(rowData, 'view_counts_aggregate.aggregate.sum.count', '-');
-
-			case 'is_published':
 			case 'is_deleted':
 				return rowData[columnId] ? 'Ja' : 'Nee';
+
+			case 'is_published':
+				return rowData[columnId] ? 'Gepubliceerd' : 'Gedepubliceerd';
 
 			case 'actions':
 				return (
