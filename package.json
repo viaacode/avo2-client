@@ -44,6 +44,7 @@
 		"moment": "^2.24.0",
 		"node-fetch": "^2.6.0",
 		"node-sass": "^4.13.1",
+		"oaf-react-router": "^2.1.1",
 		"query-string": "^6.8.3",
 		"react": "^16.8.6",
 		"react-apollo": "^2.5.8",
@@ -120,7 +121,8 @@
 		"avo2-proxy-server": "0.21.0"
 	},
 	"resolutions": {
-		"immutable": "3.8.2"
+		"immutable": "3.8.2",
+		"oaf-routing": "4.0.1"
 	},
 	"browserslist": {
 		"production": [

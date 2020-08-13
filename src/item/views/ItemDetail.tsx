@@ -223,7 +223,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
 			history
 		);
-		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
