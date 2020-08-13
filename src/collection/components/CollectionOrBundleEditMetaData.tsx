@@ -207,7 +207,12 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											/>
 											<label>
 												{getValidationFeedbackForShortDescription(
-													collection.description_long,
+													sanitizeHtml(
+														descriptionLongEditorState
+															? descriptionLongEditorState.toHTML()
+															: collection.description_long || '',
+														'link'
+													),
 													MAX_LONG_DESCRIPTION_LENGTH
 												)}
 											</label>

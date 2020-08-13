@@ -48,6 +48,10 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		return ''; // TODO wait for https://meemoo.atlassian.net/browse/AVO-1107
 	};
 
+	const stripMarkdownLinks = (description: string) => {
+		return description.replace(/\[([^\]]+)]\([^)]+\)/gi, '$1');
+	};
+
 	return (
 		<SearchResult
 			key={`search-result-${result.id}`}
@@ -56,7 +60,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			tags={getTags(result)}
 			viewCount={result.views_count || 0}
 			bookmarkCount={result.bookmarks_count || 0}
-			description={result.dcterms_abstract || ''}
+			description={stripMarkdownLinks(result.dcterms_abstract || '')}
 			isBookmarked={isBookmarked}
 			onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
 			onTagClicked={handleTagClicked}

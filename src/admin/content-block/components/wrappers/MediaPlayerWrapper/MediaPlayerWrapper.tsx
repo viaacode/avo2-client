@@ -92,12 +92,15 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			>
 				<FlowPlayerWrapper
 					item={
-						{
-							...(mediaItem || {}),
-							title: title || get(mediaItem, 'title') || '',
-							issued: issued || get(mediaItem, 'issued') || '',
-							organisation: organisation || get(mediaItem, 'organisation') || '',
-						} as any
+						mediaItem
+							? ({
+									...(mediaItem || {}),
+									title: title || get(mediaItem, 'title') || '',
+									issued: issued || get(mediaItem, 'issued') || '',
+									organisation:
+										organisation || get(mediaItem, 'organisation') || '',
+							  } as any)
+							: undefined
 					}
 					src={src}
 					poster={videoStill}

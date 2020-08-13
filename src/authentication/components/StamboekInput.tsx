@@ -15,6 +15,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
+import Html from '../../shared/components/Html/Html';
 import { ToastType } from '../../shared/services';
 import { verifyStamboekNumber } from '../authentication.service';
 import { redirectToClientPage } from '../helpers/redirects';
@@ -88,21 +89,13 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 		},
 		ALREADY_IN_USE: {
 			message: (
-				<span>
-					<Trans i18nKey="authentication/components/stamboek-input___dit-stamboek-nummer-is-reeds-in-gebruik">
-						Dit stamboek nummer is reeds in gebruik,
-					</Trans>{' '}
-					<Button
-						label={t(
-							'authentication/components/stamboek-input___contacteer-de-helpdesk'
-						)}
-						onClick={() =>
-							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST.route, history)
-						}
-						type="inline-link"
-					/>
-					.
-				</span>
+				<Html
+					content={t(
+						'authentication/components/stamboek-input___dit-stamboek-nummer-is-reeds-in-gebruik'
+					)}
+					type="span"
+					sanitizePreset="link"
+				/>
 			),
 			status: ToastType.DANGER,
 		},
