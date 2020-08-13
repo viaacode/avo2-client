@@ -76,7 +76,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			...getMultiOptionFilters(
 				filters,
 				['user_group', 'organisation'],
-				['profile_user_groups.groups.id', 'company_id']
+				['profile_user_groups[0].groups[0].id', 'company_id']
 			)
 		);
 		andFilters.push(
