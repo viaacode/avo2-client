@@ -24,7 +24,7 @@ const mockUser: Avo.User.User = {
 		bio: 'bert de shd developer',
 		updated_at: '2019-10-23T16:22:47.543339+00:00',
 		user_id: '517aec71-cf0e-4e08-99d1-8e7e042923f7',
-		// profile_user_group: null,
+		// profile_user_groups: null,
 		educationLevels: ['Lager onderwijs', 'Hoger onderwijs'],
 		subjects: ['lichamelijke opvoeding', 'sociale vaardigheden'],
 		organizations: [{ organizationName: 'test school', unitAddress: 'test straat' }],

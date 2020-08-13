@@ -148,7 +148,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				)
 			);
 		}
-	}, [setTour, location.pathname, tourDisplayDates, updateTourDisplayDate, user]);
+	}, [setTour, location.pathname, tourDisplayDates, user]);
 
 	useEffect(() => {
 		checkIfTourExistsForCurrentPage();
@@ -223,7 +223,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 						skip: t('shared/components/interactive-tour/interactive-tour___overslaan'),
 					}}
 					spotlightPadding={8}
-					scrollOffset={200}
+					scrollOffset={220}
 					continuous
 					run={!tour.seen}
 					showSkipButton

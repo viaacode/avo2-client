@@ -22,8 +22,7 @@ import {
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { useUserGroups } from '../../user-groups/hooks';
-import { UserGroup } from '../../user-groups/user-group.types';
+import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
 import { GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentPageInfo } from '../content.types';
@@ -39,10 +38,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	const [t] = useTranslation();
 
 	const [contentTypes] = useContentTypes();
-	const [allUserGroups] = useUserGroups();
-	const allUserGroupOptions = allUserGroups.map(
-		(userGroup: UserGroup): TagInfo => ({ label: userGroup.label, value: userGroup.id })
-	);
+	const [allUserGroupOptions] = useUserGroupOptions();
 
 	// Methods
 	const getUserGroups = (contentPageInfo: ContentPageInfo): TagOption[] => {

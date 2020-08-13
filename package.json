@@ -25,7 +25,7 @@
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
-		"@viaa/avo2-components": "^1.52.0",
+		"@viaa/avo2-components": "^1.53.0",
 		"@viaa/avo2-types": "^2.21.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
@@ -98,7 +98,6 @@
 		"dotenv-cli": "^3.1.0",
 		"enzyme": "^3.10.0",
 		"enzyme-adapter-react-16": "^1.14.0",
-		"fetch-poeditor": "^0.5.2",
 		"husky": "^2.3.0",
 		"jest-expect-message": "^1.0.2",
 		"license-checker": "^25.0.1",
