@@ -123,6 +123,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				throw new CustomError('The item has not been loaded yet', null, { item });
 			}
 			await ItemsService.setItemPublishedState(item.uid, !item.is_published);
+			await ItemsService.deleteItemFromCollectionsAndBookmarks(item.uid, item.external_id);
 			ToastService.success(
 				item.is_published
 					? t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
