@@ -193,7 +193,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				),
 			},
 		});
-	}, [user]);
+	}, [isExceptionAccount, user]);
 
 	useEffect(() => {
 		if (!permissions) {
@@ -301,7 +301,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				ToastService.danger(t('Het ophalen van de onderwijsinstellingen is mislukt'));
 			}
 		})();
-	}, [organizationsCache, selectedOrganizations, selectedCity]);
+	}, [organizationsCache, selectedOrganizations, selectedCity, t]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<UpdateProfileValues>) => {
 		if (!permissions) {

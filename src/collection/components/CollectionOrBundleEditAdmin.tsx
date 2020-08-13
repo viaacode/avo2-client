@@ -127,7 +127,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				t('Het ophalen van de opdrachten die deze collectie bevatten is mislukt')
 			);
 		}
-	}, [setBundlesContainingCollection, t, collection]);
+	}, [setAssignmentsContainingCollection, t, collection]);
 
 	const fetchQualityLabels = useCallback(async () => {
 		try {
@@ -152,7 +152,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		fetchBundlesByCollectionUuid();
 		fetchAssignmentsByCollectionUuid();
 		fetchQualityLabels();
-	}, [fetchBundlesByCollectionUuid, fetchQualityLabels]);
+	}, [fetchBundlesByCollectionUuid, fetchAssignmentsByCollectionUuid, fetchQualityLabels]);
 
 	const updateCollectionMultiProperty = (
 		selectedTagOptions: TagInfo[],

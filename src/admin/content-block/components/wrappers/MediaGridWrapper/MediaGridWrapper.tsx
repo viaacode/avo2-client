@@ -99,22 +99,25 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 						searchQueryLimitNumber,
 						elements.filter(element => !isEmpty(element) && element.mediaItem)
 					);
-					if (
-						resolvedResults &&
-						resolvedResults.length &&
-						searchResults.length !== (searchQueryLimitNumber || 8)
-					) {
-						// older request that we should ignore
-						return;
-					}
-					setResolvedResults(searchResults);
+
+					setResolvedResults(r => {
+						if (
+							r &&
+							r.length &&
+							searchResults.length !== (searchQueryLimitNumber || 8)
+						) {
+							// older request that we should ignore
+							return r;
+						}
+						return searchResults;
+					});
 				} else if (
 					searchQueryValue === lastSearchQuery ||
 					searchQueryLimitNumber < (lastSearchQueryLimit || 0)
 				) {
 					// If the next query requests less items, we can resolve it without going to the server
 					// by just trimming the items in the cache
-					setResolvedResults((resolvedResults || []).slice(0, searchQueryLimitNumber));
+					setResolvedResults(r => (r || []).slice(0, searchQueryLimitNumber));
 					setLastSearchQueryLimit(searchQueryLimitNumber);
 				}
 			}
@@ -133,6 +136,8 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 		user,
 		searchQuery,
 		searchQueryLimit,
+		lastSearchQuery,
+		lastSearchQueryLimit,
 		setResolvedResults,
 		setLoadingInfo,
 		t,

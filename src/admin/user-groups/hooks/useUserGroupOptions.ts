@@ -30,7 +30,7 @@ export const useUserGroupOptions = (): UseUserGroupsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, []);
+	}, [setIsLoading, setUserGroupOptions, t]);
 
 	return [userGroupOptions, isLoading];
 };
