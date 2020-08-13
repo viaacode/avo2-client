@@ -53,6 +53,14 @@ export const GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE = gql`
 		) {
 			id
 			title
+			profile {
+				user: usersByuserId {
+					last_name
+					id
+					first_name
+				}
+			}
+			is_archived
 		}
 	}
 `;
