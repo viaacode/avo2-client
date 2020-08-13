@@ -137,6 +137,10 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		return true;
 	}
 
+	if (!!profile && profile.is_exception) {
+		return true;
+	}
+
 	return (
 		!!profile &&
 		!!profile.organizations &&
