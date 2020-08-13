@@ -451,7 +451,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		const updatedCollection = convertFragmentDescriptionsToHtml(({
 			...collectionState.currentCollection,
 			updated_by_profile_id: get(user, 'profile.id', null),
-		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
+		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.22.0
 
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
