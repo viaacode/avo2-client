@@ -156,7 +156,13 @@ export const GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
 
 export const GET_ITEM_BY_EXTERNAL_ID = gql`
 	query getItemByExternalId($externalId: bpchar!) {
-		app_item_meta(where: { external_id: { _eq: $externalId } }) {
+		app_item_meta(
+			where: {
+				external_id: { _eq: $externalId }
+				is_deleted: { _eq: false }
+				is_published: { _eq: true }
+			}
+		) {
 			browse_path
 			created_at
 			depublish_at
@@ -210,6 +216,20 @@ export const GET_DISTINCT_SERIES = gql`
 	query getDistinctSeries {
 		app_item_meta(distinct_on: series, where: { series: { _is_null: false } }) {
 			series
+		}
+	}
+`;
+
+export const DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS = gql`
+	mutation deleteItemFromCollectionBookmarksAndAssignments(
+		$itemExternalId: String!
+		$itemUid: uuid!
+	) {
+		delete_app_collection_fragments(where: { external_id: { _eq: $itemExternalId } }) {
+			affected_rows
+		}
+		delete_app_item_bookmarks(where: { item_id: { _eq: $itemUid } }) {
+			affected_rows
 		}
 	}
 `;

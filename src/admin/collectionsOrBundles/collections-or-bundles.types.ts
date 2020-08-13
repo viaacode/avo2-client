@@ -37,3 +37,10 @@ export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	education_levels: string[];
 	collection_labels: string[];
 }
+
+export type CollectionBulkAction =
+	| 'publish'
+	| 'depublish'
+	| 'delete'
+	| 'change_author'
+	| 'change_labels';

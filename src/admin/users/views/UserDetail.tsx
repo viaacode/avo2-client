@@ -192,7 +192,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 		const profileUserGroup: RawUserGroup[] = get(
 			storedProfile,
-			'profile_user_group.groups',
+			'profile_user_groups[0].groups',
 			[]
 		);
 

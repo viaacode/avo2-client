@@ -1,5 +1,7 @@
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
+export type PublishedStatus = 'published' | 'unpublished';
+
 export type ItemsOverviewTableCols =
 	| 'depublish_at'
 	| 'description'
@@ -34,7 +36,7 @@ export interface ItemsTableState extends FilterableTableState {
 	external_id: string;
 	uid: string;
 	is_deleted: boolean;
-	is_published: boolean;
+	is_published: PublishedStatus;
 	issued: string;
 	lom_classification: string[];
 	lom_context: string[];

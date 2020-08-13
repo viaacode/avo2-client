@@ -31,10 +31,13 @@ import {
 
 import {
 	Button,
+	ButtonType,
 	Flex,
 	Form,
 	FormGroup,
 	Pagination,
+	Select,
+	SelectOption,
 	Spacer,
 	Table,
 	TableColumn,
@@ -47,6 +50,7 @@ import {
 	CheckboxDropdownModal,
 	CheckboxOption,
 	DateRangeDropdown,
+	DeleteObjectModal,
 } from '../../../../shared/components';
 import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
@@ -90,6 +94,8 @@ interface FilterTableProps extends RouteComponentProps {
 	onRowClick?: (rowData: any) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
+	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
+	onSelectBulkAction?: (action: string, selectedRows: any[]) => void;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -106,12 +112,17 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	onRowClick,
 	rowKey = 'id',
 	variant = 'bordered',
+	bulkActions,
+	onSelectBulkAction,
 }) => {
 	const [t] = useTranslation();
 
 	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the tableState.query
 	// This avoids doing a database query on every key press
 	const [searchTerm, setSearchTerm] = useState<string>('');
+	const [selectedItems, setSelectedItems] = useState<any[]>([]);
+	const [selectedBulkAction, setSelectedBulkAction] = useState<string | null>(null);
+	const [confirmBulkActionModalOpen, setConfirmBulkActionModalOpen] = useState<boolean>(false);
 
 	// Build an object containing the filterable columns, so they can be converted to and from the query params
 	const queryParamConfig: { [queryParamId: string]: QueryParamConfig<any> } = {
@@ -167,6 +178,26 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
 			handleTableStateChanged(searchTerm, 'query');
+		}
+	};
+
+	const handleSelectBulkAction = (selectedAction: string) => {
+		const bulkActionInfo = (bulkActions || []).find(action => action.value === selectedAction);
+		if (bulkActionInfo && onSelectBulkAction) {
+			if (bulkActionInfo.confirm) {
+				setSelectedBulkAction(selectedAction);
+				setConfirmBulkActionModalOpen(true);
+			} else {
+				onSelectBulkAction(selectedAction, selectedItems);
+				setSelectedBulkAction(null);
+			}
+		}
+	};
+
+	const handleConfirmSelectBulkAction = () => {
+		if (onSelectBulkAction && selectedBulkAction) {
+			onSelectBulkAction(selectedBulkAction, selectedItems);
+			setSelectedBulkAction(null);
 		}
 	};
 
@@ -265,6 +296,15 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 									return null;
 							}
 						})}
+						{!!bulkActions && !!bulkActions.length && (
+							<Select
+								options={bulkActions}
+								onChange={handleSelectBulkAction}
+								placeholder={t('Bulkactie')}
+								disabled={!selectedItems.length}
+								className="c-bulk-action-select"
+							/>
+						)}
 					</Flex>
 				</Spacer>
 			</>
@@ -291,6 +331,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						variant={variant}
 						sortColumn={tableState.sort_column}
 						sortOrder={tableState.sort_order}
+						showCheckboxes={!!bulkActions && !!bulkActions.length}
+						selectedItems={selectedItems}
+						onSelectionChanged={setSelectedItems}
 					/>
 					<Spacer margin="top-large">
 						<Pagination
@@ -300,6 +343,22 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						/>
 					</Spacer>
 				</>
+			)}
+			{!!bulkActions && !!bulkActions.length && (
+				<DeleteObjectModal
+					isOpen={confirmBulkActionModalOpen}
+					deleteObjectCallback={handleConfirmSelectBulkAction}
+					onClose={() => setConfirmBulkActionModalOpen(false)}
+					confirmLabel={get(
+						bulkActions.find(action => action.value === selectedBulkAction),
+						'label',
+						t('Bevestig')
+					)}
+					confirmButtonType={get(
+						bulkActions.find(action => action.value === selectedBulkAction),
+						'confirmButtonType'
+					)}
+				/>
 			)}
 		</div>
 	);
