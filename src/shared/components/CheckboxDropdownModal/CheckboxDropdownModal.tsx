@@ -116,7 +116,10 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		setIsOpen(true);
 	};
 
-	const closeDropdownOrModal = () => setIsOpen(false);
+	const closeDropdownOrModal = () => {
+		setIsOpen(false);
+		setSearchKeyword('');
+	};
 
 	const removeFilter = (tagId: string | number, evt: MouseEvent) => {
 		evt.stopPropagation();
