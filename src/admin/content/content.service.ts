@@ -27,9 +27,9 @@ import {
 	GET_CONTENT_PAGE_BY_PATH,
 	GET_CONTENT_PAGES,
 	GET_CONTENT_TYPES,
-	GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
 	GET_PUBLIC_CONTENT_PAGES_BY_TITLE,
 	GET_PUBLIC_PROJECT_CONTENT_PAGES,
+	GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
 	INSERT_CONTENT,
 	INSERT_CONTENT_LABEL,
 	INSERT_CONTENT_LABEL_LINKS,
@@ -89,10 +89,9 @@ export class ContentService {
 		const query = {
 			query: GET_PUBLIC_CONTENT_PAGES_BY_TITLE,
 			variables: {
-				title,
 				limit: limit || null,
 				orderBy: { title: 'asc' },
-				where: { is_public: { _eq: true } },
+				where: { title: { _ilike: `%${title}%` }, is_public: { _eq: true } },
 			},
 		};
 
