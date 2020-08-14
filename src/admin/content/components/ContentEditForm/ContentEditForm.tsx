@@ -291,7 +291,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 												initialValue={owner}
 												hideTargetSwitch
 												hideTypeDropdown
-												placeholder={t('Selecteer een auteur')}
+												placeholder={t(
+													'admin/content/components/content-edit-form/content-edit-form___selecteer-een-auteur'
+												)}
 												allowedTypes={['PROFILE']}
 												onSelect={(value: PickerItem | null) => {
 													if (!value) {

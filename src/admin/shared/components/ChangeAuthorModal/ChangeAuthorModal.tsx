@@ -38,13 +38,22 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title={t('Selecteer een auteur')} size="small" onClose={handleClose}>
+		<Modal
+			isOpen={isOpen}
+			title={t(
+				'admin/shared/components/change-author-modal/change-author-modal___selecteer-een-auteur'
+			)}
+			size="small"
+			onClose={handleClose}
+		>
 			<ModalBody>
 				<ContentPicker
 					initialValue={initialAuthor || undefined}
 					hideTargetSwitch
 					hideTypeDropdown
-					placeholder={t('Selecteer een auteur')}
+					placeholder={t(
+						'admin/shared/components/change-author-modal/change-author-modal___selecteer-een-auteur'
+					)}
 					allowedTypes={['PROFILE']}
 					onSelect={(newAuthor: PickerItem | null) => {
 						setAuthor(newAuthor || undefined);
@@ -58,12 +67,16 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t('Annuleren')}
+									label={t(
+										'admin/shared/components/change-author-modal/change-author-modal___annuleren'
+									)}
 									onClick={handleClose}
 								/>
 								<Button
 									type="primary"
-									label={t('Toepassen')}
+									label={t(
+										'admin/shared/components/change-author-modal/change-author-modal___toepassen'
+									)}
 									onClick={() => {
 										if (author) {
 											callback(author);

@@ -198,7 +198,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												MAX_LONG_DESCRIPTION_LENGTH,
 												count => {
 													return t(
-														'De beschrijving is te lang {{count}}.',
+														'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
 														{
 															count,
 														} as StringMap
@@ -239,9 +239,12 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 													),
 													MAX_LONG_DESCRIPTION_LENGTH,
 													count =>
-														t('De beschrijving is te lang {{count}}.', {
-															count,
-														} as StringMap)
+														t(
+															'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
+															{
+																count,
+															} as StringMap
+														)
 												)}
 											</label>
 										</FormGroup>

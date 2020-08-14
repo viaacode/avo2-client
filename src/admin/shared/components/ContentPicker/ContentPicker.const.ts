@@ -3,12 +3,12 @@ import { ContentPickerType } from '@viaa/avo2-components';
 import i18n from '../../../../shared/translations/i18n';
 import { PickerTypeOption } from '../../types';
 
+import { retrieveAnchors } from './item-providers/anchors';
 import { retrieveBundles, retrieveCollections } from './item-providers/collection';
 import { retrieveContentPages, retrieveProjectContentPages } from './item-providers/content-page';
 import { retrieveInternalLinks } from './item-providers/internal-link';
 import { retrieveItems } from './item-providers/item';
 import { retrieveProfiles } from './item-providers/profile';
-import { retrieveAnchors } from './item-providers/anchors';
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{
@@ -78,7 +78,7 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	},
 	{
 		value: 'ANCHOR_LINK',
-		label: i18n.t('Anchors'),
+		label: i18n.t('admin/shared/components/content-picker/content-picker___anchors'),
 		disabled: false,
 		fetch: retrieveAnchors,
 		picker: 'SELECT',

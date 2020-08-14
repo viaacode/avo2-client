@@ -27,8 +27,12 @@ interface DeleteObjectModalProps {
 }
 
 const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
-	title = i18n.t('Ben je zeker dat je deze actie wil uitvoeren?'),
-	body = i18n.t('Deze actie kan niet ongedaan gemaakt worden.'),
+	title = i18n.t(
+		'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
+	),
+	body = i18n.t(
+		'shared/components/delete-object-modal/delete-object-modal___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+	),
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',
 	confirmButtonType = 'danger',

@@ -249,7 +249,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 	...getMediaNavItems(userPermissions),
 	// TODO re-enable after task https://meemoo.atlassian.net/browse/AVO-358
 	// ...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
-	// 	label: i18n.t('Items publiceren'),
+	// 	label: i18n.t('admin/admin___items-publiceren'),
 	// 	location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
 	// 	key: 'publish-items',
 	// 	exact: false,

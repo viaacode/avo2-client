@@ -47,20 +47,45 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title={t('Labels aanpassen')} size="small" onClose={handleClose}>
+		<Modal
+			isOpen={isOpen}
+			title={t(
+				'admin/shared/components/change-labels-modal/change-labels-modal___labels-aanpassen'
+			)}
+			size="small"
+			onClose={handleClose}
+		>
 			<ModalBody>
 				<Form>
-					<FormGroup label={t('Labels toevoegen of verwijderen')}>
+					<FormGroup
+						label={t(
+							'admin/shared/components/change-labels-modal/change-labels-modal___labels-toevoegen-of-verwijderen'
+						)}
+					>
 						<Select
 							options={[
-								{ label: t('Toevoegen'), value: 'add' },
-								{ label: t('Verwijderen'), value: 'delete' },
+								{
+									label: t(
+										'admin/shared/components/change-labels-modal/change-labels-modal___toevoegen'
+									),
+									value: 'add',
+								},
+								{
+									label: t(
+										'admin/shared/components/change-labels-modal/change-labels-modal___verwijderen'
+									),
+									value: 'delete',
+								},
 							]}
 							value={addOrRemove}
 							onChange={setAddOrRemove as (value: string) => void}
 						/>
 					</FormGroup>
-					<FormGroup label={t('Labels')}>
+					<FormGroup
+						label={t(
+							'admin/shared/components/change-labels-modal/change-labels-modal___labels'
+						)}
+					>
 						<TagsInput
 							options={labels}
 							value={selectedLabels || undefined}
@@ -76,13 +101,21 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t('Annuleren')}
+									label={t(
+										'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
+									)}
 									onClick={handleClose}
 								/>
 								<Button
 									type="primary"
 									label={
-										addOrRemove === 'add' ? t('Toevoegen') : t('Verwijderen')
+										addOrRemove === 'add'
+											? t(
+													'admin/shared/components/change-labels-modal/change-labels-modal___toevoegen'
+											  )
+											: t(
+													'admin/shared/components/change-labels-modal/change-labels-modal___verwijderen'
+											  )
 									}
 									onClick={() => {
 										callback(addOrRemove, selectedLabels || []);

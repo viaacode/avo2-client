@@ -298,7 +298,11 @@ const Profile: FunctionComponent<ProfileProps & {
 				console.error('Failed to get educational organizations', err, {
 					selectedCity,
 				});
-				ToastService.danger(t('Het ophalen van de onderwijsinstellingen is mislukt'));
+				ToastService.danger(
+					t(
+						'settings/components/profile___het-ophalen-van-de-onderwijsinstellingen-is-mislukt'
+					)
+				);
 			}
 		})();
 	}, [organizationsCache, selectedOrganizations, selectedCity, t]);

@@ -87,11 +87,11 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		filterProps: {
 			options: [
 				{
-					label: i18n.t('Gepubliceerd'),
+					label: i18n.t('admin/items/items___gepubliceerd'),
 					id: 'published',
 				},
 				{
-					label: i18n.t('Gedepubliceerd'),
+					label: i18n.t('admin/items/items___gedepubliceerd'),
 					id: 'unpublished',
 				},
 			],
@@ -144,7 +144,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 	{ id: 'pid', label: i18n.t('admin/items/items___pid'), sortable: true },
 	{
 		id: 'updated_at',
-		label: i18n.t('Aangepast op (MAM)'),
+		label: i18n.t('admin/items/items___aangepast-op-mam'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
