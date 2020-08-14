@@ -220,14 +220,20 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			filterType: 'DateRangeDropdown',
 		},
 		{
+			id: 'published_at',
+			label: i18n.t('Publicatie'),
+			sortable: true,
+			filterType: 'DateRangeDropdown',
+		},
+		{
 			id: 'publish_at',
-			label: i18n.t('admin/content/content___publicatiedatum'),
+			label: i18n.t('Publiceer op'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'depublish_at',
-			label: i18n.t('admin/content/content___depublicatiedatum'),
+			label: i18n.t('Depubliceer op'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},
@@ -314,6 +320,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					) || '-'
 				);
 
+			case 'published_at':
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
