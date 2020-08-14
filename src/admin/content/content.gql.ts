@@ -60,9 +60,9 @@ export const GET_CONTENT_PAGES = gql`
 export const GET_PUBLIC_PROJECT_CONTENT_PAGES = gql`
 	query getPublicProjectContentPages($limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
 		app_content(
-			where: { content_type: { _eq: PROJECT }, is_public: { _eq: true } }
 			limit: $limit
 			order_by: $orderBy
+			where: { content_type: { _eq: PROJECT }, is_public: { _eq: true } }
 		) {
 			path
 			title
@@ -72,15 +72,11 @@ export const GET_PUBLIC_PROJECT_CONTENT_PAGES = gql`
 
 export const GET_PUBLIC_CONTENT_PAGES_BY_TITLE = gql`
 	query getPublicContentPageByTitle(
-		$title: String!
 		$limit: Int = 20
 		$orderBy: [app_content_order_by!] = {}
+		$where: app_content_bool_exp = {}
 	) {
-		app_content(
-			where: { title: { _ilike: $title }, is_public: { _eq: true } }
-			limit: $limit
-			order_by: $orderBy
-		) {
+		app_content(where: $where, limit: $limit, order_by: $orderBy) {
 			path
 			title
 		}
