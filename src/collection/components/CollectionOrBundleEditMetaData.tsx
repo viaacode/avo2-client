@@ -1,3 +1,4 @@
+import { StringMap } from 'i18next';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -151,7 +152,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											count =>
 												i18n.t(
 													'collection/collection___de-korte-omschrijving-is-te-lang-count',
-													{ count } as any
+													{ count } as StringMap
 												),
 											true
 										)}
@@ -176,7 +177,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												count =>
 													t(
 														'collection/collection___de-korte-omschrijving-is-te-lang-count',
-														{ count } as any
+														{ count } as StringMap
 													),
 												true
 											)}
@@ -200,7 +201,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 														'De beschrijving is te lang {{count}}.',
 														{
 															count,
-														} as any
+														} as StringMap
 													);
 												},
 												true
@@ -240,7 +241,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 													count =>
 														t('De beschrijving is te lang {{count}}.', {
 															count,
-														} as any)
+														} as StringMap)
 												)}
 											</label>
 										</FormGroup>
