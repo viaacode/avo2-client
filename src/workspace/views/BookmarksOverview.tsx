@@ -184,7 +184,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				category={contentType}
 				className="m-collection-overview-thumbnail"
 				src={contentThumbnailPath || undefined}
-				// showCategoryIcon TODO: Enable when components 1.53 releases
+				showCategoryIcon
 			/>
 		</Link>
 	);

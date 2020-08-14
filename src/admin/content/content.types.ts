@@ -23,10 +23,11 @@ export type ContentOverviewTableCols =
 	| 'content_type'
 	| 'author'
 	| 'author_user_group'
-	| 'publish_at'
-	| 'depublish_at'
 	| 'created_at'
 	| 'updated_at'
+	| 'published_at'
+	| 'publish_at'
+	| 'depublish_at'
 	| 'actions';
 
 export interface ContentTableState extends FilterableTableState {

@@ -20,6 +20,8 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 }
 
 .c-video-player__overlay {
+	position: relative;
+
 	.c-video-player__thumbnail {
 		background-size: cover;
 		background-position: center;
