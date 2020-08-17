@@ -82,29 +82,20 @@ pipeline {
 			steps {
 				script {
 					waitUntil {
-						try {
-							sh '''#!/bin/bash
+						def exitCode = sh '''#!/bin/bash
 							echo "pushing image to oc version $VERSION"
 							make -f ./openshift/Makefile push_oc
 							'''
-						} catch (error) {
-							echo 'Failed to push to registry'
-							// retry
-							return false;
-						}
+						return exitCode == 0;
 					}
 				}// end script
 				script {
 					waitUntil {
-						try {
-							sh '''#!/bin/bash
+						def exitCode = sh '''#!/bin/bash
 								echo "pushing image to okd version $VERSION"
 								make -f ./openshift/Makefile push_okd
 								'''
-						} catch (error) {
-							echo 'Failed to push to registry'
-							return false;
-						}
+						return exitCode == 0;
 					}
 				}// end script
 			}
