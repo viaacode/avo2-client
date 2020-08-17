@@ -138,6 +138,17 @@ export const UPDATE_ITEM_PUBLISH_STATE = gql`
 	}
 `;
 
+export const UPDATE_ITEM_DEPUBLISH_REASON = gql`
+	mutation updateItemPublishedState($itemUuid: uuid!, $reason: String) {
+		update_app_item_meta(
+			where: { uid: { _eq: $itemUuid } }
+			_set: { depublish_reason: $reason }
+		) {
+			affected_rows
+		}
+	}
+`;
+
 export const UPDATE_ITEM_NOTES = gql`
 	mutation updateItemPublishedState($itemUuid: uuid!, $note: String) {
 		update_app_item_meta(where: { uid: { _eq: $itemUuid } }, _set: { note: $note }) {
