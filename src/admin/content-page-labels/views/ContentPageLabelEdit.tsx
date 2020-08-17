@@ -134,7 +134,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			if (!initialContentPageLabel || !contentPageLabel) {
 				ToastService.danger(
 					t(
-						'Het opslaan van het content pagina label is mislukt omdat het label nog niet is geladen'
+						'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-het-content-pagina-label-is-mislukt-omdat-het-label-nog-niet-is-geladen'
 					),
 					false
 				);

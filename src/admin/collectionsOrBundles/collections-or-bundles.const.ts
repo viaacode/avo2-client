@@ -11,10 +11,6 @@ export const COLLECTIONS_OR_BUNDLES_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-const nullsLast = (order: Avo.Search.OrderDirection) => {
-	return order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_first');
-};
-
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	{
 		[columnId in CollectionsOrBundlesOverviewTableCols]: (
@@ -27,7 +23,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 	// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
 	// author_user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	profile: { profile_user_group: { groups: { label: nullsLast(order) } } },
+	// 	profile: { profile_user_groups: { groups: { label: nullsLast(order) } } },
 	// }),
 	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
 		updated_by: { usersByuserId: { last_name: order } },
@@ -35,28 +31,28 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	views: (order: Avo.Search.OrderDirection) => ({
 		view_counts_aggregate: {
 			sum: {
-				count: nullsLast(order),
+				count: order,
 			},
 		},
 	}),
 	bookmarks: (order: Avo.Search.OrderDirection) => ({
-		collection_bookmarks_aggregate: {
-			count: nullsLast(order),
+		counts: {
+			bookmarks: order,
 		},
 	}),
 	copies: (order: Avo.Search.OrderDirection) => ({
 		relations_aggregate: {
-			count: nullsLast(order),
+			count: order,
 		},
 	}),
 	in_bundle: (order: Avo.Search.OrderDirection) => ({
-		relations_aggregate: {
-			count: nullsLast(order),
+		counts: {
+			in_collection: order,
 		},
 	}),
 	in_assignment: (order: Avo.Search.OrderDirection) => ({
-		relations_aggregate: {
-			count: nullsLast(order),
+		counts: {
+			in_assignment: order,
 		},
 	}),
 };

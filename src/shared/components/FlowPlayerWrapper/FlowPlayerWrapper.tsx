@@ -23,10 +23,13 @@ type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
 	src?: string;
 	poster?: string;
+	annotationTitle?: string;
+	annotationText?: string;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
 	seekTime?: number;
 	autoplay?: boolean;
+	onPlay?: () => void;
 };
 
 /**
@@ -88,7 +91,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				trackEvents(
 					{
 						object: item.external_id,
-						object_type: 'avo_item_pid',
+						object_type: 'item',
 						message: `Gebruiker ${getProfileName(props.user)} heeft het item ${
 							item.external_id
 						} afgespeeld`,
@@ -96,6 +99,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					},
 					props.user
 				);
+				if (props.onPlay) {
+					props.onPlay();
+				}
 			}
 			setTriggeredForUrl(src || null);
 		}
@@ -153,6 +159,14 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 								)}`}
 							</div>
 						)}
+				</div>
+			)}
+			{(!!props.annotationTitle || !!props.annotationText) && (
+				<div className="a-block-image__annotation">
+					{props.annotationTitle && <h3>&#169; {props.annotationTitle}</h3>}
+					{props.annotationText && (
+						<p className="a-flowplayer__text">{props.annotationText}</p>
+					)}
 				</div>
 			)}
 		</div>

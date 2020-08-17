@@ -1,15 +1,14 @@
 import { ContentPickerType } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
-import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
-import {
-	retrieveContentPages,
-	retrieveProjectContentPages,
-} from '../../helpers/content-picker/content-page';
-import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
-import { retrieveItems } from '../../helpers/content-picker/item';
-import { retrieveProfiles } from '../../helpers/content-picker/profile';
 import { PickerTypeOption } from '../../types';
+
+import { retrieveAnchors } from './item-providers/anchors';
+import { retrieveBundles, retrieveCollections } from './item-providers/collection';
+import { retrieveContentPages, retrieveProjectContentPages } from './item-providers/content-page';
+import { retrieveInternalLinks } from './item-providers/internal-link';
+import { retrieveItems } from './item-providers/item';
+import { retrieveProfiles } from './item-providers/profile';
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{
@@ -77,6 +76,13 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 		fetch: retrieveProfiles,
 		picker: 'SELECT',
 	},
+	{
+		value: 'ANCHOR_LINK',
+		label: i18n.t('admin/shared/components/content-picker/content-picker___anchors'),
+		disabled: false,
+		fetch: retrieveAnchors,
+		picker: 'SELECT',
+	},
 ];
 
 export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
@@ -86,6 +92,7 @@ export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
 	'BUNDLE',
 	'INTERNAL_LINK',
 	'EXTERNAL_LINK',
+	'ANCHOR_LINK',
 ];
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {

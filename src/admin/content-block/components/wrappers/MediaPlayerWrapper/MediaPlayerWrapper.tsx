@@ -20,6 +20,8 @@ interface MediaPlayerWrapperProps {
 	src?: string;
 	poster?: string;
 	title: string;
+	annotationTitle?: string;
+	annotationText?: string;
 	issued?: string;
 	organisation?: Avo.Organization.Organization;
 	width?: string;
@@ -31,6 +33,8 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 	src,
 	poster,
 	title,
+	annotationTitle,
+	annotationText,
 	issued,
 	organisation,
 	width,
@@ -88,16 +92,21 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			>
 				<FlowPlayerWrapper
 					item={
-						{
-							...(mediaItem || {}),
-							title: title || get(mediaItem, 'title') || '',
-							issued: issued || get(mediaItem, 'issued') || '',
-							organisation: organisation || get(mediaItem, 'organisation') || '',
-						} as any
+						mediaItem
+							? ({
+									...(mediaItem || {}),
+									title: title || get(mediaItem, 'title') || '',
+									issued: issued || get(mediaItem, 'issued') || '',
+									organisation:
+										organisation || get(mediaItem, 'organisation') || '',
+							  } as any)
+							: undefined
 					}
 					src={src}
 					poster={videoStill}
 					autoplay={autoplay}
+					annotationTitle={annotationTitle}
+					annotationText={annotationText}
 				/>
 			</div>
 		);

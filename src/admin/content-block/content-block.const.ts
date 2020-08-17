@@ -32,7 +32,7 @@ import {
 	WidthOption,
 } from '../shared/types';
 
-import { AlignSelect, AnchorLinkSelect, ColorSelect, PaddingSelect } from './components';
+import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ANCHOR_LINKS_BLOCK_CONFIG,
 	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
@@ -174,7 +174,7 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.Quote,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___links'),
+		label: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
 		value: ContentBlockType.AnchorLinks,
 	},
 	{
@@ -193,7 +193,6 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 
 export const EDITOR_TYPES_MAP = {
 	AlignSelect,
-	AnchorLinkSelect,
 	Checkbox,
 	ColorSelect,
 	ContentPicker,

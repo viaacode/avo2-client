@@ -5,7 +5,7 @@ import { cloneDeep, get, isNil, isString, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
-import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
 import { addDefaultAudioStillToItem } from '../shared/helpers/default-still';

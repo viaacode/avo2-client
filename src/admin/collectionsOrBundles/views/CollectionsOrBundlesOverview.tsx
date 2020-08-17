@@ -8,12 +8,14 @@ import {
 	ButtonToolbar,
 	Container,
 	IconName,
+	TagInfo,
 	TagList,
 	TagOption,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
@@ -25,15 +27,20 @@ import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
+	CheckboxDropdownModalProps,
 	CheckboxOption,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, getFullName } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
+import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
+import ChangeLabelsModal, {
+	AddOrRemove,
+} from '../../shared/components/ChangeLabelsModal/ChangeLabelsModal';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -44,10 +51,12 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
+	CollectionBulkAction,
 	CollectionsOrBundlesOverviewTableCols,
 	CollectionsOrBundlesTableState,
 } from '../collections-or-bundles.types';
@@ -66,6 +75,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
+
+	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[]>([]);
+
+	const [changeAuthorModalOpen, setChangeAuthorModalOpen] = useState<boolean>(false);
+
+	const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false);
+
 	const [userGroups] = useUserGroups();
 
 	// computed
@@ -105,7 +121,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				...getMultiOptionFilters(
 					filters,
 					['author_user_group'],
-					['profile.profile_user_group.groups.id']
+					['profile.profile_user_groups[0].groups.id']
 				)
 			);
 			if (filters.collection_labels && filters.collection_labels.length) {
@@ -125,6 +141,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				});
 			}
 			andFilters.push(...getBooleanFilters(filters, ['is_public']));
+			andFilters.push({ is_deleted: { _eq: false } });
 
 			// Only show published/unpublished collections/bundles based on permissions
 			if (
@@ -263,7 +280,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: userGroupOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{
 			id: 'last_updated_by_profile',
@@ -301,7 +318,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: collectionLabelOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{
 			id: 'views',
@@ -373,6 +390,175 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		redirectToClientPage(link, history);
 	};
 
+	const handleBulkActionSelect = async (
+		action: CollectionBulkAction,
+		selectedRows: Partial<Avo.Collection.Collection>[]
+	): Promise<void> => {
+		switch (action) {
+			case 'publish':
+				await bulkChangePublishStateForCollections(true, selectedRows);
+				return;
+
+			case 'depublish':
+				await bulkChangePublishStateForCollections(false, selectedRows);
+				return;
+
+			case 'delete':
+				await bulkDeleteCollections(selectedRows);
+				return;
+
+			case 'change_author':
+				setSelectedRows(selectedRows);
+				setChangeAuthorModalOpen(true);
+				return;
+
+			case 'change_labels':
+				setSelectedRows(selectedRows);
+				setAddLabelModalOpen(true);
+				return;
+		}
+	};
+
+	const bulkChangePublishStateForCollections = async (
+		isPublic: boolean,
+		selectedRows: Partial<Avo.Collection.Collection>[]
+	) => {
+		try {
+			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
+				isPublic,
+				compact(selectedRows.map(collection => collection.id))
+			);
+			setSelectedRows([]);
+			ToastService.success(
+				isPublic
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gepubliceerd'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
+					  ),
+				false
+			);
+			fetchCollectionsOrBundles();
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle publish state for collections', err, {
+					selectedRows,
+					isPublic,
+				})
+			);
+			ToastService.danger(
+				isPublic
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-publiceren-van-de-collecties-is-mislukt'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-depubliceren-van-de-collecties-is-mislukt'
+					  ),
+				false
+			);
+		}
+	};
+
+	const bulkDeleteCollections = async (selectedRows: Partial<Avo.Collection.Collection>[]) => {
+		try {
+			await CollectionsOrBundlesService.bulkDeleteCollections(
+				compact(selectedRows.map(collection => collection.id))
+			);
+			setSelectedRows([]);
+			ToastService.success(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
+				),
+				false
+			);
+			fetchCollectionsOrBundles();
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to bulk delete collections', err, {
+					selectedRows,
+				})
+			);
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt'
+				),
+				false
+			);
+		}
+	};
+
+	const bulkChangeAuthor = async (authorProfileId: string) => {
+		try {
+			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
+				authorProfileId,
+				compact(selectedRows.map(collection => collection.id))
+			);
+			ToastService.success(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
+				),
+				false
+			);
+			fetchCollectionsOrBundles();
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to bulk update author for collections', err, {
+					authorProfileId,
+				})
+			);
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt'
+				),
+				false
+			);
+		}
+	};
+
+	const bulkChangeLabels = async (addOrRemove: AddOrRemove, labels: string[]) => {
+		try {
+			if (addOrRemove === 'add') {
+				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
+					labels,
+					compact(selectedRows.map(collection => collection.id))
+				);
+				ToastService.success(
+					t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
+					),
+					false
+				);
+			} else {
+				// remove
+				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
+					labels,
+					compact(selectedRows.map(collection => collection.id))
+				);
+				ToastService.success(
+					t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geslecteerde-collecties'
+					),
+					false
+				);
+			}
+			fetchCollectionsOrBundles();
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to bulk update labels of collections', err, {
+					addOrRemove,
+					labels,
+				})
+			);
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt'
+				),
+				false
+			);
+		}
+	};
+
 	const navigateToCollectionEdit = (id: string | undefined) => {
 		if (!id) {
 			ToastService.danger(
@@ -407,10 +593,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
-				const lastEditUser: Avo.User.User | undefined = get(
-					rowData,
-					'updated_by.usersByuserId'
-				);
+				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
 				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
 
 			case 'is_public':
@@ -419,19 +602,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
 			case 'views':
-				return get(rowData, 'view_counts_aggregate.aggregate.sum.count') || '0';
+				return get(rowData, 'counts.views') || '0';
 
 			case 'bookmarks':
-				return get(rowData, 'collection_bookmarks_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'copies.aggregate.count') || '0';
+				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
 
 			case 'in_bundle':
-				return get(rowData, 'in_bundle.aggregate.count') || '0';
+				return get(rowData, 'counts.in_collection') || '0';
 
 			case 'in_assignment':
-				return get(rowData, 'in_assignment.aggregate.count') || '0';
+				return get(rowData, 'counts.in_assignment') || '0';
 
 			case 'created_at':
 			case 'updated_at':
@@ -557,6 +740,69 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey={'id'}
+					bulkActions={[
+						{
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
+							),
+							value: 'publish',
+							confirm: true,
+							confirmButtonType: 'primary',
+						},
+						{
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
+							),
+							value: 'depublish',
+							confirm: true,
+							confirmButtonType: 'danger',
+						},
+						{
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
+							),
+							value: 'delete',
+							confirm: true,
+							confirmButtonType: 'danger',
+						},
+						{
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
+							),
+							value: 'change_author',
+						},
+						{
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
+							),
+							value: 'change_labels',
+						},
+					]}
+					onSelectBulkAction={handleBulkActionSelect as any}
+				/>
+				<ChangeAuthorModal
+					isOpen={changeAuthorModalOpen}
+					onClose={() => setChangeAuthorModalOpen(false)}
+					callback={(newAuthor: PickerItem) => bulkChangeAuthor(newAuthor.value)}
+					initialAuthor={{
+						label: getFullName(user as { profile: Avo.User.Profile }) as string,
+						value: getProfileId(user),
+						type: 'PROFILE',
+					}}
+				/>
+				<ChangeLabelsModal
+					isOpen={changeLabelsModalOpen}
+					onClose={() => setAddLabelModalOpen(false)}
+					labels={collectionLabels.map(labelObj => ({
+						label: labelObj.description,
+						value: labelObj.value,
+					}))}
+					callback={(addOrRemove: AddOrRemove, labels: TagInfo[]) =>
+						bulkChangeLabels(
+							addOrRemove,
+							labels.map(labelObj => labelObj.value.toString())
+						)
+					}
 				/>
 			</>
 		);

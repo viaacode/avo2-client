@@ -113,7 +113,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					message: t(
+						'admin/content/views/content-detail___je-hebt-geen-rechten-om-deze-content-pagina-te-bekijken'
+					),
 					icon: 'lock',
 				});
 				return;
@@ -123,7 +125,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				setLoadingInfo({
 					state: 'error',
 					message: t(
-						'De content pagina kon niet worden gevonden of je hebt geen rechten om deze te bekijken'
+						'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gevonden-of-je-hebt-geen-rechten-om-deze-te-bekijken'
 					),
 					icon: 'lock',
 				});

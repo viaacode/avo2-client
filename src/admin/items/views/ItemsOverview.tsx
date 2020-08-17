@@ -14,15 +14,21 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	CheckboxOption,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { OrganisationService } from '../../../shared/services/organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
+	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
@@ -39,6 +45,8 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
+	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
+	const [cpOptions, setCpOptions] = useState<CheckboxOption[] | null>(null);
 
 	// methods
 	const fetchItems = useCallback(async () => {
@@ -51,16 +59,30 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 						{ external_id: { _eq: query } },
 						{ title: { _ilike: queryWordWildcard } },
 						{ description: { _ilike: queryWordWildcard } },
-						{ organisation: { name: { _ilike: queryWordWildcard } } },
-						{ series: { _ilike: queryWordWildcard } },
 						{ lom_keywords: { _contains: queryWord } },
 					]
 				)
 			);
-			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
+			andFilters.push(...getBooleanFilters(filters, ['is_deleted']));
+			if (filters.is_published) {
+				const orFilters = [];
+				if (filters.is_published.includes('published')) {
+					orFilters.push({ is_published: { _eq: true } });
+				}
+				if (filters.is_published.includes('unpublished')) {
+					orFilters.push({ is_published: { _eq: false } });
+				}
+				// TODO add unpublished-merge, unpublished-pancarte https://meemoo.atlassian.net/browse/AVO-274
+
+				if (orFilters.length) {
+					andFilters.push({ _or: orFilters });
+				}
+			}
+			andFilters.push(
+				...getMultiOptionFilters(filters, ['series', 'organisation'], ['series', 'org_id'])
+			);
 			andFilters.push(
 				...getDateRangeFilters(filters, [
-					'created_at',
 					'updated_at',
 					'issued',
 					'expiry_date',
@@ -106,9 +128,53 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		}
 	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
+	const fetchAllSeries = useCallback(async () => {
+		try {
+			setSeriesOptions(
+				((await ItemsService.fetchAllSeries()) || []).map(
+					(serie: string): CheckboxOption => ({ id: serie, label: serie, checked: false })
+				)
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to load all item series from the database', err));
+			ToastService.danger(
+				t('admin/items/views/items-overview___het-ophalen-van-de-reeks-opties-is-mislukt')
+			);
+		}
+	}, [setSeriesOptions, t]);
+
+	const fetchAllCps = useCallback(async () => {
+		try {
+			setCpOptions(
+				((await OrganisationService.fetchAllOrganisations()) || []).map(
+					(org: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+						id: org.or_id as string,
+						label: org.name as string,
+						checked: false,
+					})
+				)
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to load all CPs from the database', err));
+			ToastService.danger(
+				t(
+					'admin/items/views/items-overview___het-ophalen-van-de-content-providers-is-mislukt'
+				)
+			);
+		}
+	}, [setCpOptions, t]);
+
 	useEffect(() => {
 		fetchItems();
 	}, [fetchItems]);
+
+	useEffect(() => {
+		fetchAllSeries();
+	}, [fetchAllSeries]);
+
+	useEffect(() => {
+		fetchAllCps();
+	}, [fetchAllCps]);
 
 	useEffect(() => {
 		if (items) {
@@ -144,7 +210,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 
 	const renderTableCell = (rowData: Partial<Avo.Item.Item>, columnId: ItemsOverviewTableCols) => {
 		switch (columnId) {
-			case 'created_at':
 			case 'updated_at':
 			case 'depublish_at':
 			case 'expiry_date':
@@ -161,10 +226,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 
 			case 'views':
 				return get(rowData, 'view_counts_aggregate.aggregate.sum.count', '-');
-
-			case 'is_published':
 			case 'is_deleted':
 				return rowData[columnId] ? 'Ja' : 'Nee';
+
+			case 'is_published':
+				return rowData[columnId] ? 'Gepubliceerd' : 'Gedepubliceerd';
 
 			case 'actions':
 				return (
@@ -218,7 +284,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		return (
 			<>
 				<FilterTable
-					columns={GET_ITEM_OVERVIEW_TABLE_COLS()}
+					columns={GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], cpOptions || [])}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>

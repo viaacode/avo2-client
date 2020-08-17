@@ -6,35 +6,29 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
+	DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS,
+	GET_DISTINCT_SERIES,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
-	GET_ITEMS,
-	GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	GET_ITEMS_WITH_FILTERS,
+	GET_PUBLIC_ITEMS,
+	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
 } from './items.gql';
-import { ItemsOverviewTableCols } from './items.types';
+import {
+	ItemsOverviewTableCols,
+	UnpublishedItem,
+	UnpublishedItemsOverviewTableCols,
+} from './items.types';
 
 export class ItemsService {
-	private static getOrderObject(
-		sortColumn: ItemsOverviewTableCols,
-		sortOrder: Avo.Search.OrderDirection
-	) {
-		const getOrderFunc: Function | undefined =
-			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
-
-		if (getOrderFunc) {
-			return [getOrderFunc(sortOrder)];
-		}
-
-		return [{ [sortColumn]: sortOrder }];
-	}
-
 	public static async fetchItemsWithFilters(
 		page: number,
 		sortColumn: ItemsOverviewTableCols,
@@ -47,7 +41,11 @@ export class ItemsService {
 				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
-				orderBy: ItemsService.getOrderObject(sortColumn, sortOrder),
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 			};
 
 			const response = await dataService.query({
@@ -69,6 +67,44 @@ export class ItemsService {
 			throw new CustomError('Failed to get items from the database', err, {
 				variables,
 				query: 'GET_ITEMS_WITH_FILTERS',
+			});
+		}
+	}
+
+	public static async fetchUnpublishedItemsWithFilters(
+		page: number,
+		sortColumn: UnpublishedItemsOverviewTableCols,
+		sortOrder: Avo.Search.OrderDirection,
+		where: any
+	): Promise<[UnpublishedItem[], number]> {
+		let variables: any;
+		try {
+			variables = {
+				where,
+				offset: ITEMS_PER_PAGE * page,
+				limit: ITEMS_PER_PAGE,
+				orderBy: [{ [sortColumn]: sortOrder }],
+			};
+
+			const response = await dataService.query({
+				variables,
+				query: GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+			});
+
+			const items = get(response, 'data.shared_items');
+			const itemCount = get(response, 'data.shared_items_aggregate.aggregate.count');
+
+			if (!items) {
+				throw new CustomError('Response does not contain any items', null, {
+					response,
+				});
+			}
+
+			return [items, itemCount];
+		} catch (err) {
+			throw new CustomError('Failed to get shared items from the database', err, {
+				variables,
+				query: 'GET_UNPUBLISHED_ITEMS_WITH_FILTERS',
 			});
 		}
 	}
@@ -158,13 +194,17 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItems(limit?: number): Promise<Avo.Item.Item[] | null> {
+	public static async fetchPublicItems(limit?: number): Promise<Avo.Item.Item[] | null> {
 		const query = {
-			query: GET_ITEMS,
+			query: GET_PUBLIC_ITEMS,
 			variables: { limit },
 		};
 
-		return performQuery(query, 'data.app_item_meta', 'Failed to retrieve items.');
+		return performQuery(
+			query,
+			'data.app_item_meta',
+			'Failed to retrieve items. GET_PUBLIC_ITEMS'
+		);
 	}
 
 	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item | null> {
@@ -180,9 +220,7 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			const item = addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
-
-			return item;
+			return addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
 		} catch (err) {
 			throw new CustomError('Failed to get item by external id', err, {
 				externalId,
@@ -218,7 +256,7 @@ export class ItemsService {
 					}
 				);
 			}
-			return get(response.json(), 'externalId') || null;
+			return get(await response.json(), 'externalId') || null;
 		} catch (err) {
 			throw new CustomError('Failed to get external_id by mediamosa id (avo1 id)', err, {
 				mediamosaId,
@@ -226,13 +264,13 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItemsByTitleOrExternalId(
+	public static async fetchPublicItemsByTitleOrExternalId(
 		titleOrExternalId: string,
 		limit?: number
 	): Promise<Avo.Item.Item[]> {
 		try {
 			const query = {
-				query: GET_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+				query: GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 				variables: {
 					limit,
 					title: `%${titleOrExternalId}%`,
@@ -257,7 +295,51 @@ export class ItemsService {
 			throw new CustomError('Failed to fetch items by title or external id', err, {
 				titleOrExternalId,
 				limit,
+				query: 'GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID',
 			});
+		}
+	}
+
+	public static async fetchAllSeries(): Promise<string[]> {
+		try {
+			const response = await performQuery(
+				{ query: GET_DISTINCT_SERIES },
+				'data.app_item_meta',
+				'Failed to retrieve distinct series'
+			);
+
+			return (response || []).map((item: { series: string }) => item.series);
+		} catch (err) {
+			throw new CustomError('Failed to fetch distinct series from the database', err, {
+				query: 'GET_DISTINCT_SERIES',
+			});
+		}
+	}
+
+	public static async deleteItemFromCollectionsAndBookmarks(
+		itemUid: string,
+		itemExternalId: string
+	) {
+		try {
+			const response = await dataService.mutate({
+				mutation: DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS,
+				variables: {
+					itemUid,
+					itemExternalId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to delete item from collections, bookmarks and assignments in the database',
+				err,
+				{
+					query: 'DELETE_ITEM_FROM_COLLECTION_BOOKMARKS_AND_ASSIGNMENTS',
+				}
+			);
 		}
 	}
 }
