@@ -116,7 +116,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								assignment: tempAssignment,
 							})
 						);
-						ToastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
+						ToastService.danger(
+							t(
+								'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
+							)
+						);
 					}
 
 					setAssignmentContent(null);

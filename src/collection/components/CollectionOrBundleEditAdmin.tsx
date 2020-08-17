@@ -124,7 +124,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				})
 			);
 			ToastService.danger(
-				t('Het ophalen van de opdrachten die deze collectie bevatten is mislukt')
+				t(
+					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-opdrachten-die-deze-collectie-bevatten-is-mislukt'
+				)
 			);
 		}
 	}, [setAssignmentsContainingCollection, t, collection]);
@@ -279,15 +281,21 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'is_archived':
-				return rowData[columnId] ? t('Gearchiveerd') : t('Actief');
+				return rowData[columnId]
+					? t('collection/components/collection-or-bundle-edit-admin___gearchiveerd')
+					: t('collection/components/collection-or-bundle-edit-admin___actief');
 
 			case 'actions':
 				return (
 					<Button
 						type="borderless"
 						icon="eye"
-						title={t('Ga naar de opdracht detail pagina')}
-						ariaLabel={t('Ga naar de opdracht detail pagina')}
+						title={t(
+							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-opdracht-detail-pagina'
+						)}
+						ariaLabel={t(
+							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-opdracht-detail-pagina'
+						)}
 						onClick={evt => {
 							evt.stopPropagation();
 							if (isNil(rowData.id)) {
@@ -344,7 +352,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 										/>
 									</FormGroup>
 									{isCollection && (
-										<FormGroup label={t('Briefing(s)')}>
+										<FormGroup
+											label={t(
+												'collection/components/collection-or-bundle-edit-admin___briefing-s'
+											)}
+										>
 											<TextArea
 												height="auto"
 												value={
@@ -483,7 +495,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 								<>
 									<Spacer margin={['top-extra-large', 'bottom-small']}>
 										<BlockHeading type="h2">
-											{t('Opdrachten die deze collectie bevatten')}
+											{t(
+												'collection/components/collection-or-bundle-edit-admin___opdrachten-die-deze-collectie-bevatten'
+											)}
 										</BlockHeading>
 									</Spacer>
 									{!!assignmentsContainingCollection &&
@@ -505,7 +519,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													sortable: true,
 												},
 												{
-													label: t('Status'),
+													label: t(
+														'collection/components/collection-or-bundle-edit-admin___status'
+													),
 													id: 'is_archived',
 													sortable: true,
 												},
@@ -521,7 +537,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											rowKey="id"
 										/>
 									) : (
-										t('Deze collectie is in geen enkele opdracht opgenomen')
+										t(
+											'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-opdracht-opgenomen'
+										)
 									)}
 								</>
 							)}

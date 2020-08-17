@@ -25,7 +25,11 @@ export const useUserGroupOptions = (): UseUserGroupsTuple => {
 			})
 			.catch(err => {
 				console.error(new CustomError('Failed to get user group options', err));
-				ToastService.danger(t('Het ophalen van de gebruikergroep opties is mislukt'));
+				ToastService.danger(
+					t(
+						'admin/user-groups/hooks/use-user-group-options___het-ophalen-van-de-gebruikergroep-opties-is-mislukt'
+					)
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);

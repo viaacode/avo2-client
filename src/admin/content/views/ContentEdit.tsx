@@ -110,7 +110,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					message: t(
+						'admin/content/views/content-edit___je-hebt-geen-rechten-om-deze-content-pagina-te-bekijken'
+					),
 					icon: 'lock',
 				});
 				return;
@@ -122,7 +124,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Je hebt geen rechten om deze content pagina te bekijken'),
+					message: t(
+						'admin/content/views/content-edit___je-hebt-geen-rechten-om-deze-content-pagina-te-bekijken'
+					),
 					icon: 'lock',
 				});
 				return;

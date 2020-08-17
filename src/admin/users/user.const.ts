@@ -22,31 +22,31 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{ id: 'mail', label: i18n.t('admin/users/user___email'), sortable: true },
 	{
 		id: 'user_group',
-		label: i18n.t('Gebruikersgroep'),
+		label: i18n.t('admin/users/user___gebruikersgroep'),
 		sortable: false, // wait for https://meemoo.atlassian.net/browse/DEV-1128
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: userGroupOptions,
 		} as CheckboxDropdownModalProps,
 	},
-	{ id: 'oormerk', label: i18n.t('Oormerk'), sortable: true },
+	{ id: 'oormerk', label: i18n.t('admin/users/user___oormerk'), sortable: true },
 	{
 		id: 'is_blocked',
-		label: i18n.t('Geblokkeerd'),
+		label: i18n.t('admin/users/user___geblokkeerd'),
 		sortable: true,
 		filterType: 'BooleanCheckboxDropdown',
 	},
 	{ id: 'stamboek', label: i18n.t('admin/users/user___stamboek'), sortable: true },
-	{ id: 'organisation', label: i18n.t('Organisatie'), sortable: true },
+	{ id: 'organisation', label: i18n.t('admin/users/user___organisatie'), sortable: true },
 	{
 		id: 'created_at',
-		label: i18n.t('Gebruiker sinds'),
+		label: i18n.t('admin/users/user___gebruiker-sinds'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'last_access_at',
-		label: i18n.t('Laatste toegang'),
+		label: i18n.t('admin/users/user___laatste-toegang'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},

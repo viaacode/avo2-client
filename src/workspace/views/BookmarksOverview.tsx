@@ -311,7 +311,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			<DeleteObjectModal
 				title={t('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={t(
-					'Ben je zeker dat je deze bladwijzer wil verwijderen?<br/>Deze actie kan niet ongedaan gemaakt worden.'
+					'workspace/views/bookmarks-overview___ben-je-zeker-dat-je-deze-bladwijzer-wil-verwijderen-br-deze-actie-kan-niet-ongedaan-gemaakt-worden'
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}

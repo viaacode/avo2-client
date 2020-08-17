@@ -310,7 +310,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 							<Select
 								options={bulkActions}
 								onChange={handleSelectBulkAction}
-								placeholder={t('Bulkactie')}
+								placeholder={t(
+									'admin/shared/components/filter-table/filter-table___bulkactie'
+								)}
 								disabled={!internalSelectedItems.length}
 								className="c-bulk-action-select"
 							/>
@@ -362,7 +364,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 					confirmLabel={get(
 						bulkActions.find(action => action.value === selectedBulkAction),
 						'label',
-						t('Bevestig')
+						t('admin/shared/components/filter-table/filter-table___bevestig')
 					)}
 					confirmButtonType={get(
 						bulkActions.find(action => action.value === selectedBulkAction),

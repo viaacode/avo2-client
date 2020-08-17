@@ -121,7 +121,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				},
 			},
 			align: {
-				label: i18n.t('Alignatie'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_ALIGN_OPTIONS(),

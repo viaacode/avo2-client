@@ -221,19 +221,19 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		},
 		{
 			id: 'published_at',
-			label: i18n.t('Publicatie'),
+			label: i18n.t('admin/content/views/content-overview___publicatie'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'publish_at',
-			label: i18n.t('Publiceer op'),
+			label: i18n.t('admin/content/views/content-overview___publiceer-op'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'depublish_at',
-			label: i18n.t('Depubliceer op'),
+			label: i18n.t('admin/content/views/content-overview___depubliceer-op'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},

@@ -431,8 +431,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setSelectedRows([]);
 			ToastService.success(
 				isPublic
-					? t('De gegeselecterde collecties zijn gepubliceerd')
-					: t('De gegeselecterde collecties zijn gedepubliceerd'),
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gepubliceerd'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
+					  ),
 				false
 			);
 			fetchCollectionsOrBundles();
@@ -445,8 +449,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			);
 			ToastService.danger(
 				isPublic
-					? t('Het publiceren van de collecties is mislukt')
-					: t('Het depubliceren van de collecties is mislukt'),
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-publiceren-van-de-collecties-is-mislukt'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-depubliceren-van-de-collecties-is-mislukt'
+					  ),
 				false
 			);
 		}
@@ -458,7 +466,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				compact(selectedRows.map(collection => collection.id))
 			);
 			setSelectedRows([]);
-			ToastService.success(t('De gegeselecterde collecties zijn verwijderd'), false);
+			ToastService.success(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
+				),
+				false
+			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -466,7 +479,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					selectedRows,
 				})
 			);
-			ToastService.danger(t('Het verwijderen van de collecties is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -477,7 +495,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				compact(selectedRows.map(collection => collection.id))
 			);
 			ToastService.success(
-				t('De auteurs zijn aangepast voor de geselecterde collecties'),
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
+				),
 				false
 			);
 			fetchCollectionsOrBundles();
@@ -487,7 +507,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					authorProfileId,
 				})
 			);
-			ToastService.danger(t('Het aanpassen van de auteurs is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -499,7 +524,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					compact(selectedRows.map(collection => collection.id))
 				);
 				ToastService.success(
-					t('De labels zijn toegevoegd aan de geslecteerde collecties'),
+					t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
+					),
 					false
 				);
 			} else {
@@ -509,7 +536,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					compact(selectedRows.map(collection => collection.id))
 				);
 				ToastService.success(
-					t('De labels zijn verwijderd van de geslecteerde collecties'),
+					t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geslecteerde-collecties'
+					),
 					false
 				);
 			}
@@ -521,7 +550,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					labels,
 				})
 			);
-			ToastService.danger(t('Het aanpassen van de labels is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -708,29 +742,39 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					rowKey={'id'}
 					bulkActions={[
 						{
-							label: t('Publiceren'),
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
+							),
 							value: 'publish',
 							confirm: true,
 							confirmButtonType: 'primary',
 						},
 						{
-							label: t('Depubliceren'),
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
+							),
 							value: 'depublish',
 							confirm: true,
 							confirmButtonType: 'danger',
 						},
 						{
-							label: t('Verwijderen'),
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
+							),
 							value: 'delete',
 							confirm: true,
 							confirmButtonType: 'danger',
 						},
 						{
-							label: t('Auteur aanpassen'),
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
+							),
 							value: 'change_author',
 						},
 						{
-							label: t('Labels aanpassen'),
+							label: t(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
+							),
 							value: 'change_labels',
 						},
 					]}

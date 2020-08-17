@@ -120,16 +120,24 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const publishSelection = () => {
 		if (!selectedItems.length) {
 			ToastService.info(
-				t('Selecteer eerst enkele items die je wil publiceren dmv de checkboxes'),
+				t(
+					'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
+				),
 				false
 			);
 			return;
 		}
-		ToastService.info(t('Nog niet geimplementeerd'), false);
+		ToastService.info(
+			t('admin/items/views/publish-items-overview___nog-niet-geimplementeerd'),
+			false
+		);
 	};
 
 	const triggerMamSync = () => {
-		ToastService.info(t('Nog niet geimplementeerd'), false);
+		ToastService.info(
+			t('admin/items/views/publish-items-overview___nog-niet-geimplementeerd'),
+			false
+		);
 	};
 
 	const renderTableCell = (
@@ -207,7 +215,9 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderCell={(rowData: Partial<UnpublishedItem>, columnId: string) =>
 						renderTableCell(rowData, columnId as UnpublishedItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoeken op titel, pid')}
+					searchTextPlaceholder={t(
+						'admin/items/views/publish-items-overview___zoeken-op-titel-pid'
+					)}
 					noContentMatchingFiltersMessage={t(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
@@ -234,15 +244,17 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					<Button
 						icon="external-link"
 						type="danger"
-						label={t('Publiceren')}
+						label={t('admin/items/views/publish-items-overview___publiceren')}
 						onClick={publishSelection}
 					/>
 					<Button
 						icon="download"
 						type="danger"
-						label={t('Synchroniseren met MAM')}
+						label={t(
+							'admin/items/views/publish-items-overview___synchroniseren-met-mam'
+						)}
 						title={t(
-							'Kopieer nieuwe en aangepaste items van het MAM naar de AVO database'
+							'admin/items/views/publish-items-overview___kopieer-nieuwe-en-aangepaste-items-van-het-mam-naar-de-avo-database'
 						)}
 						onClick={triggerMamSync}
 					/>
@@ -251,11 +263,17 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
-						{GENERATE_SITE_TITLE(t('publiceer items beheer overview pagina titel'))}
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel'
+							)
+						)}
 					</title>
 					<meta
 						name="description"
-						content={t('unpublished item beheer overview pagina beschrijving')}
+						content={t(
+							'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">

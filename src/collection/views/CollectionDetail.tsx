@@ -913,7 +913,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</Column>
 								<Column size="3-3">
 									<Spacer margin="top-large">
-										<p className="u-text-bold">{t('Aangemaakt op')}</p>
+										<p className="u-text-bold">
+											{t(
+												'collection/views/collection-detail___aangemaakt-op'
+											)}
+										</p>
 										<p className="c-body-1">{formatDate(created_at)}</p>
 									</Spacer>
 									<Spacer margin="top-large">
