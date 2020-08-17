@@ -34,10 +34,10 @@ build:
 	docker tag ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION} ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION}
 push_oc:
 	login_oc.sh ${ENDPOINT} > /dev/null 2>&1  && oc project sc-avo2
-	docker push ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION}
+	docker push ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION} || docker push ${oc_registry}/sc-avo2/avo2-client:${GIT_VERSION}
 push_okd:
 	login_oc.sh ${okd_endpoint} > /dev/null 2>&1  && oc project sc-avo2
-	docker push ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION}
+	docker push ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION} || docker push ${okd_registry}/sc-avo2/avo2-client:${GIT_VERSION}
 tag_int:
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int
 tag_dev:
