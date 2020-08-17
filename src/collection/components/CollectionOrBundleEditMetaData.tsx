@@ -1,3 +1,4 @@
+import { StringMap } from 'i18next';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,9 +24,10 @@ import {
 	WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION,
 	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/constants/wysiwyg';
-import { CustomError, sanitizeHtml } from '../../shared/helpers';
+import { CustomError, sanitizeHtml, stripHtml } from '../../shared/helpers';
+import i18n from '../../shared/translations/i18n';
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from '../collection.const';
-import { getValidationFeedbackForShortDescription } from '../collection.helpers';
+import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
@@ -144,9 +146,14 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											'collection/views/collection-edit-meta-data___korte-omschrijving'
 										)}
 										labelFor="shortDescriptionId"
-										error={getValidationFeedbackForShortDescription(
+										error={getValidationFeedbackForDescription(
 											collection.description,
 											MAX_SEARCH_DESCRIPTION_LENGTH,
+											count =>
+												i18n.t(
+													'collection/collection___de-korte-omschrijving-is-te-lang-count',
+													{ count } as StringMap
+												),
 											true
 										)}
 									>
@@ -164,9 +171,15 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											}
 										/>
 										<label>
-											{getValidationFeedbackForShortDescription(
+											{getValidationFeedbackForDescription(
 												collection.description,
-												MAX_SEARCH_DESCRIPTION_LENGTH
+												MAX_SEARCH_DESCRIPTION_LENGTH,
+												count =>
+													t(
+														'collection/collection___de-korte-omschrijving-is-te-lang-count',
+														{ count } as StringMap
+													),
+												true
 											)}
 										</label>
 									</FormGroup>
@@ -176,9 +189,21 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												'collection/components/collection-or-bundle-edit-meta-data___beschrijving'
 											)}
 											labelFor="longDescriptionId"
-											error={getValidationFeedbackForShortDescription(
-												collection.description_long,
+											error={getValidationFeedbackForDescription(
+												stripHtml(
+													descriptionLongEditorState
+														? descriptionLongEditorState.toHTML()
+														: collection.description_long || ''
+												),
 												MAX_LONG_DESCRIPTION_LENGTH,
+												count => {
+													return t(
+														'De beschrijving is te lang {{count}}.',
+														{
+															count,
+														} as StringMap
+													);
+												},
 												true
 											)}
 										>
@@ -206,14 +231,17 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												}
 											/>
 											<label>
-												{getValidationFeedbackForShortDescription(
-													sanitizeHtml(
+												{getValidationFeedbackForDescription(
+													stripHtml(
 														descriptionLongEditorState
 															? descriptionLongEditorState.toHTML()
-															: collection.description_long || '',
-														'link'
+															: collection.description_long || ''
 													),
-													MAX_LONG_DESCRIPTION_LENGTH
+													MAX_LONG_DESCRIPTION_LENGTH,
+													count =>
+														t('De beschrijving is te lang {{count}}.', {
+															count,
+														} as StringMap)
 												)}
 											</label>
 										</FormGroup>
