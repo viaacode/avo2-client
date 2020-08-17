@@ -1,10 +1,10 @@
 /* import shared library */
-@Library('jenkins-shared-libs')_
+@Library('jenkins-shared-libs') _
 
 def TEMPLATEPATH = 'https://raw.githubusercontent.com/viaacode/avo2-client/master/openshift/avo2-client-tmpl-dc.yaml'
 def TEMPLATENAME = 'avo2-client'
 def TARGET_NS = 'sc-avo2'
-def templateSelector = openshift.selector( "template", "avo2-client")
+def templateSelector = openshift.selector("template", "avo2-client")
 
 // def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 //def tag= sh( returnStdout: true, script: "git describe --tags").tril()
@@ -15,17 +15,17 @@ def templateSelector = openshift.selector( "template", "avo2-client")
 // will not be fully engaged.
 pipeline {
     agent {
-      node {
-        // spin up a pod to run this build on
-        label 'docker'
-      }
+        node {
+            // spin up a pod to run this build on
+            label 'docker'
+        }
     }
     options {
         // set a timeout of 480m for this pipeline
         timeout(time: 480, unit: 'MINUTES')
     }
 
-	environment {
+    environment {
         ENDPOINT = sh(returnStdout: true, script: 'echo https://c100-e.eu-de.containers.cloud.ibm.com:31240').trim()
         VERSION = sh(returnStdout: true, script: "git describe --tags|| echo noTagFound").trim()
         shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
@@ -42,8 +42,8 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
-			                echo "Testing login script for the external docker agent"
-			                sh '''#!/bin/bash
+                            echo "Testing login script for the external docker agent"
+                            sh '''#!/bin/bash
                             set +x
                             login_oc.sh $ENDPOINT > /dev/null 2>&1  && oc project sc-avo2 1>/dev/null
                             '''
@@ -56,68 +56,78 @@ pipeline {
         stage('Docker build') {
             steps {
                 script {
-                        sh'''#!/bin/bash
-                        echo starting a build
-                        make -f ./openshift/Makefile build
-                        '''
+                    sh '''#!/bin/bash
+					echo starting a build
+					make -f ./openshift/Makefile build
+					'''
                 } // script
             } // steps
         } // stage
+
         stage('Run UNIT Tests') {
-                steps {
-                    script {sh'''#!/bin/bash
-                        echo "Running make unit_test ###DISABLED for build test####"
-                        #make -f ./openshift/Makefile unit_test
-                        '''
-                    }// end script
-                }
-            }//end stage
+            steps {
+                script {
+                    sh '''#!/bin/bash
+						echo "Running make unit_test ###DISABLED for build test####"
+						#make -f ./openshift/Makefile unit_test
+						'''
+                }// end script
+            }
+        }//end stage
+
         stage('Push Image') {
-           waitUntil {
-				try {
-					steps {
-						script {
-							sh'''#!/bin/bash
-							echo "pushing image version $VERSION"
-							make -f ./openshift/Makefile push
-							'''
-						}// end script
-					}
-				} catch (error) {
-					input "Retry pushing image to registry?"
-					false
-				}
-           }
+            steps {
+                script {
+                    waitUntil {
+                        try {
+                            sh '''#!/bin/bash
+								echo "pushing image version $VERSION"
+								make -f ./openshift/Makefile push
+								'''
+                        } catch (error) {
+                            echo 'Failed to push to registry'
+                            def userChoice = input(message: "Retry pushing image to registry?", ok: 'yes');
+                            if (userChoice) {
+                                // try again
+                                return false;
+                            } else {
+                                // do not try again
+                                return true;
+                            }
+                        }
+                    }
+                }// end script
+            }
         }//end stage
 
         stage('Tag DEV Image AND rollout DEV') {
-                steps {
-                    script {
-                        sh'''#!/bin/bash
-                        echo "tagging dev"
-                        make -f ./openshift/Makefile tag_dev
-                        '''
-                    }// end script
-                    script {
-                        sh'''#!/bin/bash
-                        login_oc.sh $OKD_ENDPOINT
-                        echo "Waiting deploymentconfig to rollout"
-                        make -f ./openshift/Makefile rollout_dev
-                        '''
-                    }// end script
-                }
-            }//end stage
+            steps {
+                script {
+                    sh '''#!/bin/bash
+					echo "tagging dev"
+					make -f ./openshift/Makefile tag_dev
+					'''
+                }// end script
+                script {
+                    sh '''#!/bin/bash
+					login_oc.sh $OKD_ENDPOINT
+					echo "Waiting deploymentconfig to rollout"
+					make -f ./openshift/Makefile rollout_dev
+					'''
+                }// end script
+            }
+        }//end stage
 
         stage('Tag QAS Image AND rollout QAS') {
-                steps {
-                    script {
-                        sh'''#!/bin/bash
-                        echo "Depoying QAS on IBM"
-                        make -f ./openshift/Makefile staging
-                        '''
-                    }// end script
-                }
-            }//end stage
+            steps {
+                script {
+                    sh '''#!/bin/bash
+					echo "Depoying QAS on IBM"
+					make -f ./openshift/Makefile staging
+					'''
+                }// end script
+            }
+        }//end stage
 
     } // stages
     post {
@@ -130,7 +140,7 @@ pipeline {
             //archiveArtifacts artifacts: 'ci-results/*.xml', fingerprint: true
 
             script {
-               slackNotifier(currentBuild.currentResult)
+                slackNotifier(currentBuild.currentResult)
             }
             sh '''#!/bin/bash
             set +x
