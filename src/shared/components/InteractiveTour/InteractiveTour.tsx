@@ -18,6 +18,8 @@ import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
 
+export const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
+
 export interface InteractiveTourProps {
 	showButton: boolean;
 }
@@ -31,6 +33,44 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 
 	const [tour, setTour] = useState<TourInfo | null>(null);
 	const [routeId, setRouteId] = useState<RouteId | null>(null);
+	const [tourDisplayDates, setTourDisplayDates] = useState<{ [tourId: string]: string } | null>(
+		null
+	);
+
+	const getTourDisplayDates = useCallback(() => {
+		try {
+			setTourDisplayDates(
+				JSON.parse(localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY) || '{}')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to parse tour dates in local storage. Overriding with {}',
+					err,
+					{
+						key: TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
+						value: localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY),
+					}
+				)
+			);
+			localStorage.setItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY, '{}');
+		}
+	}, [setTourDisplayDates]);
+
+	const updateTourDisplayDate = useCallback(
+		(tourId: string) => {
+			const newTourDisplayDates = { ...tourDisplayDates, [tourId]: new Date().toISOString() };
+			localStorage.setItem(
+				TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
+				JSON.stringify(newTourDisplayDates)
+			);
+		},
+		[tourDisplayDates]
+	);
+
+	useEffect(() => {
+		getTourDisplayDates();
+	}, [getTourDisplayDates]);
 
 	const mapSteps = (dbSteps: Avo.InteractiveTour.Step[]): Avo.InteractiveTour.Step[] => {
 		return compact(
@@ -58,6 +98,9 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 
 	const checkIfTourExistsForCurrentPage = useCallback(async () => {
 		try {
+			if (!tourDisplayDates) {
+				return;
+			}
 			// Resolve current page location to route id, so we know which interactive tour to show
 			// We reverse the order of the routes, since more specific routes are always declared later in the list
 			const interactiveRoutePairs = reverse(
@@ -91,7 +134,8 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
-				get(user, 'profile.id')
+				get(user, 'profile.id'),
+				tourDisplayDates
 			);
 			setTour(tourTemp);
 			setRouteId(routeId);
@@ -104,7 +148,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				)
 			);
 		}
-	}, [setTour, location.pathname, user]);
+	}, [setTour, location.pathname, tourDisplayDates, user]);
 
 	useEffect(() => {
 		checkIfTourExistsForCurrentPage();
@@ -151,6 +195,15 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 			});
 			if (data.action === 'close' || data.status === 'finished') {
 				markTourAsSeen();
+			} else {
+				// skip
+				if ((tourDisplayDates || {})[tour.id]) {
+					// if date was set already => hide the tour forever
+					markTourAsSeen();
+				} else {
+					// if date was not set => keep track of date in localstorage
+					updateTourDisplayDate(String(tour.id));
+				}
 			}
 		}
 	};
@@ -170,7 +223,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 						skip: t('shared/components/interactive-tour/interactive-tour___overslaan'),
 					}}
 					spotlightPadding={8}
-					scrollOffset={200}
+					scrollOffset={220}
 					continuous
 					run={!tour.seen}
 					showSkipButton

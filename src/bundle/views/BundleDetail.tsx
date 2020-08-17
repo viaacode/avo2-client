@@ -207,7 +207,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				trackEvents(
 					{
 						object: bundleId,
-						object_type: 'bundels',
+						object_type: 'bundle',
 						message: `Gebruiker ${getProfileName(
 							user
 						)} heeft de pagina voor collectie ${bundleId} bekeken`,
@@ -308,6 +308,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const onDeleteBundle = async () => {
 		try {
 			await CollectionService.deleteCollection(bundleId);
+
+			trackEvents(
+				{
+					object: bundleId,
+					object_type: 'collection',
+					message: `${getProfileName(user)} heeft een bundel verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
@@ -336,6 +347,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				COLLECTION_COPY,
 				COLLECTION_COPY_REGEX
 			);
+
+			trackEvents(
+				{
+					object: String(bundle.id),
+					object_type: 'bundle',
+					message: `Gebruiker ${getProfileName(user)} heeft een bundel geducpliceerd`,
+					action: 'copy',
+				},
+				user
+			);
+
 			redirectToClientPage(
 				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateBundle.id }),
 				history
@@ -503,7 +525,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									label={String(viewCountsById[fragment.external_id] || 0)}
 									icon="eye"
 								/>
-								<MetaDataItem label={fromNow(collection.updated_at)} />
+								<MetaDataItem label={formatDate(collection.updated_at)} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
@@ -583,11 +605,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						: t('bundle/views/bundle-detail___maak-bladwijzer'),
 					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 				),
-				createDropdownMenuItem(
-					'openShareThroughEmailModal',
-					t('bundle/views/bundle-detail___share-bundel'),
-					'share-2'
-				),
+				...(!!bundle && bundle.is_public
+					? [
+							createDropdownMenuItem(
+								'openShareThroughEmailModal',
+								t('bundle/views/bundle-detail___share-bundel'),
+								'share-2'
+							),
+					  ]
+					: []),
 				...(permissions.canCreateBundles
 					? [
 							createDropdownMenuItem(
@@ -664,13 +690,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
-				<Button
-					title={t('bundle/views/bundle-detail___share-bundel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
-					onClick={() => executeAction('openShareThroughEmailModal')}
-				/>
+				{isPublic && (
+					<Button
+						title={t('bundle/views/bundle-detail___share-bundel')}
+						type="secondary"
+						icon="share-2"
+						ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+						onClick={() => executeAction('openShareThroughEmailModal')}
+					/>
+				)}
 				{renderActionDropdown()}
 				<InteractiveTour showButton />
 			</ButtonToolbar>
@@ -684,20 +712,17 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		const {
 			id,
 			lom_context,
+			created_at,
 			updated_at,
 			lom_classification,
 		} = bundle as Avo.Collection.Collection;
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					<h3 className="c-h3">
-						<Trans i18nKey="bundle/views/bundle-detail___over-deze-bundel">
-							Over deze bundel
-						</Trans>
-					</h3>
+					<h3 className="c-h3">{t('bundle/views/bundle-detail___over-deze-bundel')}</h3>
 					<Grid>
 						<Column size="3-3">
-							<Spacer margin="top">
+							<Spacer margin="top-large">
 								<p className="u-text-bold">
 									<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
 										Onderwijsniveau
@@ -711,9 +736,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									)}
 								</p>
 							</Spacer>
-						</Column>
-						<Column size="3-3">
-							<Spacer margin="top">
+							<Spacer margin="top-large">
 								<p className="u-text-bold">
 									<Trans i18nKey="collection/views/collection-detail___vakken">
 										Vakken
@@ -729,11 +752,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							</Spacer>
 						</Column>
 						<Column size="3-3">
-							<Spacer margin="top">
+							<Spacer margin="top-large">
 								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-										Laatst aangepast
-									</Trans>
+									{t('bundle/views/bundle-detail___aangemaakt-op')}
+								</p>
+								<p className="c-body-1">{formatDate(created_at)}</p>
+							</Spacer>
+							<Spacer margin="top-large">
+								<p className="u-text-bold">
+									{t('collection/views/collection-detail___laatst-aangepast')}
 								</p>
 								<p className="c-body-1">{formatDate(updated_at)}</p>
 							</Spacer>

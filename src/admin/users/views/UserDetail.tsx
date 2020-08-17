@@ -192,7 +192,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 		const profileUserGroup: RawUserGroup[] = get(
 			storedProfile,
-			'profile_user_group.groups',
+			'profile_user_groups[0].groups',
 			[]
 		);
 
@@ -288,6 +288,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderDateDetailRows(storedProfile, [
 								['created_at', 'Aangemaakt op'],
 								['updated_at', 'Aangepast op'],
+								['last_access_at', 'Laatste toegang'],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
 								['bio', t('admin/users/views/user-detail___bio')],

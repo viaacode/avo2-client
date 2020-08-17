@@ -88,6 +88,9 @@ export class ApolloCacheManager {
 	public static clearUserCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'shared_users');
 
+	public static clearTranslations = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'app_site_variables');
+
 	private static deleteFromCache(cache: ApolloCache, substring: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
 			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache

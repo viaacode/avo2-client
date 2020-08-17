@@ -23,6 +23,7 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
+	CheckboxDropdownModalProps,
 	CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -110,7 +111,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							},
 							{
 								profile: {
-									profile_user_group: {
+									profile_user_groups: {
 										groups: { label: { _ilike: queryWordWildcard } },
 									},
 								},
@@ -202,7 +203,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: contentTypeOptions,
-			},
+			} as CheckboxDropdownModalProps,
 		},
 		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
 		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol'), sortable: true },
@@ -219,14 +220,20 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			filterType: 'DateRangeDropdown',
 		},
 		{
+			id: 'published_at',
+			label: i18n.t('admin/content/views/content-overview___publicatie'),
+			sortable: true,
+			filterType: 'DateRangeDropdown',
+		},
+		{
 			id: 'publish_at',
-			label: i18n.t('admin/content/content___publicatiedatum'),
+			label: i18n.t('admin/content/views/content-overview___publiceer-op'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'depublish_at',
-			label: i18n.t('admin/content/content___depublicatiedatum'),
+			label: i18n.t('admin/content/views/content-overview___depubliceer-op'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
 		},
@@ -313,6 +320,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					) || '-'
 				);
 
+			case 'published_at':
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
@@ -502,7 +510,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					/>
 				</MetaTags>
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
+					<Container mode="horizontal" size="full-width">
 						<LoadingErrorLoadedComponent
 							loadingInfo={loadingInfo}
 							dataObject={contentPages}

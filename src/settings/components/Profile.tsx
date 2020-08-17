@@ -29,11 +29,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import {
-	getProfileAlias,
-	getProfileFromUser,
-	getProfileId,
-} from '../../authentication/helpers/get-profile-info';
+import { getProfileId } from '../../authentication/helpers/get-profile-id';
+import { getProfileAlias, getProfileFromUser } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
@@ -136,43 +133,50 @@ const Profile: FunctionComponent<ProfileProps & {
 	);
 	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
 
+	const isExceptionAccount = get(user, 'profile.is_exception', false);
+
 	useEffect(() => {
 		setPermissions({
 			SUBJECTS: {
 				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE),
 				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE),
-				REQUIRED: PermissionService.hasPerm(
-					user,
-					PermissionName.REQUIRED_SUBJECTS_ON_PROFILE_PAGE
-				),
+				REQUIRED:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.REQUIRED_SUBJECTS_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
 			},
 			EDUCATION_LEVEL: {
 				VIEW: PermissionService.hasPerm(
 					user,
 					PermissionName.VIEW_EDUCATION_LEVEL_ON_PROFILE_PAGE
 				),
-				EDIT: PermissionService.hasPerm(
-					user,
-					PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE
-				),
-				REQUIRED: PermissionService.hasPerm(
-					user,
-					PermissionName.REQUIRED_EDUCATION_LEVEL_ON_PROFILE_PAGE
-				),
+				EDIT:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
+				REQUIRED:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.REQUIRED_EDUCATION_LEVEL_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
 			},
 			EDUCATIONAL_ORGANISATION: {
 				VIEW: PermissionService.hasPerm(
 					user,
 					PermissionName.VIEW_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
 				),
-				EDIT: PermissionService.hasPerm(
-					user,
-					PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
-				),
-				REQUIRED: PermissionService.hasPerm(
-					user,
-					PermissionName.REQUIRED_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
-				),
+				EDIT:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
+				REQUIRED:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.REQUIRED_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
 			},
 			ORGANISATION: {
 				VIEW: PermissionService.hasPerm(
@@ -189,7 +193,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				),
 			},
 		});
-	}, [user]);
+	}, [isExceptionAccount, user]);
 
 	useEffect(() => {
 		if (!permissions) {
@@ -294,9 +298,14 @@ const Profile: FunctionComponent<ProfileProps & {
 				console.error('Failed to get educational organizations', err, {
 					selectedCity,
 				});
+				ToastService.danger(
+					t(
+						'settings/components/profile___het-ophalen-van-de-onderwijsinstellingen-is-mislukt'
+					)
+				);
 			}
 		})();
-	}, [organizationsCache, selectedOrganizations, selectedCity]);
+	}, [organizationsCache, selectedOrganizations, selectedCity, t]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<UpdateProfileValues>) => {
 		if (!permissions) {
@@ -490,7 +499,7 @@ const Profile: FunctionComponent<ProfileProps & {
 						value={selectedSubjects}
 						onChange={selectedValues => setSelectedSubjects(selectedValues || [])}
 					/>
-				) : (
+				) : selectedSubjects.length ? (
 					<TagList
 						tags={selectedSubjects.map(
 							(subject): TagOption => ({ id: subject.value, label: subject.label })
@@ -498,12 +507,18 @@ const Profile: FunctionComponent<ProfileProps & {
 						swatches={false}
 						closable={false}
 					/>
+				) : (
+					'-'
 				)}
 			</FormGroup>
 		);
 	};
 
 	const renderEducationLevelsField = (editable: boolean, required: boolean) => {
+		if (!selectedEducationLevels.length && !editable) {
+			return null;
+		}
+
 		return (
 			<FormGroup
 				label={t('settings/components/profile___onderwijsniveau')}

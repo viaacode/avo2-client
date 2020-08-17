@@ -38,6 +38,8 @@ export interface ContentPageOverviewParams {
 	withBlock: boolean;
 	contentType: string;
 	labelIds: number[];
+	orderByProp?: string;
+	orderByDirection?: 'asc' | 'desc';
 	offset: number;
 	limit: number;
 }
@@ -93,7 +95,10 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				id: labelObj.id,
 				label: labelObj.label,
 			})),
-			created_at: contentPageInfo.created_at,
+			created_at:
+				contentPageInfo.published_at ||
+				contentPageInfo.publish_at ||
+				contentPageInfo.created_at,
 			description: ContentService.getDescription(contentPageInfo, 'full'),
 			title: contentPageInfo.title,
 			id: contentPageInfo.id,
@@ -115,6 +120,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				contentType: contentTypeAndTabs.selectedContentType,
 				labelIds:
 					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
+				orderByProp: 'published_at',
+				orderByDirection: 'desc',
 				offset: currentPage * debouncedItemsPerPage,
 				limit: debouncedItemsPerPage,
 			};
@@ -242,7 +249,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				showDescription={showDescription}
 				showDate={showDate}
 				dateString={t(
-					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___geplaatst-in-label-op-date'
+					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___geplaatst-label-op-date'
 				)}
 				allLabel={t(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___alle'

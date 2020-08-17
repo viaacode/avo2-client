@@ -113,17 +113,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 		const checkPermissionsAndGetItem = async () => {
 			try {
-				const hasPermission: boolean = await PermissionService.hasPermissions(
-					[
-						PermissionName.VIEW_ANY_PUBLISHED_ITEMS,
-						{
-							name: PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
-							obj: match.params.id,
-						},
-					],
-					user
-				);
-				if (!hasPermission) {
+				if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
 					setLoadingInfo({
 						state: 'error',
 						message: t(
@@ -149,7 +139,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				trackEvents(
 					{
 						object: match.params.id,
-						object_type: 'avo_item_pid',
+						object_type: 'item',
 						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
 							match.params.id
 						} bezocht`,
@@ -233,11 +223,22 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
 			history
 		);
-		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
+	};
+
+	const trackOnPlay = () => {
+		trackEvents(
+			{
+				object: get(item, 'external_id', ''),
+				object_type: 'item',
+				message: `${getProfileName(user)} heeft een item afgespeeld`,
+				action: 'play',
+			},
+			user
+		);
 	};
 
 	const renderRelatedItems = () => {
@@ -356,6 +357,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								!isShareThroughEmailModalOpen &&
 								!isReportItemModalOpen
 							}
+							onPlay={trackOnPlay}
 						/>
 						<Grid>
 							<Column size="2-7">

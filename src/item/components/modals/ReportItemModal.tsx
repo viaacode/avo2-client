@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import { Tickets } from 'node-zendesk';
+import { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { getFullName } from '../../../shared/helpers/formatters';
 import { ToastService, ZendeskService } from '../../../shared/services';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import i18n from '../../../shared/translations/i18n';
 
 interface ReportItemModalProps {
@@ -52,7 +55,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
 	const reportItem = async () => {
-		let ticket: Tickets.CreateModel | undefined;
+		let ticket: Requests.CreateModel | undefined;
 		try {
 			if (!reason) {
 				return;
@@ -60,9 +63,6 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 			setIsProcessing(true);
 			const body = {
 				extraDetails,
-				firstName: get(user, 'first_name'),
-				lastName: get(user, 'last_name'),
-				email: get(user, 'mail'),
 				reason: GET_RADIO_BUTTON_LABELS()[reason],
 			};
 			ticket = {
@@ -70,15 +70,6 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${
-		body.firstName
-  }</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___achternaam">Achternaam</Trans></dt><dd>${
-		body.lastName
-  }</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${
-		body.email
-  }</dd>
   <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
 		GET_RADIO_BUTTON_LABELS()[reason]
   }</dd>
@@ -90,8 +81,25 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				subject: t(
 					'item/components/modals/report-item-modal___media-item-gerapporteerd-door-gebruiker-op-av-o-2'
 				),
+				requester: {
+					email: get(user, 'mail'),
+					name: getFullName(user as any) || '',
+				},
 			};
-			await ZendeskService.createTicket(ticket);
+			await ZendeskService.createTicket(ticket as Requests.CreateModel);
+
+			trackEvents(
+				{
+					object: externalId,
+					object_type: 'item',
+					message: `${getProfileName(user)} heeft een item gerapporteerd wegens ${
+						GET_RADIO_BUTTON_LABELS()[reason]
+					}`,
+					action: 'report',
+				},
+				user
+			);
+
 			onClose();
 			ToastService.success(
 				t('item/components/modals/report-item-modal___het-item-is-gerapporteerd')

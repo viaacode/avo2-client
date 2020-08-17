@@ -1,9 +1,11 @@
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
+import { createBrowserHistory, Location } from 'history';
+import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryParamProvider } from 'use-query-params';
 
@@ -19,6 +21,18 @@ import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
+
+const history = createBrowserHistory();
+wrapHistory(history, {
+	smoothScroll: true,
+	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
+		// We don't want to set focus when only the hash changes
+		return (
+			previousLocation.pathname !== nextLocation.pathname ||
+			previousLocation.search !== nextLocation.search
+		);
+	},
+});
 
 interface AppProps extends RouteComponentProps {}
 
@@ -80,7 +94,7 @@ const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>
 		<ApolloHooksProvider client={dataService}>
 			<Provider store={store}>
-				<Router>
+				<Router history={history}>
 					<QueryParamProvider ReactRouterRoute={Route}>
 						<AppWithRouter />
 					</QueryParamProvider>

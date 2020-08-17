@@ -1,3 +1,5 @@
+import { EnglishContentType } from '@viaa/avo2-components';
+
 export interface BookmarkRequestInfo {
 	type: EventContentTypeSimplified;
 	uuid: string;
@@ -11,7 +13,7 @@ export interface BookmarkInfo {
 	createdAt: number;
 	contentId: string;
 	contentLinkId: string;
-	contentType: EventContentType;
+	contentType: EnglishContentType;
 	contentTitle: string;
 	contentThumbnailPath: string | null | undefined;
 	contentCreatedAt: number | null;

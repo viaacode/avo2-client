@@ -31,10 +31,13 @@ import {
 
 import {
 	Button,
+	ButtonType,
 	Flex,
 	Form,
 	FormGroup,
 	Pagination,
+	Select,
+	SelectOption,
 	Spacer,
 	Table,
 	TableColumn,
@@ -47,6 +50,7 @@ import {
 	CheckboxDropdownModal,
 	CheckboxOption,
 	DateRangeDropdown,
+	DeleteObjectModal,
 } from '../../../../shared/components';
 import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
@@ -87,8 +91,18 @@ interface FilterTableProps extends RouteComponentProps {
 	) => ReactNode;
 	className?: string;
 	onTableStateChanged: (tableState: { [id: string]: any }) => void;
+	onRowClick?: (rowData: any) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
+
+	// Used for automatic dropdown with bulk actions
+	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
+	onSelectBulkAction?: (action: string, selectedRows: any[]) => void;
+
+	// Used for manual handling of selected rows
+	showCheckboxes?: boolean;
+	selectedItems?: any[];
+	onSelectionChanged?: (selectedItems: any[]) => void;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -102,14 +116,23 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	renderCell,
 	className,
 	onTableStateChanged,
+	onRowClick,
 	rowKey = 'id',
 	variant = 'bordered',
+	bulkActions,
+	onSelectBulkAction,
+	showCheckboxes,
+	onSelectionChanged,
+	selectedItems,
 }) => {
 	const [t] = useTranslation();
 
 	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the tableState.query
 	// This avoids doing a database query on every key press
 	const [searchTerm, setSearchTerm] = useState<string>('');
+	const [internalSelectedItems, setInternalSelectedItems] = useState<any[]>([]);
+	const [selectedBulkAction, setSelectedBulkAction] = useState<string | null>(null);
+	const [confirmBulkActionModalOpen, setConfirmBulkActionModalOpen] = useState<boolean>(false);
 
 	// Build an object containing the filterable columns, so they can be converted to and from the query params
 	const queryParamConfig: { [queryParamId: string]: QueryParamConfig<any> } = {
@@ -168,7 +191,30 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 		}
 	};
 
+	const handleSelectBulkAction = (selectedAction: string) => {
+		const bulkActionInfo = (bulkActions || []).find(action => action.value === selectedAction);
+		if (bulkActionInfo && onSelectBulkAction) {
+			if (bulkActionInfo.confirm) {
+				setSelectedBulkAction(selectedAction);
+				setConfirmBulkActionModalOpen(true);
+			} else {
+				onSelectBulkAction(selectedAction, internalSelectedItems);
+				setSelectedBulkAction(null);
+			}
+		}
+	};
+
+	const handleConfirmSelectBulkAction = () => {
+		if (onSelectBulkAction && selectedBulkAction) {
+			onSelectBulkAction(selectedBulkAction, internalSelectedItems);
+			setSelectedBulkAction(null);
+		}
+	};
+
 	const renderFilters = () => {
+		const page = tableState.page | 0;
+		const from = page * itemsPerPage + 1;
+		const to = Math.min(page * itemsPerPage + itemsPerPage, dataCount);
 		return (
 			<>
 				<Spacer margin="bottom">
@@ -191,6 +237,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								onClick={() => handleTableStateChanged(searchTerm, 'query')}
 							/>
 						</FormGroup>
+						<Spacer margin="left-small">
+							<p className="c-body-1 u-text-muted">
+								{from}-{to} van {dataCount} resultaten
+							</p>
+						</Spacer>
 					</Form>
 				</Spacer>
 
@@ -255,6 +306,17 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 									return null;
 							}
 						})}
+						{!!bulkActions && !!bulkActions.length && (
+							<Select
+								options={bulkActions}
+								onChange={handleSelectBulkAction}
+								placeholder={t(
+									'admin/shared/components/filter-table/filter-table___bulkactie'
+								)}
+								disabled={!internalSelectedItems.length}
+								className="c-bulk-action-select"
+							/>
+						)}
 					</Flex>
 				</Spacer>
 			</>
@@ -275,20 +337,40 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						onColumnClick={columnId => {
 							handleSortOrderChanged(columnId);
 						}}
+						onRowClick={onRowClick}
 						renderCell={renderCell}
 						rowKey={rowKey}
 						variant={variant}
 						sortColumn={tableState.sort_column}
 						sortOrder={tableState.sort_order}
+						showCheckboxes={(!!bulkActions && !!bulkActions.length) || showCheckboxes}
+						selectedItems={selectedItems || internalSelectedItems}
+						onSelectionChanged={onSelectionChanged || setInternalSelectedItems}
 					/>
 					<Spacer margin="top-large">
 						<Pagination
 							pageCount={Math.ceil(dataCount / itemsPerPage)}
-							currentPage={tableState.page}
+							currentPage={tableState.page || 0}
 							onPageChange={newPage => handleTableStateChanged(newPage, 'page')}
 						/>
 					</Spacer>
 				</>
+			)}
+			{!!bulkActions && !!bulkActions.length && (
+				<DeleteObjectModal
+					isOpen={confirmBulkActionModalOpen}
+					deleteObjectCallback={handleConfirmSelectBulkAction}
+					onClose={() => setConfirmBulkActionModalOpen(false)}
+					confirmLabel={get(
+						bulkActions.find(action => action.value === selectedBulkAction),
+						'label',
+						t('admin/shared/components/filter-table/filter-table___bevestig')
+					)}
+					confirmButtonType={get(
+						bulkActions.find(action => action.value === selectedBulkAction),
+						'confirmButtonType'
+					)}
+				/>
 			)}
 		</div>
 	);

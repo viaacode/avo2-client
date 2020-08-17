@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxOption } from '../../shared/components';
+import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
@@ -9,6 +9,7 @@ import { ItemsOverviewTableCols } from './items.types';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
+	PUBLISH_ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.publishItems}`,
 	ITEM_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}/:id`,
 };
 
@@ -26,10 +27,22 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 };
 
-export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
+export const GET_ITEM_OVERVIEW_TABLE_COLS: (
+	seriesOptions: CheckboxOption[],
+	cpOptions: CheckboxOption[]
+) => FilterableColumn[] = (seriesOptions: CheckboxOption[], cpOptions: CheckboxOption[]) => [
 	{ id: 'external_id', label: i18n.t('admin/items/items___pid'), sortable: true },
 	{ id: 'title', label: i18n.t('admin/items/items___titel'), sortable: true },
-	{ id: 'series', label: i18n.t('admin/items/items___reeks'), sortable: true },
+	{
+		id: 'series',
+		label: i18n.t('admin/items/items___reeks'),
+		sortable: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: seriesOptions,
+			showMaxOptions: 40,
+		} as CheckboxDropdownModalProps,
+	},
 	{
 		id: 'issued',
 		label: i18n.t('admin/items/items___uitgegeven'),
@@ -43,12 +56,6 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 		filterType: 'DateRangeDropdown',
 	},
 	{
-		id: 'created_at',
-		label: i18n.t('admin/items/items___aangemaakt'),
-		sortable: true,
-		filterType: 'DateRangeDropdown',
-	},
-	{
 		id: 'type',
 		label: i18n.t('admin/items/items___type'),
 		sortable: true,
@@ -58,15 +65,37 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 				{ label: i18n.t('admin/items/items___video'), id: 'video' },
 				{ label: i18n.t('admin/items/items___audio'), id: 'audio' },
 			] as CheckboxOption[],
-		},
+			showMaxOptions: 40,
+		} as CheckboxDropdownModalProps,
 	},
-	{ id: 'organisation', label: i18n.t('admin/items/items___cp'), sortable: true },
+	{
+		id: 'organisation',
+		label: i18n.t('admin/items/items___cp'),
+		sortable: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: cpOptions,
+			showMaxOptions: 40,
+		} as CheckboxDropdownModalProps,
+	},
 	{ id: 'views', label: i18n.t('admin/items/items___views'), sortable: true },
 	{
 		id: 'is_published',
 		label: i18n.t('admin/items/items___publiek'),
 		sortable: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				{
+					label: i18n.t('admin/items/items___gepubliceerd'),
+					id: 'published',
+				},
+				{
+					label: i18n.t('admin/items/items___gedepubliceerd'),
+					id: 'unpublished',
+				},
+			],
+		},
 	},
 	// {
 	// 	id: 'updated_at',
@@ -107,5 +136,17 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	// { id: 'lom_keywords', label: i18n.t('admin/items/items___terfwoorden') },
 	// { id: 'lom_languages', label: i18n.t('admin/items/items___talen') },
 	// { id: 'lom_typicalagerange', label: i18n.t('admin/items/items___leeftijdsgroep') },
+	{ id: 'actions', label: '' },
+];
+
+export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
+	{ id: 'title', label: i18n.t('admin/items/items___titel') },
+	{ id: 'pid', label: i18n.t('admin/items/items___pid'), sortable: true },
+	{
+		id: 'updated_at',
+		label: i18n.t('admin/items/items___aangepast-op-mam'),
+		sortable: true,
+		filterType: 'DateRangeDropdown',
+	},
 	{ id: 'actions', label: '' },
 ];

@@ -1,6 +1,6 @@
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
@@ -9,10 +9,10 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Icon,
 	RichEditorState,
 	Spacer,
 	Table,
-	Thumbnail,
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
@@ -35,18 +35,18 @@ import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
-	renderMultiOptionDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { Color } from '../../shared/types';
 import { ItemsService } from '../items.service';
 
-type CollectionColumnId = 'title' | 'author' | 'organization' | 'actions';
+type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
 const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
 	title: 'title',
 	author: 'profile.user.last_name',
+	is_public: 'is_public',
 	organization: 'profile.profile_organizations[0].organization_id',
 	actions: '',
 };
@@ -123,6 +123,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				throw new CustomError('The item has not been loaded yet', null, { item });
 			}
 			await ItemsService.setItemPublishedState(item.uid, !item.is_published);
+			await ItemsService.deleteItemFromCollectionsAndBookmarks(item.uid, item.external_id);
 			ToastService.success(
 				item.is_published
 					? t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
@@ -212,7 +213,22 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'organization':
-				return get(rowData, 'profile.profile_organizations[0].organization_id', '-');
+				return get(rowData, 'profile.organisation.name', '-');
+
+			case 'is_public':
+				return (
+					<div
+						title={
+							rowData.is_public
+								? t('collection/components/collection-or-bundle-overview___publiek')
+								: t(
+										'collection/components/collection-or-bundle-overview___niet-publiek'
+								  )
+						}
+					>
+						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
+					</div>
+				);
 
 			case 'actions':
 				return (
@@ -251,30 +267,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				<Container mode="horizontal">
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
-							<tr>
-								<th>
-									<Trans i18nKey="admin/items/views/item-detail___cover-afbeelding">
-										Cover Afbeelding
-									</Trans>
-								</th>
-								<td>
-									<Container size="medium">
-										<Thumbnail
-											category={get(item, 'type.label', 'video')}
-											src={item.thumbnail_path}
-										/>
-									</Container>
-								</td>
-							</tr>
 							{renderSimpleDetailRows(item, [
 								['uid', t('admin/items/views/item-detail___av-o-uuid')],
 								['external_id', t('admin/items/views/item-detail___pid')],
-								['title', t('admin/items/views/item-detail___titel')],
-								['description', t('admin/items/views/item-detail___beschrijving')],
-								['type.label', t('admin/items/views/item-detail___type')],
-								['series', t('admin/items/views/item-detail___reeks')],
-								['organisation.name', t('admin/items/views/item-detail___cp')],
-								['duration', t('admin/items/views/item-detail___lengte')],
 								['is_published', t('admin/items/views/item-detail___pubiek')],
 								['is_deleted', t('admin/items/views/item-detail___verwijderd')],
 							])}
@@ -293,27 +288,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								[
 									'depublish_at',
 									t('admin/items/views/item-detail___te-depubliceren-op'),
-								],
-								[
-									'expiry_date',
-									t('admin/items/views/item-detail___expiratie-datum'),
-								],
-							])}
-							{renderMultiOptionDetailRows(item, [
-								['lom_classification', t('admin/items/views/item-detail___vakken')],
-								[
-									'lom_context',
-									t('admin/items/views/item-detail___opleidingniveaus'),
-								],
-								[
-									'lom_intendedenduserrole',
-									t('admin/items/views/item-detail___bedoeld-voor'),
-								],
-								['lom_keywords', t('admin/items/views/item-detail___trefwoorden')],
-								['lom_languages', t('admin/items/views/item-detail___talen')],
-								[
-									'lom_typicalagerange',
-									t('admin/items/views/item-detail___leeftijdsgroepen'),
 								],
 							])}
 							{renderSimpleDetailRows(item, [
@@ -372,6 +346,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									sortable: true,
 								},
 								{ label: 'Organisatie', id: 'organization', sortable: false },
+								{
+									label: t('admin/items/items___publiek'),
+									id: 'is_public',
+									sortable: true,
+								},
 								{ label: '', id: 'actions', sortable: false },
 							]}
 							data={collectionsContainingItem}

@@ -9,9 +9,10 @@ import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './co
 import { CollectionService } from './collection.service';
 import { ContentTypeNumber } from './collection.types';
 
-export const getValidationFeedbackForShortDescription = (
+export const getValidationFeedbackForDescription = (
 	description: string | null,
 	maxLength: number,
+	getTooLongErrorMessage: (count: string) => string,
 	isError?: boolean | null
 ): string => {
 	const count: string = `${(description || '').length}/${maxLength}`;
@@ -19,11 +20,7 @@ export const getValidationFeedbackForShortDescription = (
 	const exceedsSize: boolean = (description || '').length > maxLength;
 
 	if (isError) {
-		return exceedsSize
-			? i18n.t('collection/collection___de-korte-omschrijving-is-te-lang-count', {
-					count,
-			  } as any)
-			: '';
+		return exceedsSize ? getTooLongErrorMessage(count) : '';
 	}
 
 	return exceedsSize ? '' : `${(description || '').length}/${maxLength}`;
@@ -230,7 +227,8 @@ export const getDuplicateTitleOrDescriptionErrors = async (
 	const duplicates = await CollectionService.getCollectionByTitleOrDescription(
 		collection.title || '',
 		collection.description || '',
-		collection.id as string
+		collection.id as string,
+		collection.type_id as ContentTypeNumber
 	);
 
 	const errors = [];

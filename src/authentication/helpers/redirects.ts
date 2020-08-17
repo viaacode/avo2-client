@@ -32,6 +32,10 @@ export function redirectToLoggedOutHome(location: Location) {
 	window.location.href = getBaseUrl(location);
 }
 
+export function redirectToLoggedInHome(location: Location) {
+	window.location.href = `${getBaseUrl(location)}/start`;
+}
+
 /**
  *
  * Server redirect functions
@@ -84,9 +88,17 @@ export function redirectToServerLogoutPage(location: Location, routeAfterLogout:
 	})}`;
 }
 
-export function logoutAndRedirectToLogin() {
+export function logoutAndRedirectToLogin(location?: Location) {
 	// Url to return to after logout is completed
-	const returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
+	let returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
+
+	if (location) {
+		returnToUrl = `${returnToUrl}?${queryString.stringify({
+			// Url to redirect to after logging back in
+			returnToUrl: getRedirectAfterLogin(location),
+		})}`;
+	}
+
 	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
 		returnToUrl,
 	})}`;

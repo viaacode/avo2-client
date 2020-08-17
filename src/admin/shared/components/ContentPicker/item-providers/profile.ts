@@ -1,10 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../../../shared/helpers';
-import { UserService } from '../../../users/user.service';
-import { PickerSelectItem } from '../../types';
-
-import { parsePickerItem } from './parse-picker';
+import { CustomError } from '../../../../../shared/helpers';
+import { UserService } from '../../../../users/user.service';
+import { PickerSelectItem } from '../../../types';
+import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch profiles from GQL
 export const retrieveProfiles = async (
@@ -14,9 +13,17 @@ export const retrieveProfiles = async (
 	try {
 		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
 			0,
-			'updated_at',
+			'last_access_at',
 			'desc',
-			name || '',
+			!!name
+				? {
+						_or: [
+							{ usersByuserId: { first_name: { _ilike: `%${name}%` } } },
+							{ usersByuserId: { last_name: { _ilike: `%${name}%` } } },
+							{ usersByuserId: { mail: { _ilike: `%${name}%` } } },
+						],
+				  }
+				: undefined,
 			limit
 		);
 		return parseProfiles(response[0]);

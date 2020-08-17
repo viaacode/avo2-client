@@ -64,7 +64,7 @@ import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-pl
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionService } from '../collection.service';
-import { ContentTypeString, toEnglishContentType } from '../collection.types';
+import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
 import { FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
@@ -172,13 +172,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
-						{
-							name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
-							obj: collectionId,
-						},
-					],
+					{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
 					user
 				),
 				PermissionService.hasPermissions(
@@ -282,7 +276,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				trackEvents(
 					{
 						object: collectionId,
-						object_type: 'collections',
+						object_type: 'collection',
 						message: `Gebruiker ${getProfileName(
 							user
 						)} heeft de pagina voor collectie ${collectionId} bekeken`,
@@ -384,6 +378,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						COLLECTION_COPY,
 						COLLECTION_COPY_REGEX
 					);
+
+					trackEvents(
+						{
+							object: collection.id,
+							object_type: 'collection',
+							message: `${getProfileName(user)} heeft een collectie gedupliceerd`,
+							action: 'copy',
+						},
+						user
+					);
+
 					redirectToClientPage(
 						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
 						history
@@ -487,6 +492,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const onDeleteCollection = async (): Promise<void> => {
 		try {
 			await CollectionService.deleteCollection(collectionId);
+
+			trackEvents(
+				{
+					object: collectionId,
+					object_type: 'collection',
+					message: `${getProfileName(user)} heeft een collectie verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
+
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
@@ -566,6 +582,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				  ]
 				: []),
 		];
+		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
 				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
@@ -584,7 +601,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Button
 						type="secondary"
 						title={
-							collection && collection.is_public
+							isPublic
 								? t(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
@@ -593,7 +610,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								  )
 						}
 						ariaLabel={
-							collection && collection.is_public
+							isPublic
 								? t(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
@@ -601,7 +618,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={collection && collection.is_public ? 'unlock-3' : 'lock'}
+						icon={isPublic ? 'unlock-3' : 'lock'}
 						onClick={() => executeAction('openPublishCollectionModal')}
 					/>
 				)}
@@ -613,13 +630,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
-				<Button
-					title={t('collection/views/collection-detail___deel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('collection/views/collection-detail___deel')}
-					onClick={() => executeAction('openShareThroughEmail')}
-				/>
+				{isPublic && (
+					<Button
+						title={t('collection/views/collection-detail___deel')}
+						type="secondary"
+						icon="share-2"
+						ariaLabel={t('collection/views/collection-detail___deel')}
+						onClick={() => executeAction('openShareThroughEmail')}
+					/>
+				)}
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
@@ -695,11 +714,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					: t('collection/views/collection-detail___maak-bladwijzer'),
 				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 			),
-			createDropdownMenuItem(
-				'openShareThroughEmail',
-				t('collection/views/collection-detail___deel'),
-				'share-2'
-			),
+			...(!!collection && collection.is_public
+				? [
+						createDropdownMenuItem(
+							'openShareThroughEmail',
+							t('collection/views/collection-detail___deel'),
+							'share-2'
+						),
+				  ]
+				: []),
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
@@ -761,10 +784,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			profile,
 			collection_fragments,
 			lom_context,
+			created_at,
 			updated_at,
 			title,
 			lom_classification,
 		} = collection as Avo.Collection.Collection;
+		const hasCopies = !!get(collection, 'relations', []).length;
+		const hasParentBundles = !!publishedBundles.length;
+
 		return (
 			<>
 				<MetaTags>
@@ -847,7 +874,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</h3>
 							<Grid>
 								<Column size="3-3">
-									<Spacer margin="top">
+									<Spacer margin="top-large">
 										<p className="u-text-bold">
 											<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
 												Onderwijsniveau
@@ -865,72 +892,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											)}
 										</p>
 									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-												Laatst aangepast
-											</Trans>
-										</p>
-										<p className="c-body-1">{formatDate(updated_at)}</p>
-									</Spacer>
-								</Column>
-								<Column size="3-6">
-									<Spacer margin="top">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___ordering">
-												Ordering
-											</Trans>
-										</p>
-										{!!get(collection, 'relations', []).length && (
-											<p className="c-body-1">
-												<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
-													Deze collectie is een kopie van:
-												</Trans>
-												{(get(collection, 'relations', []) as any[]).map(
-													(relation: any) => (
-														<Link
-															key={`copy-of-link-${relation.object_meta.id}`}
-															to={buildLink(
-																APP_PATH.COLLECTION_DETAIL.route,
-																{ id: relation.object_meta.id }
-															)}
-														>
-															{relation.object_meta.title}
-														</Link>
-													)
-												)}
-											</p>
-										)}
-										{!!publishedBundles.length && (
-											<p className="c-body-1">
-												<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-													Deze collectie is deel van een bundel:
-												</Trans>
-												{publishedBundles.map((bundle, index) => (
-													<>
-														{index !== 0 &&
-															!!publishedBundles.length &&
-															', '}
-														<Link
-															to={buildLink(
-																APP_PATH.BUNDLE_DETAIL.route,
-																{
-																	id: bundle.id,
-																}
-															)}
-														>
-															{bundle.title}
-														</Link>
-													</>
-												))}
-											</p>
-										)}
-									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top">
+									<Spacer margin="top-large">
 										<p className="u-text-bold">
 											<Trans i18nKey="collection/views/collection-detail___vakken">
 												Vakken
@@ -949,6 +911,81 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										</p>
 									</Spacer>
 								</Column>
+								<Column size="3-3">
+									<Spacer margin="top-large">
+										<p className="u-text-bold">
+											{t(
+												'collection/views/collection-detail___aangemaakt-op'
+											)}
+										</p>
+										<p className="c-body-1">{formatDate(created_at)}</p>
+									</Spacer>
+									<Spacer margin="top-large">
+										<p className="u-text-bold">
+											{t(
+												'collection/views/collection-detail___laatst-aangepast'
+											)}
+										</p>
+										<p className="c-body-1">{formatDate(updated_at)}</p>
+									</Spacer>
+								</Column>
+								{(hasCopies || hasParentBundles) && (
+									<Column size="3-6">
+										<Spacer margin="top-large">
+											<p className="u-text-bold">
+												<Trans i18nKey="collection/views/collection-detail___ordering">
+													Ordering
+												</Trans>
+											</p>
+											{hasCopies && (
+												<p className="c-body-1">
+													{`${t(
+														'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
+													)} `}
+													{(get(
+														collection,
+														'relations',
+														[]
+													) as Relation[]).map((relation: Relation) => (
+														<Link
+															key={`copy-of-link-${relation.object_meta.id}`}
+															to={buildLink(
+																APP_PATH.COLLECTION_DETAIL.route,
+																{ id: relation.object_meta.id }
+															)}
+														>
+															{relation.object_meta.title}
+														</Link>
+													))}
+												</p>
+											)}
+											{hasParentBundles && (
+												<p className="c-body-1">
+													{`${t(
+														'collection/views/collection-detail___deze-collectie-is-deel-van-een-map'
+													)} `}
+													{publishedBundles.map((bundle, index) => (
+														<>
+															{index !== 0 &&
+																!!publishedBundles.length &&
+																', '}
+															<Link
+																to={buildLink(
+																	APP_PATH.BUNDLE_DETAIL.route,
+																	{
+																		id: bundle.id,
+																	}
+																)}
+															>
+																{bundle.title}
+															</Link>
+														</>
+													))}
+												</p>
+											)}
+										</Spacer>
+									</Column>
+								)}
 							</Grid>
 							{!!relatedCollections && !!relatedCollections.length && (
 								<>

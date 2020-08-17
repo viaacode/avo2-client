@@ -1,30 +1,26 @@
-import { get } from 'lodash-es';
+import { flatten, get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
-import { dataService } from '../../shared/services';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import {
 	ITEMS_PER_PAGE,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './collections-or-bundles.const';
-import { GET_COLLECTIONS } from './collections-or-bundles.gql';
+import {
+	BULK_ADD_LABELS_TO_COLLECTIONS,
+	BULK_DELETE_COLLECTIONS,
+	BULK_DELETE_LABELS_FROM_COLLECTIONS,
+	BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
+	BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
+	GET_COLLECTIONS,
+} from './collections-or-bundles.gql';
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
-	private static getOrderObject(
-		sortColumn: CollectionsOrBundlesOverviewTableCols,
-		sortOrder: Avo.Search.OrderDirection
-	) {
-		const getOrderFunc: Function | undefined =
-			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
-		if (getOrderFunc) {
-			return [getOrderFunc(sortOrder)];
-		}
-		return [{ [sortColumn]: sortOrder }];
-	}
-
 	public static async getCollections(
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
@@ -37,7 +33,11 @@ export class CollectionsOrBundlesService {
 				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
-				orderBy: CollectionsOrBundlesService.getOrderObject(sortColumn, sortOrder),
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 			};
 			const response = await dataService.query({
 				variables,
@@ -60,6 +60,147 @@ export class CollectionsOrBundlesService {
 			throw new CustomError('Failed to get collections from the database', err, {
 				variables,
 				query: 'GET_COLLECTIONS',
+			});
+		}
+	}
+
+	public static async bulkChangePublicStateForCollections(
+		isPublic: boolean,
+		collectionIds: string[]
+	): Promise<number> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
+				variables: {
+					isPublic,
+					collectionIds,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return get(response, 'data.update_app_collections.affected_rows');
+		} catch (err) {
+			throw new CustomError(
+				'Failed to update publish state for collections in the database',
+				err,
+				{
+					collectionIds,
+					isPublic,
+					query: 'BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS',
+				}
+			);
+		}
+	}
+
+	public static async bulkUpdateAuthorForCollections(
+		authorId: string,
+		collectionIds: string[]
+	): Promise<number> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
+				variables: {
+					authorId,
+					collectionIds,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return get(response, 'data.update_app_collections.affected_rows');
+		} catch (err) {
+			throw new CustomError('Failed to update author for collections in the database', err, {
+				authorId,
+				collectionIds,
+				query: 'BULK_UPDATE_AUTHOR_FOR_COLLECTIONS',
+			});
+		}
+	}
+
+	public static async bulkDeleteCollections(collectionIds: string[]): Promise<number> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_DELETE_COLLECTIONS,
+				variables: {
+					collectionIds,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return get(response, 'data.update_app_collections.affected_rows');
+		} catch (err) {
+			throw new CustomError('Failed to delete collections in the database', err, {
+				collectionIds,
+				query: 'BULK_DELETE_COLLECTIONS',
+			});
+		}
+	}
+
+	public static async bulkAddLabelsToCollections(labels: string[], collectionIds: string[]) {
+		try {
+			// First remove the labels, so we can add them without duplicate conflicts
+			await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
+				labels,
+				collectionIds
+			);
+
+			// Add the labels
+			const response = await dataService.mutate({
+				mutation: BULK_ADD_LABELS_TO_COLLECTIONS,
+				variables: {
+					labels: flatten(
+						labels.map(label =>
+							collectionIds.map(collectionId => ({
+								label,
+								collection_uuid: collectionId,
+							}))
+						)
+					),
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return get(response, 'data.insert_app_collection_labels.affected_rows');
+		} catch (err) {
+			throw new CustomError('Failed to bulk add labels to collections', err, {
+				labels,
+				collectionIds,
+				query: 'BULK_ADD_LABELS_TO_COLLECTIONS',
+			});
+		}
+	}
+
+	public static async bulkRemoveLabelsFromCollections(labels: string[], collectionIds: string[]) {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_DELETE_LABELS_FROM_COLLECTIONS,
+				variables: {
+					labels,
+					collectionIds,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return get(response, 'data.delete_app_collection_labels.affected_rows');
+		} catch (err) {
+			throw new CustomError('Failed to bulk delete labels from collections', err, {
+				labels,
+				collectionIds,
+				query: 'BULK_DELETE_LABELS_FROM_COLLECTIONS',
 			});
 		}
 	}

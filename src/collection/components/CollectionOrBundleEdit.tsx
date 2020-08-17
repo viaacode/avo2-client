@@ -60,14 +60,16 @@ import {
 	sanitizeHtml,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
-import { DELETE_COLLECTION } from '../collection.gql';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
+import { toDutchContentType } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
 
@@ -153,6 +155,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			canViewItems: boolean;
 		}>
 	>({});
+	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -340,6 +345,24 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 						: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
+				return;
+			}
+
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts', err, {
+						uuid: collectionObj.id,
+					})
+				);
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
 			}
 
 			setPermissions(permissionObj);
@@ -428,7 +451,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		const updatedCollection = convertFragmentDescriptionsToHtml(({
 			...collectionState.currentCollection,
 			updated_by_profile_id: get(user, 'profile.id', null),
-		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.17.0
+		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.22.0
 
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
@@ -448,10 +471,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				trackEvents(
 					{
 						object: String(newCollection.id),
-						object_type: 'collections',
-						message: `Gebruiker ${getProfileName(user)} heeft de ${type} ${
-							newCollection.id
-						} bijgewerkt`,
+						object_type: type,
+						message: `Gebruiker ${getProfileName(user)} heeft een ${type} aangepast`,
 						action: 'edit',
 					},
 					user
@@ -547,21 +568,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				);
 				return;
 			}
-			await dataService.mutate({
-				mutation: DELETE_COLLECTION,
-				variables: {
-					id: collectionState.currentCollection.id,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await CollectionService.deleteCollection(collectionState.currentCollection.id);
 
 			trackEvents(
 				{
 					object: String(collectionState.currentCollection.id),
-					object_type: 'collections',
-					message: `Gebruiker ${getProfileName(user)} heeft de ${type} ${
-						collectionState.currentCollection.id
-					} verwijderd`,
+					object_type: type,
+					message: `Gebruiker ${getProfileName(user)} heeft een ${toDutchContentType(
+						type
+					)} verwijderd`,
 					action: 'delete',
 				},
 				user
@@ -1053,8 +1068,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					onClickTitle={() => setIsRenameModalOpen(true)}
 					category={type}
 					showMetaData
-					bookmarks="0" // TODO: Real bookmark count
-					views="0" // TODO: Real view count
+					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
 					<HeaderButtons>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}

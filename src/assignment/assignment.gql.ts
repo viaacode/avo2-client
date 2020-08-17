@@ -53,6 +53,14 @@ export const GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE = gql`
 		) {
 			id
 			title
+			profile {
+				user: usersByuserId {
+					last_name
+					id
+					first_name
+				}
+			}
+			is_archived
 		}
 	}
 `;
@@ -155,8 +163,8 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 				is_archived
 				is_deleted
 				title
-				owner_profile_id
 				created_at
+				owner_profile_id
 				profile {
 					user: usersByuserId {
 						first_name
@@ -240,7 +248,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					name
 					or_id
 				}
-				profile_user_group {
+				profile_user_groups {
 					groups {
 						label
 						id
