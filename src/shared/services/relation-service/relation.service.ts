@@ -144,7 +144,7 @@ export class RelationService {
 		return this.deleteRelations(type, subjectId, relationType, null);
 	}
 
-	public static async deleteRelations(
+	private static async deleteRelations(
 		type: 'collection' | 'item',
 		subjectId: string | null,
 		relationType: RelationType,
