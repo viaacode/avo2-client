@@ -78,7 +78,11 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			await ItemsService.deleteItemFromCollectionsAndBookmarks(item.uid, item.external_id);
 
 			// When we unpublish an item, it cannot be the replacement for any other items
-			await RelationService.deleteRelationsBySubject('item', item.uid, RelationType.REPLACES);
+			await RelationService.deleteRelationsByObject(
+				'item',
+				RelationType.IS_REPLACED_BY,
+				item.uid
+			);
 
 			if (depublishType === 'depublish_with_reason') {
 				// Remove after https://meemoo.atlassian.net/browse/DEV-1140
@@ -104,8 +108,8 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				await RelationService.insertRelation(
 					'item',
 					item.uid,
-					replacementItem.uid,
-					RelationType.IS_REPLACED_BY
+					RelationType.IS_REPLACED_BY,
+					replacementItem.uid
 				);
 			}
 			ToastService.success(t('Het item is gedepubliceerd'), false);

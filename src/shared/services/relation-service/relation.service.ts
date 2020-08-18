@@ -20,10 +20,10 @@ import { RelationEntry, RelationType } from './relation.types';
 export class RelationService {
 	public static async fetchRelationsByObject(
 		type: 'collection' | 'item',
-		objectId: string,
-		relationType: RelationType
+		relationType: RelationType,
+		objectId: string
 	): Promise<RelationEntry[]> {
-		return this.fetchRelations(type, objectId, null, relationType);
+		return this.fetchRelations(type, null, relationType, objectId);
 	}
 
 	public static async fetchRelationsBySubject(
@@ -31,14 +31,14 @@ export class RelationService {
 		subjectId: string,
 		relationType: RelationType
 	): Promise<RelationEntry[]> {
-		return this.fetchRelations(type, null, subjectId, relationType);
+		return this.fetchRelations(type, subjectId, relationType, null);
 	}
 
 	private static async fetchRelations(
 		type: 'collection' | 'item',
-		objectId: string | null,
 		subjectId: string | null,
-		relationType: RelationType
+		relationType: RelationType,
+		objectId: string | null
 	): Promise<RelationEntry[]> {
 		let variables: any;
 		const isCollection = type === 'collection';
@@ -80,15 +80,15 @@ export class RelationService {
 	/**
 	 * Inserts relationship between object and subject defined by the relationshipType
 	 * @param type
-	 * @param objectId
 	 * @param subjectId
 	 * @param relationType
+	 * @param objectId
 	 */
 	public static async insertRelation(
 		type: 'collection' | 'item',
-		objectId: string,
 		subjectId: string,
-		relationType: RelationType
+		relationType: RelationType,
+		objectId: string
 	): Promise<number> {
 		let variables: any;
 		const isCollection = type === 'collection';
@@ -130,10 +130,10 @@ export class RelationService {
 
 	public static async deleteRelationsByObject(
 		type: 'collection' | 'item',
-		objectId: string,
-		relationType: RelationType
+		relationType: RelationType,
+		objectId: string
 	): Promise<void> {
-		return this.deleteRelations(type, objectId, null, relationType);
+		return this.deleteRelations(type, null, relationType, objectId);
 	}
 
 	public static async deleteRelationsBySubject(
@@ -141,14 +141,14 @@ export class RelationService {
 		subjectId: string,
 		relationType: RelationType
 	): Promise<void> {
-		return this.deleteRelations(type, null, subjectId, relationType);
+		return this.deleteRelations(type, subjectId, relationType, null);
 	}
 
 	public static async deleteRelations(
 		type: 'collection' | 'item',
-		objectId: string | null,
 		subjectId: string | null,
-		relationType: RelationType
+		relationType: RelationType,
+		objectId: string | null
 	): Promise<void> {
 		const isCollection = type === 'collection';
 		let variables: any;

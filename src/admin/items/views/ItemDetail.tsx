@@ -31,6 +31,8 @@ import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { RelationType } from '../../../shared/services/relation-service/relation.types';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -41,8 +43,6 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
-import { RelationService } from '../../../shared/services/relation-service/relation.service';
-import { RelationType } from '../../../shared/services/relation-service/relation.types';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
@@ -132,7 +132,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
 					false
 				);
-				await RelationService.deleteRelationsByObject(
+				await RelationService.deleteRelationsBySubject(
 					'item',
 					item.uid,
 					RelationType.IS_REPLACED_BY
