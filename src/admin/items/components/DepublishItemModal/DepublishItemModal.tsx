@@ -18,12 +18,14 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { CustomError } from '../../../../shared/helpers';
+import { CustomError, stripHtml } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
 import { RelationType } from '../../../../shared/services/relation-service/relation.types';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
+
+import './DepublishItemModal.scss';
 
 export type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 
@@ -54,28 +56,51 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 	const depublishItem = async () => {
 		try {
 			const reasonHtml = reason ? reason.toHTML() : '';
-			if (depublishType === 'depublish_with_reason' && !reasonHtml) {
-				ToastService.danger(t('Reden mag niet leeg zijn'));
+			if (
+				depublishType === 'depublish_with_reason' &&
+				(!reasonHtml || !stripHtml(reasonHtml).trim())
+			) {
+				ToastService.danger(t('Reden mag niet leeg zijn'), false);
 				return;
 			}
 			if (depublishType === 'depublish_with_replacement' && !replacementExternalId) {
-				ToastService.danger(t('Je moet een vervangitem selecteren'));
+				ToastService.danger(t('Je moet een vervang item selecteren'), false);
 				return;
 			}
 
-			await ItemsService.setItemPublishedState(item.external_id, false);
+			if (depublishType === 'depublish_with_reason') {
+			}
+
+			// Depublish item
+			await ItemsService.setItemPublishedState(item.uid, false);
+
+			// Remove references to this item from bookmarks and collections
 			await ItemsService.deleteItemFromCollectionsAndBookmarks(item.uid, item.external_id);
 
+			// When we unpublish an item, it cannot be the replacement for any other items
+			await RelationService.deleteRelationsBySubject('item', item.uid, RelationType.REPLACES);
+
 			if (depublishType === 'depublish_with_reason') {
-				await ItemsService.setItemDepublishReason(item.external_id, reasonHtml);
+				// Remove after https://meemoo.atlassian.net/browse/DEV-1140
+				ToastService.danger(
+					t('Depubliceren met reden is nog niet geïmplementeerd (AVO-699)'),
+					false
+				);
+				return;
+				// await ItemsService.setItemDepublishReason(item.external_id, reasonHtml);
 			} else if (depublishType === 'depublish_with_replacement' && replacementExternalId) {
 				const replacementItem: Avo.Item.Item | null = await ItemsService.fetchItemByExternalId(
 					replacementExternalId
 				);
 				if (!replacementItem) {
-					ToastService.danger(t('Het bepalen van de id van het vervang item is mislukt'));
+					ToastService.danger(
+						t('Het bepalen van de id van het vervang item is mislukt'),
+						false
+					);
 					return;
 				}
+
+				// Add the replacement as instructed by the user
 				await RelationService.insertRelation(
 					'item',
 					item.uid,
@@ -83,7 +108,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					RelationType.IS_REPLACED_BY
 				);
 			}
-			ToastService.success(t('Het item is gedepubliceerd'));
+			ToastService.success(t('Het item is gedepubliceerd'), false);
 			handleClose();
 		} catch (err) {
 			console.error(
@@ -94,19 +119,25 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					replacementExternalId,
 				})
 			);
-			ToastService.danger(t('Het depubliceren is mislukt'));
+			ToastService.danger(t('Het depubliceren is mislukt'), false);
 		}
 	};
 
 	return (
-		<Modal isOpen={isOpen} title={t('Item depubliceren')} size="small" onClose={handleClose}>
+		<Modal
+			isOpen={isOpen}
+			title={t('Item depubliceren')}
+			size="medium"
+			onClose={handleClose}
+			className="m-depublish-modal"
+		>
 			<ModalBody>
 				<Form>
 					<FormGroup label={t('Hoe depubliceren?')}>
 						<Select
 							options={[
 								{
-									label: t('Depubliceren'),
+									label: t('Enkel depubliceren'),
 									value: 'depublish',
 								},
 								{
@@ -149,6 +180,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 								}
 								hideTypeDropdown
 								hideTargetSwitch
+								allowedTypes={['ITEM']}
 							/>
 						</FormGroup>
 					)}

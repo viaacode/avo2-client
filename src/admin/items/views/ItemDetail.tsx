@@ -41,6 +41,8 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
+import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { RelationType } from '../../../shared/services/relation-service/relation.types';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
@@ -129,6 +131,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				ToastService.success(
 					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
 					false
+				);
+				await RelationService.deleteRelationsByObject(
+					'item',
+					item.uid,
+					RelationType.IS_REPLACED_BY
 				);
 
 				setItem({
