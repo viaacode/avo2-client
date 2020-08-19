@@ -54,18 +54,25 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 			});
 	}, [user, t]);
 
+	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
+		return `fragment_${fragment.id}-${get(fragment, 'created_at')}-${get(
+			fragment,
+			'position'
+		)}`;
+	};
+
 	if (isNil(allowedToAddLinks)) {
 		return null;
 	}
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
-			<Container mode="horizontal">
+			<Container mode="horizontal" key={collectionFragments.map(getFragmentKey).join('_')}>
 				{collectionFragments.map((fragment: Avo.Collection.Fragment, index: number) => (
 					<FragmentEdit
 						// If the parent is a collection then the fragment is an ITEM or TEXT
 						// If the parent is a bundle then the fragment is a COLLECTION
 						type={isCollection ? 'itemOrText' : 'collection'}
-						key={`fragment_${fragment.id}-${get(fragment, 'position')}`}
+						key={getFragmentKey(fragment)}
 						index={index}
 						collectionId={collectionId}
 						numberOfFragments={collectionFragments.length}
