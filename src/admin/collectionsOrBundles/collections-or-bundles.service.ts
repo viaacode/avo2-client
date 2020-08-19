@@ -187,7 +187,7 @@ export class CollectionsOrBundlesService {
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
-			await this.bulkUpdateDateAndLastAuthorCollections(updatedByProfileId);
+			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
 
 			return get(response, 'data.insert_app_collection_labels.affected_rows');
 		} catch (err) {
@@ -217,7 +217,7 @@ export class CollectionsOrBundlesService {
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
-			await this.bulkUpdateDateAndLastAuthorCollections(updatedByProfileId);
+			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
 
 			return get(response, 'data.delete_app_collection_labels.affected_rows');
 		} catch (err) {
@@ -229,10 +229,14 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	private static async bulkUpdateDateAndLastAuthorCollections(updatedByProfileId: string) {
+	private static async bulkUpdateDateAndLastAuthorCollections(
+		collectionIds: string[],
+		updatedByProfileId: string
+	) {
 		const updateResponse = await dataService.mutate({
 			mutation: BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
 			variables: {
+				collectionIds,
 				updatedByProfileId,
 				now: new Date().toISOString(),
 			},
