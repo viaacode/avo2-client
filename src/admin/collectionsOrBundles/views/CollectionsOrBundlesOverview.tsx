@@ -426,7 +426,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		try {
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
-				compact(selectedRows.map(collection => collection.id))
+				compact(selectedRows.map(collection => collection.id)),
+				getProfileId(user)
 			);
 			setSelectedRows([]);
 			ToastService.success(
@@ -463,7 +464,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const bulkDeleteCollections = async (selectedRows: Partial<Avo.Collection.Collection>[]) => {
 		try {
 			await CollectionsOrBundlesService.bulkDeleteCollections(
-				compact(selectedRows.map(collection => collection.id))
+				compact(selectedRows.map(collection => collection.id)),
+				getProfileId(user)
 			);
 			setSelectedRows([]);
 			ToastService.success(
@@ -492,7 +494,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		try {
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
-				compact(selectedRows.map(collection => collection.id))
+				compact(selectedRows.map(collection => collection.id)),
+				getProfileId(user)
 			);
 			ToastService.success(
 				t(
@@ -521,7 +524,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
-					compact(selectedRows.map(collection => collection.id))
+					compact(selectedRows.map(collection => collection.id)),
+					getProfileId(user)
 				);
 				ToastService.success(
 					t(
@@ -533,7 +537,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				// remove
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
-					compact(selectedRows.map(collection => collection.id))
+					compact(selectedRows.map(collection => collection.id)),
+					getProfileId(user)
 				);
 				ToastService.success(
 					t(
