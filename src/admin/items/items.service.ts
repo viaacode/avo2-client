@@ -19,6 +19,7 @@ import {
 	GET_PUBLIC_ITEMS,
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+	UPDATE_ITEM_DEPUBLISH_REASON,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
 } from './items.gql';
@@ -164,6 +165,35 @@ export class ItemsService {
 				{
 					variables,
 					query: 'UPDATE_ITEM_PUBLISH_STATE',
+				}
+			);
+		}
+	}
+
+	static async setItemDepublishReason(itemUuid: string, reason: null | string): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				itemUuid,
+				reason,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: UPDATE_ITEM_DEPUBLISH_REASON,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to update depublish_reason field for item in the database',
+				err,
+				{
+					variables,
+					query: 'UPDATE_ITEM_DEPUBLISH_REASON',
 				}
 			);
 		}

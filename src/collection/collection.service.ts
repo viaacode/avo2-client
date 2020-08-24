@@ -418,9 +418,9 @@ export class CollectionService {
 
 			await RelationService.insertRelation(
 				'collection',
-				collection.id,
 				duplicatedCollection.id,
-				RelationType.IS_COPY_OF
+				RelationType.IS_COPY_OF,
+				collection.id
 			);
 
 			return duplicatedCollection;
