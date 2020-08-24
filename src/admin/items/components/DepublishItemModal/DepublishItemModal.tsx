@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -66,9 +67,6 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			if (depublishType === 'depublish_with_replacement' && !replacementExternalId) {
 				ToastService.danger(t('Je moet een vervang item selecteren'), false);
 				return;
-			}
-
-			if (depublishType === 'depublish_with_reason') {
 			}
 
 			// Depublish item
@@ -180,7 +178,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 										: undefined
 								}
 								onSelect={pickerItem =>
-									setReplacementExternalId(pickerItem ? pickerItem.value : null)
+									setReplacementExternalId(get(pickerItem, 'value', null))
 								}
 								hideTypeDropdown
 								hideTargetSwitch
