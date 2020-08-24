@@ -285,9 +285,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				);
 
-				if (collectionObj.is_public) {
-					getRelatedCollections();
-				}
+				getRelatedCollections();
 
 				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
 				try {
