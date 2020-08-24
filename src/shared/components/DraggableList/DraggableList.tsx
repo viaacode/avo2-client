@@ -9,14 +9,14 @@ export interface DraggableListProps {
 	items: any[];
 	renderItem: (item: any) => ReactNode;
 	onListChange: (updatedList: JSX.Element[]) => void;
-	key?: string;
+	generateKey?: (item: any) => string;
 }
 
 const DraggableList: FunctionComponent<DraggableListProps> = ({
 	items,
 	renderItem,
 	onListChange,
-	key = 'id',
+	generateKey = () => 'id',
 }) => {
 	const [currentlyBeingDragged, setCurrentlyBeingDragged] = useState<any | null>(null);
 
@@ -71,7 +71,7 @@ const DraggableList: FunctionComponent<DraggableListProps> = ({
 					onDragEnd={onDragEnd}
 					onDragStart={e => onDragStart(e, index)}
 					draggable
-					key={`draggable-item-${item[key]}`}
+					key={`draggable-item-${generateKey(item)}`}
 				>
 					<div className="o-grid-col-flex">
 						<div className="o-flex">{renderItem(item)}</div>

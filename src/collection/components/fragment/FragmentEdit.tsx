@@ -77,10 +77,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-	const [cuePoints, setCuePoints] = useState({
-		start: fragment.start_oc,
-		end: fragment.end_oc,
-	}); // TODO: Add type
 	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
@@ -400,7 +396,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 										poster={
 											fragment.thumbnail_path || itemMetaData.thumbnail_path
 										}
-										cuePoints={cuePoints}
+										cuePoints={{
+											start: fragment.start_oc,
+											end: fragment.end_oc,
+										}}
 										canPlay={!isCutModalOpen && !isDeleteModalOpen}
 									/>
 								) : (
@@ -452,7 +451,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 					itemMetaData={itemMetaData}
 					changeCollectionState={changeCollectionState}
 					fragment={fragment}
-					updateCuePoints={setCuePoints}
 					index={index}
 				/>
 			)}

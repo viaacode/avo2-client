@@ -776,6 +776,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					collection_uuid: bundleId,
 					item_meta: collection,
 					type: 'COLLECTION',
+					created_at: new Date().toISOString(),
 				};
 				changeCollectionState({
 					type: 'INSERT_FRAGMENT',
@@ -811,7 +812,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	const renderDraggableFragment = (fragment: Avo.Collection.Fragment): ReactNode => {
-		const thumbnail = get(fragment, 'item_meta.thumbnail_path');
+		const thumbnail =
+			get(fragment, 'thumbnail_path') || get(fragment, 'item_meta.thumbnail_path');
 		return (
 			<Flex className="c-collection-or-bundle-edit__draggable-item">
 				<FlexItem shrink>
