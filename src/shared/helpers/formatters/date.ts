@@ -43,13 +43,13 @@ export function fromNow(timestamp: DateLikeNullable) {
 	return normalizeTimestamp(timestamp).fromNow();
 }
 
-export function formatTimestamp(timestamp: DateLikeNullable) {
+export function formatTimestamp(timestamp: DateLikeNullable, includeSeconds: boolean = true) {
 	if (!timestamp) {
 		return '';
 	}
 	return normalizeTimestamp(timestamp)
 		.local()
-		.format('DD-MM-YYYY HH:mm:ss');
+		.format(`DD-MM-YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
 }
 
 export function formatDate(timestamp: DateLikeNullable) {
