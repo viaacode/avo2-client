@@ -37,6 +37,11 @@ const ZendeskWrapper: FunctionComponent = () => {
 			updateMargin();
 		});
 
+		// Safari < 13.1
+		if (!ResizeObserver) {
+			return;
+		}
+
 		const resizeObserver = new ResizeObserver(() => {
 			updateFooterHeight();
 			updateMargin();
