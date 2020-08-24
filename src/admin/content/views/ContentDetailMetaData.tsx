@@ -146,6 +146,10 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 									'admin/content/views/content-detail-meta-data___seo-beschrijving'
 								),
 							],
+							[
+								'meta_description',
+								t('Beschrijving voor export (bv: KLAAR nieuwsbrief)'),
+							],
 							['path', t('admin/content/views/content-detail___pad')],
 							[
 								'is_protected',
