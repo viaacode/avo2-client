@@ -244,6 +244,23 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
+							<Column size="12">
+								<FormGroup
+									error={formErrors.meta_description}
+									label={t('Beschrijving voor export (bv: KLAAR nieuwsbrief)')}
+								>
+									<TextArea
+										value={contentPageInfo.meta_description || ''}
+										onChange={newValue =>
+											changeContentPageProp('meta_description', newValue)
+										}
+										height="auto"
+										placeholder={t(
+											'Omschrijving bij het exporteren van deze pagina. Bijvoorbeeld als de beschrijving van de nieuwsbrief voor KLAAR.'
+										)}
+									/>
+								</FormGroup>
+							</Column>
 							{isAdminUser && (
 								<Column size="12">
 									<FormGroup error={formErrors.is_protected}>

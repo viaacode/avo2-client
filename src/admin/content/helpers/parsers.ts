@@ -20,6 +20,7 @@ export function convertToContentPageInfo(dbContentPage: Avo.ContentPage.Page): C
 		description_html: dbContentPage.description || '',
 		description_state: undefined,
 		seo_description: dbContentPage.seo_description || '',
+		meta_description: (dbContentPage as any).meta_description || '', // TODO remove cast after update to typings v2.23.0
 		is_protected: dbContentPage.is_protected,
 		is_public: dbContentPage.is_public,
 		path: dbContentPage.path,
@@ -54,6 +55,7 @@ export function convertToDatabaseContentPage(
 				? contentPageInfo.description_state.toHTML()
 				: contentPageInfo.description_html) || null,
 		seo_description: contentPageInfo.seo_description || null,
+		meta_description: contentPageInfo.meta_description || null,
 		is_protected: contentPageInfo.is_protected,
 		is_public: contentPageInfo.is_public,
 		path: contentPageInfo.path,
@@ -67,5 +69,5 @@ export function convertToDatabaseContentPage(
 		user_group_ids: contentPageInfo.user_group_ids,
 		profile: contentPageInfo.profile,
 		user_profile_id: contentPageInfo.user_profile_id,
-	} as Avo.ContentPage.Page;
+	} as any; // TODO replace cast by "as Avo.ContentPage.Page" after update to typings v2.23.0
 }

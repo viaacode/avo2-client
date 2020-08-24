@@ -79,10 +79,19 @@ export const GET_COLLECTIONS = gql`
 `;
 
 export const BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS = gql`
-	mutation bulkUpdatePublishSTateForCollections($isPublic: Boolean!, $collectionIds: [uuid!]!) {
+	mutation bulkUpdatePublishSTateForCollections(
+		$isPublic: Boolean!
+		$collectionIds: [uuid!]!
+		$now: timestamptz!
+		$updatedByProfileId: uuid!
+	) {
 		update_app_collections(
 			where: { id: { _in: $collectionIds } }
-			_set: { is_public: $isPublic }
+			_set: {
+				is_public: $isPublic
+				updated_at: $now
+				updated_by_profile_id: $updatedByProfileId
+			}
 		) {
 			affected_rows
 		}
@@ -90,10 +99,19 @@ export const BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS = gql`
 `;
 
 export const BULK_UPDATE_AUTHOR_FOR_COLLECTIONS = gql`
-	mutation bulkUpdateAuthorForCollections($authorId: uuid!, $collectionIds: [uuid!]!) {
+	mutation bulkUpdateAuthorForCollections(
+		$authorId: uuid!
+		$collectionIds: [uuid!]!
+		$now: timestamptz!
+		$updatedByProfileId: uuid!
+	) {
 		update_app_collections(
 			where: { id: { _in: $collectionIds } }
-			_set: { owner_profile_id: $authorId }
+			_set: {
+				owner_profile_id: $authorId
+				updated_at: $now
+				updated_by_profile_id: $updatedByProfileId
+			}
 		) {
 			affected_rows
 		}
@@ -101,8 +119,15 @@ export const BULK_UPDATE_AUTHOR_FOR_COLLECTIONS = gql`
 `;
 
 export const BULK_DELETE_COLLECTIONS = gql`
-	mutation bulkDeleteCollections($collectionIds: [uuid!]!) {
-		update_app_collections(where: { id: { _in: $collectionIds } }, _set: { is_deleted: true }) {
+	mutation bulkDeleteCollections(
+		$collectionIds: [uuid!]!
+		$now: timestamptz!
+		$updatedByProfileId: uuid!
+	) {
+		update_app_collections(
+			where: { id: { _in: $collectionIds } }
+			_set: { is_deleted: true, updated_at: $now, updated_by_profile_id: $updatedByProfileId }
+		) {
 			affected_rows
 		}
 	}
@@ -120,6 +145,21 @@ export const BULK_DELETE_LABELS_FROM_COLLECTIONS = gql`
 	mutation bulkDeleteLabelsFromCollections($labels: [String!]!, $collectionIds: [uuid!]!) {
 		delete_app_collection_labels(
 			where: { label: { _in: $labels }, collection_uuid: { _in: $collectionIds } }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS = gql`
+	mutation bulkUpdateDateAndLastAuthorCollections(
+		$collectionIds: [uuid!]!
+		$now: timestamptz!
+		$updatedByProfileId: uuid!
+	) {
+		update_app_collections(
+			where: { id: { _in: $collectionIds } }
+			_set: { updated_at: $now, updated_by_profile_id: $updatedByProfileId }
 		) {
 			affected_rows
 		}
