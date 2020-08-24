@@ -20,6 +20,7 @@ import {
 	DropdownContent,
 	LinkTarget,
 	MenuContent,
+	MenuItemInfo,
 	Navbar,
 	Tabs,
 } from '@viaa/avo2-components';
@@ -242,12 +243,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		setIsPublishModalOpen(false);
 	};
 
-	const CONTENT_DROPDOWN_ITEMS = [
-		createDropdownMenuItem(
-			'duplicate',
-			t('collection/views/collection-detail___dupliceer'),
-			'copy'
-		),
+	const CONTENT_DROPDOWN_ITEMS: MenuItemInfo[] = [
+		...(hasPerm(EDIT_ANY_CONTENT_PAGES)
+			? [
+					createDropdownMenuItem(
+						'duplicate',
+						t('collection/views/collection-detail___dupliceer'),
+						'copy'
+					),
+			  ]
+			: []),
 		...((!isContentProtected || (isContentProtected && isAdminUser)) &&
 		hasPerm(DELETE_ANY_CONTENT_PAGES)
 			? [
@@ -366,25 +371,30 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
 					/>
 				)}
-				<ControlledDropdown
-					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent menuItems={CONTENT_DROPDOWN_ITEMS} onClick={executeAction} />
-					</DropdownContent>
-				</ControlledDropdown>
+				{!!CONTENT_DROPDOWN_ITEMS && !!CONTENT_DROPDOWN_ITEMS.length && (
+					<ControlledDropdown
+						isOpen={isOptionsMenuOpen}
+						menuWidth="fit-content"
+						onOpen={() => setIsOptionsMenuOpen(true)}
+						onClose={() => setIsOptionsMenuOpen(false)}
+						placement="bottom-end"
+					>
+						<DropdownButton>
+							<Button
+								type="secondary"
+								icon="more-horizontal"
+								ariaLabel={t('collection/views/collection-detail___meer-opties')}
+								title={t('collection/views/collection-detail___meer-opties')}
+							/>
+						</DropdownButton>
+						<DropdownContent>
+							<MenuContent
+								menuItems={CONTENT_DROPDOWN_ITEMS}
+								onClick={executeAction}
+							/>
+						</DropdownContent>
+					</ControlledDropdown>
+				)}
 			</ButtonToolbar>
 		);
 	};

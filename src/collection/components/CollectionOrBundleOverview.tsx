@@ -504,15 +504,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				col: '2',
 				sortable: true,
 			},
-			...(isCollection
-				? [
-						{
-							id: 'inFolder',
-							label: t('collection/views/collection-overview___in-map'),
-							col: '2' as any,
-						},
-				  ]
-				: []),
+			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
+			// ...(isCollection
+			// 	? [
+			// 			{
+			// 				id: 'inFolder',
+			// 				label: t('collection/views/collection-overview___in-map'),
+			// 				col: '2' as any,
+			// 			},
+			// 	  ]
+			// 	: []),
 			// TODO re-enable once users can give share collection view/edit rights with other users
 			// {
 			// 	id: 'access',

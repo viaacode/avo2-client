@@ -70,6 +70,7 @@ export interface ContentPageInfo {
 	description_html: string | null;
 	description_state: RichEditorState | undefined;
 	seo_description: string | null;
+	meta_description: string | null; // Used for klaar newsletter description
 	path: string | null;
 	is_public: boolean;
 	published_at: string | null;

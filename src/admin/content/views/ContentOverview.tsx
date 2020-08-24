@@ -206,7 +206,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			} as CheckboxDropdownModalProps,
 		},
 		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
-		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol'), sortable: true },
+		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol') },
 		{
 			id: 'created_at',
 			label: i18n.t('admin/content/content___aangemaakt'),

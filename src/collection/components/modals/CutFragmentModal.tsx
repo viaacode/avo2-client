@@ -32,7 +32,6 @@ interface CutFragmentModalProps {
 	index: number;
 	fragment: Avo.Collection.Fragment;
 	changeCollectionState: (action: CollectionAction) => void;
-	updateCuePoints: (cuepoints: any) => void;
 	onClose: () => void;
 }
 
@@ -42,7 +41,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	index,
 	fragment,
 	changeCollectionState,
-	updateCuePoints,
 	onClose,
 }) => {
 	const [t] = useTranslation();
@@ -120,9 +118,18 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			});
 		}
 
-		updateCuePoints({
-			start: startTime,
-			end: endTime,
+		changeCollectionState({
+			index,
+			type: 'UPDATE_FRAGMENT_PROP',
+			fragmentProp: 'start_oc',
+			fragmentPropValue: startTime,
+		});
+
+		changeCollectionState({
+			index,
+			type: 'UPDATE_FRAGMENT_PROP',
+			fragmentProp: 'end_oc',
+			fragmentPropValue: endTime,
 		});
 		onClose();
 	};
