@@ -37,11 +37,11 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [selectedLabels, setSelectedLabels] = useState<TagInfo[] | null>(null);
+	const [selectedLabels, setSelectedLabels] = useState<TagInfo[] | undefined>(undefined);
 	const [addOrRemove, setAddOrRemove] = useState<AddOrRemove>('add');
 
 	const handleClose = () => {
-		setSelectedLabels(null);
+		setSelectedLabels(undefined);
 		setAddOrRemove('add');
 		onClose();
 	};
@@ -88,8 +88,8 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 					>
 						<TagsInput
 							options={labels}
-							value={selectedLabels || undefined}
-							onChange={setSelectedLabels}
+							value={selectedLabels}
+							onChange={setSelectedLabels || []}
 						/>
 					</FormGroup>
 				</Form>
