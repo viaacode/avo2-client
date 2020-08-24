@@ -58,6 +58,7 @@ import {
 	navigate,
 	renderAvatar,
 	sanitizeHtml,
+	stripHtml,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
@@ -825,7 +826,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 								fragment,
 								fragment.use_custom_fields,
 								'title'
-							),
+							) ||
+								stripHtml(
+									getFragmentProperty(
+										fragment.item_meta,
+										fragment,
+										fragment.use_custom_fields,
+										'description'
+									) || ''
+								),
 							{ length: 50 }
 						)}
 					</BlockHeading>
