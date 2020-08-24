@@ -2,10 +2,10 @@ import { get, isString, some } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentService } from '../../admin/content/content.service';
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
+import { ContentPageService } from '../../shared/services/content-page-service';
 
 import { getProfileId } from './get-profile-id';
 import {
@@ -96,6 +96,7 @@ export class PermissionService {
 	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {
 		return this.getUserPermissions(user).includes(permName);
 	}
+
 	public static hasAtLeastOnePerm(
 		user: Avo.User.User | undefined,
 		permNames: PermissionName[]
@@ -192,7 +193,7 @@ export class PermissionService {
 
 			case PermissionName.EDIT_OWN_CONTENT_PAGES:
 				const contentPage: ContentPageInfo = isString(obj)
-					? await ContentService.fetchContentPageByPath(obj)
+					? await ContentPageService.getContentPageByPath(obj)
 					: obj;
 				const contentPageOwnerId = get(contentPage, 'user_profile_id');
 				return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;
