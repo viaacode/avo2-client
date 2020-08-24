@@ -178,8 +178,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 													t(
 														'collection/collection___de-korte-omschrijving-is-te-lang-count',
 														{ count } as StringMap
-													),
-												true
+													)
 											)}
 										</label>
 									</FormGroup>
