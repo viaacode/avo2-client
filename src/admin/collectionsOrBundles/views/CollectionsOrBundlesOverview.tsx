@@ -47,6 +47,7 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
+	getDateRangeFilters,
 	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
@@ -117,6 +118,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					},
 				])
 			);
+			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
