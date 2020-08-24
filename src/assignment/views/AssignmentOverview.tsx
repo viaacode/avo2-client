@@ -48,7 +48,6 @@ import {
 	buildLink,
 	CustomError,
 	formatTimestamp,
-	fromNow,
 	isMobileWidth,
 	navigate,
 	renderAvatar,
@@ -574,16 +573,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return cellData;
 
 			case 'deadline_at':
-				return isMobileWidth() ? (
-					<Flex>
-						<Spacer margin="right">
-							<Icon name="clock" subtle />
-						</Spacer>
-						<span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>
-					</Flex>
-				) : (
-					<span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>
-				);
+				return formatTimestamp(cellData, false);
 
 			case 'assignment_responses':
 				return (
