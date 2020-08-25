@@ -19,6 +19,7 @@ export const GET_USER_BY_ID = gql`
 			}
 			avatar
 			alias
+			title
 			stamboek
 			updated_at
 			created_at
@@ -87,6 +88,7 @@ export const GET_USERS = gql`
 			}
 			avatar
 			alias
+			title
 			stamboek
 			updated_at
 			created_at

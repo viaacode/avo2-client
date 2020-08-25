@@ -17,6 +17,7 @@ const mockUser: Avo.User.User = {
 	profile: {
 		id: '69ccef3b-751a-4be4-95bc-5ef365fbd504',
 		alias: 'bert',
+		title: 'developer',
 		alternative_email: 'verhelstbert@gmail.com',
 		avatar: null,
 		created_at: '2019-10-23T16:22:47.543339+00:00',
