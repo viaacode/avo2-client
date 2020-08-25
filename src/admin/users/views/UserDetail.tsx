@@ -276,6 +276,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								['user.first_name', t('admin/users/views/user-detail___voornaam')],
 								['user.last_name', t('admin/users/views/user-detail___achternaam')],
 								['alias', t('admin/users/views/user-detail___gebruikersnaam')],
+								['title', t('admin/users/views/user-detail___functie')],
 								[
 									'user.mail',
 									t('admin/users/views/user-detail___primair-email-adres'),
@@ -292,7 +293,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							])}
 							{renderSimpleDetailRows(storedProfile, [
 								['bio', t('admin/users/views/user-detail___bio')],
-								['function', t('admin/users/views/user-detail___functie')],
 								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
 								['title', t('admin/users/views/user-detail___oormerk')],
 								[

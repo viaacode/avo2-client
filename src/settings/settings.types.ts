@@ -14,6 +14,7 @@ export interface UpdateProfileValues {
 	}[];
 	company_id: string;
 	alias: string;
+	title: string | null;
 	alternativeEmail: string;
 	avatar: string | null;
 	bio: string | null;

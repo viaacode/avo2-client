@@ -35,6 +35,7 @@ export const GET_COLLECTION_BY_ID = gql`
 			owner_profile_id
 			profile {
 				alias
+				title
 				alternative_email
 				avatar
 				id
@@ -197,6 +198,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			profile {
 				id
 				alias
+				title
 				alternative_email
 				avatar
 				organisation {
