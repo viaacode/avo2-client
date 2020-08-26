@@ -13,6 +13,7 @@ import { getUserGroupIds } from '../../authentication/authentication.service';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { ContentPageService } from '../../shared/services/content-page-service';
 
 import './ContentPage.scss';
 
@@ -33,7 +34,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 		try {
 			if ((props as any).path) {
 				setContentPageInfo(
-					await ContentService.fetchContentPageByPath((props as any).path)
+					await ContentPageService.getContentPageByPath((props as any).path)
 				);
 			} else if ((props as any).contentPageInfo) {
 				setContentPageInfo((props as any).contentPageInfo);

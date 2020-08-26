@@ -24,7 +24,6 @@ import {
 	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
-	GET_CONTENT_PAGE_BY_PATH,
 	GET_CONTENT_PAGES,
 	GET_CONTENT_TYPES,
 	GET_PUBLIC_CONTENT_PAGES_BY_TITLE,
@@ -142,25 +141,6 @@ export class ContentService {
 				id,
 				code: 'NOT_FOUND',
 			});
-		}
-		return convertToContentPageInfo(dbContentPage);
-	}
-
-	public static async fetchContentPageByPath(path: string): Promise<ContentPageInfo> {
-		const query = {
-			query: GET_CONTENT_PAGE_BY_PATH,
-			variables: {
-				path,
-			},
-		};
-
-		const dbContentPage = await performQuery(
-			query,
-			`${CONTENT_RESULT_PATH.GET}[0]`,
-			`Failed to retrieve content page by path: ${path}.`
-		);
-		if (!dbContentPage) {
-			throw new CustomError('No content page found with provided path', null, { path });
 		}
 		return convertToContentPageInfo(dbContentPage);
 	}

@@ -26,6 +26,7 @@ import {
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
 import { ToastService } from '../../../../../shared/services';
+import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import i18n from '../../../../../shared/translations/i18n';
 import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
@@ -184,7 +185,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				}
 			}
 			if (hasItem) {
-				const contentPage = await ContentService.fetchContentPageByPath(
+				const contentPage = await ContentPageService.getContentPageByPath(
 					queryParams.item as string
 				);
 				if (!contentPage) {
