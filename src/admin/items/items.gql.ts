@@ -10,6 +10,7 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 		app_item_meta(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
 			created_at
 			depublish_at
+			depublish_reason
 			description
 			duration
 			expiry_date
