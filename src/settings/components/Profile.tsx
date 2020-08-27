@@ -117,10 +117,10 @@ const Profile: FunctionComponent<ProfileProps & {
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
 	);
-	const [bio, setBio] = useState<string | null>(get(getProfileFromUser(user, true), 'bio', null));
-	const [func, setFunc] = useState<string | null>(
-		get(getProfileFromUser(user, true), 'function', null)
+	const [title, setTitle] = useState<string | null>(
+		get(getProfileFromUser(user, true), 'title', null)
 	);
+	const [bio, setBio] = useState<string | null>(get(getProfileFromUser(user, true), 'bio', null));
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 	const [allEducationLevels, setAllEducationLevels] = useState<string[] | null>(null);
@@ -132,6 +132,9 @@ const Profile: FunctionComponent<ProfileProps & {
 		get(getProfileFromUser(user, true), 'company_id', null)
 	);
 	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
+	const [profileErrors, setProfileErrors] = useState<
+		Partial<{ [prop in keyof UpdateProfileValues]: string }>
+	>({});
 
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
 
@@ -354,7 +357,8 @@ const Profile: FunctionComponent<ProfileProps & {
 			const profileId: string = getProfileId(user);
 			const newProfileInfo = {
 				alias,
-				avatar,
+				title,
+				avatar: avatar || null,
 				bio,
 				educationLevels: (selectedEducationLevels || []).map(option => ({
 					profile_id: profileId,
@@ -375,7 +379,19 @@ const Profile: FunctionComponent<ProfileProps & {
 				setIsSaving(false);
 				return;
 			}
-			await SettingsService.updateProfileInfo(getProfileFromUser(user), newProfileInfo);
+			try {
+				await SettingsService.updateProfileInfo(getProfileFromUser(user), newProfileInfo);
+			} catch (err) {
+				setIsSaving(false);
+				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
+					ToastService.danger(t('Deze schermnaam is reeds in gebruik'));
+					setProfileErrors({
+						alias: t('Schermnaam is reeds in gebruik'),
+					});
+					return;
+				}
+				throw err;
+			}
 
 			if (isCompleteProfileStep) {
 				// Refetch user permissions since education level can change user group
@@ -602,6 +618,9 @@ const Profile: FunctionComponent<ProfileProps & {
 	};
 
 	const renderEducationOrganisationsField = (editable: boolean, required: boolean) => {
+		if (!editable && !selectedOrganizations.length) {
+			return null;
+		}
 		return (
 			<FormGroup
 				label={t('settings/components/profile___school-organisatie')}
@@ -746,6 +765,7 @@ const Profile: FunctionComponent<ProfileProps & {
 									<FormGroup
 										label={t('settings/components/profile___nickname')}
 										labelFor="alias"
+										error={get(profileErrors, 'alias')}
 									>
 										<TextInput
 											id="alias"
@@ -758,15 +778,15 @@ const Profile: FunctionComponent<ProfileProps & {
 									</FormGroup>
 									<FormGroup
 										label={t('settings/components/profile___functie')}
-										labelFor="func"
+										labelFor="title"
 									>
 										<TextInput
-											id="func"
+											id="title"
 											placeholder={t(
 												'settings/components/profile___bv-leerkracht-basis-onderwijs'
 											)}
-											value={func || ''}
-											onChange={setFunc}
+											value={title || ''}
+											onChange={setTitle}
 										/>
 									</FormGroup>
 									{!get(user, 'profile.organisation') && (

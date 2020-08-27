@@ -54,8 +54,8 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					{ alternative_email: { _ilike: queryWordWildcard } },
 					{ bio: { _ilike: queryWordWildcard } },
 					{ alias: { _ilike: queryWordWildcard } },
-					{ organisation: { name: { _ilike: queryWordWildcard } } },
 					{ title: { _ilike: queryWordWildcard } },
+					{ organisation: { name: { _ilike: queryWordWildcard } } },
 					{ profile_user_groups: { groups: { label: { _ilike: queryWordWildcard } } } },
 					{
 						usersByuserId: {
