@@ -1,10 +1,11 @@
-import { BlockHeroProps } from '@viaa/avo2-components';
+import { BlockHeroProps, TextInputProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
-import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
+import { PHOTO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { validateFlowplayerVideoUrl } from '../../../shared/helpers';
 import {
 	Color,
 	ContentBlockConfig,
@@ -121,16 +122,13 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					controls: WYSIWYG_OPTIONS_FULL,
 				},
 			}),
-
-			src: FILE_FIELD(undefined, {
-				label: i18n.t('admin/content-block/helpers/generators/hero___eigen-video-uploaden'),
-				validator: undefined,
+			src: TEXT_FIELD(undefined, {
+				label: i18n.t('Eigen video url van flowplayer.com'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: validateFlowplayerVideoUrl,
 				editorProps: {
-					allowMulti: false,
-					allowedTypes: VIDEO_TYPES,
-					assetType: 'CONTENT_BLOCK_IMAGE',
-					ownerId: '',
-				} as Partial<FileUploadProps>,
+					placeholder: i18n.t('bv: https://cdn.flowplayer.com/.../hls/playlist.m3u8'),
+				} as TextInputProps,
 			}),
 			poster: FILE_FIELD(undefined, {
 				label: i18n.t(
