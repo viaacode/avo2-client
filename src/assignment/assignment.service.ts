@@ -5,10 +5,10 @@ import { cloneDeep, get, isNil, isString, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
+import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
-import { addDefaultAudioStillToItem } from '../shared/helpers/default-still';
 import {
 	ApolloCacheManager,
 	AssignmentLabelsService,
@@ -17,7 +17,7 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { CONTENT_LABEL_TO_QUERY, ITEMS_PER_PAGE } from './assignment.const';
+import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
@@ -221,21 +221,9 @@ export class AssignmentService {
 						assignment.id
 					)) || null
 				);
+			} else if (assignment.content_label === 'ITEM' && assignment.content_id) {
+				return (await ItemsService.fetchItemByExternalId(assignment.content_id)) || null;
 			}
-			const queryInfo =
-				CONTENT_LABEL_TO_QUERY[assignment.content_label as AssignmentContentLabel];
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
-				query: queryInfo.query,
-				variables: queryInfo.getVariables(assignment.content_id),
-			});
-
-			const newAssignmentContent = get(response, `data.${queryInfo.resultPath}`);
-
-			if (!newAssignmentContent) {
-				throw new CustomError('NOT_FOUND');
-			}
-
-			return addDefaultAudioStillToItem(newAssignmentContent);
 		}
 
 		return null;

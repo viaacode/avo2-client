@@ -22,7 +22,10 @@ import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYG
 import { CustomError, stripHtml } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
-import { RelationType } from '../../../../shared/services/relation-service/relation.types';
+import {
+	RelationEntry,
+	RelationType,
+} from '../../../../shared/services/relation-service/relation.types';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 
@@ -72,24 +75,22 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			// Depublish item
 			await ItemsService.setItemPublishedState(item.uid, false);
 
-			// Remove references to this item from bookmarks and collections
-			await ItemsService.deleteItemFromCollectionsAndBookmarks(item.uid, item.external_id);
-
-			// When we unpublish an item, it cannot be the replacement for any other items
-			await RelationService.deleteRelationsByObject(
-				'item',
-				RelationType.IS_REPLACED_BY,
-				item.uid
-			);
-
-			if (depublishType === 'depublish_with_reason') {
-				// Remove after https://meemoo.atlassian.net/browse/DEV-1140
-				ToastService.danger(
-					t('Depubliceren met reden is nog niet geïmplementeerd (AVO-699)'),
-					false
+			if (depublishType === 'depublish_with_reason' || depublishType === 'depublish') {
+				// Remove references to this item from bookmarks and collections
+				await ItemsService.deleteItemFromCollectionsAndBookmarks(
+					item.uid,
+					item.external_id
 				);
-				return;
-				// await ItemsService.setItemDepublishReason(item.external_id, reasonHtml);
+
+				// When we unpublish an item, it cannot be the replacement for any other items
+				await RelationService.deleteRelationsByObject(
+					'item',
+					RelationType.IS_REPLACED_BY,
+					item.uid
+				);
+			}
+			if (depublishType === 'depublish_with_reason') {
+				await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
 			} else if (depublishType === 'depublish_with_replacement' && replacementExternalId) {
 				const replacementItem: Avo.Item.Item | null = await ItemsService.fetchItemByExternalId(
 					replacementExternalId
@@ -102,12 +103,50 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					return;
 				}
 
+				// Replace items in collection fragments and bookmarks
+				await ItemsService.replaceItemInCollectionsAndBookmarks(
+					item.uid,
+					item.external_id,
+					replacementItem.uid,
+					replacementItem.external_id
+				);
+
 				// Add the replacement as instructed by the user
 				await RelationService.insertRelation(
 					'item',
 					item.uid,
 					RelationType.IS_REPLACED_BY,
 					replacementItem.uid
+				);
+
+				// Reroute replacement chain to new replacement item
+				// eg: A => B => C
+				// Item A is replaced by B
+				// Item B is the current item that we want to replace by item C
+				// The final replacement should look like this:
+				// A => C
+				// B => C
+				const itemsReplacedByCurrentItem: RelationEntry[] = await RelationService.fetchRelationsByObject(
+					'item',
+					RelationType.IS_REPLACED_BY,
+					item.uid
+				);
+				await Promise.all(
+					itemsReplacedByCurrentItem.map(async (relation: RelationEntry) => {
+						// Remove the old relationship (A => B)
+						await RelationService.deleteRelationsBySubject(
+							'item',
+							relation.subject,
+							RelationType.IS_REPLACED_BY
+						);
+						// Insert new relationship that points to the same replacement item as the current item (A => C)
+						await RelationService.insertRelation(
+							'item',
+							relation.subject,
+							RelationType.IS_REPLACED_BY,
+							replacementItem.uid
+						);
+					})
 				);
 			}
 			ToastService.success(t('Het item is gedepubliceerd'), false);

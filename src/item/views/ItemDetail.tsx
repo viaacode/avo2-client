@@ -136,6 +136,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					return;
 				}
 
+				if ((itemObj as any).depublish_reason) {
+					// TODO remove cast after update to typings v2.23.0
+					setLoadingInfo({
+						state: 'error',
+						message:
+							t('Dit item werdt gedepubliceerd met volgende reden: ') +
+							(itemObj as any).depublish_reason,
+						icon: 'camera-off',
+					});
+					return;
+				}
+
 				trackEvents(
 					{
 						object: match.params.id,

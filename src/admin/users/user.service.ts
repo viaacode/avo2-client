@@ -106,7 +106,7 @@ export class UserService {
 				{
 					userId,
 					isBlocked,
-					query: 'UPDATE_ITEM_PUBLISH_STATE',
+					query: 'UPDATE_USER_BLOCKED_STATUS',
 				}
 			);
 		}
