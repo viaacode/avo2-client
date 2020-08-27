@@ -195,49 +195,69 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	);
 
 	const getColumnInfos: () => FilterableColumn[] = () => [
-		{ id: 'title', label: i18n.t('admin/content/content___titel'), sortable: true },
+		{
+			id: 'title',
+			label: i18n.t('admin/content/content___titel'),
+			sortable: true,
+			visibleByDefault: true,
+		},
 		{
 			id: 'content_type',
 			label: i18n.t('admin/content/content___content-type'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: contentTypeOptions,
 			} as CheckboxDropdownModalProps,
 		},
-		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
-		{ id: 'author_user_group', label: i18n.t('admin/content/content___rol') },
+		{
+			id: 'author',
+			label: i18n.t('admin/content/content___auteur'),
+			sortable: true,
+			visibleByDefault: true,
+		},
+		{
+			id: 'author_user_group',
+			label: i18n.t('admin/content/content___rol'),
+			visibleByDefault: true,
+		},
 		{
 			id: 'created_at',
 			label: i18n.t('admin/content/content___aangemaakt'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'updated_at',
 			label: i18n.t('admin/content/content___laatst-bewerkt'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'published_at',
 			label: i18n.t('admin/content/views/content-overview___publicatie'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'publish_at',
 			label: i18n.t('admin/content/views/content-overview___publiceer-op'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
 			id: 'depublish_at',
 			label: i18n.t('admin/content/views/content-overview___depubliceer-op'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
-		{ id: 'actions', label: '' },
+		{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
 	];
 
 	// Methods

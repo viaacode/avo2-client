@@ -362,7 +362,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									id: 'is_public',
 									sortable: true,
 								},
-								{ label: '', id: 'actions', sortable: false },
+								{ tooltip: t('Acties'), id: 'actions', sortable: false },
 							]}
 							data={collectionsContainingItem}
 							emptyStateMessage={t(

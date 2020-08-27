@@ -266,6 +266,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: 'title',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'author',
@@ -273,12 +274,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
 			),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'author_user_group',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
 			// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
 			// sortable: true,
+			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: userGroupOptions,
@@ -290,11 +293,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
 			),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'created_at',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 			filterProps: {},
 		},
@@ -302,6 +307,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: 'updated_at',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 			filterProps: {},
 		},
@@ -309,6 +315,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: 'is_public',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___publiek'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'BooleanCheckboxDropdown',
 		},
 		{
@@ -317,6 +324,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels'
 			),
 			sortable: false,
+			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: collectionLabelOptions,
@@ -327,6 +335,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
 			icon: 'eye',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'bookmarks',
@@ -335,6 +344,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			),
 			icon: 'bookmark',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'copies',
@@ -343,6 +353,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			),
 			icon: 'copy',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		...(isCollection
 			? [
@@ -353,6 +364,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						),
 						icon: 'folder' as IconName,
 						sortable: true,
+						visibleByDefault: true,
 					},
 			  ]
 			: []),
@@ -365,10 +377,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						),
 						icon: 'clipboard' as IconName,
 						sortable: true,
+						visibleByDefault: true,
 					},
 			  ]
 			: []),
-		{ id: 'actions', label: '' },
+		{
+			id: 'actions',
+			tooltip: t('Acties'),
+			visibleByDefault: true,
+		},
 	];
 
 	const navigateToCollectionDetail = (id: string | undefined) => {

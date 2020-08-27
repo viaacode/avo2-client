@@ -1,4 +1,5 @@
 import { every, some } from 'lodash-es';
+import queryString from 'query-string';
 
 import { PermissionName } from '../authentication/helpers/permission-service';
 import { buildLink, CustomError } from '../shared/helpers';
@@ -86,41 +87,6 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 					exact: false,
 				},
 				permission: 'EDIT_PERMISSION_GROUPS',
-			},
-		],
-		userPermissions
-	);
-}
-
-function getMediaNavItems(userPermissions: string[]): NavigationItemInfo[] {
-	return getNavWithSubLinks(
-		[
-			{
-				navItem: {
-					label: i18n.t('admin/admin___media-items'),
-					location: ADMIN_PATH.ITEMS_OVERVIEW,
-					key: 'items',
-					exact: false,
-				},
-				permission: 'VIEW_ITEMS_OVERVIEW',
-			},
-			{
-				navItem: {
-					label: i18n.t('admin/admin___collecties'),
-					location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
-					key: 'collections',
-					exact: false,
-				},
-				permission: 'VIEW_COLLECTIONS_OVERVIEW',
-			},
-			{
-				navItem: {
-					label: i18n.t('admin/admin___bundels'),
-					location: ADMIN_PATH.BUNDLES_OVERVIEW,
-					key: 'bundels',
-					exact: false,
-				},
-				permission: 'VIEW_BUNDLES_OVERVIEW',
 			},
 		],
 		userPermissions
@@ -251,7 +217,122 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		key: 'content-page-labels',
 		exact: false,
 	}),
-	...getMediaNavItems(userPermissions),
+	...hasPermissions(['VIEW_ITEMS_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___media-items'),
+		location: ADMIN_PATH.ITEMS_OVERVIEW,
+		key: 'items',
+		exact: false,
+	}),
+	...hasPermissions(['VIEW_COLLECTIONS_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___collecties'),
+		location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
+		key: 'collections',
+		exact: false,
+		subLinks: [
+			{
+				label: i18n.t('Actualisatie'),
+				location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
+					columns: [
+						'title',
+						'author',
+						'created_at',
+						'last_updated_by_profile',
+						'updated_at',
+						'is_public',
+						'collection_labels',
+					],
+				})}`,
+				key: 'collections',
+				exact: false,
+			},
+			{
+				label: i18n.t('Kwaliteitscontrole'),
+				location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
+					columns: [
+						'title',
+						'author',
+						'created_at',
+						'last_updated_by_profile',
+						'updated_at',
+						'is_public',
+						'collection_labels',
+					],
+				})}`,
+				key: 'collections',
+				exact: false,
+			},
+			{
+				label: i18n.t('Marcom'),
+				location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
+					columns: [
+						'title',
+						'author',
+						'created_at',
+						'updated_at',
+						'is_public',
+						'collection_labels',
+					],
+				})}`,
+				key: 'collections',
+				exact: false,
+			},
+		],
+	}),
+	...hasPermissions(['VIEW_BUNDLES_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___bundels'),
+		location: ADMIN_PATH.BUNDLES_OVERVIEW,
+		key: 'bundels',
+		exact: false,
+		subLinks: [
+			{
+				label: i18n.t('Actualisatie'),
+				location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
+					columns: [
+						'title',
+						'author',
+						'created_at',
+						'last_updated_by_profile',
+						'updated_at',
+						'is_public',
+						'collection_labels',
+					],
+				})}`,
+				key: 'bundels',
+				exact: false,
+			},
+			{
+				label: i18n.t('Kwaliteitscontrole'),
+				location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
+					columns: [
+						'title',
+						'author',
+						'created_at',
+						'last_updated_by_profile',
+						'updated_at',
+						'is_public',
+						'collection_labels',
+					],
+				})}`,
+				key: 'bundels',
+				exact: false,
+			},
+			{
+				label: i18n.t('Marcom'),
+				location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
+					columns: [
+						'title',
+						'author',
+						'created_at',
+						'updated_at',
+						'is_public',
+						'collection_labels',
+					],
+				})}`,
+				key: 'bundels',
+				exact: false,
+			},
+		],
+	}),
 	// TODO re-enable after task https://meemoo.atlassian.net/browse/AVO-358
 	// ...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
 	// 	label: i18n.t('admin/admin___items-publiceren'),

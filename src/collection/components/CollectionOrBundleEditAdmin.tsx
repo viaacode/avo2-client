@@ -471,7 +471,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													id: 'is_public',
 													sortable: true,
 												},
-												{ label: '', id: 'actions', sortable: false },
+												{
+													tooltip: t('Acties'),
+													id: 'actions',
+													sortable: false,
+												},
 											]}
 											data={bundlesContainingCollection}
 											onColumnClick={handleBundleColumnClick as any}
@@ -525,7 +529,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													id: 'is_archived',
 													sortable: true,
 												},
-												{ label: '', id: 'actions', sortable: false },
+												{
+													tooltip: t('Acties'),
+													id: 'actions',
+													sortable: false,
+												},
 											]}
 											data={assignmentsContainingCollection}
 											onColumnClick={handleAssignmentColumnClick as any}
