@@ -22,6 +22,7 @@ import {
 	UPDATE_ITEM_DEPUBLISH_REASON,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
+	UPDATE_SHARED_ITEMS_STATUS,
 } from './items.gql';
 import {
 	ItemsOverviewTableCols,
@@ -370,6 +371,26 @@ export class ItemsService {
 					query: 'DELETE_ITEM_FROM_COLLECTION_BOOKMARKS_AND_ASSIGNMENTS',
 				}
 			);
+		}
+	}
+
+	public static async setSharedItemsStatus(pids: string[], status: string) {
+		try {
+			const response = await dataService.mutate({
+				mutation: UPDATE_SHARED_ITEMS_STATUS,
+				variables: {
+					pids,
+					status,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update status for shared items in the database', err, {
+				query: 'UPDATE_SHARED_ITEMS_STATUS',
+			});
 		}
 	}
 }

@@ -61,9 +61,14 @@ export interface ItemsTableState extends FilterableTableState {
 	views: number;
 }
 
+export type UnpublishedStatus = 'NEW' | 'UPDATE' | 'OK' | null;
+
 export interface UnpublishedItem {
 	id: number;
 	pid: string;
 	title: string;
 	updated_at: string;
+	status: UnpublishedStatus;
 }
+
+export interface UnpublishedItemsTableState extends UnpublishedItem, FilterableTableState {}

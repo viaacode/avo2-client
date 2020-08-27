@@ -10,7 +10,7 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
@@ -19,9 +19,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import {
-	ItemsTableState,
 	UnpublishedItem,
 	UnpublishedItemsOverviewTableCols,
+	UnpublishedItemsTableState,
 } from '../items.types';
 
 interface PublishItemsOverviewProps extends DefaultSecureRouteProps {}
@@ -33,11 +33,11 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const [selectedItems, setSelectedItems] = useState<UnpublishedItem[]>([]);
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
+	const [tableState, setTableState] = useState<Partial<UnpublishedItemsTableState>>({});
 
 	// methods
 	const fetchItems = useCallback(async () => {
-		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
+		const generateWhereObject = (filters: Partial<UnpublishedItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
 				...getQueryFilter(
@@ -45,13 +45,15 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					// @ts-ignore
 					(queryWordWildcard: string, queryWord: string, query: string) => [
 						{ pid: { _eq: query } },
+						{ pid: { _eq: query } },
 					]
 				)
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
+			andFilters.push({ status: { _is_null: false } });
 
-			if (filters.type && filters.type.length) {
-				andFilters.push({ type: { label: { _in: filters.type } } });
+			if (filters.status && filters.status.length) {
+				andFilters.push({ status: { _in: filters.status } });
 			}
 			return { _and: andFilters };
 		};
@@ -117,20 +119,29 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 		redirectToClientPage(link, history);
 	};
 
-	const publishSelection = () => {
-		if (!selectedItems.length) {
-			ToastService.info(
-				t(
-					'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
-				),
-				false
+	const publishSelection = async () => {
+		try {
+			if (!selectedItems.length) {
+				ToastService.info(
+					t(
+						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
+					),
+					false
+				);
+				return;
+			}
+			await ItemsService.setSharedItemsStatus(
+				(selectedItems || []).map(item => item.pid),
+				'OK'
 			);
-			return;
+			ToastService.success(t('De geselecteerde items zijn gepubliceerd naar AvO'), false);
+			fetchItems();
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to set status for shared.items', err, { selectedItems })
+			);
+			ToastService.danger(t('Het publiceren van de items is mislukt'), false);
 		}
-		ToastService.info(
-			t('admin/items/views/publish-items-overview___nog-niet-geimplementeerd'),
-			false
-		);
 	};
 
 	const triggerMamSync = () => {
@@ -146,11 +157,23 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	) => {
 		switch (columnId) {
 			case 'updated_at':
-				return !isNil(rowData[columnId]) ? formatDate(rowData[columnId] as any) : '-';
+				return !isNil(rowData[columnId]) ? formatTimestamp(rowData[columnId] as any) : '-';
 
 			case 'title':
 			case 'pid':
 				return get(rowData, columnId, '-');
+
+			case 'status':
+				switch (rowData.status) {
+					case 'NEW':
+						return t('Nieuw');
+					case 'UPDATE':
+						return t('Update');
+					case 'OK':
+						return t('Bezig met publiceren');
+					default:
+						return t('Onbekend');
+				}
 
 			case 'actions':
 				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
@@ -215,9 +238,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderCell={(rowData: Partial<UnpublishedItem>, columnId: string) =>
 						renderTableCell(rowData, columnId as UnpublishedItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t(
-						'admin/items/views/publish-items-overview___zoeken-op-titel-pid'
-					)}
+					searchTextPlaceholder={t('Zoeken op pid')}
 					noContentMatchingFiltersMessage={t(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
@@ -249,7 +270,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					/>
 					<Button
 						icon="download"
-						type="danger"
+						type="primary"
 						label={t(
 							'admin/items/views/publish-items-overview___synchroniseren-met-mam'
 						)}
