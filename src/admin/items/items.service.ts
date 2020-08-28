@@ -7,7 +7,7 @@ import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { dataService } from '../../shared/services';
+import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
@@ -382,6 +382,7 @@ export class ItemsService {
 					pids,
 					status,
 				},
+				update: ApolloCacheManager.clearSharedItemsCache,
 			});
 
 			if (response.errors) {
@@ -390,6 +391,29 @@ export class ItemsService {
 		} catch (err) {
 			throw new CustomError('Failed to update status for shared items in the database', err, {
 				query: 'UPDATE_SHARED_ITEMS_STATUS',
+			});
+		}
+	}
+
+	/**
+	 * Returns result of request of MAM sync
+	 * either:
+	 * - started
+	 * - running
+	 */
+	public static async triggerMamSync(): Promise<string> {
+		let url: string | undefined = undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;
+			const response = await fetchWithLogout(url, {
+				method: 'POST',
+				credentials: 'include',
+			});
+
+			return await response.text();
+		} catch (err) {
+			throw new CustomError('Failed to trigger MAM sync', err, {
+				url,
 			});
 		}
 	}

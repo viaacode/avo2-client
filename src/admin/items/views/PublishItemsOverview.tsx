@@ -50,10 +50,11 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				)
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
-			andFilters.push({ status: { _is_null: false } });
 
 			if (filters.status && filters.status.length) {
 				andFilters.push({ status: { _in: filters.status } });
+			} else {
+				andFilters.push({ status: { _in: ['NEW', 'UPDATE'] } });
 			}
 			return { _and: andFilters };
 		};
@@ -144,11 +145,18 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 		}
 	};
 
-	const triggerMamSync = () => {
-		ToastService.info(
-			t('admin/items/views/publish-items-overview___nog-niet-geimplementeerd'),
-			false
-		);
+	const triggerMamSync = async () => {
+		try {
+			const result: string = await ItemsService.triggerMamSync();
+			if (result === 'starting') {
+				ToastService.success(t('Een MAM synchronisatie is gestart'), false);
+			} else {
+				ToastService.info(t('Een MAM synchronisatie is reeds bezig'), false);
+			}
+		} catch (err) {
+			console.error(new CustomError('Failed to trigger MAM sync', err));
+			ToastService.danger(t('Het triggeren van een MAM synchronisatie is mislukt'), false);
+		}
 	};
 
 	const renderTableCell = (
@@ -169,8 +177,6 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 						return t('Nieuw');
 					case 'UPDATE':
 						return t('Update');
-					case 'OK':
-						return t('Bezig met publiceren');
 					default:
 						return t('Onbekend');
 				}
