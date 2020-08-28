@@ -224,7 +224,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		exact: false,
 	}),
 	...hasPermissions(['VIEW_COLLECTIONS_OVERVIEW'], 'OR', userPermissions, {
-		label: i18n.t('admin/admin___collecties'),
+		label: i18n.t('Collectiebeheer'),
 		location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
 		key: 'collections',
 		exact: false,
@@ -279,7 +279,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		],
 	}),
 	...hasPermissions(['VIEW_BUNDLES_OVERVIEW'], 'OR', userPermissions, {
-		label: i18n.t('admin/admin___bundels'),
+		label: i18n.t('Bundelbeheer'),
 		location: ADMIN_PATH.BUNDLES_OVERVIEW,
 		key: 'bundels',
 		exact: false,
