@@ -94,8 +94,8 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		try {
 			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
-				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
-				tableState.sort_order || 'desc',
+				(tableState.sort_column || 'last_name') as UserOverviewTableCol,
+				tableState.sort_order || 'asc',
 				generateWhereObject(getFilters(tableState))
 			);
 			setProfiles(profilesTemp);

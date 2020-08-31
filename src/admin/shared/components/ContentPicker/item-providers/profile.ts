@@ -13,8 +13,8 @@ export const retrieveProfiles = async (
 	try {
 		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
 			0,
-			'last_access_at',
-			'desc',
+			'last_name',
+			'asc',
 			!!name
 				? {
 						_or: [
