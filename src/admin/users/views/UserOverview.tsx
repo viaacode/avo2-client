@@ -50,49 +50,45 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				filters.query,
 				// @ts-ignore
 				(queryWordWildcard: string, queryWord: string, query: string) => [
-					{ stamboek: { _ilike: query } },
-					{ alternative_email: { _ilike: queryWordWildcard } },
-					{ bio: { _ilike: queryWordWildcard } },
-					{ alias: { _ilike: queryWordWildcard } },
-					{ title: { _ilike: queryWordWildcard } },
-					{ organisation: { name: { _ilike: queryWordWildcard } } },
-					{ profile_user_groups: { groups: { label: { _ilike: queryWordWildcard } } } },
+					{ profiles: { stamboek: { _ilike: query } } },
+					{ profiles: { alternative_email: { _ilike: queryWordWildcard } } },
+					{ profiles: { bio: { _ilike: queryWordWildcard } } },
+					{ profiles: { alias: { _ilike: queryWordWildcard } } },
+					{ profiles: { title: { _ilike: queryWordWildcard } } },
+					{ profiles: { organisation: { name: { _ilike: queryWordWildcard } } } },
 					{
-						usersByuserId: {
-							_or: [
-								{ first_name: { _ilike: queryWordWildcard } },
-								{ last_name: { _ilike: queryWordWildcard } },
-								{ mail: { _ilike: queryWordWildcard } },
-							],
+						profiles: {
+							profile_user_groups: {
+								groups: { label: { _ilike: queryWordWildcard } },
+							},
 						},
+					},
+					{
+						_or: [
+							{ first_name: { _ilike: queryWordWildcard } },
+							{ last_name: { _ilike: queryWordWildcard } },
+							{ mail: { _ilike: queryWordWildcard } },
+						],
 					},
 				]
 			)
 		);
-		andFilters.push(
-			...getBooleanFilters(filters, ['is_blocked'], ['usersByuserId.is_blocked'])
-		);
+		andFilters.push(...getBooleanFilters(filters, ['is_blocked']));
 		andFilters.push(
 			...getMultiOptionFilters(
 				filters,
 				['user_group', 'organisation'],
-				['profile_user_groups.groups.id', 'company_id']
+				['profiles.profile_user_groups.groups.id', 'profiles.company_id']
 			)
 		);
-		andFilters.push(
-			...getDateRangeFilters(
-				filters,
-				['created_at', 'last_access_at'],
-				['usersByuserId.created_at', 'usersByuserId.last_access_at']
-			)
-		);
+		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
 
 		return { _and: andFilters };
 	};
 
 	const fetchUsers = useCallback(async () => {
 		try {
-			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
+			const [profilesTemp, profileCountTemp] = await UserService.getUsers(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_name') as UserOverviewTableCol,
 				tableState.sort_order || 'asc',

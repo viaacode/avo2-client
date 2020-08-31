@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -37,7 +37,7 @@ export class UserService {
 		}
 	}
 
-	public static async getProfiles(
+	public static async getUsers(
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
@@ -59,14 +59,21 @@ export class UserService {
 			const response = await dataService.query({
 				variables,
 				query: GET_USERS,
+				fetchPolicy: 'no-cache',
 			});
 			if (response.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
 					response,
 				});
 			}
-			const profiles = get(response, 'data.users_profiles');
-			const profileCount = get(response, 'data.users_profiles_aggregate.aggregate.count');
+			const users = get(response, 'data.shared_users');
+
+			// Convert user format to profile format since we initially wrote the ui to deal with profiles
+			const profiles = users.map((user: any) => ({
+				...user.profiles[0],
+				user: omit(user, 'profiles'),
+			}));
+			const profileCount = get(response, 'data.shared_users_aggregate.aggregate.count');
 
 			if (!profiles) {
 				throw new CustomError('Response does not contain any profiles', null, {
@@ -76,7 +83,7 @@ export class UserService {
 
 			return [profiles, profileCount];
 		} catch (err) {
-			throw new CustomError('Failed to get profiles from the database', err, {
+			throw new CustomError('Failed to get users from the database', err, {
 				variables,
 				query: 'GET_USERS',
 			});

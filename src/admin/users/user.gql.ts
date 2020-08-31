@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const GET_USER_BY_ID = gql`
-	query getUsers($id: uuid!) {
+	query getUserById($id: uuid!) {
 		users_profiles(offset: 0, limit: 1, where: { id: { _eq: $id } }) {
 			id
 			user: usersByuserId {
@@ -69,47 +69,46 @@ export const GET_USERS = gql`
 	query getUsers(
 		$offset: Int!
 		$limit: Int!
-		$orderBy: [users_profiles_order_by!]!
-		$where: users_profiles_bool_exp!
+		$orderBy: [shared_users_order_by!]!
+		$where: shared_users_bool_exp!
 	) {
-		users_profiles(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
-			id
-			user: usersByuserId {
-				first_name
-				last_name
-				mail
-				idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
-					idp_user_id
-					id
-				}
+		shared_users(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
+			first_name
+			last_name
+			mail
+			idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
+				idp_user_id
 				id
-				last_access_at
-				is_blocked
 			}
-			avatar
-			alias
-			title
-			stamboek
-			updated_at
-			created_at
-			bio
-			alternative_email
-			company_id
-			organisation {
-				logo_url
-				name
-				or_id
-			}
-			is_exception
-			title
-			profile_user_groups {
-				groups {
-					label
-					id
+			id
+			last_access_at
+			is_blocked
+			profiles {
+				id
+				avatar
+				alias
+				title
+				stamboek
+				updated_at
+				created_at
+				bio
+				alternative_email
+				company_id
+				is_exception
+				title
+				profile_user_groups {
+					groups {
+						label
+						id
+					}
+				}
+				organisation {
+					name
+					logo_url
 				}
 			}
 		}
-		users_profiles_aggregate(where: $where) {
+		shared_users_aggregate(where: $where) {
 			aggregate {
 				count
 			}
