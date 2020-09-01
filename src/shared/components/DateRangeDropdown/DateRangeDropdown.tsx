@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { FunctionComponent, MouseEvent, ReactText, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,7 +12,6 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	RadioButton,
 	RadioButtonGroup,
 	TextInput,
 } from '@viaa/avo2-components';
@@ -45,7 +44,8 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 
 	// Internal range state (copied to external range state when the user clicks on the apply button
 	const [rangeState, setRangeState] = useState<DateRange>(range);
-	const [showYearControls, setShowYearControls] = useState<boolean>(true);
+	// const [showYearControls, setShowYearControls] = useState<boolean>(true);
+	const [dateControls, setDateControls] = useState<'year' | 'date'>('year');
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 	const [yearInputGte, setYearInputGte] = useState<string>('');
 	const [yearInputLte, setYearInputLte] = useState<string>('');
@@ -55,6 +55,19 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		evt && evt.stopPropagation();
 		setRangeState(range);
 	};
+
+	useEffect(() => {
+		if (dateControls === 'year') {
+			// Round selected dates to the larger year
+			const newRangeState = {
+				gte: rangeState.gte ? `${rangeState.gte.split('-')[0]}-01-01` : '',
+				lte: rangeState.lte ? `${rangeState.lte.split('-')[0]}-12-31` : '',
+			};
+			setRangeState(newRangeState);
+			setYearInputGte(rangeState.gte ? rangeState.gte.split('-')[0] : '');
+			setYearInputLte(rangeState.lte ? rangeState.lte.split('-')[0] : '');
+		}
+	}, [dateControls, rangeState.gte, rangeState.lte]);
 
 	/**
 	 * State is only passed from the component to the parent when the user clicks the "Apply" button
@@ -73,11 +86,17 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		onChange(DEFAULT_DATE_RANGE, id);
 	};
 
-	const handleDateChange = async (date: Date | null, rangeId: string) => {
+	const handleDateChange = async (date: Date | null, rangeId: 'gte' | 'lte') => {
 		if (date) {
+			let dateMoment: moment.Moment;
+			if (rangeId === 'gte') {
+				dateMoment = moment(date).set({ hour: 0, minute: 0, second: 0 });
+			} else {
+				dateMoment = moment(date).set({ hour: 23, minute: 59, second: 59 });
+			}
 			setRangeState({
 				...rangeState,
-				[rangeId]: moment(date).format('YYYY-MM-DD'),
+				[rangeId]: dateMoment.format('YYYY-MM-DD HH:mm:ss'),
 			});
 		} else {
 			setRangeState({
@@ -104,25 +123,6 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 			}
 		} catch (err) {
 			ToastService.danger(`Ongeldig jaar: ${value}`);
-		}
-	};
-
-	/**
-	 * Called when the user switches between "year" range and "full date" range controls
-	 * @param type
-	 */
-	const dateTypeChanged = (type: 'year' | 'date') => {
-		setShowYearControls(type === 'year');
-
-		if (type === 'year') {
-			// Round selected dates to the larger year
-			const newRangeState = {
-				gte: rangeState.gte ? `${rangeState.gte.split('-')[0]}-01-01` : '',
-				lte: rangeState.lte ? `${rangeState.lte.split('-')[0]}-12-31` : '',
-			};
-			setRangeState(newRangeState);
-			setYearInputGte(rangeState.gte ? rangeState.gte.split('-')[0] : '');
-			setYearInputLte(rangeState.lte ? rangeState.lte.split('-')[0] : '');
 		}
 	};
 
@@ -175,7 +175,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	let tillYear: string;
 
 	// Get year from state or yearInputString
-	if (showYearControls) {
+	if (dateControls === 'year') {
 		fromYear = (yearInputGte || from || '').split('-')[0];
 		tillYear = (yearInputLte || till || '').split('-')[0];
 	} else {
@@ -205,35 +205,26 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 								'shared/components/date-range-dropdown/date-range-dropdown___hoe-specifiek'
 							)}
 						>
-							<RadioButtonGroup inline>
-								<RadioButton
-									label={t(
-										'shared/components/date-range-dropdown/date-range-dropdown___op-jaartal'
-									)}
-									name="year"
-									value="year"
-									checked={showYearControls}
-									onChange={async (checked: boolean) => {
-										if (checked) {
-											await dateTypeChanged('year');
-										}
-									}}
-								/>
-								<RadioButton
-									label={t(
-										'shared/components/date-range-dropdown/date-range-dropdown___specifieke-datums'
-									)}
-									name="year"
-									value="date"
-									checked={!showYearControls}
-									onChange={async (checked: boolean) => {
-										if (checked) {
-											await dateTypeChanged('date');
-										}
-									}}
-								/>
-							</RadioButtonGroup>
-							{showYearControls && (
+							<RadioButtonGroup
+								inline
+								options={[
+									{
+										label: t(
+											'shared/components/date-range-dropdown/date-range-dropdown___op-jaartal'
+										),
+										value: 'year',
+									},
+									{
+										label: t(
+											'shared/components/date-range-dropdown/date-range-dropdown___specifieke-datums'
+										),
+										value: 'date',
+									},
+								]}
+								value={dateControls}
+								onChange={value => setDateControls(value as 'year' | 'date')}
+							/>
+							{dateControls === 'year' && (
 								<Grid>
 									<Column size="6">
 										<FormGroup
@@ -273,7 +264,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									</Column>
 								</Grid>
 							)}
-							{!showYearControls && (
+							{dateControls === 'date' && (
 								<Grid>
 									<Column size="6">
 										<FormGroup
