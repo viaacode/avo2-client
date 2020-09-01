@@ -1,17 +1,19 @@
 import {
-	BlockHeroProps,
 	ButtonAction,
 	ButtonType,
-	ContentItemStyle,
-	ContentTabStyle,
 	CTAProps,
 	HeadingType,
 	IconName,
-	ImageInfo,
 	RichEditorState,
 	SpacerOption,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import type {
+	BlockHeroProps,
+	ContentItemStyle,
+	ContentTabStyle,
+	ImageInfo,
+} from '@viaa/avo2-components';
 
 // OPTIONS
 export type AlignOption = 'left' | 'right' | 'center';
