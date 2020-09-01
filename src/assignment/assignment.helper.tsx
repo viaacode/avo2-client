@@ -13,7 +13,6 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
-	RadioButton,
 	RadioButtonGroup,
 	Spacer,
 	TextInput,
@@ -218,43 +217,29 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___weergave')}
 							labelFor="only_player"
 						>
-							<RadioButtonGroup>
-								<RadioButton
-									label={i18n.t(
-										'assignment/views/assignment-edit___mediaspeler-met-beschrijving'
-									)}
-									name="content_layout"
-									value={String(AssignmentLayout.PlayerAndText)}
-									checked={
-										isNil(assignment.content_layout) ||
-										assignment.content_layout === AssignmentLayout.PlayerAndText
-									}
-									onChange={isChecked =>
-										isChecked &&
-										setAssignmentProp(
-											'content_layout',
-											AssignmentLayout.PlayerAndText
-										)
-									}
-								/>
-								<RadioButton
-									label={i18n.t(
-										'assignment/views/assignment-edit___enkel-mediaspeler'
-									)}
-									name="content_layout"
-									value={String(AssignmentLayout.OnlyPlayer)}
-									checked={
-										assignment.content_layout === AssignmentLayout.OnlyPlayer
-									}
-									onChange={isChecked =>
-										isChecked &&
-										setAssignmentProp(
-											'content_layout',
-											AssignmentLayout.OnlyPlayer
-										)
-									}
-								/>
-							</RadioButtonGroup>
+							<RadioButtonGroup
+								options={[
+									{
+										label: i18n.t(
+											'assignment/views/assignment-edit___mediaspeler-met-beschrijving'
+										),
+										value: String(AssignmentLayout.PlayerAndText),
+									},
+									{
+										label: i18n.t(
+											'assignment/views/assignment-edit___enkel-mediaspeler'
+										),
+										value: String(AssignmentLayout.OnlyPlayer),
+									},
+								]}
+								value={String(assignment.content_layout) || null}
+								onChange={(value: string) =>
+									setAssignmentProp(
+										'content_layout',
+										AssignmentLayout[value as keyof typeof AssignmentLayout]
+									)
+								}
+							/>
 						</FormGroup>
 						<FormGroup
 							label={i18n.t('assignment/views/assignment-edit___klas-of-groep')}

@@ -32,8 +32,10 @@ export interface QueryDefinition {
 }
 
 export const EVENT_QUERIES: {
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[action in EventActionExtended]: {
 		[contentType in EventContentTypeSimplified]: QueryDefinition;
+		/* eslint-enable @typescript-eslint/no-unused-vars */
 	};
 } = {
 	bookmark: {

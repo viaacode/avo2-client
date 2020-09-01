@@ -14,10 +14,6 @@ import {
 	GET_LINKED_SEARCH_QUERIES,
 } from './permission-service.gql';
 
-type PermissionInfo = { name: PermissionName; obj?: any | null };
-
-export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
-
 export enum PermissionName {
 	EDIT_OWN_COLLECTIONS = 'EDIT_OWN_COLLECTIONS',
 	CREATE_COLLECTIONS = 'CREATE_COLLECTIONS',
@@ -91,6 +87,10 @@ export enum PermissionName {
 
 	EDIT_CONTENT_PAGE_AUTHOR = 'EDIT_CONTENT_PAGE_AUTHOR',
 }
+
+type PermissionInfo = { name: PermissionName; obj?: any | null };
+
+export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
 export class PermissionService {
 	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {

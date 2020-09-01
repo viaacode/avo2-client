@@ -5,13 +5,6 @@ import { Avo } from '@viaa/avo2-types';
 import { getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
-interface MinimalClientEvent {
-	action: EventAction;
-	object: string; // entity being modified
-	object_type: EventObjectType;
-	message: any; // user played item xxx on avo
-}
-
 // TODO move to typings repo after update to typings v2.22.0
 export type EventAction =
 	| 'register'
@@ -35,17 +28,6 @@ export type EventAction =
 	| 'add_to'
 	| 'remove_from';
 
-export interface ClientEvent {
-	action: EventAction;
-	subject: string; // entity doing the modification
-	subject_type: EventSubjectType;
-	object: string; // entity being modified
-	object_type: EventObjectType;
-	message: any; // user played item xxx on avo
-	occurred_at: string | null;
-	source_url: string; // eg: url when the event was triggered
-}
-
 export type EventSubjectType = 'user' | 'system';
 
 export type EventObjectType =
@@ -60,6 +42,24 @@ export type EventObjectType =
 	| 'bundle'
 	| 'assignment'
 	| 'search';
+
+export interface ClientEvent {
+	action: EventAction;
+	subject: string; // entity doing the modification
+	subject_type: EventSubjectType;
+	object: string; // entity being modified
+	object_type: EventObjectType;
+	message: any; // user played item xxx on avo
+	occurred_at: string | null;
+	source_url: string; // eg: url when the event was triggered
+}
+
+interface MinimalClientEvent {
+	action: EventAction;
+	object: string; // entity being modified
+	object_type: EventObjectType;
+	message: any; // user played item xxx on avo
+}
 
 export function trackEvents(
 	events: MinimalClientEvent[] | MinimalClientEvent,
