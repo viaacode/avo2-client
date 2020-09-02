@@ -173,8 +173,10 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 								),
 							},
 						]}
-						value={collection.is_public ? 'public' : 'private'}
-						onChange={(value: string) => setIsCollectionPublic(value === 'public')}
+						value={isCollectionPublic ? 'public' : 'private'}
+						onChange={(value: string) => {
+							setIsCollectionPublic(value === 'public');
+						}}
 					/>
 				</FormGroup>
 				<Toolbar spaced>
