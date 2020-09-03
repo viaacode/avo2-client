@@ -38,7 +38,10 @@ import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../../content-block.const'
 export interface ContentPageOverviewParams {
 	withBlock: boolean;
 	contentType: string;
+	// Visible tabs in the page overview component for which we should fetch item counts
 	labelIds: number[];
+	// Selected tabs for which we should fetch content page items
+	selectedLabelIds: number[];
 	orderByProp?: string;
 	orderByDirection?: 'asc' | 'desc';
 	offset: number;
@@ -84,6 +87,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
 	const [pages, setPages] = useState<ContentPageInfo[] | null>(null);
 	const [pageCount, setPageCount] = useState<number | null>(null);
+	const [labelPageCounts, setLabelPageCounts] = useState<{ [id: number]: number } | null>(null);
 	const [focusedPageId, setFocusedPageId] = useState<number | undefined>(undefined);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -119,7 +123,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			const body: ContentPageOverviewParams = {
 				withBlock: itemStyle === 'ACCORDION',
 				contentType: contentTypeAndTabs.selectedContentType,
-				labelIds:
+				labelIds: (contentTypeAndTabs.selectedLabels || []).map(labelObj => labelObj.id),
+				selectedLabelIds:
 					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
 				orderByProp: 'published_at',
 				orderByDirection: 'desc',
@@ -138,6 +143,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			const response = await reply.json();
 			setPages(convertToContentPageInfos(response.pages));
 			setPageCount(Math.ceil(response.count / debouncedItemsPerPage));
+			setLabelPageCounts(response.labelCounts);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch pages', err, {
@@ -228,10 +234,16 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		setCurrentPage(0);
 	};
 
+	const getLabelsWithContent = () => {
+		return (contentTypeAndTabs.selectedLabels || []).filter(
+			(labelInfo: Avo.ContentPage.Label) => (labelPageCounts || {})[labelInfo.id] > 0
+		);
+	};
+
 	const renderPageOverviewBlock = () => {
 		return (
 			<BlockPageOverview
-				tabs={contentTypeAndTabs.selectedLabels || []}
+				tabs={getLabelsWithContent()}
 				darkTabs={
 					!!headerBackgroundColor &&
 					GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(headerBackgroundColor)
