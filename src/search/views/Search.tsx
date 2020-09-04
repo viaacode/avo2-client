@@ -10,7 +10,7 @@ import {
 	pickBy,
 	set,
 } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
@@ -20,9 +20,6 @@ import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query
 import {
 	Button,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Flex,
 	Form,
 	FormGroup,
@@ -38,7 +35,7 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { SearchResultItem } from '@viaa/avo2-types/types/search/index';
+import { SearchResultItem } from '@viaa/avo2-types/types/search';
 
 import {
 	PermissionGuard,
@@ -49,6 +46,7 @@ import { PermissionName } from '../../authentication/helpers/permission-service'
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
@@ -414,6 +412,20 @@ const Search: FunctionComponent<SearchProps> = ({
 		});
 	};
 
+	const handleOptionClicked = (optionId: string | number | ReactText) => {
+		setIsOptionsMenuOpen(false);
+
+		switch (optionId) {
+			case 'copy_link':
+				onCopySearchLinkClicked();
+				return;
+
+			case 'save':
+				ToastService.info(t('search/views/search___nog-niet-geimplementeerd'));
+				return;
+		}
+	};
+
 	const renderSearchPage = () => (
 		<Container className="c-search-view" mode="horizontal">
 			<Navbar>
@@ -449,43 +461,27 @@ const Search: FunctionComponent<SearchProps> = ({
 										/>
 									</FormGroup>
 								</Form>
-								<Dropdown
+								<MoreOptionsDropdown
 									isOpen={isOptionsMenuOpen}
-									menuWidth="fit-content"
 									onOpen={() => setIsOptionsMenuOpen(true)}
 									onClose={() => setIsOptionsMenuOpen(false)}
-									placement="bottom-end"
-									triggerClassName="c-extra-options"
-								>
-									<DropdownButton>
-										<Button
-											type="tertiary"
-											icon="more-horizontal"
-											title={t('search/views/search___meer-opties')}
-											ariaLabel={t('search/views/search___meer-opties')}
-										/>
-									</DropdownButton>
-									<DropdownContent>
-										<Button
-											type="link"
-											className="c-menu__item"
-											label={t(
+									menuItems={[
+										{
+											icon: 'link',
+											id: 'copy_link',
+											label: t(
 												'search/views/search___kopieer-vaste-link-naar-deze-zoekopdracht'
-											)}
-											onClick={onCopySearchLinkClicked}
-										/>
-										{/* TODO: DISABLED_FEATURE Create link to create search assignment task */}
-										{/* <Button
-											type="link"
-											className="c-menu__item"
-											label={t('search/views/search___maak-van-deze-zoekopdracht-een-opdracht')}
-											onClick={() => {
-												setIsOptionsMenuOpen(false);
-												ToastService.info(t('search/views/search___nog-niet-geimplementeerd'));
-											}}
-										/> */}
-									</DropdownContent>
-								</Dropdown>
+											),
+										},
+										// {
+										// 	id: 'save',
+										// 	label: t(
+										// 		'search/views/search___maak-van-deze-zoekopdracht-een-opdracht'
+										// 	),
+										// },
+									]}
+									onOptionClicked={handleOptionClicked}
+								/>
 								<InteractiveTour showButton />
 							</Flex>
 						</ToolbarRight>

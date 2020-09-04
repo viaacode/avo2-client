@@ -9,13 +9,9 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Form,
 	FormGroup,
 	Icon,
-	MenuContent,
 	Navbar,
 	RichEditorState,
 	Spacer,
@@ -54,6 +50,7 @@ import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
@@ -259,20 +256,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	};
 
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
+		setExtraOptionsMenuOpen(false);
 		switch (itemId) {
 			case 'duplicate':
 				setDuplicateModalOpen(true);
-				setExtraOptionsMenuOpen(false);
 				break;
 
 			case 'archive':
 				archiveAssignment(!initialAssignment.is_archived).then(() => {});
-				setExtraOptionsMenuOpen(false);
 				break;
 
 			case 'delete':
 				setDeleteModalOpen(true);
-				setExtraOptionsMenuOpen(false);
 				break;
 			default:
 				return null;
@@ -447,62 +442,41 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 													'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 												)}
 											/>
-											<Dropdown
+											<MoreOptionsDropdown
 												isOpen={isExtraOptionsMenuOpen}
-												menuWidth="fit-content"
 												onOpen={() => setExtraOptionsMenuOpen(true)}
 												onClose={() => setExtraOptionsMenuOpen(false)}
-												placement="bottom-end"
-											>
-												<DropdownButton>
-													<Button
-														type="secondary"
-														icon="more-horizontal"
-														ariaLabel={t(
-															'assignment/views/assignment-edit___meer-opties'
-														)}
-														title={t(
-															'assignment/views/assignment-edit___meer-opties'
-														)}
-													/>
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{
-																icon: 'copy',
-																id: 'duplicate',
-																label: t(
-																	'assignment/views/assignment-edit___dupliceer'
-																),
-															},
-															{
-																icon: 'archive',
-																id: 'archive',
-																label: initialAssignment.is_archived
-																	? t(
-																			'assignment/views/assignment-edit___dearchiveer'
-																	  )
-																	: t(
-																			'assignment/views/assignment-edit___archiveer'
-																	  ),
-															},
-															{
-																icon: 'delete',
-																id: 'delete',
-																label: t(
-																	'assignment/views/assignment-edit___verwijder'
-																),
-															},
-														]}
-														onClick={id =>
-															handleExtraOptionClicked(
-																id.toString() as any
-															)
-														}
-													/>
-												</DropdownContent>
-											</Dropdown>
+												menuItems={[
+													{
+														icon: 'copy',
+														id: 'duplicate',
+														label: t(
+															'assignment/views/assignment-edit___dupliceer'
+														),
+													},
+													{
+														icon: 'archive',
+														id: 'archive',
+														label: initialAssignment.is_archived
+															? t(
+																	'assignment/views/assignment-edit___dearchiveer'
+															  )
+															: t(
+																	'assignment/views/assignment-edit___archiveer'
+															  ),
+													},
+													{
+														icon: 'delete',
+														id: 'delete',
+														label: t(
+															'assignment/views/assignment-edit___verwijder'
+														),
+													},
+												]}
+												onOptionClicked={id =>
+													handleExtraOptionClicked(id.toString() as any)
+												}
+											/>
 											<Button
 												type="primary"
 												label={t(

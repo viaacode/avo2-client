@@ -7,11 +7,7 @@ import { Link } from 'react-router-dom';
 import {
 	Button,
 	ButtonToolbar,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Icon,
-	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Pagination,
@@ -33,6 +29,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -342,6 +339,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 		// Listeners
 		const onClickDropdownItem = (item: ReactText) => {
+			setDropdownOpen({ [collectionId]: false });
 			switch (item) {
 				case 'edit':
 					navigate(
@@ -369,26 +367,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 		return (
 			<ButtonToolbar>
-				<Dropdown
+				<MoreOptionsDropdown
 					isOpen={dropdownOpen[collectionId] || false}
-					menuWidth="fit-content"
-					onClose={() => setDropdownOpen({ [collectionId]: false })}
 					onOpen={() => setDropdownOpen({ [collectionId]: true })}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							icon="more-horizontal"
-							type="borderless"
-							title={t(
-								'collection/components/collection-or-bundle-overview___meer-opties'
-							)}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent menuItems={ROW_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
-					</DropdownContent>
-				</Dropdown>
+					onClose={() => setDropdownOpen({ [collectionId]: false })}
+					menuItems={ROW_DROPDOWN_ITEMS}
+					onOptionClicked={onClickDropdownItem}
+				/>
 
 				{!isMobileWidth() && (
 					<Button
