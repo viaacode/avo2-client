@@ -114,10 +114,12 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				const translationsArray: Translation[] = Object.entries(get(context, 'value'));
 
 				// add context to translations id
-				return translationsArray.map(item => [
-					`${get(context, 'name').replace('translations-', '')}/${item[0]}`,
-					item[1],
-				]);
+				return translationsArray.map(
+					(item: Translation): Translation => [
+						`${get(context, 'name').replace('translations-', '')}/${item[0]}`,
+						item[1],
+					]
+				);
 			})
 		);
 	};

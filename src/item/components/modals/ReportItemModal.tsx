@@ -10,7 +10,6 @@ import {
 	Modal,
 	ModalBody,
 	ModalFooterRight,
-	RadioButton,
 	RadioButtonGroup,
 	Spacer,
 	Spinner,
@@ -137,29 +136,24 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 								label={t('item/components/modals/report-item-modal___reden')}
 								required
 							>
-								<RadioButtonGroup>
-									<RadioButton
-										label={GET_RADIO_BUTTON_LABELS()['broken']}
-										name="broken"
-										value="broken"
-										checked={reason === 'broken'}
-										onChange={() => setReason('broken')}
-									/>
-									<RadioButton
-										label={GET_RADIO_BUTTON_LABELS()['inappropriate']}
-										name="inappropriate"
-										value="inappropriate"
-										checked={reason === 'inappropriate'}
-										onChange={() => setReason('inappropriate')}
-									/>
-									<RadioButton
-										label={GET_RADIO_BUTTON_LABELS()['copyright']}
-										name="copyright"
-										value="copyright"
-										checked={reason === 'copyright'}
-										onChange={() => setReason('copyright')}
-									/>
-								</RadioButtonGroup>
+								<RadioButtonGroup
+									options={[
+										{
+											label: GET_RADIO_BUTTON_LABELS()['broken'],
+											value: 'broken',
+										},
+										{
+											label: GET_RADIO_BUTTON_LABELS()['inappropriate'],
+											value: 'inappropriate',
+										},
+										{
+											label: GET_RADIO_BUTTON_LABELS()['copyright'],
+											value: 'copyright',
+										},
+									]}
+									value={reason}
+									onChange={(reason: string) => setReason(reason as Reason)}
+								/>
 							</FormGroup>
 							<Spacer margin="top-large">
 								<FormGroup

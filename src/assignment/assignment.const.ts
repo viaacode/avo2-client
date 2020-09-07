@@ -5,14 +5,15 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
 import { GET_ITEM_BY_EXTERNAL_ID } from '../admin/items/items.gql';
 import { ROUTE_PARTS } from '../shared/constants';
-import { EventObjectType } from '../shared/services/event-logging-service';
 
 import { AssignmentOverviewTableColumns } from './assignment.types';
 
 export const ITEMS_PER_PAGE = 20;
 
 export const CONTENT_LABEL_TO_QUERY: {
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[contentType in AssignmentContentLabel]: {
+		/* eslint-enable @typescript-eslint/no-unused-vars */
 		query: DocumentNode;
 		resultPath: string;
 		getVariables: (id: string) => any;
@@ -33,24 +34,20 @@ export const CONTENT_LABEL_TO_QUERY: {
 };
 
 export const CONTENT_LABEL_TO_ROUTE_PARTS: {
-	[contentType in Avo.Assignment.ContentLabel]: string;
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	[contentType in Avo.Assignment.ContentLabel]: string /* eslint-enable @typescript-eslint/no-unused-vars */;
 } = {
 	ITEM: ROUTE_PARTS.item,
 	COLLECTIE: ROUTE_PARTS.collections,
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
-export const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: EventObjectType;
-} = {
-	ITEM: 'item',
-	COLLECTIE: 'collection',
-	ZOEKOPDRACHT: 'search',
-};
-
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	{
-		[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
+		/* eslint-disable @typescript-eslint/no-unused-vars */
+		[columnId in AssignmentOverviewTableColumns]: (
+			order: Avo.Search.OrderDirection
+		) => any /* eslint-enable @typescript-eslint/no-unused-vars */;
 	}
 > = {
 	title: (order: Avo.Search.OrderDirection) => ({

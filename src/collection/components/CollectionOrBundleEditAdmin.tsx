@@ -39,7 +39,9 @@ import { CollectionAction } from './CollectionOrBundleEdit';
 type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 type AssignmentColumnId = 'title' | 'author' | 'is_archived' | 'actions';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	title: 'title',
 	author: 'profile.user.last_name',
 	is_public: 'is_public',
@@ -47,7 +49,9 @@ const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
 	actions: '',
 };
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const columnIdToAssignmentPath: { [columnId in AssignmentColumnId]: string } = {
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	title: 'title',
 	author: 'profile.user.last_name',
 	is_archived: 'is_archived',

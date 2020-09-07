@@ -46,7 +46,9 @@ import { ItemsService } from '../items.service';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	title: 'title',
 	author: 'profile.user.last_name',
 	is_public: 'is_public',
