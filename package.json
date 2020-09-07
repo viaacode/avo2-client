@@ -11,10 +11,10 @@
 		"unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
-		"build-extract-translations-script": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts",
-		"extract-translations": "npm run build-extract-translations-script && dotenv -e .env node scripts/extract-and-replace-translations.js && npm run format",
-		"build-whitelist-queries": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/whitelist-gql-queries.ts",
-		"whitelist-queries": "npm run build-whitelist-queries && node scripts/whitelist-gql-queries.js",
+		"build-scripts": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts scripts/update-sitemap.ts scripts/whitelist-gql-queries.ts",
+		"extract-translations": "npm run build-scripts && dotenv -e .env node scripts/extract-and-replace-translations.js && npm run format",
+		"whitelist-queries": "npm run build-scripts && node scripts/whitelist-gql-queries.js",
+		"update-sitemap": "npm run build-scripts && node scripts/update-sitemap.js",
 		"licenses": "license-checker --csv --out licenses.csv"
 	},
 	"contributors": [
