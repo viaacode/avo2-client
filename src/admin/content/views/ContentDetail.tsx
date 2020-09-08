@@ -16,11 +16,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	LinkTarget,
-	MenuContent,
 	MenuItemInfo,
 	Navbar,
 	Tabs,
@@ -40,6 +36,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -265,6 +262,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	];
 
 	const executeAction = async (item: ReactText) => {
+		setIsOptionsMenuOpen(false);
 		switch (item) {
 			case 'duplicate':
 				try {
@@ -371,30 +369,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
 					/>
 				)}
-				{!!CONTENT_DROPDOWN_ITEMS && !!CONTENT_DROPDOWN_ITEMS.length && (
-					<Dropdown
-						isOpen={isOptionsMenuOpen}
-						menuWidth="fit-content"
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						placement="bottom-end"
-					>
-						<DropdownButton>
-							<Button
-								type="secondary"
-								icon="more-horizontal"
-								ariaLabel={t('collection/views/collection-detail___meer-opties')}
-								title={t('collection/views/collection-detail___meer-opties')}
-							/>
-						</DropdownButton>
-						<DropdownContent>
-							<MenuContent
-								menuItems={CONTENT_DROPDOWN_ITEMS}
-								onClick={executeAction}
-							/>
-						</DropdownContent>
-					</Dropdown>
-				)}
+				<MoreOptionsDropdown
+					isOpen={isOptionsMenuOpen}
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					menuItems={CONTENT_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 			</ButtonToolbar>
 		);
 	};

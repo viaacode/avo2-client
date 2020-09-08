@@ -9,15 +9,11 @@ import {
 	ButtonGroup,
 	ButtonToolbar,
 	Checkbox,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Flex,
 	Form,
 	FormGroup,
 	Icon,
 	IconName,
-	MenuContent,
 	Pagination,
 	Select,
 	Spacer,
@@ -44,6 +40,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	CustomError,
@@ -303,6 +300,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		actionId: ExtraAssignmentOptions,
 		dataRow: Avo.Assignment.Assignment
 	) => {
+		setDropdownOpenForAssignmentId(null);
 		if (!dataRow.id) {
 			ToastService.danger(
 				t(
@@ -344,8 +342,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			default:
 				return null;
 		}
-
-		setDropdownOpenForAssignmentId(null);
 	};
 
 	const handleDeleteModalClose = () => {
@@ -409,64 +405,42 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		return (
 			<ButtonToolbar>
 				{canEditAssignments && (
-					<Dropdown
+					<MoreOptionsDropdown
 						isOpen={dropdownOpenForAssignmentId === rowData.id}
-						menuWidth="fit-content"
-						onClose={() => setDropdownOpenForAssignmentId(null)}
 						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
-						placement="bottom-end"
-					>
-						<DropdownButton>
-							<Button
-								icon="more-horizontal"
-								type={isMobileWidth() ? 'tertiary' : 'borderless'}
-								title={t('assignment/views/assignment-overview___meer-opties')}
-							/>
-						</DropdownButton>
-						<DropdownContent>
-							<MenuContent
-								menuItems={[
-									{
-										icon: 'edit2' as IconName,
-										id: 'edit',
-										label: t('assignment/views/assignment-overview___bewerk'),
-									},
-									{
-										icon: 'archive' as IconName,
-										id: 'archive',
-										label:
-											activeView === 'archived_assignments'
-												? t(
-														'assignment/views/assignment-overview___dearchiveer'
-												  )
-												: t(
-														'assignment/views/assignment-overview___archiveer'
-												  ),
-									},
-									{
-										icon: 'copy' as IconName,
-										id: 'duplicate',
-										label: t(
-											'assignment/views/assignment-overview___dupliceer'
-										),
-									},
-									{
-										icon: 'delete' as IconName,
-										id: 'delete',
-										label: t(
-											'assignment/views/assignment-overview___verwijder'
-										),
-									},
-								]}
-								onClick={(actionId: ReactText) =>
-									handleExtraOptionsItemClicked(
-										actionId.toString() as ExtraAssignmentOptions,
-										rowData
-									)
-								}
-							/>
-						</DropdownContent>
-					</Dropdown>
+						onClose={() => setDropdownOpenForAssignmentId(null)}
+						menuItems={[
+							{
+								icon: 'edit2' as IconName,
+								id: 'edit',
+								label: t('assignment/views/assignment-overview___bewerk'),
+							},
+							{
+								icon: 'archive' as IconName,
+								id: 'archive',
+								label:
+									activeView === 'archived_assignments'
+										? t('assignment/views/assignment-overview___dearchiveer')
+										: t('assignment/views/assignment-overview___archiveer'),
+							},
+							{
+								icon: 'copy' as IconName,
+								id: 'duplicate',
+								label: t('assignment/views/assignment-overview___dupliceer'),
+							},
+							{
+								icon: 'delete' as IconName,
+								id: 'delete',
+								label: t('assignment/views/assignment-overview___verwijder'),
+							},
+						]}
+						onOptionClicked={(actionId: ReactText) =>
+							handleExtraOptionsItemClicked(
+								actionId.toString() as ExtraAssignmentOptions,
+								rowData
+							)
+						}
+					/>
 				)}
 
 				{canEditAssignments && (
