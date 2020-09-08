@@ -15,12 +15,8 @@ import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stambo
  * Client redirect functions
  *
  **/
-export function redirectToClientPage(path: string, history: History, fromPath?: string) {
-	if (fromPath) {
-		history.push(path, { from: { pathname: fromPath } });
-	} else {
-		history.push(path);
-	}
+export function redirectToClientPage(path: string, history: History) {
+	history.push(path);
 }
 
 export function redirectToErrorPage(props: ErrorViewQueryParams, location: Location) {
@@ -41,10 +37,10 @@ export function redirectToLoggedInHome(location: Location) {
  * Server redirect functions
  *
  **/
-export function redirectToServerLoginPage(location: Location) {
+export function redirectToServerLoginPage(location: Location, fromPath?: string) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getRedirectAfterLogin(location);
+	const returnToUrl = fromPath || getRedirectAfterLogin(location);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
 		returnToUrl,

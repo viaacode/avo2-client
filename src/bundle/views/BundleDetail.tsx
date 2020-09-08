@@ -11,6 +11,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Flex,
@@ -44,7 +45,6 @@ import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	ControlledDropdown,
 	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -555,7 +555,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 
 		return (
-			<ControlledDropdown
+			<Dropdown
 				isOpen={isOptionsMenuOpen}
 				menuWidth="fit-content"
 				onOpen={() => setIsOptionsMenuOpen(true)}
@@ -573,7 +573,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				<DropdownContent>
 					<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
 				</DropdownContent>
-			</ControlledDropdown>
+			</Dropdown>
 		);
 	};
 
@@ -633,7 +633,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					: []),
 			];
 			return (
-				<ControlledDropdown
+				<Dropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -651,7 +651,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					<DropdownContent>
 						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
 					</DropdownContent>
-				</ControlledDropdown>
+				</Dropdown>
 			);
 		}
 		const isPublic = bundle && bundle.is_public;

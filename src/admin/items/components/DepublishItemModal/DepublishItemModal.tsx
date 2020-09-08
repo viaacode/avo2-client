@@ -10,7 +10,6 @@ import {
 	Modal,
 	ModalBody,
 	ModalFooterRight,
-	RichEditorState,
 	Select,
 	Toolbar,
 	ToolbarItem,
@@ -27,6 +26,7 @@ import { ContentPicker } from '../../../shared/components/ContentPicker/ContentP
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 export type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 
