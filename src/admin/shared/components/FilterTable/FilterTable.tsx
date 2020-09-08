@@ -97,11 +97,11 @@ interface FilterTableProps extends RouteComponentProps {
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
-	onSelectBulkAction?: (action: string, selectedRows: any[]) => void;
+	onSelectBulkAction?: (action: string) => void;
 
 	// Used for manual handling of selected rows
 	showCheckboxes?: boolean;
-	selectedItems?: any[];
+	selectedItems?: any[] | null;
 	onSelectionChanged?: (selectedItems: any[]) => void;
 }
 
@@ -130,7 +130,6 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the tableState.query
 	// This avoids doing a database query on every key press
 	const [searchTerm, setSearchTerm] = useState<string>('');
-	const [internalSelectedItems, setInternalSelectedItems] = useState<any[]>([]);
 	const [selectedBulkAction, setSelectedBulkAction] = useState<string | null>(null);
 	const [confirmBulkActionModalOpen, setConfirmBulkActionModalOpen] = useState<boolean>(false);
 
@@ -198,7 +197,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 				setSelectedBulkAction(selectedAction);
 				setConfirmBulkActionModalOpen(true);
 			} else {
-				onSelectBulkAction(selectedAction, internalSelectedItems);
+				onSelectBulkAction(selectedAction);
 				setSelectedBulkAction(null);
 			}
 		}
@@ -206,7 +205,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 	const handleConfirmSelectBulkAction = () => {
 		if (onSelectBulkAction && selectedBulkAction) {
-			onSelectBulkAction(selectedBulkAction, internalSelectedItems);
+			onSelectBulkAction(selectedBulkAction);
 			setSelectedBulkAction(null);
 		}
 	};
@@ -313,7 +312,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								placeholder={t(
 									'admin/shared/components/filter-table/filter-table___bulkactie'
 								)}
-								disabled={!internalSelectedItems.length}
+								disabled={!(selectedItems || []).length}
 								className="c-bulk-action-select"
 							/>
 						)}
@@ -344,8 +343,8 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						sortColumn={tableState.sort_column}
 						sortOrder={tableState.sort_order}
 						showCheckboxes={(!!bulkActions && !!bulkActions.length) || showCheckboxes}
-						selectedItems={selectedItems || internalSelectedItems}
-						onSelectionChanged={onSelectionChanged || setInternalSelectedItems}
+						selectedItems={selectedItems || undefined}
+						onSelectionChanged={onSelectionChanged}
 					/>
 					<Spacer margin="top-large">
 						<Pagination
