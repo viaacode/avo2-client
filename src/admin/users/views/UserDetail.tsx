@@ -294,7 +294,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderSimpleDetailRows(storedProfile, [
 								['bio', t('admin/users/views/user-detail___bio')],
 								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
-								['title', t('admin/users/views/user-detail___oormerk')],
+								['business_category', t('admin/users/views/user-detail___oormerk')],
 								[
 									'is_exception',
 									t('admin/users/views/user-detail___uitzonderingsaccount'),

@@ -77,7 +77,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 
-	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[]>([]);
+	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[] | null>();
 
 	const [changeAuthorModalOpen, setChangeAuthorModalOpen] = useState<boolean>(false);
 
@@ -230,7 +230,16 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				state: 'loaded',
 			});
 		}
-	}, [setLoadingInfo, collections]);
+
+		// Update selected rows to always be a subset of the collections array
+		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
+		const collectionIds: string[] = (collections || []).map(coll => coll.id);
+		setSelectedRows(currentSelectedRows => {
+			return (currentSelectedRows || []).filter(
+				coll => coll.id && collectionIds.includes(coll.id)
+			);
+		});
+	}, [setLoadingInfo, collections, setSelectedRows]);
 
 	const userGroupOptions = userGroups.map(
 		(option): CheckboxOption => ({
@@ -266,6 +275,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: 'title',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'author',
@@ -273,12 +283,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
 			),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'author_user_group',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
 			// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
 			// sortable: true,
+			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: userGroupOptions,
@@ -290,11 +302,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
 			),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'created_at',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 			filterProps: {},
 		},
@@ -302,6 +316,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: 'updated_at',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 			filterProps: {},
 		},
@@ -309,6 +324,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			id: 'is_public',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___publiek'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'BooleanCheckboxDropdown',
 		},
 		{
@@ -317,6 +333,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels'
 			),
 			sortable: false,
+			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: collectionLabelOptions,
@@ -327,6 +344,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
 			icon: 'eye',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'bookmarks',
@@ -335,6 +353,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			),
 			icon: 'bookmark',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'copies',
@@ -343,6 +362,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			),
 			icon: 'copy',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		...(isCollection
 			? [
@@ -353,6 +373,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						),
 						icon: 'folder' as IconName,
 						sortable: true,
+						visibleByDefault: true,
 					},
 			  ]
 			: []),
@@ -365,10 +386,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						),
 						icon: 'clipboard' as IconName,
 						sortable: true,
+						visibleByDefault: true,
 					},
 			  ]
 			: []),
-		{ id: 'actions', label: '' },
+		{
+			id: 'actions',
+			tooltip: t('Acties'),
+			visibleByDefault: true,
+		},
 	];
 
 	const navigateToCollectionDetail = (id: string | undefined) => {
@@ -392,46 +418,43 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		redirectToClientPage(link, history);
 	};
 
-	const handleBulkActionSelect = async (
-		action: CollectionBulkAction,
-		selectedRows: Partial<Avo.Collection.Collection>[]
-	): Promise<void> => {
+	const handleBulkActionSelect = async (action: CollectionBulkAction): Promise<void> => {
+		if (!selectedRows || !selectedRows.length) {
+			return;
+		}
 		switch (action) {
 			case 'publish':
-				await bulkChangePublishStateForCollections(true, selectedRows);
+				await bulkChangePublishStateForSelectedCollections(true);
 				return;
 
 			case 'depublish':
-				await bulkChangePublishStateForCollections(false, selectedRows);
+				await bulkChangePublishStateForSelectedCollections(false);
 				return;
 
 			case 'delete':
-				await bulkDeleteCollections(selectedRows);
+				await bulkDeleteSelectedCollections();
 				return;
 
 			case 'change_author':
-				setSelectedRows(selectedRows);
 				setChangeAuthorModalOpen(true);
 				return;
 
 			case 'change_labels':
-				setSelectedRows(selectedRows);
 				setAddLabelModalOpen(true);
 				return;
 		}
 	};
 
-	const bulkChangePublishStateForCollections = async (
-		isPublic: boolean,
-		selectedRows: Partial<Avo.Collection.Collection>[]
-	) => {
+	const bulkChangePublishStateForSelectedCollections = async (isPublic: boolean) => {
 		try {
+			if (!selectedRows || !selectedRows.length) {
+				return;
+			}
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
 				compact(selectedRows.map(collection => collection.id)),
 				getProfileId(user)
 			);
-			setSelectedRows([]);
 			ToastService.success(
 				isPublic
 					? t(
@@ -463,13 +486,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 	};
 
-	const bulkDeleteCollections = async (selectedRows: Partial<Avo.Collection.Collection>[]) => {
+	const bulkDeleteSelectedCollections = async () => {
 		try {
+			if (!selectedRows || !selectedRows.length) {
+				return;
+			}
 			await CollectionsOrBundlesService.bulkDeleteCollections(
 				compact(selectedRows.map(collection => collection.id)),
 				getProfileId(user)
 			);
-			setSelectedRows([]);
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
@@ -494,6 +519,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangeAuthor = async (authorProfileId: string) => {
 		try {
+			if (!selectedRows || !selectedRows.length) {
+				return;
+			}
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
 				compact(selectedRows.map(collection => collection.id)),
@@ -523,6 +551,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangeLabels = async (addOrRemove: AddOrRemove, labels: string[]) => {
 		try {
+			if (!selectedRows || !selectedRows.length) {
+				return;
+			}
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
@@ -786,6 +817,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						},
 					]}
 					onSelectBulkAction={handleBulkActionSelect as any}
+					selectedItems={selectedRows}
+					onSelectionChanged={setSelectedRows}
 				/>
 				<ChangeAuthorModal
 					isOpen={changeAuthorModalOpen}

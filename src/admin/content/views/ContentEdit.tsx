@@ -424,6 +424,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						pageTitle: page.title,
 					}
 				);
+			} else {
+				delete errors.path;
 			}
 		} catch (err) {
 			// ignore error if content page does not exist yet, since we're trying to save it
