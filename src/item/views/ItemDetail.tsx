@@ -201,6 +201,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				...bookmarkViewPlayCounts,
 				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
 			});
+			ToastService.success(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('collection/views/collection-detail___de-beladwijzer-is-verwijderd')
+					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {

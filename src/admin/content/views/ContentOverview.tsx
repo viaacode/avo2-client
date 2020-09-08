@@ -327,7 +327,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				);
 
 			case 'author':
-				return getFullName(profile) || '-';
+				return getFullName(profile, false) || '-';
 
 			case 'author_user_group':
 				return profile ? getUserGroupLabel(profile) || '-' : '-';
