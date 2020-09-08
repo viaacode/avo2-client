@@ -11,9 +11,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Flex,
 	FlexItem,
 	Grid,
@@ -21,7 +18,6 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
-	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -53,6 +49,7 @@ import {
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -550,30 +547,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				: []),
 		];
 
-		if (!BUNDLE_DROPDOWN_ITEMS.length) {
-			return null;
-		}
-
 		return (
-			<Dropdown
+			<MoreOptionsDropdown
 				isOpen={isOptionsMenuOpen}
-				menuWidth="fit-content"
 				onOpen={() => setIsOptionsMenuOpen(true)}
 				onClose={() => setIsOptionsMenuOpen(false)}
-				placement="bottom-end"
-			>
-				<DropdownButton>
-					<Button
-						type="secondary"
-						icon="more-horizontal"
-						ariaLabel={t('collection/views/collection-detail___meer-opties')}
-						title={t('collection/views/collection-detail___meer-opties')}
-					/>
-				</DropdownButton>
-				<DropdownContent>
-					<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
-				</DropdownContent>
-			</Dropdown>
+				menuItems={BUNDLE_DROPDOWN_ITEMS}
+				onOptionClicked={executeAction}
+			/>
 		);
 	};
 
@@ -633,25 +614,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					: []),
 			];
 			return (
-				<Dropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
-					</DropdownContent>
-				</Dropdown>
+					menuItems={BUNDLE_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 			);
 		}
 		const isPublic = bundle && bundle.is_public;
