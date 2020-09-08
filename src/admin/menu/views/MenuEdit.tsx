@@ -264,14 +264,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			};
 
 			if (pageType === 'create') {
-				const id = await MenuService.insertMenuItem({
+				await MenuService.insertMenuItem({
 					...menuItem,
 					// Get description from existing items or use form description field
 					description: get(menuItems, '[0].description', menuForm.description),
 					position: menuItems.length,
 				});
-				navigate(history, ADMIN_PATH.MENU_ITEM_EDIT, {
-					id,
+				navigate(history, ADMIN_PATH.MENU_DETAIL, {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
@@ -292,6 +291,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						updated_at: new Date().toISOString(),
 					} as Avo.Menu.Menu,
 				]);
+				navigate(history, ADMIN_PATH.MENU_DETAIL, {
+					menu: menuForm.placement as string,
+				});
 				ToastService.success(
 					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet'),
 					false
