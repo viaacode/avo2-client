@@ -8,17 +8,22 @@ import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
+import { RelationService } from '../../shared/services/relation-service/relation.service';
+import { RelationType } from '../../shared/services/relation-service/relation.types';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
-	DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS,
+	DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
+	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
 	GET_DISTINCT_SERIES,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
+	GET_ITEM_DEPUBLISH_REASON,
 	GET_ITEMS_WITH_FILTERS,
 	GET_PUBLIC_ITEMS,
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+	REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
 	UPDATE_ITEM_DEPUBLISH_REASON,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
@@ -131,9 +136,7 @@ export class ItemsService {
 				});
 			}
 
-			const item = addDefaultAudioStillToItem(rawItem);
-
-			return item;
+			return addDefaultAudioStillToItem(rawItem);
 		} catch (err) {
 			throw new CustomError('Failed to get the item from the database', err, {
 				variables,
@@ -238,6 +241,19 @@ export class ItemsService {
 		);
 	}
 
+	private static async fetchDepublishReasonByExternalId(externalId: string): Promise<string> {
+		const query = {
+			query: GET_ITEM_DEPUBLISH_REASON,
+			variables: { externalId },
+		};
+
+		return performQuery(
+			query,
+			'data.app_item_meta[0].depublish_reason',
+			'Failed to retrieve depublish reason for item. GET_ITEM_DEPUBLISH_REASON'
+		);
+	}
+
 	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item | null> {
 		try {
 			const response = await dataService.query({
@@ -251,7 +267,38 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			return addDefaultAudioStillToItem(get(response, 'data.app_item_meta[0]')) || null;
+			// Return item if an item is found that is published and not deleted
+			const item = get(response, 'data.app_item_meta[0]');
+			if (item) {
+				return addDefaultAudioStillToItem(item) || null;
+			}
+
+			// Return the replacement item if a REPLACED_BY relation is found for the current item
+			// TODO replace with single query to fetch depublish_reason and relations after task is done: https://meemoo.atlassian.net/browse/DEV-1166
+			const itemUid = await ItemsService.fetchItemUuidByExternalId(externalId);
+			if (itemUid) {
+				const relations = await RelationService.fetchRelationsBySubject(
+					'item',
+					itemUid,
+					RelationType.IS_REPLACED_BY
+				);
+				const replacedByItemUid = get(relations, '[0].object', null);
+				if (replacedByItemUid) {
+					return await this.fetchItemByUuid(replacedByItemUid);
+				}
+			}
+
+			// Return the depublish reason if the item has a depublish reason
+			const depublishReason = await this.fetchDepublishReasonByExternalId(externalId);
+
+			if (depublishReason) {
+				return {
+					depublish_reason: depublishReason,
+				} as any; // TODO replace cast with Avo.Item.Item after update to typings v2.23.0
+			}
+
+			// otherwise return null
+			return null;
 		} catch (err) {
 			throw new CustomError('Failed to get item by external id', err, {
 				externalId,
@@ -293,6 +340,14 @@ export class ItemsService {
 				mediamosaId,
 			});
 		}
+	}
+
+	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
+		return performQuery(
+			{ query: FETCH_ITEM_UUID_BY_EXTERNAL_ID, variables: { externalId } },
+			'data.app_item_meta[0].uid',
+			'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)'
+		);
 	}
 
 	public static async fetchPublicItemsByTitleOrExternalId(
@@ -353,7 +408,7 @@ export class ItemsService {
 	) {
 		try {
 			const response = await dataService.mutate({
-				mutation: DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS,
+				mutation: DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
 				variables: {
 					itemUid,
 					itemExternalId,
@@ -365,10 +420,41 @@ export class ItemsService {
 			}
 		} catch (err) {
 			throw new CustomError(
-				'Failed to delete item from collections, bookmarks and assignments in the database',
+				'Failed to delete item from collections and bookmarks in the database',
 				err,
 				{
-					query: 'DELETE_ITEM_FROM_COLLECTION_BOOKMARKS_AND_ASSIGNMENTS',
+					query: 'DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS',
+				}
+			);
+		}
+	}
+
+	public static async replaceItemInCollectionsAndBookmarks(
+		oldItemUid: string,
+		oldItemExternalId: string,
+		newItemUid: string,
+		newItemExternalId: string
+	) {
+		try {
+			const response = await dataService.mutate({
+				mutation: REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
+				variables: {
+					oldItemUid,
+					oldItemExternalId,
+					newItemUid,
+					newItemExternalId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to replace item in collections, bookmarks and assignments in the database',
+				err,
+				{
+					query: 'REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS',
 				}
 			);
 		}

@@ -139,11 +139,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					item.uid,
 					RelationType.IS_REPLACED_BY
 				);
+				await ItemsService.setItemDepublishReason(item.uid, null);
 
-				setItem({
-					...item,
-					is_published: true,
-				});
+				fetchItemById();
 			} else {
 				setDepublishItemModalOpen(true);
 			}
@@ -304,6 +302,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								],
 							])}
 							{renderSimpleDetailRows(item, [
+								['depublish_reason', t('Reden tot depubliceren')],
+								// ['-', t('Vervangen door')], // TODO add title of replacement item with link to item after task: https://meemoo.atlassian.net/browse/DEV-1166
 								[
 									'view_counts_aggregate.aggregate.sum.count',
 									t('admin/items/views/item-detail___views'),
