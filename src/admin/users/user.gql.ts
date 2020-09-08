@@ -20,6 +20,7 @@ export const GET_USER_BY_ID = gql`
 			avatar
 			alias
 			title
+			business_category
 			stamboek
 			updated_at
 			created_at

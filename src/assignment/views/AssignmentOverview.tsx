@@ -612,8 +612,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const columns: AssignmentColumn[] = [
-		{ id: 'title', label: t('assignment/views/assignment-overview___titel'), sortable: true },
-		// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true }, // https://district01.atlassian.net/browse/AVO2-421
+		{ id: 'title', label: t('assignment/views/assignment-overview___titel'), sortable: true, visibleByDefault: true },
+		// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
 		...(isMobileWidth()
 			? []
 			: [
@@ -629,7 +629,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					{
 						id: 'author',
 						label: t('assignment/views/assignment-overview___leerkracht'),
-						sortable: true,
+						sortable: true, visibleByDefault: true,
 					},
 			  ]), // Only show teacher for pupils
 		...(isMobileWidth()
@@ -638,13 +638,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					{
 						id: 'class_room',
 						label: t('assignment/views/assignment-overview___klas'),
-						sortable: true,
+						sortable: true, visibleByDefault: true,
 					},
 			  ]),
 		{
 			id: 'deadline_at',
 			label: t('assignment/views/assignment-overview___deadline'),
-			sortable: true,
+			sortable: true, visibleByDefault: true,
 		},
 		...(canEditAssignments
 			? []
@@ -655,7 +655,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						tooltip: t(
 							'assignment/views/assignment-overview___heb-je-deze-opdracht-reeds-ingediend'
 						),
-						sortable: true,
+						sortable: true, visibleByDefault: true,
 					},
 			  ]), // Only show teacher for pupils
 		// { id: 'assignment_responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421

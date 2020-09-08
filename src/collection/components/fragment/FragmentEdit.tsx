@@ -13,6 +13,7 @@ import {
 	Button,
 	Column,
 	convertToHtml,
+	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Form,
@@ -20,7 +21,6 @@ import {
 	Grid,
 	IconName,
 	MenuContent,
-	RichEditorState,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -29,14 +29,11 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import {
-	ControlledDropdown,
-	DeleteObjectModal,
-	FlowPlayerWrapper,
-} from '../../../shared/components';
+import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
@@ -356,7 +353,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 						</ToolbarLeft>
 						<ToolbarRight>
 							<ToolbarItem>
-								<ControlledDropdown
+								<Dropdown
 									isOpen={openOptionsId === fragment.id}
 									menuWidth="fit-content"
 									onOpen={() => setOpenOptionsId(fragment.id)}
@@ -381,7 +378,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 											onClick={onClickDropdownItem}
 										/>
 									</DropdownContent>
-								</ControlledDropdown>
+								</Dropdown>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

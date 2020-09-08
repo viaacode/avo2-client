@@ -32,7 +32,7 @@ export const CheckboxListParam = {
 		if (!value) {
 			return;
 		}
-		return value.join(',');
+		return value.join('~');
 	},
 	decode: (value: string | (string | null)[] | null | undefined): string[] | undefined => {
 		try {
@@ -42,7 +42,7 @@ export const CheckboxListParam = {
 			if (isArray(value)) {
 				return value as string[];
 			}
-			return value.split(',');
+			return value.split('~');
 		} catch (err) {
 			return;
 		}

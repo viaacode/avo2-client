@@ -15,7 +15,8 @@
 		"extract-translations": "npm run build-scripts && dotenv -e .env node scripts/extract-and-replace-translations.js && npm run format",
 		"whitelist-queries": "npm run build-scripts && node scripts/whitelist-gql-queries.js",
 		"update-sitemap": "npm run build-scripts && node scripts/update-sitemap.js",
-		"licenses": "license-checker --csv --out licenses.csv"
+		"licenses": "license-checker --csv --out licenses.csv",
+		"analyse": "npm run build && source-map-explorer 'build/static/js/*.js'"
 	},
 	"contributors": [
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -25,7 +26,8 @@
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
-		"@viaa/avo2-components": "^1.55.0",
+		"@storybook/addon-actions": "^6.0.21",
+		"@viaa/avo2-components": "^1.56.3",
 		"@viaa/avo2-types": "^2.21.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
@@ -46,11 +48,11 @@
 		"node-sass": "^4.13.1",
 		"oaf-react-router": "^2.1.1",
 		"query-string": "^6.8.3",
-		"react": "^16.8.6",
+		"react": "16.13.1",
 		"react-apollo": "^2.5.8",
 		"react-copy-to-clipboard": "^5.0.2",
 		"react-datepicker": "^2.9.6",
-		"react-dom": "^16.8.6",
+		"react-dom": "16.13.1",
 		"react-i18next": "^11.2.7",
 		"react-joyride": "^2.2.1",
 		"react-meta-tags": "^0.7.4",
@@ -58,7 +60,7 @@
 		"react-popper": "^1.3.3",
 		"react-redux": "^6.0.1",
 		"react-router-dom": "^5.0.1",
-		"react-scripts": "^3.4.3",
+		"react-scripts": "3.4.1",
 		"react-scrollbars-custom": "^4.0.15",
 		"react-select": "^3.0.8",
 		"react-toastify": "^5.3.2",
@@ -66,15 +68,14 @@
 		"redux": "^4.0.1",
 		"redux-devtools-extension": "^2.13.8",
 		"redux-thunk": "^2.3.0",
-		"sanitize-html": "^1.20.1",
+		"sanitize-html": "^2.0.0-rc.1",
+		"source-map-explorer": "^2.5.0",
 		"use-query-params": "^1.1.6",
 		"webpack": "^4.42.0"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^8.1.0",
 		"@commitlint/config-conventional": "^7.6.0",
-		"@storybook/addon-actions": "^6.0.21",
-		"@storybook/react": "^6.0.21",
 		"@types/classnames": "^2.2.8",
 		"@types/enzyme": "^3.9.3",
 		"@types/enzyme-adapter-react-16": "^1.0.5",
@@ -86,16 +87,14 @@
 		"@types/node": "12.0.2",
 		"@types/node-fetch": "^2.5.7",
 		"@types/node-zendesk": "^1.4.0",
-		"@types/react": "16.8.17",
+		"@types/react": "16.9.48",
 		"@types/react-copy-to-clipboard": "^4.3.0",
 		"@types/react-datepicker": "^2.9.3",
-		"@types/react-dom": "16.8.4",
+		"@types/react-dom": "16.9.8",
 		"@types/react-redux": "^6.0.14",
 		"@types/react-router-dom": "^4.3.3",
 		"@types/react-select": "^3.0.8",
 		"@types/redux-mock-store": "^1.0.1",
-		"@types/sanitize-html": "^1.20.2",
-		"@types/storybook__react": "^4.0.2",
 		"@typescript-eslint/parser": "^4.0.1",
 		"@typescript-eslint/eslint-plugin": "^4.0.1",
 		"axios": "^0.19.1",
@@ -125,7 +124,8 @@
 	},
 	"resolutions": {
 		"immutable": "3.8.2",
-		"oaf-routing": "4.0.1"
+		"oaf-routing": "4.0.1",
+		"react": "16.13.1"
 	},
 	"browserslist": {
 		"production": [
@@ -138,5 +138,17 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
-	}
+	},
+  "eslintConfig": {
+    "extends": ["react-app"],
+    "rules": {},
+    "overrides": [
+      {
+        "files": ["**/*.ts?(x)"],
+        "rules": {
+          "@typescript-eslint/no-use-before-define": "off"
+        }
+      }
+    ]
+  }
 }

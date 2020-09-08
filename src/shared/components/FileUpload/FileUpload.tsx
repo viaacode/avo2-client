@@ -31,6 +31,7 @@ export interface FileUploadProps {
 	assetType: Avo.FileUpload.AssetType;
 	ownerId: string;
 	urls: string[] | null;
+	showDeleteButton?: boolean;
 	disabled?: boolean;
 	onChange: (urls: string[]) => void;
 }
@@ -43,6 +44,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	assetType,
 	ownerId,
 	urls,
+	showDeleteButton = true,
 	disabled = false,
 	onChange,
 }) => {
@@ -128,7 +130,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	};
 
 	const renderDeleteButton = (url: string) => {
-		if (disabled) {
+		if (disabled || !showDeleteButton) {
 			return null;
 		}
 		return (
