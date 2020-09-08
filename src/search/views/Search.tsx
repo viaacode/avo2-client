@@ -415,7 +415,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const renderSearchPage = () => (
-		<Container className="c-search-view" mode="horizontal">
+		<div className="c-search-view">
 			<Navbar>
 				<Container mode="horizontal">
 					<Toolbar>
@@ -562,7 +562,7 @@ const Search: FunctionComponent<SearchProps> = ({
 					navigateUserRequestForm={navigateToUserRequestForm}
 				/>
 			)}
-		</Container>
+		</div>
 	);
 
 	return (

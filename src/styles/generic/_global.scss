@@ -8,3 +8,8 @@
 .react-datepicker-popper {
 	z-index: $g-c-modal-z;
 }
+
+// Avoid 1px div causing extra scrollbar in admin dashboard
+#announcements {
+	top: 0;
+}
