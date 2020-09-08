@@ -148,5 +148,23 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
+	{
+		id: 'status',
+		label: i18n.t('Status'),
+		sortable: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				{
+					label: i18n.t('Nieuw'),
+					id: 'NEW',
+				},
+				{
+					label: i18n.t('Update'),
+					id: 'UPDATE',
+				},
+			],
+		},
+	},
 	{ id: 'actions', label: '' },
 ];

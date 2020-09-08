@@ -7,7 +7,7 @@ import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { dataService } from '../../shared/services';
+import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
@@ -22,6 +22,7 @@ import {
 	UPDATE_ITEM_DEPUBLISH_REASON,
 	UPDATE_ITEM_NOTES,
 	UPDATE_ITEM_PUBLISH_STATE,
+	UPDATE_SHARED_ITEMS_STATUS,
 } from './items.gql';
 import {
 	ItemsOverviewTableCols,
@@ -370,6 +371,50 @@ export class ItemsService {
 					query: 'DELETE_ITEM_FROM_COLLECTION_BOOKMARKS_AND_ASSIGNMENTS',
 				}
 			);
+		}
+	}
+
+	public static async setSharedItemsStatus(pids: string[], status: string) {
+		try {
+			const response = await dataService.mutate({
+				mutation: UPDATE_SHARED_ITEMS_STATUS,
+				variables: {
+					pids,
+					status,
+				},
+				update: ApolloCacheManager.clearSharedItemsCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update status for shared items in the database', err, {
+				query: 'UPDATE_SHARED_ITEMS_STATUS',
+			});
+		}
+	}
+
+	/**
+	 * Returns result of request of MAM sync
+	 * either:
+	 * - started
+	 * - running
+	 */
+	public static async triggerMamSync(): Promise<string> {
+		let url: string | undefined = undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;
+			const response = await fetchWithLogout(url, {
+				method: 'POST',
+				credentials: 'include',
+			});
+
+			return await response.text();
+		} catch (err) {
+			throw new CustomError('Failed to trigger MAM sync', err, {
+				url,
+			});
 		}
 	}
 }
