@@ -55,23 +55,28 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	// Fetch menu items depending on menu parent param
 	// This is necessary for populating the menu parent options for our form
 	useEffect(() => {
-		MenuService.fetchMenuItems(menuParentId).then(menuItemsByPosition => {
-			if (menuItemsByPosition && menuItemsByPosition.length) {
-				setMenuItems(menuItemsByPosition);
-			} else {
-				// Go back to overview if no menu items are present
-				ToastService.danger(
-					t(
-						'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
-						{
-							menuName,
-						}
-					),
-					false
-				);
-				history.push(MENU_PATH.MENU_OVERVIEW);
-			}
-		});
+		MenuService.fetchMenuItems(menuParentId)
+			.then(menuItemsByPosition => {
+				if (menuItemsByPosition && menuItemsByPosition.length) {
+					setMenuItems(menuItemsByPosition);
+				} else {
+					// Go back to overview if no menu items are present
+					ToastService.danger(
+						t(
+							'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
+							{
+								menuName,
+							}
+						),
+						false
+					);
+					history.push(MENU_PATH.MENU_OVERVIEW);
+				}
+			})
+			.catch(err => {
+				console.error(new CustomError('Failed to fetch menu items', err));
+				ToastService.danger(t('Het ophalen van de menu items is mislukt'));
+			});
 	}, [history, menuName, menuParentId, t]);
 
 	// Fetch menu item by id
@@ -147,7 +152,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							</Trans>
 							<ButtonToolbar>
 								{faultyUserGroups.map(group => (
-									<Badge text={group} />
+									<Badge text={group} key={`badge-${group}`} />
 								))}
 							</ButtonToolbar>
 						</Spacer>

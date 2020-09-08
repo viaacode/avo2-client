@@ -284,7 +284,7 @@ export class ItemsService {
 				);
 				const replacedByItemUid = get(relations, '[0].object', null);
 				if (replacedByItemUid) {
-					return await this.fetchItemByUuid(replacedByItemUid);
+					return await ItemsService.fetchItemByUuid(replacedByItemUid);
 				}
 			}
 

@@ -17,6 +17,7 @@ import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
+import { CustomError } from './shared/helpers';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
@@ -42,9 +43,13 @@ const App: FunctionComponent<AppProps> = props => {
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	useEffect(() => {
-		waitForTranslations.then(() => {
-			setLoadingInfo({ state: 'loaded' });
-		});
+		waitForTranslations
+			.then(() => {
+				setLoadingInfo({ state: 'loaded' });
+			})
+			.catch(err => {
+				console.error(new CustomError('Failed to wait for translations', err));
+			});
 	}, [setLoadingInfo]);
 
 	// Render
