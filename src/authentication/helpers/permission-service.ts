@@ -94,14 +94,16 @@ export type Permissions = PermissionName | PermissionInfo | (PermissionName | Pe
 
 export class PermissionService {
 	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {
-		return this.getUserPermissions(user).includes(permName);
+		return PermissionService.getUserPermissions(user).includes(permName);
 	}
 
 	public static hasAtLeastOnePerm(
 		user: Avo.User.User | undefined,
 		permNames: PermissionName[]
 	): boolean {
-		return some(permNames, permName => this.getUserPermissions(user).includes(permName));
+		return some(permNames, permName =>
+			PermissionService.getUserPermissions(user).includes(permName)
+		);
 	}
 
 	public static getUserPermissions(user: Avo.User.User | undefined): PermissionName[] {
@@ -142,7 +144,7 @@ export class PermissionService {
 		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
 		for (const perm of permissionList) {
-			if (await this.hasPermission(perm.name, perm.obj, user)) {
+			if (await PermissionService.hasPermission(perm.name, perm.obj, user)) {
 				return true;
 			}
 		}

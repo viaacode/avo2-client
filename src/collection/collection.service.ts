@@ -208,7 +208,7 @@ export class CollectionService {
 			);
 
 			// insert fragments. New fragments do not have a fragment id yet
-			const insertPromise = this.insertFragments(newCollection.id, newFragments);
+			const insertPromise = CollectionService.insertFragments(newCollection.id, newFragments);
 
 			// delete fragments
 			const deletePromises = deleteFragmentIds.map((id: number) =>
@@ -910,7 +910,7 @@ export class CollectionService {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
 
-				const labels: QualityLabel[] = (await this.fetchQualityLabels()) || [];
+				const labels: QualityLabel[] = (await CollectionService.fetchQualityLabels()) || [];
 
 				// Map result array to dictionary
 				CollectionService.collectionLabels = fromPairs(

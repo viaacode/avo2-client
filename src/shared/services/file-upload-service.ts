@@ -19,9 +19,9 @@ export class FileUploadService {
 		ownerId: string
 	): Promise<string> {
 		if (assetType === 'ZENDESK_ATTACHMENT') {
-			return await this.uploadFileToZendesk(file);
+			return await FileUploadService.uploadFileToZendesk(file);
 		}
-		return await this.uploadFileToBlobStorage(file, assetType, ownerId);
+		return await FileUploadService.uploadFileToBlobStorage(file, assetType, ownerId);
 	}
 
 	public static async uploadFileToZendesk(file: File): Promise<string> {

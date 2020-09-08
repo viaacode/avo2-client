@@ -2,7 +2,7 @@ import fs from 'fs';
 import fetch from 'node-fetch';
 import path from 'path';
 
-async function updateSitemap() {
+async function updateSitemap(): Promise<void> {
 	if (!process.env.PROXY_URL) {
 		throw 'Required environment variable is not set: PROXY_URL';
 	}
@@ -18,6 +18,7 @@ async function updateSitemap() {
 }
 
 console.info('Updating sitemap...');
+// deepcode ignore UsageOfUndefinedReturnValue: False positive
 updateSitemap()
 	.then(() => console.info('Updating sitemap... done'))
 	.catch(err => console.error('Failed to update sitemap: ', err));

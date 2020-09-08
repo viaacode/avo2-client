@@ -68,7 +68,9 @@ export class ToastService {
 				<div>
 					{messages.map((message: string, index: number) => {
 						return index + 1 !== messages.length ? (
-							<Spacer margin="bottom-small">{message}</Spacer>
+							<Spacer margin="bottom-small" key={`toast-message-${index}`}>
+								{message}
+							</Spacer>
 						) : (
 							message
 						);

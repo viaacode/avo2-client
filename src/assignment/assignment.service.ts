@@ -696,7 +696,7 @@ export class AssignmentService {
 		user: Avo.User.User | undefined
 	): Promise<Avo.Assignment.Response | null> {
 		try {
-			if (this.isOwnerOfAssignment(assignment, user)) {
+			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
 			const existingAssignmentResponse: Avo.Assignment.Response | null | undefined = get(

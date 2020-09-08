@@ -133,7 +133,7 @@ export class RelationService {
 		relationType: RelationType,
 		objectId: string
 	): Promise<void> {
-		return this.deleteRelations(type, null, relationType, objectId);
+		return RelationService.deleteRelations(type, null, relationType, objectId);
 	}
 
 	public static async deleteRelationsBySubject(
@@ -141,7 +141,7 @@ export class RelationService {
 		subjectId: string,
 		relationType: RelationType
 	): Promise<void> {
-		return this.deleteRelations(type, subjectId, relationType, null);
+		return RelationService.deleteRelations(type, subjectId, relationType, null);
 	}
 
 	private static async deleteRelations(

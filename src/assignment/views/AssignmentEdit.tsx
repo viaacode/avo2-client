@@ -36,6 +36,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -50,7 +51,6 @@ import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
@@ -263,7 +263,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				break;
 
 			case 'archive':
-				archiveAssignment(!initialAssignment.is_archived).then(() => {});
+				await archiveAssignment(!initialAssignment.is_archived);
 				break;
 
 			case 'delete':
@@ -473,7 +473,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 														),
 													},
 												]}
-												onOptionClicked={id =>
+												onOptionClicked={(id: string | number) =>
 													handleExtraOptionClicked(id.toString() as any)
 												}
 											/>
