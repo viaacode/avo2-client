@@ -334,11 +334,15 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		);
 	};
 
-	return (
-		<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
-			{options.length <= 7 ? renderCheckboxControl() : renderModalControl()}
-		</div>
-	);
+	if (disabled) {
+		return (
+			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
+				{options.length <= 7 ? renderCheckboxControl() : renderModalControl()}
+			</div>
+		);
+	}
+
+	return options.length <= 7 ? renderCheckboxControl() : renderModalControl();
 };
 
 export const renderDropdownButton = (

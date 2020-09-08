@@ -430,7 +430,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		<div className="c-search-view">
 			<Navbar>
 				<Container mode="horizontal">
-					<Toolbar>
+					<Toolbar className="c-toolbar--results">
 						<ToolbarLeft>
 							<ToolbarItem>
 								<ToolbarTitle>
