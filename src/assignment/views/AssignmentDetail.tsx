@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -33,7 +34,7 @@ import { ItemVideoDescription } from '../../item/components';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
+import { buildLink, CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -350,11 +351,20 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		);
 
 		return (
-			<div className="c-assignment-detail">
+			<div
+				className={classnames('c-assignment-detail', {
+					'c-assignment-detail--mobile': isMobileWidth(),
+				})}
+			>
 				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
-							<Toolbar justify size="huge" className="c-toolbar--drop-columns-low-mq">
+							<Toolbar
+								justify
+								wrap={isMobileWidth()}
+								size="huge"
+								className="c-toolbar--drop-columns-low-mq"
+							>
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
