@@ -17,7 +17,6 @@ import {
 	FormGroup,
 	Grid,
 	IconName,
-	RichEditorState,
 	TextInput,
 	Thumbnail,
 	Toggle,
