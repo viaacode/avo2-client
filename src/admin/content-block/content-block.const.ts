@@ -234,7 +234,9 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[type in ContentBlockType]: (position?: number) => ContentBlockComponentState;
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 } = {
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,

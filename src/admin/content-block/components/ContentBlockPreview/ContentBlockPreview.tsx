@@ -28,11 +28,13 @@ interface ContentBlockPreviewProps {
 	className?: string;
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 enum ContentWidthMap {
 	REGULAR = 'regular',
 	LARGE = 'large',
 	MEDIUM = 'medium',
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
 	UserProps &

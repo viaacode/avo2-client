@@ -33,16 +33,16 @@ export enum InteractiveTourEditActionType {
 	UPDATE_INTERACTIVE_TOUR_PROP = '@@admin-interactive-tour-edit/UPDATE_INTERACTIVE_TOUR_PROP',
 }
 
-export interface InteractiveTourState {
-	currentInteractiveTour: EditableInteractiveTour | null;
-	initialInteractiveTour: EditableInteractiveTour | null;
-	formErrors: InteractiveTourEditFormErrorState | null;
+export interface EditableStep extends Avo.InteractiveTour.Step {
+	contentState: RichEditorState | undefined;
 }
 
 export interface EditableInteractiveTour extends Avo.InteractiveTour.InteractiveTour {
 	steps: EditableStep[];
 }
 
-export interface EditableStep extends Avo.InteractiveTour.Step {
-	contentState: RichEditorState | undefined;
+export interface InteractiveTourState {
+	currentInteractiveTour: EditableInteractiveTour | null;
+	initialInteractiveTour: EditableInteractiveTour | null;
+	formErrors: InteractiveTourEditFormErrorState | null;
 }

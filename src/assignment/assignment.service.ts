@@ -1,6 +1,5 @@
-import { ExecutionResult } from '@apollo/react-common';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, isString, omit, without } from 'lodash-es';
+import { cloneDeep, get, isNil, isString, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
@@ -359,9 +358,7 @@ export class AssignmentService {
 
 			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT,
 				variables: {
 					id: assignment.id,
@@ -370,7 +367,7 @@ export class AssignmentService {
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			if (!response || !response.data) {
+			if (!response || !response.data || (response.errors && response.errors.length)) {
 				console.error('assignment update returned empty response', response);
 				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
 			}
@@ -404,9 +401,7 @@ export class AssignmentService {
 		archived: boolean
 	): Promise<void> {
 		try {
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
 				variables: {
 					id,
@@ -431,9 +426,7 @@ export class AssignmentService {
 		submittedAt: string | null
 	): Promise<void> {
 		try {
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 				variables: {
 					id,
@@ -473,9 +466,7 @@ export class AssignmentService {
 
 			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: INSERT_ASSIGNMENT,
 				variables: {
 					assignment: assignmentToSave,
@@ -547,7 +538,7 @@ export class AssignmentService {
 		collectionIdOrCollection: string | Avo.Collection.Collection,
 		user: Avo.User.User
 	): Promise<string> {
-		let collection: Avo.Collection.Collection | undefined = undefined;
+		let collection: Avo.Collection.Collection | undefined;
 		if (isString(collectionIdOrCollection)) {
 			collection = await CollectionService.fetchCollectionOrBundleById(
 				collectionIdOrCollection as string,
@@ -769,11 +760,5 @@ export class AssignmentService {
 				assignment,
 			});
 		}
-	}
-
-	public static cleanAssignmentResponse(
-		assignmentResponse: Partial<Avo.Assignment.Response>
-	): Partial<Avo.Assignment.Response> {
-		return omit(assignmentResponse, ['__typename', 'id']);
 	}
 }
