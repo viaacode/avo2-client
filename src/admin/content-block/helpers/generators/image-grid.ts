@@ -64,6 +64,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					editorProps: {
 						assetType: 'CONTENT_BLOCK_IMAGE',
 						allowMulti: false,
+						showDeleteButton: false,
 					} as FileUploadProps,
 				}
 			),

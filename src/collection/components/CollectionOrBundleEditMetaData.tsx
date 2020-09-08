@@ -9,12 +9,12 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	RichEditorState,
 	Spacer,
 	TagInfo,
 	TagsInput,
 	TextArea,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { SettingsService } from '../../settings/settings.service';

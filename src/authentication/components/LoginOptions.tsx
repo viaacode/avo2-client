@@ -4,10 +4,9 @@ import { RouteComponentProps } from 'react-router';
 
 import { Button, Spacer } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../constants';
 import {
-	redirectToClientPage,
 	redirectToServerKlascementLogin,
+	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
 } from '../helpers/redirects';
 
@@ -19,7 +18,6 @@ export interface LoginOptionsProps extends RouteComponentProps {
 }
 
 const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
-	history,
 	location,
 	onOptionClicked = () => {},
 	redirectAfterLogin,
@@ -39,7 +37,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						className="c-login-with-archief"
 						onClick={() => {
 							onOptionClicked();
-							redirectToClientPage(APP_PATH.LOGIN.route, history, redirectAfterLogin);
+							redirectToServerLoginPage(location, redirectAfterLogin);
 						}}
 					/>
 				</Spacer>

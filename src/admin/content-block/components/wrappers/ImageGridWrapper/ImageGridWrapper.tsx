@@ -14,7 +14,9 @@ export interface BlockGridWrapperProps {
 }
 
 const formatLookup: {
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[format in BlockGridFormatOption]: {
+		/* eslint-enable @typescript-eslint/no-unused-vars */
 		imageWidth: number;
 		imageHeight: number;
 		itemWidth: number;

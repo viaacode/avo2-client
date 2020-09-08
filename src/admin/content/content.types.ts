@@ -1,4 +1,4 @@
-import { RichEditorState } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
@@ -39,23 +39,6 @@ export interface ContentTableState extends FilterableTableState {
 }
 
 // Content Detail
-export type ContentDetailParams = { id: string };
-
-export type ContentEditFormErrors = Partial<{ [key in keyof ContentPageInfo]: string }>;
-
-export enum ContentEditActionType {
-	SET_CONTENT_PAGE = '@@admin-content-page/SET_CONTENT_PAGE',
-	SET_CONTENT_PAGE_PROP = '@@admin-content-page/SET_CONTENT_PAGE_PROP',
-	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLOCK_CONFIG',
-	REMOVE_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REMOVE_CONTENT_BLOCK_CONFIG',
-	REORDER_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REORDER_CONTENT_BLOCK_CONFIG',
-	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
-	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
-	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
-	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
-	SET_CONTENT_BLOCK_ERROR = '@@admin-content-edit/SET_CONTENT_BLOCK_ERROR',
-}
-
 /**
  * Convenience type with certain fields converted to be easier to manipulate
  * eg:
@@ -86,6 +69,23 @@ export interface ContentPageInfo {
 	user_group_ids: number[] | null;
 	contentBlockConfigs: ContentBlockConfig[];
 	labels: Partial<Avo.ContentPage.Label>[];
+}
+
+export type ContentDetailParams = { id: string };
+
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentPageInfo]: string }>;
+
+export enum ContentEditActionType {
+	SET_CONTENT_PAGE = '@@admin-content-page/SET_CONTENT_PAGE',
+	SET_CONTENT_PAGE_PROP = '@@admin-content-page/SET_CONTENT_PAGE_PROP',
+	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLOCK_CONFIG',
+	REMOVE_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REMOVE_CONTENT_BLOCK_CONFIG',
+	REORDER_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REORDER_CONTENT_BLOCK_CONFIG',
+	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
+	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
+	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
+	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
+	SET_CONTENT_BLOCK_ERROR = '@@admin-content-edit/SET_CONTENT_BLOCK_ERROR',
 }
 
 export type BlockClickHandler = (position: number, type: 'preview' | 'sidebar') => void;

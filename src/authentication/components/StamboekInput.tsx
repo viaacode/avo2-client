@@ -41,7 +41,9 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 	const [rawStamboekNumber, setRawStamboekNumber] = useState<string>(value);
 
 	const STAMBOEK_MESSAGES: {
+		/* eslint-disable @typescript-eslint/no-unused-vars */
 		[status in StamboekValidationStatus]: {
+			/* eslint-enable @typescript-eslint/no-unused-vars */
 			message: string | ReactNode;
 			status: ToastType | undefined;
 		};

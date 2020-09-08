@@ -1,4 +1,4 @@
-import { ExecutionResult } from '@apollo/react-common';
+import { FetchResult } from 'apollo-link';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
@@ -88,7 +88,7 @@ export class CollectionService {
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
 			// insert collection
-			const insertResponse: void | ExecutionResult<
+			const insertResponse: void | FetchResult<
 				Avo.Collection.Collection
 			> = await dataService.mutate({
 				mutation: INSERT_COLLECTION,
@@ -184,8 +184,8 @@ export class CollectionService {
 			(newCollection.collection_fragments || []).forEach(
 				(fragment: Avo.Collection.Fragment) => {
 					if (!fragment.use_custom_fields) {
-						delete fragment.custom_title;
-						delete fragment.custom_description;
+						fragment.custom_title = null;
+						fragment.custom_description = null;
 					}
 				}
 			);
@@ -384,7 +384,7 @@ export class CollectionService {
 			collectionToInsert.is_public = false;
 
 			// remove id from duplicate
-			delete collectionToInsert.id;
+			delete (collectionToInsert as any).id;
 
 			try {
 				collectionToInsert.title = await this.getCopyTitleForCollection(

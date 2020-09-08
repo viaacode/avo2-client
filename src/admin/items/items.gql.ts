@@ -68,13 +68,14 @@ export const GET_UNPUBLISHED_ITEMS_WITH_FILTERS = gql`
 			pid
 			updated_at
 			title: json(path: "Dynamic.dc_title")
+			status
 			item_meta {
 				id
 				external_id
 				uid
 			}
 		}
-		shared_items_aggregate {
+		shared_items_aggregate(where: $where) {
 			aggregate {
 				count
 			}
@@ -318,6 +319,14 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 			where: { content_id: { _eq: $oldItemExternalId }, content_label: { _eq: ITEM } }
 			_set: { content_id: $newItemExternalId }
 		) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_SHARED_ITEMS_STATUS = gql`
+	mutation setSharedItemsStatus($pids: [String!]!, $status: item_publishing_status) {
+		update_shared_items(where: { pid: { _in: $pids } }, _set: { status: $status }) {
 			affected_rows
 		}
 	}
