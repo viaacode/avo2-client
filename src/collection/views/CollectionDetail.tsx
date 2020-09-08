@@ -12,9 +12,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Grid,
 	Header,
 	HeaderAvatar,
@@ -22,7 +19,6 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
-	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -44,6 +40,7 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -359,6 +356,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const executeAction = async (item: ReactText) => {
+		setIsOptionsMenuOpen(false);
 		switch (item) {
 			case 'duplicate':
 				try {
@@ -637,28 +635,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => executeAction('openShareThroughEmail')}
 					/>
 				)}
-				<Dropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={executeAction}
-						/>
-					</DropdownContent>
-				</Dropdown>
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 				{permissions.canEditCollection && (
 					<Spacer margin="left-small">
 						<Button
@@ -750,28 +733,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		];
 		return (
 			<ButtonToolbar>
-				<Dropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={executeAction}
-						/>
-					</DropdownContent>
-				</Dropdown>
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 			</ButtonToolbar>
 		);
 	};

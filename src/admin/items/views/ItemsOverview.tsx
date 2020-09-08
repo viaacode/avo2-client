@@ -72,7 +72,13 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				if (filters.is_published.includes('unpublished')) {
 					orFilters.push({ is_published: { _eq: false } });
 				}
-				// TODO add unpublished-merge, unpublished-pancarte https://meemoo.atlassian.net/browse/AVO-274
+				if (filters.is_published.includes('unpublished-with-reason')) {
+					orFilters.push({ is_published: { _eq: false } });
+				}
+				// if (filters.is_published.includes('unpublished-with-merge')) {
+				// 	orFilters.push({ is_published: { _eq: false },  });
+				// }
+				// TODO add unpublished-merge afterhttps://meemoo.atlassian.net/browse/DEV-1166
 
 				if (orFilters.length) {
 					andFilters.push({ _or: orFilters });
@@ -230,7 +236,16 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				return rowData[columnId] ? 'Ja' : 'Nee';
 
 			case 'is_published':
-				return rowData[columnId] ? 'Gepubliceerd' : 'Gedepubliceerd';
+				if (rowData.is_published) {
+					return t('Gepubliceerd');
+				} else {
+					if ((rowData as any).depublish_reason) {
+						// TODO remove cast after update to typings v2.23.0
+						return t('Gedepubliceerd - pancarte');
+					}
+					// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
+					return t('Gedepubliceerd');
+				}
 
 			case 'actions':
 				return (

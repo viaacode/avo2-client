@@ -7,15 +7,10 @@ import { Link } from 'react-router-dom';
 import {
 	BlockHeading,
 	Box,
-	Button,
 	Checkbox,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Icon,
 	IconName,
-	MenuContent,
 	Navbar,
 	Spacer,
 	TagList,
@@ -37,6 +32,7 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -185,6 +181,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	}, [assignment]);
 
 	const handleExtraOptionsClick = async (itemId: 'archive') => {
+		setActionsDropdownOpen(false);
 		if (itemId === 'archive') {
 			try {
 				if (!assignment) {
@@ -399,44 +396,25 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 										PermissionName.EDIT_ASSIGNMENTS
 									) && (
 										<ToolbarItem>
-											<Dropdown
+											<MoreOptionsDropdown
 												isOpen={isActionsDropdownOpen}
-												menuWidth="fit-content"
-												onClose={() => setActionsDropdownOpen(false)}
 												onOpen={() => setActionsDropdownOpen(true)}
-												placement="bottom-end"
-											>
-												<DropdownButton>
-													<Button
-														icon="more-horizontal"
-														type="secondary"
-														ariaLabel={t(
-															'assignment/views/assignment-detail___meer-opties'
-														)}
-														title={t(
-															'assignment/views/assignment-detail___meer-opties'
-														)}
-													/>
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{
-																icon: 'archive',
-																id: 'archive',
-																label: assignment.is_archived
-																	? t(
-																			'assignment/views/assignment-detail___dearchiveer'
-																	  )
-																	: t(
-																			'assignment/views/assignment-detail___archiveer'
-																	  ),
-															},
-														]}
-														onClick={handleExtraOptionsClick as any}
-													/>
-												</DropdownContent>
-											</Dropdown>
+												onClose={() => setActionsDropdownOpen(false)}
+												menuItems={[
+													{
+														icon: 'archive',
+														id: 'archive',
+														label: assignment.is_archived
+															? t(
+																	'assignment/views/assignment-detail___dearchiveer'
+															  )
+															: t(
+																	'assignment/views/assignment-detail___archiveer'
+															  ),
+													},
+												]}
+												onOptionClicked={handleExtraOptionsClick as any}
+											/>
 										</ToolbarItem>
 									)}
 									<ToolbarItem>

@@ -18,15 +18,11 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Flex,
 	FlexItem,
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
-	MenuContent,
 	Navbar,
 	Spacer,
 	TabProps,
@@ -50,6 +46,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -605,6 +602,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	// const onPreviewCollection = () => {};
 
 	const executeAction = async (item: ReactText) => {
+		setIsOptionsMenuOpen(false);
 		switch (item) {
 			case 'rename':
 				onClickRename();
@@ -976,32 +974,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					)}
 					onClick={() => setIsReorderModalOpen(true)}
 				/>
-				<Dropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t(
-								'collection/components/collection-or-bundle-edit___meer-opties'
-							)}
-							title={t(
-								'collection/components/collection-or-bundle-edit___meer-opties'
-							)}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={executeAction}
-						/>
-					</DropdownContent>
-				</Dropdown>
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
@@ -1036,29 +1015,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		];
 		return (
 			<ButtonToolbar>
-				<Dropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							title={t(
-								'collection/components/collection-or-bundle-edit___meer-opties'
-							)}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={executeAction}
-						/>
-					</DropdownContent>
-				</Dropdown>
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 			</ButtonToolbar>
 		);
 	};

@@ -49,7 +49,7 @@ import { NavigationItemInfo } from '../../types';
 import './Navigation.scss';
 import NavigationItem from './NavigationItem';
 
-interface NavigationParams extends RouteComponentProps {
+export interface NavigationParams extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;

@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 
 import { APP_PATH } from '../../../constants';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
-import mockUser from '../../mocks/user-mock';
 
 import { Navigation } from './Navigation';
 
@@ -60,7 +59,7 @@ describe('<Navigation />', () => {
 		// https://redux.js.org/recipes/writing-tests#connected-components
 		mount(
 			<MemoryRouter>
-				<Navigation {...mockProps} user={undefined as any} />
+				<Navigation {...mockProps} />
 			</MemoryRouter>
 		);
 	});
@@ -68,7 +67,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged out on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} user={undefined as any} />
+				<Navigation {...mockProps} />
 			</Router>
 		);
 
@@ -88,7 +87,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged in on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} user={mockUser} />
+				<Navigation {...mockProps} />
 			</Router>
 		);
 
