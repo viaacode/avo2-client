@@ -18,6 +18,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Flex,
@@ -43,7 +44,6 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	ControlledDropdown,
 	DraggableListModal,
 	InputModal,
 	InteractiveTour,
@@ -976,7 +976,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					)}
 					onClick={() => setIsReorderModalOpen(true)}
 				/>
-				<ControlledDropdown
+				<Dropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1001,7 +1001,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							onClick={executeAction}
 						/>
 					</DropdownContent>
-				</ControlledDropdown>
+				</Dropdown>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
@@ -1036,7 +1036,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		];
 		return (
 			<ButtonToolbar>
-				<ControlledDropdown
+				<Dropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1058,7 +1058,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							onClick={executeAction}
 						/>
 					</DropdownContent>
-				</ControlledDropdown>
+				</Dropdown>
 			</ButtonToolbar>
 		);
 	};
