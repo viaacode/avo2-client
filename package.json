@@ -26,7 +26,7 @@
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
-		"@viaa/avo2-components": "^1.55.0",
+		"@viaa/avo2-components": "^1.56.1",
 		"@viaa/avo2-types": "^2.21.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
