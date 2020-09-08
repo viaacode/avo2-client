@@ -27,6 +27,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { isMobileWidth } from '../../helpers';
+
 import './CheckboxDropdownModal.scss';
 
 interface CheckedState {
@@ -282,17 +284,21 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 						)}
 						<Spacer className="c-checkbox-dropdown__list">
 							<Form>
-								<Grid>
-									<Column size="2-4">
-										{renderCheckboxGroup(firstColumnOptions)}
-									</Column>
-									<Column size="2-4">
-										{renderCheckboxGroup(secondColumnOptions)}
-									</Column>
-									<Column size="2-4">
-										{renderCheckboxGroup(thirdColumnOptions)}
-									</Column>
-								</Grid>
+								{isMobileWidth() ? (
+									renderCheckboxGroup(take(filteredOptions, 14))
+								) : (
+									<Grid>
+										<Column size="2-4">
+											{renderCheckboxGroup(firstColumnOptions)}
+										</Column>
+										<Column size="2-4">
+											{renderCheckboxGroup(secondColumnOptions)}
+										</Column>
+										<Column size="2-4">
+											{renderCheckboxGroup(thirdColumnOptions)}
+										</Column>
+									</Grid>
+								)}
 							</Form>
 						</Spacer>
 					</ModalBody>

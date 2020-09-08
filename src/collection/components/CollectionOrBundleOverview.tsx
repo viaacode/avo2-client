@@ -586,6 +586,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				<Button
 					type="primary"
 					icon="search"
+					autoHeight
 					label={
 						isCollection
 							? t('collection/views/collection-overview___maak-je-eerste-collectie')

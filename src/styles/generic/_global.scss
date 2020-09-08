@@ -5,8 +5,16 @@
 	z-index: $g-c-global-navbar-z !important;
 }
 
+.modal-open #launcher {
+	display: none !important;
+}
+
 .react-datepicker-popper {
 	z-index: $g-c-modal-z;
+}
+
+.o-app > .o-container {
+	overflow-x: hidden;
 }
 
 // Avoid 1px div causing extra scrollbar in admin dashboard
