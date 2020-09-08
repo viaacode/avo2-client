@@ -343,7 +343,7 @@ export class ItemsService {
 	}
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
-		return await performQuery(
+		return performQuery(
 			{ query: FETCH_ITEM_UUID_BY_EXTERNAL_ID, variables: { externalId } },
 			'data.app_item_meta[0].uid',
 			'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)'

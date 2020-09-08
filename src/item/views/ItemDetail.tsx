@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -643,7 +643,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						</Grid>
 					</Container>
 				</Container>
-				{typeof match.params.id !== undefined && isOpenAddToCollectionModal && (
+				{!isNil(match.params.id) && isOpenAddToCollectionModal && (
 					<AddToCollectionModal
 						history={history}
 						location={location}
