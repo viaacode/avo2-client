@@ -20,7 +20,6 @@ import {
 	Grid,
 	IconName,
 	MenuContent,
-	RichEditorState,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -29,6 +28,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
