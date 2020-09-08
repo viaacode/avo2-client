@@ -47,7 +47,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
+import { copyToClipboard, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -427,7 +427,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const renderSearchPage = () => (
-		<Container className="c-search-view" mode="horizontal">
+		<div className="c-search-view">
 			<Navbar>
 				<Container mode="horizontal">
 					<Toolbar>
@@ -517,10 +517,18 @@ const Search: FunctionComponent<SearchProps> = ({
 									{hasFilters && (
 										<FormGroup inlineMode="shrink">
 											<Button
-												label={t(
+												label={
+													isMobileWidth()
+														? ''
+														: t(
+																'search/views/search___verwijder-alle-filters'
+														  )
+												}
+												ariaLabel={t(
 													'search/views/search___verwijder-alle-filters'
 												)}
-												type="link"
+												icon={isMobileWidth() ? 'trash-2' : undefined}
+												type={isMobileWidth() ? 'borderless' : 'link'}
 												onClick={deleteAllFilters}
 											/>
 										</FormGroup>
@@ -558,7 +566,7 @@ const Search: FunctionComponent<SearchProps> = ({
 					navigateUserRequestForm={navigateToUserRequestForm}
 				/>
 			)}
-		</Container>
+		</div>
 	);
 
 	return (

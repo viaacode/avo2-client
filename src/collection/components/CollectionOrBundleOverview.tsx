@@ -466,11 +466,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					col: '6',
 					sortable: true,
 				},
-				{ id: 'actions', label: '', col: '1' },
+				{ id: 'actions', tooltip: t('Acties'), col: '1' },
 			];
 		}
 		return [
-			{ id: 'thumbnail', label: '', col: '2' },
+			{ id: 'thumbnail', tooltip: t('Cover'), col: '2' },
 			{
 				id: 'title',
 				label: t('collection/views/collection-overview___titel'),
@@ -505,7 +505,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			// 	label: t('collection/views/collection-overview___toegang'),
 			// 	col: '2',
 			// },
-			{ id: 'actions', label: '', col: '1' },
+			{ id: 'actions', tooltip: t('Acties'), col: '1' },
 		];
 	};
 
@@ -571,6 +571,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				<Button
 					type="primary"
 					icon="search"
+					autoHeight
 					label={
 						isCollection
 							? t('collection/views/collection-overview___maak-je-eerste-collectie')

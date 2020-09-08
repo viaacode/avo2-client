@@ -26,7 +26,8 @@ export const getInitials = (profile: Avo.User.Profile | null) =>
 	getInitialChar(get(profile, 'user.last_name'));
 
 export const getFullName = (
-	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
+	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined,
+	includeCompany: boolean = true
 ): string | null => {
 	if (!userOrProfile) {
 		return null;
@@ -36,7 +37,7 @@ export const getFullName = (
 
 	const firstName = get(profile, 'user.first_name');
 	const lastName = get(profile, 'user.last_name');
-	const organisationName = get(profile, 'organisation.name');
+	const organisationName = includeCompany ? get(profile, 'organisation.name') : '';
 
 	return `${firstName} ${lastName}${organisationName ? ` (${organisationName})` : ''}`;
 };

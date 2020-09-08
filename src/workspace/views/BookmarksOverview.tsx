@@ -70,6 +70,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			label: t('collection/views/collection-overview___titel'),
 			col: '6',
 			sortable: true,
+			visibleByDefault: true,
 		},
 		...(isMobileWidth()
 			? []
@@ -79,9 +80,10 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 						label: t('workspace/views/bookmarks___aangemaakt-op'),
 						col: '3',
 						sortable: true,
+						visibleByDefault: true,
 					},
 			  ]),
-		{ id: 'actions', label: '', col: '1' },
+		{ id: 'actions', tooltip: t('Acties'), col: '1' },
 	] as TableColumn[];
 
 	const fetchBookmarks = useCallback(async () => {

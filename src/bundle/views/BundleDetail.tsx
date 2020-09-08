@@ -547,10 +547,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				: []),
 		];
 
-		if (!BUNDLE_DROPDOWN_ITEMS.length) {
-			return null;
-		}
-
 		return (
 			<MoreOptionsDropdown
 				isOpen={isOptionsMenuOpen}

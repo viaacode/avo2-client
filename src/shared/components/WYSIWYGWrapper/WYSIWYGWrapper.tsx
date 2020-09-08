@@ -2,7 +2,12 @@ import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { WYSIWYG, WYSIWYGMedia, WYSIWYGProps, WYSIWYGUploadInfo } from '@viaa/avo2-components';
+import {
+	WYSIWYG,
+	WYSIWYGMedia,
+	WYSIWYGProps,
+	WYSIWYGUploadInfo,
+} from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { WYSIWYG_OPTIONS_DEFAULT } from '../../constants';

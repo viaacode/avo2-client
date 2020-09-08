@@ -1,7 +1,10 @@
-import { last } from 'lodash-es';
+import { get, last } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
 import {
 	Avatar,
@@ -15,8 +18,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
 	getFirstName,
 	getProfileAvatar,
@@ -26,9 +29,15 @@ import {
 	redirectToClientPage,
 	redirectToExternalPage,
 } from '../../../authentication/helpers/redirects';
+import { getLoginStateAction } from '../../../authentication/store/actions';
+import {
+	selectLogin,
+	selectLoginError,
+	selectLoginLoading,
+} from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
+import { AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import withUser from '../../hocs/withUser';
 import { ToastService } from '../../services';
 import {
 	AppContentNavElement,
@@ -40,20 +49,29 @@ import { NavigationItemInfo } from '../../types';
 import './Navigation.scss';
 import NavigationItem from './NavigationItem';
 
+interface NavigationParams extends RouteComponentProps {
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateLoading: boolean;
+	loginStateError: boolean;
+	getLoginState: () => Dispatch;
+}
+
 /**
  * Main navigation bar component
  * @param history
  * @param location
  * @param match
  * @param loginMessage
- * @param user
  * @constructor
  */
-export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
+export const Navigation: FunctionComponent<NavigationParams> = ({
+	loginState,
+	loginStateLoading,
+	loginStateError,
+	getLoginState,
 	history,
 	location,
 	match,
-	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -61,6 +79,15 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
 	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
+
+	const user = get(loginState, 'userInfo');
+
+	useEffect(() => {
+		if (!loginState && !loginStateLoading && !loginStateError) {
+			getLoginState();
+			return;
+		}
+	});
 
 	useEffect(() => {
 		getNavigationItems()
@@ -76,7 +103,7 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 					)
 				);
 			});
-	}, [history, t, user]);
+	}, [history, t, loginState]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[], isMobile: boolean) => {
 		return navItems.map(item => (
@@ -113,8 +140,9 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
 
 		if (
-			(user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
-			(!user && logoutNavItem.location === APP_PATH.LOGOUT.route)
+			// (user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
+			!user &&
+			logoutNavItem.location === APP_PATH.LOGOUT.route
 		) {
 			// Avoid flashing the menu items for a second without them being in a dropdown menu
 			return [];
@@ -300,4 +328,16 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 	);
 };
 
-export default withUser(Navigation) as FunctionComponent<RouteComponentProps>;
+const mapStateToProps = (state: AppState) => ({
+	loginState: selectLogin(state),
+	loginStateLoading: selectLoginLoading(state),
+	loginStateError: selectLoginError(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getLoginState: () => dispatch(getLoginStateAction() as any),
+	};
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navigation));
