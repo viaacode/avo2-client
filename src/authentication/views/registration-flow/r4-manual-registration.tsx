@@ -156,11 +156,18 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						educationLevels: selectedEducationLevels,
 					}),
 					html_body: `<dl>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus">Onderwijsniveau's</Trans></dt><dd>${parsedEducationLevels}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
-</dl>`,
+  <dt>${t(
+		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
+  )}</dt><dd>${organization}</dd>
+  <dt>${t(
+		'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
+  )}</dt><dd>${profession}</dd>
+  <dt>${t(
+		'authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus'
+  )}</dt><dd>${parsedEducationLevels}</dd>
+  <dt>${t(
+		'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
+  )}</dt><dd>${reason}</dd>`,
 					public: false,
 				},
 				subject: t(

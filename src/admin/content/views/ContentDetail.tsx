@@ -16,6 +16,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	LinkTarget,
@@ -35,7 +36,6 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import {
-	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -372,7 +372,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					/>
 				)}
 				{!!CONTENT_DROPDOWN_ITEMS && !!CONTENT_DROPDOWN_ITEMS.length && (
-					<ControlledDropdown
+					<Dropdown
 						isOpen={isOptionsMenuOpen}
 						menuWidth="fit-content"
 						onOpen={() => setIsOptionsMenuOpen(true)}
@@ -393,7 +393,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 								onClick={executeAction}
 							/>
 						</DropdownContent>
-					</ControlledDropdown>
+					</Dropdown>
 				)}
 			</ButtonToolbar>
 		);

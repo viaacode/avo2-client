@@ -63,6 +63,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 			const body = {
 				extraDetails,
 				reason: GET_RADIO_BUTTON_LABELS()[reason],
+				pageUrl: window.location.href,
 			};
 			ticket = {
 				comment: {
@@ -72,8 +73,11 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
   <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
 		GET_RADIO_BUTTON_LABELS()[reason]
   }</dd>
-  <dt><Trans i18nKey="item/components/modals/report-item-modal___extra-toelichting">Extra toelichting</Trans></dt><dd>${extraDetails ||
-		t('item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven')}</dd>
+  <dt>${t('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${extraDetails ||
+						t(
+							'item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven'
+						)}</dd>
+  <dt>${t('Pagina url')}</dt><dd>${window.location.href}</dd>
 </dl>`,
 					public: false,
 				},

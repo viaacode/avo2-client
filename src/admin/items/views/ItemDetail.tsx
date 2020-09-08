@@ -10,7 +10,6 @@ import {
 	ButtonToolbar,
 	Container,
 	Icon,
-	RichEditorState,
 	Spacer,
 	Table,
 	Toolbar,
@@ -43,6 +42,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
@@ -364,7 +364,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									id: 'is_public',
 									sortable: true,
 								},
-								{ label: '', id: 'actions', sortable: false },
+								{ tooltip: t('Acties'), id: 'actions', sortable: false },
 							]}
 							data={collectionsContainingItem}
 							emptyStateMessage={t(

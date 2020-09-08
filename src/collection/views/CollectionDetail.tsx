@@ -12,6 +12,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Grid,
@@ -37,7 +38,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrRegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	ControlledDropdown,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -637,7 +637,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => executeAction('openShareThroughEmail')}
 					/>
 				)}
-				<ControlledDropdown
+				<Dropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -658,7 +658,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							onClick={executeAction}
 						/>
 					</DropdownContent>
-				</ControlledDropdown>
+				</Dropdown>
 				{permissions.canEditCollection && (
 					<Spacer margin="left-small">
 						<Button
@@ -750,7 +750,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		];
 		return (
 			<ButtonToolbar>
-				<ControlledDropdown
+				<Dropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -771,7 +771,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							onClick={executeAction}
 						/>
 					</DropdownContent>
-				</ControlledDropdown>
+				</Dropdown>
 			</ButtonToolbar>
 		);
 	};

@@ -1,8 +1,9 @@
-import { CheckboxProps } from '@viaa/avo2-components';
+import { CheckboxProps, TextInputProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import { PHOTO_TYPES, VIDEO_TYPES } from '../../../../shared/helpers/files';
+import { PHOTO_TYPES } from '../../../../shared/helpers/files';
 import i18n from '../../../../shared/translations/i18n';
+import { validateFlowplayerVideoUrl } from '../../../shared/helpers';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -17,7 +18,7 @@ import {
 	BLOCK_STATE_DEFAULTS,
 	FILE_FIELD,
 	TEXT_FIELD,
-	VIDEO_FIELD,
+	ITEM_PICKER_FIELD,
 } from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
@@ -47,20 +48,16 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				validator: undefined,
 				editorType: ContentBlockEditor.TextInput,
 			}),
-			item: VIDEO_FIELD(undefined, {
+			item: ITEM_PICKER_FIELD(undefined, {
 				validator: undefined,
 			}),
-			src: FILE_FIELD(undefined, {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/media-player___eigen-video-uploaden-optioneel'
-				),
-				validator: undefined,
+			src: TEXT_FIELD(undefined, {
+				label: i18n.t('Eigen video url van flowplayer.com (optioneel)'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: validateFlowplayerVideoUrl,
 				editorProps: {
-					allowMulti: false,
-					allowedTypes: VIDEO_TYPES,
-					assetType: 'CONTENT_BLOCK_IMAGE',
-					ownerId: '',
-				} as FileUploadProps,
+					placeholder: i18n.t('bv: https://cdn.flowplayer.com/.../hls/playlist.m3u8'),
+				} as TextInputProps,
 			}),
 			poster: FILE_FIELD(undefined, {
 				label: i18n.t(
