@@ -13,6 +13,7 @@ import { ToastService } from '../services';
 import i18n from '../translations/i18n';
 
 import { getEnv } from './env';
+import { insideIframe } from './inside-iframe';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
@@ -107,32 +108,38 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 	if (action) {
 		const { type, value, target } = action;
 
+		let resolvedTarget = target;
+		if (insideIframe()) {
+			// Klaar page inside smartschool iframe must open all links in new window: https://meemoo.atlassian.net/browse/AVO-1354
+			resolvedTarget = LinkTarget.Blank;
+		}
+
 		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 			case 'PROJECTS':
-				navigateToAbsoluteOrRelativeUrl(String(value), history, target);
+				navigateToAbsoluteOrRelativeUrl(String(value), history, resolvedTarget);
 				break;
 
 			case 'COLLECTION':
 				const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 					id: value as string,
 				});
-				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, target);
+				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, resolvedTarget);
 				break;
 
 			case 'ITEM':
 				const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
 					id: value,
 				});
-				navigateToAbsoluteOrRelativeUrl(itemUrl, history, target);
+				navigateToAbsoluteOrRelativeUrl(itemUrl, history, resolvedTarget);
 				break;
 
 			case 'BUNDLE':
 				const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
 					id: value,
 				});
-				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, target);
+				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, resolvedTarget);
 				break;
 
 			case 'EXTERNAL_LINK':
@@ -140,7 +147,7 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 					'{{PROXY_URL}}',
 					getEnv('PROXY_URL') || ''
 				);
-				navigateToAbsoluteOrRelativeUrl(externalUrl, history, target);
+				navigateToAbsoluteOrRelativeUrl(externalUrl, history, resolvedTarget);
 				break;
 
 			case 'ANCHOR_LINK':
@@ -148,7 +155,7 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 				navigateToAbsoluteOrRelativeUrl(
 					`${urlWithoutQueryOrAnchor}#${value}`,
 					history,
-					target
+					resolvedTarget
 				);
 				break;
 
@@ -168,7 +175,7 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 						)
 					),
 					history,
-					target
+					resolvedTarget
 				);
 				break;
 

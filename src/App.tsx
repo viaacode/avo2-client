@@ -17,6 +17,8 @@ import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
+import { CustomError } from './shared/helpers';
+import { insideIframe } from './shared/helpers/inside-iframe';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
@@ -49,8 +51,16 @@ const App: FunctionComponent<AppProps> = props => {
 
 	// Render
 	const renderApp = () => {
+		const isInsideIframe = insideIframe();
+		const isLoginRoute = props.location.pathname === APP_PATH.LOGIN.route;
+
 		return (
-			<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
+			<div
+				className={classnames('o-app', {
+					'o-app--admin': isAdminRoute,
+					'o-app--iframe': isInsideIframe,
+				})}
+			>
 				<ToastContainer
 					autoClose={4000}
 					className="c-alert-stack"
@@ -60,17 +70,14 @@ const App: FunctionComponent<AppProps> = props => {
 					position="bottom-left"
 					transition={Slide}
 				/>
-				{/* TODO: Based on current user permissions */}
 				{isAdminRoute ? (
 					<SecuredRoute component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
-						{props.location.pathname !== APP_PATH.LOGIN.route && (
-							<Navigation {...props} />
-						)}
+						{!isLoginRoute && !isInsideIframe && <Navigation {...props} />}
 						{renderRoutes()}
-						{props.location.pathname !== APP_PATH.LOGIN.route && <Footer {...props} />}
-						<ZendeskWrapper />
+						{!isLoginRoute && !isInsideIframe && <Footer {...props} />}
+						{!isInsideIframe && <ZendeskWrapper />}
 					</>
 				)}
 			</div>
