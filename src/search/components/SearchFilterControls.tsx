@@ -1,13 +1,15 @@
+import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../collection/collection.service';
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
-import { CustomError } from '../../shared/helpers';
+import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
@@ -60,7 +62,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
-		disabled: boolean = false,
+		disabled = false,
 		labelsMapping?: { [id: string]: string }
 	): ReactNode => {
 		const checkboxMultiOptions = (getCombinedMultiOptions()[propertyName] || []).map(
@@ -128,8 +130,12 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		);
 	};
 
-	return (
-		<ul className="c-filter-dropdown-list">
+	const renderFilters = () => (
+		<ul
+			className={classnames('c-filter-dropdown-list', {
+				'c-filter-dropdown-list--mobile': isMobileWidth(),
+			})}
+		>
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___type'),
 				'type'
@@ -174,6 +180,18 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			)}
 		</ul>
 	);
+
+	if (isMobileWidth()) {
+		return (
+			<Spacer margin="bottom-large">
+				<Accordion title={t('Filters')} className="c-accordion--filters">
+					<AccordionBody>{renderFilters()}</AccordionBody>
+				</Accordion>
+			</Spacer>
+		);
+	}
+
+	return renderFilters();
 };
 
 export default SearchFilterControls;
