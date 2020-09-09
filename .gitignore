@@ -262,3 +262,4 @@ scripts/*.js
 scripts/*.js.map
 src/shared/translations/poeditor
 licenses.csv
+public/sitemap.xml

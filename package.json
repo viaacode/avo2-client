@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
 		"@storybook/addon-actions": "^6.0.21",
-		"@viaa/avo2-components": "^1.56.3",
+		"@viaa/avo2-components": "^1.56.4",
 		"@viaa/avo2-types": "^2.21.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
@@ -139,16 +139,20 @@
 			"last 1 safari version"
 		]
 	},
-  "eslintConfig": {
-    "extends": ["react-app"],
-    "rules": {},
-    "overrides": [
-      {
-        "files": ["**/*.ts?(x)"],
-        "rules": {
-          "@typescript-eslint/no-use-before-define": "off"
-        }
-      }
-    ]
-  }
+	"eslintConfig": {
+		"extends": [
+			"react-app"
+		],
+		"rules": {},
+		"overrides": [
+			{
+				"files": [
+					"**/*.ts?(x)"
+				],
+				"rules": {
+					"@typescript-eslint/no-use-before-define": "off"
+				}
+			}
+		]
+	}
 }
