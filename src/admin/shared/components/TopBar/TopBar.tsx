@@ -16,6 +16,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import './TopBar.scss';
+
 interface TopbarProps {
 	onClickBackButton?: () => void;
 	title?: string;
@@ -54,7 +56,9 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 										/>
 									</Spacer>
 								)}
-								<BlockHeading type={'h1'}>{title}</BlockHeading>
+								<div title={title}>
+									<BlockHeading type={'h1'}>{title}</BlockHeading>
+								</div>
 							</Flex>
 						</ToolbarItem>
 					</ToolbarLeft>
