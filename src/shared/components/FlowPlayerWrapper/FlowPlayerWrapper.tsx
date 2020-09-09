@@ -23,6 +23,9 @@ type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
 	src?: string;
 	poster?: string;
+	organisationName?: string;
+	organisationLogo?: string;
+	issuedDate?: string;
 	annotationTitle?: string;
 	annotationText?: string;
 	canPlay?: boolean;
@@ -125,14 +128,14 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					subtitles={
 						item
 							? [
-									reorderDate(item.issued || null, '.'),
-									get(item, 'organisation.name', ''),
+									props.issuedDate || reorderDate(item.issued || null, '.'),
+									props.organisationName || get(item, 'organisation.name', ''),
 							  ]
 							: undefined
 					}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-					logo={get(item, 'organisation.logo_url')}
+					logo={props.organisationLogo || get(item, 'organisation.logo_url')}
 					{...props.cuePoints}
 					autoplay={(!!item && !!src) || props.autoplay}
 					canPlay={props.canPlay}
