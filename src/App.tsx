@@ -25,7 +25,7 @@ import './styles/main.scss';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
-	smoothScroll: true,
+	smoothScroll: false,
 	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
 		// We don't want to set focus when only the hash changes
 		return (
