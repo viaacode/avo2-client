@@ -104,6 +104,12 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 					}
 					src={src}
 					poster={videoStill}
+					organisationName={get(organisation || get(mediaItem, 'organisation'), 'name')}
+					organisationLogo={get(
+						organisation || get(mediaItem, 'organisation'),
+						'logo_url'
+					)}
+					issuedDate={issued || get(mediaItem, 'issued')}
 					autoplay={autoplay}
 					annotationTitle={annotationTitle}
 					annotationText={annotationText}

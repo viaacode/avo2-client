@@ -37,6 +37,7 @@ import {
 } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
+import { insideIframe } from '../../helpers/inside-iframe';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { ToastService } from '../../services';
 import {
@@ -234,6 +235,31 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 		}
 	};
 
+	const isInsideIframe = insideIframe();
+
+	if (isInsideIframe) {
+		return (
+			<Navbar background="inverse" position="fixed" placement="top">
+				<Container mode="horizontal">
+					<Toolbar>
+						<ToolbarLeft>
+							<ToolbarItem>
+								<h1 className="c-brand">
+									<img
+										className="c-brand__image"
+										src="/images/avo-logo-i.svg"
+										alt={t(
+											'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
+										)}
+									/>
+								</h1>
+							</ToolbarItem>
+						</ToolbarLeft>
+					</Toolbar>
+				</Container>
+			</Navbar>
+		);
+	}
 	return (
 		<>
 			<Navbar background="inverse" position="fixed" placement="top">
