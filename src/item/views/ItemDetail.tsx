@@ -385,7 +385,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 												<Flex justify="between" wrap>
 													<Button
 														type="tertiary"
-														icon="add"
+														icon="scissors"
 														label={t(
 															'item/views/item___voeg-fragment-toe-aan-collectie'
 														)}
