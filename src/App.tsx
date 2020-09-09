@@ -62,7 +62,6 @@ const App: FunctionComponent<AppProps> = props => {
 			<div
 				className={classnames('o-app', {
 					'o-app--admin': isAdminRoute,
-					'o-app--iframe': isInsideIframe,
 				})}
 			>
 				<ToastContainer
@@ -78,7 +77,7 @@ const App: FunctionComponent<AppProps> = props => {
 					<SecuredRoute component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
-						{!isLoginRoute && !isInsideIframe && <Navigation {...props} />}
+						{!isLoginRoute && <Navigation {...props} />}
 						{renderRoutes()}
 						{!isLoginRoute && !isInsideIframe && <Footer {...props} />}
 						{!isInsideIframe && <ZendeskWrapper />}
