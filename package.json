@@ -68,7 +68,7 @@
 		"redux": "^4.0.1",
 		"redux-devtools-extension": "^2.13.8",
 		"redux-thunk": "^2.3.0",
-		"sanitize-html": "^2.0.0-rc.1",
+		"sanitize-html": "^1.27.4",
 		"source-map-explorer": "^2.5.0",
 		"use-query-params": "^1.1.6",
 		"webpack": "^4.42.0"
