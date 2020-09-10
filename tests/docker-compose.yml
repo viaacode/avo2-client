@@ -13,12 +13,15 @@ services:
       FIREFOX: "firefox:4444"
     env_file:
       - .env
+    expose:
+      - 8585
   chrome:
     image: selenium/standalone-chrome
-    privileged: true
     volumes:
       - ./shm:/dev/shm
   firefox:
     image: selenium/standalone-firefox
     volumes:
       - ./shm:/dev/shm
+
+
