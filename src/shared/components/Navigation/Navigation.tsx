@@ -27,7 +27,6 @@ import {
 	redirectToExternalPage,
 } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
-import { AppState } from '../../../store';
 import { insideIframe } from '../../helpers/inside-iframe';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import withUser from '../../hocs/withUser';

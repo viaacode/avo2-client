@@ -17,7 +17,6 @@ import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
-import { CustomError } from './shared/helpers';
 import { insideIframe } from './shared/helpers/inside-iframe';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
