@@ -15,6 +15,7 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -31,7 +32,6 @@ import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
-import { RelationType } from '../../../shared/services/relation-service/relation.types';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -42,7 +42,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import { Link } from 'react-router-dom';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
@@ -77,7 +77,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const fetchItemById = useCallback(async () => {
 		try {
-			setItem(await ItemsService.fetchItemByUuid(match.params.id));
+			const itemObj = await ItemsService.fetchItemByUuid(match.params.id);
+
+			const replacedByUuid: string | undefined = get(itemObj, 'relations[0].object');
+			if (replacedByUuid) {
+				// TODO remove cast after update to typings v2.23.0
+				(itemObj as any).relations[0].object_meta = await ItemsService.fetchItemByUuid(
+					replacedByUuid
+				);
+			}
+
+			setItem(itemObj);
 		} catch (err) {
 			console.error(new CustomError('Failed to get item by uuid', err));
 			setLoadingInfo({
@@ -134,11 +144,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
 					false
 				);
-				await RelationService.deleteRelationsBySubject(
-					'item',
-					item.uid,
-					RelationType.IS_REPLACED_BY
-				);
+				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
 				fetchItemById();
@@ -273,6 +279,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			);
 			return;
 		}
+
+		const replacementTitle = get(item, 'relations[0].object_meta.title');
+		const replacementExternalId = get(item, 'relations[0].object_meta.external_id');
+		const replacementUuid = get(item, 'relations[0].object_meta.uid');
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -303,7 +314,20 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderSimpleDetailRows(item, [
 								['depublish_reason', t('Reden tot depubliceren')],
-								// ['-', t('Vervangen door')], // TODO add title of replacement item with link to item after task: https://meemoo.atlassian.net/browse/DEV-1166
+							])}
+							{renderDetailRow(
+								!!replacementUuid ? (
+									<Link
+										to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
+											id: replacementUuid,
+										})}
+									>{`${replacementTitle} (${replacementExternalId})`}</Link>
+								) : (
+									'-'
+								),
+								t('Vervangen door')
+							)}
+							{renderSimpleDetailRows(item, [
 								[
 									'view_counts_aggregate.aggregate.sum.count',
 									t('admin/items/views/item-detail___views'),

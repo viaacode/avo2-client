@@ -116,14 +116,13 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 					id: 'unpublished',
 				},
 				{
-					label: i18n.t('admin/items/items___gedepubliceerd - pancarte'),
+					label: i18n.t('Gedepubliceerd - pancarte'),
 					id: 'unpublished-with-reason',
 				},
-				// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
-				// {
-				// 	label: i18n.t('admin/items/items___gedepubliceerd - merge'),
-				// 	id: 'unpublished-with-replacement',
-				// },
+				{
+					label: i18n.t('Gedepubliceerd - merge'),
+					id: 'unpublished-with-merge',
+				},
 			],
 		},
 	},
@@ -193,7 +192,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 		id: 'status',
 		label: i18n.t('Status'),
 		sortable: true,
-        visibleByDefault: true,
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [

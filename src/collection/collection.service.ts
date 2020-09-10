@@ -11,7 +11,6 @@ import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { RelationService } from '../shared/services/relation-service/relation.service';
-import { RelationType } from '../shared/services/relation-service/relation.types';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
@@ -419,7 +418,7 @@ export class CollectionService {
 			await RelationService.insertRelation(
 				'collection',
 				duplicatedCollection.id,
-				RelationType.IS_COPY_OF,
+				'IS_COPY_OF',
 				collection.id
 			);
 

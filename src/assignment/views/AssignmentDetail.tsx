@@ -279,6 +279,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 						location={location}
 						match={match}
 						user={user}
+						collection={assignmentContent as Avo.Collection.Collection}
 						{...rest}
 					/>
 				);

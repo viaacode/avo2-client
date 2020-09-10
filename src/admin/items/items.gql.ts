@@ -40,6 +40,9 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			}
 			updated_at
 			note
+			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
+				object
+			}
 			view_counts_aggregate {
 				aggregate {
 					sum {
@@ -119,6 +122,9 @@ export const GET_ITEM_BY_UUID = gql`
 			}
 			updated_at
 			note
+			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
+				object
+			}
 			view_counts_aggregate {
 				aggregate {
 					sum {

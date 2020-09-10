@@ -814,21 +814,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					</Header>
 					<Container mode="vertical">
 						<Container mode="horizontal">
-							<FragmentList
-								collectionFragments={collection_fragments}
-								showDescription
-								linkToItems={permissions.canViewItems || false}
-								canPlay={
-									!isAddToBundleModalOpen &&
-									!isDeleteModalOpen &&
-									!isPublishModalOpen &&
-									!isShareThroughEmailModalOpen
-								}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
-							/>
+							{!!collection && (
+								<FragmentList
+									collectionFragments={collection_fragments}
+									showDescription
+									linkToItems={permissions.canViewItems || false}
+									canPlay={
+										!isAddToBundleModalOpen &&
+										!isDeleteModalOpen &&
+										!isPublishModalOpen &&
+										!isShareThroughEmailModalOpen
+									}
+									history={history}
+									location={location}
+									match={match}
+									user={user}
+									collection={collection}
+								/>
+							)}
 						</Container>
 					</Container>
 					<Container mode="vertical">

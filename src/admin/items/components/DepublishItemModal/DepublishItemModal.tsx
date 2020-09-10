@@ -15,21 +15,18 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
-import {
-	RelationEntry,
-	RelationType,
-} from '../../../../shared/services/relation-service/relation.types';
+import { RelationEntry } from '../../../../shared/services/relation-service/relation.types';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 export type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 
@@ -83,11 +80,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				);
 
 				// When we unpublish an item, it cannot be the replacement for any other items
-				await RelationService.deleteRelationsByObject(
-					'item',
-					RelationType.IS_REPLACED_BY,
-					item.uid
-				);
+				await RelationService.deleteRelationsByObject('item', 'IS_REPLACED_BY', item.uid);
 			}
 			if (depublishType === 'depublish_with_reason') {
 				await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
@@ -115,7 +108,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				await RelationService.insertRelation(
 					'item',
 					item.uid,
-					RelationType.IS_REPLACED_BY,
+					'IS_REPLACED_BY',
 					replacementItem.uid
 				);
 
@@ -126,27 +119,31 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// The final replacement should look like this:
 				// A => C
 				// B => C
-				const itemsReplacedByCurrentItem: RelationEntry[] = await RelationService.fetchRelationsByObject(
+				const itemsReplacedByCurrentItem: RelationEntry<
+					Avo.Item.Item
+				>[] = (await RelationService.fetchRelationsByObject(
 					'item',
-					RelationType.IS_REPLACED_BY,
+					'IS_REPLACED_BY',
 					item.uid
-				);
+				)) as RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
-					itemsReplacedByCurrentItem.map(async (relation: RelationEntry) => {
-						// Remove the old relationship (A => B)
-						await RelationService.deleteRelationsBySubject(
-							'item',
-							relation.subject,
-							RelationType.IS_REPLACED_BY
-						);
-						// Insert new relationship that points to the same replacement item as the current item (A => C)
-						await RelationService.insertRelation(
-							'item',
-							relation.subject,
-							RelationType.IS_REPLACED_BY,
-							replacementItem.uid
-						);
-					})
+					itemsReplacedByCurrentItem.map(
+						async (relation: RelationEntry<Avo.Item.Item>) => {
+							// Remove the old relationship (A => B)
+							await RelationService.deleteRelationsBySubject(
+								'item',
+								relation.subject,
+								'IS_REPLACED_BY'
+							);
+							// Insert new relationship that points to the same replacement item as the current item (A => C)
+							await RelationService.insertRelation(
+								'item',
+								relation.subject,
+								'IS_REPLACED_BY',
+								replacementItem.uid
+							);
+						}
+					)
 				);
 			}
 			ToastService.success(t('Het item is gedepubliceerd'), false);
