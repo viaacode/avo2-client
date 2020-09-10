@@ -92,35 +92,34 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}
 > = {
 	first_name: (order: Avo.Search.OrderDirection) => ({
-		usersByuserId: { first_name: order },
+		first_name: order,
 	}),
 	last_name: (order: Avo.Search.OrderDirection) => ({
-		usersByuserId: { last_name: order },
+		last_name: order,
 	}),
 	mail: (order: Avo.Search.OrderDirection) => ({
-		usersByuserId: { mail: order },
+		mail: order,
 	}),
 	// wait for https://meemoo.atlassian.net/browse/DEV-1128
 	// user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	usersByuserId: { mail: order },
+	// 	mail: order
 	// }),
-
 	oormerk: (order: Avo.Search.OrderDirection) => ({
-		title: order, // TODO change title to oormerk after task: https://meemoo.atlassian.net/browse/DEV-1062
+		profile: { title: order }, // TODO change title to oormerk after task: https://meemoo.atlassian.net/browse/DEV-1062
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
-		usersByuserId: { is_blocked: order },
+		is_blocked: order,
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({
-		stamboek: order,
+		profile: { stamboek: order },
 	}),
 	organisation: (order: Avo.Search.OrderDirection) => ({
-		organisation: { name: order },
+		profile: { organisation: { name: order } },
 	}),
 	created_at: (order: Avo.Search.OrderDirection) => ({
-		usersByuserId: { created_at: order },
+		created_at: order,
 	}),
 	last_access_at: (order: Avo.Search.OrderDirection) => ({
-		usersByuserId: { last_access_at: order },
+		last_access_at: order,
 	}),
 };

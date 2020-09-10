@@ -11,16 +11,16 @@ export const retrieveProfiles = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
-		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
+		const response: [Avo.User.Profile[], number] = await UserService.getUsers(
 			0,
 			'last_access_at',
 			'desc',
 			!!name
 				? {
 						_or: [
-							{ usersByuserId: { first_name: { _ilike: `%${name}%` } } },
-							{ usersByuserId: { last_name: { _ilike: `%${name}%` } } },
-							{ usersByuserId: { mail: { _ilike: `%${name}%` } } },
+							{ first_name: { _ilike: `%${name}%` } },
+							{ last_name: { _ilike: `%${name}%` } },
+							{ mail: { _ilike: `%${name}%` } },
 						],
 				  }
 				: undefined,
