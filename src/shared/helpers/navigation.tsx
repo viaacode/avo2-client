@@ -10,6 +10,7 @@ import { AppContentNavElement } from '../services/navigation-items-service';
 import { NavigationItemInfo } from '../types';
 
 import { buildLink } from './link';
+import { isMobileWidth } from './media-query';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
 	'<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
@@ -50,6 +51,17 @@ export function mapNavElementsToNavigationItems(
 			const navLocation: string = getLocation(navItem, t);
 
 			if (NAVIGATION_COMPONENTS[navLocation]) {
+				if (isMobileWidth()) {
+					return {
+						label: navItem.label,
+						icon: navItem.icon_name,
+						tooltip: navItem.tooltip,
+						location: APP_PATH.REGISTER_OR_LOGIN.route,
+						target: '_self',
+						key: `nav-item-${navItem.id}`,
+					};
+				}
+
 				// Show component when clicking this nav item
 				const Component = NAVIGATION_COMPONENTS[navLocation];
 
