@@ -106,16 +106,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							usersByuserId: { last_name: { _ilike: queryWordWildcard } },
 						},
 					},
-					{
-						updated_by: {
-							usersByuserId: { first_name: { _ilike: queryWordWildcard } },
-						},
-					},
-					{
-						updated_by: {
-							usersByuserId: { last_name: { _ilike: queryWordWildcard } },
-						},
-					},
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
