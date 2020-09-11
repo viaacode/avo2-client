@@ -15,6 +15,7 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -42,7 +43,6 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 

@@ -9,8 +9,8 @@ import i18n from '../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import {
 	DELETE_CONTENT_PAGE_LABEL,
-	GET_CONTENT_PAGE_LABEL_BY_ID,
 	GET_CONTENT_PAGE_LABELS,
+	GET_CONTENT_PAGE_LABEL_BY_ID,
 	INSERT_CONTENT_PAGE_LABEL,
 	UPDATE_CONTENT_PAGE_LABEL,
 } from './content-page-label.gql';

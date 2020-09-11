@@ -15,6 +15,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
@@ -29,7 +30,6 @@ import { ContentPicker } from '../../../shared/components/ContentPicker/ContentP
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 export type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 

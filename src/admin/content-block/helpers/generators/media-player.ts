@@ -17,8 +17,8 @@ import {
 	BLOCK_FIELD_DEFAULTS,
 	BLOCK_STATE_DEFAULTS,
 	FILE_FIELD,
-	TEXT_FIELD,
 	ITEM_PICKER_FIELD,
+	TEXT_FIELD,
 } from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
