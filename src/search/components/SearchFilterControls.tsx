@@ -184,7 +184,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	if (isMobileWidth()) {
 		return (
 			<Spacer margin="bottom-large">
-				<Accordion title={t('Filters')} className="c-accordion--filters">
+				<Accordion
+					title={t('search/components/search-filter-controls___filters')}
+					className="c-accordion--filters"
+				>
 					<AccordionBody>{renderFilters()}</AccordionBody>
 				</Accordion>
 			</Spacer>

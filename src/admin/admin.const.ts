@@ -1,5 +1,4 @@
 import { every, some } from 'lodash-es';
-import queryString from 'query-string';
 
 import { PermissionName } from '../authentication/helpers/permission-service';
 import { buildLink, CustomError } from '../shared/helpers';
@@ -224,13 +223,13 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		exact: false,
 	}),
 	...hasPermissions(['VIEW_COLLECTIONS_OVERVIEW'], 'OR', userPermissions, {
-		label: i18n.t('Collectiebeheer'),
+		label: i18n.t('admin/admin___collectiebeheer'),
 		location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
 		key: 'collections',
 		exact: false,
 		// subLinks: [
 		// 	{
-		// 		label: i18n.t('Actualisatie'),
+		// 		label: i18n.t('admin/admin___actualisatie'),
 		// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
 		// 			columns: [
 		// 				'title',
@@ -246,7 +245,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		// 		exact: false,
 		// 	},
 		// 	{
-		// 		label: i18n.t('Kwaliteitscontrole'),
+		// 		label: i18n.t('admin/admin___kwaliteitscontrole'),
 		// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
 		// 			columns: [
 		// 				'title',
@@ -262,7 +261,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		// 		exact: false,
 		// 	},
 		// 	{
-		// 		label: i18n.t('Marcom'),
+		// 		label: i18n.t('admin/admin___marcom'),
 		// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
 		// 			columns: [
 		// 				'title',
@@ -279,13 +278,13 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		// ],
 	}),
 	...hasPermissions(['VIEW_BUNDLES_OVERVIEW'], 'OR', userPermissions, {
-		label: i18n.t('Bundelbeheer'),
+		label: i18n.t('admin/admin___bundelbeheer'),
 		location: ADMIN_PATH.BUNDLES_OVERVIEW,
 		key: 'bundels',
 		exact: false,
 		// subLinks: [
 		// 	{
-		// 		label: i18n.t('Actualisatie'),
+		// 		label: i18n.t('admin/admin___actualisatie'),
 		// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
 		// 			columns: [
 		// 				'title',
@@ -301,7 +300,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		// 		exact: false,
 		// 	},
 		// 	{
-		// 		label: i18n.t('Kwaliteitscontrole'),
+		// 		label: i18n.t('admin/admin___kwaliteitscontrole'),
 		// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
 		// 			columns: [
 		// 				'title',
@@ -317,7 +316,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		// 		exact: false,
 		// 	},
 		// 	{
-		// 		label: i18n.t('Marcom'),
+		// 		label: i18n.t('admin/admin___marcom'),
 		// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
 		// 			columns: [
 		// 				'title',

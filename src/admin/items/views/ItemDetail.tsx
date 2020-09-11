@@ -15,6 +15,7 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -42,7 +43,6 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
@@ -302,8 +302,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								],
 							])}
 							{renderSimpleDetailRows(item, [
-								['depublish_reason', t('Reden tot depubliceren')],
-								// ['-', t('Vervangen door')], // TODO add title of replacement item with link to item after task: https://meemoo.atlassian.net/browse/DEV-1166
+								[
+									'depublish_reason',
+									t('admin/items/views/item-detail___reden-tot-depubliceren'),
+								],
+								// ['-', t('admin/items/views/item-detail___vervangen-door')], // TODO add title of replacement item with link to item after task: https://meemoo.atlassian.net/browse/DEV-1166
 								[
 									'view_counts_aggregate.aggregate.sum.count',
 									t('admin/items/views/item-detail___views'),
@@ -364,7 +367,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									id: 'is_public',
 									sortable: true,
 								},
-								{ tooltip: t('Acties'), id: 'actions', sortable: false },
+								{
+									tooltip: t('admin/items/views/item-detail___acties'),
+									id: 'actions',
+									sortable: false,
+								},
 							]}
 							data={collectionsContainingItem}
 							emptyStateMessage={t(
