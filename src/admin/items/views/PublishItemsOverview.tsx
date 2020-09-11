@@ -45,7 +45,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					// @ts-ignore
 					(queryWordWildcard: string, queryWord: string, query: string) => [
 						{ pid: { _eq: query } },
-						{ pid: { _eq: query } },
+						{ title: { _ilike: queryWordWildcard } },
 					]
 				)
 			);
@@ -244,7 +244,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderCell={(rowData: Partial<UnpublishedItem>, columnId: string) =>
 						renderTableCell(rowData, columnId as UnpublishedItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoeken op pid')}
+					searchTextPlaceholder={t('Zoeken op titel, pid')}
 					noContentMatchingFiltersMessage={t(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
