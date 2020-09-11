@@ -21,6 +21,7 @@ import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { useContentTypes } from '../../content/hooks';
 import { ItemsTableState } from '../../items/items.types';
+import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,

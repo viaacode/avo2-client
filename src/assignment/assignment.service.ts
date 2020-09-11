@@ -19,11 +19,11 @@ import i18n from '../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
@@ -220,7 +220,8 @@ export class AssignmentService {
 						assignment.id
 					)) || null
 				);
-			} else if (assignment.content_label === 'ITEM' && assignment.content_id) {
+			}
+			if (assignment.content_label === 'ITEM' && assignment.content_id) {
 				return (await ItemsService.fetchItemByExternalId(assignment.content_id)) || null;
 			}
 		}

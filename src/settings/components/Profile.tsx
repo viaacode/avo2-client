@@ -358,8 +358,8 @@ const Profile: FunctionComponent<ProfileProps & {
 			const newProfileInfo = {
 				alias,
 				title,
-				avatar: avatar || null,
 				bio,
+				avatar: avatar || null,
 				educationLevels: (selectedEducationLevels || []).map(option => ({
 					profile_id: profileId,
 					key: option.value.toString(),
