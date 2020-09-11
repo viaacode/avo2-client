@@ -31,12 +31,23 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	seriesOptions: CheckboxOption[],
 	cpOptions: CheckboxOption[]
 ) => FilterableColumn[] = (seriesOptions: CheckboxOption[], cpOptions: CheckboxOption[]) => [
-	{ id: 'external_id', label: i18n.t('admin/items/items___pid'), sortable: true },
-	{ id: 'title', label: i18n.t('admin/items/items___titel'), sortable: true },
+	{
+		id: 'external_id',
+		label: i18n.t('admin/items/items___pid'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'title',
+		label: i18n.t('admin/items/items___titel'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'series',
 		label: i18n.t('admin/items/items___reeks'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: seriesOptions,
@@ -47,18 +58,21 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		id: 'issued',
 		label: i18n.t('admin/items/items___uitgegeven'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'published_at',
 		label: i18n.t('admin/items/items___published'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'type',
 		label: i18n.t('admin/items/items___type'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
@@ -72,17 +86,24 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		id: 'organisation',
 		label: i18n.t('admin/items/items___cp'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: cpOptions,
 			showMaxOptions: 40,
 		} as CheckboxDropdownModalProps,
 	},
-	{ id: 'views', label: i18n.t('admin/items/items___views'), sortable: true },
+	{
+		id: 'views',
+		label: i18n.t('admin/items/items___views'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'is_published',
 		label: i18n.t('admin/items/items___publiek'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
@@ -94,59 +115,98 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 					label: i18n.t('admin/items/items___gedepubliceerd'),
 					id: 'unpublished',
 				},
+				{
+					label: i18n.t('admin/items/items___gedepubliceerd - pancarte'),
+					id: 'unpublished-with-reason',
+				},
+				// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
+				// {
+				// 	label: i18n.t('admin/items/items___gedepubliceerd - merge'),
+				// 	id: 'unpublished-with-replacement',
+				// },
 			],
 		},
 	},
 	// {
 	// 	id: 'updated_at',
 	// 	label: i18n.t('admin/items/items___aangepast-op'),
-	// 	sortable: true,
+	// 	sortable: true, visibleByDefault: true,
+	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
 	// },
 	// {
 	// 	id: 'publish_at',
 	// 	label: i18n.t('admin/items/items___publish-at'),
-	// 	sortable: true,
+	// 	sortable: true, visibleByDefault: true,
+	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
 	// },
 	// {
 	// 	id: 'depublish_at',
 	// 	label: i18n.t('admin/items/items___depubliceren-op'),
-	// 	sortable: true,
+	// 	sortable: true, visibleByDefault: true,
+	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
 	// },
-	// { id: 'description', label: i18n.t('admin/items/items___beschrijving'), sortable: true },
-	// { id: 'duration', label: i18n.t('admin/items/items___duur'), sortable: true },
+	// { id: 'description', label: i18n.t('admin/items/items___beschrijving'), sortable: true, visibleByDefault: true },
+	// { id: 'duration', label: i18n.t('admin/items/items___duur'), sortable: true, visibleByDefault: true },
 	// {
 	// 	id: 'expiry_date',
 	// 	label: i18n.t('admin/items/items___expiratie-op'),
-	// 	sortable: true,
+	// 	sortable: true, visibleByDefault: true,
+	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
 	// },
-	// { id: 'uid', label: i18n.t('admin/items/items___id'), sortable: true },
+	// { id: 'uid', label: i18n.t('admin/items/items___id'), sortable: true, visibleByDefault: true },
 	// {
 	// 	id: 'is_deleted',
 	// 	label: i18n.t('admin/items/items___verwijdert'),
-	// 	sortable: true,
+	// 	sortable: true, visibleByDefault: true,
+	// 	visibleByDefault: true,
 	// 	filterType: 'BooleanCheckboxDropdown',
 	// },
 	// { id: 'lom_classification', label: i18n.t('admin/items/items___vakken') },
 	// { id: 'lom_context', label: i18n.t('admin/items/items___opleidingsniveau') },
-	// { id: 'lom_intendedenduserrole', label: i18n.t('admin/items/items___bedoelde-rol'), sortable: true },
+	// { id: 'lom_intendedenduserrole', label: i18n.t('admin/items/items___bedoelde-rol'), sortable: true, visibleByDefault: true, visibleByDefault: true },
 	// { id: 'lom_keywords', label: i18n.t('admin/items/items___terfwoorden') },
 	// { id: 'lom_languages', label: i18n.t('admin/items/items___talen') },
 	// { id: 'lom_typicalagerange', label: i18n.t('admin/items/items___leeftijdsgroep') },
-	{ id: 'actions', label: '' },
+	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
 ];
 
 export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{ id: 'title', label: i18n.t('admin/items/items___titel') },
-	{ id: 'pid', label: i18n.t('admin/items/items___pid'), sortable: true },
+	{ id: 'title', label: i18n.t('admin/items/items___titel'), visibleByDefault: true },
+	{
+		id: 'pid',
+		label: i18n.t('admin/items/items___pid'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'updated_at',
 		label: i18n.t('admin/items/items___aangepast-op-mam'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
-	{ id: 'actions', label: '' },
+	{
+		id: 'status',
+		label: i18n.t('Status'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				{
+					label: i18n.t('Nieuw'),
+					id: 'NEW',
+				},
+				{
+					label: i18n.t('Update'),
+					id: 'UPDATE',
+				},
+			],
+		},
+	},
+	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
 ];

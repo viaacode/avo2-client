@@ -18,14 +18,11 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	DropdownButton,
-	DropdownContent,
 	Flex,
 	FlexItem,
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
-	MenuContent,
 	Navbar,
 	Spacer,
 	TabProps,
@@ -43,13 +40,13 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	ControlledDropdown,
 	DraggableListModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -58,6 +55,7 @@ import {
 	navigate,
 	renderAvatar,
 	sanitizeHtml,
+	stripHtml,
 } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
@@ -604,6 +602,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	// const onPreviewCollection = () => {};
 
 	const executeAction = async (item: ReactText) => {
+		setIsOptionsMenuOpen(false);
 		switch (item) {
 			case 'rename':
 				onClickRename();
@@ -827,7 +826,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 								fragment,
 								fragment.use_custom_fields,
 								'title'
-							),
+							) ||
+								stripHtml(
+									getFragmentProperty(
+										fragment.item_meta,
+										fragment,
+										fragment.use_custom_fields,
+										'description'
+									) || ''
+								),
 							{ length: 50 }
 						)}
 					</BlockHeading>
@@ -967,32 +974,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					)}
 					onClick={() => setIsReorderModalOpen(true)}
 				/>
-				<ControlledDropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t(
-								'collection/components/collection-or-bundle-edit___meer-opties'
-							)}
-							title={t(
-								'collection/components/collection-or-bundle-edit___meer-opties'
-							)}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={executeAction}
-						/>
-					</DropdownContent>
-				</ControlledDropdown>
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
@@ -1027,29 +1015,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		];
 		return (
 			<ButtonToolbar>
-				<ControlledDropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							title={t(
-								'collection/components/collection-or-bundle-edit___meer-opties'
-							)}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent
-							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={executeAction}
-						/>
-					</DropdownContent>
-				</ControlledDropdown>
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 			</ButtonToolbar>
 		);
 	};

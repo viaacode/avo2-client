@@ -4,7 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
-import { ContentOverviewTableCols, ContentPageInfo, ContentWidth } from './content.types';
+import { ContentOverviewTableCols, ContentWidth } from './content.types';
 
 export const RichEditorStateKey = 'RichEditorState';
 
@@ -45,22 +45,6 @@ export const CONTENT_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const INITIAL_CONTENT_FORM = (): Partial<ContentPageInfo> => ({
-	thumbnail_path: null,
-	title: '',
-	description_html: '',
-	description_state: undefined,
-	seo_description: '',
-	is_protected: false,
-	path: '',
-	content_type: undefined,
-	content_width: ContentWidth.REGULAR,
-	publish_at: '',
-	depublish_at: '',
-	user_group_ids: [],
-	labels: [],
-});
-
 export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 	{
 		id: 'inhoud',
@@ -85,8 +69,10 @@ export const GET_CONTENT_WIDTH_OPTIONS = () => [
 	{ label: i18n.t('admin/content/content___medium-720-px'), value: 'MEDIUM' },
 ];
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: Avo.ContentPage.Type[] } = {
 	[ContentWidth.REGULAR]: ['PROJECT'],
 	[ContentWidth.LARGE]: [],
 	[ContentWidth.MEDIUM]: ['NIEUWS_ITEM'],
 };
+/* eslint-enable @typescript-eslint/no-unused-vars */

@@ -3,13 +3,13 @@ import { every, some } from 'lodash-es';
 import { PermissionName } from '../authentication/helpers/permission-service';
 import { buildLink, CustomError } from '../shared/helpers';
 import { ToastService } from '../shared/services';
+import { ContentPageService } from '../shared/services/content-page-service';
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
 import { CONTENT_PATH } from './content/content.const';
-import { ContentService } from './content/content.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
@@ -92,41 +92,6 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 	);
 }
 
-function getMediaNavItems(userPermissions: string[]): NavigationItemInfo[] {
-	return getNavWithSubLinks(
-		[
-			{
-				navItem: {
-					label: i18n.t('admin/admin___media-items'),
-					location: ADMIN_PATH.ITEMS_OVERVIEW,
-					key: 'items',
-					exact: false,
-				},
-				permission: 'VIEW_ITEMS_OVERVIEW',
-			},
-			{
-				navItem: {
-					label: i18n.t('admin/admin___collecties'),
-					location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
-					key: 'collections',
-					exact: false,
-				},
-				permission: 'VIEW_COLLECTIONS_OVERVIEW',
-			},
-			{
-				navItem: {
-					label: i18n.t('admin/admin___bundels'),
-					location: ADMIN_PATH.BUNDLES_OVERVIEW,
-					key: 'bundels',
-					exact: false,
-				},
-				permission: 'VIEW_BUNDLES_OVERVIEW',
-			},
-		],
-		userPermissions
-	);
-}
-
 function hasPermissions(
 	permissions: string[],
 	booleanOperator: 'AND' | 'OR',
@@ -151,7 +116,12 @@ function hasPermissions(
 
 async function getContentPageDetailRouteByPath(path: string): Promise<string | undefined> {
 	try {
-		const page = await ContentService.fetchContentPageByPath(path);
+		const page = await ContentPageService.getContentPageByPath(path);
+		if (!page) {
+			throw new CustomError('Failed to fetch content page by path, reponse was null', null, {
+				page,
+			});
+		}
 		return buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, { id: page.id });
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
@@ -246,14 +216,128 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		key: 'content-page-labels',
 		exact: false,
 	}),
-	...getMediaNavItems(userPermissions),
-	// TODO re-enable after task https://meemoo.atlassian.net/browse/AVO-358
-	// ...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
-	// 	label: i18n.t('admin/admin___items-publiceren'),
-	// 	location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
-	// 	key: 'publish-items',
-	// 	exact: false,
-	// }),
+	...hasPermissions(['VIEW_ITEMS_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___media-items'),
+		location: ADMIN_PATH.ITEMS_OVERVIEW,
+		key: 'items',
+		exact: false,
+	}),
+	...hasPermissions(['VIEW_COLLECTIONS_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___collectiebeheer'),
+		location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
+		key: 'collections',
+		exact: false,
+		// subLinks: [
+		// 	{
+		// 		label: i18n.t('admin/admin___actualisatie'),
+		// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
+		// 			columns: [
+		// 				'title',
+		// 				'author',
+		// 				'created_at',
+		// 				'last_updated_by_profile',
+		// 				'updated_at',
+		// 				'is_public',
+		// 				'collection_labels',
+		// 			],
+		// 		})}`,
+		// 		key: 'collections',
+		// 		exact: false,
+		// 	},
+		// 	{
+		// 		label: i18n.t('admin/admin___kwaliteitscontrole'),
+		// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
+		// 			columns: [
+		// 				'title',
+		// 				'author',
+		// 				'created_at',
+		// 				'last_updated_by_profile',
+		// 				'updated_at',
+		// 				'is_public',
+		// 				'collection_labels',
+		// 			],
+		// 		})}`,
+		// 		key: 'collections',
+		// 		exact: false,
+		// 	},
+		// 	{
+		// 		label: i18n.t('admin/admin___marcom'),
+		// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
+		// 			columns: [
+		// 				'title',
+		// 				'author',
+		// 				'created_at',
+		// 				'updated_at',
+		// 				'is_public',
+		// 				'collection_labels',
+		// 			],
+		// 		})}`,
+		// 		key: 'collections',
+		// 		exact: false,
+		// 	},
+		// ],
+	}),
+	...hasPermissions(['VIEW_BUNDLES_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___bundelbeheer'),
+		location: ADMIN_PATH.BUNDLES_OVERVIEW,
+		key: 'bundels',
+		exact: false,
+		// subLinks: [
+		// 	{
+		// 		label: i18n.t('admin/admin___actualisatie'),
+		// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
+		// 			columns: [
+		// 				'title',
+		// 				'author',
+		// 				'created_at',
+		// 				'last_updated_by_profile',
+		// 				'updated_at',
+		// 				'is_public',
+		// 				'collection_labels',
+		// 			],
+		// 		})}`,
+		// 		key: 'bundels',
+		// 		exact: false,
+		// 	},
+		// 	{
+		// 		label: i18n.t('admin/admin___kwaliteitscontrole'),
+		// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
+		// 			columns: [
+		// 				'title',
+		// 				'author',
+		// 				'created_at',
+		// 				'last_updated_by_profile',
+		// 				'updated_at',
+		// 				'is_public',
+		// 				'collection_labels',
+		// 			],
+		// 		})}`,
+		// 		key: 'bundels',
+		// 		exact: false,
+		// 	},
+		// 	{
+		// 		label: i18n.t('admin/admin___marcom'),
+		// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
+		// 			columns: [
+		// 				'title',
+		// 				'author',
+		// 				'created_at',
+		// 				'updated_at',
+		// 				'is_public',
+		// 				'collection_labels',
+		// 			],
+		// 		})}`,
+		// 		key: 'bundels',
+		// 		exact: false,
+		// 	},
+		// ],
+	}),
+	...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
+		label: i18n.t('admin/admin___items-publiceren'),
+		location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
+		key: 'publish-items',
+		exact: false,
+	}),
 	...hasPermissions(['EDIT_INTERACTIVE_TOURS'], 'OR', userPermissions, {
 		label: i18n.t('admin/admin___interactive-tours'),
 		location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,

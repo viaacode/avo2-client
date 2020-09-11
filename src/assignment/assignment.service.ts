@@ -1,14 +1,13 @@
-import { ExecutionResult } from '@apollo/react-common';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, isString, omit, without } from 'lodash-es';
+import { cloneDeep, get, isNil, isString, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
+import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
-import { addDefaultAudioStillToItem } from '../shared/helpers/default-still';
 import {
 	ApolloCacheManager,
 	AssignmentLabelsService,
@@ -17,14 +16,14 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { CONTENT_LABEL_TO_QUERY, ITEMS_PER_PAGE } from './assignment.const';
+import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
@@ -222,20 +221,9 @@ export class AssignmentService {
 					)) || null
 				);
 			}
-			const queryInfo =
-				CONTENT_LABEL_TO_QUERY[assignment.content_label as AssignmentContentLabel];
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
-				query: queryInfo.query,
-				variables: queryInfo.getVariables(assignment.content_id),
-			});
-
-			const newAssignmentContent = get(response, `data.${queryInfo.resultPath}`);
-
-			if (!newAssignmentContent) {
-				throw new CustomError('NOT_FOUND');
+			if (assignment.content_label === 'ITEM' && assignment.content_id) {
+				return (await ItemsService.fetchItemByExternalId(assignment.content_id)) || null;
 			}
-
-			return addDefaultAudioStillToItem(newAssignmentContent);
 		}
 
 		return null;
@@ -359,9 +347,7 @@ export class AssignmentService {
 
 			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT,
 				variables: {
 					id: assignment.id,
@@ -370,7 +356,7 @@ export class AssignmentService {
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			if (!response || !response.data) {
+			if (!response || !response.data || (response.errors && response.errors.length)) {
 				console.error('assignment update returned empty response', response);
 				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
 			}
@@ -404,9 +390,7 @@ export class AssignmentService {
 		archived: boolean
 	): Promise<void> {
 		try {
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
 				variables: {
 					id,
@@ -431,9 +415,7 @@ export class AssignmentService {
 		submittedAt: string | null
 	): Promise<void> {
 		try {
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 				variables: {
 					id,
@@ -473,9 +455,7 @@ export class AssignmentService {
 
 			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 
-			const response: void | ExecutionResult<
-				Avo.Assignment.Assignment
-			> = await dataService.mutate({
+			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: INSERT_ASSIGNMENT,
 				variables: {
 					assignment: assignmentToSave,
@@ -547,7 +527,7 @@ export class AssignmentService {
 		collectionIdOrCollection: string | Avo.Collection.Collection,
 		user: Avo.User.User
 	): Promise<string> {
-		let collection: Avo.Collection.Collection | undefined = undefined;
+		let collection: Avo.Collection.Collection | undefined;
 		if (isString(collectionIdOrCollection)) {
 			collection = await CollectionService.fetchCollectionOrBundleById(
 				collectionIdOrCollection as string,
@@ -717,7 +697,7 @@ export class AssignmentService {
 		user: Avo.User.User | undefined
 	): Promise<Avo.Assignment.Response | null> {
 		try {
-			if (this.isOwnerOfAssignment(assignment, user)) {
+			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
 			const existingAssignmentResponse: Avo.Assignment.Response | null | undefined = get(
@@ -769,11 +749,5 @@ export class AssignmentService {
 				assignment,
 			});
 		}
-	}
-
-	public static cleanAssignmentResponse(
-		assignmentResponse: Partial<Avo.Assignment.Response>
-	): Partial<Avo.Assignment.Response> {
-		return omit(assignmentResponse, ['__typename', 'id']);
 	}
 }

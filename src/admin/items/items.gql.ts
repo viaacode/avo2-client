@@ -10,6 +10,7 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 		app_item_meta(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
 			created_at
 			depublish_at
+			depublish_reason
 			description
 			duration
 			expiry_date
@@ -67,13 +68,14 @@ export const GET_UNPUBLISHED_ITEMS_WITH_FILTERS = gql`
 			pid
 			updated_at
 			title: json(path: "Dynamic.dc_title")
+			status
 			item_meta {
 				id
 				external_id
 				uid
 			}
 		}
-		shared_items_aggregate {
+		shared_items_aggregate(where: $where) {
 			aggregate {
 				count
 			}
@@ -87,6 +89,7 @@ export const GET_ITEM_BY_UUID = gql`
 			thumbnail_path
 			created_at
 			depublish_at
+			depublish_reason
 			description
 			duration
 			expiry_date
@@ -138,8 +141,19 @@ export const UPDATE_ITEM_PUBLISH_STATE = gql`
 	}
 `;
 
+export const UPDATE_ITEM_DEPUBLISH_REASON = gql`
+	mutation updateItemDepublishReason($itemUuid: uuid!, $reason: String) {
+		update_app_item_meta(
+			where: { uid: { _eq: $itemUuid } }
+			_set: { depublish_reason: $reason }
+		) {
+			affected_rows
+		}
+	}
+`;
+
 export const UPDATE_ITEM_NOTES = gql`
-	mutation updateItemPublishedState($itemUuid: uuid!, $note: String) {
+	mutation updateItemNotes($itemUuid: uuid!, $note: String) {
 		update_app_item_meta(where: { uid: { _eq: $itemUuid } }, _set: { note: $note }) {
 			affected_rows
 		}
@@ -155,6 +169,14 @@ export const GET_PUBLIC_ITEMS = gql`
 		) {
 			external_id
 			title
+		}
+	}
+`;
+
+export const FETCH_ITEM_UUID_BY_EXTERNAL_ID = gql`
+	query fetchItemUuidByExternalId($externalId: bpchar!) {
+		app_item_meta(where: { external_id: { _eq: $externalId } }) {
+			uid
 		}
 	}
 `;
@@ -238,6 +260,20 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 	}
 `;
 
+export const GET_ITEM_DEPUBLISH_REASON = gql`
+	query getDepublishReasonByExternalId($externalId: bpchar!) {
+		app_item_meta(
+			where: {
+				external_id: { _eq: $externalId }
+				is_deleted: { _eq: false }
+				is_published: { _eq: false }
+			}
+		) {
+			depublish_reason
+		}
+	}
+`;
+
 export const GET_DISTINCT_SERIES = gql`
 	query getDistinctSeries {
 		app_item_meta(distinct_on: series, where: { series: { _is_null: false } }) {
@@ -246,7 +282,7 @@ export const GET_DISTINCT_SERIES = gql`
 	}
 `;
 
-export const DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS = gql`
+export const DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS = gql`
 	mutation deleteItemFromCollectionBookmarksAndAssignments(
 		$itemExternalId: String!
 		$itemUid: uuid!
@@ -255,6 +291,42 @@ export const DELETE_ITEM_FROM_COLLECTION_AND_BOOKMARKS = gql`
 			affected_rows
 		}
 		delete_app_item_bookmarks(where: { item_id: { _eq: $itemUid } }) {
+			affected_rows
+		}
+	}
+`;
+
+export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
+	mutation replaceItemInCollectionsBookmarksAndAssignments(
+		$oldItemUid: uuid!
+		$oldItemExternalId: String!
+		$newItemUid: uuid!
+		$newItemExternalId: String!
+	) {
+		update_app_collection_fragments(
+			where: { external_id: { _eq: $oldItemExternalId } }
+			_set: { external_id: $newItemExternalId, start_oc: null, end_oc: null }
+		) {
+			affected_rows
+		}
+		update_app_item_bookmarks(
+			where: { item_id: { _eq: $oldItemUid } }
+			_set: { item_id: $newItemUid }
+		) {
+			affected_rows
+		}
+		update_app_assignments(
+			where: { content_id: { _eq: $oldItemExternalId }, content_label: { _eq: ITEM } }
+			_set: { content_id: $newItemExternalId }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_SHARED_ITEMS_STATUS = gql`
+	mutation setSharedItemsStatus($pids: [String!]!, $status: item_publishing_status) {
+		update_shared_items(where: { pid: { _in: $pids } }, _set: { status: $status }) {
 			affected_rows
 		}
 	}

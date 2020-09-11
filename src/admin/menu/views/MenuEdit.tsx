@@ -55,23 +55,30 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	// Fetch menu items depending on menu parent param
 	// This is necessary for populating the menu parent options for our form
 	useEffect(() => {
-		MenuService.fetchMenuItems(menuParentId).then(menuItemsByPosition => {
-			if (menuItemsByPosition && menuItemsByPosition.length) {
-				setMenuItems(menuItemsByPosition);
-			} else {
-				// Go back to overview if no menu items are present
+		MenuService.fetchMenuItems(menuParentId)
+			.then(menuItemsByPosition => {
+				if (menuItemsByPosition && menuItemsByPosition.length) {
+					setMenuItems(menuItemsByPosition);
+				} else {
+					// Go back to overview if no menu items are present
+					ToastService.danger(
+						t(
+							'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
+							{
+								menuName,
+							}
+						),
+						false
+					);
+					history.push(MENU_PATH.MENU_OVERVIEW);
+				}
+			})
+			.catch(err => {
+				console.error(new CustomError('Failed to fetch menu items', err));
 				ToastService.danger(
-					t(
-						'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
-						{
-							menuName,
-						}
-					),
-					false
+					t('admin/menu/views/menu-edit___het-ophalen-van-de-menu-items-is-mislukt')
 				);
-				history.push(MENU_PATH.MENU_OVERVIEW);
-			}
-		});
+			});
 	}, [history, menuName, menuParentId, t]);
 
 	// Fetch menu item by id
@@ -147,7 +154,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							</Trans>
 							<ButtonToolbar>
 								{faultyUserGroups.map(group => (
-									<Badge text={group} />
+									<Badge text={group} key={`badge-${group}`} />
 								))}
 							</ButtonToolbar>
 						</Spacer>
@@ -264,14 +271,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			};
 
 			if (pageType === 'create') {
-				const id = await MenuService.insertMenuItem({
+				await MenuService.insertMenuItem({
 					...menuItem,
 					// Get description from existing items or use form description field
 					description: get(menuItems, '[0].description', menuForm.description),
 					position: menuItems.length,
 				});
-				navigate(history, ADMIN_PATH.MENU_ITEM_EDIT, {
-					id,
+				navigate(history, ADMIN_PATH.MENU_DETAIL, {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
@@ -292,6 +298,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						updated_at: new Date().toISOString(),
 					} as Avo.Menu.Menu,
 				]);
+				navigate(history, ADMIN_PATH.MENU_DETAIL, {
+					menu: menuForm.placement as string,
+				});
 				ToastService.success(
 					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet'),
 					false

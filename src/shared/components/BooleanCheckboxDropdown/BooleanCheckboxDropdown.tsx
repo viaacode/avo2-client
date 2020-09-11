@@ -2,8 +2,10 @@ import { isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CheckboxOption } from '../CheckboxDropdownModal/CheckboxDropdownModal';
-import { CheckboxDropdownModal } from '../index';
+import {
+	CheckboxDropdownModal,
+	CheckboxOption,
+} from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface BooleanCheckboxDropdownProps {
 	label: string;

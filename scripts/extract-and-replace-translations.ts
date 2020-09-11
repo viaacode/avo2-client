@@ -231,7 +231,7 @@ function checkTranslationsForKeysAsValue(translationJson: string) {
 	}
 }
 
-async function updateTranslations() {
+async function updateTranslations(): Promise<void> {
 	const onlineTranslations = await getOnlineTranslations();
 
 	// Extract translations from code and replace code by reference to translation key
@@ -280,4 +280,5 @@ async function updateTranslations() {
 	);
 }
 
+// deepcode ignore UsageOfUndefinedReturnValue: False positive
 updateTranslations().catch(err => console.error('Update of translations failed: ', err));

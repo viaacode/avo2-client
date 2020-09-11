@@ -8,8 +8,8 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
 import {
 	DELETE_INTERACTIVE_TOUR,
-	GET_INTERACTIVE_TOUR_BY_ID,
 	GET_INTERACTIVE_TOURS,
+	GET_INTERACTIVE_TOUR_BY_ID,
 	INSERT_INTERACTIVE_TOUR,
 	UPDATE_INTERACTIVE_TOUR,
 } from './interactive-tour.gql';

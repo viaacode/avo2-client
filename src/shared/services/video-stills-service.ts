@@ -41,7 +41,7 @@ export class VideoStillService {
 	 * @return url to frame from video
 	 */
 	public static async getVideoStill(externalId: string, startTime: number): Promise<string> {
-		const stills = await this.getVideoStills([{ externalId, startTime }]);
+		const stills = await VideoStillService.getVideoStills([{ externalId, startTime }]);
 		return stills[0].previewImagePath;
 	}
 
@@ -76,7 +76,7 @@ export class VideoStillService {
 				startTime: (fragment.start_oc || 0) * 1000,
 			}))
 		);
-		const cutVideoStills = await this.getVideoStills(cutVideoStillRequests);
+		const cutVideoStills = await VideoStillService.getVideoStills(cutVideoStillRequests);
 
 		return uniq(
 			compact([

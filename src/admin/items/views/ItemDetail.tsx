@@ -10,12 +10,12 @@ import {
 	ButtonToolbar,
 	Container,
 	Icon,
-	RichEditorState,
 	Spacer,
 	Table,
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -31,6 +31,8 @@ import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { RelationType } from '../../../shared/services/relation-service/relation.types';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -39,11 +41,14 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { Color } from '../../shared/types';
+import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	title: 'title',
 	author: 'profile.user.last_name',
 	is_public: 'is_public',
@@ -58,6 +63,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmPublishModalOpen, setIsConfirmPublishModalOpen] = useState<boolean>(false);
+	const [isDepublishItemModalOpen, setDepublishItemModalOpen] = useState<boolean>(false);
 	const [collectionsContainingItem, setCollectionsContainingItem] = useState<
 		Avo.Collection.Collection[] | undefined
 	>(undefined);
@@ -122,18 +128,23 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item) {
 				throw new CustomError('The item has not been loaded yet', null, { item });
 			}
-			await ItemsService.setItemPublishedState(item.uid, !item.is_published);
-			await ItemsService.deleteItemFromCollectionsAndBookmarks(item.uid, item.external_id);
-			ToastService.success(
-				item.is_published
-					? t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
-					: t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
-				false
-			);
-			setItem({
-				...item,
-				is_published: !item.is_published,
-			});
+			if (!item.is_published) {
+				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
+				ToastService.success(
+					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
+					false
+				);
+				await RelationService.deleteRelationsBySubject(
+					'item',
+					item.uid,
+					RelationType.IS_REPLACED_BY
+				);
+				await ItemsService.setItemDepublishReason(item.uid, null);
+
+				fetchItemById();
+			} else {
+				setDepublishItemModalOpen(true);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle is_published state for item', err, { item })
@@ -292,6 +303,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderSimpleDetailRows(item, [
 								[
+									'depublish_reason',
+									t('admin/items/views/item-detail___reden-tot-depubliceren'),
+								],
+								// ['-', t('admin/items/views/item-detail___vervangen-door')], // TODO add title of replacement item with link to item after task: https://meemoo.atlassian.net/browse/DEV-1166
+								[
 									'view_counts_aggregate.aggregate.sum.count',
 									t('admin/items/views/item-detail___views'),
 								],
@@ -351,7 +367,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									id: 'is_public',
 									sortable: true,
 								},
-								{ label: '', id: 'actions', sortable: false },
+								{
+									tooltip: t('admin/items/views/item-detail___acties'),
+									id: 'actions',
+									sortable: false,
+								},
 							]}
 							data={collectionsContainingItem}
 							emptyStateMessage={t(
@@ -393,6 +413,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						isOpen={isConfirmPublishModalOpen}
 						onClose={() => setIsConfirmPublishModalOpen(false)}
 						deleteObjectCallback={toggleItemPublishedState}
+					/>
+					<DepublishItemModal
+						item={item}
+						isOpen={isDepublishItemModalOpen}
+						onClose={() => {
+							setDepublishItemModalOpen(false);
+							fetchItemById();
+						}}
 					/>
 				</Container>
 			</Container>

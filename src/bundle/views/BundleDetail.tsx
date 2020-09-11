@@ -11,8 +11,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	DropdownButton,
-	DropdownContent,
 	Flex,
 	FlexItem,
 	Grid,
@@ -20,7 +18,6 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
-	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -44,7 +41,6 @@ import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	ControlledDropdown,
 	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -53,6 +49,7 @@ import {
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -550,30 +547,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				: []),
 		];
 
-		if (!BUNDLE_DROPDOWN_ITEMS.length) {
-			return null;
-		}
-
 		return (
-			<ControlledDropdown
+			<MoreOptionsDropdown
 				isOpen={isOptionsMenuOpen}
-				menuWidth="fit-content"
 				onOpen={() => setIsOptionsMenuOpen(true)}
 				onClose={() => setIsOptionsMenuOpen(false)}
-				placement="bottom-end"
-			>
-				<DropdownButton>
-					<Button
-						type="secondary"
-						icon="more-horizontal"
-						ariaLabel={t('collection/views/collection-detail___meer-opties')}
-						title={t('collection/views/collection-detail___meer-opties')}
-					/>
-				</DropdownButton>
-				<DropdownContent>
-					<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
-				</DropdownContent>
-			</ControlledDropdown>
+				menuItems={BUNDLE_DROPDOWN_ITEMS}
+				onOptionClicked={executeAction}
+			/>
 		);
 	};
 
@@ -633,25 +614,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					: []),
 			];
 			return (
-				<ControlledDropdown
+				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
-					</DropdownContent>
-				</ControlledDropdown>
+					menuItems={BUNDLE_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
 			);
 		}
 		const isPublic = bundle && bundle.is_public;

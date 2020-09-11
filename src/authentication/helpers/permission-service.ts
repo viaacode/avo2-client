@@ -2,10 +2,10 @@ import { get, isString, some } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentService } from '../../admin/content/content.service';
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
 import { dataService } from '../../shared/services';
+import { ContentPageService } from '../../shared/services/content-page-service';
 
 import { getProfileId } from './get-profile-id';
 import {
@@ -13,10 +13,6 @@ import {
 	GET_LINKED_ITEMS,
 	GET_LINKED_SEARCH_QUERIES,
 } from './permission-service.gql';
-
-type PermissionInfo = { name: PermissionName; obj?: any | null };
-
-export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
 export enum PermissionName {
 	EDIT_OWN_COLLECTIONS = 'EDIT_OWN_COLLECTIONS',
@@ -92,15 +88,22 @@ export enum PermissionName {
 	EDIT_CONTENT_PAGE_AUTHOR = 'EDIT_CONTENT_PAGE_AUTHOR',
 }
 
+type PermissionInfo = { name: PermissionName; obj?: any | null };
+
+export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
+
 export class PermissionService {
 	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {
-		return this.getUserPermissions(user).includes(permName);
+		return PermissionService.getUserPermissions(user).includes(permName);
 	}
+
 	public static hasAtLeastOnePerm(
 		user: Avo.User.User | undefined,
 		permNames: PermissionName[]
 	): boolean {
-		return some(permNames, permName => this.getUserPermissions(user).includes(permName));
+		return some(permNames, permName =>
+			PermissionService.getUserPermissions(user).includes(permName)
+		);
 	}
 
 	public static getUserPermissions(user: Avo.User.User | undefined): PermissionName[] {
@@ -141,7 +144,7 @@ export class PermissionService {
 		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
 		for (const perm of permissionList) {
-			if (await this.hasPermission(perm.name, perm.obj, user)) {
+			if (await PermissionService.hasPermission(perm.name, perm.obj, user)) {
 				return true;
 			}
 		}
@@ -192,7 +195,7 @@ export class PermissionService {
 
 			case PermissionName.EDIT_OWN_CONTENT_PAGES:
 				const contentPage: ContentPageInfo = isString(obj)
-					? await ContentService.fetchContentPageByPath(obj)
+					? await ContentPageService.getContentPageByPath(obj)
 					: obj;
 				const contentPageOwnerId = get(contentPage, 'user_profile_id');
 				return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;

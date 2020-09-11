@@ -7,7 +7,7 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import { GET_USER_BY_ID, GET_USERS, UPDATE_USER_BLOCKED_STATUS } from './user.gql';
+import { GET_USERS, GET_USER_BY_ID, UPDATE_USER_BLOCKED_STATUS } from './user.gql';
 import { UserOverviewTableCol } from './user.types';
 
 export class UserService {
@@ -113,7 +113,7 @@ export class UserService {
 				{
 					userId,
 					isBlocked,
-					query: 'UPDATE_ITEM_PUBLISH_STATE',
+					query: 'UPDATE_USER_BLOCKED_STATUS',
 				}
 			);
 		}

@@ -9,7 +9,6 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	RichEditorState,
 	Select,
 	SelectOption,
 	TagInfo,
@@ -17,6 +16,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../../../authentication/helpers/get-profile-id';
@@ -247,7 +247,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="12">
 								<FormGroup
 									error={formErrors.meta_description}
-									label={t('Beschrijving voor export (bv: KLAAR nieuwsbrief)')}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___beschrijving-voor-export-bv-klaar-nieuwsbrief'
+									)}
 								>
 									<TextArea
 										value={contentPageInfo.meta_description || ''}
@@ -256,7 +258,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										}
 										height="auto"
 										placeholder={t(
-											'Omschrijving bij het exporteren van deze pagina. Bijvoorbeeld als de beschrijving van de nieuwsbrief voor KLAAR.'
+											'admin/content/components/content-edit-form/content-edit-form___omschrijving-bij-het-exporteren-van-deze-pagina-bijvoorbeeld-als-de-beschrijving-van-de-nieuwsbrief-voor-klaar'
 										)}
 									/>
 								</FormGroup>

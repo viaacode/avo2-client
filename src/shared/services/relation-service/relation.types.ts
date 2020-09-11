@@ -4,3 +4,10 @@ export enum RelationType {
 	REPLACES = 'REPLACES',
 	HAS_COPY = 'HAS_COPY',
 }
+
+export interface RelationEntry {
+	id: number;
+	object: string;
+	subject: string;
+	predicate: RelationType;
+}

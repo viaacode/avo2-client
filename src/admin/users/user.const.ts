@@ -17,37 +17,71 @@ export const ITEMS_PER_PAGE = 50;
 export const GET_USER_OVERVIEW_TABLE_COLS: (
 	userGroupOptions: CheckboxOption[]
 ) => FilterableColumn[] = (userGroupOptions: CheckboxOption[]) => [
-	{ id: 'first_name', label: i18n.t('admin/users/user___voornaam'), sortable: true },
-	{ id: 'last_name', label: i18n.t('admin/users/user___achternaam'), sortable: true },
-	{ id: 'mail', label: i18n.t('admin/users/user___email'), sortable: true },
+	{
+		id: 'first_name',
+		label: i18n.t('admin/users/user___voornaam'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'last_name',
+		label: i18n.t('admin/users/user___achternaam'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'mail',
+		label: i18n.t('admin/users/user___email'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'user_group',
 		label: i18n.t('admin/users/user___gebruikersgroep'),
 		sortable: false, // wait for https://meemoo.atlassian.net/browse/DEV-1128
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: userGroupOptions,
 		} as CheckboxDropdownModalProps,
 	},
-	{ id: 'oormerk', label: i18n.t('admin/users/user___oormerk'), sortable: true },
+	{
+		id: 'oormerk',
+		label: i18n.t('admin/users/user___oormerk'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'is_blocked',
 		label: i18n.t('admin/users/user___geblokkeerd'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
 	},
-	{ id: 'stamboek', label: i18n.t('admin/users/user___stamboek'), sortable: true },
-	{ id: 'organisation', label: i18n.t('admin/users/user___organisatie'), sortable: true },
+	{
+		id: 'stamboek',
+		label: i18n.t('admin/users/user___stamboek'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'organisation',
+		label: i18n.t('admin/users/user___organisatie'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'created_at',
 		label: i18n.t('admin/users/user___gebruiker-sinds'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'last_access_at',
 		label: i18n.t('admin/users/user___laatste-toegang'),
 		sortable: true,
+		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
 ];

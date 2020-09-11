@@ -93,7 +93,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			if (pathname === '/' && loginState.message === 'LOGGED_IN') {
 				// Redirect the logged out homepage to the logged in homepage is the user is logged in
-				history.push('/start');
+				history.replace('/start');
 				return;
 			}
 
@@ -108,7 +108,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 					if (itemExternalId) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.push(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId }));
+						history.replace(
+							buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId })
+						);
 						return;
 					} // else keep analysing
 
@@ -116,7 +118,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					const bundleUuid = await CollectionService.fetchUuidByAvo1Id(avo1Id);
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.push(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }));
+						history.replace(
+							buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid })
+						);
 						return;
 					} // else keep analysing
 				}
@@ -125,7 +129,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			// Check if path is old item id
 			if (/\/pid\/[^/]+/g.test(pathname)) {
 				const itemPid = (pathname.split('/').pop() || '').trim();
-				history.push(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }));
+				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }));
 				return;
 			}
 
@@ -136,7 +140,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				(loginState as any).userInfo &&
 				PermissionService.hasPerm((loginState as any).userInfo, PermissionName.SEARCH)
 			) {
-				history.push(generateSearchLinkString('serie', 'KLAAR', 'broadcastDate', 'desc'));
+				history.replace(
+					generateSearchLinkString('serie', 'KLAAR', 'broadcastDate', 'desc')
+				);
 				return;
 			}
 

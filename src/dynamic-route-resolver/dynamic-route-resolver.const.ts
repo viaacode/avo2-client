@@ -30,5 +30,4 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 		'/nieuws/barend-van-heusden-aan-het-woord-over-cultuur-de-spiegel',
 
 	'/klaar.json': `${getEnv('PROXY_URL')}/klaar/klaar.json`,
-	'/sitemap.xml': `${getEnv('PROXY_URL')}/sitemap`,
 });

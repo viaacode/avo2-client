@@ -358,8 +358,8 @@ const Profile: FunctionComponent<ProfileProps & {
 			const newProfileInfo = {
 				alias,
 				title,
-				avatar: avatar || null,
 				bio,
+				avatar: avatar || null,
 				educationLevels: (selectedEducationLevels || []).map(option => ({
 					profile_id: profileId,
 					key: option.value.toString(),
@@ -384,9 +384,11 @@ const Profile: FunctionComponent<ProfileProps & {
 			} catch (err) {
 				setIsSaving(false);
 				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
-					ToastService.danger(t('Deze schermnaam is reeds in gebruik'));
+					ToastService.danger(
+						t('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
+					);
 					setProfileErrors({
-						alias: t('Schermnaam is reeds in gebruik'),
+						alias: t('settings/components/profile___schermnaam-is-reeds-in-gebruik'),
 					});
 					return;
 				}

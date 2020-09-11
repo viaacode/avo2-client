@@ -121,11 +121,13 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			id: 'label',
 			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___label'),
 			sortable: true,
+			visibleByDefault: true,
 		},
 		{
 			id: 'content_type',
 			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___type'),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: contentTypeOptions,
@@ -137,6 +139,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				'admin/content-page-labels/views/content-page-label-overview___gemaakt-op'
 			),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
 		{
@@ -145,9 +148,14 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				'admin/content-page-labels/views/content-page-label-overview___aangepast-op'
 			),
 			sortable: true,
+			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
-		{ id: 'actions', label: '' },
+		{
+			id: 'actions',
+			tooltip: i18n.t('admin/content-page-labels/views/content-page-label-overview___acties'),
+			visibleByDefault: true,
+		},
 	];
 
 	// Methods

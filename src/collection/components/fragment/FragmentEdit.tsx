@@ -13,14 +13,10 @@ import {
 	Button,
 	Column,
 	convertToHtml,
-	DropdownButton,
-	DropdownContent,
 	Form,
 	FormGroup,
 	Grid,
 	IconName,
-	MenuContent,
-	RichEditorState,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -29,14 +25,12 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import {
-	ControlledDropdown,
-	DeleteObjectModal,
-	FlowPlayerWrapper,
-} from '../../../shared/components';
+import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
+import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
@@ -196,6 +190,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {
+		setOpenOptionsId(null);
 		switch (item) {
 			// TODO: DISABLED FEATURE
 			// case 'duplicate':
@@ -218,8 +213,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			default:
 				return null;
 		}
-
-		setOpenOptionsId(null);
 	};
 
 	// Render functions
@@ -356,32 +349,13 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 						</ToolbarLeft>
 						<ToolbarRight>
 							<ToolbarItem>
-								<ControlledDropdown
+								<MoreOptionsDropdown
 									isOpen={openOptionsId === fragment.id}
-									menuWidth="fit-content"
 									onOpen={() => setOpenOptionsId(fragment.id)}
 									onClose={() => setOpenOptionsId(null)}
-									placement="bottom-end"
-								>
-									<DropdownButton>
-										<Button
-											type="secondary"
-											icon="more-horizontal"
-											ariaLabel={t(
-												'collection/components/fragment/fragment-edit___meer-opties'
-											)}
-											title={t(
-												'collection/components/fragment/fragment-edit___meer-opties'
-											)}
-										/>
-									</DropdownButton>
-									<DropdownContent>
-										<MenuContent
-											menuItems={FRAGMENT_DROPDOWN_ITEMS}
-											onClick={onClickDropdownItem}
-										/>
-									</DropdownContent>
-								</ControlledDropdown>
+									menuItems={FRAGMENT_DROPDOWN_ITEMS}
+									onOptionClicked={onClickDropdownItem}
+								/>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

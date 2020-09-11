@@ -28,6 +28,15 @@ export class ApolloCacheManager {
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_views');
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_plays');
 	}
+
+	public static clearItemCache(cache: ApolloCache) {
+		ApolloCacheManager.deleteFromCache(cache, 'app_item_meta');
+	}
+
+	public static clearSharedItemsCache(cache: ApolloCache) {
+		ApolloCacheManager.deleteFromCache(cache, 'shared_items');
+	}
+
 	/**
 	 * Clear all collection aggregate related data from the cache
 	 * eg: app_collections, app_collection_fragments, app_collections_aggregate

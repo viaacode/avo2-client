@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -7,15 +8,10 @@ import { Link } from 'react-router-dom';
 import {
 	BlockHeading,
 	Box,
-	Button,
 	Checkbox,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Icon,
 	IconName,
-	MenuContent,
 	Navbar,
 	Spacer,
 	TagList,
@@ -37,7 +33,8 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
-import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { buildLink, CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -185,6 +182,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	}, [assignment]);
 
 	const handleExtraOptionsClick = async (itemId: 'archive') => {
+		setActionsDropdownOpen(false);
 		if (itemId === 'archive') {
 			try {
 				if (!assignment) {
@@ -353,11 +351,20 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		);
 
 		return (
-			<div className="c-assignment-detail">
+			<div
+				className={classnames('c-assignment-detail', {
+					'c-assignment-detail--mobile': isMobileWidth(),
+				})}
+			>
 				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
-							<Toolbar justify size="huge" className="c-toolbar--drop-columns-low-mq">
+							<Toolbar
+								justify
+								wrap={isMobileWidth()}
+								size="huge"
+								className="c-toolbar--drop-columns-low-mq"
+							>
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
@@ -399,44 +406,25 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 										PermissionName.EDIT_ASSIGNMENTS
 									) && (
 										<ToolbarItem>
-											<Dropdown
+											<MoreOptionsDropdown
 												isOpen={isActionsDropdownOpen}
-												menuWidth="fit-content"
-												onClose={() => setActionsDropdownOpen(false)}
 												onOpen={() => setActionsDropdownOpen(true)}
-												placement="bottom-end"
-											>
-												<DropdownButton>
-													<Button
-														icon="more-horizontal"
-														type="secondary"
-														ariaLabel={t(
-															'assignment/views/assignment-detail___meer-opties'
-														)}
-														title={t(
-															'assignment/views/assignment-detail___meer-opties'
-														)}
-													/>
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{
-																icon: 'archive',
-																id: 'archive',
-																label: assignment.is_archived
-																	? t(
-																			'assignment/views/assignment-detail___dearchiveer'
-																	  )
-																	: t(
-																			'assignment/views/assignment-detail___archiveer'
-																	  ),
-															},
-														]}
-														onClick={handleExtraOptionsClick as any}
-													/>
-												</DropdownContent>
-											</Dropdown>
+												onClose={() => setActionsDropdownOpen(false)}
+												menuItems={[
+													{
+														icon: 'archive',
+														id: 'archive',
+														label: assignment.is_archived
+															? t(
+																	'assignment/views/assignment-detail___dearchiveer'
+															  )
+															: t(
+																	'assignment/views/assignment-detail___archiveer'
+															  ),
+													},
+												]}
+												onOptionClicked={handleExtraOptionsClick as any}
+											/>
 										</ToolbarItem>
 									)}
 									<ToolbarItem>

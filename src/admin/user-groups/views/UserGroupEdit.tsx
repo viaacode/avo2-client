@@ -340,9 +340,6 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					</div>
 				);
 
-			case 'description':
-				return rowData[columnId];
-
 			case 'created_at':
 			case 'updated_at':
 				return formatDate(rowData[columnId]);
@@ -365,6 +362,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					</ButtonToolbar>
 				);
 
+			case 'description': // fallthrough
 			default:
 				return rowData[columnId];
 		}

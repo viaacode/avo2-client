@@ -27,6 +27,7 @@ import {
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
+import { ContentPageService } from '../../../shared/services/content-page-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { validateContentBlockField } from '../../shared/helpers';
@@ -56,10 +57,10 @@ import {
 	PageType,
 } from '../content.types';
 import {
-	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
+	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
@@ -413,7 +414,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const path = getPathOrDefault();
 
 		try {
-			const page: ContentPageInfo | null = await ContentService.fetchContentPageByPath(path);
+			const page: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
+				path
+			);
 			if (page && String(page.id) !== id) {
 				errors.path = t(
 					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
@@ -421,6 +424,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						pageTitle: page.title,
 					}
 				);
+			} else {
+				delete errors.path;
 			}
 		} catch (err) {
 			// ignore error if content page does not exist yet, since we're trying to save it
