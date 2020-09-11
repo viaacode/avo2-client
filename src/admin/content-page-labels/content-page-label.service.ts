@@ -75,6 +75,7 @@ export class ContentPageLabelService {
 				id: contentPageLabelObj.id,
 				label: contentPageLabelObj.label,
 				content_type: contentPageLabelObj.content_type,
+				link_to: contentPageLabelObj.link_to,
 				created_at: contentPageLabelObj.created_at,
 				updated_at: contentPageLabelObj.updated_at,
 			};
@@ -126,16 +127,17 @@ export class ContentPageLabelService {
 		}
 	}
 
-	static async updateContentPageLabel(contentPageLabel: ContentPageLabel) {
+	static async updateContentPageLabel(contentPageLabelInfo: ContentPageLabel) {
 		try {
 			const response = await dataService.mutate({
 				mutation: UPDATE_CONTENT_PAGE_LABEL,
 				variables: {
 					contentPageLabel: {
-						label: contentPageLabel.label,
-						content_type: contentPageLabel.content_type,
+						label: contentPageLabelInfo.label,
+						content_type: contentPageLabelInfo.content_type,
+						link_to: contentPageLabelInfo.link_to,
 					} as Partial<ContentPageLabel>,
-					contentPageLabelId: contentPageLabel.id,
+					contentPageLabelId: contentPageLabelInfo.id,
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
@@ -147,7 +149,7 @@ export class ContentPageLabelService {
 			}
 		} catch (err) {
 			throw new CustomError('Failed to update content page label in the database', err, {
-				contentPageLabel,
+				contentPageLabel: contentPageLabelInfo,
 				query: 'UPDATE_CONTENT_PAGE_LABEL',
 			});
 		}

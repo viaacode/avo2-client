@@ -24,6 +24,7 @@ import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { useContentTypes } from '../../content/hooks';
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
 import { ContentPageLabelService } from '../content-page-label.service';
@@ -42,7 +43,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	const [initialContentPageLabel, setInitialContentPageLabel] = useState<ContentPageLabel | null>(
 		null
 	);
-	const [contentPageLabel, setContentPageLabel] = useState<ContentPageLabel | null>(null);
+	const [contentPageLabelInfo, setContentPageLabelInfo] = useState<ContentPageLabel | null>(null);
 
 	const [formErrors, setFormErrors] = useState<ContentPageLabelEditFormErrorState>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -61,14 +62,14 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				permissions: [],
 			} as unknown) as ContentPageLabel;
 			setInitialContentPageLabel(contentLabel);
-			setContentPageLabel(contentLabel);
+			setContentPageLabelInfo(contentLabel);
 		} else {
 			try {
 				const contentLabel = await ContentPageLabelService.fetchContentPageLabel(
 					match.params.id
 				);
 				setInitialContentPageLabel(contentLabel);
-				setContentPageLabel(contentLabel);
+				setContentPageLabelInfo(contentLabel);
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to get content page label by id', err, {
@@ -84,17 +85,17 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				});
 			}
 		}
-	}, [isCreatePage, match.params.id, setLoadingInfo, setContentPageLabel, t]);
+	}, [isCreatePage, match.params.id, setLoadingInfo, setContentPageLabelInfo, t]);
 
 	useEffect(() => {
 		initOrFetchContentPageLabel();
 	}, [initOrFetchContentPageLabel]);
 
 	useEffect(() => {
-		if (contentPageLabel) {
+		if (contentPageLabelInfo) {
 			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [contentPageLabel, setLoadingInfo]);
+	}, [contentPageLabelInfo, setLoadingInfo]);
 
 	const navigateBack = () => {
 		if (isCreatePage) {
@@ -107,7 +108,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	};
 
 	const getFormErrors = (): ContentPageLabelEditFormErrorState | null => {
-		if (!contentPageLabel || !contentPageLabel.label) {
+		if (!contentPageLabelInfo || !contentPageLabelInfo.label) {
 			return {
 				label: t(
 					'admin/content-page-labels/views/content-page-label-edit___een-label-is-verplicht'
@@ -131,7 +132,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				return;
 			}
 
-			if (!initialContentPageLabel || !contentPageLabel) {
+			if (!initialContentPageLabel || !contentPageLabelInfo) {
 				ToastService.danger(
 					t(
 						'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-het-content-pagina-label-is-mislukt-omdat-het-label-nog-niet-is-geladen'
@@ -147,11 +148,11 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			if (isCreatePage) {
 				// insert the content page label
 				contentPageLabelId = await ContentPageLabelService.insertContentPageLabel(
-					contentPageLabel
+					contentPageLabelInfo
 				);
 			} else {
 				// Update existing content page label
-				await ContentPageLabelService.updateContentPageLabel(contentPageLabel);
+				await ContentPageLabelService.updateContentPageLabel(contentPageLabelInfo);
 				contentPageLabelId = match.params.id;
 			}
 
@@ -168,7 +169,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save content page label', err, {
-					contentPageLabel,
+					contentPageLabelInfo,
 					initialContentPageLabel,
 				})
 			);
@@ -183,7 +184,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	};
 
 	const renderEditPage = () => {
-		if (!contentPageLabel) {
+		if (!contentPageLabelInfo) {
 			return;
 		}
 		return (
@@ -200,10 +201,10 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 									required
 								>
 									<TextInput
-										value={contentPageLabel.label || ''}
+										value={contentPageLabelInfo.label || ''}
 										onChange={newLabel =>
-											setContentPageLabel({
-												...contentPageLabel,
+											setContentPageLabelInfo({
+												...contentPageLabelInfo,
 												label: newLabel,
 											})
 										}
@@ -217,13 +218,32 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 								>
 									<Select
 										options={contentTypes}
-										value={contentPageLabel.content_type}
+										value={contentPageLabelInfo.content_type}
 										onChange={newContentType =>
-											setContentPageLabel({
-												...contentPageLabel,
+											setContentPageLabelInfo({
+												...contentPageLabelInfo,
 												content_type: newContentType as Avo.ContentPage.Type,
 											})
 										}
+									/>
+								</FormGroup>
+								<FormGroup label={t('Link naar')} error={formErrors.link_to}>
+									<ContentPicker
+										allowedTypes={[
+											'CONTENT_PAGE',
+											'ITEM',
+											'COLLECTION',
+											'BUNDLE',
+											'INTERNAL_LINK',
+											'EXTERNAL_LINK',
+										]}
+										onSelect={newLinkTo =>
+											setContentPageLabelInfo({
+												...contentPageLabelInfo,
+												link_to: newLinkTo,
+											})
+										}
+										initialValue={contentPageLabelInfo.link_to || undefined}
 									/>
 								</FormGroup>
 							</Form>
@@ -303,7 +323,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
-				dataObject={contentPageLabel}
+				dataObject={contentPageLabelInfo}
 				render={renderPage}
 			/>
 		</>

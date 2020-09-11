@@ -15,7 +15,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { formatDate, navigate } from '../../../shared/helpers';
+import { formatDate, navigate, navigateToContentType } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
@@ -40,6 +40,7 @@ import {
 } from '../content-page-label.types';
 
 import './ContentPageLabelOverview.scss';
+import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 
 interface ContentPageLabelOverviewProps extends DefaultSecureRouteProps {}
 
@@ -134,6 +135,12 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			} as CheckboxDropdownModalProps,
 		},
 		{
+			id: 'link_to',
+			label: i18n.t('Link'),
+			sortable: false,
+			visibleByDefault: true,
+		},
+		{
 			id: 'created_at',
 			label: i18n.t(
 				'admin/content-page-labels/views/content-page-label-overview___gemaakt-op'
@@ -180,6 +187,19 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
+
+			case 'link_to':
+				const linkTo = rowData.link_to;
+				if (!linkTo) {
+					return '-';
+				}
+				const labels = GET_CONTENT_TYPE_LABELS();
+				return (
+					<Button
+						type="inline-link"
+						onClick={() => navigateToContentType(linkTo, history)}
+					>{`${labels[linkTo.type]} - ${linkTo.label}`}</Button>
+				);
 
 			case 'actions':
 				return (

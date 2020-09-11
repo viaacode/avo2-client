@@ -10,6 +10,7 @@ export const GET_CONTENT_PAGE_LABELS = gql`
 		app_content_labels(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
 			label
 			content_type
+			link_to
 			created_at
 			updated_at
 			id
@@ -36,6 +37,7 @@ export const GET_CONTENT_PAGE_LABEL_BY_ID = gql`
 			label
 			id
 			content_type
+			link_to
 			created_at
 			updated_at
 		}
