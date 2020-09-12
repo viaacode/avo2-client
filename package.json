@@ -44,7 +44,7 @@
 		"lodash-es": "^4.17.11",
 		"marked": "^0.7.0",
 		"moment": "^2.24.0",
-		"node-fetch": "^2.6.0",
+		"node-fetch": "^2.6.1",
 		"node-sass": "^4.13.1",
 		"oaf-react-router": "^2.1.1",
 		"query-string": "^6.8.3",
