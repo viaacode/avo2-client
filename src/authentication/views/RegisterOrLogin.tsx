@@ -21,7 +21,7 @@ import {
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
 import LoginOptions from '../components/LoginOptions';
-import { getFromPath, redirectToClientPage } from '../helpers/redirects';
+import { getBaseUrl, getFromPath, redirectToClientPage } from '../helpers/redirects';
 
 import './RegisterOrLogin.scss';
 
@@ -50,7 +50,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 
 		// From location history
 		if (location.pathname === `/${ROUTE_PARTS.registerOrLogin}`) {
-			return getFromPath(location);
+			return getBaseUrl(location) + getFromPath(location);
 		}
 
 		return (
