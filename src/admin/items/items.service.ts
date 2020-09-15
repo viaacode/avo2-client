@@ -413,6 +413,7 @@ export class ItemsService {
 					itemUid,
 					itemExternalId,
 				},
+				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 
 			if (response.errors) {
@@ -444,6 +445,7 @@ export class ItemsService {
 					newItemUid,
 					newItemExternalId,
 				},
+				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 
 			if (response.errors) {
