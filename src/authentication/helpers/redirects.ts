@@ -159,14 +159,12 @@ export function getRedirectAfterLogin(
 	// From query string
 	const queryStrings = queryString.parse(location.search);
 	if (queryStrings.returnToUrl && isString(queryStrings.returnToUrl)) {
-		if (
-			queryStrings.returnToUrl.startsWith('http') ||
-			queryStrings.returnToUrl.startsWith('//')
-		) {
-			// replace absolute url by relative url
-			return `/${queryStrings.returnToUrl.split(/\/\/[^/]+?\//).pop() || 'start'}`;
+		const returnToUrl = queryStrings.returnToUrl;
+		if (!returnToUrl.startsWith('http') && !returnToUrl.startsWith('//')) {
+			// make url absolute
+			return getBaseUrl(location) + returnToUrl;
 		}
-		return queryStrings.returnToUrl;
+		return returnToUrl;
 	}
 
 	// From location history
