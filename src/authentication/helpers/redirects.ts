@@ -1,11 +1,12 @@
 import { History, Location } from 'history';
-import { get, trimEnd, trimStart } from 'lodash-es';
+import { get, isString, omit, trimEnd, trimStart } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ROUTE_PARTS } from '../../shared/constants';
 import { getEnv } from '../../shared/helpers';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
@@ -37,10 +38,10 @@ export function redirectToLoggedInHome(location: Location) {
  * Server redirect functions
  *
  **/
-export function redirectToServerLoginPage(location: Location, fromPath?: string) {
+export function redirectToServerLoginPage(location: Location) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = fromPath || getRedirectAfterLogin(location);
+	const returnToUrl = getRedirectAfterLogin(location);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
 		returnToUrl,
@@ -145,19 +146,40 @@ export function getFromPath(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
-	const from =
-		get(location, 'state.from.pathname', defaultPath) + get(location, 'state.from.search', '');
-	return `/${trimStart(from, '/')}`;
+	const fromPath =
+		get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
+	const fromSearch = get(location, 'state.from.search') || get(location, 'search') || '';
+	return `/${trimStart(fromPath + fromSearch, '/')}`;
 }
 
 export function getRedirectAfterLogin(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ) {
+	// From query string
+	const queryStrings = queryString.parse(location.search);
+	if (queryStrings.returnToUrl && isString(queryStrings.returnToUrl)) {
+		if (
+			queryStrings.returnToUrl.startsWith('http') ||
+			queryStrings.returnToUrl.startsWith('//')
+		) {
+			// replace absolute url by relative url
+			return `/${queryStrings.returnToUrl.split(/\/\/[^/]+?\//).pop() || 'start'}`;
+		}
+		return queryStrings.returnToUrl;
+	}
+
+	// From location history
+	if (location.pathname === `/${ROUTE_PARTS.registerOrLogin}`) {
+		return getBaseUrl(location) + getFromPath(location);
+	}
+
 	const base = getBaseUrl(location);
 	const from = getFromPath(location, defaultPath);
 	if (from === '/') {
 		return `${base}${defaultPath}`;
 	}
-	return `${base}${from}`;
+	return `${base}${from}${location.hash}${queryString.stringify(
+		omit(queryStrings, ['returnToUrl'])
+	)}`;
 }
