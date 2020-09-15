@@ -169,7 +169,7 @@ export const GET_CONTENT_BY_ID = gql`
 `;
 
 export const GET_CONTENT_TYPES = gql`
-	{
+	query getContentTypes {
 		lookup_enum_content_types {
 			value
 			description
