@@ -48,7 +48,7 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 		>
 			<ModalBody>
 				<ContentPicker
-					initialValue={initialAuthor || undefined}
+					initialValue={author || undefined}
 					hideTargetSwitch
 					hideTypeDropdown
 					placeholder={t(
@@ -58,6 +58,7 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 					onSelect={(newAuthor: PickerItem | null) => {
 						setAuthor(newAuthor || undefined);
 					}}
+					key={author ? author.value : author}
 				/>
 			</ModalBody>
 			<ModalFooterRight>
