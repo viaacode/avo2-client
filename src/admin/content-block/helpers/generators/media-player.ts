@@ -52,11 +52,15 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				validator: undefined,
 			}),
 			src: TEXT_FIELD(undefined, {
-				label: i18n.t('Eigen video url van flowplayer.com (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___eigen-video-url-van-flowplayer-com-optioneel'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: validateFlowplayerVideoUrl,
 				editorProps: {
-					placeholder: i18n.t('bv: https://cdn.flowplayer.com/.../hls/playlist.m3u8'),
+					placeholder: i18n.t(
+						'admin/content-block/helpers/generators/media-player___bv-https-cdn-flowplayer-com-hls-playlist-m-3-u-8'
+					),
 				} as TextInputProps,
 			}),
 			poster: FILE_FIELD(undefined, {

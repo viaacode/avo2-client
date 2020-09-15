@@ -392,7 +392,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			: []),
 		{
 			id: 'actions',
-			tooltip: t('Acties'),
+			tooltip: t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___acties'
+			),
 			visibleByDefault: true,
 		},
 	];
