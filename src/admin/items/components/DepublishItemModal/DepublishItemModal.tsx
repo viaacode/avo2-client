@@ -64,11 +64,21 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				depublishType === 'depublish_with_reason' &&
 				(!reasonHtml || !stripHtml(reasonHtml).trim())
 			) {
-				ToastService.danger(t('Reden mag niet leeg zijn'), false);
+				ToastService.danger(
+					t(
+						'admin/items/components/depublish-item-modal/depublish-item-modal___reden-mag-niet-leeg-zijn'
+					),
+					false
+				);
 				return;
 			}
 			if (depublishType === 'depublish_with_replacement' && !replacementExternalId) {
-				ToastService.danger(t('Je moet een vervang item selecteren'), false);
+				ToastService.danger(
+					t(
+						'admin/items/components/depublish-item-modal/depublish-item-modal___je-moet-een-vervang-item-selecteren'
+					),
+					false
+				);
 				return;
 			}
 
@@ -97,7 +107,9 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				);
 				if (!replacementItem) {
 					ToastService.danger(
-						t('Het bepalen van de id van het vervang item is mislukt'),
+						t(
+							'admin/items/components/depublish-item-modal/depublish-item-modal___het-bepalen-van-de-id-van-het-vervang-item-is-mislukt'
+						),
 						false
 					);
 					return;
@@ -149,7 +161,12 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					})
 				);
 			}
-			ToastService.success(t('Het item is gedepubliceerd'), false);
+			ToastService.success(
+				t(
+					'admin/items/components/depublish-item-modal/depublish-item-modal___het-item-is-gedepubliceerd'
+				),
+				false
+			);
 			handleClose();
 		} catch (err) {
 			console.error(
@@ -160,33 +177,50 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					replacementExternalId,
 				})
 			);
-			ToastService.danger(t('Het depubliceren is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/items/components/depublish-item-modal/depublish-item-modal___het-depubliceren-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('Item depubliceren')}
+			title={t(
+				'admin/items/components/depublish-item-modal/depublish-item-modal___item-depubliceren'
+			)}
 			size="medium"
 			onClose={handleClose}
 			className="m-depublish-modal"
 		>
 			<ModalBody>
 				<Form>
-					<FormGroup label={t('Hoe depubliceren?')}>
+					<FormGroup
+						label={t(
+							'admin/items/components/depublish-item-modal/depublish-item-modal___hoe-depubliceren'
+						)}
+					>
 						<Select
 							options={[
 								{
-									label: t('Enkel depubliceren'),
+									label: t(
+										'admin/items/components/depublish-item-modal/depublish-item-modal___enkel-depubliceren'
+									),
 									value: 'depublish',
 								},
 								{
-									label: t('Depubliceren met reden'),
+									label: t(
+										'admin/items/components/depublish-item-modal/depublish-item-modal___depubliceren-met-reden'
+									),
 									value: 'depublish_with_reason',
 								},
 								{
-									label: t('Depubliceren en vervang item aanduiden'),
+									label: t(
+										'admin/items/components/depublish-item-modal/depublish-item-modal___depubliceren-en-vervang-item-aanduiden'
+									),
 									value: 'depublish_with_replacement',
 								},
 							]}
@@ -195,10 +229,14 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 						/>
 					</FormGroup>
 					{depublishType === 'depublish_with_reason' && (
-						<FormGroup label={t('Reden tot depubliceren:')}>
+						<FormGroup
+							label={t(
+								'admin/items/components/depublish-item-modal/depublish-item-modal___reden-tot-depubliceren'
+							)}
+						>
 							<WYSIWYGWrapper
 								placeholder={t(
-									'Geef een reden waarom dit item gedepubliceerd wordt'
+									'admin/items/components/depublish-item-modal/depublish-item-modal___geef-een-reden-waarom-dit-item-gedepubliceerd-wordt'
 								)}
 								state={reason || undefined}
 								onChange={setReason}
@@ -206,7 +244,11 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 						</FormGroup>
 					)}
 					{depublishType === 'depublish_with_replacement' && (
-						<FormGroup label={t('Selecteer item ter vervanging:')}>
+						<FormGroup
+							label={t(
+								'admin/items/components/depublish-item-modal/depublish-item-modal___selecteer-item-ter-vervanging'
+							)}
+						>
 							<ContentPicker
 								initialValue={
 									replacementExternalId
@@ -241,7 +283,9 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 								/>
 								<Button
 									type="primary"
-									label={t('Depubliceer')}
+									label={t(
+										'admin/items/components/depublish-item-modal/depublish-item-modal___depubliceer'
+									)}
 									onClick={depublishItem}
 								/>
 							</ButtonToolbar>

@@ -253,7 +253,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										checked={!createNewBundle}
 										value="existing"
 										name="collection"
-										onChange={checked => checked && setCreateNewBundle(false)}
+										onChange={() => setCreateNewBundle(false)}
 									/>
 									<div>
 										{bundles.length ? (
@@ -296,7 +296,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										checked={createNewBundle}
 										value="new"
 										name="bundle"
-										onChange={checked => checked && setCreateNewBundle(true)}
+										onChange={() => setCreateNewBundle(true)}
 									/>
 									<div>
 										<TextInput

@@ -83,7 +83,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 						visibleByDefault: true,
 					},
 			  ]),
-		{ id: 'actions', tooltip: t('Acties'), col: '1' },
+		{ id: 'actions', tooltip: t('workspace/views/bookmarks-overview___acties'), col: '1' },
 	] as TableColumn[];
 
 	const fetchBookmarks = useCallback(async () => {
