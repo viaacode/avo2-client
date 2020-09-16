@@ -17,8 +17,7 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../../../../constants';
-import { navigate, navigateToContentType } from '../../../../../shared/helpers';
+import { navigateToContentType } from '../../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
 import MediaPlayerWrapper from '../MediaPlayerWrapper/MediaPlayerWrapper';
@@ -84,10 +83,7 @@ export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWra
 					type={headingType}
 					onClick={
 						shouldTitleLink
-							? () =>
-									navigate(history, APP_PATH.ITEM_DETAIL.route, {
-										id: mediaItem.value,
-									})
+							? () => navigateToContentType(mediaItem, history)
 							: undefined
 					}
 					className={shouldTitleLink ? 'u-clickable' : ''}
