@@ -29,6 +29,7 @@ import {
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
+import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
@@ -273,6 +274,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			);
 			return;
 		}
+
+		const subtitles = getSubtitles(item);
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -312,6 +316,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									t('admin/items/views/item-detail___views'),
 								],
 							])}
+							{renderDetailRow(
+								subtitles
+									? subtitles.map(subtitle => (
+											<a key={subtitle.id} href={subtitle.src}>
+												{subtitle.label}
+											</a>
+									  ))
+									: '-',
+								t('Ondertitels')
+							)}
 							{renderDetailRow(
 								<>
 									<Spacer margin="right-small">

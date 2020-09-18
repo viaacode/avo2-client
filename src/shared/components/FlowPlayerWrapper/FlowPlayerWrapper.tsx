@@ -7,6 +7,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CustomError, getEnv, reorderDate } from '../../helpers';
+import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
@@ -125,7 +126,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					seekTime={props.seekTime}
 					poster={poster}
 					title={get(item, 'title')}
-					subtitles={
+					metadata={
 						item
 							? [
 									props.issuedDate || reorderDate(item.issued || null, '.'),
@@ -139,6 +140,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					{...props.cuePoints}
 					autoplay={(!!item && !!src) || props.autoplay}
 					canPlay={props.canPlay}
+					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
 				/>
 			) : (
