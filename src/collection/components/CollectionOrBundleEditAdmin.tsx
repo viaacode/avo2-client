@@ -476,7 +476,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													sortable: true,
 												},
 												{
-													tooltip: t('Acties'),
+													tooltip: t(
+														'collection/components/collection-or-bundle-edit-admin___acties'
+													),
 													id: 'actions',
 													sortable: false,
 												},
@@ -534,7 +536,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 													sortable: true,
 												},
 												{
-													tooltip: t('Acties'),
+													tooltip: t(
+														'collection/components/collection-or-bundle-edit-admin___acties'
+													),
 													id: 'actions',
 													sortable: false,
 												},

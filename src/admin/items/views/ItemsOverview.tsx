@@ -237,14 +237,14 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 
 			case 'is_published':
 				if (rowData.is_published) {
-					return t('Gepubliceerd');
+					return t('admin/items/views/items-overview___gepubliceerd');
 				}
 				if ((rowData as any).depublish_reason) {
 					// TODO remove cast after update to typings v2.23.0
-					return t('Gedepubliceerd - pancarte');
+					return t('admin/items/views/items-overview___gedepubliceerd-pancarte');
 				}
 				// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
-				return t('Gedepubliceerd');
+				return t('admin/items/views/items-overview___gedepubliceerd');
 
 			case 'actions':
 				return (

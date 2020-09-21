@@ -42,7 +42,7 @@ export const GET_USER_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 	},
 	{
 		id: 'actions',
-		tooltip: i18n.t('Acties'),
+		tooltip: i18n.t('admin/user-groups/user-group___acties'),
 		visibleByDefault: true,
 	},
 ];
@@ -72,7 +72,11 @@ export const GET_PERMISSION_GROUP_TABLE_COLS: () => TableColumn[] = () => [
 		sortable: true,
 		visibleByDefault: true,
 	},
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{
+		id: 'actions',
+		tooltip: i18n.t('admin/user-groups/user-group___acties'),
+		visibleByDefault: true,
+	},
 ];
 
 export enum SpecialUserGroup {

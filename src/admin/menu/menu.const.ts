@@ -15,7 +15,7 @@ export const MENU_PATH = {
 export const GET_MENU_OVERVIEW_TABLE_COLS: () => TableColumn[] = () => [
 	{ id: 'placement', label: i18n.t('admin/menu/menu___naam') },
 	{ id: 'description', label: i18n.t('admin/menu/menu___omschrijving') },
-	{ id: 'actions', tooltip: i18n.t('Acties') },
+	{ id: 'actions', tooltip: i18n.t('admin/menu/menu___acties') },
 ];
 
 export const INITIAL_MENU_FORM = (placement: string = ''): Partial<Avo.Menu.Menu> => ({

@@ -75,7 +75,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			})
 			.catch(err => {
 				console.error(new CustomError('Failed to fetch menu items', err));
-				ToastService.danger(t('Het ophalen van de menu items is mislukt'));
+				ToastService.danger(
+					t('admin/menu/views/menu-edit___het-ophalen-van-de-menu-items-is-mislukt')
+				);
 			});
 	}, [history, menuName, menuParentId, t]);
 
