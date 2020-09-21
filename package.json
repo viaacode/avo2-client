@@ -28,7 +28,7 @@
 		"@apollo/react-hooks": "^3.0.0",
 		"@storybook/addon-actions": "^6.0.21",
 		"@viaa/avo2-components": "^1.56.5",
-		"@viaa/avo2-types": "^2.23.0",
+		"@viaa/avo2-types": "^2.23.1",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
 		"braft-extensions": "^0.1.0",
@@ -120,7 +120,7 @@
 		"typescript": "4.0.2"
 	},
 	"peerDependencies": {
-		"avo2-proxy-server": "0.21.0"
+		"avo2-proxy-server": "1.4.0"
 	},
 	"resolutions": {
 		"immutable": "3.8.2",
