@@ -231,7 +231,17 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				return get(rowData, 'type.label', '-');
 
 			case 'views':
-				return get(rowData, 'view_counts_aggregate.aggregate.sum.count', '-');
+				return get(rowData, 'item_counts.views', '-');
+
+			case 'in_collection':
+				return get(rowData, 'item_counts.in_collection', '-');
+
+			case 'bookmarks':
+				return get(rowData, 'item_counts.bookmarks', '-');
+
+			case 'in_assignment':
+				return get(rowData, 'item_counts.in_assignment', '-');
+
 			case 'is_deleted':
 				return rowData[columnId] ? 'Ja' : 'Nee';
 

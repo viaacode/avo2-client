@@ -23,7 +23,16 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	organisation: (order: Avo.Search.OrderDirection) => ({ organisation: { name: order } }),
 	type: (order: Avo.Search.OrderDirection) => ({ type: { label: order } }),
 	views: (order: Avo.Search.OrderDirection) => ({
-		view_counts_aggregate: { sum: { count: order } },
+		item_counts: { views: order },
+	}),
+	in_collection: (order: Avo.Search.OrderDirection) => ({
+		item_counts: { in_collection: order },
+	}),
+	bookmarks: (order: Avo.Search.OrderDirection) => ({
+		item_counts: { bookmarks: order },
+	}),
+	in_assignment: (order: Avo.Search.OrderDirection) => ({
+		item_counts: { in_assignment: order },
 	}),
 };
 
@@ -94,12 +103,6 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'views',
-		label: i18n.t('admin/items/items___views'),
-		sortable: true,
-		visibleByDefault: true,
-	},
-	{
 		id: 'is_published',
 		label: i18n.t('admin/items/items___publiek'),
 		sortable: true,
@@ -126,6 +129,38 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 				// },
 			],
 		},
+	},
+	{
+		id: 'views',
+		tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+		icon: 'eye',
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'in_collection',
+		tooltip: i18n.t('Aantal keer opgenomen in collectie'),
+		icon: 'collection',
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'bookmarks',
+		tooltip: i18n.t(
+			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
+		),
+		icon: 'bookmark',
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'in_assignment',
+		tooltip: i18n.t(
+			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
+		),
+		icon: 'clipboard',
+		sortable: true,
+		visibleByDefault: true,
 	},
 	// {
 	// 	id: 'updated_at',
