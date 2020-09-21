@@ -40,9 +40,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import {
-	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 	InteractiveTourAction,
 	interactiveTourEditReducer,
+	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 } from '../helpers/reducers';
 import {
 	getInitialInteractiveTour,

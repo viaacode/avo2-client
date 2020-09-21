@@ -359,15 +359,17 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										placeholder={t(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
-								        disabled={!(selectedItems || []).length}
-                                        className="c-bulk-action-select"
+										disabled={!(selectedItems || []).length}
+										className="c-bulk-action-select"
 									/>
 								)}
 							</Flex>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<CheckboxDropdownModal
-								label={t('Kolommen')}
+								label={t(
+									'admin/shared/components/filter-table/filter-table___kolommen'
+								)}
 								id="table_columns"
 								options={getColumnOptions()}
 								onChange={updateSelectedColumns}

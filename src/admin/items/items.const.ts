@@ -193,7 +193,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 		id: 'status',
 		label: i18n.t('Status'),
 		sortable: true,
-        visibleByDefault: true,
+		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [

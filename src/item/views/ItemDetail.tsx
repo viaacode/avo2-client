@@ -141,8 +141,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					setLoadingInfo({
 						state: 'error',
 						message:
-							t('Dit item werdt gedepubliceerd met volgende reden: ') +
-							(itemObj as any).depublish_reason,
+							t(
+								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
+							) + (itemObj as any).depublish_reason,
 						icon: 'camera-off',
 					});
 					return;

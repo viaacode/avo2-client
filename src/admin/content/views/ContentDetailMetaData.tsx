@@ -148,7 +148,9 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							],
 							[
 								'meta_description',
-								t('Beschrijving voor export (bv: KLAAR nieuwsbrief)'),
+								t(
+									'admin/content/views/content-detail-meta-data___beschrijving-voor-export-bv-klaar-nieuwsbrief'
+								),
 							],
 							['path', t('admin/content/views/content-detail___pad')],
 							[

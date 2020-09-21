@@ -429,9 +429,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													checked={!createNewCollection}
 													value="existing"
 													name="collection"
-													onChange={checked =>
-														setCreateNewCollection(!checked)
-													}
+													onChange={() => {
+														setCreateNewCollection(false);
+													}}
 												/>
 												<div>
 													{collections.length ? (
@@ -483,6 +483,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													checked={createNewCollection}
 													value="new"
 													name="collection"
+													onChange={() => {
+														setCreateNewCollection(true);
+													}}
 												/>
 												<div>
 													<TextInput

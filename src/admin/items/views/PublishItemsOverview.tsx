@@ -45,7 +45,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					// @ts-ignore
 					(queryWordWildcard: string, queryWord: string, query: string) => [
 						{ pid: { _eq: query } },
-						{ pid: { _eq: query } },
+						{ title: { _ilike: queryWordWildcard } },
 					]
 				)
 			);
@@ -135,13 +135,23 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				(selectedItems || []).map(item => item.pid),
 				'OK'
 			);
-			ToastService.success(t('De geselecteerde items zijn gepubliceerd naar AvO'), false);
+			ToastService.success(
+				t(
+					'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o'
+				),
+				false
+			);
 			fetchItems();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to set status for shared.items', err, { selectedItems })
 			);
-			ToastService.danger(t('Het publiceren van de items is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/items/views/publish-items-overview___het-publiceren-van-de-items-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -149,13 +159,28 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 		try {
 			const result: string = await ItemsService.triggerMamSync();
 			if (result === 'starting') {
-				ToastService.success(t('Een MAM synchronisatie is gestart'), false);
+				ToastService.success(
+					t(
+						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-gestart'
+					),
+					false
+				);
 			} else {
-				ToastService.info(t('Een MAM synchronisatie is reeds bezig'), false);
+				ToastService.info(
+					t(
+						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-reeds-bezig'
+					),
+					false
+				);
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to trigger MAM sync', err));
-			ToastService.danger(t('Het triggeren van een MAM synchronisatie is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/items/views/publish-items-overview___het-triggeren-van-een-mam-synchronisatie-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -174,11 +199,11 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			case 'status':
 				switch (rowData.status) {
 					case 'NEW':
-						return t('Nieuw');
+						return t('admin/items/views/publish-items-overview___nieuw');
 					case 'UPDATE':
-						return t('Update');
+						return t('admin/items/views/publish-items-overview___update');
 					default:
-						return t('Onbekend');
+						return t('admin/items/views/publish-items-overview___onbekend');
 				}
 
 			case 'actions':
@@ -244,7 +269,9 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderCell={(rowData: Partial<UnpublishedItem>, columnId: string) =>
 						renderTableCell(rowData, columnId as UnpublishedItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoeken op pid')}
+					searchTextPlaceholder={t(
+						'admin/items/views/publish-items-overview___zoeken-op-titel-pid'
+					)}
 					noContentMatchingFiltersMessage={t(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
