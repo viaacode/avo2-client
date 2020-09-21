@@ -181,7 +181,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		setCollectionsContainingItem(
 			orderBy(
 				collectionsContainingItem,
-				[coll => get(coll, columnIdToCollectionPath[columnId])],
+				[(coll) => get(coll, columnIdToCollectionPath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -253,7 +253,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						ariaLabel={t(
 							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						)}
-						onClick={evt => {
+						onClick={(evt) => {
 							evt.stopPropagation();
 							navigateToCollectionDetail(rowData.id as string);
 						}}
@@ -318,7 +318,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							])}
 							{renderDetailRow(
 								subtitles
-									? subtitles.map(subtitle => (
+									? subtitles.map((subtitle) => (
 											<a key={subtitle.id} href={subtitle.src}>
 												{subtitle.label}
 											</a>
@@ -392,7 +392,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
 							)}
 							onColumnClick={handleCollectionColumnClick as any}
-							onRowClick={coll => navigateToCollectionDetail(coll.id)}
+							onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
 							renderCell={renderCollectionCell as any}
 							sortColumn={collectionSortColumn}
 							sortOrder={collectionSortOrder}
