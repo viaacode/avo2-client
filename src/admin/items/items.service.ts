@@ -498,7 +498,14 @@ export class ItemsService {
 				credentials: 'include',
 			});
 
-			return await response.text();
+			const body = await response.text();
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Response code indicates failure', null, {
+					response,
+					body,
+				});
+			}
+			return body;
 		} catch (err) {
 			throw new CustomError('Failed to trigger MAM sync', err, {
 				url,
