@@ -123,11 +123,15 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				},
 			}),
 			src: TEXT_FIELD(undefined, {
-				label: i18n.t('Eigen video url van flowplayer.com'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/hero___eigen-video-url-van-flowplayer-com'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: validateFlowplayerVideoUrl,
 				editorProps: {
-					placeholder: i18n.t('bv: https://cdn.flowplayer.com/.../hls/playlist.m3u8'),
+					placeholder: i18n.t(
+						'admin/content-block/helpers/generators/hero___bv-https-cdn-flowplayer-com-hls-playlist-m-3-u-8'
+					),
 				} as TextInputProps,
 			}),
 			poster: FILE_FIELD(undefined, {

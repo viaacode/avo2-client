@@ -1,5 +1,3 @@
-import { isString, omit } from 'lodash-es';
-import queryString from 'query-string';
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -21,7 +19,7 @@ import {
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
 import LoginOptions from '../components/LoginOptions';
-import { getFromPath, redirectToClientPage } from '../helpers/redirects';
+import { redirectToClientPage } from '../helpers/redirects';
 
 import './RegisterOrLogin.scss';
 
@@ -33,32 +31,6 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 	match,
 }) => {
 	const [t] = useTranslation();
-
-	const getRedirectAfterLogin = () => {
-		// From query string
-		const queryStrings = queryString.parse(location.search);
-		if (queryStrings.returnToUrl && isString(queryStrings.returnToUrl)) {
-			if (
-				queryStrings.returnToUrl.startsWith('http') ||
-				queryStrings.returnToUrl.startsWith('//')
-			) {
-				// replace absolute url by relative url
-				return `/${queryStrings.returnToUrl.split(/\/\/[^/]+?\//).pop() || 'start'}`;
-			}
-			return queryStrings.returnToUrl;
-		}
-
-		// From location history
-		if (location.pathname === `/${ROUTE_PARTS.registerOrLogin}`) {
-			return getFromPath(location);
-		}
-
-		return (
-			location.pathname +
-			location.hash +
-			queryString.stringify(omit(queryStrings, ['returnToUrl']))
-		);
-	};
 
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
@@ -144,7 +116,6 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 											history={history}
 											location={location}
 											match={match}
-											redirectAfterLogin={getRedirectAfterLogin()}
 										/>
 									</FlexItem>
 								</Flex>

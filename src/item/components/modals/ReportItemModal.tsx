@@ -77,7 +77,9 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 						t(
 							'item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven'
 						)}</dd>
-  <dt>${t('Pagina url')}</dt><dd>${window.location.href}</dd>
+  <dt>${t('item/components/modals/report-item-modal___pagina-url')}</dt><dd>${
+						window.location.href
+					}</dd>
 </dl>`,
 					public: false,
 				},
