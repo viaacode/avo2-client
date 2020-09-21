@@ -2,6 +2,7 @@ import { every, some } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Switch } from 'react-router';
 
+import { PermissionName } from '../authentication/helpers/permission-service';
 import { renderErrorRoutes } from '../error/error.routes';
 
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
@@ -41,25 +42,33 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 	return (
 		<Switch>
 			{renderAdminDashboardRoutes()}
-			{renderWithPermissions(renderAdminUserRoutes, ['VIEW_USERS'])}
-			{renderWithPermissions(renderAdminUserGroupRoutes, ['EDIT_USER_GROUPS'])}
-			{renderWithPermissions(renderAdminPermissionGroupRoutes, ['EDIT_PERMISSION_GROUPS'])}
-			{renderWithPermissions(renderAdminMenuRoutes, ['EDIT_NAVIGATION_BARS'])}
+			{renderWithPermissions(renderAdminUserRoutes, [PermissionName.VIEW_USERS])}
+			{renderWithPermissions(renderAdminUserGroupRoutes, [PermissionName.EDIT_USER_GROUPS])}
+			{renderWithPermissions(renderAdminPermissionGroupRoutes, [
+				PermissionName.EDIT_PERMISSION_GROUPS,
+			])}
+			{renderWithPermissions(renderAdminMenuRoutes, [PermissionName.EDIT_NAVIGATION_BARS])}
 			{renderWithPermissions(
 				renderAdminContentRoutes,
-				['EDIT_OWN_CONTENT_PAGES', 'EDIT_ANY_CONTENT_PAGES'],
+				[PermissionName.EDIT_OWN_CONTENT_PAGES, PermissionName.EDIT_ANY_CONTENT_PAGES],
 				'OR'
 			)}
-			{renderWithPermissions(renderAdminContentPageLabelRoutes, ['EDIT_CONTENT_PAGE_LABELS'])}
-			{renderWithPermissions(renderItemRoutes, ['VIEW_ITEMS_OVERVIEW'])}
-			{renderWithPermissions(renderPublishItemRoutes, ['VIEW_PUBLISH_ITEMS_OVERVIEW'])}
+			{renderWithPermissions(renderAdminContentPageLabelRoutes, [
+				PermissionName.EDIT_CONTENT_PAGE_LABELS,
+			])}
+			{renderWithPermissions(renderItemRoutes, [PermissionName.VIEW_ITEMS_OVERVIEW])}
+			{renderWithPermissions(renderPublishItemRoutes, [PermissionName.PUBLISH_ITEMS])}
 			{renderWithPermissions(
 				renderCollectionOrBundleRoutes,
-				['VIEW_COLLECTIONS_OVERVIEW', 'VIEW_BUNDLES_OVERVIEW'],
+				[PermissionName.VIEW_COLLECTIONS_OVERVIEW, PermissionName.VIEW_BUNDLES_OVERVIEW],
 				'OR'
 			)}
-			{renderWithPermissions(renderInteractiveTourRoutes, ['EDIT_INTERACTIVE_TOURS'])}
-			{renderWithPermissions(renderAdminTranslationsRoutes, ['EDIT_TRANSLATIONS'])}
+			{renderWithPermissions(renderInteractiveTourRoutes, [
+				PermissionName.EDIT_INTERACTIVE_TOURS,
+			])}
+			{renderWithPermissions(renderAdminTranslationsRoutes, [
+				PermissionName.EDIT_TRANSLATIONS,
+			])}
 			{/* Default routes */}
 			{renderErrorRoutes()}
 		</Switch>
