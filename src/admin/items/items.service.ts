@@ -294,7 +294,7 @@ export class ItemsService {
 			if (depublishReason) {
 				return {
 					depublish_reason: depublishReason,
-				} as any; // TODO replace cast with Avo.Item.Item after update to typings v2.23.0
+				} as Avo.Item.Item;
 			}
 
 			// otherwise return null
