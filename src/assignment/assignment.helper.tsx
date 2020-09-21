@@ -168,6 +168,20 @@ export class AssignmentHelper {
 		return !!assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now());
 	}
 
+	private static getContentLayoutOptions() {
+		const options = [
+			{
+				label: i18n.t('assignment/views/assignment-edit___mediaspeler-met-beschrijving'),
+				value: AssignmentLayout.PlayerAndText,
+			},
+			{
+				label: i18n.t('assignment/views/assignment-edit___enkel-mediaspeler'),
+				value: AssignmentLayout.OnlyPlayer,
+			},
+		] as any[];
+		return options;
+	}
+
 	public static renderAssignmentForm(
 		assignment: Partial<Avo.Assignment.Assignment>,
 		assignmentContent: Avo.Assignment.Content | null,
@@ -218,27 +232,18 @@ export class AssignmentHelper {
 							labelFor="only_player"
 						>
 							<RadioButtonGroup
-								options={[
-									{
-										label: i18n.t(
-											'assignment/views/assignment-edit___mediaspeler-met-beschrijving'
-										),
-										value: String(AssignmentLayout.PlayerAndText),
-									},
-									{
-										label: i18n.t(
-											'assignment/views/assignment-edit___enkel-mediaspeler'
-										),
-										value: String(AssignmentLayout.OnlyPlayer),
-									},
-								]}
-								value={String(assignment.content_layout) || null}
-								onChange={(value: string) =>
+								options={AssignmentHelper.getContentLayoutOptions()}
+								value={
+									isNil(assignment.content_layout)
+										? null
+										: (assignment.content_layout as any)
+								}
+								onChange={(value: string) => {
 									setAssignmentProp(
 										'content_layout',
-										AssignmentLayout[value as keyof typeof AssignmentLayout]
-									)
-								}
+										value ? parseInt(value, 10) : null
+									);
+								}}
 							/>
 						</FormGroup>
 						<FormGroup

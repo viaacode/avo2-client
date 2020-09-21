@@ -246,7 +246,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 
 			case 'is_published':
 				if (rowData.is_published) {
-					return t('Gepubliceerd');
+					return t('admin/items/views/items-overview___gepubliceerd');
 				} else {
 					if ((rowData as any).depublish_reason) {
 						// TODO remove cast after update to typings v2.23.0

@@ -3,6 +3,7 @@ import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState }
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -42,7 +43,6 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
-import { Link } from 'react-router-dom';
 
 type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 
@@ -186,7 +186,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		setCollectionsContainingItem(
 			orderBy(
 				collectionsContainingItem,
-				[coll => get(coll, columnIdToCollectionPath[columnId])],
+				[(coll) => get(coll, columnIdToCollectionPath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -258,7 +258,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						ariaLabel={t(
 							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						)}
-						onClick={evt => {
+						onClick={(evt) => {
 							evt.stopPropagation();
 							navigateToCollectionDetail(rowData.id as string);
 						}}
@@ -313,7 +313,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								],
 							])}
 							{renderSimpleDetailRows(item, [
-								['depublish_reason', t('Reden tot depubliceren')],
+								[
+									'depublish_reason',
+									t('admin/items/views/item-detail___reden-tot-depubliceren'),
+								],
 							])}
 							{renderDetailRow(
 								!!replacementUuid ? (
@@ -388,14 +391,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									id: 'is_public',
 									sortable: true,
 								},
-								{ tooltip: t('Acties'), id: 'actions', sortable: false },
+								{
+									tooltip: t('admin/items/views/item-detail___acties'),
+									id: 'actions',
+									sortable: false,
+								},
 							]}
 							data={collectionsContainingItem}
 							emptyStateMessage={t(
 								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
 							)}
 							onColumnClick={handleCollectionColumnClick as any}
-							onRowClick={coll => navigateToCollectionDetail(coll.id)}
+							onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
 							renderCell={renderCollectionCell as any}
 							sortColumn={collectionSortColumn}
 							sortOrder={collectionSortOrder}

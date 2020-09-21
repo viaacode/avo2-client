@@ -151,7 +151,11 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
-		{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+		{
+			id: 'actions',
+			tooltip: i18n.t('admin/content-page-labels/views/content-page-label-overview___acties'),
+			visibleByDefault: true,
+		},
 	];
 
 	// Methods
