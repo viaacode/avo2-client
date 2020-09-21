@@ -57,10 +57,12 @@ export function validateFlowplayerVideoUrl(url: string | null | undefined) {
 		return [];
 	}
 	if (!url.startsWith('https://')) {
-		return [i18n.t('Video url moet beginnen met http://')];
+		return [i18n.t('admin/shared/helpers/validation___video-url-moet-beginnen-met-http')];
 	}
 	if (!url.endsWith('.m3u8') && !url.endsWith('.mp4')) {
-		return [i18n.t('Video url moet eindigen met .m3u8 of .mp4')];
+		return [
+			i18n.t('admin/shared/helpers/validation___video-url-moet-eindigen-met-m-3-u-8-of-mp-4'),
+		];
 	}
 	return [];
 }

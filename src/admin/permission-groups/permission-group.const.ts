@@ -40,7 +40,11 @@ export const GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{
+		id: 'actions',
+		tooltip: i18n.t('admin/permission-groups/permission-group___acties'),
+		visibleByDefault: true,
+	},
 ];
 
 export const GET_PERMISSIONS_TABLE_COLS: () => TableColumn[] = () => [
@@ -56,5 +60,9 @@ export const GET_PERMISSIONS_TABLE_COLS: () => TableColumn[] = () => [
 		sortable: true,
 		visibleByDefault: true,
 	},
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{
+		id: 'actions',
+		tooltip: i18n.t('admin/permission-groups/permission-group___acties'),
+		visibleByDefault: true,
+	},
 ];

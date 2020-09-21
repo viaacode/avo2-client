@@ -41,7 +41,11 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{
+		id: 'actions',
+		tooltip: i18n.t('admin/interactive-tour/interactive-tour___acties'),
+		visibleByDefault: true,
+	},
 ];
 
 export function getInitialInteractiveTour(): EditableInteractiveTour {

@@ -27,6 +27,9 @@ export class ApolloCacheManager {
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_bookmarks');
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_views');
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_plays');
+		ApolloCacheManager.deleteFromCache(cache, 'app_collection_bookmarks');
+		ApolloCacheManager.deleteFromCache(cache, 'app_collection_views');
+		ApolloCacheManager.deleteFromCache(cache, 'app_collection_plays');
 	}
 
 	public static clearItemCache(cache: ApolloCache) {

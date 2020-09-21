@@ -257,7 +257,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
 		},
-		{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+		{
+			id: 'actions',
+			tooltip: i18n.t('admin/content/views/content-overview___acties'),
+			visibleByDefault: true,
+		},
 	];
 
 	// Methods
