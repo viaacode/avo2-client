@@ -26,7 +26,7 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PermissionName } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-names';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,

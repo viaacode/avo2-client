@@ -1,11 +1,13 @@
+// tslint:disable:no-console
 /**
  * This script runs over all files that match *.gql.ts and extracts the gql queries and whitelists them into the graphql database
  */
 import axios, { AxiosResponse } from 'axios';
-import * as fs from 'fs';
 import glob from 'glob';
 import _ from 'lodash';
 import * as path from 'path';
+
+const fs = require('fs-extra');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
@@ -135,13 +137,19 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 			});
 			console.log('[QUERY WHITELISTING]: Re-added collection to whitelist');
 
+			const outputFile = path.join(options.cwd, '../scripts/whitelist.json');
+			await fs.writeFile(outputFile, JSON.stringify(queries, null, 2));
+
 			console.log(
 				`[QUERY WHITELISTING]: Whitelisted ${
 					Object.keys(queries).length
-				} queries in the graphql database`
+				} queries in the graphql database. Full list: ${outputFile}`
 			);
 		} catch (err) {
-			console.error('Failed to extract and upload graphql query whitelist', err);
+			console.error(
+				'Failed to extract and upload graphql query whitelist',
+				JSON.stringify(err)
+			);
 		}
 	});
 }
@@ -151,3 +159,4 @@ whitelistQueries(
 	'All queries the avo2 client is allowed to execute',
 	/const ([^\s]+) = gql`([^`]+?)`/gm
 );
+// tslint:enable:no-console

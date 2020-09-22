@@ -2,7 +2,7 @@ import { every, some } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Switch } from 'react-router';
 
-import { PermissionName } from '../authentication/helpers/permission-service';
+import { PermissionName } from '../authentication/helpers/permission-names';
 import { renderErrorRoutes } from '../error/error.routes';
 
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';

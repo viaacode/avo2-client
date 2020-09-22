@@ -1,6 +1,6 @@
 import { every, some } from 'lodash-es';
 
-import { PermissionName } from '../authentication/helpers/permission-service';
+import { PermissionName } from '../authentication/helpers/permission-names';
 import { buildLink, CustomError } from '../shared/helpers';
 import { ToastService } from '../shared/services';
 import { ContentPageService } from '../shared/services/content-page-service';

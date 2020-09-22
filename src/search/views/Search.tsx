@@ -42,7 +42,7 @@ import {
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
-import { PermissionName } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-names';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';

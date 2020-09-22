@@ -27,7 +27,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PermissionName } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-names';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	checkPermissions,

@@ -48,7 +48,6 @@ interface ContentEditFormProps {
 	contentTypes: SelectOption<Avo.ContentPage.Type>[];
 	formErrors: ContentEditFormErrors;
 	contentPageInfo: Partial<ContentPageInfo>;
-	isAdminUser: boolean;
 	changeContentPageState: (action: ContentEditAction) => void;
 	user: Avo.User.User;
 }
@@ -57,7 +56,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypes = [],
 	formErrors,
 	contentPageInfo,
-	isAdminUser,
 	changeContentPageState,
 	user,
 }) => {
@@ -263,7 +261,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
-							{isAdminUser && (
+							{PermissionService.hasPerm(
+								user,
+								PermissionName.EDIT_PROTECTED_PAGE_STATUS
+							) && (
 								<Column size="12">
 									<FormGroup error={formErrors.is_protected}>
 										<Checkbox

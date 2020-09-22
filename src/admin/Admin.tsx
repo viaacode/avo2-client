@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
+import { PermissionName } from '../authentication/helpers/permission-names';
+import { PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
 import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
