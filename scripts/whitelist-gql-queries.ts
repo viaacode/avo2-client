@@ -9,6 +9,8 @@ import * as path from 'path';
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
+const NOT_FOUND_WHITELIST_COLLECTION_ERROR = 'not-exists';
+
 if (!process.env.GRAPHQL_URL) {
 	console.error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_URL is not set'
@@ -21,7 +23,7 @@ if (!process.env.GRAPHQL_SECRET) {
 }
 
 async function fetchPost(body: any) {
-	const url = `${process.env.GRAPHQL_URL}/v1/query`;
+	const url = (process.env.GRAPHQL_URL as string).replace('/v1/graphql', '/v1/query');
 	const response: AxiosResponse<any> = await axios(url, {
 		method: 'post',
 		headers: {
@@ -31,10 +33,7 @@ async function fetchPost(body: any) {
 	});
 	const errors = _.get(response, 'data.errors');
 	if (errors) {
-		console.error('Failed to insert event into the database', {
-			url,
-			errors,
-		});
+		throw new Error(`Failed to add whitelist to the database: ${JSON.stringify(errors)}`);
 	}
 	return response.data;
 }
@@ -88,7 +87,7 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 				});
 			} catch (err) {
 				// Ignore error if query collection doesn't exist
-				if (_.get(err, 'response.data.code') !== 'not-exists') {
+				if (_.get(err, 'response.data.code') !== NOT_FOUND_WHITELIST_COLLECTION_ERROR) {
 					throw err;
 				}
 			}
@@ -105,7 +104,7 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 				});
 			} catch (err) {
 				// Ignore error if query collection doesn't exist
-				if (_.get(err, 'response.data.code') !== 'not-exists') {
+				if (_.get(err, 'response.data.code') !== NOT_FOUND_WHITELIST_COLLECTION_ERROR) {
 					throw err;
 				}
 			}
