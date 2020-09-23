@@ -1,24 +1,34 @@
-import { without } from 'lodash-es';
+import { without } from 'lodash';
 
 import { PermissionName } from '../src/authentication/helpers/permission-names';
-import { ContentTypeNumber } from '../src/collection/collection.types';
 
-type TableOperation = 'insert' | 'update' | 'delete' | 'select';
+export type TableOperation = 'insert' | 'update' | 'delete' | 'select';
 
-interface RowPermission {
+export type ColumnCheck = { [columnName: string]: any };
+
+export enum ContentTypeNumber {
+	audio = 1,
+	video = 2,
+	collection = 3,
+	bundle = 4,
+}
+
+export const PROFILE_UUID = 'X-HASURA-USER-ID';
+
+export interface RowPermission {
 	table: string;
 	operation: TableOperation | TableOperation[];
 
 	/**
 	 * Dictionary of all the properties that should match.
-	 * Current user profile id can be entered with the template: '%PROFILE_ID%'
+	 * Current user profile id can be entered with the variable: PROFILE_UUID
 	 * example:
 	 *    {
 	 *      type: 'collection',
-	 *      owner_profile_id: '%PROFILE_ID%'
+	 *      owner_profile_id: PROFILE_UUID
 	 *    }
 	 **/
-	check_columns?: { [columnName: string]: any };
+	check_columns?: ColumnCheck;
 
 	/**
 	 * What columns this permission gives access to. Defaults to all columns ['*']
@@ -33,7 +43,12 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 		{
 			table: 'app_collections',
 			operation: 'update',
-			check_columns: { owner_profile_id: '%PROFILE_ID%' },
+			check_columns: {
+				type_id: ContentTypeNumber.collection,
+				owner_profile_id: PROFILE_UUID,
+			},
+			columns: (allColumns: string[]) =>
+				without(allColumns, 'is_deleted', 'owner_profile_id', 'is_public', 'published_at'),
 		},
 	],
 	CREATE_COLLECTIONS: [
@@ -42,7 +57,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'insert',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
 		},
 		{
@@ -58,8 +73,10 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'update',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
+			columns: (allColumns: string[]) =>
+				without(allColumns, 'is_deleted', 'owner_profile_id', 'is_public', 'published_at'),
 		},
 	],
 	CREATE_BUNDLES: [
@@ -68,7 +85,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'insert',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
 		},
 		{
@@ -106,7 +123,10 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id'),
-			check_columns: { owner_profile_id: '%PROFILE_ID%' },
+			check_columns: {
+				type_id: ContentTypeNumber.bundle,
+				owner_profile_id: PROFILE_UUID,
+			},
 		},
 	],
 	PUBLISH_ALL_COLLECTIONS: [
@@ -123,21 +143,24 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id'),
-			check_columns: { owner_profile_id: '%PROFILE_ID%' },
+			check_columns: {
+				type_id: ContentTypeNumber.collection,
+				owner_profile_id: PROFILE_UUID,
+			},
 		},
 	],
 	CREATE_ASSIGNMENTS: [
 		{
 			table: 'app_assignments',
 			operation: 'insert',
-			check_columns: { owner_profile_id: '%PROFILE_ID%' },
+			check_columns: { owner_profile_id: PROFILE_UUID },
 		},
 	],
 	EDIT_ASSIGNMENTS: [
 		{
 			table: 'app_assignments',
 			operation: 'update',
-			check_columns: { owner_profile_id: '%PROFILE_ID%' },
+			check_columns: { owner_profile_id: PROFILE_UUID },
 		},
 	],
 	VIEW_ASSIGNMENTS: [
@@ -164,7 +187,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			table: 'app_collections',
 			operation: 'update',
 			columns: (allColumns: string[]) =>
-				without(allColumns, 'is_deleted', 'is_public', 'owner_profile_id', 'published_at'),
+				without(allColumns, 'is_deleted', 'owner_profile_id', 'is_public', 'published_at'),
 		},
 	],
 	EDIT_ANY_BUNDLES: [
@@ -172,7 +195,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			table: 'app_collections',
 			operation: 'update',
 			columns: (allColumns: string[]) =>
-				without(allColumns, 'is_deleted', 'is_public', 'owner_profile_id', 'published_at'),
+				without(allColumns, 'is_deleted', 'owner_profile_id', 'is_public', 'published_at'),
 		},
 	],
 	VIEW_USERS: [
@@ -182,10 +205,6 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 		},
 		{
 			table: 'users_profiles',
-			operation: 'select',
-		},
-		{
-			table: 'users_user_groups',
 			operation: 'select',
 		},
 		{
@@ -209,7 +228,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 		{
 			table: 'app_content',
 			operation: 'insert',
-			check_columns: { user_profile_id: '%PROFILE_ID%' },
+			check_columns: { user_profile_id: PROFILE_UUID },
 		},
 	],
 	EDIT_ANY_CONTENT_PAGES: [
@@ -231,7 +250,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 		{
 			table: 'app_content',
 			operation: 'update',
-			check_columns: { user_profile_id: '%PROFILE_ID%' },
+			check_columns: { user_profile_id: PROFILE_UUID },
 			columns: (allColumns: string[]) =>
 				without(
 					allColumns,
@@ -255,7 +274,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'delete',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
 		},
 	],
@@ -274,7 +293,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'delete',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
 		},
 	],
@@ -294,6 +313,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			check_columns: {
 				is_published: true,
 			},
+			columns: (allColumns: string[]) => without(allColumns, 'browse_path'),
 		},
 		{
 			table: 'app_item_counts',
@@ -315,6 +335,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			check_columns: {
 				is_published: false,
 			},
+			columns: (allColumns: string[]) => without(allColumns, 'browse_path'),
 		},
 		{
 			table: 'app_item_counts',
@@ -334,14 +355,14 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			table: 'app_collection_bookmarks',
 			operation: 'insert',
 			check_columns: {
-				profile_id: '%PROFILE_ID%',
+				profile_id: PROFILE_UUID,
 			},
 		},
 		{
 			table: 'app_item_bookmarks',
 			operation: 'insert',
 			check_columns: {
-				profile_id: '%PROFILE_ID%',
+				profile_id: PROFILE_UUID,
 			},
 		},
 	],
@@ -403,7 +424,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 		{
-			table: 'permissions',
+			table: 'users_permissions',
 			operation: 'select',
 		},
 	],
@@ -472,7 +493,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 		{
-			table: 'content_labels',
+			table: 'app_content_labels',
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 	],
@@ -500,7 +521,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
 		},
 	],
@@ -530,7 +551,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
-				owner_profile_id: '%PROFILE_ID%',
+				owner_profile_id: PROFILE_UUID,
 			},
 		},
 	],

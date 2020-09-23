@@ -264,3 +264,4 @@ src/shared/translations/poeditor
 licenses.csv
 public/sitemap.xml
 scripts/whitelist.json
+scripts/permissions.json

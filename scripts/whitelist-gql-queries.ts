@@ -137,7 +137,7 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 			});
 			console.log('[QUERY WHITELISTING]: Re-added collection to whitelist');
 
-			const outputFile = path.join(options.cwd, '../scripts/whitelist.json');
+			const outputFile = path.join(__dirname, 'whitelist.json');
 			await fs.writeFile(outputFile, JSON.stringify(queries, null, 2));
 
 			console.log(
