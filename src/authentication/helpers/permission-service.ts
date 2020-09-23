@@ -4,16 +4,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
-import { dataService } from '../../shared/services';
 import { ContentPageService } from '../../shared/services/content-page-service';
 
 import { getProfileId } from './get-profile-id';
 import { PermissionName } from './permission-names';
-import {
-	GET_LINKED_COLLECTIONS,
-	GET_LINKED_ITEMS,
-	GET_LINKED_SEARCH_QUERIES,
-} from './permission-service.gql';
 
 export { PermissionName };
 
@@ -133,35 +127,5 @@ export class PermissionService {
 				// The permission does not require any other checks besides is presence in the permission list
 				return true;
 		}
-	}
-
-	private static async checkViewItemsLinkedToAssignment(
-		user: Avo.User.User,
-		id: string,
-		type: 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT'
-	): Promise<boolean> {
-		if (!user.profile) {
-			return false;
-		}
-		const queries = {
-			ITEM: GET_LINKED_ITEMS,
-			COLLECTIE: GET_LINKED_COLLECTIONS,
-			ZOEKOPDRACHT: GET_LINKED_SEARCH_QUERIES,
-		};
-		const response = await dataService.query({
-			query: queries[type],
-			variables:
-				type === 'COLLECTIE'
-					? {
-							idString: id,
-							idUuid: id,
-							userId: user.profile.id,
-					  }
-					: {
-							id,
-							userId: user.profile.id,
-					  },
-		});
-		return get(response, 'data.app_assignment_responses', []).length;
 	}
 }

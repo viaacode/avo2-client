@@ -94,7 +94,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
 
-	const hasPerm = (permission: PermissionName) => PermissionService.hasPerm(user, permission);
+	const hasPerm = useCallback(
+		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
+		[user]
+	);
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -144,7 +147,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				false
 			);
 		}
-	}, [id, user, t]);
+	}, [id, user, hasPerm, t]);
 
 	const onPasteContentBlock = useCallback(
 		(evt: ClipboardEvent) => {
