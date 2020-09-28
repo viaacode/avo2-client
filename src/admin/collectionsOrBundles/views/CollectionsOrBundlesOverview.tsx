@@ -288,8 +288,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		{
 			id: 'author_user_group',
 			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
-			// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
-			// sortable: true,
+			sortable: true,
 			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
