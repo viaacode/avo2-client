@@ -1,4 +1,4 @@
-import { compact, get, kebabCase } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -289,10 +289,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								>
 									<TextInput
 										onChange={value => changeContentPageProp('path', value)}
-										value={
-											contentPageInfo.path ||
-											`/${kebabCase(contentPageInfo.title || '')}`
-										}
+										value={ContentService.getPathOrDefault(contentPageInfo)}
 									/>
 								</FormGroup>
 							</Column>

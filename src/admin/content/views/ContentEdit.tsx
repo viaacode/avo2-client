@@ -1,4 +1,4 @@
-import { get, has, isFunction, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isFunction, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	Reducer,
@@ -221,10 +221,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setConfigToDelete(configIndex);
 	};
 
-	const getPathOrDefault = (): string =>
-		contentPageState.currentContentPageInfo.path ||
-		`/${kebabCase(contentPageState.currentContentPageInfo.title)}`;
-
 	const handleSave = async () => {
 		try {
 			setIsSaving(true);
@@ -319,9 +315,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					...contentPageState.currentContentPageInfo,
 					user_profile_id: getProfileId(user),
 					contentBlockConfigs: blockConfigs,
-					path:
-						contentPageState.currentContentPageInfo.path ||
-						`/${kebabCase(contentPageState.currentContentPageInfo.title || '')}`,
+					path: ContentService.getPathOrDefault(contentPageState.currentContentPageInfo),
 				};
 				insertedOrUpdatedContent = await ContentService.insertContentPage(contentBody);
 			} else {
@@ -331,6 +325,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						updated_at: new Date().toISOString(),
 						id: parseInt(id, 10),
 						contentBlockConfigs: blockConfigs,
+						path: ContentService.getPathOrDefault(
+							contentPageState.currentContentPageInfo
+						),
 					};
 					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
@@ -409,7 +406,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 
 		// check if the path is unique
-		const path = getPathOrDefault();
+		const path = ContentService.getPathOrDefault(contentPageState.currentContentPageInfo);
 
 		try {
 			const page: ContentPageInfo | null = await ContentPageService.getContentPageByPath(

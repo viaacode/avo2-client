@@ -1,4 +1,4 @@
-import { get, isFunction, omit } from 'lodash-es';
+import { get, isFunction, kebabCase, omit } from 'lodash-es';
 import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
@@ -485,6 +485,10 @@ export class ContentService {
 
 			return null;
 		}
+	}
+
+	public static getPathOrDefault(contentPage: Partial<ContentPageInfo>): string {
+		return contentPage.path || `/${kebabCase(contentPage.title)}`;
 	}
 
 	/**
