@@ -186,7 +186,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	};
 
 	const renderPermissionLists = () => {
-		const userGroups: { id: number; label: string }[] = [];
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
@@ -197,10 +196,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		);
 
 		profileUserGroup.forEach(group => {
-			userGroups.push({
-				id: group.id,
-				label: group.label,
-			});
 			const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
 				group,
 				'group_user_permission_groups',
@@ -227,13 +222,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		return (
 			<>
 				<Spacer margin="top-extra-large">
-					<Accordion
-						title={t('admin/users/views/user-detail___gebruikersgroepen')}
-						isOpen={false}
-					>
-						{renderList(sortBy(userGroups, 'label'), ADMIN_PATH.USER_GROUP_DETAIL)}
-					</Accordion>
-
 					<Accordion
 						title={t('admin/users/views/user-detail___permissiegroepen')}
 						isOpen={false}
@@ -263,6 +251,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			);
 			return;
 		}
+
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].groups[0]', []);
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -348,6 +339,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderDetailRow(
 								get(storedProfile, 'organisation.name'),
 								t('admin/users/views/user-detail___bedrijf')
+							)}
+							{renderDetailRow(
+								<Link
+									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
+										id: userGroup.id,
+									})}
+								>
+									{userGroup.label}
+								</Link>,
+								t('Gebruikersgroep')
 							)}
 						</tbody>
 					</Table>
