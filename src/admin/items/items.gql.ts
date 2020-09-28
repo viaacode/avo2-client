@@ -40,12 +40,12 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			}
 			updated_at
 			note
-			view_counts_aggregate {
-				aggregate {
-					sum {
-						count
-					}
-				}
+			item_counts {
+				bookmarks
+				in_assignment
+				in_collection
+				plays
+				views
 			}
 		}
 		app_item_meta_aggregate(where: $where) {
