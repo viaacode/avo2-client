@@ -460,7 +460,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						title={relatedItem.dc_title}
 					>
 						<MediaCardThumbnail>
-							<Thumbnail category={contentType} src={relatedItem.thumbnail_path} showCategoryIcon />
+							<Thumbnail
+								category={contentType}
+								src={relatedItem.thumbnail_path}
+								showCategoryIcon
+							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category={contentType}>
