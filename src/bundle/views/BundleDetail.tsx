@@ -56,12 +56,12 @@ import {
 	CustomError,
 	formatDate,
 	fromNow,
-	generateContentLinkString,
 	generateSearchLinks,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
+import { handleRelatedItemClicked } from '../../shared/helpers/handle-related-item-click';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -447,15 +447,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					<MediaCard
 						className="u-clickable"
 						category={contentType}
-						onClick={() =>
-							redirectToClientPage(
-								generateContentLinkString(
-									relatedItem.administrative_type,
-									relatedItem.id
-								),
-								history
-							)
-						}
+						onClick={() => handleRelatedItemClicked(relatedItem, history)}
 						orientation="horizontal"
 						title={relatedItem.dc_title}
 					>
