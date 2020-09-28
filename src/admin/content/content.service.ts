@@ -158,7 +158,7 @@ export class ContentService {
 				})
 			);
 		} catch (err) {
-			console.error('Failed to retrieve content types.', err);
+			console.error('Failed to retrieve content types.', err, { query: 'GET_CONTENT_TYPES' });
 			ToastService.danger(
 				i18n.t(
 					'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'

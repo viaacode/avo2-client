@@ -43,12 +43,12 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
 				object
 			}
-			view_counts_aggregate {
-				aggregate {
-					sum {
-						count
-					}
-				}
+			item_counts {
+				bookmarks
+				in_assignment
+				in_collection
+				plays
+				views
 			}
 		}
 		app_item_meta_aggregate(where: $where) {

@@ -21,10 +21,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	author: (order: Avo.Search.OrderDirection) => ({
 		profile: { usersByuserId: { last_name: order } },
 	}),
-	// Waiting for https://meemoo.atlassian.net/browse/DEV-1070
-	// author_user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	profile: { profile_user_groups: { groups: { label: nullsLast(order) } } },
-	// }),
+	author_user_group: (order: Avo.Search.OrderDirection) => ({
+		profile: { profile_user_group: { group: { label: order } } },
+	}),
 	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
 		updated_by: { usersByuserId: { last_name: order } },
 	}),

@@ -5,59 +5,10 @@ import { Avo } from '@viaa/avo2-types';
 import { getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
-// TODO move to typings repo after update to typings v2.22.0
-export type EventAction =
-	| 'register'
-	| 'activate'
-	| 'create'
-	| 'edit'
-	| 'delete'
-	| 'request'
-	| 'reset'
-	| 'authenticate'
-	| 'logout'
-	| 'send'
-	| 'view'
-	| 'play'
-	| 'bookmark'
-	| 'share'
-	| 'report'
-	| 'publish'
-	| 'unpublish'
-	| 'copy'
-	| 'add_to'
-	| 'remove_from';
-
-export type EventSubjectType = 'user' | 'system';
-
-export type EventObjectType =
-	| 'account'
-	| 'profile'
-	| 'password'
-	| 'user'
-	| 'mail'
-	| 'information'
-	| 'item'
-	| 'collection'
-	| 'bundle'
-	| 'assignment'
-	| 'search';
-
-export interface ClientEvent {
-	action: EventAction;
-	subject: string; // entity doing the modification
-	subject_type: EventSubjectType;
-	object: string; // entity being modified
-	object_type: EventObjectType;
-	message: any; // user played item xxx on avo
-	occurred_at: string | null;
-	source_url: string; // eg: url when the event was triggered
-}
-
 interface MinimalClientEvent {
-	action: EventAction;
+	action: Avo.EventLogging.Action;
 	object: string; // entity being modified
-	object_type: EventObjectType;
+	object_type: Avo.EventLogging.ObjectType;
 	message: any; // user played item xxx on avo
 }
 
@@ -73,7 +24,7 @@ export function trackEvents(
 			eventsArray = [events];
 		}
 		const eventLogEntries = eventsArray.map(
-			(event: MinimalClientEvent): ClientEvent => {
+			(event: MinimalClientEvent): Avo.EventLogging.Event => {
 				return {
 					occurred_at: new Date().toISOString(),
 					source_url: window.location.href, // url when the event was triggered

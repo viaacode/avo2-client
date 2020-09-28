@@ -138,7 +138,7 @@ export class CollectionService {
 	}
 
 	private static getLabels(
-		collection: Avo.Collection.Collection | null
+		collection: Partial<Avo.Collection.Collection> | null
 	): CollectionLabelSchema[] {
 		return get(collection, 'collection_labels', []) as CollectionLabelSchema[];
 	}
@@ -151,7 +151,7 @@ export class CollectionService {
 	 */
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Avo.Collection.Collection
+		updatedCollection: Partial<Avo.Collection.Collection>
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// abort if updatedCollection is empty
@@ -177,7 +177,7 @@ export class CollectionService {
 				return null;
 			}
 
-			const newCollection: Avo.Collection.Collection = cloneDeep(updatedCollection);
+			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
 			// remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach(
@@ -207,7 +207,10 @@ export class CollectionService {
 			);
 
 			// insert fragments. New fragments do not have a fragment id yet
-			const insertPromise = CollectionService.insertFragments(newCollection.id, newFragments);
+			const insertPromise = CollectionService.insertFragments(
+				newCollection.id as string,
+				newFragments
+			);
 
 			// delete fragments
 			const deletePromises = deleteFragmentIds.map((id: number) =>
@@ -274,7 +277,7 @@ export class CollectionService {
 				newCollection
 			);
 
-			await this.updateCollectionProperties(newCollection.id, cleanedCollection);
+			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
 			// Update collection labels
 			const initialLabels: string[] = this.getLabels(initialCollection).map(

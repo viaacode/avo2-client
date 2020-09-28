@@ -755,7 +755,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			title,
 			lom_classification,
 		} = collection as Avo.Collection.Collection;
-		const hasCopies = !!get(collection, 'relations', []).length;
+		const hasCopies = (get(collection, 'relations') || []).length > 0;
 		const hasParentBundles = !!publishedBundles.length;
 
 		return (
