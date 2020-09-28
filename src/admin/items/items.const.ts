@@ -119,14 +119,13 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 					id: 'unpublished',
 				},
 				{
-					label: i18n.t('admin/items/items___gedepubliceerd - pancarte'),
+					label: i18n.t('Gedepubliceerd - pancarte'),
 					id: 'unpublished-with-reason',
 				},
-				// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
-				// {
-				// 	label: i18n.t('admin/items/items___gedepubliceerd - merge'),
-				// 	id: 'unpublished-with-replacement',
-				// },
+				{
+					label: i18n.t('Gedepubliceerd - merge'),
+					id: 'unpublished-with-merge',
+				},
 			],
 		},
 	},

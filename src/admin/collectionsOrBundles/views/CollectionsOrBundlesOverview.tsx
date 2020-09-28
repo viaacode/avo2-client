@@ -214,7 +214,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				)
+				),
+				false
 			);
 		}
 	}, [setCollectionLabels, t]);

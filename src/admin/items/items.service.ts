@@ -9,7 +9,6 @@ import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
-import { RelationType } from '../../shared/services/relation-service/relation.types';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
@@ -280,7 +279,7 @@ export class ItemsService {
 				const relations = await RelationService.fetchRelationsBySubject(
 					'item',
 					itemUid,
-					RelationType.IS_REPLACED_BY
+					'IS_REPLACED_BY'
 				);
 				const replacedByItemUid = get(relations, '[0].object', null);
 				if (replacedByItemUid) {
