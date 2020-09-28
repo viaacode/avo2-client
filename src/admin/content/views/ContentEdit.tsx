@@ -57,10 +57,10 @@ import {
 	PageType,
 } from '../content.types';
 import {
+	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
-	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
@@ -69,11 +69,7 @@ import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
-const {
-	EDIT_ANY_CONTENT_PAGES,
-	EDIT_OWN_CONTENT_PAGES,
-	EDIT_PROTECTED_PAGE_STATUS,
-} = PermissionName;
+const { EDIT_ANY_CONTENT_PAGES, EDIT_OWN_CONTENT_PAGES } = PermissionName;
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
 	const { id } = match.params;
@@ -98,7 +94,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
 
-	const hasPerm = (permission: PermissionName) => PermissionService.hasPerm(user, permission);
+	const hasPerm = useCallback(
+		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
+		[user]
+	);
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -106,8 +105,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				return;
 			}
 			if (
-				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
-				!PermissionService.hasPerm(user, PermissionName.EDIT_OWN_CONTENT_PAGES)
+				!hasPerm(PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!hasPerm(PermissionName.EDIT_OWN_CONTENT_PAGES)
 			) {
 				setLoadingInfo({
 					state: 'error',
@@ -120,7 +119,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			}
 			const contentPageObj = await ContentService.getContentPageById(id);
 			if (
-				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!hasPerm(PermissionName.EDIT_ANY_CONTENT_PAGES) &&
 				contentPageObj.user_profile_id !== getProfileId(user)
 			) {
 				setLoadingInfo({
@@ -148,7 +147,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				false
 			);
 		}
-	}, [id, user, t]);
+	}, [id, user, hasPerm, t]);
 
 	const onPasteContentBlock = useCallback(
 		(evt: ClipboardEvent) => {
@@ -215,7 +214,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			''
 		)}`;
 	}
-	const isAdminUser = hasPerm(EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
 	const openDeleteModal = (configIndex: number) => {
@@ -528,7 +526,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						contentTypes={contentTypes}
 						formErrors={formErrors}
 						contentPageInfo={contentPageState.currentContentPageInfo}
-						isAdminUser={isAdminUser}
 						changeContentPageState={changeContentPageState}
 						user={user}
 					/>

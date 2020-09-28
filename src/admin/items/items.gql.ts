@@ -217,7 +217,6 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 				is_published: { _eq: true }
 			}
 		) {
-			browse_path
 			created_at
 			depublish_at
 			description
