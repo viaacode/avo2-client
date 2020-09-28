@@ -277,6 +277,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								<Thumbnail
 									category={englishContentType}
 									src={relatedItem.thumbnail_path}
+									showCategoryIcon
 								/>
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
