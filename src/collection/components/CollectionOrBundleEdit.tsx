@@ -420,8 +420,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	}));
 
 	const convertFragmentDescriptionsToHtml = (
-		collection: Avo.Collection.Collection | null
-	): Avo.Collection.Collection | null => {
+		collection: Partial<Avo.Collection.Collection> | null
+	): Partial<Avo.Collection.Collection> | null => {
 		if (!collection) {
 			return collection;
 		}
@@ -446,15 +446,15 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		setIsSavingCollection(true);
 
 		// Convert fragment description editor states to html strings
-		const updatedCollection = convertFragmentDescriptionsToHtml(({
-			...collectionState.currentCollection,
+		const updatedCollection = convertFragmentDescriptionsToHtml({
+			...(collectionState.currentCollection as Avo.Collection.Collection),
 			updated_by_profile_id: get(user, 'profile.id', null),
-		} as unknown) as Avo.Collection.Collection) as Avo.Collection.Collection; // TODO remove cast after update to typings 2.22.0
+		});
 
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
 				collectionState.initialCollection,
-				updatedCollection
+				updatedCollection as Partial<Avo.Collection.Collection>
 			);
 
 			if (newCollection) {

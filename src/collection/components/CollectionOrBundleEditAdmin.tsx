@@ -363,13 +363,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 										>
 											<TextArea
 												height="auto"
-												value={
-													(collection as any).briefing_id // TODO remove cast after update to typings v2.22
-												}
+												value={collection.briefing_id || undefined}
 												onChange={(newBriefing: string) =>
 													changeCollectionState({
 														type: 'UPDATE_COLLECTION_PROP',
-														collectionProp: 'briefing_id' as any, // TODO remove cast after update to typings v2.22
+														collectionProp: 'briefing_id',
 														collectionPropValue: newBriefing,
 													})
 												}
