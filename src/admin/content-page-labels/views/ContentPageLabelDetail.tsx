@@ -9,11 +9,13 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate, navigateToContentType } from '../../../shared/helpers';
 import { dataService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
+import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import {
 	renderDateDetailRows,
+	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -27,7 +29,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 	const [t] = useTranslation();
 
 	// Hooks
-	const [contentPageLabel, setContentPageLabel] = useState<ContentPageLabel | null>(null);
+	const [contentPageLabelInfo, setContentPageLabelInfo] = useState<ContentPageLabel | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	const initOrFetchContentPageLabel = useCallback(async () => {
@@ -54,10 +56,11 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				id: contentPageLabelObj.id,
 				label: contentPageLabelObj.label,
 				content_type: contentPageLabelObj.content_type,
+				link_to: contentPageLabelObj.link_to,
 				created_at: contentPageLabelObj.created_at,
 				updated_at: contentPageLabelObj.updated_at,
 			};
-			setContentPageLabel(contentLabel);
+			setContentPageLabelInfo(contentLabel);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content page label by id', err, {
@@ -72,17 +75,17 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				),
 			});
 		}
-	}, [setLoadingInfo, setContentPageLabel, t, match.params.id]);
+	}, [setLoadingInfo, setContentPageLabelInfo, t, match.params.id]);
 
 	useEffect(() => {
 		initOrFetchContentPageLabel();
 	}, [initOrFetchContentPageLabel]);
 
 	useEffect(() => {
-		if (contentPageLabel) {
+		if (contentPageLabelInfo) {
 			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [contentPageLabel, setLoadingInfo]);
+	}, [contentPageLabelInfo, setLoadingInfo]);
 
 	const handleEditClick = () => {
 		redirectToClientPage(
@@ -94,14 +97,18 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 	};
 
 	const renderDetailPage = () => {
-		if (!contentPageLabel) {
+		if (!contentPageLabelInfo) {
 			return;
 		}
+
+		const linkTo = contentPageLabelInfo.link_to;
+		const labels = GET_CONTENT_TYPE_LABELS();
+
 		return (
 			<>
 				<Table horizontal variant="invisible" className="c-table_detail-page">
 					<tbody>
-						{renderSimpleDetailRows(contentPageLabel, [
+						{renderSimpleDetailRows(contentPageLabelInfo, [
 							[
 								'label',
 								t(
@@ -115,7 +122,18 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 								),
 							],
 						])}
-						{renderDateDetailRows(contentPageLabel, [
+						{renderDetailRow(
+							linkTo ? (
+								<Button
+									type="inline-link"
+									onClick={() => navigateToContentType(linkTo, history)}
+								>{`${labels[linkTo.type]} - ${linkTo.label}`}</Button>
+							) : (
+								'-'
+							),
+							t('Link')
+						)}
+						{renderDateDetailRows(contentPageLabelInfo, [
 							[
 								'created_at',
 								t(
@@ -137,7 +155,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 
 	// Render
 	const renderPage = () => {
-		if (!contentPageLabel) {
+		if (!contentPageLabelInfo) {
 			return null;
 		}
 		return (
@@ -192,7 +210,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
-				dataObject={contentPageLabel}
+				dataObject={contentPageLabelInfo}
 				render={renderPage}
 			/>
 		</>
