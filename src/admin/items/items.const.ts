@@ -209,7 +209,12 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 ];
 
 export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{ id: 'title', label: i18n.t('admin/items/items___titel'), visibleByDefault: true },
+	{
+		id: 'title',
+		label: i18n.t('admin/items/items___titel'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'pid',
 		label: i18n.t('admin/items/items___pid'),
