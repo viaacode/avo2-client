@@ -204,6 +204,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 				src: itemOrCollection.thumbnail_path || '',
 			},
 			src: itemOrCollection.src,
+			item_collaterals: (itemOrCollection as any).item_collaterals, // TODO remove cast after update to typings v2.23.0
 		} as any; // TODO remove cast after update to components v1.47.0
 	};
 

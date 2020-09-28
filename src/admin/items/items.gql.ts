@@ -125,6 +125,11 @@ export const GET_ITEM_BY_UUID = gql`
 			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
 				object
 			}
+			item_collaterals(where: { description: { _eq: "subtitle" } }) {
+				path
+				description
+				external_id
+			}
 			view_counts_aggregate {
 				aggregate {
 					sum {
@@ -254,6 +259,11 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 			type_id
 			updated_at
 			note
+			item_collaterals(where: { description: { _eq: "subtitle" } }) {
+				path
+				description
+				external_id
+			}
 			view_counts_aggregate {
 				aggregate {
 					sum {
