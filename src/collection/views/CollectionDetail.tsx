@@ -535,7 +535,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						title={dc_title}
 					>
 						<MediaCardThumbnail>
-							<Thumbnail category={category} src={thumbnail_path} />
+							<Thumbnail category={category} src={thumbnail_path} showCategoryIcon />
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category={category}>
