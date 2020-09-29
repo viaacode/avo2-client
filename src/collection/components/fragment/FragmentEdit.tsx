@@ -1,12 +1,5 @@
 import { get, isEqual, isNil, isString } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactText,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -50,7 +43,7 @@ interface FragmentEditProps {
 	numberOfFragments: number;
 	changeCollectionState: (action: CollectionAction) => void;
 	openOptionsId: number | null;
-	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
+	setOpenOptionsId: (id: number | null) => void;
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
 }
@@ -437,6 +430,7 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 		prevProps.numberOfFragments === nextProps.numberOfFragments &&
 		prevProps.collectionId === nextProps.collectionId &&
 		isEqual(prevProps.fragment, nextProps.fragment) &&
+		isEqual(prevProps.openOptionsId, nextProps.openOptionsId) &&
 		prevProps.allowedToAddLinks === nextProps.allowedToAddLinks &&
 		prevProps.index === nextProps.index &&
 		prevProps.type === nextProps.type

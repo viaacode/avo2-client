@@ -696,7 +696,7 @@ const Profile: FunctionComponent<ProfileProps & {
 	const renderCompleteProfilePage = () => {
 		return (
 			<Container mode="horizontal" size="medium">
-				<Container mode="vertical">
+				<Container mode="vertical" className="p-profile-page">
 					<BlockHeading type="h1">
 						<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
 							Je bent er bijna. Vervolledig nog je profiel.
@@ -758,8 +758,8 @@ const Profile: FunctionComponent<ProfileProps & {
 
 	const renderProfilePage = () => {
 		return (
-			<Container mode="vertical">
-				<Spacer margin="bottom">
+			<Container mode="vertical" className="p-profile-page">
+				<Spacer margin="bottom-extra-large">
 					<Grid>
 						<Column size="3-7">
 							<Form type="standard">
