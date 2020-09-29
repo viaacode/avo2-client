@@ -21,6 +21,7 @@ import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { useContentTypes } from '../../content/hooks';
 import { ItemsTableState } from '../../items/items.types';
+import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -40,7 +41,6 @@ import {
 } from '../content-page-label.types';
 
 import './ContentPageLabelOverview.scss';
-import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 
 interface ContentPageLabelOverviewProps extends DefaultSecureRouteProps {}
 
@@ -202,6 +202,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					<Button
 						type="inline-link"
 						onClick={() => navigateToContentType(linkTo, history)}
+						autoHeight
 					>{`${labels[linkTo.type]} - ${linkTo.label}`}</Button>
 				);
 
