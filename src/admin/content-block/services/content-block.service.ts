@@ -79,7 +79,7 @@ export class ContentBlockService {
 	private static cleanContentBlocksBeforeDatabaseInsert(
 		dbContentBlocks: Partial<Avo.ContentPage.Block>[]
 	) {
-		return (dbContentBlocks || []).map(block =>
+		return (dbContentBlocks || []).map((block) =>
 			omit(block, 'enum_content_block_type', '__typename', 'id')
 		);
 	}
@@ -100,7 +100,7 @@ export class ContentBlockService {
 			const dbBlocks: Partial<Avo.ContentPage.Block>[] = convertBlocksToDatabaseFormat(
 				contentBlockConfigs
 			);
-			(dbBlocks || []).forEach(block => (block.content_id = contentId));
+			(dbBlocks || []).forEach((block) => (block.content_id = contentId));
 			const response = await dataService.mutate({
 				mutation: INSERT_CONTENT_BLOCKS,
 				variables: {
@@ -148,7 +148,7 @@ export class ContentBlockService {
 	) {
 		try {
 			const initialContentBlockIds: number[] = compact(
-				initialContentBlocks.map(contentBlock => contentBlock.id)
+				initialContentBlocks.map((contentBlock) => contentBlock.id)
 			);
 			const currentContentBlockIds = contentBlockConfigs.reduce((acc: number[], curr) => {
 				if (has(curr, 'id')) {
@@ -161,7 +161,7 @@ export class ContentBlockService {
 			// Inserted content-blocks
 			const insertPromises: Promise<any>[] = [];
 			const insertedConfigs: ContentBlockConfig[] = contentBlockConfigs.filter(
-				config => !has(config, 'id')
+				(config) => !has(config, 'id')
 			);
 
 			if (insertedConfigs.length) {
@@ -173,10 +173,11 @@ export class ContentBlockService {
 			// Updated content-blocks
 			const updatePromises: Promise<any>[] = [];
 			const updatedConfigs = contentBlockConfigs.filter(
-				config => has(config, 'id') && initialContentBlockIds.includes(config.id as number)
+				(config) =>
+					has(config, 'id') && initialContentBlockIds.includes(config.id as number)
 			);
 
-			updatedConfigs.forEach(config =>
+			updatedConfigs.forEach((config) =>
 				updatePromises.push(ContentBlockService.updateContentBlock(config))
 			);
 
@@ -184,7 +185,7 @@ export class ContentBlockService {
 			const deletePromises: Promise<any>[] = [];
 			const deletedIds = without(initialContentBlockIds, ...currentContentBlockIds);
 
-			deletedIds.forEach(id =>
+			deletedIds.forEach((id) =>
 				deletePromises.push(ContentBlockService.deleteContentBlock(id))
 			);
 

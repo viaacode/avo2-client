@@ -23,9 +23,11 @@ const ZendeskWrapper: FunctionComponent = () => {
 				const screenHeight = document.documentElement.clientHeight;
 				const scrollTop = document.documentElement.scrollTop;
 				if (scrollHeight - screenHeight - scrollTop < footerHeight + zendeskMarginBottom) {
-					widget.style.marginBottom = `${footerHeight +
+					widget.style.marginBottom = `${
+						footerHeight +
 						zendeskMarginBottom -
-						(scrollHeight - screenHeight - scrollTop)}px`;
+						(scrollHeight - screenHeight - scrollTop)
+					}px`;
 				} else {
 					widget.style.marginBottom = '10px';
 				}

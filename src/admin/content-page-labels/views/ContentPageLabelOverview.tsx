@@ -136,7 +136,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		},
 		{
 			id: 'link_to',
-			label: i18n.t('Link'),
+			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___link'),
 			sortable: false,
 			visibleByDefault: true,
 		},

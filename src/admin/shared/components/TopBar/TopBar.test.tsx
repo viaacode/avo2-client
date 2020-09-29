@@ -19,12 +19,7 @@ describe('<TopBar />', () => {
 				<TopBar onClickBackButton={() => window.history.back()} />
 			</MemoryRouter>
 		);
-		expect(
-			topBarComponent
-				.find('div')
-				.at(0)
-				.hasClass('c-top-bar')
-		).toBeTruthy();
+		expect(topBarComponent.find('div').at(0).hasClass('c-top-bar')).toBeTruthy();
 	});
 
 	it('Should render a back button based on `showBackButton` prop', () => {

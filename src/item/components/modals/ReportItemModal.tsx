@@ -73,10 +73,12 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
   <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
 		GET_RADIO_BUTTON_LABELS()[reason]
   }</dd>
-  <dt>${t('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${extraDetails ||
+  <dt>${t('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${
+						extraDetails ||
 						t(
 							'item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven'
-						)}</dd>
+						)
+					}</dd>
   <dt>${t('item/components/modals/report-item-modal___pagina-url')}</dt><dd>${
 						window.location.href
 					}</dd>

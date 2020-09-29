@@ -136,7 +136,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	const formatTimestamps = (description: string = ''): ReactNode => {
 		const formattedDescription = description
 			.replace(/[\n\r]+/, '')
-			.replace(TIMESTAMP_REGEX, match => {
+			.replace(TIMESTAMP_REGEX, (match) => {
 				return `<span class="c-description-timecode">${match}</span>`;
 			});
 

@@ -71,11 +71,7 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps & RouteC
 			{t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___gepubliceerd-op'
 			)}{' '}
-			{publishedDate
-				? normalizeTimestamp(publishedDate)
-						.local()
-						.format('D MMMM YYYY')
-				: '-'}{' '}
+			{publishedDate ? normalizeTimestamp(publishedDate).local().format('D MMMM YYYY') : '-'}{' '}
 			{renderLabels()}
 			{`${t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___door'

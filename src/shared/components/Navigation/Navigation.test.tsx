@@ -27,13 +27,13 @@ const linkLoginState: {
 function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 	const links = menuItems.find(Link);
 
-	links.forEach(link => {
+	links.forEach((link) => {
 		const to: Location = link.prop('to') as Location;
 		if (to) {
 			expect(link.text()).toBeTruthy();
 			expect(
 				Object.values(APP_PATH)
-					.map(routeInfo => routeInfo.route)
+					.map((routeInfo) => routeInfo.route)
 					.includes(to.pathname)
 			).toEqual(true);
 			if (loggedIn) {

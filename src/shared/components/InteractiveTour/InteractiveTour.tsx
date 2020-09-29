@@ -104,10 +104,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 			// Resolve current page location to route id, so we know which interactive tour to show
 			// We reverse the order of the routes, since more specific routes are always declared later in the list
 			const interactiveRoutePairs = reverse(
-				toPairs(APP_PATH).filter(pair => pair[1].showForInteractiveTour)
+				toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
 			);
 			const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
-				pair => {
+				(pair) => {
 					const route = pair[1].route;
 					const currentRoute = location.pathname;
 					const match = matchPath(currentRoute, route);

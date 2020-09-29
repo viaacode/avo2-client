@@ -37,10 +37,10 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 	useEffect(() => {
 		PermissionService.hasPermission(PermissionName.ADD_HYPERLINK_COLLECTIONS, null, user)
-			.then(hasPermission => {
+			.then((hasPermission) => {
 				setAllowedToAddLinks(hasPermission);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(
 					'Failed to check permissions for adding hyperlinks in collection fragment editors',
 					err,

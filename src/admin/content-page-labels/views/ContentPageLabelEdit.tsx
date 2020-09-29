@@ -202,7 +202,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 								>
 									<TextInput
 										value={contentPageLabelInfo.label || ''}
-										onChange={newLabel =>
+										onChange={(newLabel) =>
 											setContentPageLabelInfo({
 												...contentPageLabelInfo,
 												label: newLabel,
@@ -219,7 +219,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 									<Select
 										options={contentTypes}
 										value={contentPageLabelInfo.content_type}
-										onChange={newContentType =>
+										onChange={(newContentType) =>
 											setContentPageLabelInfo({
 												...contentPageLabelInfo,
 												content_type: newContentType as Avo.ContentPage.Type,
@@ -227,7 +227,12 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 										}
 									/>
 								</FormGroup>
-								<FormGroup label={t('Link naar')} error={formErrors.link_to}>
+								<FormGroup
+									label={t(
+										'admin/content-page-labels/views/content-page-label-edit___link-naar'
+									)}
+									error={formErrors.link_to}
+								>
 									<ContentPicker
 										allowedTypes={[
 											'CONTENT_PAGE',
@@ -237,7 +242,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 											'INTERNAL_LINK',
 											'EXTERNAL_LINK',
 										]}
-										onSelect={newLinkTo =>
+										onSelect={(newLinkTo) =>
 											setContentPageLabelInfo({
 												...contentPageLabelInfo,
 												link_to: newLinkTo,

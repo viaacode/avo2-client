@@ -98,7 +98,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 			getRelatedItems(currentItemId, 'items', limit)
 				.then(setRelatedItems)
-				.catch(err => {
+				.catch((err) => {
 					console.error('Failed to get related items', err, {
 						currentItemId,
 						limit,
@@ -252,7 +252,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
-			return relatedItems.map(relatedItem => {
+			return relatedItems.map((relatedItem) => {
 				const englishContentType: EnglishContentType =
 					toEnglishContentType(relatedItem.administrative_type) ||
 					ContentTypeString.video;
@@ -534,7 +534,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<td>
 														{item.lom_languages
 															.map(
-																languageCode =>
+																(languageCode) =>
 																	LANGUAGES.nl[languageCode]
 															)
 															.join(', ')}
@@ -593,7 +593,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<td>
 														<TagList
 															tags={item.lom_keywords.map(
-																keyword => ({
+																(keyword) => ({
 																	label: keyword,
 																	id: keyword,
 																})

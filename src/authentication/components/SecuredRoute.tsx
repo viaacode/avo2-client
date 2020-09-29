@@ -88,7 +88,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 		<Route
 			{...(path ? { path } : {})}
 			exact={exact}
-			render={props => {
+			render={(props) => {
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
 					if (!loginState.acceptedConditions) {

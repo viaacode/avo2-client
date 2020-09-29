@@ -5,7 +5,7 @@ export function getQueryFilter(
 	getQueryFilterObj: (query: string, queryWord: string, queryWordWildcard: string) => any[]
 ) {
 	if (query) {
-		return query.split(' ').map(queryWord => {
+		return query.split(' ').map((queryWord) => {
 			return {
 				_or: getQueryFilterObj(`%${queryWord}%`, queryWord, query),
 			};

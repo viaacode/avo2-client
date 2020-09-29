@@ -100,7 +100,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 
 	const getSelectedFilterIds = (currentCheckedStates: CheckedState) =>
 		compact(
-			Object.keys(currentCheckedStates).map(key => (currentCheckedStates[key] ? key : null))
+			Object.keys(currentCheckedStates).map((key) => (currentCheckedStates[key] ? key : null))
 		);
 
 	const resetInternalCheckboxStates = () => setCheckedStates(optionsFromPairs);
@@ -256,7 +256,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 									)}
 									icon="search"
 									value={searchKeyword}
-									onChange={value => {
+									onChange={(value) => {
 										setSearchKeyword(value);
 
 										if (onSearch) {
@@ -274,7 +274,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 											)}
 											swatches={false}
 											closable={true}
-											onTagClosed={id =>
+											onTagClosed={(id) =>
 												handleCheckboxToggled(false, id.toString())
 											}
 										/>

@@ -23,7 +23,7 @@ import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from 
 
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
-const Settings: FunctionComponent<ForPupilsProps> = props => {
+const Settings: FunctionComponent<ForPupilsProps> = (props) => {
 	const [t] = useTranslation();
 
 	const [activeTab, setActiveTab] = useState<SettingsTab>(props.match.params.tabId || PROFILE_ID);

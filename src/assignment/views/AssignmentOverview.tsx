@@ -689,7 +689,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										},
 									]}
 									value={activeView}
-									onChange={activeViewId =>
+									onChange={(activeViewId) =>
 										setActiveView(activeViewId as Avo.Assignment.View)
 									}
 									className="c-assignment-overview__archive-select"
@@ -878,7 +878,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					}
 					rowKey="id"
 					variant="styled"
-					onColumnClick={columnId =>
+					onColumnClick={(columnId) =>
 						handleColumnClick(columnId as AssignmentOverviewTableColumns)
 					}
 					sortColumn={sortColumn}

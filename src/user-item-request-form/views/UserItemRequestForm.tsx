@@ -203,7 +203,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 							<FileUpload
 								assetType="ZENDESK_ATTACHMENT"
 								urls={attachmentUrl ? [attachmentUrl] : []}
-								onChange={attachments => setAttachmentUrl(attachments[0])}
+								onChange={(attachments) => setAttachmentUrl(attachments[0])}
 								ownerId=""
 								allowedTypes={DOC_TYPES}
 								allowMulti={false}

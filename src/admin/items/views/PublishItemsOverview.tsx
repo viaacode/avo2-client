@@ -146,7 +146,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				return;
 			}
 			await ItemsService.setSharedItemsStatus(
-				(selectedItems || []).map(item => item.pid),
+				(selectedItems || []).map((item) => item.pid),
 				'OK'
 			);
 			ToastService.success(
@@ -290,10 +290,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderNoResults={renderNoResults}
 					rowKey="pid"
 					showCheckboxes
-					selectedItems={items.filter(item =>
-						selectedItems.map(item => item.pid).includes(item.pid)
+					selectedItems={items.filter((item) =>
+						selectedItems.map((item) => item.pid).includes(item.pid)
 					)}
-					onSelectionChanged={newSelection => {
+					onSelectionChanged={(newSelection) => {
 						setSelectedItems(newSelection);
 					}}
 				/>

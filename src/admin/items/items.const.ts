@@ -119,11 +119,11 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 					id: 'unpublished',
 				},
 				{
-					label: i18n.t('Gedepubliceerd - pancarte'),
+					label: i18n.t('admin/items/items___gedepubliceerd-pancarte'),
 					id: 'unpublished-with-reason',
 				},
 				{
-					label: i18n.t('Gedepubliceerd - merge'),
+					label: i18n.t('admin/items/items___gedepubliceerd-merge'),
 					id: 'unpublished-with-merge',
 				},
 			],
@@ -138,7 +138,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'in_collection',
-		tooltip: i18n.t('Aantal keer opgenomen in collectie'),
+		tooltip: i18n.t('admin/items/items___aantal-keer-opgenomen-in-collectie'),
 		icon: 'collection',
 		sortable: true,
 		visibleByDefault: true,
@@ -205,7 +205,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	// { id: 'lom_keywords', label: i18n.t('admin/items/items___terfwoorden') },
 	// { id: 'lom_languages', label: i18n.t('admin/items/items___talen') },
 	// { id: 'lom_typicalagerange', label: i18n.t('admin/items/items___leeftijdsgroep') },
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{ id: 'actions', tooltip: i18n.t('admin/items/items___acties'), visibleByDefault: true },
 ];
 
 export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
@@ -230,22 +230,22 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 	},
 	{
 		id: 'status',
-		label: i18n.t('Status'),
+		label: i18n.t('admin/items/items___status'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				{
-					label: i18n.t('Nieuw'),
+					label: i18n.t('admin/items/items___nieuw'),
 					id: 'NEW',
 				},
 				{
-					label: i18n.t('Update'),
+					label: i18n.t('admin/items/items___update'),
 					id: 'UPDATE',
 				},
 			],
 		},
 	},
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{ id: 'actions', tooltip: i18n.t('admin/items/items___acties'), visibleByDefault: true },
 ];

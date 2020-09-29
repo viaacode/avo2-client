@@ -147,7 +147,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 								emptyStateMessage={t(
 									'admin/permission-groups/views/permission-group-detail___deze-groep-bevat-nog-geen-permissies'
 								)}
-								onColumnClick={columId =>
+								onColumnClick={(columId) =>
 									handleSortClick(columId as PermissionsTableCols)
 								}
 								renderCell={(rowData: any, columnId: string) => rowData[columnId]}

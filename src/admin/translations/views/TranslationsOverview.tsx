@@ -28,7 +28,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				setInitialTranslations(translationRows);
 				setTranslations(translationRows);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(new CustomError('Failed to fetch translations', err));
 				ToastService.danger(
 					t(
@@ -58,9 +58,11 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			string
 		] => {
 			const initialTranslation = initialTranslations.find(
-				trans => trans[0] === freshTranslation[0]
+				(trans) => trans[0] === freshTranslation[0]
 			);
-			const currentTranslation = translations.find(trans => trans[0] === freshTranslation[0]);
+			const currentTranslation = translations.find(
+				(trans) => trans[0] === freshTranslation[0]
+			);
 
 			if (isNil(currentTranslation)) {
 				// This translation has been added to the database but didn't exist yet when the page was loaded
@@ -130,14 +132,14 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 	};
 
 	const convertDataToTranslations = (data: Translation[]) => {
-		const translationsPerContext = groupBy(data, dataItem => {
+		const translationsPerContext = groupBy(data, (dataItem) => {
 			return splitOnFirstSlash(dataItem[0])[0];
 		});
 
 		return map(translationsPerContext, (translations: Translation, context: string) => ({
 			name: `translations-${context}`,
 			value: fromPairs(
-				translations.map(translation => [
+				translations.map((translation) => [
 					splitOnFirstSlash(translation[0])[1],
 					translation[1],
 				])

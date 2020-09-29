@@ -263,7 +263,7 @@ export class ContentService {
 		let variables: any;
 		try {
 			variables = {
-				objects: labelIds.map(labelId => ({
+				objects: labelIds.map((labelId) => ({
 					content_id: contentPageId,
 					label_id: labelId,
 				})),
@@ -549,7 +549,7 @@ export class ContentService {
 		const contentPages = await ContentService.getPublicContentItemsByTitle(
 			`%${titleWithoutCopy}`
 		);
-		const titles = (contentPages || []).map(contentPage => contentPage.title);
+		const titles = (contentPages || []).map((contentPage) => contentPage.title);
 
 		let index = 0;
 		let candidateTitle: string;

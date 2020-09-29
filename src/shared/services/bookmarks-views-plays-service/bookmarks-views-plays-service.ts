@@ -238,15 +238,11 @@ export class BookmarksViewsPlaysService {
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
 						.label as EnglishContentType,
-					createdAt: normalizeTimestamp(itemBookmark.created_at)
-						.toDate()
-						.getTime(),
+					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
 					contentThumbnailPath: thumbnailPath,
 					contentCreatedAt: itemBookmark.bookmarkedItem.issued
-						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued)
-								.toDate()
-								.getTime()
+						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
 						: null,
 					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
 				};
@@ -265,9 +261,7 @@ export class BookmarksViewsPlaysService {
 						ContentTypeNumber.collection
 							? 'collection'
 							: 'bundle',
-					createdAt: normalizeTimestamp(collectionBookmark.created_at)
-						.toDate()
-						.getTime(),
+					createdAt: normalizeTimestamp(collectionBookmark.created_at).toDate().getTime(),
 					contentTitle: collectionBookmark.bookmarkedCollection.title,
 					contentThumbnailPath: collectionBookmark.bookmarkedCollection.thumbnail_path,
 					contentCreatedAt: normalizeTimestamp(
@@ -380,9 +374,9 @@ export class BookmarksViewsPlaysService {
 				groupedObjectInfos['collection'] || [];
 
 			// Get list of item ids and collection ids from the object infos
-			const itemUuids: string[] = itemObjectInfos.map(objectInfo => objectInfo.uuid);
+			const itemUuids: string[] = itemObjectInfos.map((objectInfo) => objectInfo.uuid);
 			const collectionUuids: string[] = collectionObjectInfos.map(
-				objectInfo => objectInfo.uuid
+				(objectInfo) => objectInfo.uuid
 			);
 			const response = await dataService.query({
 				query: GET_BOOKMARK_STATUSES,
@@ -406,12 +400,12 @@ export class BookmarksViewsPlaysService {
 			// if the id was found we set the isBookmarked status to true
 			// if the id was not found we set the isBookmarked status to false
 			const itemBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
-				itemObjectInfos.map(objectInfo => {
+				itemObjectInfos.map((objectInfo) => {
 					return [objectInfo.uuid, itemBookmarkIds.includes(objectInfo.uuid)];
 				})
 			);
 			const collectionBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
-				collectionObjectInfos.map(objectInfo => {
+				collectionObjectInfos.map((objectInfo) => {
 					return [objectInfo.uuid, collectionBookmarkIds.includes(objectInfo.uuid)];
 				})
 			);

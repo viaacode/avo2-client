@@ -25,7 +25,7 @@ type ContentPageDetailProps =
 	  }
 	| { path: string };
 
-const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props => {
+const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (props) => {
 	const [t] = useTranslation();
 	const [contentPageInfo, setContentPageInfo] = useState<ContentPageInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -82,7 +82,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 
 		// images can have a setting to go full width
 		// so we need to set the block prop: fullWidth to true if we find an image block with size setting: pageWidth
-		contentBlockBlockConfigs = contentBlockBlockConfigs.map(contentBlockConfig => {
+		contentBlockBlockConfigs = contentBlockBlockConfigs.map((contentBlockConfig) => {
 			const width = (contentBlockConfig.components.state as BlockImageProps).width;
 			if (
 				contentBlockConfig.type === ContentBlockType.Image &&

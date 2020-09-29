@@ -59,19 +59,19 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 		Promise.all([SettingsService.fetchSubjects(), SettingsService.fetchEducationLevels()])
 			.then((response: [string[], string[]]) => {
 				setSubjects(
-					response[0].map(subject => ({
+					response[0].map((subject) => ({
 						value: subject,
 						label: subject,
 					}))
 				);
 				setEducationLevels(
-					response[1].map(educationLevel => ({
+					response[1].map((educationLevel) => ({
 						value: educationLevel,
 						label: educationLevel,
 					}))
 				);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(
 					new CustomError(
 						'Failed to get education levels and subjects from the database',
@@ -88,7 +88,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 		changeCollectionState({
 			collectionProp,
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: (selectedTagOptions || []).map(tag => tag.value as string),
+			collectionPropValue: (selectedTagOptions || []).map((tag) => tag.value as string),
 		});
 	};
 
@@ -149,7 +149,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										error={getValidationFeedbackForDescription(
 											collection.description,
 											MAX_SEARCH_DESCRIPTION_LENGTH,
-											count =>
+											(count) =>
 												i18n.t(
 													'collection/collection___de-korte-omschrijving-is-te-lang-count',
 													{ count } as StringMap
@@ -174,7 +174,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											{getValidationFeedbackForDescription(
 												collection.description,
 												MAX_SEARCH_DESCRIPTION_LENGTH,
-												count =>
+												(count) =>
 													t(
 														'collection/collection___de-korte-omschrijving-is-te-lang-count',
 														{ count } as StringMap
@@ -195,7 +195,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 														: collection.description_long || ''
 												),
 												MAX_LONG_DESCRIPTION_LENGTH,
-												count => {
+												(count) => {
 													return t(
 														'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
 														{
@@ -237,7 +237,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 															: collection.description_long || ''
 													),
 													MAX_LONG_DESCRIPTION_LENGTH,
-													count =>
+													(count) =>
 														t(
 															'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
 															{
@@ -309,7 +309,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												allowMulti={false}
 												assetType="BUNDLE_COVER"
 												ownerId={collection.id}
-												onChange={urls =>
+												onChange={(urls) =>
 													changeCollectionState({
 														type: 'UPDATE_COLLECTION_PROP',
 														collectionProp: 'thumbnail_path',

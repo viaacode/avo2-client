@@ -222,7 +222,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									},
 								]}
 								value={dateControls}
-								onChange={value => setDateControls(value as 'year' | 'date')}
+								onChange={(value) => setDateControls(value as 'year' | 'date')}
 							/>
 							{dateControls === 'year' && (
 								<Grid>
@@ -274,7 +274,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										>
 											<DatePicker
 												value={fromDate}
-												onChange={value => handleDateChange(value, 'gte')}
+												onChange={(value) => handleDateChange(value, 'gte')}
 											/>
 										</FormGroup>
 									</Column>
@@ -286,7 +286,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										>
 											<DatePicker
 												value={tillDate}
-												onChange={value => handleDateChange(value, 'lte')}
+												onChange={(value) => handleDateChange(value, 'lte')}
 											/>
 										</FormGroup>
 									</Column>

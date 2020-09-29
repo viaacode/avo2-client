@@ -26,13 +26,13 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 		if (booleanOperator === 'OR') {
 			// OR
 			// If at least one of the permissions is met, render the routes
-			if (some(permissions, permission => userPermissions.includes(permission))) {
+			if (some(permissions, (permission) => userPermissions.includes(permission))) {
 				return renderFunc(userPermissions);
 			}
 		} else {
 			// AND
 			// All permissions have to be met
-			if (every(permissions, permission => userPermissions.includes(permission))) {
+			if (every(permissions, (permission) => userPermissions.includes(permission))) {
 				return renderFunc(userPermissions);
 			}
 		}

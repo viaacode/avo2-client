@@ -72,8 +72,8 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 		onChange({
 			selectedContentType: get(value, 'selectedContentType') as Avo.ContentPage.Type,
 			selectedLabels: compact(
-				(newSelectedLabels || []).map(selectedLabel =>
-					(labels || []).find(labelObj => {
+				(newSelectedLabels || []).map((selectedLabel) =>
+					(labels || []).find((labelObj) => {
 						return labelObj.id === get(selectedLabel, 'value');
 					})
 				)

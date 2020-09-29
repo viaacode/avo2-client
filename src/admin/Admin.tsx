@@ -33,7 +33,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			setUserPermissions(tempUserPermissions);
 			GET_NAV_ITEMS(tempUserPermissions)
 				.then(setNavigationItems)
-				.catch(err => {
+				.catch((err) => {
 					console.error(new CustomError('Failed to get nav items', err));
 					ToastService.danger('Het ophalen van de navigatie items is mislukt');
 				});

@@ -24,7 +24,7 @@ export class PermissionService {
 		user: Avo.User.User | undefined,
 		permNames: PermissionName[]
 	): boolean {
-		return some(permNames, permName =>
+		return some(permNames, (permName) =>
 			PermissionService.getUserPermissions(user).includes(permName)
 		);
 	}

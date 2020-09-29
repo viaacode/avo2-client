@@ -119,7 +119,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 					>
 						<TextInput
 							value={(step.title || '').toString()}
-							onChange={newTitle => {
+							onChange={(newTitle) => {
 								changeInteractiveTourState({
 									type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
 									stepIndex: index,
@@ -137,7 +137,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						<WYSIWYGWrapper
 							initialHtml={(step.content || '').toString()}
 							state={step.contentState}
-							onChange={newContentState => {
+							onChange={(newContentState) => {
 								if (!isEqual(newContentState, step.contentState)) {
 									changeInteractiveTourState({
 										type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
@@ -172,7 +172,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 					>
 						<TextInput
 							value={(step.target || '').toString()}
-							onChange={newTarget => {
+							onChange={(newTarget) => {
 								changeInteractiveTourState({
 									type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
 									stepIndex: index,

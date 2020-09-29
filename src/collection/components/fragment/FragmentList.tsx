@@ -1,4 +1,5 @@
 import { get, sortBy } from 'lodash-es';
+import moment from 'moment';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,11 +7,10 @@ import { Alert, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { RelationEntry } from '../../../shared/services/relation-service/relation.types';
 
 import FragmentDetail from './FragmentDetail';
-import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import moment from 'moment';
 
 interface FragmentListDetailProps extends DefaultSecureRouteProps {
 	collectionFragments: Avo.Collection.Fragment[];
@@ -68,7 +68,7 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 							<Spacer margin="bottom-large">
 								<Alert type="danger">
 									{t(
-										'Dit item is recent vervangen door een nieuwe versie. Je controleert best of je knippunten nog correct zijn.'
+										'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
 									)}
 								</Alert>
 							</Spacer>

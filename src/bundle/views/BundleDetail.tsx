@@ -219,7 +219,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				try {
 					setViewCountsById(
 						await BookmarksViewsPlaysService.getMultipleViewCounts(
-							bundleObj.collection_fragments.map(fragment => fragment.external_id),
+							bundleObj.collection_fragments.map((fragment) => fragment.external_id),
 							'collection'
 						)
 					);
@@ -247,10 +247,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				}
 
 				getRelatedItems(bundleId, 'bundles', 4)
-					.then(relatedItems => {
+					.then((relatedItems) => {
 						setRelatedBundles(relatedItems);
 					})
-					.catch(err => {
+					.catch((err) => {
 						console.error('Failed to get related items', err, {
 							bundleId,
 							type: 'bundles',
@@ -269,7 +269,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			setBundle(bundleObj || null);
 		};
 
-		checkPermissionsAndGetBundle().catch(err => {
+		checkPermissionsAndGetBundle().catch((err) => {
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get bundle from the database',

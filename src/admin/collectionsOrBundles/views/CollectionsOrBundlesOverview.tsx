@@ -224,10 +224,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 		// Update selected rows to always be a subset of the collections array
 		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
-		const collectionIds: string[] = (collections || []).map(coll => coll.id);
-		setSelectedRows(currentSelectedRows => {
+		const collectionIds: string[] = (collections || []).map((coll) => coll.id);
+		setSelectedRows((currentSelectedRows) => {
 			return (currentSelectedRows || []).filter(
-				coll => coll.id && collectionIds.includes(coll.id)
+				(coll) => coll.id && collectionIds.includes(coll.id)
 			);
 		});
 	}, [setLoadingInfo, collections, setSelectedRows]);
@@ -444,7 +444,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
-				compact(selectedRows.map(collection => collection.id)),
+				compact(selectedRows.map((collection) => collection.id)),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -484,7 +484,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return;
 			}
 			await CollectionsOrBundlesService.bulkDeleteCollections(
-				compact(selectedRows.map(collection => collection.id)),
+				compact(selectedRows.map((collection) => collection.id)),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -516,7 +516,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
-				compact(selectedRows.map(collection => collection.id)),
+				compact(selectedRows.map((collection) => collection.id)),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -549,7 +549,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
-					compact(selectedRows.map(collection => collection.id)),
+					compact(selectedRows.map((collection) => collection.id)),
 					getProfileId(user)
 				);
 				ToastService.success(
@@ -562,7 +562,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				// remove
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
-					compact(selectedRows.map(collection => collection.id)),
+					compact(selectedRows.map((collection) => collection.id)),
 					getProfileId(user)
 				);
 				ToastService.success(
@@ -656,7 +656,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				const tags: TagOption[] = compact(
 					labels.map((labelObj: any): TagOption | null => {
 						const prettyLabel = collectionLabels.find(
-							collectionLabel => collectionLabel.value === labelObj.label
+							(collectionLabel) => collectionLabel.value === labelObj.label
 						);
 						if (!prettyLabel) {
 							return null;
@@ -825,14 +825,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				<ChangeLabelsModal
 					isOpen={changeLabelsModalOpen}
 					onClose={() => setAddLabelModalOpen(false)}
-					labels={collectionLabels.map(labelObj => ({
+					labels={collectionLabels.map((labelObj) => ({
 						label: labelObj.description,
 						value: labelObj.value,
 					}))}
 					callback={(addOrRemove: AddOrRemove, labels: TagInfo[]) =>
 						bulkChangeLabels(
 							addOrRemove,
-							labels.map(labelObj => labelObj.value.toString())
+							labels.map((labelObj) => labelObj.value.toString())
 						)
 					}
 				/>

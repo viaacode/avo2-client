@@ -85,7 +85,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				.then((collectionTitles: Partial<Avo.Collection.Collection>[]) => {
 					setCollections(collectionTitles);
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.error(err);
 					ToastService.danger(
 						t(
@@ -97,7 +97,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	);
 
 	useEffect(() => {
-		fetchCollections().catch(err => {
+		fetchCollections().catch((err) => {
 			console.error('Failed to fetch collections', err);
 			ToastService.danger(
 				t(
@@ -389,7 +389,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											<TextInput
 												value={fragmentStartString}
 												onBlur={() => updateStartAndEnd('start')}
-												onChange={endTime =>
+												onChange={(endTime) =>
 													updateStartAndEnd('start', endTime)
 												}
 											/>
@@ -408,7 +408,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											<TextInput
 												value={fragmentEndString}
 												onBlur={() => updateStartAndEnd('end')}
-												onChange={endTime =>
+												onChange={(endTime) =>
 													updateStartAndEnd('end', endTime)
 												}
 											/>

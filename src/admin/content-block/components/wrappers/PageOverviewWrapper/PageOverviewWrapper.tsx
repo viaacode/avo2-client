@@ -96,7 +96,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	const dbToPageOverviewContentPage = (contentPageInfo: ContentPageInfo): PageInfo => {
 		return {
 			thumbnail_path: contentPageInfo.thumbnail_path || '/images/placeholder-wide.png',
-			labels: ((contentPageInfo.labels || []) as Avo.ContentPage.Label[]).map(labelObj => ({
+			labels: ((contentPageInfo.labels || []) as Avo.ContentPage.Label[]).map((labelObj) => ({
 				id: labelObj.id,
 				label: labelObj.label,
 			})),
@@ -117,13 +117,13 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 
 	const fetchPages = useCallback(async () => {
 		try {
-			const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
+			const selectedLabelIds = selectedTabs.map((labelObj) => labelObj.id);
 			const blockLabelIds = ((contentTypeAndTabs.selectedLabels ||
-				[]) as Avo.ContentPage.Label[]).map(labelObj => labelObj.id);
+				[]) as Avo.ContentPage.Label[]).map((labelObj) => labelObj.id);
 			const body: ContentPageOverviewParams = {
 				withBlock: itemStyle === 'ACCORDION',
 				contentType: contentTypeAndTabs.selectedContentType,
-				labelIds: (contentTypeAndTabs.selectedLabels || []).map(labelObj => labelObj.id),
+				labelIds: (contentTypeAndTabs.selectedLabels || []).map((labelObj) => labelObj.id),
 				selectedLabelIds:
 					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
 				orderByProp: 'published_at',
@@ -184,7 +184,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			const hasItem = queryParams.item && isString(queryParams.item);
 			if (hasLabel) {
 				const labelObj = (contentTypeAndTabs.selectedLabels || []).find(
-					l => l.label === queryParams.label
+					(l) => l.label === queryParams.label
 				);
 				if (labelObj) {
 					setSelectedTabs([{ label: labelObj.label, id: labelObj.id }]);

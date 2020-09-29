@@ -69,7 +69,7 @@ const DraggableList: FunctionComponent<DraggableListProps> = ({
 					)}
 					onDragOver={() => onDragOver(index)}
 					onDragEnd={onDragEnd}
-					onDragStart={e => onDragStart(e, index)}
+					onDragStart={(e) => onDragStart(e, index)}
 					draggable
 					key={`draggable-item-${generateKey(item)}`}
 				>
