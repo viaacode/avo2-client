@@ -4,6 +4,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { CollectionService } from '../../collection/collection.service';
+import { CustomError, getEnv } from '../../shared/helpers';
+import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { ContentPageService } from '../../shared/services/content-page-service';
 
 import { getProfileId } from './get-profile-id';
@@ -24,7 +26,7 @@ export class PermissionService {
 		user: Avo.User.User | undefined,
 		permNames: PermissionName[]
 	): boolean {
-		return some(permNames, permName =>
+		return some(permNames, (permName) =>
 			PermissionService.getUserPermissions(user).includes(permName)
 		);
 	}
@@ -126,6 +128,60 @@ export class PermissionService {
 			default:
 				// The permission does not require any other checks besides is presence in the permission list
 				return true;
+		}
+	}
+
+	/**
+	 * Triggers an update of all the database permissions
+	 */
+	public static async getUpdatePermissionsProgress(): Promise<number | null> {
+		let url: string | undefined = undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/auth/update-database-permissions`;
+			const response = await fetchWithLogout(url, {
+				method: 'GET',
+				credentials: 'include',
+			});
+
+			const body = await response.json();
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Response code indicates failure', null, {
+					response,
+					body,
+				});
+			}
+			return body.progress;
+		} catch (err) {
+			throw new CustomError('Failed to trigger MAM sync', err, {
+				url,
+			});
+		}
+	}
+
+	/**
+	 * Triggers an update of all the database permissions
+	 */
+	public static async triggerUpdatePermissions(): Promise<{ message?: string; error?: string }> {
+		let url: string | undefined = undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/auth/update-database-permissions`;
+			const response = await fetchWithLogout(url, {
+				method: 'POST',
+				credentials: 'include',
+			});
+
+			const body = await response.json();
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Response code indicates failure', null, {
+					response,
+					body,
+				});
+			}
+			return body;
+		} catch (err) {
+			throw new CustomError('Failed to trigger MAM sync', err, {
+				url,
+			});
 		}
 	}
 }
