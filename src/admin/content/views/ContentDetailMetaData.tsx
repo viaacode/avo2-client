@@ -74,7 +74,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	const getContentPageWidthLabel = (contentPageInfo: ContentPageInfo): string => {
 		return get(
 			GET_CONTENT_WIDTH_OPTIONS().find(
-				option => option.value === contentPageInfo.content_width
+				(option) => option.value === contentPageInfo.content_width
 			),
 			'label',
 			'-'
@@ -161,7 +161,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 						{renderDetailRow(
 							get(
 								contentTypes.find(
-									type => type.value === contentPageInfo.content_type
+									(type) => type.value === contentPageInfo.content_type
 								),
 								'label'
 							) || '-',
@@ -228,8 +228,8 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 								selectable={false}
 								closable={false}
 								tags={contentPageInfo.labels
-									.filter(labelObj => labelObj.label && labelObj.id)
-									.map(labelObj => ({
+									.filter((labelObj) => labelObj.label && labelObj.id)
+									.map((labelObj) => ({
 										label: labelObj.label as string,
 										id: String(labelObj.id),
 									}))}

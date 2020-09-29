@@ -108,7 +108,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 	const getPageType = useCallback(
 		(pageId: string): InteractiveTourPageType => {
-			const staticPageIds = getPageOptions().map(pageOption => pageOption.value);
+			const staticPageIds = getPageOptions().map((pageOption) => pageOption.value);
 			return staticPageIds.includes(pageId) ? 'static' : 'content';
 		},
 		[getPageOptions]
@@ -386,7 +386,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										value={
 											interactiveTourState.currentInteractiveTour.name || ''
 										}
-										onChange={newName =>
+										onChange={(newName) =>
 											changeInteractiveTourState({
 												type:
 													InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
@@ -421,7 +421,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 													},
 												]}
 												value={selectedPageType}
-												onChange={value =>
+												onChange={(value) =>
 													setSelectedPageType(
 														value as InteractiveTourPageType
 													)

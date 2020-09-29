@@ -56,7 +56,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	// This is necessary for populating the menu parent options for our form
 	useEffect(() => {
 		MenuService.fetchMenuItems(menuParentId)
-			.then(menuItemsByPosition => {
+			.then((menuItemsByPosition) => {
 				if (menuItemsByPosition && menuItemsByPosition.length) {
 					setMenuItems(menuItemsByPosition);
 				} else {
@@ -73,7 +73,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					history.push(MENU_PATH.MENU_OVERVIEW);
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(new CustomError('Failed to fetch menu items', err));
 				ToastService.danger(
 					t('admin/menu/views/menu-edit___het-ophalen-van-de-menu-items-is-mislukt')
@@ -120,7 +120,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				[]
 			);
 			const navItemUserGroupIds: number[] = menuForm.user_group_ids || [];
-			const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
+			const allUserGroupIds: number[] = allUserGroups.map((ug) => ug.value as number);
 
 			// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
 			if (contentUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers)) {
@@ -133,9 +133,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			const faultyUserGroupIds = without(navItemUserGroupIds, ...contentUserGroupIds);
 			if (faultyUserGroupIds.length) {
 				const faultyUserGroups = compact(
-					faultyUserGroupIds.map(faultyUserGroupId => {
+					faultyUserGroupIds.map((faultyUserGroupId) => {
 						const faultyUserGroup = allUserGroups.find(
-							userGroup => userGroup.value === faultyUserGroupId
+							(userGroup) => userGroup.value === faultyUserGroupId
 						);
 						return get(faultyUserGroup, 'label', null);
 					})
@@ -153,7 +153,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 								De geselecteerde pagina is niet toegankelijk voor:
 							</Trans>
 							<ButtonToolbar>
-								{faultyUserGroups.map(group => (
+								{faultyUserGroups.map((group) => (
 									<Badge text={group} key={`badge-${group}`} />
 								))}
 							</ButtonToolbar>
@@ -178,10 +178,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						path: menuForm.content_path,
 					},
 				})
-				.then(response => {
+				.then((response) => {
 					checkMenuItemContentPagePermissionsMismatch(response);
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.error(
 						new CustomError('Failed to get permissions from page', err, {
 							query: 'GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH',
@@ -213,7 +213,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = uniqBy(
 		compact(
-			menuItems.map(menuItem => {
+			menuItems.map((menuItem) => {
 				if (!menuItem.placement) {
 					return null;
 				}

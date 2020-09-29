@@ -59,7 +59,7 @@ export class SettingsService {
 				description: string;
 			}[]).map((item: { description: string }) => item.description);
 
-			return sortBy(subjects, subject => subject.toLowerCase());
+			return sortBy(subjects, (subject) => subject.toLowerCase());
 		} catch (err) {
 			throw new CustomError('Failed to get subjects from the database', err, {
 				query: 'GET_SUBJECTS',

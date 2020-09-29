@@ -33,9 +33,9 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	results: ResolvedItemOrCollection[];
 }
 
-const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
-	RouteComponentProps &
-	UserProps> = ({
+const MediaGridWrapper: FunctionComponent<
+	MediaGridWrapperProps & RouteComponentProps & UserProps
+> = ({
 	title,
 	buttonLabel,
 	buttonAction,
@@ -97,10 +97,10 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 					const searchResults = await ContentPageService.resolveMediaItems(
 						searchQueryValue,
 						searchQueryLimitNumber,
-						elements.filter(element => !isEmpty(element) && element.mediaItem)
+						elements.filter((element) => !isEmpty(element) && element.mediaItem)
 					);
 
-					setResolvedResults(r => {
+					setResolvedResults((r) => {
 						if (
 							r &&
 							r.length &&
@@ -117,7 +117,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 				) {
 					// If the next query requests less items, we can resolve it without going to the server
 					// by just trimming the items in the cache
-					setResolvedResults(r => (r || []).slice(0, searchQueryLimitNumber));
+					setResolvedResults((r) => (r || []).slice(0, searchQueryLimitNumber));
 					setLastSearchQueryLimit(searchQueryLimitNumber);
 				}
 			}
@@ -204,6 +204,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 				src: itemOrCollection.thumbnail_path || '',
 			},
 			src: itemOrCollection.src,
+			item_collaterals: (itemOrCollection as any).item_collaterals, // TODO remove cast after update to typings v2.23.0
 		} as any; // TODO remove cast after update to components v1.47.0
 	};
 

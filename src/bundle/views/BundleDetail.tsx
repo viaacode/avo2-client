@@ -56,12 +56,12 @@ import {
 	CustomError,
 	formatDate,
 	fromNow,
-	generateContentLinkString,
 	generateSearchLinks,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
+import { handleRelatedItemClicked } from '../../shared/helpers/handle-related-item-click';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -219,7 +219,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				try {
 					setViewCountsById(
 						await BookmarksViewsPlaysService.getMultipleViewCounts(
-							bundleObj.collection_fragments.map(fragment => fragment.external_id),
+							bundleObj.collection_fragments.map((fragment) => fragment.external_id),
 							'collection'
 						)
 					);
@@ -247,10 +247,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				}
 
 				getRelatedItems(bundleId, 'bundles', 4)
-					.then(relatedItems => {
+					.then((relatedItems) => {
 						setRelatedBundles(relatedItems);
 					})
-					.catch(err => {
+					.catch((err) => {
 						console.error('Failed to get related items', err, {
 							bundleId,
 							type: 'bundles',
@@ -269,7 +269,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			setBundle(bundleObj || null);
 		};
 
-		checkPermissionsAndGetBundle().catch(err => {
+		checkPermissionsAndGetBundle().catch((err) => {
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get bundle from the database',
@@ -447,20 +447,16 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					<MediaCard
 						className="u-clickable"
 						category={contentType}
-						onClick={() =>
-							redirectToClientPage(
-								generateContentLinkString(
-									relatedItem.administrative_type,
-									relatedItem.id
-								),
-								history
-							)
-						}
+						onClick={() => handleRelatedItemClicked(relatedItem, history)}
 						orientation="horizontal"
 						title={relatedItem.dc_title}
 					>
 						<MediaCardThumbnail>
-							<Thumbnail category={contentType} src={relatedItem.thumbnail_path} />
+							<Thumbnail
+								category={contentType}
+								src={relatedItem.thumbnail_path}
+								showCategoryIcon
+							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category={contentType}>

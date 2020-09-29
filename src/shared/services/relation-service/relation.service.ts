@@ -1,5 +1,7 @@
 import { get } from 'lodash-es';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
 
@@ -22,7 +24,7 @@ export class RelationService {
 		type: 'collection' | 'item',
 		relationType: RelationType,
 		objectId: string
-	): Promise<RelationEntry[]> {
+	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, null, relationType, objectId);
 	}
 
@@ -30,7 +32,7 @@ export class RelationService {
 		type: 'collection' | 'item',
 		subjectId: string,
 		relationType: RelationType
-	): Promise<RelationEntry[]> {
+	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, subjectId, relationType, null);
 	}
 
@@ -39,7 +41,7 @@ export class RelationService {
 		subjectId: string | null,
 		relationType: RelationType,
 		objectId: string | null
-	): Promise<RelationEntry[]> {
+	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		let variables: any;
 		const isCollection = type === 'collection';
 		try {

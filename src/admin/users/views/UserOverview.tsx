@@ -219,7 +219,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
-					onRowClick={rowData => navigateToUserDetail(rowData.id)}
+					onRowClick={(rowData) => navigateToUserDetail(rowData.id)}
 					renderNoResults={renderNoResults}
 				/>
 			</>

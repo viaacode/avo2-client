@@ -180,7 +180,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					false
 				);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(err);
 				ToastService.danger(
 					t(

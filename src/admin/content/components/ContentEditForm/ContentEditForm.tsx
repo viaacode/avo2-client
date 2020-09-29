@@ -1,4 +1,4 @@
-import { compact, get, kebabCase } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -48,7 +48,6 @@ interface ContentEditFormProps {
 	contentTypes: SelectOption<Avo.ContentPage.Type>[];
 	formErrors: ContentEditFormErrors;
 	contentPageInfo: Partial<ContentPageInfo>;
-	isAdminUser: boolean;
 	changeContentPageState: (action: ContentEditAction) => void;
 	user: Avo.User.User;
 }
@@ -57,7 +56,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypes = [],
 	formErrors,
 	contentPageInfo,
-	isAdminUser,
 	changeContentPageState,
 	user,
 }) => {
@@ -77,7 +75,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	useEffect(() => {
 		// Set fixed content width for specific page types
-		Object.keys(DEFAULT_PAGES_WIDTH).forEach(key => {
+		Object.keys(DEFAULT_PAGES_WIDTH).forEach((key) => {
 			if (
 				contentPageInfo.content_type &&
 				DEFAULT_PAGES_WIDTH[key as ContentWidth].includes(contentPageInfo.content_type) &&
@@ -94,7 +92,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		}
 		ContentService.fetchLabelsByContentType(contentPageInfo.content_type)
 			.then(setContentTypeLabels)
-			.catch(err => {
+			.catch((err) => {
 				console.error('Failed to fetch content labels by content type', err, {
 					contentType: contentPageInfo.content_type,
 				});
@@ -126,7 +124,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	};
 
 	const mapLabelsToTags = (contentLabels: Partial<Avo.ContentPage.Label>[]): TagInfo[] => {
-		return (contentLabels || []).map(contentLabel => ({
+		return (contentLabels || []).map((contentLabel) => ({
 			label: contentLabel.label as string,
 			value: String(contentLabel.id as number),
 		}));
@@ -136,7 +134,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		tags: TagInfo[],
 		contentType: Avo.ContentPage.Type | undefined
 	): Partial<Avo.ContentPage.Label>[] => {
-		return (tags || []).map(tag => ({
+		return (tags || []).map((tag) => ({
 			label: tag.label,
 			id: tag.value as number,
 			content_type: contentType,
@@ -184,7 +182,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										label={t(
 											'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
 										)}
-										onChange={urls =>
+										onChange={(urls) =>
 											changeContentPageProp('thumbnail_path', urls[0])
 										}
 									/>
@@ -199,7 +197,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									required
 								>
 									<TextInput
-										onChange={value => {
+										onChange={(value) => {
 											changeContentPageProp('title', value);
 										}}
 										value={contentPageInfo.title}
@@ -234,7 +232,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								>
 									<TextArea
 										value={contentPageInfo.seo_description || ''}
-										onChange={newValue =>
+										onChange={(newValue) =>
 											changeContentPageProp('seo_description', newValue)
 										}
 										height="auto"
@@ -253,7 +251,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								>
 									<TextArea
 										value={contentPageInfo.meta_description || ''}
-										onChange={newValue =>
+										onChange={(newValue) =>
 											changeContentPageProp('meta_description', newValue)
 										}
 										height="auto"
@@ -263,7 +261,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
-							{isAdminUser && (
+							{PermissionService.hasPerm(
+								user,
+								PermissionName.EDIT_PROTECTED_PAGE_STATUS
+							) && (
 								<Column size="12">
 									<FormGroup error={formErrors.is_protected}>
 										<Checkbox
@@ -271,7 +272,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 											label={t(
 												'admin/content/components/content-edit-form/content-edit-form___beschermde-pagina'
 											)}
-											onChange={value =>
+											onChange={(value) =>
 												changeContentPageProp('is_protected', value)
 											}
 										/>
@@ -287,11 +288,8 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									required
 								>
 									<TextInput
-										onChange={value => changeContentPageProp('path', value)}
-										value={
-											contentPageInfo.path ||
-											`/${kebabCase(contentPageInfo.title || '')}`
-										}
+										onChange={(value) => changeContentPageProp('path', value)}
+										value={ContentService.getPathOrDefault(contentPageInfo)}
 									/>
 								</FormGroup>
 							</Column>
@@ -350,7 +348,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									)}
 								>
 									<Select
-										onChange={value =>
+										onChange={(value) =>
 											changeContentPageProp('content_width', value)
 										}
 										options={GET_CONTENT_WIDTH_OPTIONS()}
@@ -377,7 +375,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 												  )
 										}
 										allowMulti
-										onChange={values =>
+										onChange={(values) =>
 											changeContentPageProp(
 												'labels',
 												mapTagsToLabels(

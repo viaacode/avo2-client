@@ -60,7 +60,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			setEduOrgNames(
 				compact(
 					await Promise.all(
-						eduOrgs.map(eduOrg =>
+						eduOrgs.map((eduOrg) =>
 							EducationOrganisationService.fetchEducationOrganisationName(
 								eduOrg.organization_id,
 								eduOrg.unit_id
@@ -161,7 +161,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		return (
 			<Table horizontal variant="invisible" className="c-table_detail-page">
 				<tbody>
-					{list.map(item => {
+					{list.map((item) => {
 						return (
 							<tr key={`user-group-row-${item.id}`}>
 								<td>
@@ -186,7 +186,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	};
 
 	const renderPermissionLists = () => {
-		const userGroups: { id: number; label: string }[] = [];
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
@@ -196,17 +195,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			[]
 		);
 
-		profileUserGroup.forEach(group => {
-			userGroups.push({
-				id: group.id,
-				label: group.label,
-			});
+		profileUserGroup.forEach((group) => {
 			const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
 				group,
 				'group_user_permission_groups',
 				[]
 			);
-			rawPermissionGroups.forEach(permissionGroup => {
+			rawPermissionGroups.forEach((permissionGroup) => {
 				permissionGroups.push({
 					id: permissionGroup.permission_group.id,
 					label: permissionGroup.permission_group.label,
@@ -215,7 +210,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					permissionGroup.permission_group,
 					'permission_group_user_permissions'
 				);
-				rawPermissions.map(permission =>
+				rawPermissions.map((permission) =>
 					permissions.push({
 						id: permission.permission.id,
 						label: permission.permission.label,
@@ -227,13 +222,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		return (
 			<>
 				<Spacer margin="top-extra-large">
-					<Accordion
-						title={t('admin/users/views/user-detail___gebruikersgroepen')}
-						isOpen={false}
-					>
-						{renderList(sortBy(userGroups, 'label'), ADMIN_PATH.USER_GROUP_DETAIL)}
-					</Accordion>
-
 					<Accordion
 						title={t('admin/users/views/user-detail___permissiegroepen')}
 						isOpen={false}
@@ -263,6 +251,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			);
 			return;
 		}
+
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].groups[0]', []);
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -338,7 +329,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								<TagList
 									closable={false}
 									swatches={false}
-									tags={eduOrgNames.map(eduOrgName => ({
+									tags={eduOrgNames.map((eduOrgName) => ({
 										label: eduOrgName,
 										id: eduOrgName,
 									}))}
@@ -348,6 +339,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderDetailRow(
 								get(storedProfile, 'organisation.name'),
 								t('admin/users/views/user-detail___bedrijf')
+							)}
+							{renderDetailRow(
+								<Link
+									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
+										id: userGroup.id,
+									})}
+								>
+									{userGroup.label}
+								</Link>,
+								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 						</tbody>
 					</Table>

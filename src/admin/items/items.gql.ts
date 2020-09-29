@@ -40,12 +40,15 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			}
 			updated_at
 			note
-			view_counts_aggregate {
-				aggregate {
-					sum {
-						count
-					}
-				}
+			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
+				object
+			}
+			item_counts {
+				bookmarks
+				in_assignment
+				in_collection
+				plays
+				views
 			}
 		}
 		app_item_meta_aggregate(where: $where) {
@@ -119,6 +122,14 @@ export const GET_ITEM_BY_UUID = gql`
 			}
 			updated_at
 			note
+			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
+				object
+			}
+			item_collaterals(where: { description: { _eq: "subtitle" } }) {
+				path
+				description
+				external_id
+			}
 			view_counts_aggregate {
 				aggregate {
 					sum {
@@ -211,7 +222,6 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 				is_published: { _eq: true }
 			}
 		) {
-			browse_path
 			created_at
 			depublish_at
 			description
@@ -249,6 +259,11 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 			type_id
 			updated_at
 			note
+			item_collaterals(where: { description: { _eq: "subtitle" } }) {
+				path
+				description
+				external_id
+			}
 			view_counts_aggregate {
 				aggregate {
 					sum {

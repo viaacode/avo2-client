@@ -27,7 +27,7 @@ export type WYSIWYGWrapperProps = WYSIWYGProps & {
  * @param props
  * @constructor
  */
-const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = props => {
+const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
 	const [t] = useTranslation();
 
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
@@ -87,7 +87,7 @@ const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = props => {
 			controls={controls || WYSIWYG_OPTIONS_DEFAULT}
 			media={media}
 			state={state}
-			onChange={newState => {
+			onChange={(newState) => {
 				if (!!onChange && !isEqual(newState, state)) {
 					onChange(newState);
 				}

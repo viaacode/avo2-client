@@ -23,7 +23,16 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	organisation: (order: Avo.Search.OrderDirection) => ({ organisation: { name: order } }),
 	type: (order: Avo.Search.OrderDirection) => ({ type: { label: order } }),
 	views: (order: Avo.Search.OrderDirection) => ({
-		view_counts_aggregate: { sum: { count: order } },
+		item_counts: { views: order },
+	}),
+	in_collection: (order: Avo.Search.OrderDirection) => ({
+		item_counts: { in_collection: order },
+	}),
+	bookmarks: (order: Avo.Search.OrderDirection) => ({
+		item_counts: { bookmarks: order },
+	}),
+	in_assignment: (order: Avo.Search.OrderDirection) => ({
+		item_counts: { in_assignment: order },
 	}),
 };
 
@@ -94,12 +103,6 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'views',
-		label: i18n.t('admin/items/items___views'),
-		sortable: true,
-		visibleByDefault: true,
-	},
-	{
 		id: 'is_published',
 		label: i18n.t('admin/items/items___publiek'),
 		sortable: true,
@@ -116,16 +119,47 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 					id: 'unpublished',
 				},
 				{
-					label: i18n.t('admin/items/items___gedepubliceerd - pancarte'),
+					label: i18n.t('admin/items/items___gedepubliceerd-pancarte'),
 					id: 'unpublished-with-reason',
 				},
-				// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
-				// {
-				// 	label: i18n.t('admin/items/items___gedepubliceerd - merge'),
-				// 	id: 'unpublished-with-replacement',
-				// },
+				{
+					label: i18n.t('admin/items/items___gedepubliceerd-merge'),
+					id: 'unpublished-with-merge',
+				},
 			],
 		},
+	},
+	{
+		id: 'views',
+		tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+		icon: 'eye',
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'in_collection',
+		tooltip: i18n.t('admin/items/items___aantal-keer-opgenomen-in-collectie'),
+		icon: 'collection',
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'bookmarks',
+		tooltip: i18n.t(
+			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
+		),
+		icon: 'bookmark',
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'in_assignment',
+		tooltip: i18n.t(
+			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
+		),
+		icon: 'clipboard',
+		sortable: true,
+		visibleByDefault: true,
 	},
 	// {
 	// 	id: 'updated_at',
@@ -171,11 +205,16 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	// { id: 'lom_keywords', label: i18n.t('admin/items/items___terfwoorden') },
 	// { id: 'lom_languages', label: i18n.t('admin/items/items___talen') },
 	// { id: 'lom_typicalagerange', label: i18n.t('admin/items/items___leeftijdsgroep') },
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{ id: 'actions', tooltip: i18n.t('admin/items/items___acties'), visibleByDefault: true },
 ];
 
 export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{ id: 'title', label: i18n.t('admin/items/items___titel'), visibleByDefault: true },
+	{
+		id: 'title',
+		label: i18n.t('admin/items/items___titel'),
+		sortable: true,
+		visibleByDefault: true,
+	},
 	{
 		id: 'pid',
 		label: i18n.t('admin/items/items___pid'),
@@ -191,22 +230,22 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 	},
 	{
 		id: 'status',
-		label: i18n.t('Status'),
+		label: i18n.t('admin/items/items___status'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				{
-					label: i18n.t('Nieuw'),
+					label: i18n.t('admin/items/items___nieuw'),
 					id: 'NEW',
 				},
 				{
-					label: i18n.t('Update'),
+					label: i18n.t('admin/items/items___update'),
 					id: 'UPDATE',
 				},
 			],
 		},
 	},
-	{ id: 'actions', tooltip: i18n.t('Acties'), visibleByDefault: true },
+	{ id: 'actions', tooltip: i18n.t('admin/items/items___acties'), visibleByDefault: true },
 ];

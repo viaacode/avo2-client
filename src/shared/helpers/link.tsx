@@ -17,7 +17,7 @@ import { insideIframe } from './inside-iframe';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
-const getMissingParams = (route: string): string[] => route.split('/').filter(r => r.match(/^:/));
+const getMissingParams = (route: string): string[] => route.split('/').filter((r) => r.match(/^:/));
 const navigationConsoleError = (route: string, missingParams: string[] = []) => {
 	const paramsString = missingParams.join(', ');
 	console.error(`The following params were not included: [${paramsString}] for route ${route}`);

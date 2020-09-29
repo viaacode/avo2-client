@@ -56,7 +56,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			if (files && files.length) {
 				// If allowedTypes array is empty, all filetypes are allowed
 				const notAllowedFiles = allowedTypes.length
-					? files.filter(file => !allowedTypes.includes(file.type))
+					? files.filter((file) => !allowedTypes.includes(file.type))
 					: [];
 				if (notAllowedFiles.length) {
 					ToastService.danger(
@@ -152,7 +152,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			return null;
 		}
 
-		return urls.map(url => {
+		return urls.map((url) => {
 			if (isPhoto(url)) {
 				return (
 					<Spacer margin="bottom-small" key={url}>
@@ -234,7 +234,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 									'shared/components/file-upload/file-upload___kies-een-bestand'
 								)}
 								multiple={allowMulti}
-								onChange={evt =>
+								onChange={(evt) =>
 									!!evt.target.files &&
 									uploadSelectedFile(Array.from(evt.target.files))
 								}

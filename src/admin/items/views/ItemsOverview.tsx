@@ -70,15 +70,24 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 					orFilters.push({ is_published: { _eq: true } });
 				}
 				if (filters.is_published.includes('unpublished')) {
-					orFilters.push({ is_published: { _eq: false } });
+					orFilters.push({
+						is_published: { _eq: false },
+						depublish_reason: { _is_null: true },
+						_not: { relations: { predicate: { _eq: 'IS_REPLACED_BY' } } },
+					});
 				}
 				if (filters.is_published.includes('unpublished-with-reason')) {
-					orFilters.push({ is_published: { _eq: false } });
+					orFilters.push({
+						is_published: { _eq: false },
+						depublish_reason: { _is_null: false },
+					});
 				}
-				// if (filters.is_published.includes('unpublished-with-merge')) {
-				// 	orFilters.push({ is_published: { _eq: false },  });
-				// }
-				// TODO add unpublished-merge afterhttps://meemoo.atlassian.net/browse/DEV-1166
+				if (filters.is_published.includes('unpublished-with-merge')) {
+					orFilters.push({
+						is_published: { _eq: false },
+						relations: { predicate: { _eq: 'IS_REPLACED_BY' } },
+					});
+				}
 
 				if (orFilters.length) {
 					andFilters.push({ _or: orFilters });
@@ -231,7 +240,17 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				return get(rowData, 'type.label', '-');
 
 			case 'views':
-				return get(rowData, 'view_counts_aggregate.aggregate.sum.count', '-');
+				return get(rowData, 'item_counts.views') || '0';
+
+			case 'in_collection':
+				return get(rowData, 'item_counts.in_collection') || '0';
+
+			case 'bookmarks':
+				return get(rowData, 'item_counts.bookmarks') || '0';
+
+			case 'in_assignment':
+				return get(rowData, 'item_counts.in_assignment') || '0';
+
 			case 'is_deleted':
 				return rowData[columnId] ? 'Ja' : 'Nee';
 
@@ -243,7 +262,9 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 					// TODO remove cast after update to typings v2.23.0
 					return t('admin/items/views/items-overview___gedepubliceerd-pancarte');
 				}
-				// TODO addunpublished-with-replacement after https://meemoo.atlassian.net/browse/DEV-1166
+				if (get(rowData, 'relations[0]')) {
+					return t('admin/items/views/items-overview___gedepubliceerd-merge');
+				}
 				return t('admin/items/views/items-overview___gedepubliceerd');
 
 			case 'actions':

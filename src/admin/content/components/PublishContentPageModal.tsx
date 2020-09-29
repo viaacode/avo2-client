@@ -133,7 +133,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 						>
 							<DatePicker
 								value={publishAt ? new Date(publishAt) : null}
-								onChange={date => setPublishAt(date ? date.toISOString() : null)}
+								onChange={(date) => setPublishAt(date ? date.toISOString() : null)}
 								showTimeInput={true}
 								disabled={selectedOption !== 'timebound'}
 							/>
@@ -145,7 +145,9 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 						>
 							<DatePicker
 								value={depublishAt ? new Date(depublishAt) : null}
-								onChange={date => setDepublishAt(date ? date.toISOString() : null)}
+								onChange={(date) =>
+									setDepublishAt(date ? date.toISOString() : null)
+								}
 								showTimeInput={true}
 								disabled={selectedOption !== 'timebound'}
 							/>

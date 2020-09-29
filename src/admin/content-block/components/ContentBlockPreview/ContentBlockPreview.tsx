@@ -36,16 +36,9 @@ enum ContentWidthMap {
 }
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
-const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps &
-	UserProps &
-	RouteComponentProps> = ({
-	contentBlockConfig,
-	contentPageInfo,
-	onClick = noop,
-	className,
-	history,
-	user,
-}) => {
+const ContentBlockPreview: FunctionComponent<
+	ContentBlockPreviewProps & UserProps & RouteComponentProps
+> = ({ contentBlockConfig, contentPageInfo, onClick = noop, className, history, user }) => {
 	const blockState = get(contentBlockConfig, 'block.state');
 	const componentState = get(contentBlockConfig, 'components.state');
 	const containerSize = ContentWidthMap[contentPageInfo.content_width || 'REGULAR'];

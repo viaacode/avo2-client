@@ -13,10 +13,7 @@ export const parseSearchQuery = (input: string): string => {
 
 		// split on first instance of ?
 		const splitString = replacedString.includes('?')
-			? replacedString
-					.split('?')
-					.slice(1)
-					.join('?')
+			? replacedString.split('?').slice(1).join('?')
 			: replacedString;
 
 		// parse as objects

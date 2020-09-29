@@ -150,7 +150,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 		setPermissionGroup({
 			...permissionGroup,
 			permissions: (permissionGroup.permissions || []).filter(
-				permission => permission.id !== permissionIdToDelete
+				(permission) => permission.id !== permissionIdToDelete
 			),
 		});
 	};
@@ -168,7 +168,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			);
 			return;
 		}
-		const selectedPermission = allPermissions.find(p => String(p.id) === selectedPermissionId);
+		const selectedPermission = allPermissions.find(
+			(p) => String(p.id) === selectedPermissionId
+		);
 		if (!selectedPermission) {
 			ToastService.danger(
 				t(
@@ -233,11 +235,11 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			);
 
 			await PermissionGroupService.addPermissionsToGroup(
-				addedPermissions.map(p => p.id),
+				addedPermissions.map((p) => p.id),
 				permissionGroupId
 			);
 			await PermissionGroupService.removePermissionsFromPermissionGroup(
-				removedPermissions.map(p => p.id),
+				removedPermissions.map((p) => p.id),
 				permissionGroupId
 			);
 
@@ -273,13 +275,13 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			permissionGroup,
 			'permissions',
 			[]
-		) as Permission[]).map(p => p.id);
+		) as Permission[]).map((p) => p.id);
 		return allPermissions
-			.filter(p => {
+			.filter((p) => {
 				// Don't show permissions that are already part of the permission group permissions
 				return !permissionIdsInGroup.includes(p.id);
 			})
-			.map(p => ({
+			.map((p) => ({
 				label: p.description || p.label,
 				value: String(p.id),
 			}));
@@ -329,7 +331,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 								>
 									<TextInput
 										value={permissionGroup.label || ''}
-										onChange={newLabel =>
+										onChange={(newLabel) =>
 											setPermissionGroup({
 												...permissionGroup,
 												label: newLabel,
@@ -345,7 +347,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 								>
 									<TextInput
 										value={permissionGroup.description || ''}
-										onChange={newDescription =>
+										onChange={(newDescription) =>
 											setPermissionGroup({
 												...permissionGroup,
 												description: newDescription,
@@ -407,7 +409,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 							emptyStateMessage={t(
 								'admin/permission-groups/views/permission-group-edit___deze-groep-bevat-nog-geen-permissies'
 							)}
-							onColumnClick={columId =>
+							onColumnClick={(columId) =>
 								handleSortClick(columId as PermissionsTableCols)
 							}
 							renderCell={(rowData: PermissionGroup, columnId: string) =>

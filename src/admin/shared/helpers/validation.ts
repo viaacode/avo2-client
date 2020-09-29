@@ -44,10 +44,10 @@ export const validateContentBlockField = (
 			[fieldKey]: errorsByKey,
 		};
 
-		return pickBy(updatedErrors, value => value.length !== 0);
+		return pickBy(updatedErrors, (value) => value.length !== 0);
 	}
 
-	const newKeys = Object.keys(oldErrors).filter(key => key !== fieldKey);
+	const newKeys = Object.keys(oldErrors).filter((key) => key !== fieldKey);
 
 	return pick(oldErrors, newKeys);
 };

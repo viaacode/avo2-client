@@ -32,7 +32,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	useEffect(() => {
 		CollectionService.getCollectionLabels()
 			.then(setCollectionLabels)
-			.catch(err => {
+			.catch((err) => {
 				console.error(new CustomError('Failed to get collection labels', err));
 				ToastService.danger(
 					t(
@@ -51,7 +51,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			combinedMultiOptions[filterName] = uniqBy(
 				[
 					...(combinedMultiOptions[filterName] || []),
-					...(values || []).map(val => ({ option_name: val, option_count: 0 })),
+					...(values || []).map((val) => ({ option_name: val, option_count: 0 })),
 				],
 				'option_name'
 			);

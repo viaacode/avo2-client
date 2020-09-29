@@ -96,7 +96,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 				setPrimaryNavItems(navItems['hoofdnavigatie-links']);
 				setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error('Failed to get navigation items', err);
 				ToastService.danger(
 					t(
@@ -107,7 +107,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 	}, [history, t, loginState]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[], isMobile: boolean) => {
-		return navItems.map(item => (
+		return navItems.map((item) => (
 			<NavigationItem
 				key={item.key}
 				item={item}
@@ -171,7 +171,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 							menuItems={[
 								dynamicNavItems
 									.slice(0, dynamicNavItems.length - 1)
-									.map(navItem => ({
+									.map((navItem) => ({
 										id: navItem.key as string,
 										label: navItem.label as string,
 									})),
@@ -204,7 +204,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 				menuItemId.toString().substring('nav-item-'.length),
 				10
 			);
-			const navItem = secondaryNavItems.find(navItem => navItem.id === navItemId);
+			const navItem = secondaryNavItems.find((navItem) => navItem.id === navItemId);
 			if (!navItem) {
 				console.error('Could not find navigation item by id', { menuItemId });
 				ToastService.danger(

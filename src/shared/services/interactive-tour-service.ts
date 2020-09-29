@@ -72,7 +72,7 @@ export class InteractiveTourService {
 			// value: seen status (boolean)
 			const tourSeenStatuses = fromPairs(
 				compact(
-					seenStatuses.map(seenStatus => {
+					seenStatuses.map((seenStatus) => {
 						try {
 							// When user clicks on "later" the tour is not shown for 2 weeks
 							const tourId: string = last(seenStatus.key.split('___')) as string;
@@ -109,7 +109,7 @@ export class InteractiveTourService {
 			);
 
 			// Combine tourSeenStatuses and tourPostponeStatuses to figure out first tour that should be shown that has steps
-			const firstUnseenTour: Partial<TourInfo> | undefined = tours.find(tour => {
+			const firstUnseenTour: Partial<TourInfo> | undefined = tours.find((tour) => {
 				const tourId = String(tour.id as number);
 				return (
 					!tourSeenStatuses[tourId] &&
@@ -129,7 +129,7 @@ export class InteractiveTourService {
 
 			// If all tours have been seen, return the last tour the user has seen already,
 			// so they can play it again using the interactive tour button
-			const lastSeenTour = findLast(tours, tour => tour.steps && tour.steps.length) as
+			const lastSeenTour = findLast(tours, (tour) => tour.steps && tour.steps.length) as
 				| Partial<TourInfo>
 				| undefined;
 
@@ -205,7 +205,7 @@ export class InteractiveTourService {
 				seenStatuses.push({ key, through_platform: false });
 			}
 		});
-		return uniqBy(seenStatuses, status => status.key);
+		return uniqBy(seenStatuses, (status) => status.key);
 	}
 
 	/**

@@ -153,7 +153,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 									placeholder={t('home/views/home___vul-een-zoekterm-in')}
 									icon="search"
 									value={searchTerms}
-									onChange={searchTerm => handleSearchTermChanged(searchTerm)}
+									onChange={(searchTerm) => handleSearchTermChanged(searchTerm)}
 									onKeyUp={handleSearchFieldKeyUp}
 								/>
 							</DropdownButton>
@@ -163,7 +163,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 										<MenuSearchResultContent
 											menuItems={autocompleteMenuItems}
 											noResultsLabel={t('home/views/home___geen-resultaten')}
-											onClick={id => goToSearchResult(id.toString())}
+											onClick={(id) => goToSearchResult(id.toString())}
 										/>
 									) : (
 										<Spinner size="large" />

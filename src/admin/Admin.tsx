@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
+import { PermissionName } from '../authentication/helpers/permission-names';
+import { PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
 import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
@@ -32,7 +33,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			setUserPermissions(tempUserPermissions);
 			GET_NAV_ITEMS(tempUserPermissions)
 				.then(setNavigationItems)
-				.catch(err => {
+				.catch((err) => {
 					console.error(new CustomError('Failed to get nav items', err));
 					ToastService.danger('Het ophalen van de navigatie items is mislukt');
 				});

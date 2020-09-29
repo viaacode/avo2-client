@@ -339,7 +339,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'content_type':
 				return (
 					get(
-						contentTypes.find(type => type.value === rowData.content_type),
+						contentTypes.find((type) => type.value === rowData.content_type),
 						'label'
 					) || '-'
 				);

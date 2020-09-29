@@ -9,7 +9,7 @@ export class FileUploadService {
 			const reader = new FileReader();
 			reader.readAsDataURL(file);
 			reader.onload = () => resolve(reader.result ? reader.result.toString() : null);
-			reader.onerror = error => reject(error);
+			reader.onerror = (error) => reject(error);
 		});
 	}
 

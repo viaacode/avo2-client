@@ -51,8 +51,22 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
 
-			if (filters.status && filters.status.length) {
-				andFilters.push({ status: { _in: filters.status } });
+			// The status column in the shared_items table indicated the MAM update status.
+			// This is not the status we want to display in the UI
+			// We want 'NEW' if the item does not exist in the app.item_meta table yet,
+			// and 'UPDATE' if the item already exist in the app.item_meta table
+			if (filters.status && filters.status.length === 1) {
+				if (filters.status[0] === 'NEW') {
+					andFilters.push({
+						status: { _in: ['NEW', 'UPDATE'] },
+						_not: { item_meta: {} },
+					});
+				} else {
+					andFilters.push({
+						status: { _in: ['NEW', 'UPDATE'] },
+						item_meta: {},
+					});
+				}
 			} else {
 				andFilters.push({ status: { _in: ['NEW', 'UPDATE'] } });
 			}
@@ -132,7 +146,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				return;
 			}
 			await ItemsService.setSharedItemsStatus(
-				(selectedItems || []).map(item => item.pid),
+				(selectedItems || []).map((item) => item.pid),
 				'OK'
 			);
 			ToastService.success(
@@ -197,14 +211,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				return get(rowData, columnId, '-');
 
 			case 'status':
-				switch (rowData.status) {
-					case 'NEW':
-						return t('admin/items/views/publish-items-overview___nieuw');
-					case 'UPDATE':
-						return t('admin/items/views/publish-items-overview___update');
-					default:
-						return t('admin/items/views/publish-items-overview___onbekend');
+				if (rowData.item_meta) {
+					return t('admin/items/views/publish-items-overview___update');
 				}
+				return t('admin/items/views/publish-items-overview___nieuw');
 
 			case 'actions':
 				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
@@ -280,10 +290,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderNoResults={renderNoResults}
 					rowKey="pid"
 					showCheckboxes
-					selectedItems={items.filter(item =>
-						selectedItems.map(item => item.pid).includes(item.pid)
+					selectedItems={items.filter((item) =>
+						selectedItems.map((item) => item.pid).includes(item.pid)
 					)}
-					onSelectionChanged={newSelection => {
+					onSelectionChanged={(newSelection) => {
 						setSelectedItems(newSelection);
 					}}
 				/>

@@ -174,8 +174,8 @@ export class CollectionsOrBundlesService {
 				mutation: BULK_ADD_LABELS_TO_COLLECTIONS,
 				variables: {
 					labels: flatten(
-						labels.map(label =>
-							collectionIds.map(collectionId => ({
+						labels.map((label) =>
+							collectionIds.map((collectionId) => ({
 								label,
 								collection_uuid: collectionId,
 							}))

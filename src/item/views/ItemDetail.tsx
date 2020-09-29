@@ -35,13 +35,12 @@ import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -50,7 +49,6 @@ import {
 } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
-	buildLink,
 	CustomError,
 	generateAssignmentCreateLink,
 	generateSearchLink,
@@ -58,6 +56,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
+import { handleRelatedItemClicked } from '../../shared/helpers/handle-related-item-click';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -99,7 +98,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 			getRelatedItems(currentItemId, 'items', limit)
 				.then(setRelatedItems)
-				.catch(err => {
+				.catch((err) => {
 					console.error('Failed to get related items', err, {
 						currentItemId,
 						limit,
@@ -136,14 +135,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					return;
 				}
 
-				if ((itemObj as any).depublish_reason) {
-					// TODO remove cast after update to typings v2.23.0
+				if (itemObj.depublish_reason) {
 					setLoadingInfo({
 						state: 'error',
 						message:
 							t(
 								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-							) + (itemObj as any).depublish_reason,
+							) + itemObj.depublish_reason,
 						icon: 'camera-off',
 					});
 					return;
@@ -236,13 +234,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		}
 	};
 
-	const handleRelatedItemClicked = (relatedItem: Avo.Search.ResultItem) => {
-		redirectToClientPage(
-			buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
-			history
-		);
-	};
-
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
@@ -261,7 +252,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
-			return relatedItems.map(relatedItem => {
+			return relatedItems.map((relatedItem) => {
 				const englishContentType: EnglishContentType =
 					toEnglishContentType(relatedItem.administrative_type) ||
 					ContentTypeString.video;
@@ -270,7 +261,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							category={englishContentType}
-							onClick={() => handleRelatedItemClicked(relatedItem)}
+							onClick={() => handleRelatedItemClicked(relatedItem, history)}
 							orientation="horizontal"
 							title={relatedItem.dc_title}
 						>
@@ -278,6 +269,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								<Thumbnail
 									category={englishContentType}
 									src={relatedItem.thumbnail_path}
+									showCategoryIcon
 								/>
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
@@ -542,7 +534,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<td>
 														{item.lom_languages
 															.map(
-																languageCode =>
+																(languageCode) =>
 																	LANGUAGES.nl[languageCode]
 															)
 															.join(', ')}
@@ -601,7 +593,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<td>
 														<TagList
 															tags={item.lom_keywords.map(
-																keyword => ({
+																(keyword) => ({
 																	label: keyword,
 																	id: keyword,
 																})

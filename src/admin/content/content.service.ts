@@ -1,4 +1,4 @@
-import { get, isFunction, omit } from 'lodash-es';
+import { get, isFunction, kebabCase, omit } from 'lodash-es';
 import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
@@ -158,7 +158,7 @@ export class ContentService {
 				})
 			);
 		} catch (err) {
-			console.error('Failed to retrieve content types.', err);
+			console.error('Failed to retrieve content types.', err, { query: 'GET_CONTENT_TYPES' });
 			ToastService.danger(
 				i18n.t(
 					'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'
@@ -263,7 +263,7 @@ export class ContentService {
 		let variables: any;
 		try {
 			variables = {
-				objects: labelIds.map(labelId => ({
+				objects: labelIds.map((labelId) => ({
 					content_id: contentPageId,
 					label_id: labelId,
 				})),
@@ -487,6 +487,10 @@ export class ContentService {
 		}
 	}
 
+	public static getPathOrDefault(contentPage: Partial<ContentPageInfo>): string {
+		return contentPage.path || `/${kebabCase(contentPage.title)}`;
+	}
+
 	/**
 	 * Remove rich text editor states, since they are also saved as html,
 	 * and we don't want those states to end up in the database
@@ -545,7 +549,7 @@ export class ContentService {
 		const contentPages = await ContentService.getPublicContentItemsByTitle(
 			`%${titleWithoutCopy}`
 		);
-		const titles = (contentPages || []).map(contentPage => contentPage.title);
+		const titles = (contentPages || []).map((contentPage) => contentPage.title);
 
 		let index = 0;
 		let candidateTitle: string;

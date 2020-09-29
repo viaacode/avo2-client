@@ -1,3 +1,5 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type PublishedStatus = 'published' | 'unpublished';
@@ -26,6 +28,9 @@ export type ItemsOverviewTableCols =
 	| 'type'
 	| 'updated_at'
 	| 'views'
+	| 'in_collection'
+	| 'bookmarks'
+	| 'in_assignment'
 	| 'actions';
 
 export type UnpublishedItemsOverviewTableCols =
@@ -59,6 +64,9 @@ export interface ItemsTableState extends FilterableTableState {
 	type: string;
 	updated_at: string;
 	views: number;
+	in_collection: number;
+	bookmarks: number;
+	in_assignment: number;
 }
 
 export type UnpublishedStatus = 'NEW' | 'UPDATE' | 'OK' | null;
@@ -69,6 +77,7 @@ export interface UnpublishedItem {
 	title: string;
 	updated_at: string;
 	status: UnpublishedStatus;
+	item_meta: Partial<Avo.Item.Item> | null;
 }
 
 export interface UnpublishedItemsTableState extends UnpublishedItem, FilterableTableState {}

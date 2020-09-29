@@ -42,7 +42,7 @@ import {
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
-import { PermissionName } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-names';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
@@ -241,7 +241,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				const isEmptyObjectOrArray: boolean =
 					(isPlainObject(value) || isArray(value)) && isEmpty(value);
 				const isArrayWithEmptyValues: boolean =
-					isArray(value) && every(value, arrayValue => arrayValue === '');
+					isArray(value) && every(value, (arrayValue) => arrayValue === '');
 				const isEmptyRangeObject: boolean =
 					isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 
@@ -269,7 +269,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		try {
 			const results = get(searchResults, 'results', []);
 			const resultItem: SearchResultItem | undefined = results.find(
-				result => result.uid === uuid
+				(result) => result.uid === uuid
 			);
 			if (!resultItem) {
 				throw new CustomError('Failed to find search result by id');
@@ -374,8 +374,9 @@ const Search: FunctionComponent<SearchProps> = ({
 		},
 		{ label: t('search/views/search___laatst-gewijzigd'), value: 'updatedAt_desc' },
 	];
-	const defaultOrder = `${filterState.orderProperty ||
-		'relevance'}_${filterState.orderDirection || 'desc'}`;
+	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
+		filterState.orderDirection || 'desc'
+	}`;
 	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
 	const resultsCount = get(searchResults, 'count', 0);
 	// elasticsearch can only handle 10000 results efficiently
@@ -457,7 +458,7 @@ const Search: FunctionComponent<SearchProps> = ({
 											id="sortBy"
 											options={orderOptions}
 											value={defaultOrder}
-											onChange={value => handleOrderChanged(value)}
+											onChange={(value) => handleOrderChanged(value)}
 										/>
 									</FormGroup>
 								</Form>

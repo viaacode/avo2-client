@@ -363,8 +363,8 @@ export class AssignmentService {
 
 			if (initialLabels && updatedLabels) {
 				// Update labels
-				const initialLabelIds = initialLabels.map(labelObj => labelObj.id);
-				const updatedLabelIds = updatedLabels.map(labelObj => labelObj.id);
+				const initialLabelIds = initialLabels.map((labelObj) => labelObj.id);
+				const updatedLabelIds = updatedLabels.map((labelObj) => labelObj.id);
 
 				const newLabelIds = without(updatedLabelIds, ...initialLabelIds);
 				const deletedLabelIds = without(initialLabelIds, ...updatedLabelIds);
@@ -477,7 +477,7 @@ export class AssignmentService {
 
 			if (addedLabels) {
 				// Update labels
-				const addedLabelIds = addedLabels.map(labelObj => labelObj.id);
+				const addedLabelIds = addedLabels.map((labelObj) => labelObj.id);
 
 				await Promise.all([
 					AssignmentLabelsService.linkLabelsFromAssignment(id, addedLabelIds),

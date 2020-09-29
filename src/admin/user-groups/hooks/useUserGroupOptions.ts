@@ -18,12 +18,12 @@ export const useUserGroupOptions = (): UseUserGroupsTuple => {
 		setIsLoading(true);
 
 		UserGroupService.fetchAllUserGroupTagInfos()
-			.then(options => {
+			.then((options) => {
 				if (options) {
 					setUserGroupOptions(options);
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(new CustomError('Failed to get user group options', err));
 				ToastService.danger(
 					t(

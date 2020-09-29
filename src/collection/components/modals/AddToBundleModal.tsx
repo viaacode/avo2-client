@@ -67,7 +67,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 						setCreateNewBundle(true);
 					}
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.error(err);
 					ToastService.danger(
 						t(
@@ -79,7 +79,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	);
 
 	useEffect(() => {
-		fetchBundles().catch(err => {
+		fetchBundles().catch((err) => {
 			console.error('Failed to fetch bundles', err);
 			ToastService.danger(
 				t(

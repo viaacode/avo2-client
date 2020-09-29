@@ -36,7 +36,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	Partial<Avo.Collection.Collection>
 >[] = () => [
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t('collection/collection___de-collectie-beschrijving-is-te-lang')
 				: i18n.t('collection/collection___de-bundel-beschrijving-is-te-lang'),
@@ -45,7 +45,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 			collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t(
 						'collection/collection___de-lange-beschrijving-van-deze-collectie-is-te-lang'
@@ -61,21 +61,21 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 
 const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t('collection/collection___de-collectie-heeft-geen-titel')
 				: i18n.t('collection/collection___de-bundel-heeft-geen-titel'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.title,
 	},
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t('collection/collection___de-collectie-heeft-geen-beschrijving')
 				: i18n.t('collection/collection___de-bundel-heeft-geen-beschrijving'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.description,
 	},
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
 				: i18n.t('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
@@ -83,7 +83,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 			!!(collection.lom_context && collection.lom_context.length),
 	},
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t('collection/collection___de-collectie-heeft-geen-vakken')
 				: i18n.t('collection/collection___de-bundel-heeft-geen-vakken'),
@@ -91,7 +91,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 			!!(collection.lom_classification && collection.lom_classification.length),
 	},
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t('collection/collection___de-collectie-heeft-geen-items')
 				: i18n.t('collection/collection___de-bundel-heeft-geen-collecties'),
@@ -99,7 +99,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 			!!(collection.collection_fragments && collection.collection_fragments.length),
 	},
 	{
-		error: collection =>
+		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
 				? i18n.t(
 						'collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten'
@@ -167,7 +167,7 @@ const validateFragments = (
 	switch (type) {
 		case 'video':
 			// Check if video fragment has custom_title and custom_description if necessary.
-			fragments.forEach(fragment => {
+			fragments.forEach((fragment) => {
 				if (
 					fragment.type === 'ITEM' &&
 					fragment.use_custom_fields &&
@@ -180,7 +180,7 @@ const validateFragments = (
 
 		case 'collection':
 			// Check if video fragment has custom_title and custom_description if necessary.
-			fragments.forEach(fragment => {
+			fragments.forEach((fragment) => {
 				if (
 					fragment.type === 'COLLECTION' &&
 					fragment.use_custom_fields &&
@@ -193,7 +193,7 @@ const validateFragments = (
 
 		case 'text':
 			// Check if text fragment has custom_title or custom_description.
-			fragments.forEach(fragment => {
+			fragments.forEach((fragment) => {
 				if (
 					fragment.type === 'TEXT' &&
 					!stripHtml(fragment.custom_title || '').trim() &&
@@ -214,7 +214,7 @@ export const getValidationErrorsForStartAndEnd = (
 	collectionFragment: Avo.Collection.Fragment
 ): string[] => {
 	return compact(
-		GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT().map(rule =>
+		GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT().map((rule) =>
 			rule.isValid(collectionFragment) ? null : getError(rule, collectionFragment)
 		)
 	);
@@ -265,7 +265,7 @@ export const getValidationErrorsForPublish = async (
 	const validationErrors = [
 		...GET_VALIDATION_RULES_FOR_SAVE(),
 		...VALIDATION_RULES_FOR_PUBLISH,
-	].map(rule => {
+	].map((rule) => {
 		return rule.isValid(collection) ? null : getError(rule, collection);
 	});
 	const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(collection);
@@ -276,7 +276,7 @@ export const getValidationErrorForSave = async (
 	collection: Partial<Avo.Collection.Collection>
 ): Promise<string[]> => {
 	// List of validator functions, so we can use the functions separately as well
-	const validationErrors = GET_VALIDATION_RULES_FOR_SAVE().map(rule =>
+	const validationErrors = GET_VALIDATION_RULES_FOR_SAVE().map((rule) =>
 		rule.isValid(collection) ? null : getError(rule, collection)
 	);
 

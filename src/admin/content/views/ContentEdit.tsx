@@ -1,4 +1,4 @@
-import { get, has, isFunction, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isFunction, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	Reducer,
@@ -69,11 +69,7 @@ import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
-const {
-	EDIT_ANY_CONTENT_PAGES,
-	EDIT_OWN_CONTENT_PAGES,
-	EDIT_PROTECTED_PAGE_STATUS,
-} = PermissionName;
+const { EDIT_ANY_CONTENT_PAGES, EDIT_OWN_CONTENT_PAGES } = PermissionName;
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
 	const { id } = match.params;
@@ -98,7 +94,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
 
-	const hasPerm = (permission: PermissionName) => PermissionService.hasPerm(user, permission);
+	const hasPerm = useCallback(
+		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
+		[user]
+	);
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -106,8 +105,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				return;
 			}
 			if (
-				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
-				!PermissionService.hasPerm(user, PermissionName.EDIT_OWN_CONTENT_PAGES)
+				!hasPerm(PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!hasPerm(PermissionName.EDIT_OWN_CONTENT_PAGES)
 			) {
 				setLoadingInfo({
 					state: 'error',
@@ -120,7 +119,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			}
 			const contentPageObj = await ContentService.getContentPageById(id);
 			if (
-				!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES) &&
+				!hasPerm(PermissionName.EDIT_ANY_CONTENT_PAGES) &&
 				contentPageObj.user_profile_id !== getProfileId(user)
 			) {
 				setLoadingInfo({
@@ -148,7 +147,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				false
 			);
 		}
-	}, [id, user, t]);
+	}, [id, user, hasPerm, t]);
 
 	const onPasteContentBlock = useCallback(
 		(evt: ClipboardEvent) => {
@@ -215,17 +214,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			''
 		)}`;
 	}
-	const isAdminUser = hasPerm(EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
 	const openDeleteModal = (configIndex: number) => {
 		setIsDeleteModalOpen(true);
 		setConfigToDelete(configIndex);
 	};
-
-	const getPathOrDefault = (): string =>
-		contentPageState.currentContentPageInfo.path ||
-		`/${kebabCase(contentPageState.currentContentPageInfo.title)}`;
 
 	const handleSave = async () => {
 		try {
@@ -252,11 +246,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			// Run validators on to check untouched inputs
 			blockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;
-				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
+				const keysToValidate = Object.keys(fields).filter((key) => fields[key].validator);
 				let newErrors: ContentBlockErrors = {};
 
 				if (keysToValidate.length > 0) {
-					keysToValidate.forEach(key => {
+					keysToValidate.forEach((key) => {
 						const validator = fields[key].validator;
 
 						if (validator && isFunction(validator)) {
@@ -321,9 +315,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					...contentPageState.currentContentPageInfo,
 					user_profile_id: getProfileId(user),
 					contentBlockConfigs: blockConfigs,
-					path:
-						contentPageState.currentContentPageInfo.path ||
-						`/${kebabCase(contentPageState.currentContentPageInfo.title || '')}`,
+					path: ContentService.getPathOrDefault(contentPageState.currentContentPageInfo),
 				};
 				insertedOrUpdatedContent = await ContentService.insertContentPage(contentBody);
 			} else {
@@ -333,6 +325,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						updated_at: new Date().toISOString(),
 						id: parseInt(id, 10),
 						contentBlockConfigs: blockConfigs,
+						path: ContentService.getPathOrDefault(
+							contentPageState.currentContentPageInfo
+						),
 					};
 					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
@@ -411,7 +406,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 
 		// check if the path is unique
-		const path = getPathOrDefault();
+		const path = ContentService.getPathOrDefault(contentPageState.currentContentPageInfo);
 
 		try {
 			const page: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
@@ -528,7 +523,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						contentTypes={contentTypes}
 						formErrors={formErrors}
 						contentPageInfo={contentPageState.currentContentPageInfo}
-						isAdminUser={isAdminUser}
 						changeContentPageState={changeContentPageState}
 						user={user}
 					/>

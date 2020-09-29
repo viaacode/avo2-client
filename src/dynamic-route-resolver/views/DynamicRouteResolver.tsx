@@ -83,7 +83,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			// Check if path is avo1 path that needs to be redirected
 			const redirects = GET_REDIRECTS();
 			const pathWithHash = pathname + location.hash;
-			const key: string | undefined = keys(redirects).find(key =>
+			const key: string | undefined = keys(redirects).find((key) =>
 				new RegExp(`^${key}$`, 'gi').test(pathWithHash)
 			);
 			if (key && redirects[key]) {

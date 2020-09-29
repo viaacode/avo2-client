@@ -11,7 +11,6 @@ import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { RelationService } from '../shared/services/relation-service/relation.service';
-import { RelationType } from '../shared/services/relation-service/relation.types';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
@@ -139,7 +138,7 @@ export class CollectionService {
 	}
 
 	private static getLabels(
-		collection: Avo.Collection.Collection | null
+		collection: Partial<Avo.Collection.Collection> | null
 	): CollectionLabelSchema[] {
 		return get(collection, 'collection_labels', []) as CollectionLabelSchema[];
 	}
@@ -152,7 +151,7 @@ export class CollectionService {
 	 */
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Avo.Collection.Collection
+		updatedCollection: Partial<Avo.Collection.Collection>
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// abort if updatedCollection is empty
@@ -178,7 +177,7 @@ export class CollectionService {
 				return null;
 			}
 
-			const newCollection: Avo.Collection.Collection = cloneDeep(updatedCollection);
+			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
 			// remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach(
@@ -196,7 +195,7 @@ export class CollectionService {
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
-				fragment => fragment.id < 0 || isNil(fragment.id)
+				(fragment) => fragment.id < 0 || isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
@@ -208,7 +207,10 @@ export class CollectionService {
 			);
 
 			// insert fragments. New fragments do not have a fragment id yet
-			const insertPromise = CollectionService.insertFragments(newCollection.id, newFragments);
+			const insertPromise = CollectionService.insertFragments(
+				newCollection.id as string,
+				newFragments
+			);
 
 			// delete fragments
 			const deletePromises = deleteFragmentIds.map((id: number) =>
@@ -275,7 +277,7 @@ export class CollectionService {
 				newCollection
 			);
 
-			await this.updateCollectionProperties(newCollection.id, cleanedCollection);
+			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
 			// Update collection labels
 			const initialLabels: string[] = this.getLabels(initialCollection).map(
@@ -419,7 +421,7 @@ export class CollectionService {
 			await RelationService.insertRelation(
 				'collection',
 				duplicatedCollection.id,
-				RelationType.IS_COPY_OF,
+				'IS_COPY_OF',
 				collection.id
 			);
 
@@ -732,9 +734,9 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			fragments.forEach(fragment => (fragment.collection_uuid = collectionId));
+			fragments.forEach((fragment) => (fragment.collection_uuid = collectionId));
 
-			const cleanedFragments = cloneDeep(fragments).map(fragment => {
+			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
 				delete fragment.id;
 				delete (fragment as any).__typename;
 				delete fragment.item_meta;
@@ -837,7 +839,7 @@ export class CollectionService {
 			'collection',
 			user
 		);
-		const titles = collections.map(c => c.title);
+		const titles = collections.map((c) => c.title);
 
 		let index = 0;
 		let candidateTitle: string;
@@ -858,7 +860,7 @@ export class CollectionService {
 		let variables: any;
 		try {
 			variables = {
-				objects: labels.map(label => ({
+				objects: labels.map((label) => ({
 					label,
 					collection_uuid: collectionId,
 				})),
@@ -914,7 +916,7 @@ export class CollectionService {
 
 				// Map result array to dictionary
 				CollectionService.collectionLabels = fromPairs(
-					labels.map(collectionLabel => [
+					labels.map((collectionLabel) => [
 						collectionLabel.value,
 						collectionLabel.description,
 					])

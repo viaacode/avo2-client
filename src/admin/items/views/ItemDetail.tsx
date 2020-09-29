@@ -3,6 +3,7 @@ import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState }
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -29,10 +30,10 @@ import {
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
+import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
-import { RelationType } from '../../../shared/services/relation-service/relation.types';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -77,7 +78,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const fetchItemById = useCallback(async () => {
 		try {
-			setItem(await ItemsService.fetchItemByUuid(match.params.id));
+			const itemObj = await ItemsService.fetchItemByUuid(match.params.id);
+
+			const replacedByUuid: string | undefined = get(itemObj, 'relations[0].object');
+			if (replacedByUuid) {
+				// TODO remove cast after update to typings v2.23.0
+				(itemObj as any).relations[0].object_meta = await ItemsService.fetchItemByUuid(
+					replacedByUuid
+				);
+			}
+
+			setItem(itemObj);
 		} catch (err) {
 			console.error(new CustomError('Failed to get item by uuid', err));
 			setLoadingInfo({
@@ -134,11 +145,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
 					false
 				);
-				await RelationService.deleteRelationsBySubject(
-					'item',
-					item.uid,
-					RelationType.IS_REPLACED_BY
-				);
+				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
 				fetchItemById();
@@ -180,7 +187,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		setCollectionsContainingItem(
 			orderBy(
 				collectionsContainingItem,
-				[coll => get(coll, columnIdToCollectionPath[columnId])],
+				[(coll) => get(coll, columnIdToCollectionPath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -252,7 +259,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						ariaLabel={t(
 							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						)}
-						onClick={evt => {
+						onClick={(evt) => {
 							evt.stopPropagation();
 							navigateToCollectionDetail(rowData.id as string);
 						}}
@@ -273,6 +280,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			);
 			return;
 		}
+
+		const replacementTitle = get(item, 'relations[0].object_meta.title');
+		const replacementExternalId = get(item, 'relations[0].object_meta.external_id');
+		const replacementUuid = get(item, 'relations[0].object_meta.uid');
+
+		const subtitles = getSubtitles(item);
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -306,12 +320,35 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									'depublish_reason',
 									t('admin/items/views/item-detail___reden-tot-depubliceren'),
 								],
-								// ['-', t('admin/items/views/item-detail___vervangen-door')], // TODO add title of replacement item with link to item after task: https://meemoo.atlassian.net/browse/DEV-1166
+							])}
+							{renderDetailRow(
+								!!replacementUuid ? (
+									<Link
+										to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
+											id: replacementUuid,
+										})}
+									>{`${replacementTitle} (${replacementExternalId})`}</Link>
+								) : (
+									'-'
+								),
+								t('admin/items/views/item-detail___vervangen-door')
+							)}
+							{renderSimpleDetailRows(item, [
 								[
 									'view_counts_aggregate.aggregate.sum.count',
 									t('admin/items/views/item-detail___views'),
 								],
 							])}
+							{renderDetailRow(
+								subtitles
+									? subtitles.map((subtitle) => (
+											<a key={subtitle.id} href={subtitle.src}>
+												{subtitle.label}
+											</a>
+									  ))
+									: '-',
+								t('admin/items/views/item-detail___ondertitels')
+							)}
 							{renderDetailRow(
 								<>
 									<Spacer margin="right-small">
@@ -378,7 +415,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
 							)}
 							onColumnClick={handleCollectionColumnClick as any}
-							onRowClick={coll => navigateToCollectionDetail(coll.id)}
+							onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
 							renderCell={renderCollectionCell as any}
 							sortColumn={collectionSortColumn}
 							sortOrder={collectionSortOrder}
