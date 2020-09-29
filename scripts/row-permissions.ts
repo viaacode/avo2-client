@@ -16,7 +16,7 @@ export enum ContentTypeNumber {
 export const PROFILE_UUID = 'X-HASURA-USER-ID';
 
 export interface RowPermission {
-	table: string;
+	table: { name: string; schema: string };
 	operation: TableOperation | TableOperation[];
 
 	/**
@@ -41,7 +41,7 @@ export interface RowPermission {
 export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] | null } = {
 	EDIT_OWN_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -53,7 +53,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	CREATE_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'insert',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -61,7 +61,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			},
 		},
 		{
-			table: 'app_collection_fragments',
+			table: { name: 'collection_fragments', schema: 'app' },
 			operation: 'insert', // TODO check fragment is linked to collection for which the current user is the owner
 		},
 	],
@@ -69,7 +69,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	ADD_HYPERLINK_COLLECTIONS: null, // Currently we sanitize all html that goes into the database, so adding links is a minor security risk
 	EDIT_OWN_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -81,7 +81,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	CREATE_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'insert',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -89,13 +89,13 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			},
 		},
 		{
-			table: 'app_collection_fragments',
+			table: { name: 'collection_fragments', schema: 'app' },
 			operation: 'insert', // TODO check fragment is linked to collection for which the current user is the owner
 		},
 	],
 	EDIT_PROTECTED_PAGE_STATUS: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(
@@ -111,7 +111,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	PUBLISH_ALL_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id'),
@@ -119,7 +119,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	PUBLISH_OWN_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id'),
@@ -131,7 +131,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	PUBLISH_ALL_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id'),
@@ -139,7 +139,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	PUBLISH_OWN_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id'),
@@ -151,40 +151,40 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	CREATE_ASSIGNMENTS: [
 		{
-			table: 'app_assignments',
+			table: { name: 'assignments', schema: 'app' },
 			operation: 'insert',
 			check_columns: { owner_profile_id: PROFILE_UUID },
 		},
 	],
 	EDIT_ASSIGNMENTS: [
 		{
-			table: 'app_assignments',
+			table: { name: 'assignments', schema: 'app' },
 			operation: 'update',
 			check_columns: { owner_profile_id: PROFILE_UUID },
 		},
 	],
 	VIEW_ASSIGNMENTS: [
 		{
-			table: 'app_assignments',
+			table: { name: 'assignments', schema: 'app' },
 			operation: 'select',
 		},
 	],
 	CREATE_ASSIGNMENT_RESPONSE: [
 		{
-			table: 'app_assignment_responses',
+			table: { name: 'assignment_responses', schema: 'app' },
 			operation: ['select', 'insert', 'update'],
 		},
 	],
 	EDIT_NAVIGATION_BARS: [
 		{
-			table: 'app_content_nav_elements',
+			table: { name: 'content_nav_elements', schema: 'app' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 	],
 	VIEW_ADMIN_DASHBOARD: null, // Frontend permission to prevent users from accessing the avo admin dashboard
 	EDIT_ANY_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id', 'is_public', 'published_at'),
@@ -192,7 +192,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_ANY_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(allColumns, 'is_deleted', 'owner_profile_id', 'is_public', 'published_at'),
@@ -200,40 +200,40 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_USERS: [
 		{
-			table: 'shared_users',
+			table: { name: 'users', schema: 'shared' },
 			operation: 'select',
 		},
 		{
-			table: 'users_profiles',
+			table: { name: 'profiles', schema: 'users' },
 			operation: 'select',
 		},
 		{
-			table: 'users_groups',
+			table: { name: 'groups', schema: 'users' },
 			operation: 'select',
 		},
 		{
-			table: 'users_permission_group_user_permissions',
+			table: { name: 'permission_group_user_permissions', schema: 'users' },
 			operation: 'select',
 		},
 		{
-			table: 'users_permission_groups',
+			table: { name: 'permission_groups', schema: 'users' },
 			operation: 'select',
 		},
 		{
-			table: 'users_permissions',
+			table: { name: 'permissions', schema: 'users' },
 			operation: 'select',
 		},
 	],
 	CREATE_CONTENT_PAGES: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'insert',
 			check_columns: { user_profile_id: PROFILE_UUID },
 		},
 	],
 	EDIT_ANY_CONTENT_PAGES: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'update',
 			columns: (allColumns: string[]) =>
 				without(
@@ -248,7 +248,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_OWN_CONTENT_PAGES: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'update',
 			check_columns: { user_profile_id: PROFILE_UUID },
 			columns: (allColumns: string[]) =>
@@ -264,13 +264,13 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	DELETE_ANY_CONTENT_PAGES: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'delete',
 		},
 	],
 	DELETE_OWN_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'delete',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -280,7 +280,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	DELETE_ANY_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'delete',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -289,7 +289,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	DELETE_OWN_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'delete',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -299,7 +299,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	DELETE_ANY_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'delete',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -308,7 +308,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_ANY_PUBLISHED_ITEMS: [
 		{
-			table: 'app_item_meta',
+			table: { name: 'item_meta', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				is_published: true,
@@ -316,21 +316,21 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			columns: (allColumns: string[]) => without(allColumns, 'browse_path'),
 		},
 		{
-			table: 'app_item_counts',
+			table: { name: 'item_counts', schema: 'app' },
 			operation: 'select',
 		},
 		{
-			table: 'app_item_plays',
+			table: { name: 'item_plays', schema: 'app' },
 			operation: 'select',
 		},
 		{
-			table: 'app_item_views',
+			table: { name: 'item_views', schema: 'app' },
 			operation: 'select',
 		},
 	],
 	VIEW_ANY_UNPUBLISHED_ITEMS: [
 		{
-			table: 'app_item_meta',
+			table: { name: 'item_meta', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				is_published: false,
@@ -338,28 +338,28 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 			columns: (allColumns: string[]) => without(allColumns, 'browse_path'),
 		},
 		{
-			table: 'app_item_counts',
+			table: { name: 'item_counts', schema: 'app' },
 			operation: 'select',
 		},
 		{
-			table: 'app_item_plays',
+			table: { name: 'item_plays', schema: 'app' },
 			operation: 'select',
 		},
 		{
-			table: 'app_item_views',
+			table: { name: 'item_views', schema: 'app' },
 			operation: 'select',
 		},
 	],
 	CREATE_BOOKMARKS: [
 		{
-			table: 'app_collection_bookmarks',
+			table: { name: 'collection_bookmarks', schema: 'app' },
 			operation: 'insert',
 			check_columns: {
 				profile_id: PROFILE_UUID,
 			},
 		},
 		{
-			table: 'app_item_bookmarks',
+			table: { name: 'item_bookmarks', schema: 'app' },
 			operation: 'insert',
 			check_columns: {
 				profile_id: PROFILE_UUID,
@@ -368,11 +368,11 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	PUBLISH_ITEMS: [
 		{
-			table: 'shared_items',
+			table: { name: 'items', schema: 'shared' },
 			operation: 'select',
 		},
 		{
-			table: 'shared_items',
+			table: { name: 'items', schema: 'shared' },
 			operation: 'update',
 			columns: ['status'],
 		},
@@ -380,7 +380,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	VIEW_ITEMS_OVERVIEW: null, // This permission protects the frontend route. The database rows are protected by VIEW_ANY_PUBLISHED_ITEMS, VIEW_ANY_UNPUBLISHED_ITEMS
 	VIEW_COLLECTIONS_OVERVIEW: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -389,7 +389,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_BUNDLES_OVERVIEW: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -398,39 +398,39 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_INTERACTIVE_TOURS: [
 		{
-			table: 'app_interactive_tour',
+			table: { name: 'interactive_tour', schema: 'app' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 	],
 	EDIT_TRANSLATIONS: [
 		{
-			table: 'app_site_variables',
+			table: { name: 'site_variables', schema: 'app' },
 			operation: 'update', // Only update existing frontend or backend translations row. New site variables will need to be added by the admin user and not by the avo user role
 		},
 	],
 	EDIT_USER_GROUPS: [
 		{
-			table: 'users_groups',
+			table: { name: 'groups', schema: 'users' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 		{
-			table: 'users_group_user_permission_groups',
+			table: { name: 'group_user_permission_groups', schema: 'users' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 	],
 	EDIT_PERMISSION_GROUPS: [
 		{
-			table: 'users_permission_groups',
+			table: { name: 'permission_groups', schema: 'users' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 		{
-			table: 'users_permissions',
+			table: { name: 'permissions', schema: 'users' },
 			operation: 'select',
 		},
 	],
 	EDIT_BAN_USER_STATUS: [
 		{
-			table: 'shared_users',
+			table: { name: 'users', schema: 'shared' },
 			operation: 'update',
 			columns: ['is_blocked'],
 		},
@@ -451,7 +451,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	VIEW_NOTIFICATIONS_PAGE: null, // Currently not used
 	EDIT_COLLECTION_LABELS: [
 		{
-			table: 'app_collection_labels',
+			table: { name: 'collection_labels', schema: 'app' },
 			operation: ['select', 'insert', 'update', 'delete'],
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -460,7 +460,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_COLLECTION_AUTHOR: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: ['owner_profile_id'],
 			check_columns: {
@@ -470,7 +470,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_BUNDLE_LABELS: [
 		{
-			table: 'app_collection_labels',
+			table: { name: 'collection_labels', schema: 'app' },
 			operation: 'update',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -479,7 +479,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_BUNDLE_AUTHOR: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'update',
 			columns: ['owner_profile_id'],
 			check_columns: {
@@ -489,17 +489,17 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	EDIT_CONTENT_PAGE_LABELS: [
 		{
-			table: 'app_content_labels',
+			table: { name: 'content_labels', schema: 'app' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 		{
-			table: 'app_content_labels',
+			table: { name: 'content_labels', schema: 'app' },
 			operation: ['select', 'insert', 'update', 'delete'],
 		},
 	],
 	ADD_ITEM_TO_COLLECTION_BY_PID: [
 		{
-			table: 'app_collection_fragments',
+			table: { name: 'collection_fragments', schema: 'app' },
 			operation: 'insert',
 			check_columns: {
 				type: 'ITEM',
@@ -508,7 +508,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	ADD_COLLECTION_TO_BUNDLE_BY_ID: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'insert',
 			check_columns: {
 				type: 'COLLECTION',
@@ -517,7 +517,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_OWN_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -527,7 +527,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_ANY_PUBLISHED_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -537,7 +537,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_ANY_UNPUBLISHED_COLLECTIONS: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.collection,
@@ -547,7 +547,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_OWN_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -557,7 +557,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_ANY_PUBLISHED_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -567,7 +567,7 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	VIEW_ANY_UNPUBLISHED_BUNDLES: [
 		{
-			table: 'app_collections',
+			table: { name: 'collections', schema: 'app' },
 			operation: 'select',
 			check_columns: {
 				type_id: ContentTypeNumber.bundle,
@@ -577,21 +577,21 @@ export const ROW_PERMISSIONS: { [permission in PermissionName]: RowPermission[] 
 	],
 	PUBLISH_ANY_CONTENT_PAGE: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'update',
 			columns: ['is_public', 'publish_at', 'depublish_at', 'published_at'],
 		},
 	],
 	UNPUBLISH_ANY_CONTENT_PAGE: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'update',
 			columns: ['is_public', 'publish_at', 'depublish_at', 'published_at'],
 		},
 	],
 	EDIT_CONTENT_PAGE_AUTHOR: [
 		{
-			table: 'app_content',
+			table: { name: 'content', schema: 'app' },
 			operation: 'update',
 			columns: ['user_profile_id'],
 		},

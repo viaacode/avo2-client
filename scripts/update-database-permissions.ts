@@ -1,20 +1,26 @@
+// tslint:disable:no-console
+
 import { mapLimit } from 'blend-promise-utils';
 import {
 	compact,
 	flatten,
 	forEach,
 	fromPairs,
+	get,
 	isEqual,
 	isFunction,
 	isString,
 	map,
 	snakeCase,
+	sortBy,
 	uniq,
 	uniqWith,
 	values,
 } from 'lodash';
 import fetch from 'node-fetch';
 import path from 'path';
+
+import { CustomError } from '../src/shared/helpers/custom-error';
 
 import { ROW_PERMISSIONS, RowPermission, TableOperation } from './row-permissions';
 
@@ -57,6 +63,28 @@ interface FinalRowPermission extends ResolvedRowPermission {
 	userGroup: string;
 }
 
+const GRAPHQL_SIMPLE_TYPES = [
+	'Boolean',
+	'Float',
+	'ID',
+	'Int',
+	'String',
+	'bigint',
+	'bpchar',
+	'date',
+	'jsonb',
+	'time',
+	'timestamp',
+	'timestamptz',
+	'uuid',
+];
+
+const LIMIT_ROWS = 100;
+
+function getFullTableName(table: { name: string; schema: string }): string {
+	return `${table.schema}_${table.name}`;
+}
+
 /**
  * We can only add one permission per table per operation per role
  * So we need to merge multiple permissions into one
@@ -87,7 +115,9 @@ function mergePermissions(
 							flatten(operationPermissions.map(permission => permission.columns))
 						).sort(),
 						check_columns: uniqWith(
-							operationPermissions.map(permission => permission.check_columns),
+							compact(
+								operationPermissions.map(permission => permission.check_columns)
+							),
 							isEqual
 						),
 					});
@@ -112,7 +142,9 @@ async function updateRowPermissions(createOrDrop: 'create' | 'drop') {
 
 	// Get columns for each table in the ROW_PERMISSIONS
 	const tables = flatten(compact(values(ROW_PERMISSIONS))).map(permission => permission.table);
-	const columnsPerTable: { [tableName: string]: string[] } = await getColumnNames(tables);
+	const columnsPerTable: { [tableName: string]: string[] } = await getColumnNames(
+		tables.map(getFullTableName)
+	);
 
 	// Link permission info to each permission
 	forEach(permissionsPerUserGroup, (permissionNames: PermissionName[], userGroup: string) => {
@@ -133,8 +165,9 @@ async function updateRowPermissions(createOrDrop: 'create' | 'drop') {
 			}
 			rowPermissions.forEach(rowPermission => {
 				// Init table key if it doesn't exist yet
-				if (!segmentedTablePermissions[userGroup][rowPermission.table]) {
-					segmentedTablePermissions[userGroup][rowPermission.table] = {} as {
+				const fullTableName = getFullTableName(rowPermission.table);
+				if (!segmentedTablePermissions[userGroup][fullTableName]) {
+					segmentedTablePermissions[userGroup][fullTableName] = {} as {
 						[operationName in Partial<TableOperation>]: ResolvedRowPermission[];
 					};
 				}
@@ -144,8 +177,8 @@ async function updateRowPermissions(createOrDrop: 'create' | 'drop') {
 
 				operations.forEach(operation => {
 					// Init operation name if it doesn't exist yet
-					if (!segmentedTablePermissions[userGroup][rowPermission.table][operation]) {
-						segmentedTablePermissions[userGroup][rowPermission.table][
+					if (!segmentedTablePermissions[userGroup][fullTableName][operation]) {
+						segmentedTablePermissions[userGroup][fullTableName][
 							operation
 						] = [] as ResolvedRowPermission[];
 					}
@@ -153,14 +186,14 @@ async function updateRowPermissions(createOrDrop: 'create' | 'drop') {
 					// Resolve columns to array of strings
 					let columns: string[];
 					if (isFunction(rowPermission.columns)) {
-						columns = rowPermission.columns(columnsPerTable[rowPermission.table]);
+						columns = rowPermission.columns(columnsPerTable[fullTableName]);
 					} else if (!rowPermission.columns) {
-						columns = columnsPerTable[rowPermission.table];
+						columns = columnsPerTable[fullTableName];
 					} else {
 						columns = rowPermission.columns;
 					}
 
-					segmentedTablePermissions[userGroup][rowPermission.table][operation].push({
+					segmentedTablePermissions[userGroup][fullTableName][operation].push({
 						...rowPermission,
 						operation,
 						columns,
@@ -170,14 +203,17 @@ async function updateRowPermissions(createOrDrop: 'create' | 'drop') {
 		});
 	});
 
-	const finalPermissions: FinalRowPermission[] = mergePermissions(segmentedTablePermissions);
+	const finalPermissions: FinalRowPermission[] = sortBy(
+		mergePermissions(segmentedTablePermissions),
+		[permission => getFullTableName(permission.table), permission => permission.operation]
+	);
 
-	await mapLimit(finalPermissions, 20, permission =>
+	const insertedPermissions = await mapLimit(finalPermissions, 1, permission =>
 		setPermissionInDatabase(permission, createOrDrop)
 	);
 
 	const outputFile = path.join(__dirname, 'permissions.json');
-	await fs.writeFile(outputFile, JSON.stringify(finalPermissions, null, 2));
+	await fs.writeFile(outputFile, JSON.stringify(insertedPermissions, null, 2));
 
 	console.log(`updating permissions: ... done. Full permission list: ${outputFile}`);
 }
@@ -185,58 +221,121 @@ async function updateRowPermissions(createOrDrop: 'create' | 'drop') {
 async function setPermissionInDatabase(
 	permission: FinalRowPermission,
 	createOrDrop: 'create' | 'drop'
-): Promise<void> {
+): Promise<any> {
 	try {
 		if (!process.env.GRAPHQL_URL) {
-			throw new Error('Env variable GRAPHQL_URL must be set');
+			throw new CustomError('Env variable GRAPHQL_URL must be set');
 		}
 		if (!process.env.GRAPHQL_SECRET) {
-			throw new Error('Env variable GRAPHQL_SECRET must be set');
+			throw new CustomError('Env variable GRAPHQL_SECRET must be set');
 		}
 
 		let check: any;
 		if (!permission.check_columns || permission.check_columns.length === 0) {
-			check = undefined;
+			check = {};
 		} else if (permission.check_columns.length === 1) {
 			check = permission.check_columns[0];
 		} else {
 			check = {
-				_or: permission.check_columns,
+				$or: permission.check_columns,
 			};
 		}
 
 		// Make call to database to set the permission
-		await fetch(process.env.GRAPHQL_URL.replace('/v1/graphql', '/v1/query'), {
+		let permissionBody;
+		switch (permission.operation) {
+			case 'insert':
+				permissionBody = {
+					check,
+					columns: permission.columns,
+				};
+				break;
+
+			case 'select':
+				permissionBody = {
+					filter: check,
+					columns: permission.columns,
+					limit: LIMIT_ROWS,
+					allow_aggregations: true,
+				};
+				break;
+
+			case 'update':
+				permissionBody = {
+					filter: check,
+					columns: permission.columns,
+				};
+				break;
+
+			case 'delete':
+			default:
+				permissionBody = {
+					filter: check,
+				};
+				break;
+		}
+		const body = {
+			type: `${createOrDrop}_${permission.operation}_permission`,
+			args: {
+				table: permission.table,
+				role: snakeCase(permission.userGroup),
+				...(createOrDrop === 'create'
+					? {
+							permission: permissionBody,
+					  }
+					: {}),
+			},
+		};
+		const response = await fetch(process.env.GRAPHQL_URL.replace('/v1/graphql', '/v1/query'), {
 			method: 'POST',
-			body: JSON.stringify({
-				type: `${createOrDrop}_${permission.operation}_permission`,
-				args: {
-					table: permission.table,
-					role: snakeCase(permission.userGroup),
-					permission: {
-						check,
-						columns: permission.columns,
-					},
-				},
-			}),
+			body: JSON.stringify(body),
 			headers: {
 				'x-hasura-admin-secret': process.env.GRAPHQL_SECRET,
 			},
 		});
+
+		try {
+			const responseJson = await response.json();
+
+			console.log(
+				`[PERMISSIONS] ${permission.operation} ${getFullTableName(permission.table)}`,
+				responseJson
+			);
+
+			if (responseJson.error) {
+				throw new CustomError(
+					'permission modification responded with an error',
+					null,
+					responseJson
+				);
+			}
+		} catch (err) {
+			try {
+				const text = await response.text();
+				throw new CustomError('Response from graphql is text instead of json', err, {
+					text,
+					response,
+				});
+			} catch (err) {
+				throw new CustomError('Response from graphql cannot be interpreted', err, {
+					response,
+				});
+			}
+		}
+
+		return body;
 	} catch (err) {
-		throw new Error(
-			`Failed to get permissions per user group from the database: ${JSON.stringify(err)}`
-		);
+		throw new CustomError('Failed to get permissions per user group from the database', err);
 	}
 }
 
 async function getPermissionsPerUserGroup(): Promise<{ [userGroup: string]: PermissionName[] }> {
 	try {
 		if (!process.env.GRAPHQL_URL) {
-			throw new Error('Env variable GRAPHQL_URL must be set');
+			throw new CustomError('Env variable GRAPHQL_URL must be set');
 		}
 		if (!process.env.GRAPHQL_SECRET) {
-			throw new Error('Env variable GRAPHQL_SECRET must be set');
+			throw new CustomError('Env variable GRAPHQL_SECRET must be set');
 		}
 
 		// Fetch user groups with their permissions from graphql database
@@ -266,6 +365,9 @@ async function getPermissionsPerUserGroup(): Promise<{ [userGroup: string]: Perm
 
 		// Convert database response to simple dictionary lookup
 		const jsonResponse = await response.json();
+		if (jsonResponse.errors) {
+			throw new CustomError('graphQL response contains errors', jsonResponse);
+		}
 		const userGroups: UsersGroup[] = jsonResponse.data.users_groups;
 		return fromPairs(
 			userGroups.map((userGroup): [string, PermissionName[]] => [
@@ -281,9 +383,7 @@ async function getPermissionsPerUserGroup(): Promise<{ [userGroup: string]: Perm
 			])
 		);
 	} catch (err) {
-		throw new Error(
-			`Failed to get permissions per user group from the database: ${JSON.stringify(err)}`
-		);
+		throw new CustomError('Failed to get permissions per user group from the database', err);
 	}
 }
 
@@ -295,16 +395,19 @@ async function getPermissionsPerUserGroup(): Promise<{ [userGroup: string]: Perm
 async function getColumnNames(tableNames: string[]): Promise<{ [tableName: string]: string[] }> {
 	try {
 		if (!process.env.GRAPHQL_URL) {
-			throw new Error('Env variable GRAPHQL_URL must be set');
+			throw new CustomError('Env variable GRAPHQL_URL must be set');
 		}
 		if (!process.env.GRAPHQL_SECRET) {
-			throw new Error('Env variable GRAPHQL_SECRET must be set');
+			throw new CustomError('Env variable GRAPHQL_SECRET must be set');
 		}
 
 		// Get all columns for all tables with one query
 		const uniqueTableNames = uniq(tableNames);
 		const queryBody = uniqueTableNames
-			.map(tableName => `${tableName}: __type(name: "${tableName}") { fields { name } }`)
+			.map(
+				tableName =>
+					`${tableName}: __type(name: "${tableName}") { fields { name, type { name, ofType { name } } } }`
+			)
 			.join('\n');
 		const response = await fetch(process.env.GRAPHQL_URL, {
 			method: 'POST',
@@ -322,14 +425,24 @@ async function getColumnNames(tableNames: string[]): Promise<{ [tableName: strin
 			map(jsonResponse.data, (value, tableName): [string, string[]] => {
 				return [
 					tableName,
-					value.fields.map((field: { name: string }): string => field.name),
+					compact(
+						value.fields.map((field: { name: string; type: { name: string } }):
+							| string
+							| null => {
+							if (GRAPHQL_SIMPLE_TYPES.includes(get(field, 'type.name'))) {
+								return field.name;
+							}
+							if (GRAPHQL_SIMPLE_TYPES.includes(get(field, 'type.ofType.name'))) {
+								return field.name;
+							}
+							return null;
+						})
+					),
 				];
 			})
 		);
 	} catch (err) {
-		throw new Error(
-			`Failed to get column names for table from the database: ${JSON.stringify(err)}`
-		);
+		throw new CustomError('Failed to get column names for table from the database', err);
 	}
 }
 
@@ -337,3 +450,4 @@ console.log('updating permissions: ...');
 updateRowPermissions('create').catch(err => {
 	console.log(`updating permissions: ... Failed: ${JSON.stringify(err)}`);
 });
+// tslint:enable:no-console
