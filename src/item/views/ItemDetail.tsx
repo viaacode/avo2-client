@@ -197,7 +197,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		};
 
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, user]);
+	}, [match.params.id, setItem, t, JSON.stringify(user)]); // ensure only triggers once for user object
 
 	const toggleBookmark = async () => {
 		try {

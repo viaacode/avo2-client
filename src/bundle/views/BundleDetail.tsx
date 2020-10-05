@@ -287,7 +287,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				icon: 'alert-triangle',
 			});
 		});
-	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, t]);
+	}, [JSON.stringify(user), bundleId, setLoadingInfo, setShowLoginPopup, t]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && bundle && !isNil(showLoginPopup)) {

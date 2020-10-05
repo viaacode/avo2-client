@@ -277,6 +277,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___secundair-email-adres'),
 								],
 							])}
+							{renderDetailRow(
+								<Link
+									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
+										id: userGroup.id,
+									})}
+								>
+									{userGroup.label}
+								</Link>,
+								t('admin/users/views/user-detail___gebruikersgroep')
+							)}
 							{renderDateDetailRows(storedProfile, [
 								['created_at', 'Aangemaakt op'],
 								['updated_at', 'Aangepast op'],
@@ -339,16 +349,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderDetailRow(
 								get(storedProfile, 'organisation.name'),
 								t('admin/users/views/user-detail___bedrijf')
-							)}
-							{renderDetailRow(
-								<Link
-									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
-										id: userGroup.id,
-									})}
-								>
-									{userGroup.label}
-								</Link>,
-								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 						</tbody>
 					</Table>
