@@ -1,5 +1,12 @@
 import { get, isEqual, isNil, isString } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -46,6 +53,7 @@ interface FragmentEditProps {
 	setOpenOptionsId: (id: number | null) => void;
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
+	renderWarning?: () => ReactNode | null;
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
@@ -58,6 +66,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	setOpenOptionsId,
 	fragment,
 	allowedToAddLinks,
+	renderWarning = () => null,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -353,6 +362,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 						</ToolbarRight>
 					</Toolbar>
 				</div>
+				{renderWarning()}
 				<div className="c-panel__body">
 					{fragment.type !== 'TEXT' && itemMetaData ? (
 						<Grid>

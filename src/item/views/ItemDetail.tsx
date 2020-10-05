@@ -40,7 +40,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -49,6 +49,7 @@ import {
 } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
+	buildLink,
 	CustomError,
 	generateAssignmentCreateLink,
 	generateSearchLink,
@@ -123,9 +124,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					return;
 				}
 
-				const itemObj: Avo.Item.Item | null = await ItemsService.fetchItemByExternalId(
-					match.params.id
-				);
+				const itemObj:
+					| (Avo.Item.Item & { replacement_for?: string })
+					| null = await ItemsService.fetchItemByExternalId(match.params.id);
 				if (!itemObj) {
 					setLoadingInfo({
 						state: 'error',
@@ -144,6 +145,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							) + itemObj.depublish_reason,
 						icon: 'camera-off',
 					});
+					return;
+				}
+
+				if (itemObj.replacement_for) {
+					// Item was replaced by another item
+					// We should reload the page, to update the url
+					history.replace(
+						buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id })
+					);
 					return;
 				}
 
