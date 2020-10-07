@@ -14,16 +14,10 @@ export const GET_COLLECTIONS = gql`
 			title
 			description
 			is_public
-			is_deleted
 			created_at
 			owner_profile_id
 			profile {
 				id
-				organisation {
-					logo_url
-					name
-					or_id
-				}
 				profile_user_groups {
 					groups {
 						label
@@ -36,22 +30,12 @@ export const GET_COLLECTIONS = gql`
 					last_name
 				}
 			}
-			lom_context
-			lom_classification
 			updated_by {
 				id
 				user: usersByuserId {
 					id
 					first_name
 					last_name
-					profile {
-						profile_user_groups {
-							groups {
-								label
-								id
-							}
-						}
-					}
 				}
 			}
 			collection_labels {
