@@ -47,11 +47,7 @@ export const GET_COLLECTIONS = gql`
 				in_assignment
 				in_collection
 				views
-			}
-			relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
-				aggregate {
-					count
-				}
+				copies
 			}
 		}
 		app_collections_aggregate(where: $where) {

@@ -638,7 +638,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.copies') || '0';
 
 			case 'in_bundle':
 				return get(rowData, 'counts.in_collection') || '0';
