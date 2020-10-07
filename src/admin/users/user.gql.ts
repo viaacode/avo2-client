@@ -77,26 +77,13 @@ export const GET_USERS = gql`
 			first_name
 			last_name
 			mail
-			idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
-				idp_user_id
-				id
-			}
 			id
 			last_access_at
 			is_blocked
 			profiles {
 				id
-				avatar
-				alias
-				title
 				stamboek
-				updated_at
 				created_at
-				bio
-				alternative_email
-				company_id
-				is_exception
-				title
 				profile_user_groups {
 					groups {
 						label
@@ -105,7 +92,6 @@ export const GET_USERS = gql`
 				}
 				organisation {
 					name
-					logo_url
 				}
 			}
 		}
