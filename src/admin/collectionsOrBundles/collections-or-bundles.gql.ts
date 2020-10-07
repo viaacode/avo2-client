@@ -26,16 +26,14 @@ export const GET_COLLECTIONS = gql`
 				}
 				user: usersByuserId {
 					id
-					first_name
-					last_name
+					full_name
 				}
 			}
 			updated_by {
 				id
 				user: usersByuserId {
 					id
-					first_name
-					last_name
+					full_name
 				}
 			}
 			collection_labels {

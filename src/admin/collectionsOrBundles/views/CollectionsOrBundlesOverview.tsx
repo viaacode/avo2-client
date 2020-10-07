@@ -617,7 +617,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'author':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
-				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
+				return user ? truncateTableValue((user as any).full_name) : '-';
 
 			case 'author_user_group':
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
