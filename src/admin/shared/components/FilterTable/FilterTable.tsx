@@ -40,6 +40,7 @@ import {
 	Select,
 	SelectOption,
 	Spacer,
+	Spinner,
 	Table,
 	TableColumn,
 	TextInput,
@@ -99,6 +100,7 @@ interface FilterTableProps extends RouteComponentProps {
 	onRowClick?: (rowData: any) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
+	isLoading?: boolean;
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
@@ -124,6 +126,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	onRowClick,
 	rowKey = 'id',
 	variant = 'bordered',
+	isLoading = false,
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes,
@@ -394,30 +397,45 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			) : (
 				<>
 					{renderFilters()}
-					<Table
-						columns={getSelectedColumns()}
-						data={data}
-						emptyStateMessage={noContentMatchingFiltersMessage}
-						onColumnClick={(columnId) => {
-							handleSortOrderChanged(columnId);
-						}}
-						onRowClick={onRowClick}
-						renderCell={renderCell}
-						rowKey={rowKey}
-						variant={variant}
-						sortColumn={tableState.sort_column}
-						sortOrder={tableState.sort_order}
-						showCheckboxes={(!!bulkActions && !!bulkActions.length) || showCheckboxes}
-						selectedItems={selectedItems || undefined}
-						onSelectionChanged={onSelectionChanged}
-					/>
-					<Spacer margin="top-large">
-						<Pagination
-							pageCount={Math.ceil(dataCount / itemsPerPage)}
-							currentPage={tableState.page || 0}
-							onPageChange={(newPage) => handleTableStateChanged(newPage, 'page')}
-						/>
-					</Spacer>
+					<div className="c-filter-table__loading-wrapper">
+						<div style={{ opacity: isLoading ? 0.2 : 1 }}>
+							<Table
+								columns={getSelectedColumns()}
+								data={data}
+								emptyStateMessage={noContentMatchingFiltersMessage}
+								onColumnClick={(columnId) => {
+									handleSortOrderChanged(columnId);
+								}}
+								onRowClick={onRowClick}
+								renderCell={renderCell}
+								rowKey={rowKey}
+								variant={variant}
+								sortColumn={tableState.sort_column}
+								sortOrder={tableState.sort_order}
+								showCheckboxes={
+									(!!bulkActions && !!bulkActions.length) || showCheckboxes
+								}
+								selectedItems={selectedItems || undefined}
+								onSelectionChanged={onSelectionChanged}
+							/>
+							<Spacer margin="top-large">
+								<Pagination
+									pageCount={Math.ceil(dataCount / itemsPerPage)}
+									currentPage={tableState.page || 0}
+									onPageChange={(newPage) =>
+										handleTableStateChanged(newPage, 'page')
+									}
+								/>
+							</Spacer>
+						</div>
+						{isLoading && (
+							<Flex center className="c-filter-table__loading">
+								<Spacer margin={['top-large', 'bottom-large']}>
+									<Spinner size="large" />
+								</Spacer>
+							</Flex>
+						)}
+					</div>
 				</>
 			)}
 			{!!bulkActions && !!bulkActions.length && (

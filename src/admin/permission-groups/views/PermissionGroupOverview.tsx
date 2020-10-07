@@ -44,10 +44,12 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PermissionGroupTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
 	const fetchPermissionGroups = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -81,6 +83,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setPermissionGroups, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -210,6 +213,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={() => handleDelete()}

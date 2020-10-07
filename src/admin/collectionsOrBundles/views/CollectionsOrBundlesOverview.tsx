@@ -76,6 +76,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[] | null>();
 
@@ -90,6 +91,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	// methods
 	const fetchCollectionsOrBundles = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -194,6 +196,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
 
 	const fetchCollectionLabels = useCallback(async () => {
@@ -811,6 +814,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onSelectBulkAction={handleBulkActionSelect as any}
 					selectedItems={selectedRows}
 					onSelectionChanged={setSelectedRows}
+					isLoading={isLoading}
 				/>
 				<ChangeAuthorModal
 					isOpen={changeAuthorModalOpen}
