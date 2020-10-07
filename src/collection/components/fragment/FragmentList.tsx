@@ -44,7 +44,7 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 			item,
 			'relations[0]'
 		);
-		const ownsCollection: boolean = collection.owner_profile_id === getProfileId(user);
+		const ownsCollection: boolean = user && collection.owner_profile_id === getProfileId(user);
 
 		// Show the warning of replaced items only
 		// * to owners and
