@@ -620,7 +620,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'author':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
-				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
+				return user ? truncateTableValue((user as any).full_name) : '-';
 
 			case 'author_user_group':
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
@@ -641,7 +641,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.copies') || '0';
 
 			case 'in_bundle':
 				return get(rowData, 'counts.in_collection') || '0';
