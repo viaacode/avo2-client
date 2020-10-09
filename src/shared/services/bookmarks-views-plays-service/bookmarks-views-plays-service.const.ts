@@ -1,4 +1,12 @@
+import { DocumentNode } from 'graphql';
+
+import { Avo } from '@viaa/avo2-types';
+
 import {
+	GET_COLLECTION_PLAYS,
+	GET_COLLECTION_VIEWS,
+	GET_ITEM_PLAYS,
+	GET_ITEM_VIEWS,
 	INCREMENT_COLLECTION_PLAYS,
 	INCREMENT_COLLECTION_VIEWS,
 	INCREMENT_ITEM_PLAYS,
@@ -14,10 +22,11 @@ import {
 } from './bookmarks-views-plays-service.gql';
 import {
 	BookmarkViewPlayCounts,
-	EventActionExtended,
+	EventAction,
 	EventContentType,
 	EventContentTypeSimplified,
 } from './bookmarks-views-plays-service.types';
+import { get } from 'lodash-es';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 	bookmarkCount: 0,
@@ -27,13 +36,17 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 };
 
 export interface QueryDefinition {
-	query: any;
-	variables: ((uuid: string, profileId: string) => any) | ((uuid: string) => any);
+	query?: DocumentNode;
+	get?: DocumentNode;
+	init?: DocumentNode;
+	increment?: DocumentNode;
+	variables: (uuid: string, user?: Avo.User.User) => any;
+	responsePath?: string;
 }
 
 export const EVENT_QUERIES: {
 	/* eslint-disable @typescript-eslint/no-unused-vars */
-	[action in EventActionExtended]: {
+	[action in EventAction]: {
 		[contentType in EventContentTypeSimplified]: QueryDefinition;
 		/* eslint-enable @typescript-eslint/no-unused-vars */
 	};
@@ -41,19 +54,19 @@ export const EVENT_QUERIES: {
 	bookmark: {
 		item: {
 			query: INSERT_ITEM_BOOKMARK,
-			variables: (itemUuid: string, profileId: string) => ({
+			variables: (itemUuid: string, user?: Avo.User.User) => ({
 				bookmarkItem: {
 					item_id: itemUuid,
-					profile_id: profileId,
+					profile_id: get(user, 'profile.id', null),
 				},
 			}),
 		},
 		collection: {
 			query: INSERT_COLLECTION_BOOKMARK,
-			variables: (collectionUuid: string, profileId: string) => ({
+			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				bookmarkItem: {
 					collection_uuid: collectionUuid,
-					profile_id: profileId,
+					profile_id: get(user, 'profile.id', null),
 				},
 			}),
 		},
@@ -61,73 +74,57 @@ export const EVENT_QUERIES: {
 	unbookmark: {
 		item: {
 			query: REMOVE_ITEM_BOOKMARK,
-			variables: (itemUuid: string, profileId: string) => ({
+			variables: (itemUuid: string, user?: Avo.User.User) => ({
 				itemUuid,
-				profileId,
+				profileId: get(user, 'profile.id', null),
 			}),
 		},
 		collection: {
 			query: REMOVE_COLLECTION_BOOKMARK,
-			variables: (collectionUuid: string, profileId: string) => ({
+			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				collectionUuid,
-				profileId,
+				profileId: get(user, 'profile.id', null),
 			}),
 		},
 	},
 	view: {
 		item: {
-			query: INCREMENT_ITEM_VIEWS,
+			get: GET_ITEM_VIEWS,
+			init: INIT_ITEM_VIEWS,
+			increment: INCREMENT_ITEM_VIEWS,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
+			responsePath: 'data.app_item_meta[0].view_counts[0].count',
 		},
 		collection: {
-			query: INCREMENT_COLLECTION_VIEWS,
+			get: GET_COLLECTION_VIEWS,
+			init: INIT_COLLECTION_VIEWS,
+			increment: INCREMENT_COLLECTION_VIEWS,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
+			responsePath: 'data.app_collections[0].view_counts[0].count',
 		},
 	},
 	play: {
 		item: {
-			query: INCREMENT_ITEM_PLAYS,
+			get: GET_ITEM_PLAYS,
+			init: INIT_ITEM_PLAYS,
+			increment: INCREMENT_ITEM_PLAYS,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
+			responsePath: 'data.app_item_meta[0].play_counts[0].count',
 		},
 		collection: {
-			query: INCREMENT_COLLECTION_PLAYS,
+			get: GET_COLLECTION_PLAYS,
+			init: INIT_COLLECTION_PLAYS,
+			increment: INCREMENT_COLLECTION_PLAYS,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
-		},
-	},
-	viewInit: {
-		item: {
-			query: INIT_ITEM_VIEWS,
-			variables: (itemUuid: string) => ({
-				itemUuid,
-			}),
-		},
-		collection: {
-			query: INIT_COLLECTION_VIEWS,
-			variables: (collectionUuid: string) => ({
-				collectionUuid,
-			}),
-		},
-	},
-	playInit: {
-		item: {
-			query: INIT_ITEM_PLAYS,
-			variables: (itemUuid: string) => ({
-				itemUuid,
-			}),
-		},
-		collection: {
-			query: INIT_COLLECTION_PLAYS,
-			variables: (collectionUuid: string) => ({
-				collectionUuid,
-			}),
+			responsePath: 'data.app_collections[0].play_counts[0].count',
 		},
 	},
 };

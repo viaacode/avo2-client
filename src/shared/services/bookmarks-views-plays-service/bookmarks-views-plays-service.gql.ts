@@ -90,6 +90,46 @@ export const INCREMENT_COLLECTION_PLAYS = gql`
 	}
 `;
 
+export const GET_ITEM_VIEWS = gql`
+	query getItemViewCount($itemUuid: uuid!) {
+		app_item_meta(where: { uid: { _eq: $itemUuid } }) {
+			view_counts {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_COLLECTION_VIEWS = gql`
+	query getCollectionViewCount($collectionUuid: uuid!) {
+		app_collections(where: { id: { _eq: $collectionUuid } }) {
+			view_counts {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_ITEM_PLAYS = gql`
+	query getItemPlayCount($itemUuid: uuid!) {
+		app_item_meta(where: { uid: { _eq: $itemUuid } }) {
+			play_counts {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_COLLECTION_PLAYS = gql`
+	query getCollectionPlayCount($collectionUuid: uuid!) {
+		app_collections(where: { uid: { _eq: $collectionUuid } }) {
+			play_counts {
+				count
+			}
+		}
+	}
+`;
+
 export const INIT_ITEM_PLAYS = gql`
 	mutation insertInitialItemPlayCount($itemUuid: uuid!) {
 		insert_app_item_plays(objects: [{ count: 1, item_id: $itemUuid }]) {
