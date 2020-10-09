@@ -46,8 +46,10 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	const [interactiveTourCount, setInteractiveTourCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<InteractiveTourTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const fetchInteractiveTours = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<InteractiveTourTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -86,6 +88,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setInteractiveTours, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -269,6 +272,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					noContentMatchingFiltersMessage={t(
 						'admin/interactive-tour/views/interactive-tour-overview___er-zijn-geen-interactieve-tours-die-voldoen-aan-de-filters'
 					)}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={handleDelete}
