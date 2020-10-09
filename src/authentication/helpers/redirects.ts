@@ -177,7 +177,7 @@ export function getRedirectAfterLogin(
 	if (from === '/') {
 		return `${base}${defaultPath}`;
 	}
-	return `${base}${from}${location.hash}${queryString.stringify(
+	return `${base}${from}${location.hash || ''}${queryString.stringify(
 		omit(queryStrings, ['returnToUrl'])
 	)}`;
 }
