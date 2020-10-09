@@ -35,7 +35,6 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 	...rest
 }) => {
 	const [t] = useTranslation();
-
 	const renderCollectionFragments = () =>
 		sortBy(collectionFragments, 'position').map(
 			(collectionFragment: Avo.Collection.Fragment) => {
