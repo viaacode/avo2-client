@@ -851,10 +851,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
-							collectionId={collectionState.currentCollection.id}
-							collectionFragments={
-								collectionState.currentCollection.collection_fragments
-							}
+							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
 							location={location}
