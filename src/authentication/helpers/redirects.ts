@@ -45,7 +45,7 @@ export function redirectToServerLoginPage(location: Location) {
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
 		returnToUrl,
-		stamboekNumber: localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
+		stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
 	})}`;
 }
 

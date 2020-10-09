@@ -40,7 +40,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	const getTourDisplayDates = useCallback(() => {
 		try {
 			setTourDisplayDates(
-				JSON.parse(localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY) || '{}')
+				JSON.parse(
+					(localStorage && localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY)) ||
+						'{}'
+				)
 			);
 		} catch (err) {
 			console.error(
@@ -49,21 +52,27 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 					err,
 					{
 						key: TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
-						value: localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY),
+						value:
+							localStorage &&
+							localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY),
 					}
 				)
 			);
-			localStorage.setItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY, '{}');
+			if (localStorage) {
+				localStorage.setItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY, '{}');
+			}
 		}
 	}, [setTourDisplayDates]);
 
 	const updateTourDisplayDate = useCallback(
 		(tourId: string) => {
 			const newTourDisplayDates = { ...tourDisplayDates, [tourId]: new Date().toISOString() };
-			localStorage.setItem(
-				TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
-				JSON.stringify(newTourDisplayDates)
-			);
+			if (localStorage) {
+				localStorage.setItem(
+					TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
+					JSON.stringify(newTourDisplayDates)
+				);
+			}
 		},
 		[tourDisplayDates]
 	);

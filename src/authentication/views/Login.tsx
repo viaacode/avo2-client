@@ -70,7 +70,9 @@ const Login: FunctionComponent<LoginProps> = ({
 	}, [getLoginState, loginState, loginStateLoading, loginStateError, history, location]);
 
 	const tryLoginAgainManually = () => {
-		localStorage.removeItem(LOGIN_ATTEMPT_KEY);
+		if (localStorage) {
+			localStorage.removeItem(LOGIN_ATTEMPT_KEY);
+		}
 		getLoginState();
 	};
 
