@@ -38,7 +38,7 @@ wrapHistory(history, {
 
 interface AppProps extends RouteComponentProps {}
 
-const App: FunctionComponent<AppProps> = props => {
+const App: FunctionComponent<AppProps> = (props) => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -48,7 +48,7 @@ const App: FunctionComponent<AppProps> = props => {
 			.then(() => {
 				setLoadingInfo({ state: 'loaded' });
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error(new CustomError('Failed to wait for translations', err));
 			});
 	}, [setLoadingInfo]);

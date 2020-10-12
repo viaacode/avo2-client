@@ -158,10 +158,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							<Spacer key={stateIndex} margin="bottom">
 								<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
 									<Toolbar autoHeight>
-										<ToolbarLeft>{`${get(
-											config,
-											'components.name'
-										)} ${stateIndex + 1}`}</ToolbarLeft>
+										<ToolbarLeft>{`${get(config, 'components.name')} ${
+											stateIndex + 1
+										}`}</ToolbarLeft>
 										<ToolbarRight>
 											{renderRemoveButton(stateIndex)}
 										</ToolbarRight>

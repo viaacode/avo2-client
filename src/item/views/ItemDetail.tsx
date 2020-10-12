@@ -40,7 +40,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -49,6 +49,7 @@ import {
 } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
+	buildLink,
 	CustomError,
 	generateAssignmentCreateLink,
 	generateSearchLink,
@@ -98,7 +99,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 			getRelatedItems(currentItemId, 'items', limit)
 				.then(setRelatedItems)
-				.catch(err => {
+				.catch((err) => {
 					console.error('Failed to get related items', err, {
 						currentItemId,
 						limit,
@@ -123,9 +124,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					return;
 				}
 
-				const itemObj: Avo.Item.Item | null = await ItemsService.fetchItemByExternalId(
-					match.params.id
-				);
+				const itemObj:
+					| (Avo.Item.Item & { replacement_for?: string })
+					| null = await ItemsService.fetchItemByExternalId(match.params.id);
 				if (!itemObj) {
 					setLoadingInfo({
 						state: 'error',
@@ -144,6 +145,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							) + itemObj.depublish_reason,
 						icon: 'camera-off',
 					});
+					return;
+				}
+
+				if (itemObj.replacement_for) {
+					// Item was replaced by another item
+					// We should reload the page, to update the url
+					history.replace(
+						buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id })
+					);
 					return;
 				}
 
@@ -197,7 +207,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		};
 
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, user]);
+	}, [match.params.id, setItem, t, JSON.stringify(user)]); // ensure only triggers once for user object
 
 	const toggleBookmark = async () => {
 		try {
@@ -252,7 +262,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
-			return relatedItems.map(relatedItem => {
+			return relatedItems.map((relatedItem) => {
 				const englishContentType: EnglishContentType =
 					toEnglishContentType(relatedItem.administrative_type) ||
 					ContentTypeString.video;
@@ -534,7 +544,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<td>
 														{item.lom_languages
 															.map(
-																languageCode =>
+																(languageCode) =>
 																	LANGUAGES.nl[languageCode]
 															)
 															.join(', ')}
@@ -593,7 +603,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<td>
 														<TagList
 															tags={item.lom_keywords.map(
-																keyword => ({
+																(keyword) => ({
 																	label: keyword,
 																	id: keyword,
 																})

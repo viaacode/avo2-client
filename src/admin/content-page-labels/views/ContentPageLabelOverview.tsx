@@ -21,6 +21,7 @@ import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { useContentTypes } from '../../content/hooks';
 import { ItemsTableState } from '../../items/items.types';
+import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -40,7 +41,6 @@ import {
 } from '../content-page-label.types';
 
 import './ContentPageLabelOverview.scss';
-import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 
 interface ContentPageLabelOverviewProps extends DefaultSecureRouteProps {}
 
@@ -56,12 +56,14 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ContentPageLabelTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [contentTypes] = useContentTypes();
 
 	const [t] = useTranslation();
 
 	const fetchContentPageLabels = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -95,6 +97,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setContentPageLabels, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -136,7 +139,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		},
 		{
 			id: 'link_to',
-			label: i18n.t('Link'),
+			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___link'),
 			sortable: false,
 			visibleByDefault: true,
 		},
@@ -202,6 +205,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					<Button
 						type="inline-link"
 						onClick={() => navigateToContentType(linkTo, history)}
+						autoHeight
 					>{`${labels[linkTo.type]} - ${linkTo.label}`}</Button>
 				);
 
@@ -299,6 +303,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={() => handleDelete()}

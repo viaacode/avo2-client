@@ -129,7 +129,7 @@ export class UserGroupService {
 			const response = await dataService.mutate({
 				mutation: ADD_PERMISSION_GROUPS_TO_USER_GROUP,
 				variables: {
-					objs: permissionGroupIds.map(permissionGroupId => ({
+					objs: permissionGroupIds.map((permissionGroupId) => ({
 						user_permission_group_id: permissionGroupId,
 						user_group_id: userGroupId,
 					})),
@@ -273,7 +273,7 @@ export class UserGroupService {
 	): Permission[] {
 		return uniqBy(
 			orderBy(permissionGroups, [sortColumn], [sortOrder]),
-			permissionGroup => permissionGroup.id
+			(permissionGroup) => permissionGroup.id
 		);
 	}
 

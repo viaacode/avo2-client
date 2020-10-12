@@ -25,7 +25,7 @@ export const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 	const [userGroupOptions] = useUserGroupOptions();
 
 	const handleSelectOnChange = (values: TagInfo[] | null) => {
-		onChange((values || []).map(val => val.value as number));
+		onChange((values || []).map((val) => val.value as number));
 	};
 
 	const selectedOptions = userGroupOptions.filter((userGroupOption: TagInfo) => {

@@ -45,7 +45,7 @@ function getFormattedKey(filePath: string, key: string) {
 			.replace(/[\\\/]+/g, '/')
 			.split('.')[0]
 			.split(/[\\\/]/g)
-			.map(part => _.kebabCase(part))
+			.map((part) => _.kebabCase(part))
 			.join('/')
 			.toLowerCase()
 			.replace(/(^\/+|\/+$)/g, '')
@@ -59,6 +59,9 @@ function getFormattedKey(filePath: string, key: string) {
 }
 
 function getFormattedTranslation(translation: string) {
+	if (!translation) {
+		return translation;
+	}
 	return translation.trim().replace(/\t\t(\t)+/g, ' ');
 }
 
@@ -281,4 +284,4 @@ async function updateTranslations(): Promise<void> {
 }
 
 // deepcode ignore UsageOfUndefinedReturnValue: False positive
-updateTranslations().catch(err => console.error('Update of translations failed: ', err));
+updateTranslations().catch((err) => console.error('Update of translations failed: ', err));

@@ -131,7 +131,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 							) : (
 								'-'
 							),
-							t('Link')
+							t('admin/content-page-labels/views/content-page-label-detail___link')
 						)}
 						{renderDateDetailRows(contentPageLabelInfo, [
 							[

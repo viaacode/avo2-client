@@ -333,7 +333,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				icon: 'alert-triangle',
 			});
 		}
-	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, user, history]);
+		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
+	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, JSON.stringify(user), history]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();

@@ -34,9 +34,11 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UnpublishedItemsTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// methods
 	const fetchItems = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<UnpublishedItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -96,6 +98,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setItems, setItemCount, tableState, t]);
 
 	useEffect(() => {
@@ -146,7 +149,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				return;
 			}
 			await ItemsService.setSharedItemsStatus(
-				(selectedItems || []).map(item => item.pid),
+				(selectedItems || []).map((item) => item.pid),
 				'OK'
 			);
 			ToastService.success(
@@ -290,12 +293,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderNoResults={renderNoResults}
 					rowKey="pid"
 					showCheckboxes
-					selectedItems={items.filter(item =>
-						selectedItems.map(item => item.pid).includes(item.pid)
+					selectedItems={items.filter((item) =>
+						selectedItems.map((item) => item.pid).includes(item.pid)
 					)}
-					onSelectionChanged={newSelection => {
+					onSelectionChanged={(newSelection) => {
 						setSelectedItems(newSelection);
 					}}
+					isLoading={isLoading}
 				/>
 			</>
 		);

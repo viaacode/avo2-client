@@ -64,8 +64,9 @@ interface CollectionOrBundleEditAdminProps {
 	history: H.History;
 }
 
-const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdminProps &
-	UserProps> = ({ collection, changeCollectionState, history, user }) => {
+const CollectionOrBundleEditAdmin: FunctionComponent<
+	CollectionOrBundleEditAdminProps & UserProps
+> = ({ collection, changeCollectionState, history, user }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -167,7 +168,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		changeCollectionState({
 			collectionProp,
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: (selectedTagOptions || []).map(tag => ({
+			collectionPropValue: (selectedTagOptions || []).map((tag) => ({
 				label: tag.value as string,
 			})) as any,
 		});
@@ -180,7 +181,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		const labelIds = ((collection.collection_labels || []) as Avo.Collection.Label[]).map(
 			(item: any) => item.label
 		);
-		return qualityLabels.filter(qualityLabel => labelIds.includes(qualityLabel.value));
+		return qualityLabels.filter((qualityLabel) => labelIds.includes(qualityLabel.value));
 	};
 
 	const navigateToBundleDetail = (id: string) => {
@@ -200,7 +201,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		setBundlesContainingCollection(
 			orderBy(
 				bundlesContainingCollection,
-				[coll => get(coll, columnIdToBundlePath[columnId])],
+				[(coll) => get(coll, columnIdToBundlePath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -213,7 +214,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		setAssignmentsContainingCollection(
 			orderBy(
 				assignmentsContainingCollection,
-				[coll => get(coll, columnIdToAssignmentPath[columnId])],
+				[(coll) => get(coll, columnIdToAssignmentPath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -260,7 +261,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						ariaLabel={t(
 							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina'
 						)}
-						onClick={evt => {
+						onClick={(evt) => {
 							evt.stopPropagation();
 							navigateToBundleDetail(rowData.id as string);
 						}}
@@ -300,7 +301,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						ariaLabel={t(
 							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-opdracht-detail-pagina'
 						)}
-						onClick={evt => {
+						onClick={(evt) => {
 							evt.stopPropagation();
 							if (isNil(rowData.id)) {
 								return;
@@ -483,7 +484,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											]}
 											data={bundlesContainingCollection}
 											onColumnClick={handleBundleColumnClick as any}
-											onRowClick={coll => navigateToBundleDetail(coll.id)}
+											onRowClick={(coll) => navigateToBundleDetail(coll.id)}
 											renderCell={renderBundleCell as any}
 											sortColumn={bundleSortColumn}
 											sortOrder={bundleSortOrder}
@@ -543,7 +544,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 											]}
 											data={assignmentsContainingCollection}
 											onColumnClick={handleAssignmentColumnClick as any}
-											onRowClick={coll => navigateToAssignmentDetail(coll.id)}
+											onRowClick={(coll) =>
+												navigateToAssignmentDetail(coll.id)
+											}
 											renderCell={renderAssignmentCell as any}
 											sortColumn={assignmentSortColumn}
 											sortOrder={assignmentSortOrder}

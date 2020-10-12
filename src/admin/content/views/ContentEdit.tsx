@@ -57,10 +57,10 @@ import {
 	PageType,
 } from '../content.types';
 import {
-	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
+	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
@@ -246,11 +246,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			// Run validators on to check untouched inputs
 			blockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;
-				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
+				const keysToValidate = Object.keys(fields).filter((key) => fields[key].validator);
 				let newErrors: ContentBlockErrors = {};
 
 				if (keysToValidate.length > 0) {
-					keysToValidate.forEach(key => {
+					keysToValidate.forEach((key) => {
 						const validator = fields[key].validator;
 
 						if (validator && isFunction(validator)) {

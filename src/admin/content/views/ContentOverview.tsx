@@ -78,6 +78,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 	const [tableState, setTableState] = useState<Partial<ContentTableState>>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [contentTypes] = useContentTypes();
 
@@ -90,6 +91,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	const fetchContentPages = useCallback(async () => {
 		try {
+			setIsLoading(true);
 			const generateWhereObject = (filters: Partial<ContentTableState>) => {
 				const andFilters: any[] = [];
 				andFilters.push(
@@ -174,6 +176,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				icon: 'alert-triangle',
 			});
 		}
+		setIsLoading(false);
 	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, hasPerm, t]);
 
 	useEffect(() => {
@@ -339,7 +342,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'content_type':
 				return (
 					get(
-						contentTypes.find(type => type.value === rowData.content_type),
+						contentTypes.find((type) => type.value === rowData.content_type),
 						'label'
 					) || '-'
 				);
@@ -471,6 +474,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					renderCell={renderTableCell as any}
 					className="c-content-overview__table"
 					onTableStateChanged={setTableState}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={handleDelete}

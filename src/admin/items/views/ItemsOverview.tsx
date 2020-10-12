@@ -47,9 +47,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 	const [cpOptions, setCpOptions] = useState<CheckboxOption[] | null>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// methods
 	const fetchItems = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -141,6 +143,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
 	const fetchAllSeries = useCallback(async () => {
@@ -240,16 +243,16 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				return get(rowData, 'type.label', '-');
 
 			case 'views':
-				return get(rowData, 'item_counts.views', '-');
+				return get(rowData, 'item_counts.views') || '0';
 
 			case 'in_collection':
-				return get(rowData, 'item_counts.in_collection', '-');
+				return get(rowData, 'item_counts.in_collection') || '0';
 
 			case 'bookmarks':
-				return get(rowData, 'item_counts.bookmarks', '-');
+				return get(rowData, 'item_counts.bookmarks') || '0';
 
 			case 'in_assignment':
-				return get(rowData, 'item_counts.in_assignment', '-');
+				return get(rowData, 'item_counts.in_assignment') || '0';
 
 			case 'is_deleted':
 				return rowData[columnId] ? 'Ja' : 'Nee';
@@ -257,16 +260,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 			case 'is_published':
 				if (rowData.is_published) {
 					return t('admin/items/views/items-overview___gepubliceerd');
-				} else {
-					if ((rowData as any).depublish_reason) {
-						// TODO remove cast after update to typings v2.23.0
-						return t('Gedepubliceerd - pancarte');
-					}
-					if (get(rowData, 'relations[0]')) {
-						return t('Gedepubliceerd - merge');
-					}
-					return t('Gedepubliceerd');
 				}
+				if ((rowData as any).depublish_reason) {
+					// TODO remove cast after update to typings v2.23.0
+					return t('admin/items/views/items-overview___gedepubliceerd-pancarte');
+				}
+				if (get(rowData, 'relations[0]')) {
+					return t('admin/items/views/items-overview___gedepubliceerd-merge');
+				}
+				return t('admin/items/views/items-overview___gedepubliceerd');
 
 			case 'actions':
 				return (
@@ -336,6 +338,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="uid"
+					isLoading={isLoading}
 				/>
 			</>
 		);

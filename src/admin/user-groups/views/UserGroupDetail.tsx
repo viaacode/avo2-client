@@ -256,7 +256,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 								emptyStateMessage={t(
 									'admin/user-groups/views/user-group-detail___deze-gebruikersgroep-is-nog-niet-gelinked-aan-een-permissiegroep'
 								)}
-								onColumnClick={columId =>
+								onColumnClick={(columId) =>
 									handleSortClick(columId as PermissionGroupTableCols)
 								}
 								renderCell={(rowData: UserGroup, columnId: string) =>

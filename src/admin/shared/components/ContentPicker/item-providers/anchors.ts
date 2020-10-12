@@ -9,7 +9,7 @@ export const retrieveAnchors = async (
 ): Promise<PickerSelectItem[]> => {
 	try {
 		const anchorIds: string[] = [];
-		document.querySelectorAll('[data-anchor]').forEach(block => {
+		document.querySelectorAll('[data-anchor]').forEach((block) => {
 			const anchorId = block.getAttribute('data-anchor');
 			if (anchorId) {
 				anchorIds.push(anchorId);

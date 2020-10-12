@@ -76,6 +76,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[] | null>();
 
@@ -90,6 +91,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	// methods
 	const fetchCollectionsOrBundles = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -194,6 +196,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
 
 	const fetchCollectionLabels = useCallback(async () => {
@@ -224,10 +227,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 		// Update selected rows to always be a subset of the collections array
 		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
-		const collectionIds: string[] = (collections || []).map(coll => coll.id);
-		setSelectedRows(currentSelectedRows => {
+		const collectionIds: string[] = (collections || []).map((coll) => coll.id);
+		setSelectedRows((currentSelectedRows) => {
 			return (currentSelectedRows || []).filter(
-				coll => coll.id && collectionIds.includes(coll.id)
+				(coll) => coll.id && collectionIds.includes(coll.id)
 			);
 		});
 	}, [setLoadingInfo, collections, setSelectedRows]);
@@ -444,7 +447,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
-				compact(selectedRows.map(collection => collection.id)),
+				compact(selectedRows.map((collection) => collection.id)),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -484,7 +487,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return;
 			}
 			await CollectionsOrBundlesService.bulkDeleteCollections(
-				compact(selectedRows.map(collection => collection.id)),
+				compact(selectedRows.map((collection) => collection.id)),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -516,7 +519,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
-				compact(selectedRows.map(collection => collection.id)),
+				compact(selectedRows.map((collection) => collection.id)),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -549,7 +552,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
-					compact(selectedRows.map(collection => collection.id)),
+					compact(selectedRows.map((collection) => collection.id)),
 					getProfileId(user)
 				);
 				ToastService.success(
@@ -562,7 +565,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				// remove
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
-					compact(selectedRows.map(collection => collection.id)),
+					compact(selectedRows.map((collection) => collection.id)),
 					getProfileId(user)
 				);
 				ToastService.success(
@@ -617,7 +620,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'author':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
-				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
+				return user ? truncateTableValue((user as any).full_name) : '-';
 
 			case 'author_user_group':
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
@@ -638,7 +641,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.copies') || '0';
 
 			case 'in_bundle':
 				return get(rowData, 'counts.in_collection') || '0';
@@ -656,7 +659,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				const tags: TagOption[] = compact(
 					labels.map((labelObj: any): TagOption | null => {
 						const prettyLabel = collectionLabels.find(
-							collectionLabel => collectionLabel.value === labelObj.label
+							(collectionLabel) => collectionLabel.value === labelObj.label
 						);
 						if (!prettyLabel) {
 							return null;
@@ -811,6 +814,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onSelectBulkAction={handleBulkActionSelect as any}
 					selectedItems={selectedRows}
 					onSelectionChanged={setSelectedRows}
+					isLoading={isLoading}
 				/>
 				<ChangeAuthorModal
 					isOpen={changeAuthorModalOpen}
@@ -825,14 +829,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				<ChangeLabelsModal
 					isOpen={changeLabelsModalOpen}
 					onClose={() => setAddLabelModalOpen(false)}
-					labels={collectionLabels.map(labelObj => ({
+					labels={collectionLabels.map((labelObj) => ({
 						label: labelObj.description,
 						value: labelObj.value,
 					}))}
 					callback={(addOrRemove: AddOrRemove, labels: TagInfo[]) =>
 						bulkChangeLabels(
 							addOrRemove,
-							labels.map(labelObj => labelObj.value.toString())
+							labels.map((labelObj) => labelObj.value.toString())
 						)
 					}
 				/>

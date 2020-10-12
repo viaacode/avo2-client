@@ -206,7 +206,7 @@ export class AssignmentHelper {
 							<TextInput
 								id="title"
 								value={assignment.title}
-								onChange={title => setAssignmentProp('title', title)}
+								onChange={(title) => setAssignmentProp('title', title)}
 							/>
 						</FormGroup>
 						<FormGroup
@@ -219,7 +219,7 @@ export class AssignmentHelper {
 								state={(assignment as any)['descriptionRichEditorState']}
 								controls={[...WYSIWYG_OPTIONS_FULL, 'media']}
 								fileType="ASSIGNMENT_DESCRIPTION_IMAGE"
-								onChange={newState =>
+								onChange={(newState) =>
 									setAssignmentProp('descriptionRichEditorState', newState)
 								}
 							/>
@@ -253,7 +253,7 @@ export class AssignmentHelper {
 							<TextInput
 								id="class_room"
 								value={assignment.class_room || ''}
-								onChange={classRoom => setAssignmentProp('class_room', classRoom)}
+								onChange={(classRoom) => setAssignmentProp('class_room', classRoom)}
 							/>
 						</FormGroup>
 						<FormGroup
@@ -274,7 +274,7 @@ export class AssignmentHelper {
 								type="text"
 								placeholder={i18n.t('assignment/views/assignment-edit___http')}
 								value={assignment.answer_url || ''}
-								onChange={value => setAssignmentProp('answer_url', value)}
+								onChange={(value) => setAssignmentProp('answer_url', value)}
 							/>
 							<p className="c-form-help-text">
 								<Trans i18nKey="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">
@@ -315,7 +315,9 @@ export class AssignmentHelper {
 												? new Date(assignment.deadline_at)
 												: null
 										}
-										onChange={value => setAssignmentProp('deadline_at', value)}
+										onChange={(value) =>
+											setAssignmentProp('deadline_at', value)
+										}
 										showTimeInput
 									/>
 								</Spacer>
@@ -347,7 +349,7 @@ export class AssignmentHelper {
 							>
 								<Toggle
 									checked={assignment.is_collaborative}
-									onChange={checked =>
+									onChange={(checked) =>
 										setAssignmentProp('is_collaborative', checked)
 									}
 								/>

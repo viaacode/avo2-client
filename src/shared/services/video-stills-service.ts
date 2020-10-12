@@ -50,20 +50,20 @@ export class VideoStillService {
 	): Promise<string[]> {
 		// Only request the thumbnail of one audio fragment since those thumbnails are all identical
 		const mediaFragments = (collection.collection_fragments || []).filter(
-			fragment => fragment.type === 'ITEM'
+			(fragment) => fragment.type === 'ITEM'
 		);
 		const videoFragments = mediaFragments.filter(
-			fragment =>
+			(fragment) =>
 				fragment.item_meta &&
 				(fragment.item_meta as Avo.Item.Item).type.label === ContentTypeString.video
 		);
 		const audioFragments = mediaFragments.filter(
-			fragment =>
+			(fragment) =>
 				fragment.item_meta &&
 				(fragment.item_meta as Avo.Item.Item).type.label === ContentTypeString.audio
 		);
 		const cutVideoFragments = videoFragments.filter(
-			fragment =>
+			(fragment) =>
 				(fragment.start_oc !== 0 && !isNil(fragment.start_oc)) ||
 				(fragment.item_meta &&
 					!isNil(fragment.end_oc) &&
@@ -71,7 +71,7 @@ export class VideoStillService {
 		);
 		const uncutVideoFragments = without(videoFragments, ...cutVideoFragments);
 		const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
-			cutVideoFragments.map(fragment => ({
+			cutVideoFragments.map((fragment) => ({
 				externalId: fragment.external_id,
 				startTime: (fragment.start_oc || 0) * 1000,
 			}))
@@ -83,10 +83,10 @@ export class VideoStillService {
 				// current thumbnail image
 				...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
 				// Cut video thumbnails
-				...cutVideoStills.map(videoStill => videoStill.previewImagePath),
+				...cutVideoStills.map((videoStill) => videoStill.previewImagePath),
 				// Uncut video thumbnails
 				...uncutVideoFragments.map(
-					fragment => fragment.item_meta && fragment.item_meta.thumbnail_path
+					(fragment) => fragment.item_meta && fragment.item_meta.thumbnail_path
 				),
 				// One audio thumbnail
 				...(audioFragments[0] && audioFragments[0].item_meta ? [DEFAULT_AUDIO_STILL] : []),

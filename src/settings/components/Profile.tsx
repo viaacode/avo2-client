@@ -76,9 +76,11 @@ export interface ProfileProps extends DefaultSecureRouteProps {
 	redirectTo?: string;
 }
 
-const Profile: FunctionComponent<ProfileProps & {
-	getLoginState: () => Dispatch;
-}> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
+const Profile: FunctionComponent<
+	ProfileProps & {
+		getLoginState: () => Dispatch;
+	}
+> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
 	const [t] = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
@@ -205,7 +207,7 @@ const Profile: FunctionComponent<ProfileProps & {
 		if (permissions.EDUCATIONAL_ORGANISATION.EDIT || isCompleteProfileStep) {
 			EducationOrganisationService.fetchCities()
 				.then(setCities)
-				.catch(err => {
+				.catch((err) => {
 					console.error(new CustomError('Failed to get cities', err));
 					ToastService.danger(
 						t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
@@ -217,7 +219,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				.then((subjects: string[]) => {
 					setAllSubjects(subjects);
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.error(new CustomError('Failed to get subjects from the database', err));
 					ToastService.danger(
 						t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
@@ -229,7 +231,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				.then((educationLevels: string[]) => {
 					setAllEducationLevels(educationLevels);
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.error(
 						new CustomError('Failed to get education levels from database', err)
 					);
@@ -246,7 +248,7 @@ const Profile: FunctionComponent<ProfileProps & {
 		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
 			OrganisationService.fetchAllOrganisations()
 				.then(setAllOrganisations)
-				.catch(err => {
+				.catch((err) => {
 					console.error(
 						new CustomError('Failed to get organisations from database', err)
 					);
@@ -276,7 +278,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					return;
 				}
 				setOrganizationsLoadingState('loading');
-				const [city, zipCode] = selectedCity.split(/[()]/g).map(s => s.trim());
+				const [city, zipCode] = selectedCity.split(/[()]/g).map((s) => s.trim());
 				let orgs: Avo.EducationOrganization.Organization[];
 				if (organizationsCache[selectedCity]) {
 					// get from cache
@@ -360,15 +362,15 @@ const Profile: FunctionComponent<ProfileProps & {
 				title,
 				bio,
 				avatar: avatar || null,
-				educationLevels: (selectedEducationLevels || []).map(option => ({
+				educationLevels: (selectedEducationLevels || []).map((option) => ({
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				subjects: (selectedSubjects || []).map(option => ({
+				subjects: (selectedSubjects || []).map((option) => ({
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				organizations: (selectedOrganizations || []).map(option => ({
+				organizations: (selectedOrganizations || []).map((option) => ({
 					profile_id: profileId,
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
@@ -452,7 +454,7 @@ const Profile: FunctionComponent<ProfileProps & {
 	};
 
 	const onSelectedOrganizationChanged = (orgLabel: string) => {
-		const selectedOrg = organizations.find(org => org.label === orgLabel);
+		const selectedOrg = organizations.find((org) => org.label === orgLabel);
 		if (!selectedOrg) {
 			ToastService.danger(
 				t(
@@ -468,7 +470,7 @@ const Profile: FunctionComponent<ProfileProps & {
 
 	const removeOrganization = async (orgLabel: ReactText) => {
 		const newOrganizations = [...selectedOrganizations];
-		remove(newOrganizations, org => org.label === orgLabel);
+		remove(newOrganizations, (org) => org.label === orgLabel);
 		setSelectedOrganizations(newOrganizations);
 	};
 
@@ -510,12 +512,12 @@ const Profile: FunctionComponent<ProfileProps & {
 						placeholder={t(
 							'settings/components/profile___selecteer-de-vakken-die-u-geeft'
 						)}
-						options={(allSubjects || []).map(subject => ({
+						options={(allSubjects || []).map((subject) => ({
 							label: subject,
 							value: subject,
 						}))}
 						value={selectedSubjects}
-						onChange={selectedValues => setSelectedSubjects(selectedValues || [])}
+						onChange={(selectedValues) => setSelectedSubjects(selectedValues || [])}
 					/>
 				) : selectedSubjects.length ? (
 					<TagList
@@ -549,12 +551,12 @@ const Profile: FunctionComponent<ProfileProps & {
 						placeholder={t(
 							'settings/components/profile___selecteer-een-opleidingsniveau'
 						)}
-						options={(allEducationLevels || []).map(edLevel => ({
+						options={(allEducationLevels || []).map((edLevel) => ({
 							label: edLevel,
 							value: edLevel,
 						}))}
 						value={selectedEducationLevels}
-						onChange={selectedValues =>
+						onChange={(selectedValues) =>
 							setSelectedEducationLevels(selectedValues || [])
 						}
 					/>
@@ -594,7 +596,7 @@ const Profile: FunctionComponent<ProfileProps & {
 				{editable ? (
 					<Select
 						options={compact(
-							(allOrganisations || []).map(org => {
+							(allOrganisations || []).map((org) => {
 								if (!org.name || !org.or_id) {
 									return null;
 								}
@@ -611,7 +613,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					'-'
 				) : (
 					get(
-						(allOrganisations || []).find(org => org.or_id === companyId),
+						(allOrganisations || []).find((org) => org.or_id === companyId),
 						'name'
 					) || t('settings/components/profile___onbekende-organisatie')
 				)}
@@ -634,7 +636,7 @@ const Profile: FunctionComponent<ProfileProps & {
 						<TagList
 							closable
 							swatches={false}
-							tags={selectedOrganizations.map(org => ({
+							tags={selectedOrganizations.map((org) => ({
 								label: org.label,
 								id: org.label,
 							}))}
@@ -649,7 +651,7 @@ const Profile: FunctionComponent<ProfileProps & {
 										),
 										value: '',
 									},
-									...(cities || []).map(c => ({ label: c, value: c })),
+									...(cities || []).map((c) => ({ label: c, value: c })),
 								]}
 								value={selectedCity || ''}
 								onChange={onSelectedCityChanged}
@@ -683,7 +685,7 @@ const Profile: FunctionComponent<ProfileProps & {
 					<TagList
 						closable={false}
 						swatches={false}
-						tags={selectedOrganizations.map(org => ({
+						tags={selectedOrganizations.map((org) => ({
 							label: org.label,
 							id: org.label,
 						}))}
@@ -804,7 +806,7 @@ const Profile: FunctionComponent<ProfileProps & {
 												allowMulti={false}
 												assetType="PROFILE_AVATAR"
 												ownerId={get(user, 'profile.id')}
-												onChange={urls => setAvatar(urls[0])}
+												onChange={(urls) => setAvatar(urls[0])}
 											/>
 										</FormGroup>
 									)}

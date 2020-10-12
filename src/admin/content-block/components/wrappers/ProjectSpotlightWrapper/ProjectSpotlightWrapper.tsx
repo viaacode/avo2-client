@@ -24,8 +24,9 @@ interface ProjectSpotlightWrapperProps {
 	navigate: (action: ButtonAction) => void;
 }
 
-const ProjectSpotlightWrapper: FunctionComponent<ProjectSpotlightWrapperProps &
-	DefaultSecureRouteProps> = ({ elements, navigate }) => {
+const ProjectSpotlightWrapper: FunctionComponent<
+	ProjectSpotlightWrapperProps & DefaultSecureRouteProps
+> = ({ elements, navigate }) => {
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -35,7 +36,7 @@ const ProjectSpotlightWrapper: FunctionComponent<ProjectSpotlightWrapperProps &
 
 	const fetchContentPages = useCallback(async () => {
 		try {
-			const promises = elements.map(projectInfo => {
+			const promises = elements.map((projectInfo) => {
 				const projectPath = get(projectInfo, 'project.value');
 				if (projectPath && projectPath.toString && projectPath.toString()) {
 					return ContentPageService.getContentPageByPath(

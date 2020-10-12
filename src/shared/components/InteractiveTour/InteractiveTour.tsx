@@ -40,7 +40,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	const getTourDisplayDates = useCallback(() => {
 		try {
 			setTourDisplayDates(
-				JSON.parse(localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY) || '{}')
+				JSON.parse(
+					(localStorage && localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY)) ||
+						'{}'
+				)
 			);
 		} catch (err) {
 			console.error(
@@ -49,21 +52,27 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 					err,
 					{
 						key: TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
-						value: localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY),
+						value:
+							localStorage &&
+							localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY),
 					}
 				)
 			);
-			localStorage.setItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY, '{}');
+			if (localStorage) {
+				localStorage.setItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY, '{}');
+			}
 		}
 	}, [setTourDisplayDates]);
 
 	const updateTourDisplayDate = useCallback(
 		(tourId: string) => {
 			const newTourDisplayDates = { ...tourDisplayDates, [tourId]: new Date().toISOString() };
-			localStorage.setItem(
-				TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
-				JSON.stringify(newTourDisplayDates)
-			);
+			if (localStorage) {
+				localStorage.setItem(
+					TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
+					JSON.stringify(newTourDisplayDates)
+				);
+			}
 		},
 		[tourDisplayDates]
 	);
@@ -104,10 +113,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 			// Resolve current page location to route id, so we know which interactive tour to show
 			// We reverse the order of the routes, since more specific routes are always declared later in the list
 			const interactiveRoutePairs = reverse(
-				toPairs(APP_PATH).filter(pair => pair[1].showForInteractiveTour)
+				toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
 			);
 			const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
-				pair => {
+				(pair) => {
 					const route = pair[1].route;
 					const currentRoute = location.pathname;
 					const match = matchPath(currentRoute, route);

@@ -13,7 +13,7 @@ export const useUserGroups = (): UseUserGroupsTuple => {
 		setIsLoading(true);
 
 		UserGroupService.fetchAllUserGroups()
-			.then(groups => {
+			.then((groups) => {
 				if (groups) {
 					setUserGroups(groups);
 				}

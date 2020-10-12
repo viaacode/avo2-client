@@ -66,7 +66,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 				const validationErrors: string[] = await getValidationErrorsForPublish(collection);
 
 				if (validationErrors && validationErrors.length) {
-					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
+					setValidationError(validationErrors.map((rule) => get(rule[1], 'error')));
 					ToastService.danger(validationErrors);
 					return;
 				}

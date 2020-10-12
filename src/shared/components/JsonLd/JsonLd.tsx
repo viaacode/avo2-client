@@ -27,7 +27,7 @@ const JsonLd: FunctionComponent<JsonLdProps> = ({
 }) => {
 	document
 		.querySelectorAll('script[type="application/ld+json"]')
-		.forEach(script => script.remove());
+		.forEach((script) => script.remove());
 
 	const info = {
 		'@context': 'https://schema.org',

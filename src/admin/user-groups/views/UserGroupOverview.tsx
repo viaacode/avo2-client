@@ -41,8 +41,10 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 	const [userGroupCount, setUserGroupCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UserGroupTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const fetchUserGroups = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -75,6 +77,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setUserGroups, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -242,6 +245,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					noContentMatchingFiltersMessage={t(
 						'admin/user-groups/views/user-group-overview___er-zijn-geen-gebruikersgroepen-die-voldoen-aan-de-filters'
 					)}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={handleDelete}

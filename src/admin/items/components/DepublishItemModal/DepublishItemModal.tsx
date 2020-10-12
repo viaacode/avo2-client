@@ -255,7 +255,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 										  }
 										: undefined
 								}
-								onSelect={pickerItem =>
+								onSelect={(pickerItem) =>
 									setReplacementExternalId(get(pickerItem, 'value', null))
 								}
 								hideTypeDropdown

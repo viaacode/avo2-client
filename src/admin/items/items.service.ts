@@ -253,7 +253,9 @@ export class ItemsService {
 		);
 	}
 
-	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item | null> {
+	public static async fetchItemByExternalId(
+		externalId: string
+	): Promise<(Avo.Item.Item & { replacement_for?: string }) | null> {
 		try {
 			const response = await dataService.query({
 				query: GET_ITEM_BY_EXTERNAL_ID,
@@ -283,7 +285,9 @@ export class ItemsService {
 				);
 				const replacedByItemUid = get(relations, '[0].object', null);
 				if (replacedByItemUid) {
-					return await ItemsService.fetchItemByUuid(replacedByItemUid);
+					const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
+					(replacementItem as any).replacement_for = externalId;
+					return replacementItem;
 				}
 			}
 

@@ -40,6 +40,7 @@ import {
 	Select,
 	SelectOption,
 	Spacer,
+	Spinner,
 	Table,
 	TableColumn,
 	TextInput,
@@ -99,6 +100,7 @@ interface FilterTableProps extends RouteComponentProps {
 	onRowClick?: (rowData: any) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
+	isLoading?: boolean;
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
@@ -124,6 +126,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	onRowClick,
 	rowKey = 'id',
 	variant = 'bordered',
+	isLoading = false,
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes,
@@ -197,7 +200,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	};
 
 	const handleSelectBulkAction = (selectedAction: string) => {
-		const bulkActionInfo = (bulkActions || []).find(action => action.value === selectedAction);
+		const bulkActionInfo = (bulkActions || []).find(
+			(action) => action.value === selectedAction
+		);
 		if (bulkActionInfo && onSelectBulkAction) {
 			if (bulkActionInfo.confirm) {
 				setSelectedBulkAction(selectedAction);
@@ -219,7 +224,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	const getColumnOptions = (): CheckboxOption[] => {
 		// Get columns from query string list of columns, or use columns visible by default
 		return sortBy(
-			columns.map(column => ({
+			columns.map((column) => ({
 				id: column.id,
 				label: column.label || column.tooltip || '',
 				checked:
@@ -227,7 +232,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						? tableState.columns.includes(column.id)
 						: column.visibleByDefault,
 			})),
-			option => option.label
+			(option) => option.label
 		);
 	};
 
@@ -236,11 +241,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			// Return the columns in the order they are specified in the query params
 			return compact(
 				tableState.columns.map((columnId: string) => {
-					return columns.find(column => column.id === columnId);
+					return columns.find((column) => column.id === columnId);
 				})
 			);
 		}
-		return columns.filter(column => column.visibleByDefault);
+		return columns.filter((column) => column.visibleByDefault);
 	};
 
 	const updateSelectedColumns = (selectedColumns: string[]) => {
@@ -248,7 +253,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 		// This way, when a user selects columns, they will be in the default order
 		// But if an array is set by modifying the query params, then the order from the query params will be kept
 		handleTableStateChanged(
-			columns.filter(column => selectedColumns.includes(column.id)).map(column => column.id),
+			columns
+				.filter((column) => selectedColumns.includes(column.id))
+				.map((column) => column.id),
 			'columns'
 		);
 	};
@@ -291,7 +298,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 					<Toolbar>
 						<ToolbarLeft>
 							<Flex spaced="regular" wrap>
-								{columns.map(col => {
+								{columns.map((col) => {
 									if (!col.filterType || !col.id) {
 										return null;
 									}
@@ -303,7 +310,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													{...(col.filterProps || {})}
 													id={col.id}
 													label={col.label}
-													onChange={value =>
+													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}
 													options={get(
@@ -326,7 +333,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													{...(col.filterProps || {})}
 													id={col.id}
 													label={col.label}
-													onChange={value =>
+													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}
 													range={(tableState as any)[col.id]}
@@ -341,7 +348,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													id={col.id}
 													label={col.label}
 													value={(tableState as any)[col.id]}
-													onChange={value =>
+													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}
 													key={`filter-${col.id}`}
@@ -390,30 +397,45 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			) : (
 				<>
 					{renderFilters()}
-					<Table
-						columns={getSelectedColumns()}
-						data={data}
-						emptyStateMessage={noContentMatchingFiltersMessage}
-						onColumnClick={columnId => {
-							handleSortOrderChanged(columnId);
-						}}
-						onRowClick={onRowClick}
-						renderCell={renderCell}
-						rowKey={rowKey}
-						variant={variant}
-						sortColumn={tableState.sort_column}
-						sortOrder={tableState.sort_order}
-						showCheckboxes={(!!bulkActions && !!bulkActions.length) || showCheckboxes}
-						selectedItems={selectedItems || undefined}
-						onSelectionChanged={onSelectionChanged}
-					/>
-					<Spacer margin="top-large">
-						<Pagination
-							pageCount={Math.ceil(dataCount / itemsPerPage)}
-							currentPage={tableState.page || 0}
-							onPageChange={newPage => handleTableStateChanged(newPage, 'page')}
-						/>
-					</Spacer>
+					<div className="c-filter-table__loading-wrapper">
+						<div style={{ opacity: isLoading ? 0.2 : 1 }}>
+							<Table
+								columns={getSelectedColumns()}
+								data={data}
+								emptyStateMessage={noContentMatchingFiltersMessage}
+								onColumnClick={(columnId) => {
+									handleSortOrderChanged(columnId);
+								}}
+								onRowClick={onRowClick}
+								renderCell={renderCell}
+								rowKey={rowKey}
+								variant={variant}
+								sortColumn={tableState.sort_column}
+								sortOrder={tableState.sort_order}
+								showCheckboxes={
+									(!!bulkActions && !!bulkActions.length) || showCheckboxes
+								}
+								selectedItems={selectedItems || undefined}
+								onSelectionChanged={onSelectionChanged}
+							/>
+							<Spacer margin="top-large">
+								<Pagination
+									pageCount={Math.ceil(dataCount / itemsPerPage)}
+									currentPage={tableState.page || 0}
+									onPageChange={(newPage) =>
+										handleTableStateChanged(newPage, 'page')
+									}
+								/>
+							</Spacer>
+						</div>
+						{isLoading && (
+							<Flex center className="c-filter-table__loading">
+								<Spacer margin={['top-large', 'bottom-large']}>
+									<Spinner size="large" />
+								</Spacer>
+							</Flex>
+						)}
+					</div>
 				</>
 			)}
 			{!!bulkActions && !!bulkActions.length && (
@@ -422,12 +444,12 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 					deleteObjectCallback={handleConfirmSelectBulkAction}
 					onClose={() => setConfirmBulkActionModalOpen(false)}
 					confirmLabel={get(
-						bulkActions.find(action => action.value === selectedBulkAction),
+						bulkActions.find((action) => action.value === selectedBulkAction),
 						'label',
 						t('admin/shared/components/filter-table/filter-table___bevestig')
 					)}
 					confirmButtonType={get(
-						bulkActions.find(action => action.value === selectedBulkAction),
+						bulkActions.find((action) => action.value === selectedBulkAction),
 						'confirmButtonType'
 					)}
 				/>

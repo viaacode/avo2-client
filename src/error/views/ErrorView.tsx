@@ -79,8 +79,8 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		...(isString(queryParams.actionButtons)
 			? queryParams.actionButtons
 					.split(',')
-					.map(button => button.trim())
-					.filter(button => !!button)
+					.map((button) => button.trim())
+					.filter((button) => !!button)
 			: []),
 	]);
 

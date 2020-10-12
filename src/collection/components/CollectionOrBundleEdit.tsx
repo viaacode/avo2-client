@@ -129,8 +129,9 @@ interface CollectionOrBundleEditProps {
 	type: 'collection' | 'bundle';
 }
 
-const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
-	DefaultSecureRouteProps<{ id: string }>> = ({ type, history, location, match, user }) => {
+const CollectionOrBundleEdit: FunctionComponent<
+	CollectionOrBundleEditProps & DefaultSecureRouteProps<{ id: string }>
+> = ({ type, history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -426,7 +427,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			return collection;
 		}
 		const clonedCollection = cloneDeep(collection);
-		getFragmentsFromCollection(clonedCollection).forEach(fragment => {
+		getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
 			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
 				fragment.custom_description = sanitizeHtml(
 					(fragment.custom_description as any).toHTML(),
@@ -850,10 +851,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
-							collectionId={collectionState.currentCollection.id}
-							collectionFragments={
-								collectionState.currentCollection.collection_fragments
-							}
+							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
 							location={location}

@@ -195,7 +195,7 @@ export class CollectionService {
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
-				fragment => fragment.id < 0 || isNil(fragment.id)
+				(fragment) => fragment.id < 0 || isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
@@ -734,9 +734,9 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			fragments.forEach(fragment => (fragment.collection_uuid = collectionId));
+			fragments.forEach((fragment) => (fragment.collection_uuid = collectionId));
 
-			const cleanedFragments = cloneDeep(fragments).map(fragment => {
+			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
 				delete fragment.id;
 				delete (fragment as any).__typename;
 				delete fragment.item_meta;
@@ -839,7 +839,7 @@ export class CollectionService {
 			'collection',
 			user
 		);
-		const titles = collections.map(c => c.title);
+		const titles = collections.map((c) => c.title);
 
 		let index = 0;
 		let candidateTitle: string;
@@ -860,7 +860,7 @@ export class CollectionService {
 		let variables: any;
 		try {
 			variables = {
-				objects: labels.map(label => ({
+				objects: labels.map((label) => ({
 					label,
 					collection_uuid: collectionId,
 				})),
@@ -916,7 +916,7 @@ export class CollectionService {
 
 				// Map result array to dictionary
 				CollectionService.collectionLabels = fromPairs(
-					labels.map(collectionLabel => [
+					labels.map((collectionLabel) => [
 						collectionLabel.value,
 						collectionLabel.description,
 					])

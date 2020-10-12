@@ -187,7 +187,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		setUserGroup({
 			...userGroup,
 			permissionGroups: (userGroup.permissionGroups || []).filter(
-				permissionGroup => permissionGroup.id !== permissionGroupIdToDelete
+				(permissionGroup) => permissionGroup.id !== permissionGroupIdToDelete
 			),
 		});
 	};
@@ -198,7 +198,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		}
 		if (
 			(userGroup.permissionGroups || []).find(
-				pg => String(pg.id) === selectedPermissionGroupId
+				(pg) => String(pg.id) === selectedPermissionGroupId
 			)
 		) {
 			ToastService.danger(
@@ -210,7 +210,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			return;
 		}
 		const selectedPermission = allPermissionGroups.find(
-			pg => String(pg.id) === selectedPermissionGroupId
+			(pg) => String(pg.id) === selectedPermissionGroupId
 		);
 		if (!selectedPermission) {
 			ToastService.danger(
@@ -276,11 +276,11 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			);
 
 			await UserGroupService.addPermissionGroupsToUserGroup(
-				addedPermissions.map(p => p.id) as number[],
+				addedPermissions.map((p) => p.id) as number[],
 				userGroupId
 			);
 			await UserGroupService.removePermissionGroupsFromUserGroup(
-				removedPermissions.map(p => p.id) as number[],
+				removedPermissions.map((p) => p.id) as number[],
 				userGroupId
 			);
 
@@ -311,14 +311,16 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 
 	const getAllPermissionGroups = () => {
 		const permissionGroupIdsInUserGroup: number[] = compact(
-			(get(userGroup, 'permissionGroups', []) as Partial<PermissionGroup>[]).map(pg => pg.id)
+			(get(userGroup, 'permissionGroups', []) as Partial<PermissionGroup>[]).map(
+				(pg) => pg.id
+			)
 		);
 		return allPermissionGroups
-			.filter(p => {
+			.filter((p) => {
 				// Don't show permissionGroups that are already linked to this user group
 				return !permissionGroupIdsInUserGroup.includes(p.id as number);
 			})
-			.map(pg => ({
+			.map((pg) => ({
 				label: pg.label || pg.description || '',
 				value: String(pg.id),
 			}));
@@ -385,7 +387,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 								>
 									<TextInput
 										value={userGroup.label || ''}
-										onChange={newLabel =>
+										onChange={(newLabel) =>
 											setUserGroup({
 												...userGroup,
 												label: newLabel,
@@ -401,7 +403,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 								>
 									<TextInput
 										value={userGroup.description || ''}
-										onChange={newDescription =>
+										onChange={(newDescription) =>
 											setUserGroup({
 												...userGroup,
 												description: newDescription,
@@ -465,7 +467,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							emptyStateMessage={t(
 								'admin/user-groups/views/user-group-edit___deze-gebruikersgroep-is-nog-niet-gelinked-aan-een-permissiegroep'
 							)}
-							onColumnClick={columId =>
+							onColumnClick={(columId) =>
 								handleSortClick(columId as PermissionGroupTableCols)
 							}
 							renderCell={(rowData: UserGroup, columnId: string) =>

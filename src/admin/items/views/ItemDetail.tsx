@@ -331,7 +331,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								) : (
 									'-'
 								),
-								t('Vervangen door')
+								t('admin/items/views/item-detail___vervangen-door')
 							)}
 							{renderSimpleDetailRows(item, [
 								[
@@ -347,7 +347,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 											</a>
 									  ))
 									: '-',
-								t('Ondertitels')
+								t('admin/items/views/item-detail___ondertitels')
 							)}
 							{renderDetailRow(
 								<>

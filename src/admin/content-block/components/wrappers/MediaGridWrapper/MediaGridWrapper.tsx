@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import { BlockMediaGrid, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import {
@@ -33,9 +33,9 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	results: ResolvedItemOrCollection[];
 }
 
-const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
-	RouteComponentProps &
-	UserProps> = ({
+const MediaGridWrapper: FunctionComponent<
+	MediaGridWrapperProps & RouteComponentProps & UserProps
+> = ({
 	title,
 	buttonLabel,
 	buttonAction,
@@ -97,10 +97,10 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 					const searchResults = await ContentPageService.resolveMediaItems(
 						searchQueryValue,
 						searchQueryLimitNumber,
-						elements.filter(element => !isEmpty(element) && element.mediaItem)
+						elements.filter((element) => !isEmpty(element) && element.mediaItem)
 					);
 
-					setResolvedResults(r => {
+					setResolvedResults((r) => {
 						if (
 							r &&
 							r.length &&
@@ -117,7 +117,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 				) {
 					// If the next query requests less items, we can resolve it without going to the server
 					// by just trimming the items in the cache
-					setResolvedResults(r => (r || []).slice(0, searchQueryLimitNumber));
+					setResolvedResults((r) => (r || []).slice(0, searchQueryLimitNumber));
 					setLastSearchQueryLimit(searchQueryLimitNumber);
 				}
 			}
@@ -227,7 +227,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps &
 	// Render
 	const renderMediaGridBlock = () => {
 		return (
-			<BlockMediaList
+			<BlockMediaGrid
 				title={title}
 				buttonLabel={buttonLabel}
 				buttonAction={buttonAction || searchQuery}

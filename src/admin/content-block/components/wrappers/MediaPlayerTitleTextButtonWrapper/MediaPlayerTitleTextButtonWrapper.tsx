@@ -41,9 +41,9 @@ interface MediaPlayerTitleTextButtonWrapperProps {
 	align: AlignOption;
 }
 
-export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWrapperProps &
-	RouteComponentProps &
-	UserProps> = ({
+export const MediaPlayerTitleTextButtonWrapper: FC<
+	MediaPlayerTitleTextButtonWrapperProps & RouteComponentProps & UserProps
+> = ({
 	mediaItem,
 	mediaSrc,
 	mediaPoster,
