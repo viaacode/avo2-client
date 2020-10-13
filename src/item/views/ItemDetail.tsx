@@ -207,7 +207,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		};
 
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, JSON.stringify(user)]); // ensure only triggers once for user object
+	}, [match.params.id, setItem, t, history, user]); // ensure only triggers once for user object
 
 	const toggleBookmark = async () => {
 		try {
@@ -224,7 +224,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('collection/views/collection-detail___de-beladwijzer-is-verwijderd')
+					? t('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
 					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {

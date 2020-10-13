@@ -334,7 +334,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, JSON.stringify(user), history]);
+	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, user, history]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -456,7 +456,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('collection/views/collection-detail___de-beladwijzer-is-verwijderd')
+					? t('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
 					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
