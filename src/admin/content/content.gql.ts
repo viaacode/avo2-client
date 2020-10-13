@@ -47,6 +47,7 @@ export const GET_CONTENT_PAGES = gql`
 				content_label {
 					label
 					id
+					link_to
 				}
 			}
 		}
@@ -149,6 +150,7 @@ export const GET_CONTENT_BY_ID = gql`
 				content_label {
 					label
 					id
+					link_to
 				}
 			}
 			contentBlockssBycontentId(order_by: { position: asc }) {
