@@ -2,9 +2,9 @@ import { get } from 'lodash-es';
 import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
+import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { RelationEntry } from '../../shared/services/relation-service/relation.types';
 
 export const getFragmentProperty = (
 	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,

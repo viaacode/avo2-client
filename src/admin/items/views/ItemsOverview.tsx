@@ -261,8 +261,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				if (rowData.is_published) {
 					return t('admin/items/views/items-overview___gepubliceerd');
 				}
-				if ((rowData as any).depublish_reason) {
-					// TODO remove cast after update to typings v2.23.0
+				if (rowData.depublish_reason) {
 					return t('admin/items/views/items-overview___gedepubliceerd-pancarte');
 				}
 				if (get(rowData, 'relations[0]')) {

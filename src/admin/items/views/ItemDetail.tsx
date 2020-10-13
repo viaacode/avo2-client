@@ -81,9 +81,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			const itemObj = await ItemsService.fetchItemByUuid(match.params.id);
 
 			const replacedByUuid: string | undefined = get(itemObj, 'relations[0].object');
-			if (replacedByUuid) {
-				// TODO remove cast after update to typings v2.23.0
-				(itemObj as any).relations[0].object_meta = await ItemsService.fetchItemByUuid(
+			if (replacedByUuid && itemObj.relations) {
+				itemObj.relations[0].object_meta = await ItemsService.fetchItemByUuid(
 					replacedByUuid
 				);
 			}

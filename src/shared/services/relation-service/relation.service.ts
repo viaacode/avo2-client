@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { RelationEntry, RelationType } from '@viaa/avo2-types/types/collection';
 
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
@@ -17,7 +18,6 @@ import {
 	INSERT_COLLECTION_RELATION,
 	INSERT_ITEM_RELATION,
 } from './relation.gql';
-import { RelationEntry, RelationType } from './relation.types';
 
 export class RelationService {
 	public static async fetchRelationsByObject(

@@ -17,12 +17,12 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
-import { RelationEntry } from '../../../../shared/services/relation-service/relation.types';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 
