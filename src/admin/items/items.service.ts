@@ -280,7 +280,7 @@ export class ItemsService {
 			if (itemUid) {
 				const relations = await RelationService.fetchRelationsBySubject(
 					'item',
-					itemUid,
+					[itemUid],
 					'IS_REPLACED_BY'
 				);
 				const replacedByItemUid = get(relations, '[0].object', null);

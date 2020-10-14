@@ -36,6 +36,7 @@ export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	subjects: string[];
 	education_levels: string[];
 	collection_labels: string[];
+	is_copy: boolean;
 }
 
 export type CollectionBulkAction =

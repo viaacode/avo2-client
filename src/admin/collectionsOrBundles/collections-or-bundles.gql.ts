@@ -47,6 +47,11 @@ export const GET_COLLECTIONS = gql`
 				views
 				copies
 			}
+			relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
+				subject
+				predicate
+				object
+			}
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {
