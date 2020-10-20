@@ -3,6 +3,7 @@ export { default as MediaPlayerTitleTextButtonWrapper } from './MediaPlayerTitle
 export { default as MediaPlayerWrapper } from './MediaPlayerWrapper/MediaPlayerWrapper';
 export { default as PageOverviewWrapper } from './PageOverviewWrapper/PageOverviewWrapper';
 export { default as ProjectSpotlightWrapper } from './ProjectSpotlightWrapper/ProjectSpotlightWrapper';
-export { default as BlockGridWrapper } from './ImageGridWrapper/ImageGridWrapper';
+export { default as BlockImageGridWrapper } from './ImageGridWrapper/ImageGridWrapper';
+export { default as BlockIconGridWrapper } from './IconGridWrapper/IconGridWrapper';
 export { default as BlockContentPageMeta } from './BlockContentPageMeta/BlockContentPageMeta';
 export { default as HeroWrapper } from './HeroWrapper/HeroWrapper';

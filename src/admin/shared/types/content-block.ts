@@ -105,6 +105,7 @@ export enum ContentBlockType {
 	Hero = 'HERO',
 	Search = 'SEARCH',
 	ContentPageMeta = 'CONTENT_PAGE_META',
+	IconGrid = 'ICON_GRID',
 }
 
 export enum ContentBlockEditor {
