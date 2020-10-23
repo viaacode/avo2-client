@@ -28,6 +28,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { getProfileAlias, getProfileFromUser } from '../../authentication/helpers/get-profile-info';
@@ -115,6 +116,8 @@ const Profile: FunctionComponent<
 	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
 		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
 	);
+	const [firstName, setFirstName] = useState<string>(get(user, 'first_name') || '');
+	const [lastName, setLastName] = useState<string>(get(user, 'last_name') || '');
 	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
@@ -139,6 +142,8 @@ const Profile: FunctionComponent<
 	>({});
 
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
+
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 	useEffect(() => {
 		setPermissions({
@@ -358,6 +363,8 @@ const Profile: FunctionComponent<
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
 			const newProfileInfo = {
+				firstName,
+				lastName,
 				alias,
 				title,
 				bio,
@@ -767,75 +774,103 @@ const Profile: FunctionComponent<
 							<Form type="standard">
 								<>
 									<FormGroup
-										label={t('settings/components/profile___nickname')}
-										labelFor="alias"
-										error={get(profileErrors, 'alias')}
+										label={t('settings/components/account___voornaam')}
+										labelFor="first_name"
+										error={get(profileErrors, 'first_name')}
 									>
 										<TextInput
-											id="alias"
-											placeholder={t(
-												'settings/components/profile___een-unieke-gebruikersnaam'
-											)}
-											value={alias || ''}
-											onChange={setAlias}
+											id="first_name"
+											value={firstName || ''}
+											onChange={setFirstName}
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t('settings/components/profile___functie')}
-										labelFor="title"
+										label={t('settings/components/account___achternaam')}
+										labelFor="last_name"
+										error={get(profileErrors, 'last_name')}
 									>
 										<TextInput
-											id="title"
-											placeholder={t(
-												'settings/components/profile___bv-leerkracht-basis-onderwijs'
-											)}
-											value={title || ''}
-											onChange={setTitle}
+											id="last_name"
+											value={lastName || ''}
+											onChange={setLastName}
 										/>
 									</FormGroup>
-									{!get(user, 'profile.organisation') && (
-										<FormGroup
-											label={t('settings/components/profile___profielfoto')}
-											labelFor="profilePicture"
-										>
-											<FileUpload
-												label={t(
-													'settings/components/profile___upload-een-profiel-foto'
-												)}
-												urls={compact([avatar])}
-												allowMulti={false}
-												assetType="PROFILE_AVATAR"
-												ownerId={get(user, 'profile.id')}
-												onChange={(urls) => setAvatar(urls[0])}
-											/>
-										</FormGroup>
-									)}
-									{!!get(user, 'profile.organisation.logo_url') && (
-										<div
-											className="c-logo-preview"
-											style={{
-												backgroundImage: `url(${get(
-													user,
-													'profile.organisation.logo_url'
-												)})`,
-											}}
-										/>
-									)}
-									<FormGroup
-										label={t('settings/components/profile___bio')}
-										labelFor="bio"
-									>
-										<TextArea
-											name="bio"
-											id="bio"
-											height="medium"
-											placeholder={t(
-												'settings/components/profile___een-korte-beschrijving-van-jezelf'
+									{!isPupil && (
+										<>
+											<FormGroup
+												label={t('settings/components/profile___nickname')}
+												labelFor="alias"
+												error={get(profileErrors, 'alias')}
+											>
+												<TextInput
+													id="alias"
+													placeholder={t(
+														'settings/components/profile___een-unieke-gebruikersnaam'
+													)}
+													value={alias || ''}
+													onChange={setAlias}
+												/>
+											</FormGroup>
+											<FormGroup
+												label={t('settings/components/profile___functie')}
+												labelFor="title"
+											>
+												<TextInput
+													id="title"
+													placeholder={t(
+														'settings/components/profile___bv-leerkracht-basis-onderwijs'
+													)}
+													value={title || ''}
+													onChange={setTitle}
+												/>
+											</FormGroup>
+											{!get(user, 'profile.organisation') && (
+												<FormGroup
+													label={t(
+														'settings/components/profile___profielfoto'
+													)}
+													labelFor="profilePicture"
+												>
+													<FileUpload
+														label={t(
+															'settings/components/profile___upload-een-profiel-foto'
+														)}
+														urls={compact([avatar])}
+														allowMulti={false}
+														assetType="PROFILE_AVATAR"
+														ownerId={get(user, 'profile.id')}
+														onChange={(urls) => setAvatar(urls[0])}
+													/>
+												</FormGroup>
 											)}
-											value={bio || ''}
-											onChange={setBio}
-										/>
-									</FormGroup>
+											{!!get(user, 'profile.organisation.logo_url') && (
+												<div
+													className="c-logo-preview"
+													style={{
+														backgroundImage: `url(${get(
+															user,
+															'profile.organisation.logo_url'
+														)})`,
+													}}
+												/>
+											)}
+											<FormGroup
+												label={t('settings/components/profile___bio')}
+												labelFor="bio"
+											>
+												<TextArea
+													name="bio"
+													id="bio"
+													height="medium"
+													placeholder={t(
+														'settings/components/profile___een-korte-beschrijving-van-jezelf'
+													)}
+													value={bio || ''}
+													onChange={setBio}
+												/>
+											</FormGroup>
+										</>
+									)}
 								</>
 								{renderFieldVisibleOrRequired('SUBJECTS', renderSubjectsField)}
 								{renderFieldVisibleOrRequired(
@@ -859,25 +894,27 @@ const Profile: FunctionComponent<
 							</Form>
 						</Column>
 						<Column size="3-5">
-							<>
-								{/*<Box>*/}
-								{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
-								{/*	/!* TODO replace with components from component repo *!/*/}
-								{/*	<div className="c-progress-bar" />*/}
-								{/*</Box>*/}
-								<Spacer margin={['top', 'bottom']}>
-									<Box>
-										<p>
-											<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
-												Vul hier wat info over jezelf in! Deze informatie
-												wordt getoond op jouw persoonlijk profiel. Je kan
-												voor elk veld aanduiden of je deze informatie wil
-												delen of niet.
-											</Trans>
-										</p>
-									</Box>
-								</Spacer>
-							</>
+							{!isPupil && (
+								<>
+									{/*<Box>*/}
+									{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
+									{/*	/!* TODO replace with components from component repo *!/*/}
+									{/*	<div className="c-progress-bar" />*/}
+									{/*</Box>*/}
+									<Spacer margin={['top', 'bottom']}>
+										<Box>
+											<p>
+												<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
+													Vul hier wat info over jezelf in! Deze
+													informatie wordt getoond op jouw persoonlijk
+													profiel. Je kan voor elk veld aanduiden of je
+													deze informatie wil delen of niet.
+												</Trans>
+											</p>
+										</Box>
+									</Spacer>
+								</>
+							)}
 						</Column>
 					</Grid>
 				</Spacer>
