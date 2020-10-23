@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import {
 	Blankslate,
@@ -363,11 +364,17 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					onClick={handlePreviewClicked}
 				/>
 				{isAllowedToEdit && (
-					<Button
-						label={t('admin/content/views/content-detail___bewerken')}
-						title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
-						onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
-					/>
+					<Link
+						to={buildLink(CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
+						className="a-link__no-styles"
+					>
+						<Button
+							label={t('admin/content/views/content-detail___bewerken')}
+							title={t(
+								'admin/content/views/content-detail___bewerk-deze-content-pagina'
+							)}
+						/>
+					</Link>
 				)}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}

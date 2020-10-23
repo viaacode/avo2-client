@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import { BlockSpotlight, ButtonAction, ImageInfo } from '@viaa/avo2-components';
+import { BlockSpotlight, ButtonAction, ImageInfo, RenderLinkFunction } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
@@ -21,12 +21,12 @@ interface ProjectSpotlightProps {
 
 interface ProjectSpotlightWrapperProps {
 	elements: ProjectSpotlightProps[];
-	navigate: (action: ButtonAction) => void;
+	renderLink: RenderLinkFunction;
 }
 
 const ProjectSpotlightWrapper: FunctionComponent<
 	ProjectSpotlightWrapperProps & DefaultSecureRouteProps
-> = ({ elements, navigate }) => {
+> = ({ elements, renderLink }) => {
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -89,7 +89,7 @@ const ProjectSpotlightWrapper: FunctionComponent<
 						};
 					}
 				)}
-				navigate={navigate}
+				renderLink={renderLink}
 			/>
 		);
 	};

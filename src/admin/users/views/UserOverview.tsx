@@ -2,6 +2,7 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -132,8 +133,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			);
 			return;
 		}
-		const detailRoute = ADMIN_PATH.USER_DETAIL;
-		const link = buildLink(detailRoute, { id });
+		const link = buildLink(ADMIN_PATH.USER_DETAIL, { id });
 		redirectToClientPage(link, history);
 	};
 
@@ -141,10 +141,16 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		rowData: Partial<Avo.User.Profile>,
 		columnId: UserOverviewTableCol
 	) => {
-		const { user, stamboek, created_at, title, organisation } = rowData;
+		const { id, user, stamboek, created_at, title, organisation } = rowData;
 
 		switch (columnId) {
 			case 'first_name':
+				return (
+					<Link to={buildLink(ADMIN_PATH.USER_DETAIL, { id })}>
+						{truncateTableValue(get(user, columnId))}
+					</Link>
+				);
+
 			case 'last_name':
 			case 'mail':
 				return truncateTableValue(get(user, columnId));

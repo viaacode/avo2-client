@@ -2,6 +2,7 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -57,7 +58,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { handleRelatedItemClicked } from '../../shared/helpers/handle-related-item-click';
+import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -269,25 +270,29 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
-						<MediaCard
-							category={englishContentType}
-							onClick={() => handleRelatedItemClicked(relatedItem, history)}
-							orientation="horizontal"
-							title={relatedItem.dc_title}
+						<Link
+							to={generateRelatedItemLink(relatedItem)}
+							className="a-link__no-styles"
 						>
-							<MediaCardThumbnail>
-								<Thumbnail
-									category={englishContentType}
-									src={relatedItem.thumbnail_path}
-									showCategoryIcon
-								/>
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={englishContentType}>
-									<MetaDataItem label={relatedItem.original_cp || ''} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
+							<MediaCard
+								category={englishContentType}
+								orientation="horizontal"
+								title={relatedItem.dc_title}
+							>
+								<MediaCardThumbnail>
+									<Thumbnail
+										category={englishContentType}
+										src={relatedItem.thumbnail_path}
+										showCategoryIcon
+									/>
+								</MediaCardThumbnail>
+								<MediaCardMetaData>
+									<MetaData category={englishContentType}>
+										<MetaDataItem label={relatedItem.original_cp || ''} />
+									</MetaData>
+								</MediaCardMetaData>
+							</MediaCard>
+						</Link>
 					</li>
 				);
 			});

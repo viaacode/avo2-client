@@ -76,6 +76,8 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.Spotlight,
 	ContentBlockType.Hero,
+	ContentBlockType.PageOverview,
+	ContentBlockType.MediaGrid,
 ];
 
 /**

@@ -13,7 +13,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { formatDate, navigate } from '../../../shared/helpers';
+import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
@@ -33,6 +33,8 @@ import {
 } from '../permission-group.types';
 
 import './PermissionGroupOverview.scss';
+import { Link } from 'react-router-dom';
+import { ADMIN_PATH } from '../../admin.const';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 
@@ -119,6 +121,13 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		columnId: PermissionGroupOverviewTableCols
 	) => {
 		switch (columnId) {
+			case 'label':
+				return (
+					<Link to={buildLink(ADMIN_PATH.PERMISSION_GROUP_DETAIL, { id: rowData.id })}>
+						{truncateTableValue(rowData[columnId])}
+					</Link>
+				);
+
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
