@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { BlockMediaGrid, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import {
@@ -227,7 +227,7 @@ const MediaGridWrapper: FunctionComponent<
 	// Render
 	const renderMediaGridBlock = () => {
 		return (
-			<BlockMediaGrid
+			<BlockMediaList
 				title={title}
 				buttonLabel={buttonLabel}
 				buttonAction={buttonAction || searchQuery}

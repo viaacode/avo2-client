@@ -19,6 +19,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -260,14 +261,17 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
 		>
 			<AdminLayoutTopBarRight>
-				<Button
-					label={t(
-						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
-					}}
-				/>
+				<ButtonToolbar>
+					<UpdatePermissionsButton />
+					<Button
+						label={t(
+							'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
+						)}
+						onClick={() => {
+							redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
+						}}
+					/>
+				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>
