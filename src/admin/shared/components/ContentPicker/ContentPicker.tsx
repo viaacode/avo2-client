@@ -15,6 +15,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
+import { FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
@@ -134,7 +135,8 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// events
 	const onSelectType = async (selected: ValueType<PickerTypeOption>) => {
 		if (selectedType !== selected) {
-			setSelectedType(selected as PickerTypeOption);
+			const selectedOption = selected as PickerTypeOption<ContentPickerType>;
+			setSelectedType(selectedOption);
 			setSelectedItem(null);
 			propertyChanged('selectedItem', null);
 		}
@@ -212,6 +214,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		let newTarget: LinkTarget;
 		if (prop === 'target') {
 			newTarget = propValue as LinkTarget;
+		} else if (newType === 'FILE') {
+			newTarget = LinkTarget.Blank;
+			newLabel = (newValue && newValue.split('/').pop()) || undefined;
 		} else {
 			newTarget = isTargetSelf ? LinkTarget.Self : LinkTarget.Blank;
 		}
@@ -229,24 +234,31 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	};
 
 	// render controls
-	const renderTypePicker = () => (
-		<ReactSelect
-			{...REACT_SELECT_DEFAULT_OPTIONS}
-			id="content-picker-type"
-			placeholder={t('admin/shared/components/content-picker/content-picker___type')}
-			aria-label={t(
-				'admin/shared/components/content-picker/content-picker___selecteer-een-type'
-			)}
-			options={typeOptions}
-			onChange={onSelectType}
-			value={selectedType}
-			isSearchable={false}
-			isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-			noOptionsMessage={() =>
-				t('admin/shared/components/content-picker/content-picker___geen-types')
-			}
-		/>
-	);
+	const renderTypePicker = () => {
+		if (hideTypeDropdown) {
+			return null;
+		}
+		return (
+			<FlexItem shrink>
+				<ReactSelect
+					{...REACT_SELECT_DEFAULT_OPTIONS}
+					id="content-picker-type"
+					placeholder={t('admin/shared/components/content-picker/content-picker___type')}
+					aria-label={t(
+						'admin/shared/components/content-picker/content-picker___selecteer-een-type'
+					)}
+					options={typeOptions}
+					onChange={onSelectType}
+					value={selectedType}
+					isSearchable={false}
+					isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
+					noOptionsMessage={() =>
+						t('admin/shared/components/content-picker/content-picker___geen-types')
+					}
+				/>
+			</FlexItem>
+		);
+	};
 
 	const renderItemControl = () => {
 		if (!selectedType) {
@@ -255,9 +267,11 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 		switch (selectedType.picker) {
 			case 'SELECT':
-				return renderItemPicker();
+				return <FlexItem>{renderItemPicker()}</FlexItem>;
 			case 'TEXT_INPUT':
-				return renderTextInputPicker();
+				return <FlexItem>{renderTextInputPicker()}</FlexItem>;
+			case 'FILE_UPLOAD':
+				return <FlexItem>{renderFileUploadPicker()}</FlexItem>;
 			default:
 				return null;
 		}
@@ -287,27 +301,55 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		<TextInput value={input} onChange={onChangeInput} placeholder={selectedType.placeholder} />
 	);
 
-	const renderLinkTargetControl = () => {
+	const renderFileUploadPicker = () => {
 		return (
-			<Button
-				size="large"
-				type={'borderless'}
-				icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
-				title={
-					isTargetSelf
-						? t(
-								'admin/shared/components/content-picker/content-picker___open-de-link-in-hetzelfde-tablad'
-						  )
-						: t(
-								'admin/shared/components/content-picker/content-picker___open-de-link-in-een-nieuw-tabblad'
-						  )
-				}
-				onClick={() => {
-					setIsTargetSelf(!isTargetSelf);
-					propertyChanged('target', isTargetSelf ? LinkTarget.Blank : LinkTarget.Self);
+			<FileUpload
+				assetType={'CONTENT_BLOCK_FILE' as any}
+				ownerId=""
+				urls={[input]}
+				allowMulti={false}
+				showDeleteButton
+				onChange={(urls: string[]) => {
+					onChangeInput(urls[0]);
 				}}
-				disabled={!(selectedType.picker === 'TEXT_INPUT' ? input : selectedItem)}
+				allowedTypes={[]}
 			/>
+		);
+	};
+
+	const renderLinkTargetControl = () => {
+		if (hideTargetSwitch) {
+			return null;
+		}
+		// TODO remove after updating components to v1.59.0
+		if (selectedType.value === ('FILE' as any)) {
+			return null;
+		}
+		return (
+			<FlexItem shrink>
+				<Button
+					size="large"
+					type={'borderless'}
+					icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
+					title={
+						isTargetSelf
+							? t(
+									'admin/shared/components/content-picker/content-picker___open-de-link-in-hetzelfde-tablad'
+							  )
+							: t(
+									'admin/shared/components/content-picker/content-picker___open-de-link-in-een-nieuw-tabblad'
+							  )
+					}
+					onClick={() => {
+						setIsTargetSelf(!isTargetSelf);
+						propertyChanged(
+							'target',
+							isTargetSelf ? LinkTarget.Blank : LinkTarget.Self
+						);
+					}}
+					disabled={!(selectedType.picker === 'TEXT_INPUT' ? input : selectedItem)}
+				/>
+			</FlexItem>
 		);
 	};
 
@@ -315,9 +357,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	return (
 		<FormGroup error={errors} className="c-content-picker">
 			<Flex spaced="regular">
-				{!hideTypeDropdown && <FlexItem shrink>{renderTypePicker()}</FlexItem>}
-				<FlexItem>{renderItemControl()}</FlexItem>
-				{!hideTargetSwitch && <FlexItem shrink>{renderLinkTargetControl()}</FlexItem>}
+				{renderTypePicker()}
+				{renderItemControl()}
+				{renderLinkTargetControl()}
 			</Flex>
 		</FormGroup>
 	);

@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import React, { Fragment, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
+import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
@@ -77,6 +77,7 @@ export const navigate = (
 	history.push(builtLink);
 };
 
+// TODO see if we can replace this method completely by the new SmartLink component
 export function navigateToAbsoluteOrRelativeUrl(
 	url: string,
 	history: History,
@@ -86,22 +87,27 @@ export function navigateToAbsoluteOrRelativeUrl(
 	if (url.startsWith('www.')) {
 		fullUrl = `//${url}`;
 	}
-	if (target === LinkTarget.Self) {
-		if (fullUrl.includes('//')) {
-			// absolute url
-			window.location.href = fullUrl;
-		} else {
-			// relative url
-			history.push(fullUrl);
-		}
-	} else {
-		if (fullUrl.includes('//')) {
-			// absolute fullUrl
-			window.open(fullUrl);
-		} else {
-			// relative url
-			window.open(`${window.location.origin}${fullUrl}`);
-		}
+	switch (target) {
+		case LinkTarget.Self:
+			if (fullUrl.includes('//')) {
+				// absolute url
+				window.location.href = fullUrl;
+			} else {
+				// relative url
+				history.push(fullUrl);
+			}
+			break;
+
+		case LinkTarget.Blank:
+		default:
+			if (fullUrl.includes('//')) {
+				// absolute fullUrl
+				window.open(fullUrl);
+			} else {
+				// relative url
+				window.open(`${window.location.origin}${fullUrl}`);
+			}
+			break;
 	}
 }
 
@@ -122,7 +128,7 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 			resolvedTarget = LinkTarget.Blank;
 		}
 
-		switch (type as Avo.Core.ContentPickerType) {
+		switch (type as ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 			case 'PROJECTS':
@@ -165,6 +171,10 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 					history,
 					resolvedTarget
 				);
+				break;
+
+			case 'FILE':
+				navigateToAbsoluteOrRelativeUrl(value as string, history, LinkTarget.Blank);
 				break;
 
 			case 'SEARCH_QUERY':
