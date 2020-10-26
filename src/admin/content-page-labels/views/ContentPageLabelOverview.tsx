@@ -56,12 +56,14 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ContentPageLabelTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [contentTypes] = useContentTypes();
 
 	const [t] = useTranslation();
 
 	const fetchContentPageLabels = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -95,6 +97,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setContentPageLabels, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -300,6 +303,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={() => handleDelete()}

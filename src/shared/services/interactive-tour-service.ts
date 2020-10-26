@@ -200,7 +200,7 @@ export class InteractiveTourService {
 		);
 		const seenTourKeyPrefix = `INTERACTIVE-TOUR___${routeId}___`;
 		// @ts-ignore
-		forIn(localStorage, (value: string, key: string) => {
+		forIn(localStorage || {}, (value: string, key: string) => {
 			if (startsWith(key, seenTourKeyPrefix)) {
 				seenStatuses.push({ key, through_platform: false });
 			}
@@ -223,7 +223,7 @@ export class InteractiveTourService {
 			const key = `INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`;
 			if (profileId) {
 				await NotificationService.setNotification(key, profileId, false, false);
-			} else {
+			} else if (localStorage) {
 				localStorage.setItem(key, 'seen');
 			}
 		} catch (err) {

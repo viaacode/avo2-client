@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"private": true,
 	"scripts": {
 		"preinstall": "npx npm-force-resolutions",
@@ -12,7 +12,7 @@
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
 		"extract-translations": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format",
-		"whitelist-queries": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
+		"whitelist-queries": "ts-node --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
 		"update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
 		"licenses": "license-checker --csv --out licenses.csv",
 		"analyse": "npm run build && source-map-explorer 'build/static/js/*.js'"
@@ -45,7 +45,7 @@
 		"marked": "^0.7.0",
 		"moment": "^2.24.0",
 		"node-fetch": "^2.6.1",
-		"node-sass": "^4.13.1",
+		"node-sass": "^4.14.1",
 		"oaf-react-router": "^2.1.1",
 		"query-string": "^6.8.3",
 		"react": "16.13.1",
@@ -60,7 +60,7 @@
 		"react-popper": "^1.3.3",
 		"react-redux": "^6.0.1",
 		"react-router-dom": "^5.0.1",
-		"react-scripts": "3.4.1",
+		"react-scripts": "^3.4.3",
 		"react-scrollbars-custom": "^4.0.15",
 		"react-select": "^3.0.8",
 		"react-toastify": "^5.3.2",
@@ -75,8 +75,8 @@
 		"webpack": "^4.42.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^8.1.0",
-		"@commitlint/config-conventional": "^7.6.0",
+		"@commitlint/cli": "^11.0.0",
+		"@commitlint/config-conventional": "^11.0.0",
 		"@types/classnames": "^2.2.8",
 		"@types/enzyme": "^3.9.3",
 		"@types/enzyme-adapter-react-16": "^1.0.5",
@@ -112,7 +112,7 @@
 		"prettier": "^2.1.2",
 		"redux-mock-store": "^1.5.3",
 		"sort-object-keys": "^1.1.3",
-		"ts-jest": "^24.1.0",
+		"ts-jest": "^26.4.1",
 		"ts-loader": "^6.0.4",
 		"tslint": "^6.1.3",
 		"tslint-config-airbnb": "^5.11.2",
@@ -126,7 +126,8 @@
 	"resolutions": {
 		"immutable": "3.8.2",
 		"oaf-routing": "4.0.1",
-		"react": "16.13.1"
+		"react": "16.13.1",
+		"isomorphic-fetch": "3.0.0"
 	},
 	"browserslist": {
 		"production": [

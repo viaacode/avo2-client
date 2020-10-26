@@ -71,7 +71,13 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 									`Extracting graphql queries with javascript template parameters isn't supported: ${name}`
 								);
 							}
-							queries[name] = query.replace(/^\t/gm, '').trim();
+							// Remove leading tabs
+							// Remove query name
+							// Trim whitespace
+							queries[name] = query
+								.replace(/^\t/gm, '')
+								.replace(/^(query|mutation)\s?[^({]+([({])/gm, '$1 $2')
+								.trim();
 						}
 					} while (matches);
 				} catch (err) {
@@ -121,7 +127,7 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 					definition: {
 						queries: _.map(queries, (query: string, name: string) => ({
 							name,
-							query: query.trim(),
+							query,
 						})),
 					},
 				},
@@ -154,8 +160,9 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 	});
 }
 
+// https://github.com/hasura/graphql-engine/issues/4138
 whitelistQueries(
-	'avo_client_queries',
+	'allowed-queries',
 	'All queries the avo2 client is allowed to execute',
 	/const ([^\s]+) = gql`([^`]+?)`/gm
 );

@@ -18,6 +18,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -44,10 +45,12 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PermissionGroupTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
 	const fetchPermissionGroups = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -81,6 +84,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setPermissionGroups, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -210,6 +214,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={() => handleDelete()}
@@ -227,12 +232,15 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			)}
 		>
 			<AdminLayoutTopBarRight>
-				<Button
-					label={t(
-						'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
-					)}
-					onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
-				/>
+				<ButtonToolbar>
+					<UpdatePermissionsButton />
+					<Button
+						label={t(
+							'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
+						)}
+						onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
+					/>
+				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>

@@ -42,6 +42,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [userGroups] = useUserGroups();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const generateWhereObject = (filters: Partial<UserTableState>) => {
 		const andFilters: any[] = [];
@@ -88,6 +89,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 	const fetchUsers = useCallback(async () => {
 		try {
+			setIsLoading(true);
 			const [profilesTemp, profileCountTemp] = await UserService.getUsers(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
@@ -107,6 +109,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, t]);
 
 	useEffect(() => {
@@ -221,6 +224,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					onTableStateChanged={setTableState}
 					onRowClick={(rowData) => navigateToUserDetail(rowData.id)}
 					renderNoResults={renderNoResults}
+					isLoading={isLoading}
 				/>
 			</>
 		);

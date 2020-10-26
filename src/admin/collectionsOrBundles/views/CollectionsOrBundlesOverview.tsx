@@ -76,6 +76,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[] | null>();
 
@@ -90,6 +91,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	// methods
 	const fetchCollectionsOrBundles = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -194,6 +196,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
 
 	const fetchCollectionLabels = useCallback(async () => {
@@ -617,7 +620,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'author':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
-				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
+				return user ? truncateTableValue((user as any).full_name) : '-';
 
 			case 'author_user_group':
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
@@ -638,7 +641,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.copies') || '0';
 
 			case 'in_bundle':
 				return get(rowData, 'counts.in_collection') || '0';
@@ -811,6 +814,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onSelectBulkAction={handleBulkActionSelect as any}
 					selectedItems={selectedRows}
 					onSelectionChanged={setSelectedRows}
+					isLoading={isLoading}
 				/>
 				<ChangeAuthorModal
 					isOpen={changeAuthorModalOpen}

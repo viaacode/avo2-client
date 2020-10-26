@@ -19,6 +19,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -40,8 +41,10 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 	const [userGroupCount, setUserGroupCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UserGroupTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const fetchUserGroups = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -74,6 +77,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setUserGroups, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -241,6 +245,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					noContentMatchingFiltersMessage={t(
 						'admin/user-groups/views/user-group-overview___er-zijn-geen-gebruikersgroepen-die-voldoen-aan-de-filters'
 					)}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={handleDelete}
@@ -256,14 +261,17 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
 		>
 			<AdminLayoutTopBarRight>
-				<Button
-					label={t(
-						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
-					}}
-				/>
+				<ButtonToolbar>
+					<UpdatePermissionsButton />
+					<Button
+						label={t(
+							'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
+						)}
+						onClick={() => {
+							redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
+						}}
+					/>
+				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>

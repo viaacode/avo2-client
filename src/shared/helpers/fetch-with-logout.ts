@@ -10,12 +10,14 @@ export async function fetchWithLogout(input: RequestInfo, init?: RequestInit): P
 }
 
 export function goToLoginBecauseOfUnauthorizedError() {
-	const lastReloadDate = localStorage.getItem(AVO_LAST_RELOAD_BECAUSE_UNAUTH);
+	const lastReloadDate = localStorage && localStorage.getItem(AVO_LAST_RELOAD_BECAUSE_UNAUTH);
 	if (
 		!lastReloadDate ||
 		new Date(lastReloadDate).getTime() < new Date().getTime() - 5 * 60 * 1000
 	) {
-		localStorage.setItem(AVO_LAST_RELOAD_BECAUSE_UNAUTH, new Date().toISOString());
+		if (localStorage) {
+			localStorage.setItem(AVO_LAST_RELOAD_BECAUSE_UNAUTH, new Date().toISOString());
+		}
 		window.location.reload();
 	}
 }

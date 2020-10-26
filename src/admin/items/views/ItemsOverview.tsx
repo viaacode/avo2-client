@@ -47,9 +47,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 	const [cpOptions, setCpOptions] = useState<CheckboxOption[] | null>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// methods
 	const fetchItems = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
@@ -141,6 +143,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
 	const fetchAllSeries = useCallback(async () => {
@@ -335,6 +338,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="uid"
+					isLoading={isLoading}
 				/>
 			</>
 		);

@@ -40,8 +40,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		},
 	}),
 	copies: (order: Avo.Search.OrderDirection) => ({
-		relations_aggregate: {
-			count: order,
+		counts: {
+			copies: order,
 		},
 	}),
 	in_bundle: (order: Avo.Search.OrderDirection) => ({
