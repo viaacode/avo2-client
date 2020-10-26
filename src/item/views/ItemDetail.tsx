@@ -354,14 +354,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							{!!item.issued && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										Gepubliceerd op {reorderDate(item.issued || null, '/')}
+										{`${t('Uitgezonden op')} ${reorderDate(
+											item.issued || null,
+											'/'
+										)}`}
 									</p>
 								</MetaDataItem>
 							)}
 							{!!item.series && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										Uit reeks: {generateSearchLink('serie', item.series)}
+										<span>{`${t('Reeks:')} `}</span>
+										{generateSearchLink('serie', item.series)}
 									</p>
 								</MetaDataItem>
 							)}
