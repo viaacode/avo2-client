@@ -84,11 +84,15 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 	}
 
 	return (
-		<Button
-			onClick={inProgress ? () => {} : triggerUpdatePermissions}
-			label={getLabel()}
-			disabled={inProgress}
-			type="danger"
-		/>
+		<div
+			style={{ display: 'none' }} // TODO remove display:none once functionality can be exposed to meemoo employees
+		>
+			<Button
+				onClick={inProgress ? () => {} : triggerUpdatePermissions}
+				label={getLabel()}
+				disabled={inProgress}
+				type="danger"
+			/>
+		</div>
 	);
 };
