@@ -74,8 +74,7 @@ export const interactiveTourEditReducer = produce(
 			ToastService.danger(
 				i18n.t(
 					'admin/interactive-tour/views/interactive-tour-edit___de-interactieve-tour-is-nog-niet-geladen'
-				),
-				false
+				)
 			);
 			return;
 		}

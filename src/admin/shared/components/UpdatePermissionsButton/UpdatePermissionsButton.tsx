@@ -53,7 +53,7 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 			await updateProgress();
 
 			if (!isNil(progress)) {
-				ToastService.danger(t(`Een update is reeds bezig (${progress}%)`), false);
+				ToastService.danger(t(`Een update is reeds bezig (${progress}%)`));
 				return;
 			}
 			const result: {
@@ -61,10 +61,10 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 				error?: string;
 			} = await PermissionService.triggerUpdatePermissions();
 			if (result && result.message === 'started') {
-				ToastService.success(t('Permissie update wordt gestart'), false);
+				ToastService.success(t('Permissie update wordt gestart'));
 			} else {
 				console.error(new CustomError('Permission update start failed', { result }));
-				ToastService.info(t(`Permissie update is reeds bezig`), false);
+				ToastService.info(t(`Permissie update is reeds bezig`));
 			}
 
 			await updateProgress();
@@ -73,8 +73,7 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 			ToastService.danger(
 				t(
 					'admin/items/views/publish-items-overview___het-triggeren-van-een-mam-synchronisatie-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
