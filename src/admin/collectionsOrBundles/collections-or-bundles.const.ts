@@ -58,10 +58,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 };
 
-export const GET_COLLECTION_BULK_ACTIONS = (): (SelectOption<string> & {
+type CollectionBulkActionOption = SelectOption<string> & {
 	confirm?: boolean;
 	confirmButtonType?: ButtonType;
-})[] => {
+};
+export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 	return [
 		{
 			label: i18n.t(

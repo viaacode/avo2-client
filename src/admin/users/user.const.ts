@@ -125,7 +125,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 };
 
-export const GET_DELETE_RADIO_OPTIONS = (): { label: string; value: UserDeleteOption }[] => {
+type UserDeleteRadioOption = { label: string; value: UserDeleteOption };
+export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 	return [
 		{
 			label: i18n.t(
@@ -152,10 +153,11 @@ export const GET_DELETE_RADIO_OPTIONS = (): { label: string; value: UserDeleteOp
 	];
 };
 
-export const GET_USER_BULK_ACTIONS = (): (SelectOption<string> & {
+type UserBulkActionOption = SelectOption<string> & {
 	confirm?: boolean;
 	confirmButtonType?: ButtonType;
-})[] => {
+};
+export const GET_USER_BULK_ACTIONS = (): UserBulkActionOption[] => {
 	return [
 		{
 			label: i18n.t('Verwijderen'),

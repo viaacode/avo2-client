@@ -191,7 +191,11 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 				selectedUsers.map((user) => get(user, 'profile.id')).includes(transferToUser.value))
 		) {
 			// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
-			ToastService.danger(t('De overdracht gebruiker moet ingevuld worden en mag niet een te verwijderen gebruiker zijn'));
+			ToastService.danger(
+				t(
+					'De overdracht gebruiker moet ingevuld worden en mag niet een te verwijderen gebruiker zijn'
+				)
+			);
 		}
 		handleOptionsModalClose();
 		setDeleteConfirmModalOpen(true);
