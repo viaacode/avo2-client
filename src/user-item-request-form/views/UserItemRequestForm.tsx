@@ -119,7 +119,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				),
 				requester: {
 					email: get(user, 'mail'),
-					name: getFullName(user as any) || '',
+					name: getFullName(user as any, true, false) || '',
 				},
 			};
 			await ZendeskService.createTicket(ticket);

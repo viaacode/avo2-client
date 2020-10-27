@@ -1,10 +1,12 @@
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import {
+	Alert,
 	Button,
 	ButtonToolbar,
 	Column,
@@ -14,13 +16,13 @@ import {
 	ModalBody,
 	ModalFooterRight,
 	RadioButtonGroup,
+	Spacer,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -28,10 +30,11 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import Html from '../../../shared/components/Html/Html';
-import { CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
@@ -51,6 +54,7 @@ import {
 } from '../user.const';
 import { UserService } from '../user.service';
 import {
+	DeleteContentCounts,
 	UserBulkAction,
 	UserDeleteOption,
 	UserOverviewTableCol,
@@ -59,9 +63,9 @@ import {
 
 import './UserOverview.scss';
 
-interface UserOverviewProps extends DefaultSecureRouteProps {}
+interface UserOverviewProps {}
 
-const UserOverview: FunctionComponent<UserOverviewProps> = () => {
+const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
@@ -70,13 +74,19 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [userGroups] = useUserGroups();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [selectedUsers, setSelectedUsers] = useState<Avo.User.User[]>([]);
+	const [selectedProfiles, setSelectedProfiles] = useState<Avo.User.User[]>([]);
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
 		'DELETE_PRIVATE_KEEP_NAME'
 	);
 	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
+	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
 	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
+	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
+		null
+	);
+
+	const selectedProfileIds = selectedProfiles.map((profile) => get(profile, 'id'));
 
 	const generateWhereObject = (filters: Partial<UserTableState>) => {
 		const andFilters: any[] = [];
@@ -159,7 +169,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 	}, [fetchUsers, profiles]);
 
 	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
-		if (!selectedUsers || !selectedUsers.length) {
+		if (!selectedProfiles || !selectedProfiles.length) {
 			return;
 		}
 		switch (action) {
@@ -171,34 +181,63 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 
 	const handleOptionsModalClose = () => {
 		setDeleteOptionsModalOpen(false);
-		setSelectedDeleteOption('DELETE_PRIVATE_KEEP_NAME');
-		setTransferToUser(undefined);
 	};
 
 	const handleConfirmModalClose = () => {
 		setDeleteConfirmModalOpen(false);
+		setDeleteContentCounts(null);
+		setSelectedDeleteOption('DELETE_PRIVATE_KEEP_NAME');
+		setTransferToUser(undefined);
 	};
 
 	const handleDeleteUsers = () => {
 		ToastService.info('Nog niet geimplementeerd');
 	};
 
-	const validateOptionModal = () => {
-		if (
-			(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
-				selectedDeleteOption === 'TRANSFER_ALL') &&
-			(!transferToUser ||
-				selectedUsers.map((user) => get(user, 'profile.id')).includes(transferToUser.value))
-		) {
-			// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
+	const validateOptionModalAndOpenConfirm = async () => {
+		try {
+			if (
+				(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+					selectedDeleteOption === 'TRANSFER_ALL') &&
+				!transferToUser
+			) {
+				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
+				setTransferToUserError(t('Kies een gebruiker om de content naar over te dragen.'));
+				return;
+			}
+			if (
+				(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+					selectedDeleteOption === 'TRANSFER_ALL') &&
+				transferToUser &&
+				selectedProfileIds.includes(transferToUser.value)
+			) {
+				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
+				setTransferToUserError(
+					t(
+						'Je kan geen content overdragen naar een gebruiker die verwijdert zal worden.'
+					)
+				);
+				return;
+			}
+
+			// Fetch counts to inform the user of what objects they are about to delete
+			setDeleteContentCounts(
+				await UserService.fetchPublicAndPrivateCounts(selectedProfileIds)
+			);
+			handleOptionsModalClose();
+			setDeleteConfirmModalOpen(true);
+		} catch (err) {
+			console.error(
+				new CustomError('Error during validateOptionModalAndOpenConfirm', err, {
+					selectedUsers: selectedProfiles,
+					transferToUser,
+					selectedDeleteOption,
+				})
+			);
 			ToastService.danger(
-				t(
-					'De overdracht gebruiker moet ingevuld worden en mag niet een te verwijderen gebruiker zijn'
-				)
+				t('Het ophalen van de content items voor de geselecteerde gebruikers is mislukt')
 			);
 		}
-		handleOptionsModalClose();
-		setDeleteConfirmModalOpen(true);
 	};
 
 	const renderTableCell = (
@@ -255,6 +294,113 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 		);
 	};
 
+	const renderConfirmDeleteMessage = () => {
+		const publicCollections: number = get(deleteContentCounts, 'publicCollections') || 0;
+		const privateCollections: number = get(deleteContentCounts, 'privateCollections') || 0;
+		const assignments: number = get(deleteContentCounts, 'assignments') || 0;
+		const bookmarks: number = get(deleteContentCounts, 'bookmarks') || 0;
+		const publicContentPages: number = get(deleteContentCounts, 'publicContentPages') || 0;
+		const privateContentPages: number = get(deleteContentCounts, 'privateContentPages') || 0;
+
+		const isDeleteAll = selectedDeleteOption === 'DELETE_ALL';
+		const isTransferAll = selectedDeleteOption === 'TRANSFER_ALL';
+
+		const countOutputs: ReactNode[] = [];
+		if (isDeleteAll && publicCollections) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.COLLECTIONS_OVERVIEW,
+						{},
+						{
+							is_public: '1',
+							owner_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${publicCollections} ${t('publieke collecties')}`}
+				</Link>
+			);
+		}
+		if (!isTransferAll && privateCollections) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.COLLECTIONS_OVERVIEW,
+						{},
+						{
+							is_public: '0',
+							owner_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${privateCollections} ${t('privé collecties')}`}
+				</Link>
+			);
+		}
+		if (isDeleteAll && publicContentPages) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
+						{},
+						{
+							is_public: '1',
+							user_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${publicContentPages} ${t("publieke content pagina's")}`}
+				</Link>
+			);
+		}
+		if (!isTransferAll && privateContentPages) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
+						{},
+						{
+							is_public: '0',
+							user_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${privateContentPages} ${t("privé content pagina's")}`}
+				</Link>
+			);
+		}
+		if (!isTransferAll && assignments) {
+			countOutputs.push(`${assignments} ${t('opdrachten')}`);
+		}
+		if (!isTransferAll && bookmarks) {
+			countOutputs.push(`${bookmarks} ${t('bladwijzers')}`);
+		}
+		return (
+			<>
+				{t('Weet je zeker dat je deze gebruikers wil verwijderen?')}
+
+				{!!countOutputs.length && (
+					<Spacer margin="top" className="c-content">
+						<strong>Deze inhoud zal verwijderd worden:</strong>
+						<ul>
+							{countOutputs.map((count, index) => (
+								<li key={`content-count-${index}`}>{count}</li>
+							))}
+						</ul>
+					</Spacer>
+				)}
+
+				<Spacer margin="top">
+					<Alert
+						message={t('Deze actie kan niet ongedaan gemaakt worden!')}
+						type="danger"
+					/>
+				</Spacer>
+			</>
+		);
+	};
+
 	const userGroupOptions = userGroups.map(
 		(option): CheckboxOption => ({
 			id: String(option.id),
@@ -289,10 +435,10 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
 					showCheckboxes
-					selectedItems={selectedUsers}
-					onSelectionChanged={setSelectedUsers}
+					selectedItems={selectedProfiles}
+					onSelectionChanged={setSelectedProfiles}
 					onSelectBulkAction={handleBulkAction as any}
-					bulkActions={GET_USER_BULK_ACTIONS()}
+					bulkActions={GET_USER_BULK_ACTIONS(user)}
 				/>
 				<Modal
 					title={t('Verwijder opties:')}
@@ -327,6 +473,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 										placeholder={t('Overdragen naar gebruiker')}
 										hideTargetSwitch
 										hideTypeDropdown
+										errors={transferToUserError ? [transferToUserError] : []}
 									/>
 								)}
 							</Column>
@@ -347,9 +494,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 										<Button
 											type="danger"
 											label={t('Verwijder gebruikers')}
-											onClick={async () => {
-												validateOptionModal();
-											}}
+											onClick={validateOptionModalAndOpenConfirm}
 										/>
 									</ButtonToolbar>
 								</ToolbarItem>
@@ -360,19 +505,13 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 				<Modal
 					isOpen={deleteConfirmModalOpen}
 					title={t('Bevestiging')}
-					size="small"
+					size="medium"
 					onClose={handleConfirmModalClose}
 					scrollable
 				>
 					<ModalBody>
-						<Html
-							content={t(
-								'Weet je zeker dat je deze gebruikers wil verwijderen?<br/><br/>Deze actie kan niet ongedaan gemaakt worden!'
-							)}
-							sanitizePreset="link"
-						/>
-						{}
-						<Toolbar spaced>
+						{renderConfirmDeleteMessage()}
+						<Toolbar>
 							<ToolbarRight>
 								<ToolbarItem>
 									<ButtonToolbar>
@@ -428,4 +567,4 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 	);
 };
 
-export default UserOverview;
+export default withUser(UserOverview) as FunctionComponent<UserOverviewProps>;

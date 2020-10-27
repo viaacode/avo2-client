@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from 'apollo-boost';
 import { get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
@@ -7,8 +8,14 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import { GET_USERS, GET_USER_BY_ID, UPDATE_USER_BLOCKED_STATUS } from './user.gql';
-import { UserOverviewTableCol } from './user.types';
+import {
+	GET_CONTENT_COUNTS_FOR_USERS,
+	GET_PROFILE_NAMES,
+	GET_USER_BY_ID,
+	GET_USERS,
+	UPDATE_USER_BLOCKED_STATUS,
+} from './user.gql';
+import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } from './user.types';
 
 export class UserService {
 	public static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
@@ -116,6 +123,65 @@ export class UserService {
 					query: 'UPDATE_USER_BLOCKED_STATUS',
 				}
 			);
+		}
+	}
+
+	public static async fetchPublicAndPrivateCounts(
+		profileIds: string[]
+	): Promise<DeleteContentCounts> {
+		try {
+			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
+				query: GET_CONTENT_COUNTS_FOR_USERS,
+				variables: {
+					profileIds,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+
+			return {
+				publicCollections: get(response, 'data.publicCollections.aggregate.count'),
+				privateCollections: get(response, 'data.privateCollections.aggregate.count'),
+				assignments: get(response, 'data.assignments.aggregate.count', '-'),
+				bookmarks:
+					get(response, 'data.collectionBookmarks.aggregate.count ', 0) +
+					get(response, 'data.itemBookmarks.aggregate.count', 0),
+				publicContentPages: get(response, 'data.publicContentPages.aggregate.count'),
+				privateContentPages: get(response, 'data.privateContentPages.aggregate.count'),
+			};
+		} catch (err) {
+			throw new CustomError('Failed to get content counts for users from the database', err, {
+				profileIds,
+				query: 'GET_CONTENT_COUNTS_FOR_USERS',
+			});
+		}
+	}
+
+	static async getNamesByProfileIds(profileIds: string[]): Promise<Avo.User.Profile[]> {
+		try {
+			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
+				query: GET_PROFILE_NAMES,
+				variables: {
+					profileIds,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+
+			return get(response, 'data.users_profiles');
+		} catch (err) {
+			throw new CustomError('Failed to get profile names from the database', err, {
+				profileIds,
+				query: 'GET_PROFILE_NAMES',
+			});
 		}
 	}
 }

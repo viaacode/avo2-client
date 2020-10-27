@@ -90,7 +90,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				),
 				requester: {
 					email: get(user, 'mail'),
-					name: getFullName(user as any) || '',
+					name: getFullName(user as any, true, false) || '',
 				},
 			};
 			await ZendeskService.createTicket(ticket as Requests.CreateModel);

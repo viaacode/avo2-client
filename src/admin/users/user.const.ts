@@ -1,6 +1,7 @@
 import { ButtonType, SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
@@ -157,11 +158,18 @@ type UserBulkActionOption = SelectOption<string> & {
 	confirm?: boolean;
 	confirmButtonType?: ButtonType;
 };
-export const GET_USER_BULK_ACTIONS = (): UserBulkActionOption[] => {
-	return [
-		{
+export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulkActionOption[] => {
+	if (!user) {
+		return [];
+	}
+	const actions: UserBulkActionOption[] = [];
+
+	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
+		actions.push({
 			label: i18n.t('Verwijderen'),
 			value: 'delete',
-		},
-	];
+		});
+	}
+
+	return actions;
 };

@@ -248,8 +248,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				APP_PATH.SEARCH.route,
 				{},
 				isCollection
-					? 'filters={"type":["video","audio"]}'
-					: 'filters={"type":["collectie"]}'
+					? { filters: '{"type":["video","audio"]}' }
+					: { filters: '{"type":["collectie"]}' }
 			)
 		);
 

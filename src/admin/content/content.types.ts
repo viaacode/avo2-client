@@ -21,10 +21,11 @@ export enum ContentWidth {
 export type ContentOverviewTableCols =
 	| 'title'
 	| 'content_type'
-	| 'author'
+	| 'user_profile_id'
 	| 'author_user_group'
 	| 'created_at'
 	| 'updated_at'
+	| 'is_public'
 	| 'published_at'
 	| 'publish_at'
 	| 'depublish_at'
