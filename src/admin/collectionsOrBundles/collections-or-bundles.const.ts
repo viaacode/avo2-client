@@ -1,6 +1,8 @@
+import { ButtonType, SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../../shared/constants';
+import i18n from '../../shared/translations/i18n';
 
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
 
@@ -54,4 +56,48 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			in_assignment: order,
 		},
 	}),
+};
+
+export const GET_COLLECTION_BULK_ACTIONS = (): (SelectOption<string> & {
+	confirm?: boolean;
+	confirmButtonType?: ButtonType;
+})[] => {
+	return [
+		{
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
+			),
+			value: 'publish',
+			confirm: true,
+			confirmButtonType: 'primary',
+		},
+		{
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
+			),
+			value: 'depublish',
+			confirm: true,
+			confirmButtonType: 'danger',
+		},
+		{
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
+			),
+			value: 'delete',
+			confirm: true,
+			confirmButtonType: 'danger',
+		},
+		{
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
+			),
+			value: 'change_author',
+		},
+		{
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
+			),
+			value: 'change_labels',
+		},
+	];
 };

@@ -1,13 +1,26 @@
+import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Container } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	Column,
+	Container,
+	Grid,
+	Modal,
+	ModalBody,
+	ModalFooterRight,
+	RadioButtonGroup,
+	Toolbar,
+	ToolbarItem,
+	ToolbarRight,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -15,10 +28,11 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import Html from '../../../shared/components/Html/Html';
+import { CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
-import { ADMIN_PATH } from '../../admin.const';
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
@@ -27,14 +41,27 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
-import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
+import {
+	GET_DELETE_RADIO_OPTIONS,
+	GET_USER_BULK_ACTIONS,
+	GET_USER_OVERVIEW_TABLE_COLS,
+	ITEMS_PER_PAGE,
+} from '../user.const';
 import { UserService } from '../user.service';
-import { UserOverviewTableCol, UserTableState } from '../user.types';
+import {
+	UserBulkAction,
+	UserDeleteOption,
+	UserOverviewTableCol,
+	UserTableState,
+} from '../user.types';
+
+import './UserOverview.scss';
 
 interface UserOverviewProps extends DefaultSecureRouteProps {}
 
-const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
+const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
@@ -43,6 +70,13 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [userGroups] = useUserGroups();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [selectedUsers, setSelectedUsers] = useState<Avo.User.User[]>([]);
+	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
+	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
+		'DELETE_PRIVATE_KEEP_NAME'
+	);
+	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
+	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
 
 	const generateWhereObject = (filters: Partial<UserTableState>) => {
 		const andFilters: any[] = [];
@@ -124,17 +158,43 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		}
 	}, [fetchUsers, profiles]);
 
-	const navigateToUserDetail = (id: string | undefined) => {
-		if (!id) {
-			ToastService.danger(
-				t('admin/users/views/user-overview___deze-gebruiker-heeft-geen-geldig-id'),
-				false
-			);
+	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
+		if (!selectedUsers || !selectedUsers.length) {
 			return;
 		}
-		const detailRoute = ADMIN_PATH.USER_DETAIL;
-		const link = buildLink(detailRoute, { id });
-		redirectToClientPage(link, history);
+		switch (action) {
+			case 'delete':
+				setDeleteOptionsModalOpen(true);
+				return;
+		}
+	};
+
+	const handleOptionsModalClose = () => {
+		setDeleteOptionsModalOpen(false);
+		setSelectedDeleteOption('DELETE_PRIVATE_KEEP_NAME');
+		setTransferToUser(undefined);
+	};
+
+	const handleConfirmModalClose = () => {
+		setDeleteConfirmModalOpen(false);
+	};
+
+	const handleDeleteUsers = () => {
+		ToastService.info('Nog niet geimplementeerd');
+	};
+
+	const validateOptionModal = () => {
+		if (
+			(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+				selectedDeleteOption === 'TRANSFER_ALL') &&
+			(!transferToUser ||
+				selectedUsers.map((user) => get(user, 'profile.id')).includes(transferToUser.value))
+		) {
+			// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
+			ToastService.danger(t('De overdracht gebruiker moet ingevuld worden en mag niet een te verwijderen gebruiker zijn'));
+		}
+		handleOptionsModalClose();
+		setDeleteConfirmModalOpen(true);
 	};
 
 	const renderTableCell = (
@@ -222,10 +282,112 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
-					onRowClick={(rowData) => navigateToUserDetail(rowData.id)}
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
+					showCheckboxes
+					selectedItems={selectedUsers}
+					onSelectionChanged={setSelectedUsers}
+					onSelectBulkAction={handleBulkAction as any}
+					bulkActions={GET_USER_BULK_ACTIONS()}
 				/>
+				<Modal
+					title={t('Verwijder opties:')}
+					isOpen={deleteOptionsModalOpen}
+					onClose={() => setDeleteOptionsModalOpen(false)}
+					size="large"
+				>
+					<ModalBody>
+						<Grid className="a-delete-user__grid">
+							<Column size="3-6">
+								<div
+									className={classnames(
+										'a-delete-user__image',
+										selectedDeleteOption
+									)}
+								/>
+							</Column>
+							<Column size="3-6">
+								<RadioButtonGroup
+									options={GET_DELETE_RADIO_OPTIONS()}
+									value={selectedDeleteOption}
+									onChange={setSelectedDeleteOption as any}
+								/>
+								{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+									selectedDeleteOption === 'TRANSFER_ALL') && (
+									<ContentPicker
+										allowedTypes={['PROFILE']}
+										onSelect={(option) =>
+											setTransferToUser(option || undefined)
+										}
+										initialValue={transferToUser}
+										placeholder={t('Overdragen naar gebruiker')}
+										hideTargetSwitch
+										hideTypeDropdown
+									/>
+								)}
+							</Column>
+						</Grid>
+					</ModalBody>
+					<ModalFooterRight>
+						<Toolbar>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="secondary"
+											label={t(
+												'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
+											)}
+											onClick={handleOptionsModalClose}
+										/>
+										<Button
+											type="danger"
+											label={t('Verwijder gebruikers')}
+											onClick={async () => {
+												validateOptionModal();
+											}}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</ModalFooterRight>
+				</Modal>
+				<Modal
+					isOpen={deleteConfirmModalOpen}
+					title={t('Bevestiging')}
+					size="small"
+					onClose={handleConfirmModalClose}
+					scrollable
+				>
+					<ModalBody>
+						<Html
+							content={t(
+								'Weet je zeker dat je deze gebruikers wil verwijderen?<br/><br/>Deze actie kan niet ongedaan gemaakt worden!'
+							)}
+							sanitizePreset="link"
+						/>
+						{}
+						<Toolbar spaced>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="secondary"
+											label={t('Annuleren')}
+											onClick={handleConfirmModalClose}
+										/>
+										<Button
+											type="danger"
+											label={t('Verwijder gebruikers')}
+											onClick={handleDeleteUsers}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</ModalBody>
+				</Modal>
 			</>
 		);
 	};

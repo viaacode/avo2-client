@@ -54,7 +54,7 @@ import {
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
-import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
+import { COLLECTIONS_OR_BUNDLES_PATH, GET_COLLECTION_BULK_ACTIONS } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
 	CollectionBulkAction,
@@ -773,44 +773,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey={'id'}
-					bulkActions={[
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
-							),
-							value: 'publish',
-							confirm: true,
-							confirmButtonType: 'primary',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
-							),
-							value: 'depublish',
-							confirm: true,
-							confirmButtonType: 'danger',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
-							),
-							value: 'delete',
-							confirm: true,
-							confirmButtonType: 'danger',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
-							),
-							value: 'change_author',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
-							),
-							value: 'change_labels',
-						},
-					]}
+					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
 					onSelectBulkAction={handleBulkActionSelect as any}
 					selectedItems={selectedRows}
 					onSelectionChanged={setSelectedRows}

@@ -44,3 +44,12 @@ export interface RawPermission {
 	id: number;
 	label: string;
 }
+
+export type UserBulkAction = 'delete';
+
+export type UserDeleteOption =
+	| 'DELETE_PRIVATE_KEEP_NAME'
+	| 'TRANSFER_PUBLIC'
+	| 'TRANSFER_ALL'
+	| 'ANONYMIZE_PUBLIC'
+	| 'DELETE_ALL';
