@@ -31,7 +31,7 @@ import { getProfileName } from '../../../authentication/helpers/get-profile-info
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import {
-	formatDurationHoursMinutesSeconds,
+	formatDurationHoursMinutesSeconds, isMobileWidth,
 	parseDuration,
 	toSeconds,
 } from '../../../shared/helpers';
@@ -382,6 +382,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									canPlay={isOpen}
 									cuePoints={{ start: fragmentStartTime, end: fragmentEndTime }}
 									seekTime={fragmentStartTime || 0}
+									verticalLayout={isMobileWidth()}
 								/>
 								<Grid>
 									<Column size="2-7">
