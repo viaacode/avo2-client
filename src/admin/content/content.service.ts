@@ -162,8 +162,7 @@ export class ContentService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'
-				),
-				false
+				)
 			);
 
 			return null;
@@ -427,8 +426,7 @@ export class ContentService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'
-				),
-				false
+				)
 			);
 
 			return null;
@@ -479,8 +477,7 @@ export class ContentService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'
-				),
-				false
+				)
 			);
 
 			return null;
