@@ -176,8 +176,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				ToastService.success(
 					t(
 						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
-					),
-					false
+					)
 				);
 			})
 			.catch((err) => {
@@ -185,8 +184,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				ToastService.danger(
 					t(
 						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
-					),
-					false
+					)
 				);
 			});
 	};
@@ -219,8 +217,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
 						: t(
 								'admin/content/views/content-detail___de-content-pagina-is-nu-niet-meer-publiek'
-						  ),
-					false
+						  )
 				);
 			}
 		} catch (err) {
@@ -232,8 +229,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___het-opslaan-van-de-publiek-status-van-de-content-pagina-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 
@@ -270,8 +266,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						ToastService.danger(
 							t(
 								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
-							),
-							false
+							)
 						);
 						return;
 					}
@@ -287,8 +282,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						ToastService.danger(
 							t(
 								'admin/content/views/content-detail___de-gedupliceerde-content-pagina-kon-niet-worden-gevonden'
-							),
-							false
+							)
 						);
 						return;
 					}
@@ -301,8 +295,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					);
 
 					ToastService.success(
-						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd'),
-						false
+						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd')
 					);
 				} catch (err) {
 					console.error('Failed to duplicate content page', err, {
@@ -312,8 +305,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					ToastService.danger(
 						t(
 							'admin/content/views/content-detail___het-dupliceren-van-de-content-pagina-is-mislukt'
-						),
-						false
+						)
 					);
 				}
 				break;
@@ -386,8 +378,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-ingeladen'
-				),
-				false
+				)
 			);
 			return null;
 		}

@@ -141,10 +141,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		} catch (err) {
 			console.error(new CustomError('Failed to load content page', err, { id }));
 			ToastService.danger(
-				t(
-					'admin/content/views/content-edit___het-laden-van-deze-content-pagina-is-mislukt'
-				),
-				false
+				t('admin/content/views/content-edit___het-laden-van-deze-content-pagina-is-mislukt')
 			);
 		}
 	}, [id, user, hasPerm, t]);
@@ -168,8 +165,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						});
 
 						ToastService.success(
-							t('admin/content/views/content-edit___de-blok-is-toegevoegd'),
-							false
+							t('admin/content/views/content-edit___de-blok-is-toegevoegd')
 						);
 					}
 				}
@@ -178,8 +174,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				ToastService.danger(
 					t(
 						'admin/content/views/content-edit___het-plakken-van-het-content-blok-is-mislukt'
-					),
-					false
+					)
 				);
 			}
 		},
@@ -293,16 +288,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					ToastService.danger(
 						t(
 							'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
-						),
-						false
+						)
 					);
 				}
 				if (!areConfigsValid) {
 					ToastService.danger(
 						t(
 							'admin/content/views/content-edit___er-zijn-nog-fouten-in-de-content-blocks'
-						),
-						false
+						)
 					);
 				}
 
@@ -375,8 +368,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			]);
 
 			ToastService.success(
-				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
-				false
+				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen')
 			);
 			navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, {
 				id: insertedOrUpdatedContent.id,
@@ -384,10 +376,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		} catch (err) {
 			console.error(new CustomError('Failed to save content page ', err));
 			ToastService.danger(
-				t(
-					'admin/content/views/content-edit___het-opslaan-van-de-content-pagina-is-mislukt'
-				),
-				false
+				t('admin/content/views/content-edit___het-opslaan-van-de-content-pagina-is-mislukt')
 			);
 		}
 

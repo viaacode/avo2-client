@@ -105,8 +105,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			ToastService.danger(
 				t(
 					'admin/permission-groups/views/permission-group-edit___het-ophalen-van-alle-permissies-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	}, [setAllPermissions, t]);
@@ -163,8 +162,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			ToastService.danger(
 				t(
 					'admin/permission-groups/views/permission-group-edit___deze-permissie-zit-reeds-in-de-groep'
-				),
-				false
+				)
 			);
 			return;
 		}
@@ -175,8 +173,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			ToastService.danger(
 				t(
 					'admin/permission-groups/views/permission-group-edit___de-geselecteerde-permissie-kon-niet-worden-gevonden'
-				),
-				false
+				)
 			);
 			return;
 		}
@@ -195,8 +192,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				ToastService.danger(
 					t(
 						'admin/permission-groups/views/permission-group-edit___de-invoer-is-ongeldig'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -205,8 +201,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				ToastService.danger(
 					t(
 						'admin/permission-groups/views/permission-group-edit___het-opslaan-van-de-permissie-groep-is-mislukt-omdat-de-permissie-groep-nog-niet-is-geladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -246,8 +241,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			ToastService.success(
 				t(
 					'admin/permission-groups/views/permission-group-edit___de-permissie-groep-is-opgeslagen'
-				),
-				false
+				)
 			);
 			redirectToClientPage(
 				buildLink(ADMIN_PATH.PERMISSION_GROUP_DETAIL, { id: permissionGroupId }),
@@ -263,8 +257,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			ToastService.danger(
 				t(
 					'admin/permission-groups/views/permission-group-edit___het-opslaan-van-de-permissiegroep-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 		setIsSaving(false);

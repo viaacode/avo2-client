@@ -33,8 +33,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				ToastService.danger(
 					t(
 						'admin/translations/views/translations-overview___het-ophalen-van-de-vertalingen-is-mislukt'
-					),
-					false
+					)
 				);
 			});
 	}, [t]);
@@ -94,16 +93,14 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			ToastService.success(
 				t(
 					'admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen'
-				),
-				false
+				)
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save translations', err));
 			ToastService.danger(
 				t(
 					'admin/translations/views/translations-overview___het-opslaan-van-de-vertalingen-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};

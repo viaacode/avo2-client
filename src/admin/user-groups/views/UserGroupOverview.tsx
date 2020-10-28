@@ -96,8 +96,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				ToastService.danger(
 					t(
 						'admin/user-groups/views/user-group-overview___het-verwijderen-van-de-gebruikersgroep-is-mislukt-probeer-de-pagina-te-herladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -105,8 +104,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			await UserGroupService.deleteUserGroup(userGroupIdToDelete);
 			await fetchUserGroups();
 			ToastService.success(
-				t('admin/user-groups/views/user-group-overview___de-gebruikersgroep-is-verwijdert'),
-				false
+				t('admin/user-groups/views/user-group-overview___de-gebruikersgroep-is-verwijdert')
 			);
 		} catch (err) {
 			console.error(
@@ -118,8 +116,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-overview___het-verwijderen-van-de-gebruikersgroep-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -129,8 +126,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-overview___de-gebruikersgroep-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen'
-				),
-				false
+				)
 			);
 			return;
 		}

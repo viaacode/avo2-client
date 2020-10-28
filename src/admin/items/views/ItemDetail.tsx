@@ -141,8 +141,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item.is_published) {
 				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
 				ToastService.success(
-					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
-					false
+					t('admin/items/views/item-detail___het-item-is-gepubliceerd')
 				);
 				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
 				await ItemsService.setItemDepublishReason(item.uid, null);
@@ -156,8 +155,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				new CustomError('Failed to toggle is_published state for item', err, { item })
 			);
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt'),
-				false
+				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
 			);
 		}
 	};
@@ -165,8 +163,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const navigateToItemDetail = () => {
 		if (!item) {
 			ToastService.danger(
-				t('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid'),
-				false
+				t('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -205,14 +202,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				) || null
 			);
 			ToastService.success(
-				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
-				false
+				t('admin/items/views/item-detail___opmerkingen-opgeslagen')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save item notes', err, { item }));
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt'),
-				false
+				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt')
 			);
 		}
 	};

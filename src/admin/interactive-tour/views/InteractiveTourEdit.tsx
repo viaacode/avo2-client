@@ -247,8 +247,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			setFormErrors(errors || {});
 			if (errors) {
 				ToastService.danger(
-					t('admin/interactive-tour/views/interactive-tour-edit___de-invoer-is-ongeldig'),
-					false
+					t('admin/interactive-tour/views/interactive-tour-edit___de-invoer-is-ongeldig')
 				);
 				return;
 			}
@@ -260,8 +259,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				ToastService.danger(
 					t(
 						'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt-omdat-de-interactive-tour-nog-niet-is-geladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -290,8 +288,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			ToastService.success(
 				t(
 					'admin/interactive-tour/views/interactive-tour-edit___de-interactive-tour-is-opgeslagen'
-				),
-				false
+				)
 			);
 		} catch (err) {
 			console.error(
@@ -303,8 +300,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			ToastService.danger(
 				t(
 					'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 		setIsSaving(false);

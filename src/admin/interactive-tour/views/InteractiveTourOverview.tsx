@@ -107,8 +107,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				ToastService.danger(
 					t(
 						'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt-probeer-de-pagina-te-herladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -118,8 +117,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			ToastService.success(
 				t(
 					'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-is-verwijdert'
-				),
-				false
+				)
 			);
 		} catch (err) {
 			console.error(
@@ -131,8 +129,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			ToastService.danger(
 				t(
 					'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -142,8 +139,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			ToastService.danger(
 				t(
 					'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen'
-				),
-				false
+				)
 			);
 			return;
 		}

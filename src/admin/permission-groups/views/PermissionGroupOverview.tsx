@@ -104,8 +104,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		ToastService.success(
 			t(
 				'admin/permission-groups/views/permission-group-overview___de-permissie-groep-is-verwijdert'
-			),
-			false
+			)
 		);
 	};
 
