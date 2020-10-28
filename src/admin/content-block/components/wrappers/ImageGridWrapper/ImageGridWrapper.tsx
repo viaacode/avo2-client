@@ -4,7 +4,7 @@ import { AlignOptions, BlockImageGrid, ButtonAction, GridItem } from '@viaa/avo2
 
 import { BlockGridFormatOption, FillOption } from '../../../../shared/types';
 
-export interface BlockGridWrapperProps {
+export interface BlockImageGridWrapperProps {
 	elements: GridItem[];
 	format: BlockGridFormatOption;
 	fill?: FillOption;
@@ -13,7 +13,7 @@ export interface BlockGridWrapperProps {
 	navigate?: (buttonAction: ButtonAction) => void;
 }
 
-const formatLookup: {
+export const formatLookup: {
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[format in BlockGridFormatOption]: {
 		/* eslint-enable @typescript-eslint/no-unused-vars */
@@ -30,11 +30,11 @@ const formatLookup: {
 	'400x150': { imageWidth: 400, imageHeight: 150, itemWidth: 400 },
 };
 
-const BlockGridWrapper: FunctionComponent<BlockGridWrapperProps> = ({
+const BlockImageGridWrapper: FunctionComponent<BlockImageGridWrapperProps> = ({
 	format = 'squareLarge',
 	...rest
 }) => {
 	return <BlockImageGrid {...formatLookup[format]} {...rest} />;
 };
 
-export default BlockGridWrapper;
+export default BlockImageGridWrapper;

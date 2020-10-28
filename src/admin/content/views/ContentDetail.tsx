@@ -410,6 +410,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
 			pageTitle={pageTitle}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>{renderContentActions()}</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>

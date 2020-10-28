@@ -159,6 +159,9 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						),
 						resolvedTarget
 					);
+
+				default:
+					break;
 			}
 		}
 		return <>{children}</>;

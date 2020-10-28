@@ -2,7 +2,7 @@ import { FilterableTableState } from '../shared/components/FilterTable/FilterTab
 
 export type CollectionsOrBundlesOverviewTableCols =
 	| 'title'
-	| 'author'
+	| 'owner_profile_id'
 	| 'author_user_group'
 	| 'last_updated_by_profile'
 	| 'created_at'
