@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { get, omit } from 'lodash-es';
+import { compact, get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -10,6 +10,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
 import {
 	GET_CONTENT_COUNTS_FOR_USERS,
+	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USER_BY_ID,
 	GET_USERS,
@@ -44,7 +45,7 @@ export class UserService {
 		}
 	}
 
-	static async getUsers(
+	static async getProfiles(
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
@@ -90,9 +91,70 @@ export class UserService {
 
 			return [profiles, profileCount];
 		} catch (err) {
-			throw new CustomError('Failed to get users from the database', err, {
+			throw new CustomError('Failed to get profiles from the database', err, {
 				variables,
 				query: 'GET_USERS',
+			});
+		}
+	}
+
+	static async getProfileIds(where: any = {}): Promise<string[]> {
+		let variables: any;
+		try {
+			variables = where
+				? {
+						where,
+				  }
+				: {};
+			const response = await dataService.query({
+				variables,
+				query: GET_PROFILE_IDS,
+				fetchPolicy: 'no-cache',
+			});
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+			return compact(
+				get(response, 'data.shared_users' || []).map((user: Partial<Avo.User.User>) =>
+					get(user, 'profile.id')
+				)
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get profile ids from the database', err, {
+				variables,
+				query: 'GET_PROFILE_IDS',
+			});
+		}
+	}
+
+	static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
+		try {
+			variables = where
+				? {
+						where,
+				  }
+				: {};
+			const response = await dataService.query({
+				variables,
+				query: GET_PROFILE_IDS,
+				fetchPolicy: 'no-cache',
+			});
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+			return compact(
+				get(response, 'data.shared_users' || []).map((user: Partial<Avo.User.User>) =>
+					get(user, 'profile.id')
+				)
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get profile ids from the database', err, {
+				variables,
+				query: 'GET_PROFILE_IDS',
 			});
 		}
 	}

@@ -104,6 +104,16 @@ export const GET_USERS = gql`
 	}
 `;
 
+export const GET_PROFILE_IDS = gql`
+	query getProfileIds($where: shared_users_bool_exp!) {
+		shared_users(where: $where) {
+			profile {
+				id
+			}
+		}
+	}
+`;
+
 export const UPDATE_USER_BLOCKED_STATUS = gql`
 	mutation updateUserBlockedStatus($userId: uuid!, $isBlocked: Boolean!) {
 		update_shared_users(where: { uid: { _eq: $userId } }, _set: { is_blocked: $isBlocked }) {

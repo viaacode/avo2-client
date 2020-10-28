@@ -81,7 +81,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[] | null>();
+	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
 	const [changeAuthorModalOpen, setChangeAuthorModalOpen] = useState<boolean>(false);
 
@@ -93,80 +93,78 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
 
 	// methods
+	const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
+		const andFilters: any[] = [];
+		andFilters.push(
+			...getQueryFilter(filters.query, (queryWordWildcard: string) => [
+				{ title: { _ilike: queryWordWildcard } },
+				{ description: { _ilike: queryWordWildcard } },
+				{
+					profile: {
+						usersByuserId: { full_name: { _ilike: queryWordWildcard } },
+					},
+				},
+			])
+		);
+		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+		andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
+		andFilters.push(
+			...getMultiOptionFilters(
+				filters,
+				['author_user_group'],
+				['profile.profile_user_groups.groups.id']
+			)
+		);
+		if (filters.collection_labels && filters.collection_labels.length) {
+			andFilters.push({
+				_or: [
+					...getMultiOptionFilters(
+						{
+							collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+						},
+						['collection_labels'],
+						['collection_labels.label']
+					),
+					...(filters.collection_labels.includes('NO_LABEL')
+						? [{ _not: { collection_labels: {} } }]
+						: []),
+				],
+			});
+		}
+		andFilters.push(...getBooleanFilters(filters, ['is_public']));
+		andFilters.push({ is_deleted: { _eq: false } });
+
+		// Only show published/unpublished collections/bundles based on permissions
+		if (
+			(isCollection &&
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS)) ||
+			(!isCollection &&
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
+		) {
+			andFilters.push({ is_public: { _eq: false } });
+		}
+		if (
+			(isCollection &&
+				!PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
+				)) ||
+			(!isCollection &&
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
+		) {
+			andFilters.push({ is_public: { _eq: true } });
+		}
+
+		andFilters.push({
+			type_id: {
+				_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+			},
+		});
+		return { _and: andFilters };
+	};
+
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
-		const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
-			const andFilters: any[] = [];
-			andFilters.push(
-				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
-					{ description: { _ilike: queryWordWildcard } },
-					{
-						profile: {
-							usersByuserId: { full_name: { _ilike: queryWordWildcard } },
-						},
-					},
-				])
-			);
-			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
-			andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['author_user_group'],
-					['profile.profile_user_groups.groups.id']
-				)
-			);
-			if (filters.collection_labels && filters.collection_labels.length) {
-				andFilters.push({
-					_or: [
-						...getMultiOptionFilters(
-							{
-								collection_labels: without(filters.collection_labels, 'NO_LABEL'),
-							},
-							['collection_labels'],
-							['collection_labels.label']
-						),
-						...(filters.collection_labels.includes('NO_LABEL')
-							? [{ _not: { collection_labels: {} } }]
-							: []),
-					],
-				});
-			}
-			andFilters.push(...getBooleanFilters(filters, ['is_public']));
-			andFilters.push({ is_deleted: { _eq: false } });
-
-			// Only show published/unpublished collections/bundles based on permissions
-			if (
-				(isCollection &&
-					!PermissionService.hasPerm(
-						user,
-						PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
-					)) ||
-				(!isCollection &&
-					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
-			) {
-				andFilters.push({ is_public: { _eq: false } });
-			}
-			if (
-				(isCollection &&
-					!PermissionService.hasPerm(
-						user,
-						PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
-					)) ||
-				(!isCollection &&
-					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
-			) {
-				andFilters.push({ is_public: { _eq: true } });
-			}
-
-			andFilters.push({
-				type_id: {
-					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-				},
-			});
-			return { _and: andFilters };
-		};
 
 		try {
 			const [
@@ -226,12 +224,37 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		// Update selected rows to always be a subset of the collections array
 		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
 		const collectionIds: string[] = (collections || []).map((coll) => coll.id);
-		setSelectedRows((currentSelectedRows) => {
-			return (currentSelectedRows || []).filter(
-				(coll) => coll.id && collectionIds.includes(coll.id)
+		setSelectedCollectionIds((currentSelectedCollectionIds) => {
+			return (currentSelectedCollectionIds || []).filter(
+				(collId) => collId && collectionIds.includes(collId)
 			);
 		});
-	}, [setLoadingInfo, collections, setSelectedRows]);
+	}, [setLoadingInfo, collections, setSelectedCollectionIds]);
+
+	const setAllCollectionsAsSelected = async () => {
+		setIsLoading(true);
+		try {
+			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
+				generateWhereObject(getFilters(tableState))
+			);
+			ToastService.info(
+				t('Je hebt {{numOfSelectedCollections}} collecties geselecteerd', {
+					numOfSelectedCollections: collectionIds.length,
+				})
+			);
+			setSelectedCollectionIds(collectionIds);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to get all collection ids that match the selected filter',
+					err,
+					{ tableState }
+				)
+			);
+			ToastService.danger('Het ophalen van de collectie ids is mislukt');
+		}
+		setIsLoading(false);
+	};
 
 	const userGroupOptions = userGroups.map(
 		(option): CheckboxOption => ({
@@ -411,7 +434,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	};
 
 	const handleBulkActionSelect = async (action: CollectionBulkAction): Promise<void> => {
-		if (!selectedRows || !selectedRows.length) {
+		if (!selectedCollectionIds || !selectedCollectionIds.length) {
 			return;
 		}
 		switch (action) {
@@ -439,12 +462,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangePublishStateForSelectedCollections = async (isPublic: boolean) => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
-				compact(selectedRows.map((collection) => collection.id)),
+				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -460,7 +483,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle publish state for collections', err, {
-					selectedRows,
+					selectedRows: selectedCollectionIds,
 					isPublic,
 				})
 			);
@@ -478,11 +501,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkDeleteSelectedCollections = async () => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			await CollectionsOrBundlesService.bulkDeleteCollections(
-				compact(selectedRows.map((collection) => collection.id)),
+				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -494,7 +517,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk delete collections', err, {
-					selectedRows,
+					selectedRows: selectedCollectionIds,
 				})
 			);
 			ToastService.danger(
@@ -507,12 +530,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangeAuthor = async (authorProfileId: string) => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
-				compact(selectedRows.map((collection) => collection.id)),
+				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -537,13 +560,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangeLabels = async (addOrRemove: AddOrRemove, labels: string[]) => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
-					compact(selectedRows.map((collection) => collection.id)),
+					compact(selectedCollectionIds),
 					getProfileId(user)
 				);
 				ToastService.success(
@@ -555,7 +578,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				// remove
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
-					compact(selectedRows.map((collection) => collection.id)),
+					compact(selectedCollectionIds),
 					getProfileId(user)
 				);
 				ToastService.success(
@@ -777,8 +800,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					rowKey="id"
 					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
 					onSelectBulkAction={handleBulkActionSelect as any}
-					selectedItems={selectedRows}
-					onSelectionChanged={setSelectedRows}
+					selectedItems={selectedCollectionIds}
+					onSelectionChanged={setSelectedCollectionIds}
+					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
 				/>
 				<ChangeAuthorModal

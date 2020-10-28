@@ -116,6 +116,7 @@ interface FilterTableProps extends RouteComponentProps {
 	showCheckboxes?: boolean;
 	selectedItems?: any[] | null;
 	onSelectionChanged?: (selectedItems: any[]) => void;
+	onSelectAll?: () => void;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -136,8 +137,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes,
-	onSelectionChanged,
 	selectedItems,
+	onSelectionChanged,
+	onSelectAll,
 }) => {
 	const [t] = useTranslation();
 
@@ -435,8 +437,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes
 								}
-								selectedItems={selectedItems || undefined}
+								selectedItemIds={selectedItems || undefined}
 								onSelectionChanged={onSelectionChanged}
+								onSelectAll={onSelectAll}
 							/>
 							<Spacer margin="top-large">
 								<Pagination

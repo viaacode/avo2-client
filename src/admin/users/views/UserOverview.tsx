@@ -74,7 +74,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [userGroups] = useUserGroups();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [selectedProfiles, setSelectedProfiles] = useState<Avo.User.User[]>([]);
+	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
 		'DELETE_ALL'
@@ -85,8 +85,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
 		null
 	);
-
-	const selectedProfileIds = selectedProfiles.map((profile) => get(profile, 'id'));
 
 	const generateWhereObject = (filters: Partial<UserTableState>) => {
 		const andFilters: any[] = [];
@@ -131,10 +129,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		return { _and: andFilters };
 	};
 
-	const fetchUsers = useCallback(async () => {
+	const fetchProfiles = useCallback(async () => {
 		try {
 			setIsLoading(true);
-			const [profilesTemp, profileCountTemp] = await UserService.getUsers(
+			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
@@ -157,8 +155,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, t]);
 
 	useEffect(() => {
-		fetchUsers();
-	}, [fetchUsers]);
+		fetchProfiles();
+	}, [fetchProfiles]);
 
 	useEffect(() => {
 		if (profiles) {
@@ -166,10 +164,36 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				state: 'loaded',
 			});
 		}
-	}, [fetchUsers, profiles]);
+	}, [fetchProfiles, profiles]);
+
+	const setAllProfilesAsSelected = async () => {
+		setIsLoading(true);
+		try {
+			const profileIds = await UserService.getProfileIds(
+				generateWhereObject(getFilters(tableState))
+			);
+			ToastService.info(
+				t('Je hebt {{numOfSelectedProfiles}} gebuikers geselecteerd', {
+					numOfSelectedProfiles: profileIds.length,
+				})
+			);
+			setSelectedProfileIds(profileIds);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to fetch all profile ids that adhere to the selected filters',
+					err,
+					{ tableState }
+				)
+			);
+			ToastService.danger(t('Het ophalen van alle geselecteerde gebruiker ids is mislukt'));
+		}
+
+		setIsLoading(false);
+	};
 
 	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
-		if (!selectedProfiles || !selectedProfiles.length) {
+		if (!selectedProfileIds || !selectedProfileIds.length) {
 			return;
 		}
 		switch (action) {
@@ -229,7 +253,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		} catch (err) {
 			console.error(
 				new CustomError('Error during validateOptionModalAndOpenConfirm', err, {
-					selectedUsers: selectedProfiles,
+					selectedUsers: selectedProfileIds,
 					transferToUser,
 					selectedDeleteOption,
 				})
@@ -441,8 +465,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
 					showCheckboxes
-					selectedItems={selectedProfiles}
-					onSelectionChanged={setSelectedProfiles}
+					selectedItems={selectedProfileIds}
+					onSelectionChanged={setSelectedProfileIds}
+					onSelectAll={setAllProfilesAsSelected}
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
 				/>
