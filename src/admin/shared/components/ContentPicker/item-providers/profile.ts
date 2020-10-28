@@ -11,7 +11,7 @@ export const retrieveProfiles = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
-		const response: [Avo.User.Profile[], number] = await UserService.getUsers(
+		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
 			0,
 			'last_access_at',
 			'desc',
