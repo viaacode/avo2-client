@@ -41,6 +41,7 @@ import {
 	SelectOption,
 	Spacer,
 	Spinner,
+	Table,
 	TableColumn,
 	TextInput,
 	Toolbar,
@@ -61,7 +62,6 @@ import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
 import './FilterTable.scss';
-import { Table } from './Table/Table';
 
 export interface FilterableTableState {
 	query?: string;
