@@ -54,7 +54,10 @@ import {
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
-import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
+import {
+	COLLECTIONS_OR_BUNDLES_PATH,
+	GET_COLLECTION_BULK_ACTIONS,
+} from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
 	CollectionBulkAction,
@@ -100,17 +103,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					{ description: { _ilike: queryWordWildcard } },
 					{
 						profile: {
-							usersByuserId: { first_name: { _ilike: queryWordWildcard } },
-						},
-					},
-					{
-						profile: {
-							usersByuserId: { last_name: { _ilike: queryWordWildcard } },
+							usersByuserId: { full_name: { _ilike: queryWordWildcard } },
 						},
 					},
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+			andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
@@ -271,12 +270,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			visibleByDefault: true,
 		},
 		{
-			id: 'author',
+			id: 'owner_profile_id',
 			label: i18n.t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
 			),
 			sortable: true,
 			visibleByDefault: true,
+			filterType: 'MultiUserSelectDropdown',
 		},
 		{
 			id: 'author_user_group',
@@ -619,7 +619,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						{title}
 					</Link>
 				);
-			case 'author':
+
+			case 'owner_profile_id':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
 				return user ? truncateTableValue((user as any).full_name) : '-';
 
@@ -628,7 +629,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
-				return lastEditUser ? `${lastEditUser.full_name}` : '-';
+				return lastEditUser ? lastEditUser.full_name : '-';
 
 			case 'is_public':
 				return rowData[columnId]
@@ -773,45 +774,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
-					rowKey={'id'}
-					bulkActions={[
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
-							),
-							value: 'publish',
-							confirm: true,
-							confirmButtonType: 'primary',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
-							),
-							value: 'depublish',
-							confirm: true,
-							confirmButtonType: 'danger',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
-							),
-							value: 'delete',
-							confirm: true,
-							confirmButtonType: 'danger',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
-							),
-							value: 'change_author',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
-							),
-							value: 'change_labels',
-						},
-					]}
+					rowKey="id"
+					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
 					onSelectBulkAction={handleBulkActionSelect as any}
 					selectedItems={selectedRows}
 					onSelectionChanged={setSelectedRows}
@@ -822,7 +786,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onClose={() => setChangeAuthorModalOpen(false)}
 					callback={(newAuthor: PickerItem) => bulkChangeAuthor(newAuthor.value)}
 					initialAuthor={{
-						label: getFullName(user as { profile: Avo.User.Profile }) as string,
+						label: getFullName(
+							user as { profile: Avo.User.Profile },
+							true,
+							false
+						) as string,
 						value: getProfileId(user),
 						type: 'PROFILE',
 					}}

@@ -29,4 +29,10 @@
 			height: auto;
 		}
 	}
+
+	.c-filter-table__toolbar {
+		.c-toolbar__left {
+			max-width: calc(100% - 200px);
+		}
+	}
 }

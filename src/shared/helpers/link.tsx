@@ -1,5 +1,5 @@
 import { History } from 'history';
-import { fromPairs, get, isArray, isEmpty, isNil, map, noop } from 'lodash-es';
+import { fromPairs, get, isArray, isEmpty, isNil, isString, map, noop } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
@@ -24,7 +24,11 @@ const navigationConsoleError = (route: string, missingParams: string[] = []) => 
 	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
 };
 
-export const buildLink = (route: string, params: RouteParams = {}, search?: string): string => {
+export const buildLink = (
+	route: string,
+	params: RouteParams = {},
+	search?: string | { [paramName: string]: string }
+): string => {
 	let builtLink = route;
 
 	// Replace url with given params
@@ -42,7 +46,9 @@ export const buildLink = (route: string, params: RouteParams = {}, search?: stri
 	}
 
 	// Add search query if present
-	return search ? `${builtLink}?${search}` : builtLink;
+	return search
+		? `${builtLink}?${isString(search) ? search : queryString.stringify(search)}`
+		: builtLink;
 };
 
 export const navigate = (
