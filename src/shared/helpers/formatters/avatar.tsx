@@ -27,7 +27,8 @@ export const getInitials = (profile: Avo.User.Profile | null) =>
 
 export const getFullName = (
 	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined,
-	includeCompany: boolean = true
+	includeCompany: boolean,
+	includeEmail: boolean
 ): string | null => {
 	if (!userOrProfile) {
 		return null;
@@ -37,9 +38,13 @@ export const getFullName = (
 
 	const firstName = get(profile, 'user.first_name');
 	const lastName = get(profile, 'user.last_name');
+	const fullName = get(profile, 'user.full_name') || `${firstName} ${lastName}`;
+	const email = includeEmail ? get(profile, 'user.mail') : '';
 	const organisationName = includeCompany ? get(profile, 'organisation.name') : '';
 
-	return `${firstName} ${lastName}${organisationName ? ` (${organisationName})` : ''}`;
+	return `${fullName}${organisationName ? ` (${organisationName})` : ''}${
+		includeEmail ? ` (${email})` : ''
+	}`;
 };
 
 export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
@@ -57,7 +62,7 @@ export const getAvatarProps = (
 ): AvatarProps => {
 	const name: string = options.abbreviatedName
 		? getAbbreviatedFullName(profile)
-		: getFullName(profile) || '';
+		: getFullName(profile, true, false) || '';
 
 	return {
 		name,

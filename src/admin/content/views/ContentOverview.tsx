@@ -4,15 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	LinkTarget,
-	Modal,
-	ModalBody,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, LinkTarget, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
@@ -103,12 +95,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							{ path: { _ilike: queryWordWildcard } },
 							{
 								profile: {
-									usersByuserId: { first_name: { _ilike: queryWordWildcard } },
-								},
-							},
-							{
-								profile: {
-									usersByuserId: { last_name: { _ilike: queryWordWildcard } },
+									usersByuserId: { full_name: { _ilike: queryWordWildcard } },
 								},
 							},
 							{
@@ -140,6 +127,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					])
 				);
 				andFilters.push(...getMultiOptionFilters(filters, ['content_type']));
+				andFilters.push(...getMultiOptionFilters(filters, ['user_profile_id']));
 
 				// When you get to this point we assume you already have either the EDIT_ANY_CONTENT_PAGES or EDIT_OWN_CONTENT_PAGES permission
 				if (!hasPerm(EDIT_ANY_CONTENT_PAGES)) {
@@ -215,10 +203,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			} as CheckboxDropdownModalProps,
 		},
 		{
-			id: 'author',
+			id: 'user_profile_id',
 			label: i18n.t('admin/content/content___auteur'),
 			sortable: true,
 			visibleByDefault: true,
+			filterType: 'MultiUserSelectDropdown',
 		},
 		{
 			id: 'author_user_group',
@@ -238,6 +227,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
+		},
+		{
+			id: 'is_public',
+			label: i18n.t('Publiek'),
+			sortable: true,
+			visibleByDefault: false,
+			filterType: 'BooleanCheckboxDropdown',
 		},
 		{
 			id: 'published_at',
@@ -331,8 +327,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					</Link>
 				);
 
-			case 'author':
-				return getFullName(profile, false) || '-';
+			case 'user_profile_id':
+				return getFullName(profile, false, false) || '-';
 
 			case 'author_user_group':
 				return profile ? getUserGroupLabel(profile) || '-' : '-';
@@ -344,6 +340,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						'label'
 					) || '-'
 				);
+
+			case 'is_public':
+				return get(rowData, 'is_public') ? 'Ja' : 'Nee';
 
 			case 'published_at':
 			case 'publish_at':
@@ -507,7 +506,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/content/views/content-overview___content-overzicht')}>
+		<AdminLayout
+			pageTitle={t('admin/content/views/content-overview___content-overzicht')}
+			size="full-width"
+		>
 			<AdminLayoutTopBarRight>
 				{hasPerm(CREATE_CONTENT_PAGES) && (
 					<Button
@@ -535,15 +537,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={contentPages}
-							render={renderContentOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPages}
+					render={renderContentOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

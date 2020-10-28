@@ -90,7 +90,7 @@ export function getProfileName(user: Avo.User.User | undefined): string {
 	if (!user) {
 		throw new CustomError('Failed to get profile name because the logged in user is undefined');
 	}
-	const profileName = getFullName(user as any);
+	const profileName = getFullName(user as any, true, false);
 	if (!profileName) {
 		throw new CustomError('No profile name could be found for the logged in user');
 	}

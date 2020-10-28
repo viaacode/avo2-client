@@ -1,6 +1,5 @@
 import { TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
-import queryString from 'query-string';
 import React from 'react';
 
 import LoginOptionsDropdown from '../../authentication/components/LoginOptionsDropdown';
@@ -33,12 +32,12 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 	return buildLink(
 		APP_PATH.ERROR.route,
 		{},
-		queryString.stringify({
+		{
 			message: t(
 				'shared/helpers/navigation___de-pagina-voor-dit-navigatie-item-kon-niet-worden-gevonden'
 			),
 			icon: 'search',
-		})
+		}
 	);
 }
 

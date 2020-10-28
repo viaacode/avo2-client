@@ -5,23 +5,20 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
 import {
+	BlockPageOverview,
 	ButtonAction,
 	ContentItemStyle,
 	ContentTabStyle,
 	LabelObj,
 	PageInfo,
+	RenderLinkFunction,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
-import {
-	CustomError,
-	getEnv,
-	navigate,
-	navigateToContentType,
-} from '../../../../../shared/helpers';
+import { CustomError, getEnv, navigate } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
 import { ToastService } from '../../../../../shared/services';
@@ -62,6 +59,7 @@ interface PageOverviewWrapperProps {
 	buttonLabel?: string;
 	itemsPerPage?: number;
 	headerBackgroundColor: Color;
+	renderLink: RenderLinkFunction;
 }
 
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteComponentProps> = ({
@@ -81,6 +79,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	),
 	itemsPerPage = 20,
 	headerBackgroundColor,
+	renderLink,
 	history,
 }) => {
 	const [t] = useTranslation();
@@ -303,9 +302,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				onLabelClicked={(label: string) =>
 					navigate(history, `/${ROUTE_PARTS.news}`, {}, `label=${label}`)
 				}
-				navigate={(buttonAction: ButtonAction) =>
-					navigateToContentType(buttonAction, history)
-				}
+				renderLink={renderLink}
 			/>
 		);
 	};
