@@ -130,8 +130,16 @@ type UserDeleteRadioOption = { label: string; value: UserDeleteOption };
 export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 	return [
 		{
+			label: i18n.t('Verwijder alle content'),
+			value: 'DELETE_ALL',
+		},
+		{
+			label: i18n.t('Anonimiseer de publieke content, verwijder de rest'),
+			value: 'ANONYMIZE_PUBLIC',
+		},
+		{
 			label: i18n.t(
-				'Verwijder prive content, behoud publieke content met de naam van de gebruiker'
+				'Verwijder privé content, behoud publieke content met de naam van de gebruiker'
 			),
 			value: 'DELETE_PRIVATE_KEEP_NAME',
 		},
@@ -142,14 +150,6 @@ export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 		{
 			label: i18n.t('Zet alle content over naar een andere gebruiker'),
 			value: 'TRANSFER_ALL',
-		},
-		{
-			label: i18n.t('Anonimiseer de publieke content, verwijder de rest'),
-			value: 'ANONYMIZE_PUBLIC',
-		},
-		{
-			label: i18n.t('Verwijder alle content'),
-			value: 'DELETE_ALL',
 		},
 	];
 };

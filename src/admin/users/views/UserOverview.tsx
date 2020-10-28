@@ -77,7 +77,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [selectedProfiles, setSelectedProfiles] = useState<Avo.User.User[]>([]);
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
-		'DELETE_PRIVATE_KEEP_NAME'
+		'DELETE_ALL'
 	);
 	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
 	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
@@ -186,12 +186,12 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const handleConfirmModalClose = () => {
 		setDeleteConfirmModalOpen(false);
 		setDeleteContentCounts(null);
-		setSelectedDeleteOption('DELETE_PRIVATE_KEEP_NAME');
+		setSelectedDeleteOption('DELETE_ALL');
 		setTransferToUser(undefined);
 	};
 
 	const handleDeleteUsers = () => {
-		ToastService.info('Nog niet geimplementeerd');
+		ToastService.info('Nog niet geïmplementeerd');
 	};
 
 	const validateOptionModalAndOpenConfirm = async () => {
