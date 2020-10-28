@@ -283,8 +283,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			ToastService.success(
 				t(
 					'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
-				),
-				false
+				)
 			);
 		} catch (err) {
 			console.error(
@@ -293,8 +292,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			ToastService.danger(
 				t(
 					'admin/content/views/content-overview___het-verwijderen-van-het-content-item-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
