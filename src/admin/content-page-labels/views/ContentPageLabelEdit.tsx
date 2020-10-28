@@ -268,6 +268,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 							'admin/content-page-labels/views/content-page-label-edit___content-pagina-label-aanpassen'
 					  )
 			}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -287,11 +288,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 					/>
 				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{renderEditPage()}</Container>
-				</Container>
-			</AdminLayoutBody>
+			<AdminLayoutBody>{renderEditPage()}</AdminLayoutBody>
 		</AdminLayout>
 	);
 

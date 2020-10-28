@@ -1,7 +1,7 @@
 import { History } from 'history';
 import { fromPairs, get, isArray, isEmpty, isNil, isString, map, noop } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment } from 'react';
+import React, { Fragment, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
@@ -9,6 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import SmartLink from '../components/SmartLink/SmartLink';
 import { ToastService } from '../services';
 import i18n from '../translations/i18n';
 
@@ -109,6 +110,13 @@ export function navigateToAbsoluteOrRelativeUrl(
 		}
 	}
 }
+
+export const generateSmartLink = (
+	action: ButtonAction | null | undefined,
+	children: ReactNode
+): ReactElement<any, any> | null => {
+	return <SmartLink action={action}>{children}</SmartLink>;
+};
 
 export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {

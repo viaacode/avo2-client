@@ -532,6 +532,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				<AdminLayout
 					onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
 					pageTitle={pageTitle}
+					size="large"
 				>
 					<AdminLayoutTopBarRight>
 						<ButtonToolbar>

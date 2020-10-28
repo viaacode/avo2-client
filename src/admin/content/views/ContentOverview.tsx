@@ -4,15 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	LinkTarget,
-	Modal,
-	ModalBody,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, LinkTarget, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
@@ -514,7 +506,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/content/views/content-overview___content-overzicht')}>
+		<AdminLayout
+			pageTitle={t('admin/content/views/content-overview___content-overzicht')}
+			size="full-width"
+		>
 			<AdminLayoutTopBarRight>
 				{hasPerm(CREATE_CONTENT_PAGES) && (
 					<Button
@@ -542,15 +537,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={contentPages}
-							render={renderContentOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPages}
+					render={renderContentOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

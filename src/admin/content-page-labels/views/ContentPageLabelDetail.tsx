@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container, Table } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -164,6 +164,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				pageTitle={t(
 					'admin/content-page-labels/views/content-page-label-detail___content-pagina-label-details'
 				)}
+				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
@@ -182,11 +183,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 						/>
 					</ButtonToolbar>
 				</AdminLayoutTopBarRight>
-				<AdminLayoutBody>
-					<Container mode="vertical" size="small">
-						<Container mode="horizontal">{renderDetailPage()}</Container>
-					</Container>
-				</AdminLayoutBody>
+				<AdminLayoutBody>{renderDetailPage()}</AdminLayoutBody>
 			</AdminLayout>
 		);
 	};

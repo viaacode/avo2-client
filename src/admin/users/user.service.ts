@@ -131,6 +131,36 @@ export class UserService {
 
 	static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
 		try {
+			variables = where
+				? {
+						where,
+				  }
+				: {};
+			const response = await dataService.query({
+				variables,
+				query: GET_PROFILE_IDS,
+				fetchPolicy: 'no-cache',
+			});
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+			return compact(
+				get(response, 'data.shared_users' || []).map((user: Partial<Avo.User.User>) =>
+					get(user, 'profile.id')
+				)
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get profile ids from the database', err, {
+				variables,
+				query: 'GET_PROFILE_IDS',
+			});
+		}
+	}
+
+	static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
+		try {
 			const response = await dataService.mutate({
 				mutation: UPDATE_USER_BLOCKED_STATUS,
 				variables: {
@@ -158,9 +188,7 @@ export class UserService {
 		}
 	}
 
-	static async fetchPublicAndPrivateCounts(
-		profileIds: string[]
-	): Promise<DeleteContentCounts> {
+	static async fetchPublicAndPrivateCounts(profileIds: string[]): Promise<DeleteContentCounts> {
 		try {
 			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
 				query: GET_CONTENT_COUNTS_FOR_USERS,

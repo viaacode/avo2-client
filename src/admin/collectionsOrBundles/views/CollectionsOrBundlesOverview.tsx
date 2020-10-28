@@ -2,11 +2,11 @@ import { compact, get, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import {
 	Button,
 	ButtonToolbar,
-	Container,
 	IconName,
 	TagInfo,
 	TagList,
@@ -430,8 +430,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		const detailRoute = isCollection
 			? APP_PATH.COLLECTION_DETAIL.route
 			: APP_PATH.BUNDLE_DETAIL.route;
-		const link = buildLink(detailRoute, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(buildLink(detailRoute, { id }), history);
 	};
 
 	const handleBulkActionSelect = async (action: CollectionBulkAction): Promise<void> => {
@@ -629,6 +628,21 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		columnId: CollectionsOrBundlesOverviewTableCols
 	) => {
 		switch (columnId) {
+			case 'title':
+				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
+				return (
+					<Link
+						to={buildLink(
+							isCollection
+								? APP_PATH.COLLECTION_EDIT.route
+								: APP_PATH.BUNDLE_EDIT.route,
+							{ id: rowData.id }
+						)}
+					>
+						{title}
+					</Link>
+				);
+
 			case 'owner_profile_id':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
 				return user ? truncateTableValue((user as any).full_name) : '-';
@@ -834,6 +848,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels'
 					  )
 			}
+			size="full-width"
 		>
 			<AdminLayoutBody>
 				<MetaTags>
@@ -861,15 +876,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={collections}
-							render={renderCollectionsOrBundlesOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={collections}
+					render={renderCollectionsOrBundlesOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
