@@ -44,7 +44,7 @@ export const INITIAL_ICON_GRID_BLOCK_STATE = (): BlockIconGridWrapperProps &
 	};
 };
 
-export const ICON_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const ICON_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t("Logo's sign-off"),
 	type: ContentBlockType.IconGrid,
