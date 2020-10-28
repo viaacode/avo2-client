@@ -54,7 +54,7 @@ import {
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
-import { handleRelatedItemClicked } from '../../shared/helpers/handle-related-item-click';
+import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
 import { isUuid } from '../../shared/helpers/uuid';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
@@ -522,21 +522,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 			return (
 				<Column size="2-6" key={`related-item-${id}`}>
-					<MediaCard
-						category={category}
-						onClick={() => handleRelatedItemClicked(relatedItem, history)}
-						orientation="horizontal"
-						title={dc_title}
-					>
-						<MediaCardThumbnail>
-							<Thumbnail category={category} src={thumbnail_path} showCategoryIcon />
-						</MediaCardThumbnail>
-						<MediaCardMetaData>
-							<MetaData category={category}>
-								<MetaDataItem label={original_cp || undefined} />
-							</MetaData>
-						</MediaCardMetaData>
-					</MediaCard>
+					<Link to={generateRelatedItemLink(relatedItem)} className="a-link__no-styles">
+						<MediaCard category={category} orientation="horizontal" title={dc_title}>
+							<MediaCardThumbnail>
+								<Thumbnail
+									category={category}
+									src={thumbnail_path}
+									showCategoryIcon
+								/>
+							</MediaCardThumbnail>
+							<MediaCardMetaData>
+								<MetaData category={category}>
+									<MetaDataItem label={original_cp || undefined} />
+								</MetaData>
+							</MediaCardMetaData>
+						</MediaCard>
+					</Link>
 				</Column>
 			);
 		});

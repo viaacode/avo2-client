@@ -18,7 +18,7 @@ import {
 import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } from './user.types';
 
 export class UserService {
-	public static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
+	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
 		try {
 			const response = await dataService.query({
 				query: GET_USER_BY_ID,
@@ -44,7 +44,7 @@ export class UserService {
 		}
 	}
 
-	public static async getUsers(
+	static async getUsers(
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
@@ -97,7 +97,7 @@ export class UserService {
 		}
 	}
 
-	public static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
+	static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
 		try {
 			const response = await dataService.mutate({
 				mutation: UPDATE_USER_BLOCKED_STATUS,
@@ -126,9 +126,7 @@ export class UserService {
 		}
 	}
 
-	public static async fetchPublicAndPrivateCounts(
-		profileIds: string[]
-	): Promise<DeleteContentCounts> {
+	static async fetchPublicAndPrivateCounts(profileIds: string[]): Promise<DeleteContentCounts> {
 		try {
 			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
 				query: GET_CONTENT_COUNTS_FOR_USERS,

@@ -10,7 +10,7 @@ import React, {
 	useState,
 } from 'react';
 import { Trans } from 'react-i18next';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
 
@@ -47,7 +47,7 @@ interface ItemVideoDescriptionProps {
 	seekTime?: number;
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	verticalLayout?: boolean;
-	onTitleClicked?: () => void;
+	titleLink?: string;
 	onPlay?: () => void;
 }
 
@@ -66,7 +66,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	seekTime = 0,
 	canPlay = true,
 	verticalLayout = false,
-	onTitleClicked,
+	titleLink,
 	location,
 	onPlay,
 }) => {
@@ -157,18 +157,33 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 		);
 	};
 
+	const renderTitle = () => {
+		const titleElement = (
+			<BlockHeading
+				type="h3"
+				className={titleLink ? 'u-clickable' : ''}
+				color={titleLink ? Color.TealBright : undefined}
+			>
+				{title}
+			</BlockHeading>
+		);
+
+		if (titleLink) {
+			return (
+				<Link to={titleLink} className="a-link__no-styles">
+					{titleElement}
+				</Link>
+			);
+		} else {
+			return titleElement;
+		}
+	};
+
 	const renderDescription = () => {
 		return (
 			<>
 				{showTitle ? (
-					<BlockHeading
-						type="h3"
-						className={onTitleClicked ? 'u-clickable' : ''}
-						onClick={onTitleClicked || (() => {})}
-						color={onTitleClicked ? Color.TealBright : undefined}
-					>
-						{title}
-					</BlockHeading>
+					renderTitle()
 				) : (
 					<BlockHeading type="h4">
 						<Trans i18nKey="item/components/item-video-description___beschrijving">

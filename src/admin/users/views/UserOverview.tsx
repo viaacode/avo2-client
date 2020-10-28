@@ -244,10 +244,16 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		rowData: Partial<Avo.User.Profile>,
 		columnId: UserOverviewTableCol
 	) => {
-		const { user, stamboek, created_at, title, organisation } = rowData;
+		const { id, user, stamboek, created_at, title, organisation } = rowData;
 
 		switch (columnId) {
 			case 'first_name':
+				return (
+					<Link to={buildLink(ADMIN_PATH.USER_DETAIL, { id })}>
+						{truncateTableValue(get(user, columnId))}
+					</Link>
+				);
+
 			case 'last_name':
 			case 'mail':
 				return truncateTableValue(get(user, columnId));
@@ -536,7 +542,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/users/views/user-overview___gebruikers')}>
+		<AdminLayout
+			pageTitle={t('admin/users/views/user-overview___gebruikers')}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
@@ -553,15 +562,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={profiles}
-							render={renderUserOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={profiles}
+					render={renderUserOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

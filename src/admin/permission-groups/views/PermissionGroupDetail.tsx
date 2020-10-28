@@ -6,7 +6,6 @@ import {
 	BlockHeading,
 	Button,
 	ButtonToolbar,
-	Container,
 	Panel,
 	PanelBody,
 	PanelHeader,
@@ -174,6 +173,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 				pageTitle={t(
 					'admin/permission-groups/views/permission-group-detail___permissie-groep-details'
 				)}
+				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
@@ -192,11 +192,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 						/>
 					</ButtonToolbar>
 				</AdminLayoutTopBarRight>
-				<AdminLayoutBody>
-					<Container mode="vertical" size="small">
-						<Container mode="horizontal">{renderDetailPage()}</Container>
-					</Container>
-				</AdminLayoutBody>
+				<AdminLayoutBody>{renderDetailPage()}</AdminLayoutBody>
 			</AdminLayout>
 		);
 	};

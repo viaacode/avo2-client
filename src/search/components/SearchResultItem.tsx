@@ -52,11 +52,17 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		return description.replace(/\[([^\]]+)]\([^)]+\)/gi, '$1');
 	};
 
+	let date: string;
+	if (result.administrative_type === 'collectie' || result.administrative_type === 'bundel') {
+		date = result.created_at;
+	} else {
+		date = result.dcterms_issued;
+	}
 	return (
 		<SearchResult
 			key={`search-result-${result.id}`}
 			type={toEnglishContentType(result.administrative_type)}
-			date={formatDate(result.dcterms_issued)}
+			date={formatDate(date)}
 			tags={getTags(result)}
 			viewCount={result.views_count || 0}
 			bookmarkCount={result.bookmarks_count || 0}
