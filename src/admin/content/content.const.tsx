@@ -22,8 +22,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
 	}
 > = {
-	author: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { last_name: order } },
+	user_profile_id: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
 	}),
 	author_user_group: (order: Avo.Search.OrderDirection) => ({
 		profile: { profile_user_groups: { groups: { label: order } } },

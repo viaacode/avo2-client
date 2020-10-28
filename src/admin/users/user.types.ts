@@ -44,3 +44,59 @@ export interface RawPermission {
 	id: number;
 	label: string;
 }
+
+export type UserBulkAction = 'delete';
+
+export type UserDeleteOption =
+	| 'DELETE_PRIVATE_KEEP_NAME'
+	| 'TRANSFER_PUBLIC'
+	| 'TRANSFER_ALL'
+	| 'ANONYMIZE_PUBLIC'
+	| 'DELETE_ALL';
+
+export interface DeleteContentCounts {
+	publicCollections: number;
+	privateCollections: number;
+	assignments: number;
+	bookmarks: number;
+	publicContentPages: number;
+	privateContentPages: number;
+}
+
+export interface DeleteContentCountsRaw {
+	publicCollections: {
+		aggregate: {
+			count: number;
+		};
+	};
+	publicContentPages: {
+		aggregate: {
+			count: number;
+		};
+	};
+	privateCollections: {
+		aggregate: {
+			count: number;
+		};
+	};
+	assignments: {
+		aggregate: {
+			count: number;
+		};
+	};
+	collectionBookmarks: {
+		aggregate: {
+			count: number;
+		};
+	};
+	itemBookmarks: {
+		aggregate: {
+			count: number;
+		};
+	};
+	privateContentPages: {
+		aggregate: {
+			count: number;
+		};
+	};
+}

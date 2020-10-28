@@ -9,7 +9,7 @@ import {
 	DefaultContentBlockState,
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
-import { BlockGridWrapperProps } from '../../components/wrappers/ImageGridWrapper/ImageGridWrapper';
+import { BlockImageGridWrapperProps } from '../../components/wrappers/ImageGridWrapper/ImageGridWrapper';
 import {
 	GET_ALIGN_OPTIONS,
 	GET_BUTTON_TYPE_OPTIONS,
@@ -31,7 +31,7 @@ export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSt
 	} as any,
 ];
 
-export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockGridWrapperProps &
+export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockImageGridWrapperProps &
 	DefaultContentBlockState => {
 	return {
 		...BLOCK_STATE_DEFAULTS({

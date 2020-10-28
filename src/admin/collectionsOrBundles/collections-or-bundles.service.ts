@@ -19,12 +19,13 @@ import {
 	BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
 	BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
 	BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
+	GET_COLLECTION_IDS,
 	GET_COLLECTIONS,
 } from './collections-or-bundles.gql';
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
-	public static async getCollections(
+	static async getCollections(
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
@@ -83,7 +84,28 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkChangePublicStateForCollections(
+	static async getCollectionIds(where: any): Promise<string[]> {
+		try {
+			const response = await dataService.query({
+				variables: {
+					where,
+				},
+				query: GET_COLLECTION_IDS,
+			});
+			return get(response, 'data.app_collections', []).map(
+				(coll: Partial<Avo.Collection.Collection>) => coll.id
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get collection ids from the database', err, {
+				variables: {
+					where,
+				},
+				query: 'GET_COLLECTION_IDS',
+			});
+		}
+	}
+
+	static async bulkChangePublicStateForCollections(
 		isPublic: boolean,
 		collectionIds: string[],
 		updatedByProfileId: string
@@ -117,7 +139,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkUpdateAuthorForCollections(
+	static async bulkUpdateAuthorForCollections(
 		authorId: string,
 		collectionIds: string[],
 		updatedByProfileId: string
@@ -147,7 +169,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkDeleteCollections(
+	static async bulkDeleteCollections(
 		collectionIds: string[],
 		updatedByProfileId: string
 	): Promise<number> {
@@ -174,7 +196,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkAddLabelsToCollections(
+	static async bulkAddLabelsToCollections(
 		labels: string[],
 		collectionIds: string[],
 		updatedByProfileId: string
@@ -218,7 +240,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkRemoveLabelsFromCollections(
+	static async bulkRemoveLabelsFromCollections(
 		labels: string[],
 		collectionIds: string[],
 		updatedByProfileId: string

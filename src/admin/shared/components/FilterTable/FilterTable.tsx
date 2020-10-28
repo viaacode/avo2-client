@@ -57,6 +57,7 @@ import {
 	DateRangeDropdown,
 	DeleteObjectModal,
 } from '../../../../shared/components';
+import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
@@ -70,7 +71,11 @@ export interface FilterableTableState {
 }
 
 export interface FilterableColumn extends TableColumn {
-	filterType?: 'CheckboxDropdownModal' | 'DateRangeDropdown' | 'BooleanCheckboxDropdown';
+	filterType?:
+		| 'CheckboxDropdownModal'
+		| 'DateRangeDropdown'
+		| 'BooleanCheckboxDropdown'
+		| 'MultiUserSelectDropdown';
 	filterProps?: any;
 	visibleByDefault: boolean;
 }
@@ -79,6 +84,7 @@ const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
 	CheckboxDropdownModal: CheckboxListParam,
 	DateRangeDropdown: DateRangeParam,
 	BooleanCheckboxDropdown: BooleanParam,
+	MultiUserSelectDropdown: CheckboxListParam,
 };
 
 interface FilterTableProps extends RouteComponentProps {
@@ -110,6 +116,7 @@ interface FilterTableProps extends RouteComponentProps {
 	showCheckboxes?: boolean;
 	selectedItems?: any[] | null;
 	onSelectionChanged?: (selectedItems: any[]) => void;
+	onSelectAll?: () => void;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -130,8 +137,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes,
-	onSelectionChanged,
 	selectedItems,
+	onSelectionChanged,
+	onSelectAll,
 }) => {
 	const [t] = useTranslation();
 
@@ -295,7 +303,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 				</Spacer>
 
 				<Spacer margin="bottom">
-					<Toolbar>
+					<Toolbar className="c-filter-table__toolbar">
 						<ToolbarLeft>
 							<Flex spaced="regular" wrap>
 								{columns.map((col) => {
@@ -348,6 +356,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													id={col.id}
 													label={col.label}
 													value={(tableState as any)[col.id]}
+													onChange={(value) =>
+														handleTableStateChanged(value, col.id)
+													}
+													key={`filter-${col.id}`}
+												/>
+											);
+
+										case 'MultiUserSelectDropdown':
+											return (
+												<MultiUserSelectDropdown
+													{...(col.filterProps || {})}
+													id={col.id}
+													label={col.label}
+													values={(tableState as any)[col.id]}
 													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}
@@ -415,8 +437,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes
 								}
-								selectedItems={selectedItems || undefined}
+								selectedItemIds={selectedItems || undefined}
 								onSelectionChanged={onSelectionChanged}
+								onSelectAll={onSelectAll}
 							/>
 							<Spacer margin="top-large">
 								<Pagination

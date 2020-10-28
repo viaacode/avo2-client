@@ -61,6 +61,14 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
+export const GET_COLLECTION_IDS = gql`
+	query getCollections($where: app_collections_bool_exp!) {
+		app_collections(where: $where) {
+			id
+		}
+	}
+`;
+
 export const BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS = gql`
 	mutation bulkUpdatePublishSTateForCollections(
 		$isPublic: Boolean!
