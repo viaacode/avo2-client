@@ -79,7 +79,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 					ToastService.danger(t('Het ophalen van de gebruikersaccount namen is mislukt'));
 				});
 		}
-	}, [values, setSelectedProfiles]);
+	}, [values, setSelectedProfiles, t]);
 
 	const closeDropdown = () => {
 		setSelectedProfiles([]);
