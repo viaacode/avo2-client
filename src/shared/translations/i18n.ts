@@ -35,7 +35,10 @@ I18n.use(XHR)
 			useSuspense: false,
 		},
 		parseMissingKeyHandler: (key) => {
-			return `${upperFirst(lowerCase(key.split('___').pop()))} ***`;
+			if (key.includes('___')) {
+				return `${upperFirst(lowerCase(key.split('___').pop()))} ***`;
+			}
+			return `${key} ***`;
 		},
 	});
 

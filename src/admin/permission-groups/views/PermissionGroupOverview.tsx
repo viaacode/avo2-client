@@ -18,6 +18,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -103,8 +104,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		ToastService.success(
 			t(
 				'admin/permission-groups/views/permission-group-overview___de-permissie-groep-is-verwijdert'
-			),
-			false
+			)
 		);
 	};
 
@@ -231,12 +231,15 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			)}
 		>
 			<AdminLayoutTopBarRight>
-				<Button
-					label={t(
-						'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
-					)}
-					onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
-				/>
+				<ButtonToolbar>
+					<UpdatePermissionsButton />
+					<Button
+						label={t(
+							'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
+						)}
+						onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
+					/>
+				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>
