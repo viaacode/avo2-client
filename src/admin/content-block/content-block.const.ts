@@ -51,6 +51,10 @@ import {
 	INITIAL_HEADING_COMPONENTS_STATE,
 } from './helpers/generators/heading';
 import { HERO_BLOCK_CONFIG, INITIAL_HERO_COMPONENTS_STATE } from './helpers/generators/hero';
+import {
+	ICON_GRID_BLOCK_CONFIG,
+	INITIAL_ICON_GRID_COMPONENTS_STATE,
+} from './helpers/generators/icon-grid';
 import { IFRAME_BLOCK_CONFIG, INITIAL_IFRAME_COMPONENTS_STATE } from './helpers/generators/iframe';
 import { IMAGE_BLOCK_CONFIG, INITIAL_IMAGE_COMPONENTS_STATE } from './helpers/generators/image';
 import {
@@ -189,6 +193,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		label: i18n.t('admin/content-block/content-block___pagina-metadata'),
 		value: ContentBlockType.ContentPageMeta,
 	},
+	{
+		label: i18n.t('Icon grid'),
+		value: ContentBlockType.IconGrid,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -231,6 +239,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.Search]: SEARCH_BLOCK_CONFIG,
 	[ContentBlockType.ContentPageMeta]: CONTENT_PAGE_META_BLOCK_CONFIG,
+	[ContentBlockType.IconGrid]: ICON_GRID_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
@@ -259,6 +268,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 	[ContentBlockType.Search]: INITIAL_SEARCH_COMPONENTS_STATE,
 	[ContentBlockType.ContentPageMeta]: INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
+	[ContentBlockType.IconGrid]: INITIAL_ICON_GRID_COMPONENTS_STATE,
 };
 
 // Options
