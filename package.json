@@ -12,7 +12,7 @@
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
 		"extract-translations": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format",
-		"whitelist-queries": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
+		"whitelist-queries": "ts-node --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
 		"update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
 		"licenses": "license-checker --csv --out licenses.csv",
 		"analyse": "npm run build && source-map-explorer 'build/static/js/*.js'"

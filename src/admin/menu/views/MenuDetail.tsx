@@ -98,16 +98,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			await MenuService.deleteMenuItem(idToDelete);
 			fetchMenuItems();
 			ToastService.success(
-				t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd'),
-				false
+				t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to delete menu item', err, { idToDelete }));
 			ToastService.danger(
 				t(
 					'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -127,14 +125,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 
 			fetchMenuItems();
 			ToastService.success(
-				t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'),
-				false
+				t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to update menu items', err, { menuItems }));
 			ToastService.danger(
-				t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'),
-				false
+				t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt')
 			);
 		}
 	};
@@ -202,8 +198,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		// Return to overview if menu is empty
 		if (!menuItems) {
 			ToastService.danger(
-				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
-				false
+				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden')
 			);
 			handleNavigate(MENU_PATH.MENU_OVERVIEW);
 			return null;

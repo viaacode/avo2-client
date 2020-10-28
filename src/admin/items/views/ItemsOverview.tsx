@@ -205,8 +205,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const navigateToItemDetail = (externalId: string | undefined) => {
 		if (!externalId) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid'),
-				false
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -217,8 +216,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
 		if (!uuid) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid'),
-				false
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid')
 			);
 			return;
 		}
