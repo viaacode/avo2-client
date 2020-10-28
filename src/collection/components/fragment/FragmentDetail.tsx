@@ -8,7 +8,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { buildLink } from '../../../shared/helpers';
+import { buildLink, isMobileWidth } from '../../../shared/helpers';
 import { getFragmentProperty } from '../../helpers';
 
 import './FragmentDetail.scss';
@@ -79,6 +79,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				start: collectionFragment.start_oc,
 				end: collectionFragment.end_oc,
 			}}
+			verticalLayout={isMobileWidth()}
 		/>
 	) : (
 		<BlockIntro

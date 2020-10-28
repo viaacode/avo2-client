@@ -178,8 +178,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		ToastService.success(
 			t(
 				'admin/content-page-labels/views/content-page-label-overview___de-content-pagina-label-is-verwijdert'
-			),
-			false
+			)
 		);
 	};
 

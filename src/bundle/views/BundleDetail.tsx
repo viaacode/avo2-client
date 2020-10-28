@@ -685,7 +685,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					<h3 className="c-h3">{t('bundle/views/bundle-detail___over-deze-bundel')}</h3>
+					<BlockHeading type="h3">
+						{t('bundle/views/bundle-detail___over-deze-bundel')}
+					</BlockHeading>
 					<Grid>
 						<Column size="3-3">
 							<Spacer margin="top-large">
@@ -800,7 +802,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						<Container mode="horizontal">
 							<Grid>
 								<Column size="3-2">
-									<Spacer margin={isMobileWidth() ? 'none' : 'right-large'}>
+									<Spacer margin={isMobileWidth() ? [] : ['right-large']}>
 										<Thumbnail
 											category="bundle"
 											src={thumbnail_path || undefined}
@@ -808,7 +810,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									</Spacer>
 								</Column>
 								<Column size="3-10">
-									<Toolbar autoHeight>
+									<Toolbar autoHeight className="c-bundle-toolbar">
 										<ToolbarLeft>
 											<ToolbarItem>
 												<MetaData spaced={true} category="bundle">
@@ -841,7 +843,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 													/>
 												</MetaData>
 												<Spacer margin="top-small">
-													<h1 className="c-h1 u-m-0">{title}</h1>
+													<BlockHeading type="h1">{title}</BlockHeading>
 												</Spacer>
 											</ToolbarItem>
 										</ToolbarLeft>

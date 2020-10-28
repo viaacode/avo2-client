@@ -21,3 +21,10 @@ export interface UpdateProfileValues {
 	location: string;
 	stamboek: string | null;
 }
+
+export type UsersInSameCompanyColumn =
+	| 'full_name'
+	| 'mail'
+	| 'is_blocked'
+	| 'last_access_at'
+	| 'user_group';

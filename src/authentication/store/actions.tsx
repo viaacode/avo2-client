@@ -50,7 +50,6 @@ function checkIfSessionExpires(expiresAt: string) {
 					/>
 				</Spacer>
 			</>,
-			false,
 			{
 				autoClose: false,
 				position: 'bottom-left',

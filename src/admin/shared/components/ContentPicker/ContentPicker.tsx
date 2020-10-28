@@ -112,7 +112,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 						selectedType,
 					})
 				);
-				ToastService.danger('Het ophalen van de opties is mislukt', false);
+				ToastService.danger('Het ophalen van de opties is mislukt');
 				return [];
 			}
 		},
@@ -164,8 +164,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			ToastService.danger(
 				t(
 					'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
-				),
-				false
+				)
 			);
 			return null;
 		}

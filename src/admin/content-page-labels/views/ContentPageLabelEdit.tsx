@@ -126,8 +126,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				ToastService.danger(
 					t(
 						'admin/content-page-labels/views/content-page-label-edit___de-invoer-is-ongeldig'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -136,8 +135,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				ToastService.danger(
 					t(
 						'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-het-content-pagina-label-is-mislukt-omdat-het-label-nog-niet-is-geladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -159,8 +157,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			ToastService.success(
 				t(
 					'admin/content-page-labels/views/content-page-label-edit___de-content-pagina-label-is-opgeslagen'
-				),
-				false
+				)
 			);
 			redirectToClientPage(
 				buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabelId }),
@@ -176,8 +173,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			ToastService.danger(
 				t(
 					'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-de-permissiegroep-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 		setIsSaving(false);

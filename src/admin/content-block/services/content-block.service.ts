@@ -42,8 +42,7 @@ export class ContentBlockService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
-				),
-				false
+				)
 			);
 
 			return null;
@@ -68,8 +67,7 @@ export class ContentBlockService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
-				),
-				false
+				)
 			);
 
 			return null;
@@ -126,8 +124,7 @@ export class ContentBlockService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
-				),
-				false
+				)
 			);
 
 			return null;
@@ -207,8 +204,7 @@ export class ContentBlockService {
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
-				),
-				false
+				)
 			);
 
 			return null;

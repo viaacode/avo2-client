@@ -28,7 +28,7 @@ import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import Html from '../../shared/components/Html/Html';
-import { parseDuration } from '../../shared/helpers';
+import { parseDuration, stripHtml } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 
 import './ItemVideoDescription.scss';
@@ -198,6 +198,20 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 
 	const renderDescriptionWrapper = () => {
 		if (collapseDescription) {
+			if (verticalLayout) {
+				if (stripHtml(convertToHtml(description)).length < 444) {
+					// The description is short enough so we don't need to collapse it, and we can make the height auto
+					return renderDescription();
+				}
+				// The height is too large, we need to wrap the description in a collapsable container
+				return (
+					<ExpandableContainer collapsedHeight={300 - 36 - 18}>
+						{renderDescription()}
+					</ExpandableContainer>
+				);
+			}
+			// The description is rendered next to the video
+			// We need to make the height of the description collapsable container the same as the video height
 			return (
 				<Scrollbar
 					style={{

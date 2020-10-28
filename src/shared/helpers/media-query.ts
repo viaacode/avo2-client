@@ -1,3 +1,3 @@
 export function isMobileWidth() {
-	return window.innerWidth < 700;
+	return window.outerWidth < 700;
 }
