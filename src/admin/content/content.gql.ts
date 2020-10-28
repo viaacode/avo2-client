@@ -33,8 +33,7 @@ export const GET_CONTENT_PAGES = gql`
 					}
 				}
 				user: usersByuserId {
-					first_name
-					last_name
+					full_name
 				}
 			}
 			publish_at
@@ -135,8 +134,8 @@ export const GET_CONTENT_BY_ID = gql`
 					}
 				}
 				user: usersByuserId {
-					first_name
-					last_name
+					id
+					full_name
 					mail
 				}
 			}

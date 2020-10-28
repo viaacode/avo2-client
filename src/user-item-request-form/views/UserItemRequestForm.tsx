@@ -16,6 +16,7 @@ import {
 	Spinner,
 	TextArea,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -119,7 +120,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				),
 				requester: {
 					email: get(user, 'mail'),
-					name: getFullName(user as any) || '',
+					name: getFullName(user as { profile: Avo.User.Profile }, true, false) || '',
 				},
 			};
 			await ZendeskService.createTicket(ticket);

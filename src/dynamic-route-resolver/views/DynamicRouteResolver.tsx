@@ -244,7 +244,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 						description={description}
 						image={get(routeInfo.data, 'thumbnail_path')}
 						isOrganisation={!!get(routeInfo.data, 'profile.organisation')}
-						author={getFullName(get(routeInfo.data, 'profile'))}
+						author={getFullName(get(routeInfo.data, 'profile'), true, false)}
 						publishedAt={getPublishedDate(routeInfo.data)}
 						updatedAt={get(routeInfo.data, 'updated_at')}
 					/>

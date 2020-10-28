@@ -8,7 +8,6 @@ import {
 	Badge,
 	Button,
 	ButtonToolbar,
-	Container,
 	Flex,
 	IconName,
 	Spacer,
@@ -350,6 +349,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.MENU_OVERVIEW)}
 			pageTitle={pageTitle}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -381,18 +381,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					</title>
 					<meta name="description" content={get(menuForm, 'description') || ''} />
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<MenuEditForm
-							formErrors={formErrors}
-							formState={menuForm}
-							menuParentId={menuParentId}
-							menuParentOptions={menuParentOptions}
-							onChange={handleChange}
-							permissionWarning={permissionWarning}
-						/>
-					</Container>
-				</Container>
+				<MenuEditForm
+					formErrors={formErrors}
+					formState={menuForm}
+					menuParentId={menuParentId}
+					menuParentOptions={menuParentOptions}
+					onChange={handleChange}
+					permissionWarning={permissionWarning}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

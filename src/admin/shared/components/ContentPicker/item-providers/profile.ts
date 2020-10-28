@@ -11,15 +11,17 @@ export const retrieveProfiles = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
-		const response: [Avo.User.Profile[], number] = await UserService.getUsers(
+		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
 			0,
 			'last_access_at',
 			'desc',
 			!!name
 				? {
 						_or: [
+							// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
 							{ first_name: { _ilike: `%${name}%` } },
 							{ last_name: { _ilike: `%${name}%` } },
+							// { full_name: { _ilike: `%${name}%` } },
 							{ mail: { _ilike: `%${name}%` } },
 						],
 				  }
@@ -36,7 +38,7 @@ export const retrieveProfiles = async (
 const parseProfiles = (profiles: Avo.User.Profile[]): PickerSelectItem[] => {
 	return profiles.map(
 		(profile): PickerSelectItem => ({
-			label: `${profile.user.first_name} ${profile.user.last_name} (${profile.user.mail})`,
+			label: `${profile.user.full_name} (${profile.user.mail})`,
 			value: parsePickerItem('PROFILE', profile.id),
 		})
 	);

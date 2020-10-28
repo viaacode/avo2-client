@@ -2,8 +2,9 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -15,8 +16,9 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -152,6 +154,13 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 		columnId: InteractiveTourOverviewTableCols
 	) => {
 		switch (columnId) {
+			case 'name':
+				return (
+					<Link to={buildLink(ADMIN_PATH.INTERACTIVE_TOUR_DETAIL, { id: rowData.id })}>
+						{isNil(rowData.name) ? '-' : rowData.name}
+					</Link>
+				);
+
 			case 'page_id':
 				return (
 					<div>
@@ -284,6 +293,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			pageTitle={t(
 				'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
 			)}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<Button
@@ -314,15 +324,11 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={interactiveTours}
-							render={renderInteractiveTourPageBody}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={interactiveTours}
+					render={renderInteractiveTourPageBody}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

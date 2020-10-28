@@ -4,9 +4,9 @@ import React, { FunctionComponent, RefObject, useCallback, useEffect, useRef } f
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
+import { Container, Spacer } from '@viaa/avo2-components';
 
-import { navigateToContentType } from '../../../../shared/helpers';
+import { generateSmartLink } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { ContentPageInfo } from '../../../content/content.types';
 import { Color, ContentBlockConfig } from '../../../shared/types';
@@ -34,11 +34,12 @@ enum ContentWidthMap {
 	LARGE = 'large',
 	MEDIUM = 'medium',
 }
+
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 const ContentBlockPreview: FunctionComponent<
 	ContentBlockPreviewProps & UserProps & RouteComponentProps
-> = ({ contentBlockConfig, contentPageInfo, onClick = noop, className, history, user }) => {
+> = ({ contentBlockConfig, contentPageInfo, onClick = noop, className, user }) => {
 	const blockState = get(contentBlockConfig, 'block.state');
 	const componentState = get(contentBlockConfig, 'components.state');
 	const containerSize = ContentWidthMap[contentPageInfo.content_width || 'REGULAR'];
@@ -83,10 +84,10 @@ const ContentBlockPreview: FunctionComponent<
 	}, [blockState.headerBackgroundColor, getHeaderHeight, headerBgRef]);
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type)) {
-		// Pass the navigate function to the block
-		blockStateProps.navigate = (buttonAction: ButtonAction) => {
-			navigateToContentType(buttonAction, history);
-		};
+		// Pass a function to the block so it can render links without needing to know anything about the app routes
+		// You pass in the buttonAction and the children of the link
+		// And you receive a ReactNode that wraps the children in the correct link tag
+		blockStateProps.renderLink = generateSmartLink;
 	}
 
 	// Pass the content page object to the block

@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -13,7 +13,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { formatDate, navigate } from '../../../shared/helpers';
+import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
@@ -34,6 +34,8 @@ import {
 } from '../permission-group.types';
 
 import './PermissionGroupOverview.scss';
+import { Link } from 'react-router-dom';
+import { ADMIN_PATH } from '../../admin.const';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 
@@ -119,6 +121,13 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		columnId: PermissionGroupOverviewTableCols
 	) => {
 		switch (columnId) {
+			case 'label':
+				return (
+					<Link to={buildLink(ADMIN_PATH.PERMISSION_GROUP_DETAIL, { id: rowData.id })}>
+						{truncateTableValue(rowData[columnId])}
+					</Link>
+				);
+
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
@@ -216,7 +225,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete()}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>
@@ -229,6 +238,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			pageTitle={t(
 				'admin/permission-groups/views/permission-group-overview___permissie-groepen-overzicht'
 			)}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -257,15 +267,11 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={permissionGroups}
-							render={renderPermissionGroupTable}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={permissionGroups}
+					render={renderPermissionGroupTable}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

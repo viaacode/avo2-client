@@ -23,6 +23,7 @@ interface TopbarProps {
 	title?: string;
 	center?: ReactNode;
 	right?: ReactNode;
+	size?: 'small' | 'medium' | 'large' | 'full-width';
 }
 
 export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProps> = ({
@@ -30,12 +31,13 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 	title,
 	center,
 	right,
+	size,
 }) => {
 	const [t] = useTranslation();
 
 	return (
 		<Navbar className="c-top-bar">
-			<Container mode="horizontal">
+			<Container mode="horizontal" size={size}>
 				<Toolbar>
 					<ToolbarLeft>
 						<ToolbarItem>

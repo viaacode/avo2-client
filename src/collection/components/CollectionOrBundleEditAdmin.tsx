@@ -339,7 +339,10 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 									>
 										<TextInput
 											disabled
-											value={getFullName(collection.updated_by) || '-'}
+											value={
+												getFullName(collection.updated_by, true, false) ||
+												'-'
+											}
 										/>
 									</FormGroup>
 									<FormGroup
