@@ -305,7 +305,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete()}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

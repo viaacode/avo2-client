@@ -306,7 +306,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 						</Flex>
 					</Spacer>
 					<DeleteObjectModal
-						deleteObjectCallback={() => handleDelete()}
+						deleteObjectCallback={handleDelete}
 						isOpen={isConfirmModalOpen}
 						onClose={() => setIsConfirmModalOpen(false)}
 					/>
