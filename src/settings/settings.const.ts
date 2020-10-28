@@ -21,3 +21,22 @@ export const GET_NEWSLETTER_LABELS = () => ({
 		'settings/settings___ik-krijg-graag-berichten-om-actief-mee-te-werken-aan-het-archief-voor-onderwijs'
 	),
 });
+
+export const USERS_IN_SAME_COMPANY_COLUMNS = () => [
+	{
+		label: i18n.t('Naam'),
+		id: 'full_name',
+	},
+	{
+		label: i18n.t('Rol'),
+		id: 'user_group',
+	},
+	{
+		label: i18n.t('Geblokkeerd'),
+		id: 'is_blocked',
+	},
+	{
+		label: i18n.t('Laatste login'),
+		id: 'last_access_at',
+	},
+];

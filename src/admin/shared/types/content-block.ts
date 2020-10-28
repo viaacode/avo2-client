@@ -18,7 +18,13 @@ export type AlignOption = 'left' | 'right' | 'center';
 
 export type FillOption = 'cover' | 'contain' | 'auto';
 
-export type BlockGridFormatOption = 'squareSmall' | 'squareLarge' | '4:3' | '2:1' | '6:9';
+export type BlockGridFormatOption =
+	| 'squareSmall'
+	| 'squareLarge'
+	| '4:3'
+	| '2:1'
+	| '6:9'
+	| '400x150';
 
 export type WidthOption = 'full-width' | 'page-header' | string; // CSS width string: eg: 100%; 400px, 500px
 

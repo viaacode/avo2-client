@@ -131,8 +131,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			}
 			await UserGroupService.deleteUserGroup(userGroup.id);
 			ToastService.success(
-				t('admin/user-groups/views/user-group-detail___de-gebruikersgroep-is-verwijdert'),
-				false
+				t('admin/user-groups/views/user-group-detail___de-gebruikersgroep-is-verwijdert')
 			);
 			redirectToClientPage(ADMIN_PATH.USER_GROUP_OVERVIEW, history);
 		} catch (err) {
@@ -140,8 +139,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-detail___het-verwijderen-van-de-gebruikersgroep-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -174,8 +172,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 							icon="edit"
 							onClick={() =>
 								ToastService.info(
-									t('settings/components/profile___nog-niet-geimplementeerd'),
-									false
+									t('settings/components/profile___nog-niet-geimplementeerd')
 								)
 							}
 							size="small"

@@ -27,6 +27,7 @@ export const formatLookup: {
 	'4:3': { imageWidth: 400, imageHeight: 300, itemWidth: 400 },
 	'2:1': { imageWidth: 200, imageHeight: 100, itemWidth: 200 },
 	'6:9': { imageWidth: 400, imageHeight: 225, itemWidth: 400 },
+	'400x150': { imageWidth: 400, imageHeight: 150, itemWidth: 400 },
 };
 
 const BlockImageGridWrapper: FunctionComponent<BlockImageGridWrapperProps> = ({

@@ -7,3 +7,4 @@ export { default as BlockImageGridWrapper } from './ImageGridWrapper/ImageGridWr
 export { default as BlockIconGridWrapper } from './IconGridWrapper/IconGridWrapper';
 export { default as BlockContentPageMeta } from './BlockContentPageMeta/BlockContentPageMeta';
 export { default as HeroWrapper } from './HeroWrapper/HeroWrapper';
+export { default as CtaWrapper } from './CtaWrapper/CtaWrapper';

@@ -99,8 +99,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 				ToastService.danger(
 					t(
 						'admin/content/components/content-edit-form/content-edit-form___het-ophalen-van-de-content-labels-is-mislukt'
-					),
-					false
+					)
 				);
 			});
 	}, [contentPageInfo.content_type, setContentTypeLabels, t]);

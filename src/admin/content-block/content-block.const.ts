@@ -530,6 +530,10 @@ export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOp
 		label: i18n.t('admin/content-block/content-block___6-x-9-400-x-225'),
 		value: '6:9',
 	},
+	{
+		label: i18n.t('400x150'),
+		value: '400x150',
+	},
 ];
 
 export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabStyle>[] = () => [
