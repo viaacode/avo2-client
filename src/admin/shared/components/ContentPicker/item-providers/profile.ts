@@ -18,7 +18,10 @@ export const retrieveProfiles = async (
 			!!name
 				? {
 						_or: [
-							{ full_name: { _ilike: `%${name}%` } },
+							// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
+							{ first_name: { _ilike: `%${name}%` } },
+							{ last_name: { _ilike: `%${name}%` } },
+							// { full_name: { _ilike: `%${name}%` } },
 							{ mail: { _ilike: `%${name}%` } },
 						],
 				  }
