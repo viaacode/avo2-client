@@ -57,7 +57,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 		};
 
 		fetchThumbnailImages();
-	}, [isOpen, collection]);
+	}, [isOpen, collection, t]);
 
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
