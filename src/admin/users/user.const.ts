@@ -7,7 +7,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
-import { UserDeleteOption, UserOverviewTableCol } from './user.types';
+import { UserBulkAction, UserDeleteOption, UserOverviewTableCol } from './user.types';
 
 export const USER_PATH = {
 	USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}`,
@@ -154,7 +154,7 @@ export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 	];
 };
 
-type UserBulkActionOption = SelectOption<string> & {
+type UserBulkActionOption = SelectOption<UserBulkAction> & {
 	confirm?: boolean;
 	confirmButtonType?: ButtonType;
 };
@@ -166,8 +166,20 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 
 	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
 		actions.push({
+			label: i18n.t('Blokkeren'),
+			value: 'block',
+		});
+		actions.push({
+			label: i18n.t('Deblokkeren'),
+			value: 'unblock',
+		});
+		actions.push({
 			label: i18n.t('Verwijderen'),
 			value: 'delete',
+		});
+		actions.push({
+			label: i18n.t('Vakken aanpassen'),
+			value: 'change_subjects',
 		});
 	}
 

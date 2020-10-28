@@ -17,19 +17,22 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { PickerItem } from '../../types';
-
 export type AddOrRemove = 'add' | 'remove';
 
-interface ChangeLabelsModalProps {
-	initialAuthor?: PickerItem;
+interface AddOrRemoveLinkedElementsProps {
+	title: string; // eg: change subjects
+	addOrRemoveLabel: string; // eg: add or remove subjects
+	contentLabel: string; // eg: subjects
 	isOpen: boolean;
 	labels: TagInfo[];
 	onClose?: () => void;
 	callback: (addOrRemove: AddOrRemove, selectedLabels: TagInfo[]) => void;
 }
 
-const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
+const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElementsProps> = ({
+	title,
+	addOrRemoveLabel,
+	contentLabel,
 	onClose = () => {},
 	isOpen,
 	labels,
@@ -47,21 +50,10 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			title={t(
-				'admin/shared/components/change-labels-modal/change-labels-modal___labels-aanpassen'
-			)}
-			size="small"
-			onClose={handleClose}
-		>
+		<Modal isOpen={isOpen} title={title} size="small" onClose={handleClose}>
 			<ModalBody>
 				<Form>
-					<FormGroup
-						label={t(
-							'admin/shared/components/change-labels-modal/change-labels-modal___labels-toevoegen-of-verwijderen'
-						)}
-					>
+					<FormGroup label={addOrRemoveLabel}>
 						<Select
 							options={[
 								{
@@ -82,9 +74,7 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 						/>
 					</FormGroup>
 					<FormGroup
-						label={t(
-							'admin/shared/components/change-labels-modal/change-labels-modal___labels'
-						)}
+						label={contentLabel}
 					>
 						<TagsInput
 							options={labels}
@@ -131,4 +121,4 @@ const ChangeLabelsModal: FunctionComponent<ChangeLabelsModalProps> = ({
 	);
 };
 
-export default ChangeLabelsModal;
+export default AddOrRemoveLinkedElementsModal;

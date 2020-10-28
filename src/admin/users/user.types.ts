@@ -45,7 +45,7 @@ export interface RawPermission {
 	label: string;
 }
 
-export type UserBulkAction = 'delete';
+export type UserBulkAction = 'block' | 'unblock' | 'delete' | 'change_subjects';
 
 export type UserDeleteOption =
 	| 'DELETE_PRIVATE_KEEP_NAME'
