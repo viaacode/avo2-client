@@ -2,6 +2,7 @@ import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -11,7 +12,6 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -38,7 +38,7 @@ import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
 interface ItemsOverviewProps extends DefaultSecureRouteProps {}
 
-const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user }) => {
+const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
@@ -202,30 +202,23 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		}
 	}, [setLoadingInfo, items]);
 
-	const navigateToItemDetail = (externalId: string | undefined) => {
-		if (!externalId) {
-			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid')
-			);
-			return;
-		}
-		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
-		redirectToClientPage(link, history);
+	const getItemDetailLink = (externalId: string | undefined) => {
+		return buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
 	};
 
-	const navigateToAdminItemDetail = (uuid: string | undefined) => {
-		if (!uuid) {
-			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid')
-			);
-			return;
-		}
-		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
-		redirectToClientPage(link, history);
+	const getItemAdminDetailLink = (uuid: string | undefined) => {
+		return buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
 	};
 
 	const renderTableCell = (rowData: Partial<Avo.Item.Item>, columnId: ItemsOverviewTableCols) => {
 		switch (columnId) {
+			case 'external_id':
+				return (
+					<Link to={buildLink(ADMIN_PATH.ITEM_DETAIL, { id: rowData.uid })}>
+						{truncate((rowData as any)[columnId] || '-', { length: 60 })}
+					</Link>
+				);
+
 			case 'updated_at':
 			case 'depublish_at':
 			case 'expiry_date':
@@ -270,28 +263,30 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 			case 'actions':
 				return (
 					<ButtonToolbar>
-						<Button
-							type="secondary"
-							icon="eye"
-							onClick={() => navigateToItemDetail(rowData.external_id)}
-							title={t(
-								'admin/items/views/items-overview___bekijk-item-in-de-website'
-							)}
-							ariaLabel={t(
-								'admin/items/views/items-overview___bekijk-item-in-de-website'
-							)}
-						/>
-						<Button
-							type="secondary"
-							icon="edit"
-							onClick={() => navigateToAdminItemDetail(rowData.uid)}
-							title={t(
-								'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-							)}
-							ariaLabel={t(
-								'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-							)}
-						/>
+						<Link to={getItemDetailLink(rowData.external_id)}>
+							<Button
+								type="secondary"
+								icon="eye"
+								title={t(
+									'admin/items/views/items-overview___bekijk-item-in-de-website'
+								)}
+								ariaLabel={t(
+									'admin/items/views/items-overview___bekijk-item-in-de-website'
+								)}
+							/>
+						</Link>
+						<Link to={getItemAdminDetailLink(rowData.uid)}>
+							<Button
+								type="secondary"
+								icon="edit"
+								title={t(
+									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+								)}
+								ariaLabel={t(
+									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+								)}
+							/>
+						</Link>
 					</ButtonToolbar>
 				);
 
