@@ -3,7 +3,6 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -230,7 +229,10 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/users/views/user-overview___gebruikers')}>
+		<AdminLayout
+			pageTitle={t('admin/users/views/user-overview___gebruikers')}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
@@ -247,15 +249,11 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={profiles}
-							render={renderUserOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={profiles}
+					render={renderUserOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
