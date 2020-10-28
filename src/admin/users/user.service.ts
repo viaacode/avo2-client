@@ -19,7 +19,7 @@ import {
 import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } from './user.types';
 
 export class UserService {
-	public static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
+	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
 		try {
 			const response = await dataService.query({
 				query: GET_USER_BY_ID,
@@ -45,7 +45,7 @@ export class UserService {
 		}
 	}
 
-	public static async getProfiles(
+	static async getProfiles(
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
@@ -98,7 +98,7 @@ export class UserService {
 		}
 	}
 
-	public static async getProfileIds(where: any = {}): Promise<string[]> {
+	static async getProfileIds(where: any = {}): Promise<string[]> {
 		let variables: any;
 		try {
 			variables = where
@@ -129,7 +129,7 @@ export class UserService {
 		}
 	}
 
-	public static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
+	static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
 		try {
 			const response = await dataService.mutate({
 				mutation: UPDATE_USER_BLOCKED_STATUS,
@@ -158,7 +158,7 @@ export class UserService {
 		}
 	}
 
-	public static async fetchPublicAndPrivateCounts(
+	static async fetchPublicAndPrivateCounts(
 		profileIds: string[]
 	): Promise<DeleteContentCounts> {
 		try {
