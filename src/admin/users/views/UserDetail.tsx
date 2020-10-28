@@ -133,15 +133,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				ToastService.success(
 					isBlocked
 						? t('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
-						: t('admin/users/views/user-detail___gebruiker-is-geblokkeerd'),
-					false
+						: t('admin/users/views/user-detail___gebruiker-is-geblokkeerd')
 				);
 			} else {
 				ToastService.danger(
 					t(
 						'admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt-omdat-zijn-id-niet-kon-worden-gevonden'
-					),
-					false
+					)
 				);
 			}
 		} catch (err) {
@@ -151,8 +149,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				})
 			);
 			ToastService.danger(
-				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt'),
-				false
+				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt')
 			);
 		}
 	};

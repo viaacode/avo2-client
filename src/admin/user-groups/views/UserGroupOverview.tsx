@@ -21,6 +21,7 @@ import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -97,8 +98,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				ToastService.danger(
 					t(
 						'admin/user-groups/views/user-group-overview___het-verwijderen-van-de-gebruikersgroep-is-mislukt-probeer-de-pagina-te-herladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -106,8 +106,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			await UserGroupService.deleteUserGroup(userGroupIdToDelete);
 			await fetchUserGroups();
 			ToastService.success(
-				t('admin/user-groups/views/user-group-overview___de-gebruikersgroep-is-verwijdert'),
-				false
+				t('admin/user-groups/views/user-group-overview___de-gebruikersgroep-is-verwijdert')
 			);
 		} catch (err) {
 			console.error(
@@ -119,8 +118,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-overview___het-verwijderen-van-de-gebruikersgroep-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -130,8 +128,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-overview___de-gebruikersgroep-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen'
-				),
-				false
+				)
 			);
 			return;
 		}
@@ -269,14 +266,17 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
 		>
 			<AdminLayoutTopBarRight>
-				<Button
-					label={t(
-						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
-					}}
-				/>
+				<ButtonToolbar>
+					<UpdatePermissionsButton />
+					<Button
+						label={t(
+							'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
+						)}
+						onClick={() => {
+							redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
+						}}
+					/>
+				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>

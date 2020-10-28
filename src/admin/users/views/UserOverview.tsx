@@ -128,8 +128,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const navigateToUserDetail = (id: string | undefined) => {
 		if (!id) {
 			ToastService.danger(
-				t('admin/users/views/user-overview___deze-gebruiker-heeft-geen-geldig-id'),
-				false
+				t('admin/users/views/user-overview___deze-gebruiker-heeft-geen-geldig-id')
 			);
 			return;
 		}

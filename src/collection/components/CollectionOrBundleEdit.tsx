@@ -29,7 +29,7 @@ import {
 	Tabs,
 	Toolbar,
 	ToolbarItem,
-	ToolbarRight,
+	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -1057,11 +1057,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
-							<ToolbarRight>
+							<ToolbarLeft>
 								<ToolbarItem>
 									<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
 								</ToolbarItem>
-							</ToolbarRight>
+							</ToolbarLeft>
 						</Toolbar>
 					</Container>
 				</Container>

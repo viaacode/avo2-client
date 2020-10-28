@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -56,6 +57,7 @@ import {
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
+	isMobileWidth,
 	reorderDate,
 } from '../../shared/helpers';
 import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
@@ -313,7 +315,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					title={item.title}
 					category={toEnglishContentType(item.type.label)}
 					showMetaData={true}
-					className="c-item-detail__header"
+					className={classnames('c-item-detail__header', {
+						'c-item-detail__header-mobile': isMobileWidth(),
+					})}
 				>
 					<HeaderContentType
 						category={toEnglishContentType(item.type.label)}
@@ -359,14 +363,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							{!!item.issued && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										Gepubliceerd op {reorderDate(item.issued || null, '/')}
+										{`${t('Uitgezonden op')} ${reorderDate(
+											item.issued || null,
+											'/'
+										)}`}
 									</p>
 								</MetaDataItem>
 							)}
 							{!!item.series && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										Uit reeks: {generateSearchLink('serie', item.series)}
+										<span>{`${t('Reeks:')} `}</span>
+										{generateSearchLink('serie', item.series)}
 									</p>
 								</MetaDataItem>
 							)}
@@ -383,6 +391,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								!isReportItemModalOpen
 							}
 							onPlay={trackOnPlay}
+							verticalLayout={isMobileWidth()}
 						/>
 						<Grid>
 							<Column size="2-7">
@@ -476,7 +485,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 									<BlockHeading type="h3">
 										<Trans i18nKey="item/views/item___metadata">Metadata</Trans>
 									</BlockHeading>
-									<Table horizontal untable>
+									<Table
+										horizontal
+										untable
+										className={classnames('c-meta-data__table', {
+											'c-meta-data__table-mobile': isMobileWidth(),
+										})}
+									>
 										<Grid tag="tbody">
 											{!!item.issued && (
 												<Column size="2-5" tag="tr">
@@ -559,7 +574,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 										</Grid>
 									</Table>
 									<div className="c-hr" />
-									<Table horizontal untable>
+									<Table
+										horizontal
+										untable
+										className={classnames('c-meta-data__table', {
+											'c-meta-data__table-mobile': isMobileWidth(),
+										})}
+									>
 										<tbody>
 											{!!item.external_id && !!item.lom_context && (
 												<tr>
@@ -596,7 +617,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 										</tbody>
 									</Table>
 									<div className="c-hr" />
-									<Table horizontal untable>
+									<Table
+										horizontal
+										untable
+										className={classnames('c-meta-data__table', {
+											'c-meta-data__table-mobile': isMobileWidth(),
+										})}
+									>
 										<tbody>
 											{!!item.lom_keywords && !!item.lom_keywords.length && (
 												<tr>

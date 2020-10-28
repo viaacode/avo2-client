@@ -31,8 +31,7 @@ export const parseSearchQuery = (input: string): string => {
 		ToastService.danger(
 			i18n.t(
 				'admin/shared/helpers/content-picker/parse-picker___gelieve-een-correcte-zoekfilter-link-in-te-vullen'
-			),
-			false
+			)
 		);
 
 		return 'Ongeldige zoekfilter';

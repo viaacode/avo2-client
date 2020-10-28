@@ -1,6 +1,5 @@
 import {
 	BlockButtons,
-	BlockCTAs,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
@@ -15,6 +14,7 @@ import { ContentBlockType } from '../../../shared/types';
 import {
 	BlockContentPageMeta,
 	BlockGridWrapper,
+	CtaWrapper,
 	HeroWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
@@ -27,7 +27,7 @@ import RichTextWrapper from '../wrappers/RichTextWrapper/RichTextWrapper';
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.AnchorLinks]: BlockButtons,
 	[ContentBlockType.Buttons]: BlockButtons,
-	[ContentBlockType.CTAs]: BlockCTAs,
+	[ContentBlockType.CTAs]: CtaWrapper,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.ImageGrid]: BlockGridWrapper,
