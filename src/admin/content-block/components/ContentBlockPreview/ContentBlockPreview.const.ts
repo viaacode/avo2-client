@@ -13,7 +13,8 @@ import BlockSearch from '../../../../search/components/BlockSearch';
 import { ContentBlockType } from '../../../shared/types';
 import {
 	BlockContentPageMeta,
-	BlockGridWrapper,
+	BlockIconGridWrapper,
+	BlockImageGridWrapper,
 	CtaWrapper,
 	HeroWrapper,
 	MediaGridWrapper,
@@ -30,7 +31,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.CTAs]: CtaWrapper,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.ImageGrid]: BlockGridWrapper,
+	[ContentBlockType.ImageGrid]: BlockImageGridWrapper,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Intro]: BlockIntro,
@@ -49,6 +50,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Hero]: HeroWrapper,
 	[ContentBlockType.Search]: BlockSearch,
 	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
+	[ContentBlockType.IconGrid]: BlockIconGridWrapper,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -61,6 +63,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.Spotlight,
+	ContentBlockType.IconGrid,
 ];
 
 /**
@@ -78,6 +81,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Hero,
 	ContentBlockType.PageOverview,
 	ContentBlockType.MediaGrid,
+	ContentBlockType.IconGrid,
 ];
 
 /**

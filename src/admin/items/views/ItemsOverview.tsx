@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -337,7 +337,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
+		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')} size="full-width">
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
@@ -354,15 +354,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={items}
-							render={renderItemsOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={items}
+					render={renderItemsOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

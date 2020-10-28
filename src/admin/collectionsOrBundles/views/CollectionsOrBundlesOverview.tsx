@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import {
 	Button,
 	ButtonToolbar,
-	Container,
 	IconName,
 	TagInfo,
 	TagList,
@@ -857,6 +856,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels'
 					  )
 			}
+			size="full-width"
 		>
 			<AdminLayoutBody>
 				<MetaTags>
@@ -884,15 +884,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={collections}
-							render={renderCollectionsOrBundlesOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={collections}
+					render={renderCollectionsOrBundlesOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

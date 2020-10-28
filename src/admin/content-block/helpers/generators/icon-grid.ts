@@ -1,4 +1,4 @@
-import { GridItem } from '@viaa/avo2-components';
+import { GridItem, MultiRangeProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
@@ -9,29 +9,25 @@ import {
 	DefaultContentBlockState,
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
-import { BlockImageGridWrapperProps } from '../../components/wrappers/ImageGridWrapper/ImageGridWrapper';
+import { BlockIconGridWrapperProps } from '../../components/wrappers/IconGridWrapper/IconGridWrapper';
 import {
 	GET_ALIGN_OPTIONS,
-	GET_BUTTON_TYPE_OPTIONS,
 	GET_FILL_OPTIONS,
 	GET_IMAGE_GRID_FORMAT_OPTIONS,
 } from '../../content-block.const';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
-export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
+export const INITIAL_ICON_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
 	{
 		source: undefined,
 		title: '',
 		text: '',
-		buttonLabel: '',
-		buttonType: 'primary',
-		buttonTitle: '',
 		action: undefined,
 	} as any,
 ];
 
-export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockImageGridWrapperProps &
+export const INITIAL_ICON_GRID_BLOCK_STATE = (): BlockIconGridWrapperProps &
 	DefaultContentBlockState => {
 	return {
 		...BLOCK_STATE_DEFAULTS({
@@ -41,20 +37,26 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (): BlockImageGridWrapperProps &
 			},
 		}),
 		elements: [] as GridItem[],
-		format: 'squareLarge',
+		format: '2:1',
 		fill: 'cover',
 		textAlign: 'center',
+		itemWidth: 400,
 	};
 };
 
-export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const ICON_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/image-grid___afbeeldingen-grid'),
-	type: ContentBlockType.ImageGrid,
+	name: i18n.t("Logo's sign-off"),
+	type: ContentBlockType.IconGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
-		state: INITIAL_IMAGE_GRID_COMPONENTS_STATE(),
+		state: INITIAL_ICON_GRID_COMPONENTS_STATE(),
 		fields: {
+			textAbove: TEXT_FIELD('', {
+				label: i18n.t('Tekst boven afbeelding'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			}),
 			source: FILE_FIELD(
 				i18n.t(
 					'admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'
@@ -68,43 +70,15 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					} as FileUploadProps,
 				}
 			),
-			title: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___titel'),
-				editorType: ContentBlockEditor.TextInput,
-				validator: undefined,
-			}),
-			text: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___tekst'),
-				editorType: ContentBlockEditor.TextInput,
-				validator: undefined,
-			}),
-			buttonLabel: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tekst'),
-				editorType: ContentBlockEditor.TextInput,
-				validator: undefined,
-			}),
-			buttonTitle: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tooltip'),
-				editorType: ContentBlockEditor.TextInput,
-				validator: undefined,
-			}),
-			buttonType: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/image-grid___knop-type-kleur'
-				),
-				editorType: ContentBlockEditor.Select,
-				editorProps: {
-					options: GET_BUTTON_TYPE_OPTIONS(),
-				},
-			},
 			action: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___link'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},
 	},
+
 	block: {
-		state: INITIAL_IMAGE_GRID_BLOCK_STATE(),
+		state: INITIAL_ICON_GRID_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 			format: {
@@ -113,6 +87,16 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorProps: {
 					options: GET_IMAGE_GRID_FORMAT_OPTIONS(),
 				},
+			},
+			itemWidth: {
+				label: i18n.t('Kolom breedte'),
+				editorType: ContentBlockEditor.MultiRange,
+				editorProps: {
+					min: 0,
+					max: 500,
+					step: 1,
+					showNumber: true,
+				} as MultiRangeProps,
 			},
 			fill: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),
