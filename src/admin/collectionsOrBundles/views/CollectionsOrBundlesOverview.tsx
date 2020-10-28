@@ -627,7 +627,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
-				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
+				return lastEditUser ? `${lastEditUser.full_name}` : '-';
 
 			case 'is_public':
 				return rowData[columnId]
