@@ -278,6 +278,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.USER_GROUP_OVERVIEW)}
 			pageTitle={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>

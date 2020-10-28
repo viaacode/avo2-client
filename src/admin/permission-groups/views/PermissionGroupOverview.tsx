@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -230,6 +230,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			pageTitle={t(
 				'admin/permission-groups/views/permission-group-overview___permissie-groepen-overzicht'
 			)}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -258,15 +259,11 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={permissionGroups}
-							render={renderPermissionGroupTable}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={permissionGroups}
+					render={renderPermissionGroupTable}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -259,6 +259,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 	return (
 		<AdminLayout
 			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -289,15 +290,11 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={userGroups}
-							render={renderUserGroupPageBody}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={userGroups}
+					render={renderUserGroupPageBody}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

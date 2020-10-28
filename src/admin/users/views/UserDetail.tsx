@@ -369,6 +369,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
 				pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>

@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -319,6 +319,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			pageTitle={t(
 				'admin/content-page-labels/views/content-page-label-overview___content-pagina-labels-overzicht'
 			)}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<Button
@@ -344,15 +345,11 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={contentPageLabel}
-							render={renderContentPageLabelTable}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPageLabel}
+					render={renderContentPageLabelTable}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

@@ -57,10 +57,10 @@ import {
 	PageType,
 } from '../content.types';
 import {
+	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
-	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
@@ -543,6 +543,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				<AdminLayout
 					onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
 					pageTitle={pageTitle}
+					size="large"
 				>
 					<AdminLayoutTopBarRight>
 						<ButtonToolbar>

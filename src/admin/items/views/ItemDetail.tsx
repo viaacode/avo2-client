@@ -471,6 +471,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.ITEMS_OVERVIEW)}
 				pageTitle={`${t('admin/items/views/item-detail___item-details')}: ${item.title}`}
+				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					{!!item && (

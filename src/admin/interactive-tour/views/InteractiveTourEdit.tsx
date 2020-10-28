@@ -40,9 +40,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import {
+	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 	InteractiveTourAction,
 	interactiveTourEditReducer,
-	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 } from '../helpers/reducers';
 import {
 	getInitialInteractiveTour,
@@ -477,6 +477,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			pageTitle={t(
 				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
 			)}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -492,11 +493,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					/>
 				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Container mode="vertical" size="small" className="m-interactive-tour-edit-view">
-					<Container mode="horizontal">{renderEditPage()}</Container>
-				</Container>
-			</AdminLayoutBody>
+			<AdminLayoutBody>{renderEditPage()}</AdminLayoutBody>
 		</AdminLayout>
 	);
 

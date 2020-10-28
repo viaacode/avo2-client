@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, Container, KeyValueEditor } from '@viaa/avo2-components';
+import { Button, KeyValueEditor } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -148,7 +148,10 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/translations/views/translations-overview___vertalingen')}>
+		<AdminLayout
+			pageTitle={t('admin/translations/views/translations-overview___vertalingen')}
+			size="full-width"
+		>
 			<AdminLayoutTopBarRight>
 				<Button label="Opslaan" onClick={onSaveTranslations} />
 			</AdminLayoutTopBarRight>
@@ -168,17 +171,13 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						{!!translations.length && (
-							<KeyValueEditor
-								initialData={initialTranslations}
-								data={translations}
-								onChange={onChangeTranslations}
-							/>
-						)}
-					</Container>
-				</Container>
+				{!!translations.length && (
+					<KeyValueEditor
+						initialData={initialTranslations}
+						data={translations}
+						onChange={onChangeTranslations}
+					/>
+				)}
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

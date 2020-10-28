@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -288,6 +288,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			pageTitle={t(
 				'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
 			)}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<Button
@@ -318,15 +319,11 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={interactiveTours}
-							render={renderInteractiveTourPageBody}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={interactiveTours}
+					render={renderInteractiveTourPageBody}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

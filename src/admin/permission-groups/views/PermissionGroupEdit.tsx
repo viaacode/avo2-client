@@ -439,6 +439,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 							'admin/permission-groups/views/permission-group-edit___permissie-groep-aanpassen'
 					  )
 			}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -454,11 +455,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					/>
 				</ButtonToolbar>
 			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{renderEditPage()}</Container>
-				</Container>
-			</AdminLayoutBody>
+			<AdminLayoutBody>{renderEditPage()}</AdminLayoutBody>
 		</AdminLayout>
 	);
 
