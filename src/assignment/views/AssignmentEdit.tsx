@@ -505,7 +505,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					setAssignmentLabels
 				)}
 				<Container background="alt" mode="vertical">
-					<Container mode="horizontal">
+					<Container size="small" mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarRight>
 								<ToolbarItem>

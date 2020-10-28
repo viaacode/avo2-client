@@ -129,7 +129,6 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 			`${i18n.t(
 				'admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt'
 			)}: ${path}`,
-			false
 		);
 		return undefined;
 	}

@@ -67,8 +67,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							{
 								menuName,
 							}
-						),
-						false
+						)
 					);
 					history.push(MENU_PATH.MENU_OVERVIEW);
 				}
@@ -193,8 +192,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					ToastService.danger(
 						t(
 							'admin/menu/views/menu-edit___het-controleren-of-de-permissies-van-de-pagina-overeenkomen-met-de-zichtbaarheid-van-dit-navigatie-item-is-mislukt'
-						),
-						false
+						)
 					);
 				});
 		}
@@ -281,8 +279,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
-					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
-					false
+					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
 				);
 			} else {
 				if (isNil(menuItemId)) {
@@ -302,8 +299,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
-					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet'),
-					false
+					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
 				);
 			}
 		} catch (err) {
@@ -313,8 +309,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
-				false
+				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt')
 			);
 		}
 		setIsSaving(false);

@@ -116,8 +116,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const navigateToItemDetail = (externalId: string | undefined) => {
 		if (!externalId) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid'),
-				false
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -128,8 +127,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
 		if (!uuid) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid'),
-				false
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid')
 			);
 			return;
 		}
@@ -143,8 +141,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -155,8 +152,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			ToastService.success(
 				t(
 					'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o'
-				),
-				false
+				)
 			);
 			fetchItems();
 		} catch (err) {
@@ -166,8 +162,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			ToastService.danger(
 				t(
 					'admin/items/views/publish-items-overview___het-publiceren-van-de-items-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -179,15 +174,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				ToastService.success(
 					t(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-gestart'
-					),
-					false
+					)
 				);
 			} else {
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-reeds-bezig'
-					),
-					false
+					)
 				);
 			}
 		} catch (err) {
@@ -195,8 +188,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			ToastService.danger(
 				t(
 					'admin/items/views/publish-items-overview___het-triggeren-van-een-mam-synchronisatie-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};

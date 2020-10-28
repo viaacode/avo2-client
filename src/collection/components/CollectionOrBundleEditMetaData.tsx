@@ -162,6 +162,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											value={collection.description || ''}
 											id="shortDescriptionId"
 											height="medium"
+											placeholder={t(
+												'Omschrijf je collectie in enkele kernzinnen. Dit is de tekst die andere gebruikers naast jouw collectie (of bundel) te zien krijgen in de zoekresultaten.'
+											)}
 											onChange={(value: string) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',

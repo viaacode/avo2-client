@@ -255,8 +255,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								ToastService.success(
 									t(
 										'admin/content-block/components/content-block-form/content-block-form___de-blok-is-naar-je-klembord-gekopieerd-druk-ctrl-v-om-hem-te-plakken'
-									),
-									false
+									)
 								)
 							}
 						>
