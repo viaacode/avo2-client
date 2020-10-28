@@ -64,8 +64,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				ToastService.danger(
 					t(
 						'admin/items/components/depublish-item-modal/depublish-item-modal___reden-mag-niet-leeg-zijn'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -73,8 +72,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				ToastService.danger(
 					t(
 						'admin/items/components/depublish-item-modal/depublish-item-modal___je-moet-een-vervang-item-selecteren'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -102,8 +100,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					ToastService.danger(
 						t(
 							'admin/items/components/depublish-item-modal/depublish-item-modal___het-bepalen-van-de-id-van-het-vervang-item-is-mislukt'
-						),
-						false
+						)
 					);
 					return;
 				}
@@ -159,8 +156,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			ToastService.success(
 				t(
 					'admin/items/components/depublish-item-modal/depublish-item-modal___het-item-is-gedepubliceerd'
-				),
-				false
+				)
 			);
 			handleClose();
 		} catch (err) {
@@ -175,8 +171,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			ToastService.danger(
 				t(
 					'admin/items/components/depublish-item-modal/depublish-item-modal___het-depubliceren-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};

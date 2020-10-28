@@ -352,9 +352,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					setAssignmentLabels
 				)}
 				<Container background="alt" mode="vertical">
-					<Container mode="horizontal">
+					<Container size="small" mode="horizontal">
 						<Toolbar autoHeight>
-							<ToolbarRight>
+							<ToolbarLeft>
 								<ToolbarItem>
 									<ButtonToolbar>
 										<Button
@@ -368,7 +368,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 										/>
 									</ButtonToolbar>
 								</ToolbarItem>
-							</ToolbarRight>
+							</ToolbarLeft>
 						</Toolbar>
 					</Container>
 				</Container>

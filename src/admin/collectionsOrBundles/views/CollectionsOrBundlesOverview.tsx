@@ -218,8 +218,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	}, [setCollectionLabels, t]);
@@ -419,8 +418,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
-					  ),
-				false
+					  )
 			);
 			return;
 		}
@@ -475,8 +473,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
-					  ),
-				false
+					  )
 			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
@@ -493,8 +490,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-depubliceren-van-de-collecties-is-mislukt'
-					  ),
-				false
+					  )
 			);
 		}
 	};
@@ -511,8 +507,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
-				),
-				false
+				)
 			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
@@ -524,8 +519,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -543,8 +537,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
-				),
-				false
+				)
 			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
@@ -556,8 +549,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -576,8 +568,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				ToastService.success(
 					t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
-					),
-					false
+					)
 				);
 			} else {
 				// remove
@@ -589,8 +580,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				ToastService.success(
 					t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geslecteerde-collecties'
-					),
-					false
+					)
 				);
 			}
 			fetchCollectionsOrBundles();
@@ -604,8 +594,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -619,8 +608,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
-					  ),
-				false
+					  )
 			);
 			return;
 		}
@@ -666,7 +654,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
-				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
+				return lastEditUser ? `${lastEditUser.full_name}` : '-';
 
 			case 'is_public':
 				return rowData[columnId]
