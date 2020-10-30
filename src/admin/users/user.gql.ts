@@ -85,6 +85,8 @@ export const GET_USERS = gql`
 				id
 				stamboek
 				created_at
+				business_category
+				is_exception
 				profile_user_groups {
 					group {
 						label

@@ -6,6 +6,7 @@ import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/compone
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../shared/helpers/filters';
 
 import { UserBulkAction, UserDeleteOption, UserOverviewTableCol } from './user.types';
 
@@ -17,8 +18,12 @@ export const USER_PATH = {
 export const ITEMS_PER_PAGE = 50;
 
 export const GET_USER_OVERVIEW_TABLE_COLS: (
-	userGroupOptions: CheckboxOption[]
-) => FilterableColumn[] = (userGroupOptions: CheckboxOption[]) => [
+	userGroupOptions: CheckboxOption[],
+	companyOptions: CheckboxOption[]
+) => FilterableColumn[] = (
+	userGroupOptions: CheckboxOption[],
+	companyOptions: CheckboxOption[]
+) => [
 	{
 		id: 'first_name',
 		label: i18n.t('admin/users/user___voornaam'),
@@ -44,14 +49,22 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: userGroupOptions,
+			options: [...userGroupOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'oormerk',
+		id: 'business_category',
 		label: i18n.t('admin/users/user___oormerk'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
+	},
+	{
+		id: 'is_exception',
+		label: i18n.t('Uitzonderingsaccount'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
 		id: 'is_blocked',
@@ -65,12 +78,17 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/users/user___stamboek'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
 		id: 'organisation',
 		label: i18n.t('admin/users/user___organisatie'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...companyOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'created_at',
@@ -105,7 +123,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	user_group: (order: Avo.Search.OrderDirection) => ({
 		profile: { profile_user_group: { group: { label: order } } },
 	}),
-	oormerk: (order: Avo.Search.OrderDirection) => ({
+	business_category: (order: Avo.Search.OrderDirection) => ({
 		profile: { business_category: order },
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
