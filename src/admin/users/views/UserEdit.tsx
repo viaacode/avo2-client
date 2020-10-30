@@ -7,9 +7,12 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Select,
+	Spacer,
 	TagInfo,
 	TagsInput,
 	TextArea,
@@ -18,7 +21,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { StamboekInput } from '../../../authentication/components/StamboekInput';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
@@ -56,7 +58,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	const [bio, setBio] = useState<string | undefined>();
 	const [alias, setAlias] = useState<string | undefined>();
 	const [companyId, setCompanyId] = useState<string | undefined>();
-	const [stamboek, setStamboek] = useState<string | undefined>();
 
 	const [t] = useTranslation();
 
@@ -71,7 +72,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			setBio(get(profile, 'bio') || undefined);
 			setAlias(get(profile, 'alias') || undefined);
 			setCompanyId(get(profile, 'company_id') || undefined);
-			setStamboek(get(profile, 'stamboek') || undefined);
 			setSelectedSubjects(
 				(get(profile, 'profile_classifications') || [])
 					.map((classification: { key: string }) => classification.key)
@@ -121,6 +121,8 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 
 			const profileId = match.params.id;
 			const newProfileInfo = {
+				firstName,
+				lastName,
 				alias,
 				title,
 				bio,
@@ -129,7 +131,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				stamboek: stamboek || null,
 				company_id: companyId || undefined,
 			};
 			try {
@@ -180,16 +181,18 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Form>
-						<FormGroup label={t('admin/users/views/user-detail___avatar')}>
-							<FileUpload
-								urls={avatar ? [avatar] : []}
-								onChange={(urls) => setAvatar(urls[0])}
-								assetType="PROFILE_AVATAR"
-								allowMulti={false}
-								allowedTypes={PHOTO_TYPES}
-								ownerId={match.params.id}
-							/>
-						</FormGroup>
+						{!companyId && (
+							<FormGroup label={t('admin/users/views/user-detail___avatar')}>
+								<FileUpload
+									urls={avatar ? [avatar] : []}
+									onChange={(urls) => setAvatar(urls[0])}
+									assetType="PROFILE_AVATAR"
+									allowMulti={false}
+									allowedTypes={PHOTO_TYPES}
+									ownerId={match.params.id}
+								/>
+							</FormGroup>
+						)}
 						<FormGroup label={t('admin/users/views/user-detail___voornaam')}>
 							<TextInput value={firstName} onChange={setFirstName} />
 						</FormGroup>
@@ -220,24 +223,42 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 							/>
 						</FormGroup>
 						<FormGroup label={t('admin/users/views/user-detail___bedrijf')}>
-							<Select
-								options={compact(
-									(companies || []).map((org) => {
-										if (!org.name || !org.or_id) {
-											return null;
-										}
-										return {
-											label: org.name,
-											value: org.or_id,
-										};
-									})
-								)}
-								value={companyId}
-								onChange={setCompanyId}
-							/>
-						</FormGroup>
-						<FormGroup label={t('admin/users/views/user-detail___stamboek-nummer')}>
-							<StamboekInput value={stamboek} onChange={setStamboek} />
+							<Flex>
+								{' '}
+								<FlexItem>
+									<Select
+										options={compact(
+											(companies || []).map((org) => {
+												if (!org.name || !org.or_id) {
+													return null;
+												}
+												return {
+													label: org.name,
+													value: org.or_id,
+												};
+											})
+										)}
+										value={companyId}
+										onChange={(newCompany) => {
+											setCompanyId(newCompany);
+										}}
+										clearable
+									/>
+								</FlexItem>
+								<FlexItem shrink>
+									<Spacer margin="left">
+										<Button
+											type="danger"
+											size="large"
+											ariaLabel={t(
+												'Verbreek de link tussen deze gebruiker en dit bedrijf'
+											)}
+											icon="trash-2"
+											onClick={() => setCompanyId(undefined)}
+										/>
+									</Spacer>
+								</FlexItem>
+							</Flex>
 						</FormGroup>
 					</Form>
 				</Container>
