@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, get, omit } from 'lodash-es';
+import { compact, flatten, get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -9,12 +9,15 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
 import {
+	BULK_ADD_SUBJECTS_TO_PROFILES,
+	BULK_DELETE_SUBJECTS_FROM_PROFILES,
+	BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS,
+	BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS,
 	GET_CONTENT_COUNTS_FOR_USERS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USER_BY_ID,
 	GET_USERS,
-	UPDATE_USER_BLOCKED_STATUS,
 } from './user.gql';
 import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } from './user.types';
 
@@ -129,12 +132,12 @@ export class UserService {
 		}
 	}
 
-	static async updateBlockStatus(userId: string, isBlocked: boolean): Promise<void> {
+	static async updateBlockStatusByUserIds(userIds: string[], isBlocked: boolean): Promise<void> {
 		try {
 			const response = await dataService.mutate({
-				mutation: UPDATE_USER_BLOCKED_STATUS,
+				mutation: BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS,
 				variables: {
-					userId,
+					userIds,
 					isBlocked,
 				},
 				update: ApolloCacheManager.clearUserCache,
@@ -147,12 +150,44 @@ export class UserService {
 			}
 		} catch (err) {
 			throw new CustomError(
-				'Failed to update is_blocked field for user in the database',
+				'Failed to update is_blocked field for users in the database',
 				err,
 				{
-					userId,
+					userIds,
 					isBlocked,
-					query: 'UPDATE_USER_BLOCKED_STATUS',
+					query: 'BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS',
+				}
+			);
+		}
+	}
+
+	static async updateBlockStatusByProfileIds(
+		profileIds: string[],
+		isBlocked: boolean
+	): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS,
+				variables: {
+					profileIds,
+					isBlocked,
+				},
+				update: ApolloCacheManager.clearUserCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to update is_blocked field for users in the database',
+				err,
+				{
+					profileIds,
+					isBlocked,
+					query: 'BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS',
 				}
 			);
 		}
@@ -211,6 +246,66 @@ export class UserService {
 			throw new CustomError('Failed to get profile names from the database', err, {
 				profileIds,
 				query: 'GET_PROFILE_NAMES',
+			});
+		}
+	}
+
+	static async bulkAddSubjectsToProfiles(
+		subjects: string[],
+		profileIds: string[]
+	): Promise<void> {
+		try {
+			// First remove the subjects, so we can add them without duplicate conflicts
+			await UserService.bulkRemoveSubjectsFromProfiles(subjects, profileIds);
+
+			// Add the subjects
+			const response = await dataService.mutate({
+				mutation: BULK_ADD_SUBJECTS_TO_PROFILES,
+				variables: {
+					subjects: flatten(
+						subjects.map((subject) =>
+							profileIds.map((profileId) => ({
+								key: subject,
+								profile_id: profileId,
+							}))
+						)
+					),
+				},
+				update: ApolloCacheManager.clearUserCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to bulk add subjects to profiles', err, {
+				subjects,
+				profileIds,
+				query: 'BULK_ADD_SUBJECTS_TO_PROFILES',
+			});
+		}
+	}
+
+	static async bulkRemoveSubjectsFromProfiles(
+		subjects: string[],
+		profileIds: string[]
+	): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_DELETE_SUBJECTS_FROM_PROFILES,
+				variables: {
+					subjects,
+					profileIds,
+				},
+				update: ApolloCacheManager.clearUserCache,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to bulk delete subjects from profiles', err, {
+				subjects,
+				profileIds,
+				query: 'BULK_DELETE_SUBJECTS_FROM_PROFILES',
 			});
 		}
 	}
