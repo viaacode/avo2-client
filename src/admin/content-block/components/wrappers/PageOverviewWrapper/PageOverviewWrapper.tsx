@@ -6,7 +6,6 @@ import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-
 
 import {
 	BlockPageOverview,
-	ButtonAction,
 	ContentItemStyle,
 	ContentTabStyle,
 	LabelObj,
@@ -31,8 +30,6 @@ import { ContentTypeAndLabelsValue } from '../../../../shared/components/Content
 import { CheckboxListParam } from '../../../../shared/helpers/query-string-converters';
 import { Color } from '../../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../../content-block.const';
-
-import { BlockPageOverview } from './BlockPageOverview/BlockPageOverview';
 
 export interface ContentPageOverviewParams {
 	withBlock: boolean;
