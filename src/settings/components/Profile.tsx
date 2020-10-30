@@ -807,7 +807,7 @@ const Profile: FunctionComponent<
 				return get(profile, 'user.mail') || '-';
 
 			case 'user_group':
-				return get(profile, 'profile_user_groups[0].groups[0].label') || '-';
+				return get(profile, 'profile_user_groups[0].group.label') || '-';
 
 			case 'is_blocked':
 				return get(profile, 'user.is_blocked') || 'Nee';

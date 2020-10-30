@@ -249,7 +249,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].groups[0]', []);
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].group', []);
 
 		return (
 			<Container mode="vertical" size="small">
