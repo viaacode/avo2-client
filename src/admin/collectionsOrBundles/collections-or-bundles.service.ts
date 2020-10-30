@@ -1,10 +1,12 @@
 import { flatten, get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
 import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
+import { RelationService } from '../../shared/services/relation-service/relation.service';
 
 import {
 	ITEMS_PER_PAGE,
@@ -45,7 +47,10 @@ export class CollectionsOrBundlesService {
 				variables,
 				query: GET_COLLECTIONS,
 			});
-			const collections = get(response, 'data.app_collections');
+			const collections: Avo.Collection.Collection[] | null = get(
+				response,
+				'data.app_collections'
+			);
 			const collectionsCount = get(
 				response,
 				'data.app_collections_aggregate.aggregate.count'
@@ -56,6 +61,19 @@ export class CollectionsOrBundlesService {
 					response,
 				});
 			}
+
+			// also fetch if the collection is a copy in a separate query to avoid making the main query slower
+			const relations = (await RelationService.fetchRelationsBySubject(
+				'collection',
+				collections.map((coll: Avo.Collection.Collection) => coll.id),
+				'IS_COPY_OF'
+			)) as RelationEntry<Avo.Collection.Collection>[];
+			relations.forEach((relation) => {
+				const collection = collections.find((coll) => coll.id === relation.subject);
+				if (collection) {
+					collection.relations = [relation];
+				}
+			});
 
 			return [collections, collectionsCount];
 		} catch (err) {

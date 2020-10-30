@@ -130,11 +130,9 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// B => C
 				const itemsReplacedByCurrentItem: RelationEntry<
 					Avo.Item.Item
-				>[] = (await RelationService.fetchRelationsByObject(
-					'item',
-					'IS_REPLACED_BY',
-					item.uid
-				)) as RelationEntry<Avo.Item.Item>[];
+				>[] = (await RelationService.fetchRelationsByObject('item', 'IS_REPLACED_BY', [
+					item.uid,
+				])) as RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
 					itemsReplacedByCurrentItem.map(
 						async (relation: RelationEntry<Avo.Item.Item>) => {

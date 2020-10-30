@@ -11,10 +11,10 @@ import {
 	DELETE_COLLECTION_RELATIONS_BY_SUBJECT,
 	DELETE_ITEM_RELATIONS_BY_OBJECT,
 	DELETE_ITEM_RELATIONS_BY_SUBJECT,
-	FETCH_COLLECTION_RELATIONS_BY_OBJECT,
-	FETCH_COLLECTION_RELATIONS_BY_SUBJECT,
-	FETCH_ITEM_RELATIONS_BY_OBJECT,
-	FETCH_ITEM_RELATIONS_BY_SUBJECT,
+	FETCH_COLLECTION_RELATIONS_BY_OBJECTS,
+	FETCH_COLLECTION_RELATIONS_BY_SUBJECTS,
+	FETCH_ITEM_RELATIONS_BY_OBJECTS,
+	FETCH_ITEM_RELATIONS_BY_SUBJECTS,
 	INSERT_COLLECTION_RELATION,
 	INSERT_ITEM_RELATION,
 } from './relation.gql';
@@ -23,39 +23,39 @@ export class RelationService {
 	public static async fetchRelationsByObject(
 		type: 'collection' | 'item',
 		relationType: RelationType,
-		objectId: string
+		objectIds: string[]
 	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
-		return this.fetchRelations(type, null, relationType, objectId);
+		return this.fetchRelations(type, null, relationType, objectIds);
 	}
 
 	public static async fetchRelationsBySubject(
 		type: 'collection' | 'item',
-		subjectId: string,
+		subjectIds: string[],
 		relationType: RelationType
 	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
-		return this.fetchRelations(type, subjectId, relationType, null);
+		return this.fetchRelations(type, subjectIds, relationType, null);
 	}
 
 	private static async fetchRelations(
 		type: 'collection' | 'item',
-		subjectId: string | null,
+		subjectIds: string[] | null,
 		relationType: RelationType,
-		objectId: string | null
+		objectIds: string[] | null
 	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		let variables: any;
 		const isCollection = type === 'collection';
 		try {
 			variables = {
 				relationType,
-				...(objectId ? { objectId } : {}),
-				...(subjectId ? { subjectId } : {}),
+				...(objectIds ? { objectIds } : {}),
+				...(subjectIds ? { subjectIds } : {}),
 			};
-			const collectionQuery = objectId
-				? FETCH_COLLECTION_RELATIONS_BY_OBJECT
-				: FETCH_COLLECTION_RELATIONS_BY_SUBJECT;
-			const itemQuery = objectId
-				? FETCH_ITEM_RELATIONS_BY_OBJECT
-				: FETCH_ITEM_RELATIONS_BY_SUBJECT;
+			const collectionQuery = objectIds
+				? FETCH_COLLECTION_RELATIONS_BY_OBJECTS
+				: FETCH_COLLECTION_RELATIONS_BY_SUBJECTS;
+			const itemQuery = objectIds
+				? FETCH_ITEM_RELATIONS_BY_OBJECTS
+				: FETCH_ITEM_RELATIONS_BY_SUBJECTS;
 			const response = await dataService.mutate({
 				variables,
 				mutation: isCollection ? collectionQuery : itemQuery,
@@ -73,8 +73,8 @@ export class RelationService {
 			throw new CustomError('Failed to get relation from the database', err, {
 				variables,
 				query: isCollection
-					? 'FETCH_COLLECTION_RELATIONS_BY_OBJECT'
-					: 'FETCH_ITEM_RELATIONS_BY_OBJECT',
+					? 'FETCH_COLLECTION_RELATIONS_BY_OBJECTS or FETCH_COLLECTION_RELATIONS_BY_SUBJECTS'
+					: 'FETCH_ITEM_RELATIONS_BY_OBJECTS or FETCH_ITEM_RELATIONS_BY_SUBJECTS',
 			});
 		}
 	}

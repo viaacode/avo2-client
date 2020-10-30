@@ -1,4 +1,4 @@
-import { compact, get, truncate, without } from 'lodash-es';
+import { compact, get, isNil, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -164,6 +164,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 				},
 			});
+
+			if (!isNil(filters.is_copy)) {
+				if (filters.is_copy) {
+					andFilters.push({
+						relations: { predicate: { _eq: 'IS_COPY_OF' } },
+					});
+				} else {
+					andFilters.push({
+						relations: { _not: { predicate: { _eq: 'IS_COPY_OF' } } },
+					});
+				}
+			}
+
 			return { _and: andFilters };
 		},
 		[isCollection, user]
@@ -367,6 +380,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterProps: {
 				options: collectionLabelOptions,
 			} as CheckboxDropdownModalProps,
+		},
+		{
+			id: 'is_copy',
+			label: i18n.t('Kopie'),
+			sortable: false,
+			visibleByDefault: false,
+			filterType: 'BooleanCheckboxDropdown',
 		},
 		{
 			id: 'views',
@@ -653,7 +673,21 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							{ id: rowData.id }
 						)}
 					>
-						{title}
+						<span>{title}</span>
+						{!!get(rowData, 'relations[0].object') && (
+							<a
+								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+									id: get(rowData, 'relations[0].object'),
+								})}
+							>
+								<TagList
+									tags={[
+										{ id: get(rowData, 'relations[0].object'), label: 'Kopie' },
+									]}
+									swatches={false}
+								/>
+							</a>
+						)}
 					</Link>
 				);
 
