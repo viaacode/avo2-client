@@ -3,7 +3,7 @@ import { ValueType } from 'react-select/src/types';
 
 import { ContentPickerType } from '@viaa/avo2-components';
 
-import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
+import { PickerItem, PickerItemControls, PickerSelectItem, PickerTypeOption } from '../../types';
 
 export const filterTypes = (
 	types: PickerTypeOption<ContentPickerType>[],
@@ -18,9 +18,14 @@ export const setInitialInput = (
 	type?: PickerTypeOption<ContentPickerType>,
 	initialValue?: PickerItem
 ) => {
-	const isInput = get(type, 'picker') === 'TEXT_INPUT';
+	switch (get(type, 'picker') as PickerItemControls) {
+		case 'TEXT_INPUT':
+		case 'FILE_UPLOAD':
+			return get(initialValue, 'value', '');
 
-	return isInput ? get(initialValue, 'value', '') : '';
+		default:
+			return '';
+	}
 };
 
 export const setInitialItem = (

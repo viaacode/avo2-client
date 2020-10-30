@@ -21,6 +21,7 @@ export const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => (
 	PROJECTS: i18n.t('admin/shared/components/content-picker/content-picker___projecten'),
 	PROFILE: i18n.t('admin/shared/components/content-picker/content-picker___gebruiker'),
 	ANCHOR_LINK: i18n.t('admin/shared/components/content-picker/content-picker___anchors'),
+	FILE: i18n.t('Bestand'),
 });
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
@@ -98,6 +99,12 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 			fetch: retrieveAnchors,
 			picker: 'SELECT',
 		},
+		{
+			value: 'FILE',
+			label: labels['FILE'],
+			disabled: false,
+			picker: 'FILE_UPLOAD',
+		},
 	];
 };
 
@@ -109,6 +116,7 @@ export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
 	'INTERNAL_LINK',
 	'EXTERNAL_LINK',
 	'ANCHOR_LINK',
+	'FILE',
 ];
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {
