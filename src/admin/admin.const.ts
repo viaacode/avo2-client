@@ -1,5 +1,7 @@
 import { every, some } from 'lodash-es';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { buildLink, CustomError } from '../shared/helpers';
 import { ToastService } from '../shared/services';
@@ -128,7 +130,7 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 		ToastService.danger(
 			`${i18n.t(
 				'admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt'
-			)}: ${path}`,
+			)}: ${path}`
 		);
 		return undefined;
 	}
@@ -350,3 +352,11 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		exact: false,
 	}),
 ];
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export const IDP_COLORS: { [idp in Avo.Auth.IdpType]: string } = {
+	HETARCHIEF: '#25a4cf',
+	KLASCEMENT: '#f7931b',
+	SMARTSCHOOL: '#f05a1a',
+};
+/* eslint-enable @typescript-eslint/no-unused-vars */

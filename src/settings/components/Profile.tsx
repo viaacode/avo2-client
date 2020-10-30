@@ -45,6 +45,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate } from '../../shared/helpers';
+import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { EducationOrganisationService } from '../../shared/services/education-organizations-service';
@@ -87,10 +88,6 @@ const Profile: FunctionComponent<
 	const [t] = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
-	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
-		label: enumLabel,
-		value: enumLabel,
-	});
 	const gqlOrganizationToSelectOption = (
 		org: Avo.EducationOrganization.Organization
 	): TagInfo => ({
@@ -110,10 +107,10 @@ const Profile: FunctionComponent<
 		[cityAndZipCode: string]: Avo.EducationOrganization.Organization[];
 	}>({});
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
-		get(user, 'profile.educationLevels', []).map(gqlEnumToSelectOption)
+		get(user, 'profile.educationLevels', []).map(stringToSelectOption)
 	);
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
-		get(user, 'profile.subjects', []).map(gqlEnumToSelectOption)
+		get(user, 'profile.subjects', []).map(stringToSelectOption)
 	);
 	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
 		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)

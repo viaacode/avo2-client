@@ -12,6 +12,7 @@ import { UserBulkAction, UserDeleteOption, UserOverviewTableCol } from './user.t
 export const USER_PATH = {
 	USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}`,
 	USER_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}/:id`,
+	USER_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}/:id/${ROUTE_PARTS.edit}`,
 };
 
 export const ITEMS_PER_PAGE = 50;

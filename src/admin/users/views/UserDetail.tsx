@@ -22,13 +22,16 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
-import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
+import {
+	redirectToClientPage,
+	redirectToExternalPage,
+} from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { ADMIN_PATH } from '../../admin.const';
+import { ADMIN_PATH, IDP_COLORS } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -265,6 +268,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								['user.last_name', t('admin/users/views/user-detail___achternaam')],
 								['alias', t('admin/users/views/user-detail___gebruikersnaam')],
 								['title', t('admin/users/views/user-detail___functie')],
+								['bio', t('admin/users/views/user-detail___bio')],
+								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
 								[
 									'user.mail',
 									t('admin/users/views/user-detail___primair-email-adres'),
@@ -287,11 +292,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderDateDetailRows(storedProfile, [
 								['created_at', 'Aangemaakt op'],
 								['updated_at', 'Aangepast op'],
-								['last_access_at', 'Laatste toegang'],
+								['user.last_access_at', 'Laatste toegang'],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
-								['bio', t('admin/users/views/user-detail___bio')],
-								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
 								['business_category', t('admin/users/views/user-detail___oormerk')],
 								[
 									'is_exception',
@@ -302,6 +305,18 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___geblokkeerd'),
 								],
 							])}
+							{renderDetailRow(
+								<TagList
+									tags={get(storedProfile, 'user.idpmaps', []).map(
+										(idpMap: { idp: Avo.Auth.IdpType }): TagOption => ({
+											color: IDP_COLORS[idpMap.idp],
+											label: idpMap.idp,
+											id: idpMap.idp,
+										})
+									)}
+								/>,
+								t('Gelinked aan')
+							)}
 							{renderDetailRow(
 								<TagList
 									tags={get(
@@ -383,6 +398,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								onClick={() => toggleBlockedStatus()}
 							/>
 						)}
+						<Button
+							label={t('Bewerken')}
+							ariaLabel={t('Bewerk deze gebruiker')}
+							onClick={() =>
+								redirectToClientPage(
+									buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),
+									history
+								)
+							}
+						/>
 						<Button
 							label={t('admin/users/views/user-detail___beheer-in-account-manager')}
 							ariaLabel={t(

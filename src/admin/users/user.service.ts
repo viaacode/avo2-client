@@ -29,6 +29,7 @@ export class UserService {
 				variables: {
 					id: profileId,
 				},
+				fetchPolicy: 'no-cache',
 			});
 			if (response.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
