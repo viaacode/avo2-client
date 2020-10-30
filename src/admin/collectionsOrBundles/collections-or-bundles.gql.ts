@@ -47,11 +47,6 @@ export const GET_COLLECTIONS = gql`
 				views
 				copies
 			}
-			relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
-				subject
-				predicate
-				object
-			}
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {
@@ -60,6 +55,15 @@ export const GET_COLLECTIONS = gql`
 		}
 	}
 `;
+
+// TODO add relations back into the collections query to show which collections are a copy of which collection
+// We first want to test how fast the query is, before we make it heavier again:
+//
+// relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
+// 	subject
+// 	predicate
+// 	object
+// }
 
 export const GET_COLLECTION_IDS = gql`
 	query getCollections($where: app_collections_bool_exp!) {

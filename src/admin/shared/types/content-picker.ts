@@ -1,6 +1,6 @@
 import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 
-export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
+export type PickerItemControls = 'SELECT' | 'TEXT_INPUT' | 'FILE_UPLOAD';
 
 export interface PickerItem {
 	label?: string;

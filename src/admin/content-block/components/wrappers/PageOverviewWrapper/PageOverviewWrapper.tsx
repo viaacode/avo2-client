@@ -1,8 +1,8 @@
-import { isString } from 'lodash-es';
-import queryString from 'query-string';
+import { cloneDeep, compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
 import {
 	BlockPageOverview,
@@ -27,6 +27,7 @@ import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+import { CheckboxListParam } from '../../../../shared/helpers/query-string-converters';
 import { Color } from '../../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../../content-block.const';
 
@@ -80,13 +81,18 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 }) => {
 	const [t] = useTranslation();
 
-	const [currentPage, setCurrentPage] = useState<number>(0);
-	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
+	const queryParamConfig: { [queryParamId: string]: QueryParamConfig<any> } = {
+		page: NumberParam,
+		item: StringParam,
+		label: CheckboxListParam,
+	};
+	const [queryParamsState, setQueryParamsState] = useQueryParams(queryParamConfig);
 	const [pages, setPages] = useState<ContentPageInfo[] | null>(null);
 	const [pageCount, setPageCount] = useState<number | null>(null);
 	const [labelPageCounts, setLabelPageCounts] = useState<{ [id: number]: number } | null>(null);
-	const [focusedPageId, setFocusedPageId] = useState<number | undefined>(undefined);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [selectedTabObjects, setSelectedTabObjects] = useState<LabelObj[]>([]);
+	const [focusedPage, setFocusedPage] = useState<PageInfo | null>(null);
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
@@ -114,6 +120,48 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 
 	const fetchPages = useCallback(async () => {
 		try {
+			// Map labels in query params to label objects
+			let selectedTabs: LabelObj[] = [];
+			if (queryParamsState.label) {
+				if (queryParamsState.label.length) {
+					selectedTabs = compact(
+						(queryParamsState.label || []).map((labelName: string) => {
+							return (contentTypeAndTabs.selectedLabels || []).find((labelObj) => {
+								return labelObj.label === labelName;
+							});
+						})
+					);
+					setSelectedTabObjects(selectedTabs);
+				} else {
+					setSelectedTabObjects([]);
+				}
+			}
+
+			let tempFocusedPage: PageInfo | undefined;
+			if (queryParamsState.item) {
+				const contentPage = await ContentPageService.getContentPageByPath(
+					queryParamsState.item
+				);
+				if (contentPage) {
+					tempFocusedPage = dbToPageOverviewContentPage(contentPage);
+					setFocusedPage(tempFocusedPage);
+				} else {
+					console.error(
+						new CustomError(
+							'Failed to find content page by path to set it as the expanded item for the page overview wrapper component',
+							null,
+							{
+								path: queryParamsState.item,
+								contentPage,
+							}
+						)
+					);
+					ToastService.danger(
+						t('Het opgegeven item kon niet worden gevonden: ') + queryParamsState.item
+					);
+				}
+			}
+
 			const selectedLabelIds = selectedTabs.map((labelObj) => labelObj.id);
 			const blockLabelIds = ((contentTypeAndTabs.selectedLabels ||
 				[]) as Avo.ContentPage.Label[]).map((labelObj) => labelObj.id);
@@ -125,7 +173,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
 				orderByProp: 'published_at',
 				orderByDirection: 'desc',
-				offset: currentPage * debouncedItemsPerPage,
+				offset: queryParamsState.page * debouncedItemsPerPage,
 				limit: debouncedItemsPerPage,
 			};
 			const reply = await fetchWithLogout(`${getEnv('PROXY_URL')}/content-pages/overview`, {
@@ -138,7 +186,13 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			});
 
 			const response = await reply.json();
-			setPages(convertToContentPageInfos(response.pages));
+
+			// Set the pages on the state after removing the page that will be shown at the top (?item=/path)
+			setPages(
+				convertToContentPageInfos(response.pages).filter(
+					(page) => page.id !== get(tempFocusedPage, 'id')
+				)
+			);
 			setPageCount(Math.ceil(response.count / debouncedItemsPerPage));
 			setLabelPageCounts(response.labelCounts);
 		} catch (err) {
@@ -146,7 +200,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				new CustomError('Failed to fetch pages', err, {
 					query: 'GET_CONTENT_PAGES',
 					variables: {
-						offset: currentPage * debouncedItemsPerPage,
+						offset: queryParamsState.page * debouncedItemsPerPage,
 						limit: debouncedItemsPerPage,
 					},
 				})
@@ -161,7 +215,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		itemStyle,
-		currentPage,
+		queryParamsState,
 		debouncedItemsPerPage,
 		setPages,
 		setPageCount,
@@ -170,51 +224,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		JSON.stringify(contentTypeAndTabs.selectedLabels),
-		selectedTabs,
 		t,
 	]);
-
-	const checkFocusedFilterAndPage = useCallback(async () => {
-		try {
-			const queryParams = queryString.parse(window.location.search);
-			const hasLabel = queryParams.label && isString(queryParams.label);
-			const hasItem = queryParams.item && isString(queryParams.item);
-			if (hasLabel) {
-				const labelObj = (contentTypeAndTabs.selectedLabels || []).find(
-					(l) => l.label === queryParams.label
-				);
-				if (labelObj) {
-					setSelectedTabs([{ label: labelObj.label, id: labelObj.id }]);
-				}
-			}
-			if (hasItem) {
-				const contentPage = await ContentPageService.getContentPageByPath(
-					queryParams.item as string
-				);
-				if (!contentPage) {
-					throw new CustomError('No pages were found with the provided path');
-				}
-				setFocusedPageId(contentPage.id);
-			}
-		} catch (err) {
-			console.error('Failed to fetch content page by path', err, {
-				queryParams: window.location.search,
-			});
-			ToastService.danger(
-				t(
-					'admin/content-block/components/wrappers/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-het-te-focussen-item-is-mislukt'
-				)
-			);
-		}
-	}, [setFocusedPageId, contentTypeAndTabs.selectedLabels, t]);
 
 	useEffect(() => {
 		fetchPages();
 	}, [fetchPages]);
-
-	useEffect(() => {
-		checkFocusedFilterAndPage();
-	}, [checkFocusedFilterAndPage]);
 
 	useEffect(() => {
 		if (pages && pageCount) {
@@ -223,12 +238,24 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	}, [pages, pageCount]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
-		setCurrentPage(pageIndex);
+		setQueryParamsState((oldQueryParamState) => {
+			return {
+				...cloneDeep(oldQueryParamState),
+				page: pageIndex,
+				item: undefined,
+			};
+		});
 	};
 
 	const handleSelectedTabsChanged = (tabs: LabelObj[]) => {
-		setSelectedTabs(tabs);
-		setCurrentPage(0);
+		setQueryParamsState((oldQueryParamState) => {
+			return {
+				...cloneDeep(oldQueryParamState),
+				label: tabs.map((tab) => tab.label),
+				page: 0,
+				item: undefined,
+			};
+		});
 	};
 
 	const getLabelsWithContent = () => {
@@ -245,9 +272,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 					!!headerBackgroundColor &&
 					GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(headerBackgroundColor)
 				}
-				selectedTabs={selectedTabs}
+				selectedTabs={selectedTabObjects}
 				onSelectedTabsChanged={handleSelectedTabsChanged}
-				currentPage={currentPage}
+				currentPage={queryParamsState.page}
 				onCurrentPageChanged={handleCurrentPageChanged}
 				pageCount={pageCount || 1}
 				pages={(pages || []).map(dbToPageOverviewContentPage)}
@@ -268,7 +295,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
 				)}
 				buttonLabel={buttonLabel}
-				activePageId={focusedPageId}
+				focusedPage={focusedPage}
 				onLabelClicked={(label: string) =>
 					navigate(history, `/${ROUTE_PARTS.news}`, {}, `label=${label}`)
 				}

@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
+import { compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -16,6 +16,7 @@ import {
 	ModalFooterRight,
 	RadioButtonGroup,
 	Spacer,
+	TagInfo,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
@@ -24,6 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { SettingsService } from '../../../settings/settings.service';
 import {
 	CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -34,6 +36,9 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
+import AddOrRemoveLinkedElementsModal, {
+	AddOrRemove,
+} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
@@ -84,6 +89,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
 		null
 	);
+	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
+	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
 	const generateWhereObject = (filters: Partial<UserTableState>) => {
 		const andFilters: any[] = [];
@@ -107,6 +114,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					},
 					{
 						_or: [
+							// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
 							{ first_name: { _ilike: queryWordWildcard } },
 							{ last_name: { _ilike: queryWordWildcard } },
 							{ mail: { _ilike: queryWordWildcard } },
@@ -165,6 +173,37 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		}
 	}, [fetchProfiles, profiles]);
 
+	const bulkChangeSubjects = async (addOrRemove: AddOrRemove, subjects: string[]) => {
+		try {
+			if (!selectedProfileIds || !selectedProfileIds.length) {
+				return;
+			}
+			if (addOrRemove === 'add') {
+				await UserService.bulkAddSubjectsToProfiles(subjects, compact(selectedProfileIds));
+				ToastService.success(
+					t('De vakken zijn toegevoegd aan de geselecteerde gebruikers')
+				);
+			} else {
+				// remove
+				await UserService.bulkRemoveSubjectsFromProfiles(
+					subjects,
+					compact(selectedProfileIds)
+				);
+				ToastService.success(
+					t('De vakken zijn verwijderd van de geselecteerde gebruikers')
+				);
+			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to bulk update subjects of user profiles', err, {
+					addOrRemove,
+					subjects,
+				})
+			);
+			ToastService.danger(t('Het aanpassen van de vakken is mislukt'));
+		}
+	};
+
 	const setAllProfilesAsSelected = async () => {
 		setIsLoading(true);
 		try {
@@ -191,13 +230,55 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setIsLoading(false);
 	};
 
+	/**
+	 * Blocks or unblocks all users in the selectedProfileIds list
+	 * @param blockOrUnblock set true for block and false for unblock
+	 */
+	const bulkUpdateBlockStatus = async (blockOrUnblock: boolean) => {
+		try {
+			await UserService.updateBlockStatusByProfileIds(selectedProfileIds, blockOrUnblock);
+			await fetchProfiles();
+			ToastService.success(
+				blockOrUnblock
+					? t('De geselecteerde gebruikers zijn geblokkeerd')
+					: t('De geselecteerde gebruikers zijn gedeblokkeerd')
+			);
+		} catch (err) {
+			ToastService.danger(t('Het blokkeren van de geselecteerde gebruikers is mislukt'));
+		}
+	};
+
 	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
 		if (!selectedProfileIds || !selectedProfileIds.length) {
 			return;
 		}
 		switch (action) {
+			case 'block':
+				await bulkUpdateBlockStatus(true);
+				return;
+
+			case 'unblock':
+				await bulkUpdateBlockStatus(false);
+				return;
+
 			case 'delete':
 				setDeleteOptionsModalOpen(true);
+				return;
+
+			case 'change_subjects':
+				setChangeSubjectsModalOpen(true);
+				SettingsService.fetchSubjects()
+					.then((subjects: string[]) => {
+						setAllSubjects(subjects);
+					})
+					.catch((err) => {
+						console.error(
+							new CustomError('Failed to get subjects from the database', err)
+						);
+						ToastService.danger(
+							t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
+						);
+					});
 				return;
 		}
 	};
@@ -561,6 +642,23 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						</Toolbar>
 					</ModalBody>
 				</Modal>
+				<AddOrRemoveLinkedElementsModal
+					title={t('Vakken aanpassen')}
+					addOrRemoveLabel={t('Vakken toevoegen of verwijderen')}
+					contentLabel={t('Vakken')}
+					isOpen={changeSubjectsModalOpen}
+					onClose={() => setChangeSubjectsModalOpen(false)}
+					labels={allSubjects.map((subject) => ({
+						label: subject,
+						value: subject,
+					}))}
+					callback={(addOrRemove: AddOrRemove, tags: TagInfo[]) =>
+						bulkChangeSubjects(
+							addOrRemove,
+							tags.map((tag) => tag.value.toString())
+						)
+					}
+				/>
 			</>
 		);
 	};

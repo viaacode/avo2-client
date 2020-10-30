@@ -10,14 +10,17 @@ import {
 	Button,
 	Column,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Grid,
 	IconName,
 	Spacer,
+	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToExternalPage,
@@ -25,10 +28,11 @@ import {
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views';
 import Html from '../../shared/components/Html/Html';
 import { getEnv } from '../../shared/helpers';
 
-const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
+// const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
 
 export interface AccountProps extends RouteComponentProps {
@@ -37,6 +41,8 @@ export interface AccountProps extends RouteComponentProps {
 
 const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
+
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
@@ -87,6 +93,20 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 		);
 	};
 
+	if (!user) {
+		return (
+			<Flex center>
+				<Spinner size="large" />
+			</Flex>
+		);
+	}
+
+	if (
+		isPupil &&
+		!get(user, 'idpmaps', []).find((idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF')
+	) {
+		return <ErrorView message={t('Je hebt geen toegang tot de account pagina')} icon="lock" />;
+	}
 	return (
 		<>
 			<MetaTags>
@@ -112,25 +132,18 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 									<FormGroup label={t('settings/components/account___email')}>
 										<span>{get(user, 'mail')}</span>
 									</FormGroup>
-									<FormGroup label={t('settings/components/account___voornaam')}>
-										<span>{get(user, 'first_name')}</span>
-									</FormGroup>
-									<FormGroup
-										label={t('settings/components/account___achternaam')}
-									>
-										<span>{get(user, 'last_name')}</span>
-									</FormGroup>
-									<Spacer margin="bottom">
-										<Button
-											type="secondary"
-											onClick={() =>
-												redirectToExternalPage(ssumAccountEditPage, null)
-											}
-											label={t(
-												'settings/components/account___wijzig-accountgegevens'
-											)}
-										/>
-									</Spacer>
+									{/* TODO re-enable when summ allows you to change your email address */}
+									{/*<Spacer margin="bottom">*/}
+									{/*	<Button*/}
+									{/*		type="secondary"*/}
+									{/*		onClick={() =>*/}
+									{/*			redirectToExternalPage(ssumAccountEditPage, null)*/}
+									{/*		}*/}
+									{/*		label={t(*/}
+									{/*			'settings/components/account___wijzig-accountgegevens'*/}
+									{/*		)}*/}
+									{/*	/>*/}
+									{/*</Spacer>*/}
 									<BlockHeading type="h3">
 										{t('settings/components/account___wachtwoord')}
 									</BlockHeading>

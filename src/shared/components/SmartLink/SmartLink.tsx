@@ -4,8 +4,7 @@ import queryString from 'query-string';
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 
 import { BUNDLE_PATH } from '../../../bundle/bundle.const';
 import { APP_PATH } from '../../../constants';
@@ -31,57 +30,61 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 		if (url.startsWith('www.')) {
 			fullUrl = `//${url}`;
 		}
-		if (target === LinkTarget.Self) {
-			// Open inside same tab
-			if (fullUrl.includes('//')) {
-				// absolute url
-				return (
-					<a
-						href={fullUrl}
-						target="_self"
-						className={classnames({ 'a-link__no-styles': removeStyles })}
-					>
-						{children}
-					</a>
-				);
-			} else {
-				// relative url
-				return (
-					<Link
-						to={fullUrl}
-						className={classnames({ 'a-link__no-styles': removeStyles })}
-					>
-						{children}
-					</Link>
-				);
-			}
-		} else {
-			// Open in a new tab
-			if (fullUrl.includes('//')) {
-				// absolute fullUrl
-				return (
-					<a
-						href={fullUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						className={classnames({ 'a-link__no-styles': removeStyles })}
-					>
-						{children}
-					</a>
-				);
-			} else {
-				// relative url
-				return (
-					<a
-						href={`${window.location.origin}${fullUrl}`}
-						target="_blank"
-						rel="noopener noreferrer"
-						className={classnames({ 'a-link__no-styles': removeStyles })}
-					>
-						{children}
-					</a>
-				);
-			}
+
+		switch (target) {
+			case LinkTarget.Self:
+				// Open inside same tab
+				if (fullUrl.includes('//')) {
+					// absolute url
+					return (
+						<a
+							href={fullUrl}
+							target="_self"
+							className={classnames({ 'a-link__no-styles': removeStyles })}
+						>
+							{children}
+						</a>
+					);
+				} else {
+					// relative url
+					return (
+						<Link
+							to={fullUrl}
+							className={classnames({ 'a-link__no-styles': removeStyles })}
+						>
+							{children}
+						</Link>
+					);
+				}
+
+			case LinkTarget.Blank:
+			default:
+				// Open in a new tab
+				if (fullUrl.includes('//')) {
+					// absolute fullUrl
+					return (
+						<a
+							href={fullUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className={classnames({ 'a-link__no-styles': removeStyles })}
+						>
+							{children}
+						</a>
+					);
+				} else {
+					// relative url
+					return (
+						<a
+							href={`${window.location.origin}${fullUrl}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							className={classnames({ 'a-link__no-styles': removeStyles })}
+						>
+							{children}
+						</a>
+					);
+				}
 		}
 	};
 
@@ -89,13 +92,17 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 		if (action) {
 			const { type, value, target } = action;
 
+			if (!value) {
+				return <>{children}</>;
+			}
+
 			let resolvedTarget = target;
 			if (insideIframe()) {
 				// Klaar page inside smartschool iframe must open all links in new window: https://meemoo.atlassian.net/browse/AVO-1354
 				resolvedTarget = LinkTarget.Blank;
 			}
 
-			switch (type as Avo.Core.ContentPickerType) {
+			switch (type as ContentPickerType) {
 				case 'INTERNAL_LINK':
 				case 'CONTENT_PAGE':
 				case 'PROJECTS':
@@ -131,6 +138,9 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						.split('?')[0]
 						.split('#')[0];
 					return renderLink(`${urlWithoutQueryOrAnchor}#${value}`, resolvedTarget);
+
+				case 'FILE':
+					return renderLink(value as string, LinkTarget.Blank);
 
 				case 'SEARCH_QUERY':
 					const queryParams = JSON.parse(value as string);

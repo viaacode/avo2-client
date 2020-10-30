@@ -114,9 +114,20 @@ export const GET_PROFILE_IDS = gql`
 	}
 `;
 
-export const UPDATE_USER_BLOCKED_STATUS = gql`
-	mutation updateUserBlockedStatus($userId: uuid!, $isBlocked: Boolean!) {
-		update_shared_users(where: { uid: { _eq: $userId } }, _set: { is_blocked: $isBlocked }) {
+export const BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS = gql`
+	mutation updateUserBlockedStatus($userIds: [uuid!]!, $isBlocked: Boolean!) {
+		update_shared_users(where: { uid: { _in: $userIds } }, _set: { is_blocked: $isBlocked }) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS = gql`
+	mutation updateUserBlockedStatus($profileIds: [uuid!]!, $isBlocked: Boolean!) {
+		update_shared_users(
+			where: { profile: { id: { _in: $profileIds } } }
+			_set: { is_blocked: $isBlocked }
+		) {
 			affected_rows
 		}
 	}
@@ -131,6 +142,24 @@ export const GET_PROFILE_NAMES = gql`
 				full_name
 				mail
 			}
+		}
+	}
+`;
+
+export const BULK_ADD_SUBJECTS_TO_PROFILES = gql`
+	mutation bulkAddSubjectsToProfiles($subjects: [users_profile_classifications_insert_input!]!) {
+		insert_users_profile_classifications(objects: $subjects) {
+			affected_rows
+		}
+	}
+`;
+
+export const BULK_DELETE_SUBJECTS_FROM_PROFILES = gql`
+	mutation bulkDeleteSubjectsFromProfiles($subjects: [String!]!, $profileIds: [uuid!]!) {
+		delete_users_profile_classifications(
+			where: { key: { _in: $subjects }, profile_id: { _in: $profileIds } }
+		) {
+			affected_rows
 		}
 	}
 `;

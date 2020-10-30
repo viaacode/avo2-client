@@ -128,7 +128,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			const userId = get(storedProfile, 'user.uid');
 			const isBlocked = get(storedProfile, 'user.is_blocked') || false;
 			if (userId) {
-				await UserService.updateBlockStatus(userId, !isBlocked);
+				await UserService.updateBlockStatusByUserIds([userId], !isBlocked);
 				fetchProfileById();
 				ToastService.success(
 					isBlocked

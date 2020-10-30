@@ -37,10 +37,10 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import ChangeLabelsModal, {
+import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
-} from '../../shared/components/ChangeLabelsModal/ChangeLabelsModal';
+} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
+import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -93,91 +93,94 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
 
 	// methods
-	const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
-		const andFilters: any[] = [];
-		andFilters.push(
-			...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-				{ title: { _ilike: queryWordWildcard } },
-				{ description: { _ilike: queryWordWildcard } },
-				{
-					profile: {
-						usersByuserId: { first_name: { _ilike: queryWordWildcard } },
-					},
-				},
-				{
-					profile: {
-						usersByuserId: { last_name: { _ilike: queryWordWildcard } },
-					},
-				},
-			])
-		);
-		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
-		andFilters.push(
-			...getMultiOptionFilters(
-				filters,
-				['author_user_group'],
-				['profile.profile_user_groups.groups.id']
-			)
-		);
-		if (filters.collection_labels && filters.collection_labels.length) {
-			andFilters.push({
-				_or: [
-					...getMultiOptionFilters(
-						{
-							collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+	const generateWhereObject = useCallback(
+		(filters: Partial<CollectionsOrBundlesTableState>) => {
+			const andFilters: any[] = [];
+			andFilters.push(
+				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
+					{ title: { _ilike: queryWordWildcard } },
+					{ description: { _ilike: queryWordWildcard } },
+					{
+						profile: {
+							usersByuserId: { full_name: { _ilike: queryWordWildcard } },
 						},
-						['collection_labels'],
-						['collection_labels.label']
-					),
-					...(filters.collection_labels.includes('NO_LABEL')
-						? [{ _not: { collection_labels: {} } }]
-						: []),
-				],
-			});
-		}
-		andFilters.push(...getBooleanFilters(filters, ['is_public']));
-		andFilters.push({ is_deleted: { _eq: false } });
-
-		if (!isNil(filters.is_copy)) {
-			if (filters.is_copy) {
+					},
+				])
+			);
+			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+			andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['author_user_group'],
+					['profile.profile_user_groups.groups.id']
+				)
+			);
+			if (filters.collection_labels && filters.collection_labels.length) {
 				andFilters.push({
-					relations: { predicate: { _eq: 'IS_COPY_OF' } },
-				});
-			} else {
-				andFilters.push({
-					relations: { _not: { predicate: { _eq: 'IS_COPY_OF' } } },
+					_or: [
+						...getMultiOptionFilters(
+							{
+								collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+							},
+							['collection_labels'],
+							['collection_labels.label']
+						),
+						...(filters.collection_labels.includes('NO_LABEL')
+							? [{ _not: { collection_labels: {} } }]
+							: []),
+					],
 				});
 			}
-		}
+			andFilters.push(...getBooleanFilters(filters, ['is_public']));
+			andFilters.push({ is_deleted: { _eq: false } });
 
-		// Only show published/unpublished collections/bundles based on permissions
-		if (
-			(isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS)) ||
-			(!isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
-		) {
-			andFilters.push({ is_public: { _eq: false } });
-		}
-		if (
-			(isCollection &&
-				!PermissionService.hasPerm(
-					user,
-					PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
-				)) ||
-			(!isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
-		) {
-			andFilters.push({ is_public: { _eq: true } });
-		}
+			// Only show published/unpublished collections/bundles based on permissions
+			if (
+				(isCollection &&
+					!PermissionService.hasPerm(
+						user,
+						PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
+					)) ||
+				(!isCollection &&
+					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
+			) {
+				andFilters.push({ is_public: { _eq: false } });
+			}
+			if (
+				(isCollection &&
+					!PermissionService.hasPerm(
+						user,
+						PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
+					)) ||
+				(!isCollection &&
+					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
+			) {
+				andFilters.push({ is_public: { _eq: true } });
+			}
 
-		andFilters.push({
-			type_id: {
-				_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-			},
-		});
-		return { _and: andFilters };
-	};
+			andFilters.push({
+				type_id: {
+					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+				},
+			});
+
+			if (!isNil(filters.is_copy)) {
+				if (filters.is_copy) {
+					andFilters.push({
+						relations: { predicate: { _eq: 'IS_COPY_OF' } },
+					});
+				} else {
+					andFilters.push({
+						relations: { _not: { predicate: { _eq: 'IS_COPY_OF' } } },
+					});
+				}
+			}
+
+			return { _and: andFilters };
+		},
+		[isCollection, user]
+	);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
@@ -210,7 +213,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
+	}, [
+		setLoadingInfo,
+		setCollections,
+		setCollectionCount,
+		tableState,
+		isCollection,
+		t,
+		generateWhereObject,
+	]);
 
 	const fetchCollectionLabels = useCallback(async () => {
 		try {
@@ -856,7 +867,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						type: 'PROFILE',
 					}}
 				/>
-				<ChangeLabelsModal
+				<AddOrRemoveLinkedElementsModal
+					title={t('Labels aanpassen')}
+					addOrRemoveLabel={t('Labels toevoegen of verwijderen')}
+					contentLabel={t('Labels')}
 					isOpen={changeLabelsModalOpen}
 					onClose={() => setAddLabelModalOpen(false)}
 					labels={collectionLabels.map((labelObj) => ({
