@@ -166,6 +166,17 @@ export const BULK_DELETE_SUBJECTS_FROM_PROFILES = gql`
 	}
 `;
 
+export const GET_DISTINCT_BUSINESS_CATEGORIES = gql`
+	query getDistinctBusinessCategories {
+		users_profiles(
+			distinct_on: business_category
+			where: { business_category: { _is_null: false } }
+		) {
+			business_category
+		}
+	}
+`;
+
 export const GET_CONTENT_COUNTS_FOR_USERS = gql`
 	query getContentCountsForUsers($profileIds: [uuid!]!) {
 		publicCollections: app_collections_aggregate(

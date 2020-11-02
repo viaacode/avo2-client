@@ -34,6 +34,7 @@ import {
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useBusinessCategories } from '../../../shared/hooks/useBusinessCategory';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
@@ -78,6 +79,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [userGroups] = useUserGroups();
 	const [companies] = useCompanies();
+	const [businessCategories] = useBusinessCategories();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
@@ -105,7 +107,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					{ profiles: { alias: { _ilike: query } } },
 					{ profiles: { title: { _ilike: query } } },
 					{ profiles: { organisation: { name: { _ilike: query } } } },
-					{ profiles: { business_category: { _ilike: query } } },
 					{
 						profiles: {
 							profile_user_groups: {
@@ -124,23 +125,27 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				],
 			});
 		}
-		andFilters.push(...getBooleanFilters(filters, ['is_blocked']));
-		andFilters.push(...getBooleanFilters(filters, ['is_exception'], ['profile.is_exception']));
+		andFilters.push(
+			...getBooleanFilters(
+				filters,
+				['is_blocked', 'is_exception'],
+				['is_blocked', 'profile.is_exception']
+			)
+		);
 		andFilters.push(
 			...getMultiOptionFilters(
 				filters,
-				['user_group', 'organisation'],
-				['profiles.profile_user_groups.group.id', 'profiles.company_id']
+				['user_group', 'organisation', 'business_category'],
+				[
+					'profiles.profile_user_groups.group.id',
+					'profiles.company_id',
+					'profile.business_category',
+				]
 			)
 		);
 		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
 		if (!isNil(filters.stamboek)) {
 			andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
-		}
-		if (!isNil(filters.business_category)) {
-			andFilters.push({
-				profile: { business_category: { _is_null: !filters.business_category } },
-			});
 		}
 
 		return { _and: andFilters };
@@ -529,6 +534,14 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		})
 	);
 
+	const businessCategoryOptions = businessCategories.map(
+		(option: string): CheckboxOption => ({
+			id: option,
+			label: option,
+			checked: get(tableState, 'business_category', [] as string[]).includes(option),
+		})
+	);
+
 	const companyOptions = companies.map(
 		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
 			id: option.or_id as string,
@@ -544,7 +557,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		return (
 			<>
 				<FilterTable
-					columns={GET_USER_OVERVIEW_TABLE_COLS(userGroupOptions, companyOptions)}
+					columns={GET_USER_OVERVIEW_TABLE_COLS(
+						userGroupOptions,
+						companyOptions,
+						businessCategoryOptions
+					)}
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>

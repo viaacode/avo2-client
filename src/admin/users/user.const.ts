@@ -19,10 +19,12 @@ export const ITEMS_PER_PAGE = 50;
 
 export const GET_USER_OVERVIEW_TABLE_COLS: (
 	userGroupOptions: CheckboxOption[],
-	companyOptions: CheckboxOption[]
+	companyOptions: CheckboxOption[],
+	businessCategoryOptions: CheckboxOption[]
 ) => FilterableColumn[] = (
 	userGroupOptions: CheckboxOption[],
-	companyOptions: CheckboxOption[]
+	companyOptions: CheckboxOption[],
+	businessCategoryOptions: CheckboxOption[]
 ) => [
 	{
 		id: 'first_name',
@@ -57,7 +59,10 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/users/user___oormerk'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...businessCategoryOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'is_exception',

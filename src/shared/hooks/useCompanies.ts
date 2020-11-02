@@ -38,7 +38,7 @@ export const useCompanies = (): UseCompaniesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, []);
+	}, [t]);
 
 	return [companies, isLoading];
 };
