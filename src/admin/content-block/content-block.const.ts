@@ -565,3 +565,30 @@ export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentIte
 		value: 'ACCORDION',
 	},
 ];
+
+export type PageOverviewOrderOptions =
+	| 'published_at__asc'
+	| 'published_at__desc'
+	| 'title__asc'
+	| 'title__desc';
+
+export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<
+	PageOverviewOrderOptions
+>[] = () => [
+	{
+		label: i18n.t('Publicatie datum (nieuw > oud)'),
+		value: 'published_at__asc',
+	},
+	{
+		label: i18n.t('Publicatie datum (oud > nieuw)'),
+		value: 'published_at__desc',
+	},
+	{
+		label: i18n.t('Titel (A > Z)'),
+		value: 'title__asc',
+	},
+	{
+		label: i18n.t('Titel (Z > A)'),
+		value: 'title__desc',
+	},
+];

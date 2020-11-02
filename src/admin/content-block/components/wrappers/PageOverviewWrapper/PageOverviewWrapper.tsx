@@ -29,7 +29,10 @@ import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 import { CheckboxListParam } from '../../../../shared/helpers/query-string-converters';
 import { Color } from '../../../../shared/types';
-import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../../content-block.const';
+import {
+	GET_DARK_BACKGROUND_COLOR_OPTIONS,
+	PageOverviewOrderOptions,
+} from '../../../content-block.const';
 
 export interface ContentPageOverviewParams {
 	withBlock: boolean;
@@ -55,6 +58,7 @@ interface PageOverviewWrapperProps {
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
+	sortOrder?: PageOverviewOrderOptions;
 	headerBackgroundColor: Color;
 	renderLink: RenderLinkFunction;
 }
@@ -75,6 +79,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___lees-meer'
 	),
 	itemsPerPage = 20,
+	sortOrder = 'published_at__desc',
 	headerBackgroundColor,
 	renderLink,
 	history,
@@ -171,8 +176,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				labelIds: (contentTypeAndTabs.selectedLabels || []).map((labelObj) => labelObj.id),
 				selectedLabelIds:
 					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
-				orderByProp: 'published_at',
-				orderByDirection: 'desc',
+				orderByProp: sortOrder.split('__')[0],
+				orderByDirection: sortOrder.split('__').pop() as Avo.Search.OrderDirection,
 				offset: queryParamsState.page * debouncedItemsPerPage,
 				limit: debouncedItemsPerPage,
 			};
@@ -219,6 +224,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		debouncedItemsPerPage,
 		setPages,
 		setPageCount,
+		sortOrder,
 		contentTypeAndTabs.selectedContentType,
 		// Deep compare by value and not by ref
 		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
