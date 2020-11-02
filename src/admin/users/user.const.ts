@@ -20,6 +20,12 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	userGroupOptions: CheckboxOption[]
 ) => FilterableColumn[] = (userGroupOptions: CheckboxOption[]) => [
 	{
+		id: 'id',
+		label: i18n.t('Id'),
+		sortable: true,
+		visibleByDefault: false,
+	},
+	{
 		id: 'first_name',
 		label: i18n.t('admin/users/user___voornaam'),
 		sortable: true,
@@ -180,6 +186,10 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 		actions.push({
 			label: i18n.t('Vakken aanpassen'),
 			value: 'change_subjects',
+		});
+		actions.push({
+			label: i18n.t('Exporteren'),
+			value: 'export',
 		});
 	}
 

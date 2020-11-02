@@ -1,6 +1,7 @@
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type UserOverviewTableCol =
+	| 'id'
 	| 'first_name'
 	| 'last_name'
 	| 'mail'
@@ -18,6 +19,7 @@ export interface UserTableState extends FilterableTableState {
 	mail: string;
 	stamboek: string;
 	created_at: string;
+	columns: string[];
 }
 
 export interface RawUserGroup {
@@ -45,7 +47,7 @@ export interface RawPermission {
 	label: string;
 }
 
-export type UserBulkAction = 'block' | 'unblock' | 'delete' | 'change_subjects';
+export type UserBulkAction = 'block' | 'unblock' | 'delete' | 'change_subjects' | 'export';
 
 export type UserDeleteOption =
 	| 'DELETE_PRIVATE_KEEP_NAME'
