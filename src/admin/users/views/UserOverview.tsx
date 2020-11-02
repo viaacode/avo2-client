@@ -236,6 +236,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	 */
 	const bulkUpdateBlockStatus = async (blockOrUnblock: boolean) => {
 		try {
+			setIsLoading(true);
 			await UserService.updateBlockStatusByProfileIds(selectedProfileIds, blockOrUnblock);
 			await fetchProfiles();
 			ToastService.success(
@@ -246,6 +247,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		} catch (err) {
 			ToastService.danger(t('Het blokkeren van de geselecteerde gebruikers is mislukt'));
 		}
+		setIsLoading(false);
 	};
 
 	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
