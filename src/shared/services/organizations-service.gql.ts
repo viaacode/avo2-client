@@ -9,6 +9,17 @@ export const GET_ALL_ORGANISATIONS = gql`
 	}
 `;
 
+export const GET_DISTINCT_ORGANISATIONS = gql`
+	query getDistinctOrganisations {
+		app_item_meta(distinct_on: org_id, where: { org_id: { _is_null: false } }) {
+			organisation {
+				or_id
+				name
+			}
+		}
+	}
+`;
+
 export const GET_USERS_IN_COMPANY = gql`
 	query getUsersByCompanyId($companyId: String!) {
 		users_profiles(
