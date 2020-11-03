@@ -95,7 +95,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							{ path: { _ilike: queryWordWildcard } },
 							{
 								profile: {
-									usersByuserId: { full_name: { _ilike: queryWordWildcard } },
+									_or: [
+										{
+											usersByuserId: {
+												first_name: { _ilike: queryWordWildcard },
+											},
+										},
+										{
+											usersByuserId: {
+												last_name: { _ilike: queryWordWildcard },
+											},
+										},
+									],
 								},
 							},
 							{
@@ -273,9 +284,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			await ContentService.deleteContentPage(contentToDelete.id);
 			fetchContentPages();
 			ToastService.success(
-				t(
-					'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
-				)
+				t('admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(
