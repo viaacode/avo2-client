@@ -5,7 +5,7 @@ export function getValidStartAndEnd(
 	end: number | null | undefined,
 	duration: number | null | undefined
 ): [number, number] {
-	const minTime: number = 0;
+	const minTime = 0;
 	const maxTime: number = duration || 0;
 
 	const clampDuration = (duration: number): number => {
