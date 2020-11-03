@@ -38,7 +38,7 @@ export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [t]);
+	}, [t, onlyWithItems]);
 
 	return [companies, isLoading];
 };
