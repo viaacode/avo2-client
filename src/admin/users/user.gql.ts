@@ -86,7 +86,7 @@ export const GET_USERS = gql`
 				stamboek
 				created_at
 				profile_user_groups {
-					groups {
+					group {
 						label
 						id
 					}

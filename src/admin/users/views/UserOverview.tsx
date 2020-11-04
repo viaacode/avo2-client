@@ -128,7 +128,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			...getMultiOptionFilters(
 				filters,
 				['user_group', 'organisation'],
-				['profiles.profile_user_groups.groups.id', 'profiles.company_id']
+				['profiles.profile_user_groups.group.id', 'profiles.company_id']
 			)
 		);
 		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
@@ -348,7 +348,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		rowData: Partial<Avo.User.Profile>,
 		columnId: UserOverviewTableCol
 	) => {
-		const { id, user, stamboek, created_at, title, organisation } = rowData;
+		const { id, user, stamboek, created_at, business_category, organisation } = rowData as any; // TODO remove cast after update to typings v2.25.0
 
 		switch (columnId) {
 			case 'first_name':
@@ -363,10 +363,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				return truncateTableValue(get(user, columnId));
 
 			case 'user_group':
-				return get(rowData, 'profile_user_groups[0].groups[0].label') || '-';
+				return get(rowData, 'profile_user_groups[0].group.label') || '-';
 
 			case 'oormerk': // TODO replace title with sector after:https://meemoo.atlassian.net/browse/DEV-1062
-				return title || '-';
+				return business_category || '-';
 
 			case 'is_blocked':
 				const isBlocked = get(rowData, 'user.is_blocked');
