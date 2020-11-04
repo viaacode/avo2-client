@@ -720,7 +720,7 @@ export class AssignmentService {
 			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
-			const existingAssignmentResponses: string[] = await this.getAssignmentResponses(
+			const existingAssignmentResponses: string[] = await AssignmentService.getAssignmentResponses(
 				get(user, 'profile.id'),
 				get(assignment, 'id')
 			);
