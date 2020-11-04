@@ -40,7 +40,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'user_group',
 		label: i18n.t('admin/users/user___gebruikersgroep'),
-		sortable: false, // wait for https://meemoo.atlassian.net/browse/DEV-1128
+		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
@@ -102,12 +102,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	mail: (order: Avo.Search.OrderDirection) => ({
 		mail: order,
 	}),
-	// wait for https://meemoo.atlassian.net/browse/DEV-1128
-	// user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	mail: order
-	// }),
+	user_group: (order: Avo.Search.OrderDirection) => ({
+		profile: { profile_user_group: { group: { label: order } } },
+	}),
 	oormerk: (order: Avo.Search.OrderDirection) => ({
-		profile: { title: order }, // TODO change title to oormerk after task: https://meemoo.atlassian.net/browse/DEV-1062
+		profile: { business_category: order },
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
