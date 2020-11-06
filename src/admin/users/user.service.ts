@@ -14,6 +14,7 @@ import {
 	BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS,
 	BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS,
 	GET_CONTENT_COUNTS_FOR_USERS,
+	GET_DISTINCT_BUSINESS_CATEGORIES,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USER_BY_ID,
@@ -306,6 +307,24 @@ export class UserService {
 				subjects,
 				profileIds,
 				query: 'BULK_DELETE_SUBJECTS_FROM_PROFILES',
+			});
+		}
+	}
+
+	static async fetchDistinctBusinessCategories() {
+		try {
+			const response = await dataService.query({
+				query: GET_DISTINCT_BUSINESS_CATEGORIES,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+			return get(response, 'data.users_profiles', []).map(
+				(profile: Partial<Avo.User.Profile>) => (profile as any).business_category // TODO Remove cast after update to typings v2.25.0
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get distinct business categories from profiles', err, {
+				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
 			});
 		}
 	}

@@ -85,6 +85,8 @@ export const GET_USERS = gql`
 				id
 				stamboek
 				created_at
+				business_category
+				is_exception
 				profile_user_groups {
 					group {
 						label
@@ -160,6 +162,17 @@ export const BULK_DELETE_SUBJECTS_FROM_PROFILES = gql`
 			where: { key: { _in: $subjects }, profile_id: { _in: $profileIds } }
 		) {
 			affected_rows
+		}
+	}
+`;
+
+export const GET_DISTINCT_BUSINESS_CATEGORIES = gql`
+	query getDistinctBusinessCategories {
+		users_profiles(
+			distinct_on: business_category
+			where: { business_category: { _is_null: false } }
+		) {
+			business_category
 		}
 	}
 `;
