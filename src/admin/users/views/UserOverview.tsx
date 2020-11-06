@@ -1,9 +1,11 @@
 import classnames from 'classnames';
+import FileSaver from 'file-saver';
 import { compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
+import reactToString from 'react-to-string';
 
 import {
 	Alert,
@@ -95,7 +97,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
-	const generateWhereObject = (filters: Partial<UserTableState>) => {
+	const generateWhereObject = (
+		filters: Partial<UserTableState>,
+		onlySelectedProfiles: boolean
+	) => {
 		const andFilters: any[] = [];
 		if (filters.query) {
 			const query = `%${filters.query}%`;
@@ -144,6 +149,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			)
 		);
 		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
+		if (onlySelectedProfiles) {
+			andFilters.push({ profile: { id: { _in: selectedProfileIds } } });
+		}
 		if (!isNil(filters.stamboek)) {
 			andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
 		}
@@ -158,7 +166,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
-				generateWhereObject(getFilters(tableState))
+				generateWhereObject(getFilters(tableState), false)
 			);
 			setProfiles(profilesTemp);
 			setProfileCount(profileCountTemp);
@@ -223,7 +231,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setIsLoading(true);
 		try {
 			const profileIds = await UserService.getProfileIds(
-				generateWhereObject(getFilters(tableState))
+				generateWhereObject(getFilters(tableState), false)
 			);
 			ToastService.info(
 				t('Je hebt {{numOfSelectedProfiles}} gebuikers geselecteerd', {
@@ -265,11 +273,63 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setIsLoading(false);
 	};
 
+	const bulkExport = async () => {
+		try {
+			setIsLoading(true);
+			const [profilesTemp] = await UserService.getProfiles(
+				0,
+				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
+				tableState.sort_order || 'desc',
+				generateWhereObject(getFilters(tableState), true),
+				100000
+			);
+			const columns = GET_USER_OVERVIEW_TABLE_COLS(userGroupOptions);
+			const columnIds =
+				tableState.columns && tableState.columns.length
+					? tableState.columns
+					: columns
+							.filter((column) => column.visibleByDefault)
+							.map((column) => column.id);
+			const columnLabels = columnIds.map((columnId) =>
+				get(
+					columns.find((column) => column.id === columnId),
+					'label',
+					columnId
+				)
+			);
+			const csvRowValues: string[] = [columnLabels.join(';')];
+			profilesTemp.forEach((profile) => {
+				const csvCellValues: string[] = [];
+				columnIds.forEach((columnId) => {
+					const csvCellValue = reactToString(
+						renderTableCell(profile, columnId as UserOverviewTableCol)
+					);
+					csvCellValues.push(csvCellValue);
+				});
+				csvRowValues.push(csvCellValues.join(';'));
+			});
+			const csvString = csvRowValues.join('\n');
+			const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+			FileSaver.saveAs(blob, 'gebruikers.csv');
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to export users to csv file', err, { tableState })
+			);
+			ToastService.danger(t('Het exporteren van de geselecteerde gebruikers is mislukt'));
+		}
+
+		setIsLoading(false);
+	};
+
 	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
 		if (!selectedProfileIds || !selectedProfileIds.length) {
 			return;
 		}
 		switch (action) {
+			case 'export':
+				await bulkExport();
+				return;
+
 			case 'block':
 				await bulkUpdateBlockStatus(true);
 				return;
