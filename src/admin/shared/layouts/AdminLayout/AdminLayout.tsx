@@ -17,7 +17,7 @@ interface AdminLayoutProps {
 	className?: string;
 	pageTitle?: string;
 	onClickBackButton?: () => void;
-	size: 'small' | 'medium' | 'large' | 'full-width'; // TODO move this to a type in the Container component in the components repo
+	size: 'small' | 'medium' | 'large' | 'full-width' | 'no-margin'; // TODO move this to a type in the Container component in the components repo
 }
 
 const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
@@ -39,15 +39,18 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 				title={pageTitle}
 				center={topBarCenter}
 				right={topBarRight}
-				size={size}
+				size={size === 'no-margin' ? 'full-width' : size}
 			/>
 			<div className="m-admin-layout-content">
 				{header}
-				<Container className={className} mode="vertical" size="small">
-					<Container mode="horizontal" size={size}>
-						{body || children}
+				{size !== 'no-margin' && (
+					<Container className={className} mode="vertical" size="small">
+						<Container mode="horizontal" size={size}>
+							{body || children}
+						</Container>
 					</Container>
-				</Container>
+				)}
+				{size === 'no-margin' && <>{body || children}</>}
 			</div>
 		</div>
 	);
