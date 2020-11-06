@@ -9,12 +9,13 @@ export const GET_USER_BY_ID = gql`
 				id
 				first_name
 				last_name
+				last_access_at
 				mail
 				is_blocked
-				idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
+				idpmaps {
 					id
-					idp_user_id
 					idp
+					idp_user_id
 				}
 			}
 			avatar

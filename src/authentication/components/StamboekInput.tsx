@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	Alert,
@@ -18,21 +18,16 @@ import { APP_PATH } from '../../constants';
 import Html from '../../shared/components/Html/Html';
 import { ToastType } from '../../shared/services';
 import { verifyStamboekNumber } from '../authentication.service';
-import { redirectToClientPage } from '../helpers/redirects';
 import { StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
 
 import './StamboekInput.scss';
 
-export interface StamboekInputProps extends RouteComponentProps {
+export interface StamboekInputProps {
 	value?: string;
 	onChange: (validStamboekNumber: string) => void;
 }
 
-export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
-	onChange,
-	value = '',
-	history,
-}) => {
+export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange, value = '' }) => {
 	const [t] = useTranslation();
 
 	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<
@@ -68,14 +63,13 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					</Trans>
 					<br />
 					<Spacer margin="top-small">
-						<Button
-							onClick={() =>
-								redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST.route, history)
-							}
-							label={t(
-								'authentication/components/stamboek-input___manuele-aanvraag-indienen'
-							)}
-						/>
+						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST.route}>
+							<Button
+								label={t(
+									'authentication/components/stamboek-input___manuele-aanvraag-indienen'
+								)}
+							/>
+						</Link>
 					</Spacer>
 				</span>
 			),

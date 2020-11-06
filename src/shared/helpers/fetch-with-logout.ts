@@ -1,5 +1,10 @@
 const AVO_LAST_RELOAD_BECAUSE_UNAUTH = 'AVO_LAST_RELOAD_BECAUSE_UNAUTH';
 
+/**
+ * Tries to get something from the proxy, if the response is 401, then the user is logged out and redirected to the login screen
+ * @param input
+ * @param init
+ */
 export async function fetchWithLogout(input: RequestInfo, init?: RequestInit): Promise<Response> {
 	const response = await fetch(input, init);
 	if (response.status === 401) {

@@ -38,10 +38,8 @@ export function renderDateDetailRows(
 	propAndTranslations: [string, string][]
 ): ReactElement[] {
 	return propAndTranslations.map((propAndTranslation) => {
-		return renderDetailRow(
-			obj[propAndTranslation[0]] ? formatDate(obj[propAndTranslation[0]]) : '-',
-			propAndTranslation[1]
-		);
+		const value = get(obj, propAndTranslation[0]);
+		return renderDetailRow(value ? formatDate(value) : '-', propAndTranslation[1]);
 	});
 }
 

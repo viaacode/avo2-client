@@ -32,11 +32,7 @@ export type StamboekValidationStatus =
 
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
-const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
-	history,
-	location,
-	...props
-}) => {
+const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }) => {
 	const [t] = useTranslation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
@@ -105,12 +101,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						labelFor="stamboekInput"
 						required
 					>
-						<StamboekInput
-							onChange={setValidStamboekNumber}
-							history={history}
-							location={location}
-							{...props}
-						/>
+						<StamboekInput onChange={setValidStamboekNumber} />
 					</FormGroup>
 					<FormGroup>
 						<Checkbox

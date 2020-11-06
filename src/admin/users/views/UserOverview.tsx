@@ -283,7 +283,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				generateWhereObject(getFilters(tableState), true),
 				100000
 			);
-			const columns = GET_USER_OVERVIEW_TABLE_COLS(userGroupOptions);
+			const columns = GET_USER_OVERVIEW_TABLE_COLS(
+				userGroupOptions,
+				companyOptions,
+				businessCategoryOptions
+			);
 			const columnIds =
 				tableState.columns && tableState.columns.length
 					? tableState.columns
