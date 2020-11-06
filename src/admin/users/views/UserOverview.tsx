@@ -97,67 +97,67 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
-	const generateWhereObject = (
-		filters: Partial<UserTableState>,
-		onlySelectedProfiles: boolean
-	) => {
-		const andFilters: any[] = [];
-		if (filters.query) {
-			const query = `%${filters.query}%`;
-			andFilters.push({
-				_or: [
-					{ profiles: { stamboek: { _ilike: query } } },
-					{ profiles: { alternative_email: { _ilike: query } } },
-					{ profiles: { bio: { _ilike: query } } },
-					{ profiles: { alias: { _ilike: query } } },
-					{ profiles: { title: { _ilike: query } } },
-					{ profiles: { organisation: { name: { _ilike: query } } } },
-					{
-						profiles: {
-							profile_user_groups: {
-								groups: { label: { _ilike: query } },
+	const generateWhereObject = useCallback(
+		(filters: Partial<UserTableState>, onlySelectedProfiles: boolean) => {
+			const andFilters: any[] = [];
+			if (filters.query) {
+				const query = `%${filters.query}%`;
+				andFilters.push({
+					_or: [
+						{ profiles: { stamboek: { _ilike: query } } },
+						{ profiles: { alternative_email: { _ilike: query } } },
+						{ profiles: { bio: { _ilike: query } } },
+						{ profiles: { alias: { _ilike: query } } },
+						{ profiles: { title: { _ilike: query } } },
+						{ profiles: { organisation: { name: { _ilike: query } } } },
+						{
+							profiles: {
+								profile_user_groups: {
+									groups: { label: { _ilike: query } },
+								},
 							},
 						},
-					},
-					{
-						_or: [
-							// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
-							{ first_name: { _ilike: query } },
-							{ last_name: { _ilike: query } },
-							{ mail: { _ilike: query } },
-						],
-					},
-				],
-			});
-		}
-		andFilters.push(
-			...getBooleanFilters(
-				filters,
-				['is_blocked', 'is_exception'],
-				['is_blocked', 'profile.is_exception']
-			)
-		);
-		andFilters.push(
-			...getMultiOptionFilters(
-				filters,
-				['user_group', 'organisation', 'business_category'],
-				[
-					'profiles.profile_user_groups.group.id',
-					'profiles.company_id',
-					'profile.business_category',
-				]
-			)
-		);
-		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
-		if (onlySelectedProfiles) {
-			andFilters.push({ profile: { id: { _in: selectedProfileIds } } });
-		}
-		if (!isNil(filters.stamboek)) {
-			andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
-		}
+						{
+							_or: [
+								// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
+								{ first_name: { _ilike: query } },
+								{ last_name: { _ilike: query } },
+								{ mail: { _ilike: query } },
+							],
+						},
+					],
+				});
+			}
+			andFilters.push(
+				...getBooleanFilters(
+					filters,
+					['is_blocked', 'is_exception'],
+					['is_blocked', 'profile.is_exception']
+				)
+			);
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['user_group', 'organisation', 'business_category'],
+					[
+						'profiles.profile_user_groups.group.id',
+						'profiles.company_id',
+						'profile.business_category',
+					]
+				)
+			);
+			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
+			if (onlySelectedProfiles) {
+				andFilters.push({ profile: { id: { _in: selectedProfileIds } } });
+			}
+			if (!isNil(filters.stamboek)) {
+				andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
+			}
 
-		return { _and: andFilters };
-	};
+			return { _and: andFilters };
+		},
+		[selectedProfileIds]
+	);
 
 	const fetchProfiles = useCallback(async () => {
 		try {
@@ -182,7 +182,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, t]);
+	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, generateWhereObject, t]);
 
 	useEffect(() => {
 		fetchProfiles();
