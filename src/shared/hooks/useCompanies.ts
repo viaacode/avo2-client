@@ -12,7 +12,7 @@ export type BasicOrganisation = {
 
 type UseCompaniesTuple = [BasicOrganisation[], boolean];
 
-export const useCompanies = (): UseCompaniesTuple => {
+export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
 	const [t] = useTranslation();
 
 	const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
@@ -21,7 +21,7 @@ export const useCompanies = (): UseCompaniesTuple => {
 	useEffect(() => {
 		setIsLoading(true);
 
-		OrganisationService.fetchAllOrganisations()
+		OrganisationService.fetchOrganisations(onlyWithItems)
 			.then((orgs) => {
 				if (orgs) {
 					setCompanies(
@@ -38,7 +38,7 @@ export const useCompanies = (): UseCompaniesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [t]);
+	}, [t, onlyWithItems]);
 
 	return [companies, isLoading];
 };

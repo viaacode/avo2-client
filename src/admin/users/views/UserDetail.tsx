@@ -17,7 +17,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
@@ -38,7 +37,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import { UserService } from '../user.service';
 import { RawPermissionLink, RawUserGroup, RawUserGroupPermissionGroupLink } from '../user.types';
 
@@ -122,17 +120,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
 	};
 
-	const isPupil = (): boolean => {
-		return getUserGroupId(storedProfile) === SpecialUserGroup.Pupil;
-	};
-
 	const toggleBlockedStatus = async () => {
 		try {
-			const userId = get(storedProfile, 'user.uid');
+			const profileId = get(storedProfile, 'id');
 			const isBlocked = get(storedProfile, 'user.is_blocked') || false;
-			if (userId) {
-				await UserService.updateBlockStatusByUserIds([userId], !isBlocked);
-				fetchProfileById();
+			if (profileId) {
+				await UserService.updateBlockStatusByProfileIds([profileId], !isBlocked);
+				await fetchProfileById();
 				ToastService.success(
 					isBlocked
 						? t('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
@@ -252,7 +246,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].groups[0]', []);
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].group', []);
 
 		return (
 			<Container mode="vertical" size="small">
@@ -385,7 +379,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
-						{canBanUser() && isPupil() && (
+						{canBanUser() && (
 							<Button
 								type={isBlocked ? 'primary' : 'danger'}
 								label={

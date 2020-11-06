@@ -1,5 +1,6 @@
 import { get, isNil } from 'lodash-es';
 
+import { LabelObj } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
@@ -9,8 +10,9 @@ import i18n from '../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import {
 	DELETE_CONTENT_PAGE_LABEL,
-	GET_CONTENT_PAGE_LABELS,
 	GET_CONTENT_PAGE_LABEL_BY_ID,
+	GET_CONTENT_PAGE_LABELS, GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID,
+	GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL,
 	INSERT_CONTENT_PAGE_LABEL,
 	UPDATE_CONTENT_PAGE_LABEL,
 } from './content-page-label.gql';
@@ -194,6 +196,60 @@ export class ContentPageLabelService {
 				i18n.t(
 					'admin/content-page-labels/content-page-label___het-verwijderen-van-de-content-pagina-label-is-mislukt'
 				)
+			);
+		}
+	}
+
+	static async getContentPageLabelsByTypeAndLabels(
+		contentType: Avo.ContentPage.Type,
+		labels: string[]
+	): Promise<LabelObj[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL,
+				variables: { contentType, labels },
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_content_labels') || [];
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get content page label objects by type and label',
+				err,
+				{
+					query: 'GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL',
+					variables: { contentType, labels },
+				}
+			);
+		}
+	}
+
+	static async getContentPageLabelsByTypeAndIds(
+		contentType: Avo.ContentPage.Type,
+		labelIds: number[]
+	): Promise<LabelObj[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID,
+				variables: { contentType, labelIds },
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_content_labels') || [];
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get content page label objects by type and label',
+				err,
+				{
+					query: 'GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID',
+					variables: { contentType, labelIds },
+				}
 			);
 		}
 	}

@@ -1,27 +1,37 @@
-import { get } from 'lodash-es';
+import { get, sortBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-import { GET_ALL_ORGANISATIONS, GET_USERS_IN_COMPANY } from './organizations-service.gql';
+import {
+	GET_ALL_ORGANISATIONS,
+	GET_DISTINCT_ORGANISATIONS,
+	GET_USERS_IN_COMPANY,
+} from './organizations-service.gql';
 
 export class OrganisationService {
-	public static async fetchAllOrganisations(): Promise<Partial<Avo.Organization.Organization>[]> {
+	public static async fetchOrganisations(
+		onlyWithItems: boolean
+	): Promise<Partial<Avo.Organization.Organization>[]> {
 		try {
 			const response = await dataService.query({
-				query: GET_ALL_ORGANISATIONS,
+				query: onlyWithItems ? GET_DISTINCT_ORGANISATIONS : GET_ALL_ORGANISATIONS,
 			});
 
 			if (response.errors) {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			const organisations: Partial<Avo.Organization.Organization>[] | null = get(
-				response,
-				'data.shared_organisations'
-			);
+			let organisations: Partial<Avo.Organization.Organization>[] | null;
+			if (onlyWithItems) {
+				organisations = get(response, 'data.app_item_meta', []).map(
+					(item: any) => item.organisation
+				);
+			} else {
+				organisations = get(response, 'data.shared_organisations');
+			}
 
 			if (!organisations) {
 				throw new CustomError('Response does not contain any organisations', null, {
@@ -29,7 +39,7 @@ export class OrganisationService {
 				});
 			}
 
-			return organisations;
+			return sortBy(organisations, 'name');
 		} catch (err) {
 			throw new CustomError('Failed to get organisations from the database', err, {
 				query: 'GET_ALL_ORGANISATIONS',

@@ -64,7 +64,6 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 					<br />
 					<Spacer margin="top-small">
 						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST.route}>
-							{' '}
 							<Button
 								label={t(
 									'authentication/components/stamboek-input___manuele-aanvraag-indienen'

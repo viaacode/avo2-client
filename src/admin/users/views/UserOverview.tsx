@@ -1,9 +1,11 @@
 import classnames from 'classnames';
+import FileSaver from 'file-saver';
 import { compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
+import reactToString from 'react-to-string';
 
 import {
 	Alert,
@@ -34,6 +36,8 @@ import {
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useBusinessCategories } from '../../../shared/hooks/useBusinessCategory';
+import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import AddOrRemoveLinkedElementsModal, {
@@ -45,7 +49,6 @@ import {
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
-	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -77,6 +80,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [userGroups] = useUserGroups();
+	const [companies] = useCompanies(false);
+	const [businessCategories] = useBusinessCategories();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
@@ -92,46 +97,64 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
-	const generateWhereObject = (filters: Partial<UserTableState>) => {
+	const generateWhereObject = (
+		filters: Partial<UserTableState>,
+		onlySelectedProfiles: boolean
+	) => {
 		const andFilters: any[] = [];
-		andFilters.push(
-			...getQueryFilter(
-				filters.query,
-				// @ts-ignore
-				(queryWordWildcard: string, queryWord: string, query: string) => [
+		if (filters.query) {
+			const query = `%${filters.query}%`;
+			andFilters.push({
+				_or: [
 					{ profiles: { stamboek: { _ilike: query } } },
-					{ profiles: { alternative_email: { _ilike: queryWordWildcard } } },
-					{ profiles: { bio: { _ilike: queryWordWildcard } } },
-					{ profiles: { alias: { _ilike: queryWordWildcard } } },
-					{ profiles: { title: { _ilike: queryWordWildcard } } },
-					{ profiles: { organisation: { name: { _ilike: queryWordWildcard } } } },
+					{ profiles: { alternative_email: { _ilike: query } } },
+					{ profiles: { bio: { _ilike: query } } },
+					{ profiles: { alias: { _ilike: query } } },
+					{ profiles: { title: { _ilike: query } } },
+					{ profiles: { organisation: { name: { _ilike: query } } } },
 					{
 						profiles: {
 							profile_user_groups: {
-								groups: { label: { _ilike: queryWordWildcard } },
+								groups: { label: { _ilike: query } },
 							},
 						},
 					},
 					{
 						_or: [
 							// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
-							{ first_name: { _ilike: queryWordWildcard } },
-							{ last_name: { _ilike: queryWordWildcard } },
-							{ mail: { _ilike: queryWordWildcard } },
+							{ first_name: { _ilike: query } },
+							{ last_name: { _ilike: query } },
+							{ mail: { _ilike: query } },
 						],
 					},
-				]
+				],
+			});
+		}
+		andFilters.push(
+			...getBooleanFilters(
+				filters,
+				['is_blocked', 'is_exception'],
+				['is_blocked', 'profile.is_exception']
 			)
 		);
-		andFilters.push(...getBooleanFilters(filters, ['is_blocked']));
 		andFilters.push(
 			...getMultiOptionFilters(
 				filters,
-				['user_group', 'organisation'],
-				['profiles.profile_user_groups.groups.id', 'profiles.company_id']
+				['user_group', 'organisation', 'business_category'],
+				[
+					'profiles.profile_user_groups.group.id',
+					'profiles.company_id',
+					'profile.business_category',
+				]
 			)
 		);
 		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
+		if (onlySelectedProfiles) {
+			andFilters.push({ profile: { id: { _in: selectedProfileIds } } });
+		}
+		if (!isNil(filters.stamboek)) {
+			andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
+		}
 
 		return { _and: andFilters };
 	};
@@ -143,7 +166,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
-				generateWhereObject(getFilters(tableState))
+				generateWhereObject(getFilters(tableState), false)
 			);
 			setProfiles(profilesTemp);
 			setProfileCount(profileCountTemp);
@@ -208,7 +231,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setIsLoading(true);
 		try {
 			const profileIds = await UserService.getProfileIds(
-				generateWhereObject(getFilters(tableState))
+				generateWhereObject(getFilters(tableState), false)
 			);
 			ToastService.info(
 				t('Je hebt {{numOfSelectedProfiles}} gebuikers geselecteerd', {
@@ -236,6 +259,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	 */
 	const bulkUpdateBlockStatus = async (blockOrUnblock: boolean) => {
 		try {
+			setIsLoading(true);
 			await UserService.updateBlockStatusByProfileIds(selectedProfileIds, blockOrUnblock);
 			await fetchProfiles();
 			ToastService.success(
@@ -246,6 +270,59 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		} catch (err) {
 			ToastService.danger(t('Het blokkeren van de geselecteerde gebruikers is mislukt'));
 		}
+		setIsLoading(false);
+	};
+
+	const bulkExport = async () => {
+		try {
+			setIsLoading(true);
+			const [profilesTemp] = await UserService.getProfiles(
+				0,
+				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
+				tableState.sort_order || 'desc',
+				generateWhereObject(getFilters(tableState), true),
+				100000
+			);
+			const columns = GET_USER_OVERVIEW_TABLE_COLS(
+				userGroupOptions,
+				companyOptions,
+				businessCategoryOptions
+			);
+			const columnIds =
+				tableState.columns && tableState.columns.length
+					? tableState.columns
+					: columns
+							.filter((column) => column.visibleByDefault)
+							.map((column) => column.id);
+			const columnLabels = columnIds.map((columnId) =>
+				get(
+					columns.find((column) => column.id === columnId),
+					'label',
+					columnId
+				)
+			);
+			const csvRowValues: string[] = [columnLabels.join(';')];
+			profilesTemp.forEach((profile) => {
+				const csvCellValues: string[] = [];
+				columnIds.forEach((columnId) => {
+					const csvCellValue = reactToString(
+						renderTableCell(profile, columnId as UserOverviewTableCol)
+					);
+					csvCellValues.push(csvCellValue);
+				});
+				csvRowValues.push(csvCellValues.join(';'));
+			});
+			const csvString = csvRowValues.join('\n');
+			const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+			FileSaver.saveAs(blob, 'gebruikers.csv');
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to export users to csv file', err, { tableState })
+			);
+			ToastService.danger(t('Het exporteren van de geselecteerde gebruikers is mislukt'));
+		}
+
+		setIsLoading(false);
 	};
 
 	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
@@ -253,6 +330,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			return;
 		}
 		switch (action) {
+			case 'export':
+				await bulkExport();
+				return;
+
 			case 'block':
 				await bulkUpdateBlockStatus(true);
 				return;
@@ -348,7 +429,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		rowData: Partial<Avo.User.Profile>,
 		columnId: UserOverviewTableCol
 	) => {
-		const { id, user, stamboek, created_at, title, organisation } = rowData;
+		const { id, user, created_at, organisation } = rowData;
 
 		switch (columnId) {
 			case 'first_name':
@@ -363,17 +444,14 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				return truncateTableValue(get(user, columnId));
 
 			case 'user_group':
-				return get(rowData, 'profile_user_groups[0].groups[0].label') || '-';
-
-			case 'oormerk': // TODO replace title with sector after:https://meemoo.atlassian.net/browse/DEV-1062
-				return title || '-';
+				return get(rowData, 'profile_user_groups[0].group.label') || '-';
 
 			case 'is_blocked':
 				const isBlocked = get(rowData, 'user.is_blocked');
 				return isBlocked ? 'Ja' : 'Nee';
 
-			case 'stamboek':
-				return stamboek || '-';
+			case 'is_exception':
+				return get(rowData, 'is_exception') ? 'Ja' : 'Nee';
 
 			case 'organisation':
 				return get(organisation, 'name') || '-';
@@ -386,7 +464,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			default:
-				return '';
+				// TODO remove cast after update to typings v2.25.0
+				return truncateTableValue((rowData as any)[columnId] || '-');
 		}
 	};
 
@@ -521,6 +600,22 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		})
 	);
 
+	const businessCategoryOptions = businessCategories.map(
+		(option: string): CheckboxOption => ({
+			id: option,
+			label: option,
+			checked: get(tableState, 'business_category', [] as string[]).includes(option),
+		})
+	);
+
+	const companyOptions = companies.map(
+		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+			id: option.or_id as string,
+			label: option.name as string,
+			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
+		})
+	);
+
 	const renderUserOverview = () => {
 		if (!profiles) {
 			return null;
@@ -528,7 +623,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		return (
 			<>
 				<FilterTable
-					columns={GET_USER_OVERVIEW_TABLE_COLS(userGroupOptions)}
+					columns={GET_USER_OVERVIEW_TABLE_COLS(
+						userGroupOptions,
+						companyOptions,
+						businessCategoryOptions
+					)}
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>

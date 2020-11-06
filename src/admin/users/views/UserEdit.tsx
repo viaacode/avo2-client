@@ -49,7 +49,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	>({});
 
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);
-	const [companies] = useCompanies();
+	const [companies] = useCompanies(false);
 	const [subjects] = useSubjects();
 	const [firstName, setFirstName] = useState<string | undefined>();
 	const [lastName, setLastName] = useState<string | undefined>();
@@ -224,7 +224,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 						</FormGroup>
 						<FormGroup label={t('admin/users/views/user-detail___bedrijf')}>
 							<Flex>
-								{' '}
 								<FlexItem>
 									<Select
 										options={compact(

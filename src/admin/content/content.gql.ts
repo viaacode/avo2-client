@@ -213,7 +213,7 @@ export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH = gql`
 `;
 
 export const GET_CONTENT_LABELS_BY_CONTENT_TYPE = gql`
-	query getContentLabls($contentType: String!) {
+	query getContentLabels($contentType: String!) {
 		app_content_labels(where: { content_type: { _eq: $contentType } }) {
 			id
 			label

@@ -255,7 +255,7 @@ const Profile: FunctionComponent<
 		// TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
 		// Waiting for: https://meemoo.atlassian.net/browse/DEV-985
 		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
-			OrganisationService.fetchAllOrganisations()
+			OrganisationService.fetchOrganisations(false)
 				.then(setAllOrganisations)
 				.catch((err) => {
 					console.error(
@@ -804,7 +804,7 @@ const Profile: FunctionComponent<
 				return get(profile, 'user.mail') || '-';
 
 			case 'user_group':
-				return get(profile, 'profile_user_groups[0].groups[0].label') || '-';
+				return get(profile, 'profile_user_groups[0].group.label') || '-';
 
 			case 'is_blocked':
 				return get(profile, 'user.is_blocked') || 'Nee';
