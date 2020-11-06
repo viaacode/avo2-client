@@ -6,8 +6,6 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { GET_ITEM_BY_EXTERNAL_ID } from '../admin/items/items.gql';
 import { ROUTE_PARTS } from '../shared/constants';
 
-import { AssignmentOverviewTableColumns } from './assignment.types';
-
 export const ITEMS_PER_PAGE = 20;
 
 export const CONTENT_LABEL_TO_QUERY: {
@@ -40,29 +38,4 @@ export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 	ITEM: ROUTE_PARTS.item,
 	COLLECTIE: ROUTE_PARTS.collections,
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
-};
-
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		/* eslint-disable @typescript-eslint/no-unused-vars */
-		[columnId in AssignmentOverviewTableColumns]: (
-			order: Avo.Search.OrderDirection
-		) => any /* eslint-enable @typescript-eslint/no-unused-vars */;
-	}
-> = {
-	title: (order: Avo.Search.OrderDirection) => ({
-		assignment: { title: order },
-	}),
-	class_room: (order: Avo.Search.OrderDirection) => ({
-		assignment: { class_room: order },
-	}),
-	deadline_at: (order: Avo.Search.OrderDirection) => ({
-		assignment: { deadline_at: order },
-	}),
-	created_at: (order: Avo.Search.OrderDirection) => ({
-		assignment: { created_at: order },
-	}),
-	author: (order: Avo.Search.OrderDirection) => ({
-		assignment: { profile: { usersByuserId: { last_name: order } } },
-	}),
 };
