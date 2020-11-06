@@ -62,7 +62,6 @@ import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';
 
-import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
 
 export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
@@ -435,32 +434,30 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						content={get(contentPageInfo, 'seo_description') || description || ''}
 					/>
 				</MetaTags>
-				<div className="m-content-detail-preview">
-					<LoadingErrorLoadedComponent
-						loadingInfo={loadingInfo}
-						dataObject={contentPageInfo}
-						render={() => renderContentDetail(contentPageInfo)}
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPageInfo}
+					render={() => renderContentDetail(contentPageInfo)}
+				/>
+				<DeleteObjectModal
+					deleteObjectCallback={handleDelete}
+					isOpen={isConfirmModalOpen}
+					onClose={() => setIsConfirmModalOpen(false)}
+					body={
+						isContentProtected
+							? t(
+									'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
+							  )
+							: ''
+					}
+				/>
+				{!!contentPageInfo && (
+					<PublishContentPageModal
+						contentPage={contentPageInfo}
+						isOpen={isPublishModalOpen}
+						onClose={handleShareModalClose}
 					/>
-					<DeleteObjectModal
-						deleteObjectCallback={handleDelete}
-						isOpen={isConfirmModalOpen}
-						onClose={() => setIsConfirmModalOpen(false)}
-						body={
-							isContentProtected
-								? t(
-										'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
-								  )
-								: ''
-						}
-					/>
-					{!!contentPageInfo && (
-						<PublishContentPageModal
-							contentPage={contentPageInfo}
-							isOpen={isPublishModalOpen}
-							onClose={handleShareModalClose}
-						/>
-					)}
-				</div>
+				)}
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

@@ -6,7 +6,8 @@ export type UserOverviewTableCol =
 	| 'last_name'
 	| 'mail'
 	| 'user_group'
-	| 'oormerk' // Currently stored in the title field
+	| 'business_category'
+	| 'is_exception'
 	| 'is_blocked'
 	| 'stamboek'
 	| 'organisation'
@@ -18,6 +19,9 @@ export interface UserTableState extends FilterableTableState {
 	last_name: string;
 	mail: string;
 	stamboek: string;
+	business_category: string;
+	is_exception: boolean;
+	is_blocked: boolean;
 	created_at: string;
 	columns: string[];
 }

@@ -146,8 +146,10 @@ export function getFromPath(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
-	const fromPath =
-		get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
+	let fromPath = get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
+	if (fromPath === `/${ROUTE_PARTS.registerOrLogin}`) {
+		fromPath = '/';
+	}
 	const fromSearch = get(location, 'state.from.search') || get(location, 'search') || '';
 	return `/${trimStart(fromPath + fromSearch, '/')}`;
 }

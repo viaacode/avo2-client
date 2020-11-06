@@ -40,7 +40,7 @@ export const getUserGroupLabel = (
 	}
 
 	const profile = getProfile(userOrProfile);
-	return get(profile, 'profile_user_groups[0].groups[0].label') || '';
+	return get(profile, 'profile_user_groups[0].group.label') || '';
 };
 
 export const getUserGroupId = (
@@ -60,9 +60,7 @@ export const getUserGroupId = (
 
 	const profile = getProfile(userOrProfile);
 	const userGroupId =
-		get(profile, 'userGroupIds[0]') ||
-		get(profile, 'profile_user_groups[0].groups[0].id') ||
-		'';
+		get(profile, 'userGroupIds[0]') || get(profile, 'profile_user_groups[0].group.id') || '';
 	if (!userGroupId) {
 		console.error('Failed to get user group id from profile');
 	}

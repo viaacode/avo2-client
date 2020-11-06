@@ -85,8 +85,10 @@ export const GET_USERS = gql`
 				id
 				stamboek
 				created_at
+				business_category
+				is_exception
 				profile_user_groups {
-					groups {
+					group {
 						label
 						id
 					}
@@ -110,25 +112,6 @@ export const GET_PROFILE_IDS = gql`
 			profile {
 				id
 			}
-		}
-	}
-`;
-
-export const BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS = gql`
-	mutation updateUserBlockedStatus($userIds: [uuid!]!, $isBlocked: Boolean!) {
-		update_shared_users(where: { uid: { _in: $userIds } }, _set: { is_blocked: $isBlocked }) {
-			affected_rows
-		}
-	}
-`;
-
-export const BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS = gql`
-	mutation updateUserBlockedStatus($profileIds: [uuid!]!, $isBlocked: Boolean!) {
-		update_shared_users(
-			where: { profile: { id: { _in: $profileIds } } }
-			_set: { is_blocked: $isBlocked }
-		) {
-			affected_rows
 		}
 	}
 `;
@@ -160,6 +143,17 @@ export const BULK_DELETE_SUBJECTS_FROM_PROFILES = gql`
 			where: { key: { _in: $subjects }, profile_id: { _in: $profileIds } }
 		) {
 			affected_rows
+		}
+	}
+`;
+
+export const GET_DISTINCT_BUSINESS_CATEGORIES = gql`
+	query getDistinctBusinessCategories {
+		users_profiles(
+			distinct_on: business_category
+			where: { business_category: { _is_null: false } }
+		) {
+			business_category
 		}
 	}
 `;
