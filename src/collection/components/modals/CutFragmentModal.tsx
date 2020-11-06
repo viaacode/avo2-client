@@ -18,6 +18,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { CustomError, formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { ToastService } from '../../../shared/services';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { KeyCode } from '../../../shared/types';
@@ -46,14 +47,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const [t] = useTranslation();
 
 	// Save initial state for reusability purposes
-	const { start, end, startString, endString } = {
-		start: fragment.start_oc || 0,
-		end: fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0,
-		startString: formatDurationHoursMinutesSeconds(fragment.start_oc || 0),
-		endString: formatDurationHoursMinutesSeconds(
-			fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
-		),
-	};
+	const [start, end] = getValidStartAndEnd(
+		fragment.start_oc,
+		fragment.end_oc,
+		toSeconds(itemMetaData.duration)
+	);
+	const startString = formatDurationHoursMinutesSeconds(start);
+	const endString = formatDurationHoursMinutesSeconds(end);
 	const itemMeta = fragment.item_meta as Avo.Item.Item;
 
 	const [fragmentStart, setFragmentStart] = useState<number>(start);

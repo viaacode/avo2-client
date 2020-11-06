@@ -6,7 +6,8 @@ import { AspectRatioWrapper, FlowPlayer, formatDuration, Icon } from '@viaa/avo2
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { CustomError, getEnv, reorderDate } from '../../helpers';
+import { CustomError, getEnv, reorderDate, toSeconds } from '../../helpers';
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
@@ -118,11 +119,39 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
+	const hasHlsSupport = (): boolean => {
+		try {
+			new MediaSource();
+			return true;
+		} catch (err) {
+			return false;
+		}
+	};
+
+	const getBrowserSafeUrl = (src: string): string => {
+		if (hasHlsSupport()) {
+			return src;
+		} else if (src.includes('flowplayer')) {
+			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
+		} else {
+			ToastService.danger(
+				t('Deze video kan niet worden afgespeeld. Probeer een andere browser.')
+			);
+			return src;
+		}
+	};
+
+	const [start, end] = getValidStartAndEnd(
+		props.cuePoints?.start,
+		props.cuePoints?.end,
+		toSeconds(item?.duration)
+	);
+
 	return (
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
 				<FlowPlayer
-					src={src}
+					src={getBrowserSafeUrl(src)}
 					seekTime={props.seekTime}
 					poster={poster}
 					title={get(item, 'title')}
@@ -137,7 +166,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 					logo={props.organisationLogo || get(item, 'organisation.logo_url')}
-					{...props.cuePoints}
+					start={item ? start : null}
+					end={item ? end : null}
 					autoplay={(!!item && !!src) || props.autoplay}
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
