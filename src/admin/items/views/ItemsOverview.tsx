@@ -21,8 +21,8 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
-import { OrganisationService } from '../../../shared/services/organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
@@ -46,7 +46,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
-	const [cpOptions, setCpOptions] = useState<CheckboxOption[] | null>(null);
+	const [companies] = useCompanies(true);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// methods
@@ -161,27 +161,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		}
 	}, [setSeriesOptions, t]);
 
-	const fetchAllCps = useCallback(async () => {
-		try {
-			setCpOptions(
-				((await OrganisationService.fetchAllOrganisations()) || []).map(
-					(org: Partial<Avo.Organization.Organization>): CheckboxOption => ({
-						id: org.or_id as string,
-						label: org.name as string,
-						checked: false,
-					})
-				)
-			);
-		} catch (err) {
-			console.error(new CustomError('Failed to load all CPs from the database', err));
-			ToastService.danger(
-				t(
-					'admin/items/views/items-overview___het-ophalen-van-de-content-providers-is-mislukt'
-				)
-			);
-		}
-	}, [setCpOptions, t]);
-
 	useEffect(() => {
 		fetchItems();
 	}, [fetchItems]);
@@ -189,10 +168,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	useEffect(() => {
 		fetchAllSeries();
 	}, [fetchAllSeries]);
-
-	useEffect(() => {
-		fetchAllCps();
-	}, [fetchAllCps]);
 
 	useEffect(() => {
 		if (items) {
@@ -307,6 +282,14 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		);
 	};
 
+	const companyOptions = companies.map(
+		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+			id: option.or_id as string,
+			label: option.name as string,
+			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
+		})
+	);
+
 	const renderItemsOverview = () => {
 		if (!items) {
 			return null;
@@ -314,7 +297,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		return (
 			<>
 				<FilterTable
-					columns={GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], cpOptions || [])}
+					columns={GET_ITEM_OVERVIEW_TABLE_COLS(
+						seriesOptions || [],
+						companyOptions || []
+					)}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
