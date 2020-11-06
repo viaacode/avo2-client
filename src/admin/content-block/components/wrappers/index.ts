@@ -4,7 +4,8 @@ export { default as MediaPlayerWrapper } from './MediaPlayerWrapper/MediaPlayerW
 export { default as PageOverviewWrapper } from './PageOverviewWrapper/PageOverviewWrapper';
 export { default as ProjectSpotlightWrapper } from './ProjectSpotlightWrapper/ProjectSpotlightWrapper';
 export { default as BlockImageGridWrapper } from './ImageGridWrapper/ImageGridWrapper';
-export { default as BlockIconGridWrapper } from './IconGridWrapper/IconGridWrapper';
+export { default as BlockLogoGridWrapper } from './LogoGridWrapper/LogoGridWrapper';
+export { default as BlockUspGridWrapper } from './UspGridWrapper/UspGridWrapper';
 export { default as BlockContentPageMeta } from './BlockContentPageMeta/BlockContentPageMeta';
 export { default as HeroWrapper } from './HeroWrapper/HeroWrapper';
 export { default as CtaWrapper } from './CtaWrapper/CtaWrapper';

@@ -51,10 +51,6 @@ import {
 	INITIAL_HEADING_COMPONENTS_STATE,
 } from './helpers/generators/heading';
 import { HERO_BLOCK_CONFIG, INITIAL_HERO_COMPONENTS_STATE } from './helpers/generators/hero';
-import {
-	ICON_GRID_BLOCK_CONFIG,
-	INITIAL_ICON_GRID_COMPONENTS_STATE,
-} from './helpers/generators/icon-grid';
 import { IFRAME_BLOCK_CONFIG, INITIAL_IFRAME_COMPONENTS_STATE } from './helpers/generators/iframe';
 import { IMAGE_BLOCK_CONFIG, INITIAL_IMAGE_COMPONENTS_STATE } from './helpers/generators/image';
 import {
@@ -63,6 +59,10 @@ import {
 } from './helpers/generators/image-grid';
 import { INITIAL_INTRO_COMPONENTS_STATE, INTRO_BLOCK_CONFIG } from './helpers/generators/intro';
 import { INITIAL_KLAAR_COMPONENTS_STATE, KLAAR_BLOCK_CONFIG } from './helpers/generators/klaar';
+import {
+	INITIAL_LOGO_GRID_COMPONENTS_STATE,
+	LOGO_GRID_BLOCK_CONFIG,
+} from './helpers/generators/logo-grid';
 import {
 	INITIAL_MEDIA_GRID_COMPONENTS_STATE,
 	MEDIA_GRID_BLOCK_CONFIG,
@@ -97,6 +97,10 @@ import {
 	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers/generators/spotlight';
+import {
+	INITIAL_USP_GRID_COMPONENTS_STATE,
+	USP_GRID_BLOCK_CONFIG,
+} from './helpers/generators/usp-grid';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -194,8 +198,12 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.ContentPageMeta,
 	},
 	{
-		label: i18n.t('Icon grid'),
-		value: ContentBlockType.IconGrid,
+		label: i18n.t("Logo's sign-off"),
+		value: ContentBlockType.LogoGrid,
+	},
+	{
+		label: i18n.t('USP'),
+		value: ContentBlockType.UspGrid,
 	},
 ];
 
@@ -239,7 +247,8 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.Search]: SEARCH_BLOCK_CONFIG,
 	[ContentBlockType.ContentPageMeta]: CONTENT_PAGE_META_BLOCK_CONFIG,
-	[ContentBlockType.IconGrid]: ICON_GRID_BLOCK_CONFIG,
+	[ContentBlockType.LogoGrid]: LOGO_GRID_BLOCK_CONFIG,
+	[ContentBlockType.UspGrid]: USP_GRID_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
@@ -268,7 +277,8 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 	[ContentBlockType.Search]: INITIAL_SEARCH_COMPONENTS_STATE,
 	[ContentBlockType.ContentPageMeta]: INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
-	[ContentBlockType.IconGrid]: INITIAL_ICON_GRID_COMPONENTS_STATE,
+	[ContentBlockType.LogoGrid]: INITIAL_LOGO_GRID_COMPONENTS_STATE,
+	[ContentBlockType.UspGrid]: INITIAL_USP_GRID_COMPONENTS_STATE,
 };
 
 // Options
