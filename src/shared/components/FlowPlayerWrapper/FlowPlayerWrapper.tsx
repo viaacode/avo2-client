@@ -6,7 +6,8 @@ import { AspectRatioWrapper, FlowPlayer, formatDuration, Icon } from '@viaa/avo2
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { CustomError, getEnv, reorderDate } from '../../helpers';
+import { CustomError, getEnv, reorderDate, toSeconds } from '../../helpers';
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
@@ -140,6 +141,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
+	const [start, end] = getValidStartAndEnd(
+		props.cuePoints?.start,
+		props.cuePoints?.end,
+		toSeconds(item?.duration)
+	);
+
 	return (
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
@@ -159,7 +166,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 					logo={props.organisationLogo || get(item, 'organisation.logo_url')}
-					{...props.cuePoints}
+					start={item ? start : null}
+					end={item ? end : null}
 					autoplay={(!!item && !!src) || props.autoplay}
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}

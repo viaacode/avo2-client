@@ -31,10 +31,12 @@ import { getProfileName } from '../../../authentication/helpers/get-profile-info
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import {
-	formatDurationHoursMinutesSeconds, isMobileWidth,
+	formatDurationHoursMinutesSeconds,
+	isMobileWidth,
 	parseDuration,
 	toSeconds,
 } from '../../../shared/helpers';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -78,6 +80,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const minTime: number = 0;
 	const maxTime: number = toSeconds(itemMetaData.duration) || 0;
+
+	const clampDuration = (value: number): number => {
+		return clamp(value, minTime, maxTime);
+	};
 
 	const fetchCollections = React.useCallback(
 		() =>
@@ -143,9 +149,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 		return {
 			use_custom_fields: false,
-			start_oc: hasCut ? fragmentStartTime : null,
 			position: (collection.collection_fragments || []).length,
 			external_id: externalId,
+			start_oc: hasCut ? fragmentStartTime : null,
 			end_oc: hasCut ? fragmentEndTime : null,
 			custom_title: null,
 			custom_description: null,
@@ -281,10 +287,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					selectedCollection as Partial<Avo.Collection.Collection>
 				);
 
-	const clampDuration = (duration: number): number => {
-		return clamp(duration, minTime, maxTime);
-	};
-
 	const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
 		if (value) {
 			// onChange event
@@ -360,6 +362,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const renderAddToCollectionModal = () => {
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
+		const [start, end] = getValidStartAndEnd(
+			fragmentStartTime,
+			fragmentEndTime,
+			fragmentDuration
+		);
 
 		return (
 			<Modal
@@ -380,7 +387,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									showTitle
 									showDescription
 									canPlay={isOpen}
-									cuePoints={{ start: fragmentStartTime, end: fragmentEndTime }}
+									cuePoints={{ start, end }}
 									seekTime={fragmentStartTime || 0}
 									verticalLayout={isMobileWidth()}
 								/>
@@ -396,10 +403,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											/>
 											<div className="m-multi-range-wrapper">
 												<MultiRange
-													values={[
-														fragmentStartTime,
-														Math.min(fragmentEndTime, fragmentDuration),
-													]}
+													values={[start, end]}
 													onChange={onUpdateMultiRangeValues}
 													min={0}
 													max={fragmentDuration}
