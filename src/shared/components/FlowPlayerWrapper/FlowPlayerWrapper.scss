@@ -13,6 +13,7 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 	position: relative;
 	border-radius: 0.4rem;
 	overflow: hidden;
+	max-width: 100%;
 
 	.a-flowplayer__text {
 		color: $color-gray-200;

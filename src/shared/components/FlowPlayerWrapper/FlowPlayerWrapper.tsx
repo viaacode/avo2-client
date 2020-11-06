@@ -119,6 +119,28 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
+	const hasHlsSupport = (): boolean => {
+		try {
+			new MediaSource();
+			return true;
+		} catch (err) {
+			return false;
+		}
+	};
+
+	const getBrowserSafeUrl = (src: string): string => {
+		if (hasHlsSupport()) {
+			return src;
+		} else if (src.includes('flowplayer')) {
+			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
+		} else {
+			ToastService.danger(
+				t('Deze video kan niet worden afgespeeld. Probeer een andere browser.')
+			);
+			return src;
+		}
+	};
+
 	const [start, end] = getValidStartAndEnd(
 		props.cuePoints?.start,
 		props.cuePoints?.end,
@@ -129,7 +151,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
 				<FlowPlayer
-					src={src}
+					src={getBrowserSafeUrl(src)}
 					seekTime={props.seekTime}
 					poster={poster}
 					title={get(item, 'title')}

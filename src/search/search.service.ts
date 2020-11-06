@@ -1,3 +1,5 @@
+import { get, set } from 'lodash-es';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../shared/helpers';
@@ -13,6 +15,16 @@ export const fetchSearchResults = async (
 	requestedAggs?: Avo.Search.FilterProp[],
 	aggsSize?: number
 ) => {
+	if (filters) {
+		const gte = get(filters, 'broadcastDate.gte');
+		const lte = get(filters, 'broadcastDate.lte');
+		if (gte) {
+			set(filters, 'broadcastDate.gte', gte.split(' ')[0]);
+		}
+		if (lte) {
+			set(filters, 'broadcastDate.lte', lte.split(' ')[0]);
+		}
+	}
 	const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/search`, {
 		method: 'POST',
 		headers: {
