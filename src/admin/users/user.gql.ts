@@ -116,25 +116,6 @@ export const GET_PROFILE_IDS = gql`
 	}
 `;
 
-export const BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS = gql`
-	mutation updateUserBlockedStatus($userIds: [uuid!]!, $isBlocked: Boolean!) {
-		update_shared_users(where: { uid: { _in: $userIds } }, _set: { is_blocked: $isBlocked }) {
-			affected_rows
-		}
-	}
-`;
-
-export const BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS = gql`
-	mutation updateUserBlockedStatus($profileIds: [uuid!]!, $isBlocked: Boolean!) {
-		update_shared_users(
-			where: { profile: { id: { _in: $profileIds } } }
-			_set: { is_blocked: $isBlocked }
-		) {
-			affected_rows
-		}
-	}
-`;
-
 export const GET_PROFILE_NAMES = gql`
 	query getProfileNames($profileIds: [uuid!]!) {
 		users_profiles(where: { id: { _in: $profileIds } }) {
