@@ -1,4 +1,4 @@
-import { cloneDeep, compact, get } from 'lodash-es';
+import { cloneDeep, get, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -23,6 +23,7 @@ import { useDebounce } from '../../../../../shared/hooks';
 import { ToastService } from '../../../../../shared/services';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import i18n from '../../../../../shared/translations/i18n';
+import { ContentPageLabelService } from '../../../../content-page-labels/content-page-label.service';
 import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
@@ -91,6 +92,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		item: StringParam,
 		label: CheckboxListParam,
 	};
+	const [labelObjs, setLabelObjs] = useState<LabelObj[]>([]);
 	const [queryParamsState, setQueryParamsState] = useQueryParams(queryParamConfig);
 	const [pages, setPages] = useState<ContentPageInfo[] | null>(null);
 	const [pageCount, setPageCount] = useState<number | null>(null);
@@ -123,21 +125,46 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 		};
 	};
 
+	const getSelectedLabelIds = (): number[] => {
+		if (!contentTypeAndTabs.selectedLabels) {
+			return [];
+		}
+		if (isNumber(contentTypeAndTabs.selectedLabels[0])) {
+			// new format where we save the ids of the labels instead of the full label object
+			// https://meemoo.atlassian.net/browse/AVO-1410
+			return contentTypeAndTabs.selectedLabels || [];
+		} else {
+			// Old format where we save the whole label object
+			// TODO deprecated remove when all content pages with type overview have been resaved
+			return (((contentTypeAndTabs.selectedLabels || []) as unknown) as LabelObj[]).map(
+				(label) => label.id
+			);
+		}
+	};
+
 	const fetchPages = useCallback(async () => {
 		try {
+			if (contentTypeAndTabs.selectedLabels && contentTypeAndTabs.selectedLabels.length) {
+				setLabelObjs(
+					await ContentPageLabelService.getContentPageLabelsByTypeAndIds(
+						contentTypeAndTabs.selectedContentType,
+						getSelectedLabelIds()
+					)
+				);
+			}
+
 			// Map labels in query params to label objects
 			let selectedTabs: LabelObj[] = [];
 			if (queryParamsState.label) {
-				if (queryParamsState.label.length) {
-					selectedTabs = compact(
-						(queryParamsState.label || []).map((labelName: string) => {
-							return (contentTypeAndTabs.selectedLabels || []).find((labelObj) => {
-								return labelObj.label === labelName;
-							});
-						})
+				const queryLabels = queryParamsState.label || [];
+				if (queryLabels.length) {
+					selectedTabs = await ContentPageLabelService.getContentPageLabelsByTypeAndLabels(
+						contentTypeAndTabs.selectedContentType,
+						queryLabels
 					);
 					setSelectedTabObjects(selectedTabs);
 				} else {
+					selectedTabs = [];
 					setSelectedTabObjects([]);
 				}
 			}
@@ -167,15 +194,14 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				}
 			}
 
-			const selectedLabelIds = selectedTabs.map((labelObj) => labelObj.id);
-			const blockLabelIds = ((contentTypeAndTabs.selectedLabels ||
-				[]) as Avo.ContentPage.Label[]).map((labelObj) => labelObj.id);
 			const body: ContentPageOverviewParams = {
 				withBlock: itemStyle === 'ACCORDION',
 				contentType: contentTypeAndTabs.selectedContentType,
-				labelIds: (contentTypeAndTabs.selectedLabels || []).map((labelObj) => labelObj.id),
+				labelIds: getSelectedLabelIds(),
 				selectedLabelIds:
-					selectedLabelIds && selectedLabelIds.length ? selectedLabelIds : blockLabelIds,
+					selectedTabs && selectedTabs.length
+						? selectedTabs.map((tab) => tab.id)
+						: getSelectedLabelIds(),
 				orderByProp: sortOrder.split('__')[0],
 				orderByDirection: sortOrder.split('__').pop() as Avo.Search.OrderDirection,
 				offset: queryParamsState.page * debouncedItemsPerPage,
@@ -265,8 +291,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	};
 
 	const getLabelsWithContent = () => {
-		return (contentTypeAndTabs.selectedLabels || []).filter(
-			(labelInfo: Avo.ContentPage.Label) => (labelPageCounts || {})[labelInfo.id] > 0
+		return (labelObjs || []).filter(
+			(labelObj: LabelObj) => (labelPageCounts || {})[labelObj.id] > 0
 		);
 	};
 

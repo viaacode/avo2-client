@@ -3,7 +3,8 @@ import { compact, flatten, get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../shared/helpers';
+import { CustomError, getEnv } from '../../shared/helpers';
+import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
@@ -11,9 +12,8 @@ import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.co
 import {
 	BULK_ADD_SUBJECTS_TO_PROFILES,
 	BULK_DELETE_SUBJECTS_FROM_PROFILES,
-	BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS,
-	BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS,
 	GET_CONTENT_COUNTS_FOR_USERS,
+	GET_DISTINCT_BUSINESS_CATEGORIES,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USER_BY_ID,
@@ -29,6 +29,7 @@ export class UserService {
 				variables: {
 					id: profileId,
 				},
+				fetchPolicy: 'no-cache',
 			});
 			if (response.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
@@ -132,51 +133,27 @@ export class UserService {
 		}
 	}
 
-	static async updateBlockStatusByUserIds(userIds: string[], isBlocked: boolean): Promise<void> {
-		try {
-			const response = await dataService.mutate({
-				mutation: BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS,
-				variables: {
-					userIds,
-					isBlocked,
-				},
-				update: ApolloCacheManager.clearUserCache,
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
-					response,
-				});
-			}
-		} catch (err) {
-			throw new CustomError(
-				'Failed to update is_blocked field for users in the database',
-				err,
-				{
-					userIds,
-					isBlocked,
-					query: 'BULK_UPDATE_USERS_BLOCKED_STATUS_BY_USER_IDS',
-				}
-			);
-		}
-	}
-
 	static async updateBlockStatusByProfileIds(
 		profileIds: string[],
 		isBlocked: boolean
 	): Promise<void> {
+		let url: string | undefined;
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS,
-				variables: {
+			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
+			const response = await fetchWithLogout(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
 					profileIds,
 					isBlocked,
-				},
-				update: ApolloCacheManager.clearUserCache,
+				}),
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Status code was unexpected', null, {
 					response,
 				});
 			}
@@ -185,9 +162,9 @@ export class UserService {
 				'Failed to update is_blocked field for users in the database',
 				err,
 				{
+					url,
 					profileIds,
 					isBlocked,
-					query: 'BULK_UPDATE_USER_BLOCKED_STATUS_BY_PROFILE_IDS',
 				}
 			);
 		}
@@ -306,6 +283,24 @@ export class UserService {
 				subjects,
 				profileIds,
 				query: 'BULK_DELETE_SUBJECTS_FROM_PROFILES',
+			});
+		}
+	}
+
+	static async fetchDistinctBusinessCategories() {
+		try {
+			const response = await dataService.query({
+				query: GET_DISTINCT_BUSINESS_CATEGORIES,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+			return get(response, 'data.users_profiles', []).map(
+				(profile: Partial<Avo.User.Profile>) => (profile as any).business_category // TODO Remove cast after update to typings v2.25.0
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get distinct business categories from profiles', err, {
+				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
 			});
 		}
 	}

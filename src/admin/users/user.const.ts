@@ -6,6 +6,7 @@ import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/compone
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../shared/helpers/filters';
 
 import { UserBulkAction, UserDeleteOption, UserOverviewTableCol } from './user.types';
 
@@ -17,8 +18,20 @@ export const USER_PATH = {
 export const ITEMS_PER_PAGE = 50;
 
 export const GET_USER_OVERVIEW_TABLE_COLS: (
-	userGroupOptions: CheckboxOption[]
-) => FilterableColumn[] = (userGroupOptions: CheckboxOption[]) => [
+	userGroupOptions: CheckboxOption[],
+	companyOptions: CheckboxOption[],
+	businessCategoryOptions: CheckboxOption[]
+) => FilterableColumn[] = (
+	userGroupOptions: CheckboxOption[],
+	companyOptions: CheckboxOption[],
+	businessCategoryOptions: CheckboxOption[]
+) => [
+	{
+		id: 'id',
+		label: i18n.t('Id'),
+		sortable: true,
+		visibleByDefault: false,
+	},
 	{
 		id: 'first_name',
 		label: i18n.t('admin/users/user___voornaam'),
@@ -40,18 +53,29 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'user_group',
 		label: i18n.t('admin/users/user___gebruikersgroep'),
-		sortable: false, // wait for https://meemoo.atlassian.net/browse/DEV-1128
+		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: userGroupOptions,
+			options: [...userGroupOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'oormerk',
+		id: 'business_category',
 		label: i18n.t('admin/users/user___oormerk'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...businessCategoryOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'is_exception',
+		label: i18n.t('Uitzonderingsaccount'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
 		id: 'is_blocked',
@@ -65,12 +89,17 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/users/user___stamboek'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
 		id: 'organisation',
 		label: i18n.t('admin/users/user___organisatie'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...companyOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'created_at',
@@ -102,12 +131,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	mail: (order: Avo.Search.OrderDirection) => ({
 		mail: order,
 	}),
-	// wait for https://meemoo.atlassian.net/browse/DEV-1128
-	// user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	mail: order
-	// }),
-	oormerk: (order: Avo.Search.OrderDirection) => ({
-		profile: { title: order }, // TODO change title to oormerk after task: https://meemoo.atlassian.net/browse/DEV-1062
+	user_group: (order: Avo.Search.OrderDirection) => ({
+		profile: { profile_user_group: { group: { label: order } } },
+	}),
+	business_category: (order: Avo.Search.OrderDirection) => ({
+		profile: { business_category: order },
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
@@ -180,6 +208,10 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 		actions.push({
 			label: i18n.t('Vakken aanpassen'),
 			value: 'change_subjects',
+		});
+		actions.push({
+			label: i18n.t('Exporteren'),
+			value: 'export',
 		});
 	}
 
