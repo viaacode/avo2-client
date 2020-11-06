@@ -40,7 +40,11 @@ export const getUserGroupLabel = (
 	}
 
 	const profile = getProfile(userOrProfile);
-	return get(profile, 'profile_user_groups[0].group.label') || '';
+	return (
+		get(profile, 'profile_user_groups[0].group.label') ||
+		get(profile, 'profile_user_groups[0].groups[0].label') ||
+		''
+	);
 };
 
 export const getUserGroupId = (

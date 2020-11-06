@@ -12,6 +12,7 @@ import {
 	IconName,
 	Spacer,
 	Spinner,
+	TagInfo,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -49,7 +50,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
-	const [allUserGroups] = useUserGroupOptions();
+	const [allUserGroups] = useUserGroupOptions('TagInfo', true) as [TagInfo[], boolean];
 
 	// Fetch menu items depending on menu parent param
 	// This is necessary for populating the menu parent options for our form

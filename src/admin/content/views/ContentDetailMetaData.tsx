@@ -38,7 +38,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	const [t] = useTranslation();
 
 	const [contentTypes] = useContentTypes();
-	const [allUserGroupOptions] = useUserGroupOptions();
+	const [allUserGroupOptions] = useUserGroupOptions('TagInfo', true) as [TagInfo[], boolean];
 
 	// Methods
 	const getUserGroups = (contentPageInfo: ContentPageInfo): TagOption[] => {

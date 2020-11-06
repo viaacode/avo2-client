@@ -55,9 +55,9 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 		const generateWhereObject = (filters: Partial<InteractiveTourTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
-				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ name: { _ilike: queryWordWildcard } },
-					{ page: { _ilike: queryWordWildcard } },
+				...getQueryFilter(filters.query, (queryWildcard: string) => [
+					{ name: { _ilike: queryWildcard } },
+					{ page: { _ilike: queryWildcard } },
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));

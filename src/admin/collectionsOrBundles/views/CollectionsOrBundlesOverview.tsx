@@ -87,7 +87,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false);
 
-	const [userGroups] = useUserGroups();
+	const [userGroups] = useUserGroups(false);
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -97,12 +97,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		(filters: Partial<CollectionsOrBundlesTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
-				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
-					{ description: { _ilike: queryWordWildcard } },
+				...getQueryFilter(filters.query, (queryWildcard: string) => [
+					{ title: { _ilike: queryWildcard } },
+					{ description: { _ilike: queryWildcard } },
 					{
 						profile: {
-							usersByuserId: { full_name: { _ilike: queryWordWildcard } },
+							usersByuserId: { full_name: { _ilike: queryWildcard } },
 						},
 					},
 				])
@@ -286,7 +286,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const userGroupOptions = userGroups.map(
 		(option): CheckboxOption => ({
 			id: String(option.id),
-			label: option.label,
+			label: option.label as string,
 			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
 				String(option.id)
 			),

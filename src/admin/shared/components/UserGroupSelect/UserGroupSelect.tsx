@@ -22,7 +22,7 @@ export const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 	onChange,
 	required,
 }) => {
-	const [userGroupOptions] = useUserGroupOptions();
+	const [userGroupOptions] = useUserGroupOptions('TagInfo', true) as [TagInfo[], boolean];
 
 	const handleSelectOnChange = (values: TagInfo[] | null) => {
 		onChange((values || []).map((val) => val.value as number));

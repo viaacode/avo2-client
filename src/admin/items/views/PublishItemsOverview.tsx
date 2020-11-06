@@ -45,9 +45,9 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				...getQueryFilter(
 					filters.query,
 					// @ts-ignore
-					(queryWordWildcard: string, queryWord: string, query: string) => [
+					(queryWildcard: string, query: string) => [
 						{ pid: { _eq: query } },
-						{ title: { _ilike: queryWordWildcard } },
+						{ title: { _ilike: queryWildcard } },
 					]
 				)
 			);

@@ -3,24 +3,50 @@ import { useTranslation } from 'react-i18next';
 
 import { TagInfo } from '@viaa/avo2-components';
 
+import { CheckboxOption } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { SPECIAL_USER_GROUPS } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 
-type UseUserGroupsTuple = [TagInfo[], boolean];
+type UseUserGroupsTuple = [TagInfo[] | CheckboxOption[], boolean];
 
-export const useUserGroupOptions = (): UseUserGroupsTuple => {
+export const useUserGroupOptions = (
+	type: 'CheckboxOption' | 'TagInfo',
+	includeSpecialGroups: boolean
+): UseUserGroupsTuple => {
 	const [t] = useTranslation();
-	const [userGroupOptions, setUserGroupOptions] = useState<TagInfo[]>([]);
+	const [userGroupOptions, setUserGroupOptions] = useState<TagInfo[] | CheckboxOption[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		UserGroupService.fetchAllUserGroupTagInfos()
+		UserGroupService.fetchAllUserGroups()
 			.then((options) => {
-				if (options) {
-					setUserGroupOptions(options);
+				const allOptions = [
+					...(includeSpecialGroups ? SPECIAL_USER_GROUPS : []),
+					...options,
+				];
+				if (type === 'TagInfo') {
+					setUserGroupOptions(
+						allOptions.map(
+							(opt): TagInfo => ({
+								label: opt.label as string,
+								value: opt.id as number,
+							})
+						)
+					);
+				} else {
+					setUserGroupOptions(
+						allOptions.map(
+							(opt): CheckboxOption => ({
+								label: opt.label as string,
+								id: String(opt.id),
+								checked: false,
+							})
+						)
+					);
 				}
 			})
 			.catch((err) => {
@@ -34,7 +60,7 @@ export const useUserGroupOptions = (): UseUserGroupsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [setIsLoading, setUserGroupOptions, t]);
+	}, [setIsLoading, setUserGroupOptions, includeSpecialGroups, type, t]);
 
 	return [userGroupOptions, isLoading];
 };
