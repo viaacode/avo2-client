@@ -9,7 +9,7 @@ import {
 	DefaultContentBlockState,
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
-import { BlockIconGridWrapperProps } from '../../components/wrappers/IconGridWrapper/IconGridWrapper';
+import { BlockLogoGridWrapperProps } from '../../components/wrappers/LogoGridWrapper/LogoGridWrapper';
 import {
 	GET_ALIGN_OPTIONS,
 	GET_FILL_OPTIONS,
@@ -18,7 +18,7 @@ import {
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
-export const INITIAL_ICON_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
+export const INITIAL_LOGO_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
 	{
 		source: undefined,
 		title: '',
@@ -27,7 +27,7 @@ export const INITIAL_ICON_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSta
 	} as any,
 ];
 
-export const INITIAL_ICON_GRID_BLOCK_STATE = (): BlockIconGridWrapperProps &
+export const INITIAL_LOGO_GRID_BLOCK_STATE = (): BlockLogoGridWrapperProps &
 	DefaultContentBlockState => {
 	return {
 		...BLOCK_STATE_DEFAULTS({
@@ -44,13 +44,13 @@ export const INITIAL_ICON_GRID_BLOCK_STATE = (): BlockIconGridWrapperProps &
 	};
 };
 
-export const ICON_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
+export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t("Logo's sign-off"),
-	type: ContentBlockType.IconGrid,
+	type: ContentBlockType.LogoGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
-		state: INITIAL_ICON_GRID_COMPONENTS_STATE(),
+		state: INITIAL_LOGO_GRID_COMPONENTS_STATE(),
 		fields: {
 			textAbove: TEXT_FIELD('', {
 				label: i18n.t('Tekst boven afbeelding'),
@@ -78,7 +78,7 @@ export const ICON_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	},
 
 	block: {
-		state: INITIAL_ICON_GRID_BLOCK_STATE(),
+		state: INITIAL_LOGO_GRID_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 			format: {

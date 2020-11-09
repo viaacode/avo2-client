@@ -5,7 +5,7 @@ import { AlignOptions, BlockImageGrid, ButtonAction, GridItem } from '@viaa/avo2
 import { BlockGridFormatOption, FillOption } from '../../../../shared/types';
 import { formatLookup } from '../ImageGridWrapper/ImageGridWrapper';
 
-export interface BlockIconGridWrapperProps {
+export interface BlockLogoGridWrapperProps {
 	elements: GridItem[];
 	format: BlockGridFormatOption;
 	itemWidth: number;
@@ -15,7 +15,7 @@ export interface BlockIconGridWrapperProps {
 	navigate?: (buttonAction: ButtonAction) => void;
 }
 
-const BlockIconGridWrapper: FunctionComponent<BlockIconGridWrapperProps> = ({
+const BlockLogoGridWrapper: FunctionComponent<BlockLogoGridWrapperProps> = ({
 	format = '2:1',
 	itemWidth = 400,
 	...rest
@@ -23,4 +23,4 @@ const BlockIconGridWrapper: FunctionComponent<BlockIconGridWrapperProps> = ({
 	return <BlockImageGrid {...formatLookup[format]} itemWidth={itemWidth} {...rest} />;
 };
 
-export default BlockIconGridWrapper;
+export default BlockLogoGridWrapper;
