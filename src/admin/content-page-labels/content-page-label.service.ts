@@ -11,7 +11,8 @@ import { ITEMS_PER_PAGE } from './content-page-label.const';
 import {
 	DELETE_CONTENT_PAGE_LABEL,
 	GET_CONTENT_PAGE_LABEL_BY_ID,
-	GET_CONTENT_PAGE_LABELS, GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID,
+	GET_CONTENT_PAGE_LABELS,
+	GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID,
 	GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL,
 	INSERT_CONTENT_PAGE_LABEL,
 	UPDATE_CONTENT_PAGE_LABEL,
@@ -23,14 +24,15 @@ export class ContentPageLabelService {
 		page: number,
 		sortColumn: ContentPageLabelOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any
+		where: any,
+		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[ContentPageLabel[], number]> {
 		let variables: any;
 		try {
 			variables = {
 				where,
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
+				offset: itemsPerPage * page,
+				limit: itemsPerPage,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
 			const response = await dataService.query({

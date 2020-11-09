@@ -29,6 +29,8 @@ export type ContentOverviewTableCols =
 	| 'published_at'
 	| 'publish_at'
 	| 'depublish_at'
+	| 'labels'
+	| 'user_group_ids'
 	| 'actions';
 
 export interface ContentTableState extends FilterableTableState {
@@ -37,6 +39,8 @@ export interface ContentTableState extends FilterableTableState {
 	updated_at: DateRange;
 	publish_at: DateRange;
 	depublish_at: DateRange;
+	user_group: number[];
+	labels: number[];
 }
 
 // Content Detail

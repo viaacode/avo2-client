@@ -1,10 +1,20 @@
-import { get } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, LinkTarget, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	LabelObj,
+	LinkTarget,
+	Modal,
+	ModalBody,
+	Spacer,
+	TagList,
+	TagOption,
+} from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
@@ -15,7 +25,6 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
-	CheckboxDropdownModalProps,
 	CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -29,13 +38,11 @@ import {
 	navigate,
 	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
+import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
-import i18n from '../../../shared/translations/i18n';
-import FilterTable, {
-	FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
+import { useContentPageLabelOptions } from '../../content-page-labels/hooks/useContentPageLabelOptions';
+import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -43,7 +50,9 @@ import {
 	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
+import { useUserGroups } from '../../user-groups/hooks';
+import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
+import { CONTENT_PATH, GET_CONTENT_PAGE_OVERVIEW_COLUMNS, ITEMS_PER_PAGE } from '../content.const';
 import { ContentService } from '../content.service';
 import { ContentOverviewTableCols, ContentPageInfo, ContentTableState } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';
@@ -71,8 +80,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [tableState, setTableState] = useState<Partial<ContentTableState>>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-
+	const [userGroupOptions] = useUserGroupOptions('CheckboxOption', false) as [
+		CheckboxOption[],
+		boolean
+	];
+	const [userGroups] = useUserGroups(true);
 	const [contentTypes] = useContentTypes();
+	const [contentPageLabelOptions] = useContentPageLabelOptions();
 
 	const [t] = useTranslation();
 
@@ -90,20 +104,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					...getQueryFilter(
 						filters.query,
 						// @ts-ignore
-						(queryWordWildcard: string) => [
-							{ title: { _ilike: queryWordWildcard } },
-							{ path: { _ilike: queryWordWildcard } },
+						(queryWildcard: string) => [
+							{ title: { _ilike: queryWildcard } },
+							{ title: { _ilike: queryWildcard } },
+							{ path: { _ilike: queryWildcard } },
 							{
 								profile: {
 									_or: [
 										{
 											usersByuserId: {
-												first_name: { _ilike: queryWordWildcard },
+												first_name: { _ilike: queryWildcard },
 											},
 										},
 										{
 											usersByuserId: {
-												last_name: { _ilike: queryWordWildcard },
+												last_name: { _ilike: queryWildcard },
 											},
 										},
 									],
@@ -112,7 +127,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							{
 								profile: {
 									profile_user_groups: {
-										groups: { label: { _ilike: queryWordWildcard } },
+										groups: { label: { _ilike: queryWildcard } },
 									},
 								},
 							},
@@ -120,7 +135,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								content_content_labels: {
 									content_label: {
 										label: {
-											_ilike: queryWordWildcard,
+											_ilike: queryWildcard,
 										},
 									},
 								},
@@ -137,8 +152,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						'depublish_at',
 					])
 				);
-				andFilters.push(...getMultiOptionFilters(filters, ['content_type']));
-				andFilters.push(...getMultiOptionFilters(filters, ['user_profile_id']));
+				andFilters.push(
+					...getMultiOptionFilters(
+						filters,
+						['author_user_group', 'content_type', 'user_profile_id', 'labels'],
+						[
+							'profile.profile_user_group.group.id',
+							'content_type',
+							'user_profile_id',
+							'content_content_labels.content_label.id',
+						]
+					)
+				);
 
 				// When you get to this point we assume you already have either the EDIT_ANY_CONTENT_PAGES or EDIT_OWN_CONTENT_PAGES permission
 				if (!hasPerm(EDIT_ANY_CONTENT_PAGES)) {
@@ -195,84 +220,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			checked: get(tableState, 'content_type', [] as string[]).includes(option.value),
 		})
 	);
-
-	const getColumnInfos: () => FilterableColumn[] = () => [
-		{
-			id: 'title',
-			label: i18n.t('admin/content/content___titel'),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		{
-			id: 'content_type',
-			label: i18n.t('admin/content/content___content-type'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'CheckboxDropdownModal',
-			filterProps: {
-				options: contentTypeOptions,
-			} as CheckboxDropdownModalProps,
-		},
-		{
-			id: 'user_profile_id',
-			label: i18n.t('admin/content/content___auteur'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'MultiUserSelectDropdown',
-		},
-		{
-			id: 'author_user_group',
-			label: i18n.t('admin/content/content___rol'),
-			visibleByDefault: true,
-		},
-		{
-			id: 'created_at',
-			label: i18n.t('admin/content/content___aangemaakt'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-		},
-		{
-			id: 'updated_at',
-			label: i18n.t('admin/content/content___laatst-bewerkt'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-		},
-		{
-			id: 'is_public',
-			label: i18n.t('Publiek'),
-			sortable: true,
-			visibleByDefault: false,
-			filterType: 'BooleanCheckboxDropdown',
-		},
-		{
-			id: 'published_at',
-			label: i18n.t('admin/content/views/content-overview___publicatie'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-		},
-		{
-			id: 'publish_at',
-			label: i18n.t('admin/content/views/content-overview___publiceer-op'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-		},
-		{
-			id: 'depublish_at',
-			label: i18n.t('admin/content/views/content-overview___depubliceer-op'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-		},
-		{
-			id: 'actions',
-			tooltip: i18n.t('admin/content/views/content-overview___acties'),
-			visibleByDefault: true,
-		},
-	];
 
 	// Methods
 	const handleDelete = async () => {
@@ -353,6 +300,48 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'is_public':
 				return get(rowData, 'is_public') ? 'Ja' : 'Nee';
 
+			case 'labels':
+				const labels = rowData[columnId];
+				if (!labels || !labels.length) {
+					return '-';
+				}
+				return (
+					<TagList
+						tags={labels.map(
+							(labelObj: LabelObj): TagOption => ({
+								label: labelObj.label,
+								id: labelObj.id,
+							})
+						)}
+						swatches={false}
+					/>
+				);
+
+			case 'user_group_ids':
+				const userGroupIds = rowData[columnId];
+				if (!userGroupIds || !userGroupIds.length) {
+					return '-';
+				}
+				return (
+					<TagList
+						tags={compact(
+							userGroupIds.map((userGroupId: number): TagOption | null => {
+								const userGroup = userGroups.find(
+									(userGroup) => userGroup.id === userGroupId
+								);
+								if (!userGroup) {
+									return null;
+								}
+								return {
+									label: userGroup.label as string,
+									id: userGroup.id as number,
+								};
+							})
+						)}
+						swatches={false}
+					/>
+				);
+
 			case 'published_at':
 			case 'publish_at':
 			case 'depublish_at':
@@ -424,7 +413,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				);
 
 			default:
-				return rowData[columnId];
+				return truncateTableValue(rowData[columnId] || '-');
 		}
 	};
 
@@ -468,7 +457,17 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				<FilterTable
 					data={contentPages}
 					itemsPerPage={ITEMS_PER_PAGE}
-					columns={getColumnInfos()}
+					columns={GET_CONTENT_PAGE_OVERVIEW_COLUMNS(
+						contentTypeOptions,
+						setSelectedCheckboxes(
+							userGroupOptions,
+							get(tableState, 'user_group', []) as string[]
+						),
+						setSelectedCheckboxes(
+							contentPageLabelOptions,
+							get(tableState, 'label', []) as string[]
+						)
+					)}
 					dataCount={contentPageCount}
 					searchTextPlaceholder={t(
 						'admin/content/views/content-overview___zoeken-op-auteur-titel-rol'

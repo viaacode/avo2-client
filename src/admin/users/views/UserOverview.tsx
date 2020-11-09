@@ -34,6 +34,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { useBusinessCategories } from '../../../shared/hooks/useBusinessCategory';
@@ -52,7 +53,7 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
-import { useUserGroups } from '../../user-groups/hooks';
+import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
 import {
 	GET_DELETE_RADIO_OPTIONS,
 	GET_USER_BULK_ACTIONS,
@@ -79,11 +80,14 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [profileCount, setProfileCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
-	const [userGroups] = useUserGroups();
-	const [companies] = useCompanies(false);
-	const [businessCategories] = useBusinessCategories();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
+	const [companies] = useCompanies(false);
+	const [businessCategories] = useBusinessCategories();
+	const [userGroupOptions] = useUserGroupOptions('CheckboxOption', false) as [
+		CheckboxOption[],
+		boolean
+	];
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
 		'DELETE_ALL'
@@ -284,7 +288,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				100000
 			);
 			const columns = GET_USER_OVERVIEW_TABLE_COLS(
-				userGroupOptions,
+				setSelectedCheckboxes(
+					userGroupOptions,
+					get(tableState, 'author.user_groups', []) as string[]
+				),
 				companyOptions,
 				businessCategoryOptions
 			);
@@ -589,16 +596,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			</>
 		);
 	};
-
-	const userGroupOptions = userGroups.map(
-		(option): CheckboxOption => ({
-			id: String(option.id),
-			label: option.label,
-			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-				String(option.id)
-			),
-		})
-	);
 
 	const businessCategoryOptions = businessCategories.map(
 		(option: string): CheckboxOption => ({

@@ -4,14 +4,14 @@ export const NULL_FILTER = 'null';
 
 export function getQueryFilter(
 	query: string | undefined,
-	getQueryFilterObj: (query: string, queryWord: string, queryWordWildcard: string) => any[]
+	getQueryFilterObj: (queryWildcard: string, query: string) => any[]
 ) {
 	if (query) {
-		return query.split(' ').map((queryWord) => {
-			return {
-				_or: getQueryFilterObj(`%${queryWord}%`, queryWord, query),
-			};
-		});
+		return [
+			{
+				_or: getQueryFilterObj(`%${query}%`, query),
+			},
+		];
 	}
 	return [];
 }
