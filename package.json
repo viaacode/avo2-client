@@ -26,7 +26,7 @@
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
 		"@storybook/addon-actions": "^6.0.21",
-		"@viaa/avo2-components": "^1.59.2",
+		"@viaa/avo2-components": "^1.60.0",
 		"@viaa/avo2-types": "^2.24.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
