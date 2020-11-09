@@ -1,3 +1,4 @@
+import { capitalize, orderBy, startCase } from 'lodash-es';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,12 +21,15 @@ export const useContentPageLabelOptions = (): UseContentPageLabelsTuple => {
 		ContentPageLabelService.fetchContentPageLabels(0, 'label', 'asc', {}, 10000)
 			.then((reply: [ContentPageLabel[], number]) => {
 				setContentPageLabelOptions(
-					reply[0].map(
-						(opt): CheckboxOption => ({
-							label: `${opt.content_type}: ${opt.label}`,
-							id: String(opt.id),
-							checked: false,
-						})
+					orderBy(
+						reply[0].map(
+							(opt): CheckboxOption => ({
+								label: `${capitalize(startCase(opt.content_type))}: ${opt.label}`,
+								id: String(opt.id),
+								checked: false,
+							})
+						),
+						['label']
 					)
 				);
 			})
