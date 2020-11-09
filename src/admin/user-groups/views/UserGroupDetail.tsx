@@ -9,6 +9,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	LinkTarget,
 	Panel,
 	PanelBody,
 	PanelHeader,
@@ -23,6 +24,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
@@ -167,23 +169,27 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			case 'actions':
 				return (
 					<ButtonToolbar>
-						{/* TODO add link to permission group edit page */}
-						<Button
-							icon="edit"
-							onClick={() =>
-								ToastService.info(
-									t('settings/components/profile___nog-niet-geimplementeerd')
-								)
-							}
-							size="small"
-							ariaLabel={t(
-								'admin/user-groups/views/user-group-detail___verwijder-deze-gebruikersgroep'
-							)}
-							title={t(
-								'admin/user-groups/views/user-group-detail___verwijder-deze-gebruikersgroep'
-							)}
-							type="tertiary"
-						/>
+						<SmartLink
+							action={{
+								type: 'INTERNAL_LINK',
+								target: LinkTarget.Self,
+								value: buildLink(ADMIN_PATH.PERMISSION_GROUP_EDIT, {
+									id: rowData.id,
+								}),
+							}}
+						>
+							<Button
+								icon="edit"
+								size="small"
+								ariaLabel={t(
+									'admin/permission-groups/views/permission-group-detail___bewerk-deze-permissie-groep'
+								)}
+								title={t(
+									'admin/permission-groups/views/permission-group-detail___bewerk-deze-permissie-groep'
+								)}
+								type="tertiary"
+							/>
+						</SmartLink>
 					</ButtonToolbar>
 				);
 
