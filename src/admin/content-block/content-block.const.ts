@@ -587,11 +587,11 @@ export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<
 >[] = () => [
 	{
 		label: i18n.t('Publicatie datum (nieuw > oud)'),
-		value: 'published_at__asc',
+		value: 'published_at__desc',
 	},
 	{
 		label: i18n.t('Publicatie datum (oud > nieuw)'),
-		value: 'published_at__desc',
+		value: 'published_at__asc',
 	},
 	{
 		label: i18n.t('Titel (A > Z)'),
