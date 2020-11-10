@@ -1,4 +1,5 @@
 export interface UpdateProfileValues {
+	userId: string;
 	educationLevels: {
 		profile_id: string;
 		key: string;
@@ -12,7 +13,9 @@ export interface UpdateProfileValues {
 		organization_id: string;
 		unit_id: string | null;
 	}[];
-	company_id: string;
+	firstName: string;
+	lastName: string;
+	company_id: string | null;
 	alias: string;
 	title: string | null;
 	alternativeEmail: string;

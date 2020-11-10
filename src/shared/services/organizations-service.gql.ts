@@ -28,6 +28,7 @@ export const GET_USERS_IN_COMPANY = gql`
 		) {
 			id
 			user: usersByuserId {
+				uid
 				full_name
 				mail
 				is_blocked
@@ -35,8 +36,8 @@ export const GET_USERS_IN_COMPANY = gql`
 			}
 			profile_user_groups {
 				groups(limit: 1) {
-					label
 					id
+					label
 				}
 			}
 		}

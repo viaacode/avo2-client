@@ -121,6 +121,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 
 			const profileId = match.params.id;
 			const newProfileInfo = {
+				userId: get(storedProfile, 'user.uid'),
 				firstName,
 				lastName,
 				alias,
