@@ -27,6 +27,7 @@ import {
 import { FileUpload } from '../../../../shared/components';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
+import { getFullName } from '../../../../shared/helpers/formatters';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
@@ -145,18 +146,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	const owner: PickerItem | undefined =
 		contentPageInfo.profile && ownerId
 			? {
-					label: `${get(contentPageInfo, 'profile.user.first_name')} ${get(
-						contentPageInfo,
-						'profile.user.last_name'
-					)} (${get(contentPageInfo, 'profile.user.mail')})`,
+					label: getFullName(get(contentPageInfo, 'profile'), false, true) || '-',
 					type: 'PROFILE',
 					value: ownerId,
 			  }
 			: {
-					label: `${get(user, 'first_name')} ${get(user, 'last_name')} (${get(
-						user,
-						'mail'
-					)})`,
+					label: getFullName(user as any, false, false) || '-',
 					type: 'PROFILE',
 					value: getProfileId(user),
 			  };
