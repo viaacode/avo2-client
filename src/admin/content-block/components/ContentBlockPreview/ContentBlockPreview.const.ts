@@ -1,5 +1,6 @@
 import {
 	BlockButtons,
+	BlockEventbrite,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
@@ -53,6 +54,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
 	[ContentBlockType.LogoGrid]: BlockLogoGridWrapper,
 	[ContentBlockType.UspGrid]: BlockUspGridWrapper,
+	[ContentBlockType.Eventbrite]: BlockEventbrite,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -86,6 +88,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.MediaGrid,
 	ContentBlockType.LogoGrid,
 	ContentBlockType.UspGrid,
+	ContentBlockType.Eventbrite,
 ];
 
 /**
