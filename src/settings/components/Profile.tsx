@@ -805,14 +805,7 @@ const Profile: FunctionComponent<
 				return get(profile, 'user.mail') || '-';
 
 			case 'user_group':
-				// TODO cleanup queries and get paths everywhere to use the singular forms: profile_user_group and group
-				return (
-					get(profile, 'profile_user_group.group.label') ||
-					get(profile, 'profile_user_group.groups[0].label') ||
-					get(profile, 'profile_user_groups[0].group.label') ||
-					get(profile, 'profile_user_groups[0].groups[0].label') ||
-					'-'
-				);
+				return get(profile, 'profile_user_group.group.label') || '-';
 
 			case 'is_blocked':
 				return get(profile, 'user.is_blocked') || 'Nee';

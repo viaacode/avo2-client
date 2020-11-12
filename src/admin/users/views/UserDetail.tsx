@@ -183,11 +183,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const profileUserGroup: RawUserGroup[] = get(
-			storedProfile,
-			'profile_user_groups[0].groups',
-			[]
-		);
+		const profileUserGroup: RawUserGroup[] = get(storedProfile, 'profile_user_group.group', []);
 
 		profileUserGroup.forEach((group) => {
 			const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
@@ -246,7 +242,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].group', []);
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group', []);
 
 		return (
 			<Container mode="vertical" size="small">

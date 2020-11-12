@@ -133,22 +133,22 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		mail: order,
 	}),
 	user_group: (order: Avo.Search.OrderDirection) => ({
-		profile: { profile_user_group: { group: { label: order } } },
+		role_name: order,
 	}),
 	business_category: (order: Avo.Search.OrderDirection) => ({
-		profile: { business_category: order },
+		business_category: order,
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({
-		profile: { stamboek: order },
+		stamboek: order,
 	}),
 	organisation: (order: Avo.Search.OrderDirection) => ({
-		profile: { organisation: { name: order } },
+		company_name: order,
 	}),
 	created_at: (order: Avo.Search.OrderDirection) => ({
-		created_at: order,
+		acc_created_at: order,
 	}),
 	last_access_at: (order: Avo.Search.OrderDirection) => ({
 		last_access_at: order,

@@ -26,8 +26,8 @@ export const GET_CONTENT_PAGES = gql`
 					logo_url
 					name
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						id
 						label
 					}
@@ -128,8 +128,8 @@ export const GET_CONTENT_BY_ID = gql`
 					name
 					or_id
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						label
 						id
 					}

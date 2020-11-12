@@ -106,3 +106,21 @@ export interface DeleteContentCountsRaw {
 		};
 	};
 }
+
+export interface UserSummeryView {
+	user_id: string;
+	full_name: string;
+	first_name: string;
+	last_name: string;
+	mail: string;
+	last_access_at: string | null;
+	is_blocked: boolean;
+	profile_id: string;
+	stamboek: string | null;
+	acc_created_at: string;
+	role_id: number | null;
+	role_name: string | null;
+	company_name: string | null;
+	is_exception: boolean;
+	business_category: string | null;
+}

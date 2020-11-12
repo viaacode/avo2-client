@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, flatten, get, omit } from 'lodash-es';
+import { compact, flatten, get, isNil } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -19,7 +19,12 @@ import {
 	GET_USER_BY_ID,
 	GET_USERS,
 } from './user.gql';
-import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } from './user.types';
+import {
+	DeleteContentCounts,
+	DeleteContentCountsRaw,
+	UserOverviewTableCol,
+	UserSummeryView,
+} from './user.types';
 
 export class UserService {
 	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
@@ -78,13 +83,42 @@ export class UserService {
 					response,
 				});
 			}
-			const users = get(response, 'data.shared_users');
+			const users: UserSummeryView[] = get(response, 'data.users_summary_view');
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
-			const profiles = users.map((user: any) => ({
-				...user.profiles[0],
-				user: omit(user, 'profiles'),
-			}));
+			const profiles: Partial<Avo.User.Profile>[] = users.map(
+				(user: UserSummeryView): Avo.User.Profile =>
+					({
+						id: user.profile_id,
+						stamboek: user.stamboek,
+						organisation: user.company_name
+							? ({
+									name: user.company_name,
+							  } as Avo.Organization.Organization)
+							: null,
+						// is_exception: user.is_exception,
+						// business_category: user.business_category,
+						created_at: user.acc_created_at,
+						userGroupIds: isNil(user.role_id) ? [] : [user.role_id],
+						user_id: user.user_id,
+						profile_user_group: {
+							group: {
+								label: user.role_name,
+								id: user.role_id,
+							},
+						},
+						user: {
+							uid: user.user_id,
+							mail: user.mail,
+							full_name: user.full_name,
+							first_name: user.first_name,
+							last_name: user.last_name,
+							is_blocked: user.is_blocked,
+							created_at: user.acc_created_at,
+							last_access_at: user.last_access_at as string, // TODO remove cast after update to typings 2.26.0
+						},
+					} as any)
+			);
 			const profileCount = get(response, 'data.shared_users_aggregate.aggregate.count');
 
 			if (!profiles) {
@@ -93,7 +127,7 @@ export class UserService {
 				});
 			}
 
-			return [profiles, profileCount];
+			return [profiles as any[], profileCount];
 		} catch (err) {
 			throw new CustomError('Failed to get profiles from the database', err, {
 				variables,

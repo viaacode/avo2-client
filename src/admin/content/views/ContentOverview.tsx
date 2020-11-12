@@ -126,8 +126,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							},
 							{
 								profile: {
-									profile_user_groups: {
-										groups: { label: { _ilike: queryWildcard } },
+									profile_user_group: {
+										group: { label: { _ilike: queryWildcard } },
 									},
 								},
 							},
