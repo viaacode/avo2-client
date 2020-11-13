@@ -35,9 +35,9 @@ import {
 } from '../../shared/helpers';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
-import { GET_REDIRECTS } from '../dynamic-route-resolver.const';
+import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
-type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
+type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound' | 'depublishedContentPage';
 
 interface RouteInfo {
 	type: DynamicRouteType;
@@ -147,15 +147,24 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path points to a content page
-			const contentPage: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
-				pathname
-			);
-			if (!contentPage) {
-				setRouteInfo({ type: 'notFound', data: null });
-				return;
+			try {
+				const contentPage: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
+					pathname
+				);
+				// Path is indeed a content page url
+				setRouteInfo({ type: 'contentPage', data: contentPage });
+			} catch (err) {
+				if (JSON.stringify(err).includes('CONTENT_PAGE_DEPUBLISHED')) {
+					const type = get(
+						err,
+						'innerException.additionalInfo.responseContent.additionalInfo.contentPageType'
+					);
+					setRouteInfo({ type: 'depublishedContentPage', data: { type } });
+				} else {
+					setRouteInfo({ type: 'notFound', data: null });
+				}
 			}
-			// Path is indeed a content page url
-			setRouteInfo({ type: 'contentPage', data: contentPage });
+
 			return;
 		} catch (err) {
 			console.error(
@@ -250,6 +259,18 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					/>
 					<ContentPage contentPageInfo={routeInfo.data} />
 				</>
+			);
+		}
+		if (routeInfo && routeInfo.type === 'depublishedContentPage') {
+			return (
+				<ErrorView
+					message={
+						GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
+						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]
+					}
+					icon="clock"
+					actionButtons={['home', 'helpdesk']}
+				/>
 			);
 		}
 		console.error(
