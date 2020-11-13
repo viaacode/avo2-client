@@ -2,8 +2,9 @@ import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -11,7 +12,6 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -21,8 +21,8 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
-import { OrganisationService } from '../../../shared/services/organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
@@ -38,7 +38,7 @@ import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
 interface ItemsOverviewProps extends DefaultSecureRouteProps {}
 
-const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user }) => {
+const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
@@ -46,22 +46,21 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
-	const [cpOptions, setCpOptions] = useState<CheckboxOption[] | null>(null);
+	const [companies] = useCompanies(true);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// methods
 	const fetchItems = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
-				...getQueryFilter(
-					filters.query,
-					(queryWordWildcard: string, queryWord: string, query: string) => [
-						{ external_id: { _eq: query } },
-						{ title: { _ilike: queryWordWildcard } },
-						{ description: { _ilike: queryWordWildcard } },
-						{ lom_keywords: { _contains: queryWord } },
-					]
-				)
+				...getQueryFilter(filters.query, (queryWildcard: string, query: string) => [
+					{ external_id: { _eq: query } },
+					{ title: { _ilike: queryWildcard } },
+					{ description: { _ilike: queryWildcard } },
+					{ lom_keywords: { _contains: query } },
+				])
 			);
 			andFilters.push(...getBooleanFilters(filters, ['is_deleted']));
 			if (filters.is_published) {
@@ -141,6 +140,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
 	const fetchAllSeries = useCallback(async () => {
@@ -158,27 +158,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		}
 	}, [setSeriesOptions, t]);
 
-	const fetchAllCps = useCallback(async () => {
-		try {
-			setCpOptions(
-				((await OrganisationService.fetchAllOrganisations()) || []).map(
-					(org: Partial<Avo.Organization.Organization>): CheckboxOption => ({
-						id: org.or_id as string,
-						label: org.name as string,
-						checked: false,
-					})
-				)
-			);
-		} catch (err) {
-			console.error(new CustomError('Failed to load all CPs from the database', err));
-			ToastService.danger(
-				t(
-					'admin/items/views/items-overview___het-ophalen-van-de-content-providers-is-mislukt'
-				)
-			);
-		}
-	}, [setCpOptions, t]);
-
 	useEffect(() => {
 		fetchItems();
 	}, [fetchItems]);
@@ -188,10 +167,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 	}, [fetchAllSeries]);
 
 	useEffect(() => {
-		fetchAllCps();
-	}, [fetchAllCps]);
-
-	useEffect(() => {
 		if (items) {
 			setLoadingInfo({
 				state: 'loaded',
@@ -199,32 +174,23 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		}
 	}, [setLoadingInfo, items]);
 
-	const navigateToItemDetail = (externalId: string | undefined) => {
-		if (!externalId) {
-			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid'),
-				false
-			);
-			return;
-		}
-		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
-		redirectToClientPage(link, history);
+	const getItemDetailLink = (externalId: string | undefined) => {
+		return buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
 	};
 
-	const navigateToAdminItemDetail = (uuid: string | undefined) => {
-		if (!uuid) {
-			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid'),
-				false
-			);
-			return;
-		}
-		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
-		redirectToClientPage(link, history);
+	const getItemAdminDetailLink = (uuid: string | undefined) => {
+		return buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
 	};
 
 	const renderTableCell = (rowData: Partial<Avo.Item.Item>, columnId: ItemsOverviewTableCols) => {
 		switch (columnId) {
+			case 'external_id':
+				return (
+					<Link to={buildLink(ADMIN_PATH.ITEM_DETAIL, { id: rowData.uid })}>
+						{truncate((rowData as any)[columnId] || '-', { length: 60 })}
+					</Link>
+				);
+
 			case 'updated_at':
 			case 'depublish_at':
 			case 'expiry_date':
@@ -258,8 +224,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 				if (rowData.is_published) {
 					return t('admin/items/views/items-overview___gepubliceerd');
 				}
-				if ((rowData as any).depublish_reason) {
-					// TODO remove cast after update to typings v2.23.0
+				if (rowData.depublish_reason) {
 					return t('admin/items/views/items-overview___gedepubliceerd-pancarte');
 				}
 				if (get(rowData, 'relations[0]')) {
@@ -270,28 +235,30 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 			case 'actions':
 				return (
 					<ButtonToolbar>
-						<Button
-							type="secondary"
-							icon="eye"
-							onClick={() => navigateToItemDetail(rowData.external_id)}
-							title={t(
-								'admin/items/views/items-overview___bekijk-item-in-de-website'
-							)}
-							ariaLabel={t(
-								'admin/items/views/items-overview___bekijk-item-in-de-website'
-							)}
-						/>
-						<Button
-							type="secondary"
-							icon="edit"
-							onClick={() => navigateToAdminItemDetail(rowData.uid)}
-							title={t(
-								'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-							)}
-							ariaLabel={t(
-								'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-							)}
-						/>
+						<Link to={getItemDetailLink(rowData.external_id)}>
+							<Button
+								type="secondary"
+								icon="eye"
+								title={t(
+									'admin/items/views/items-overview___bekijk-item-in-de-website'
+								)}
+								ariaLabel={t(
+									'admin/items/views/items-overview___bekijk-item-in-de-website'
+								)}
+							/>
+						</Link>
+						<Link to={getItemAdminDetailLink(rowData.uid)}>
+							<Button
+								type="secondary"
+								icon="edit"
+								title={t(
+									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+								)}
+								ariaLabel={t(
+									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+								)}
+							/>
+						</Link>
 					</ButtonToolbar>
 				);
 
@@ -312,6 +279,14 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		);
 	};
 
+	const companyOptions = companies.map(
+		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+			id: option.or_id as string,
+			label: option.name as string,
+			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
+		})
+	);
+
 	const renderItemsOverview = () => {
 		if (!items) {
 			return null;
@@ -319,7 +294,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 		return (
 			<>
 				<FilterTable
-					columns={GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], cpOptions || [])}
+					columns={GET_ITEM_OVERVIEW_TABLE_COLS(
+						seriesOptions || [],
+						companyOptions || []
+					)}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
@@ -335,13 +313,14 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="uid"
+					isLoading={isLoading}
 				/>
 			</>
 		);
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
+		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')} size="full-width">
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
@@ -358,15 +337,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, user })
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={items}
-							render={renderItemsOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={items}
+					render={renderItemsOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

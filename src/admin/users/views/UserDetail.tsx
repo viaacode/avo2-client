@@ -17,25 +17,26 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
 import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
-import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
+import {
+	redirectToClientPage,
+	redirectToExternalPage,
+} from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { ADMIN_PATH } from '../../admin.const';
+import { ADMIN_PATH, IDP_COLORS } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import { UserService } from '../user.service';
 import { RawPermissionLink, RawUserGroup, RawUserGroupPermissionGroupLink } from '../user.types';
 
@@ -119,29 +120,23 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
 	};
 
-	const isPupil = (): boolean => {
-		return getUserGroupId(storedProfile) === SpecialUserGroup.Pupil;
-	};
-
 	const toggleBlockedStatus = async () => {
 		try {
-			const userId = get(storedProfile, 'user.uid');
+			const profileId = get(storedProfile, 'id');
 			const isBlocked = get(storedProfile, 'user.is_blocked') || false;
-			if (userId) {
-				await UserService.updateBlockStatus(userId, !isBlocked);
-				fetchProfileById();
+			if (profileId) {
+				await UserService.updateBlockStatusByProfileIds([profileId], !isBlocked);
+				await fetchProfileById();
 				ToastService.success(
 					isBlocked
 						? t('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
-						: t('admin/users/views/user-detail___gebruiker-is-geblokkeerd'),
-					false
+						: t('admin/users/views/user-detail___gebruiker-is-geblokkeerd')
 				);
 			} else {
 				ToastService.danger(
 					t(
 						'admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt-omdat-zijn-id-niet-kon-worden-gevonden'
-					),
-					false
+					)
 				);
 			}
 		} catch (err) {
@@ -151,8 +146,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				})
 			);
 			ToastService.danger(
-				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt'),
-				false
+				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt')
 			);
 		}
 	};
@@ -252,7 +246,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].groups[0]', []);
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].group', []);
 
 		return (
 			<Container mode="vertical" size="small">
@@ -268,6 +262,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								['user.last_name', t('admin/users/views/user-detail___achternaam')],
 								['alias', t('admin/users/views/user-detail___gebruikersnaam')],
 								['title', t('admin/users/views/user-detail___functie')],
+								['bio', t('admin/users/views/user-detail___bio')],
+								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
 								[
 									'user.mail',
 									t('admin/users/views/user-detail___primair-email-adres'),
@@ -277,14 +273,22 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___secundair-email-adres'),
 								],
 							])}
+							{renderDetailRow(
+								<Link
+									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
+										id: userGroup.id,
+									})}
+								>
+									{userGroup.label}
+								</Link>,
+								t('admin/users/views/user-detail___gebruikersgroep')
+							)}
 							{renderDateDetailRows(storedProfile, [
 								['created_at', 'Aangemaakt op'],
 								['updated_at', 'Aangepast op'],
-								['last_access_at', 'Laatste toegang'],
+								['user.last_access_at', 'Laatste toegang'],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
-								['bio', t('admin/users/views/user-detail___bio')],
-								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
 								['business_category', t('admin/users/views/user-detail___oormerk')],
 								[
 									'is_exception',
@@ -295,6 +299,18 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___geblokkeerd'),
 								],
 							])}
+							{renderDetailRow(
+								<TagList
+									tags={get(storedProfile, 'user.idpmaps', []).map(
+										(idpMap: { idp: Avo.Auth.IdpType }): TagOption => ({
+											color: IDP_COLORS[idpMap.idp],
+											label: idpMap.idp,
+											id: idpMap.idp,
+										})
+									)}
+								/>,
+								t('Gelinked aan')
+							)}
 							{renderDetailRow(
 								<TagList
 									tags={get(
@@ -340,16 +356,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								get(storedProfile, 'organisation.name'),
 								t('admin/users/views/user-detail___bedrijf')
 							)}
-							{renderDetailRow(
-								<Link
-									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
-										id: userGroup.id,
-									})}
-								>
-									{userGroup.label}
-								</Link>,
-								t('admin/users/views/user-detail___gebruikersgroep')
-							)}
 						</tbody>
 					</Table>
 					{renderPermissionLists()}
@@ -369,10 +375,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
 				pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
-						{canBanUser() && isPupil() && (
+						{canBanUser() && (
 							<Button
 								type={isBlocked ? 'primary' : 'danger'}
 								label={
@@ -385,6 +392,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								onClick={() => toggleBlockedStatus()}
 							/>
 						)}
+						<Button
+							label={t('Bewerken')}
+							ariaLabel={t('Bewerk deze gebruiker')}
+							onClick={() =>
+								redirectToClientPage(
+									buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),
+									history
+								)
+							}
+						/>
 						<Button
 							label={t('admin/users/views/user-detail___beheer-in-account-manager')}
 							ariaLabel={t(

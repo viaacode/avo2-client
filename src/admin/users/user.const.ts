@@ -1,22 +1,38 @@
+import { ButtonType, SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../shared/helpers/filters';
 
-import { UserOverviewTableCol } from './user.types';
+import { UserBulkAction, UserDeleteOption, UserOverviewTableCol } from './user.types';
 
 export const USER_PATH = {
 	USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}`,
 	USER_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}/:id`,
+	USER_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}/:id/${ROUTE_PARTS.edit}`,
 };
 
 export const ITEMS_PER_PAGE = 50;
 
 export const GET_USER_OVERVIEW_TABLE_COLS: (
-	userGroupOptions: CheckboxOption[]
-) => FilterableColumn[] = (userGroupOptions: CheckboxOption[]) => [
+	userGroupOptions: CheckboxOption[],
+	companyOptions: CheckboxOption[],
+	businessCategoryOptions: CheckboxOption[]
+) => FilterableColumn[] = (
+	userGroupOptions: CheckboxOption[],
+	companyOptions: CheckboxOption[],
+	businessCategoryOptions: CheckboxOption[]
+) => [
+	{
+		id: 'id',
+		label: i18n.t('Id'),
+		sortable: true,
+		visibleByDefault: false,
+	},
 	{
 		id: 'first_name',
 		label: i18n.t('admin/users/user___voornaam'),
@@ -38,18 +54,29 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'user_group',
 		label: i18n.t('admin/users/user___gebruikersgroep'),
-		sortable: false, // wait for https://meemoo.atlassian.net/browse/DEV-1128
+		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: userGroupOptions,
+			options: [...userGroupOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'oormerk',
+		id: 'business_category',
 		label: i18n.t('admin/users/user___oormerk'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...businessCategoryOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'is_exception',
+		label: i18n.t('Uitzonderingsaccount'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
 		id: 'is_blocked',
@@ -63,12 +90,17 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/users/user___stamboek'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
 		id: 'organisation',
 		label: i18n.t('admin/users/user___organisatie'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...companyOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'created_at',
@@ -100,12 +132,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	mail: (order: Avo.Search.OrderDirection) => ({
 		mail: order,
 	}),
-	// wait for https://meemoo.atlassian.net/browse/DEV-1128
-	// user_group: (order: Avo.Search.OrderDirection) => ({
-	// 	mail: order
-	// }),
-	oormerk: (order: Avo.Search.OrderDirection) => ({
-		profile: { title: order }, // TODO change title to oormerk after task: https://meemoo.atlassian.net/browse/DEV-1062
+	user_group: (order: Avo.Search.OrderDirection) => ({
+		profile: { profile_user_group: { group: { label: order } } },
+	}),
+	business_category: (order: Avo.Search.OrderDirection) => ({
+		profile: { business_category: order },
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
@@ -122,4 +153,68 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	last_access_at: (order: Avo.Search.OrderDirection) => ({
 		last_access_at: order,
 	}),
+};
+
+type UserDeleteRadioOption = { label: string; value: UserDeleteOption };
+export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
+	return [
+		{
+			label: i18n.t('Verwijder alle content'),
+			value: 'DELETE_ALL',
+		},
+		{
+			label: i18n.t('Anonimiseer de publieke content, verwijder de rest'),
+			value: 'ANONYMIZE_PUBLIC',
+		},
+		{
+			label: i18n.t(
+				'Verwijder privé content, behoud publieke content met de naam van de gebruiker'
+			),
+			value: 'DELETE_PRIVATE_KEEP_NAME',
+		},
+		{
+			label: i18n.t('Zet publieke content over naar een andere gebruiker, verwijder de rest'),
+			value: 'TRANSFER_PUBLIC',
+		},
+		{
+			label: i18n.t('Zet alle content over naar een andere gebruiker'),
+			value: 'TRANSFER_ALL',
+		},
+	];
+};
+
+type UserBulkActionOption = SelectOption<UserBulkAction> & {
+	confirm?: boolean;
+	confirmButtonType?: ButtonType;
+};
+export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulkActionOption[] => {
+	if (!user) {
+		return [];
+	}
+	const actions: UserBulkActionOption[] = [];
+
+	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
+		actions.push({
+			label: i18n.t('Blokkeren'),
+			value: 'block',
+		});
+		actions.push({
+			label: i18n.t('Deblokkeren'),
+			value: 'unblock',
+		});
+		actions.push({
+			label: i18n.t('Verwijderen'),
+			value: 'delete',
+		});
+		actions.push({
+			label: i18n.t('Vakken aanpassen'),
+			value: 'change_subjects',
+		});
+		actions.push({
+			label: i18n.t('Exporteren'),
+			value: 'export',
+		});
+	}
+
+	return actions;
 };

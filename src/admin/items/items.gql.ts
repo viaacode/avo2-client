@@ -70,7 +70,7 @@ export const GET_UNPUBLISHED_ITEMS_WITH_FILTERS = gql`
 			id
 			pid
 			updated_at
-			title: json(path: "Dynamic.dc_title")
+			title
 			status
 			item_meta {
 				id

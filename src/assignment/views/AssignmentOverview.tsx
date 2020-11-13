@@ -54,7 +54,6 @@ import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
 
@@ -127,11 +126,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				user,
 				canEditAssignments ? activeView === 'archived_assignments' : false, // Teachers can see archived assignments
 				canEditAssignments ? null : activeView === 'archived_assignments', // pupils can see assignments past deadline
-				TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn]
-					? (TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn] as Function)(sortOrder)
-					: {
-							[sortColumn]: sortOrder,
-					  },
+				{
+					[sortColumn]: sortOrder,
+				},
 				page,
 				filterString,
 				selectedAssignmentLabelsIds
@@ -557,6 +554,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'submitted_at':
 				const isSubmitted = !!get(assignment, 'assignment_responses[0].submitted_at');
+
+				if (activeView === 'archived_assignments') {
+					return isSubmitted
+						? t('assignment/views/assignment-overview___gemaakt')
+						: t('Niet gemaakt');
+				}
+
 				const checkbox = (
 					<Checkbox
 						checked={isSubmitted}

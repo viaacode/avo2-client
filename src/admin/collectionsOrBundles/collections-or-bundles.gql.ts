@@ -14,16 +14,10 @@ export const GET_COLLECTIONS = gql`
 			title
 			description
 			is_public
-			is_deleted
 			created_at
 			owner_profile_id
 			profile {
 				id
-				organisation {
-					logo_url
-					name
-					or_id
-				}
 				profile_user_groups {
 					groups {
 						label
@@ -32,26 +26,14 @@ export const GET_COLLECTIONS = gql`
 				}
 				user: usersByuserId {
 					id
-					first_name
-					last_name
+					full_name
 				}
 			}
-			lom_context
-			lom_classification
 			updated_by {
 				id
 				user: usersByuserId {
 					id
-					first_name
-					last_name
-					profile {
-						profile_user_groups {
-							groups {
-								label
-								id
-							}
-						}
-					}
+					full_name
 				}
 			}
 			collection_labels {
@@ -63,17 +45,30 @@ export const GET_COLLECTIONS = gql`
 				in_assignment
 				in_collection
 				views
-			}
-			relations_aggregate(where: { predicate: { _eq: "HAS_COPY" } }) {
-				aggregate {
-					count
-				}
+				copies
 			}
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {
 				count
 			}
+		}
+	}
+`;
+
+// TODO add relations back into the collections query to show which collections are a copy of which collection
+// We first want to test how fast the query is, before we make it heavier again:
+//
+// relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
+// 	subject
+// 	predicate
+// 	object
+// }
+
+export const GET_COLLECTION_IDS = gql`
+	query getCollections($where: app_collections_bool_exp!) {
+		app_collections(where: $where) {
+			id
 		}
 	}
 `;

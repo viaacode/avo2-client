@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -34,18 +34,20 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UnpublishedItemsTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// methods
 	const fetchItems = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<UnpublishedItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
 				...getQueryFilter(
 					filters.query,
 					// @ts-ignore
-					(queryWordWildcard: string, queryWord: string, query: string) => [
+					(queryWildcard: string, query: string) => [
 						{ pid: { _eq: query } },
-						{ title: { _ilike: queryWordWildcard } },
+						{ title: { _ilike: queryWildcard } },
 					]
 				)
 			);
@@ -96,6 +98,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setLoadingInfo, setItems, setItemCount, tableState, t]);
 
 	useEffect(() => {
@@ -113,8 +116,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const navigateToItemDetail = (externalId: string | undefined) => {
 		if (!externalId) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid'),
-				false
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -125,8 +127,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
 		if (!uuid) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid'),
-				false
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid')
 			);
 			return;
 		}
@@ -140,8 +141,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -152,8 +152,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			ToastService.success(
 				t(
 					'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o'
-				),
-				false
+				)
 			);
 			fetchItems();
 		} catch (err) {
@@ -163,8 +162,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			ToastService.danger(
 				t(
 					'admin/items/views/publish-items-overview___het-publiceren-van-de-items-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -176,15 +174,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				ToastService.success(
 					t(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-gestart'
-					),
-					false
+					)
 				);
 			} else {
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-reeds-bezig'
-					),
-					false
+					)
 				);
 			}
 		} catch (err) {
@@ -192,8 +188,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			ToastService.danger(
 				t(
 					'admin/items/views/publish-items-overview___het-triggeren-van-een-mam-synchronisatie-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -296,13 +291,14 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					onSelectionChanged={(newSelection) => {
 						setSelectedItems(newSelection);
 					}}
+					isLoading={isLoading}
 				/>
 			</>
 		);
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
+		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')} size="full-width">
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
@@ -340,15 +336,11 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={items}
-							render={renderItemsOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={items}
+					render={renderItemsOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

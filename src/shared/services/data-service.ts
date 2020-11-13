@@ -97,8 +97,10 @@ export class ApolloCacheManager {
 	public static clearInteractiveTourCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_interactive_tour');
 
-	public static clearUserCache = (cache: ApolloCache) =>
+	public static clearUserCache = (cache: ApolloCache) => {
 		ApolloCacheManager.deleteFromCache(cache, 'shared_users');
+		ApolloCacheManager.deleteFromCache(cache, 'users_profile');
+	};
 
 	public static clearTranslations = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_site_variables');

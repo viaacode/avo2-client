@@ -1,6 +1,6 @@
 import {
 	BlockButtons,
-	BlockCTAs,
+	BlockEventbrite,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
@@ -14,7 +14,10 @@ import BlockSearch from '../../../../search/components/BlockSearch';
 import { ContentBlockType } from '../../../shared/types';
 import {
 	BlockContentPageMeta,
-	BlockGridWrapper,
+	BlockImageGridWrapper,
+	BlockLogoGridWrapper,
+	BlockUspGridWrapper,
+	CtaWrapper,
 	HeroWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
@@ -27,10 +30,10 @@ import RichTextWrapper from '../wrappers/RichTextWrapper/RichTextWrapper';
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.AnchorLinks]: BlockButtons,
 	[ContentBlockType.Buttons]: BlockButtons,
-	[ContentBlockType.CTAs]: BlockCTAs,
+	[ContentBlockType.CTAs]: CtaWrapper,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.ImageGrid]: BlockGridWrapper,
+	[ContentBlockType.ImageGrid]: BlockImageGridWrapper,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Intro]: BlockIntro,
@@ -49,6 +52,9 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Hero]: HeroWrapper,
 	[ContentBlockType.Search]: BlockSearch,
 	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
+	[ContentBlockType.LogoGrid]: BlockLogoGridWrapper,
+	[ContentBlockType.UspGrid]: BlockUspGridWrapper,
+	[ContentBlockType.Eventbrite]: BlockEventbrite,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -61,6 +67,8 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.Spotlight,
+	ContentBlockType.LogoGrid,
+	ContentBlockType.UspGrid,
 ];
 
 /**
@@ -76,6 +84,11 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.Spotlight,
 	ContentBlockType.Hero,
+	ContentBlockType.PageOverview,
+	ContentBlockType.MediaGrid,
+	ContentBlockType.LogoGrid,
+	ContentBlockType.UspGrid,
+	ContentBlockType.Eventbrite,
 ];
 
 /**

@@ -1,4 +1,4 @@
-import { compact, get, pullAllBy, remove, uniq } from 'lodash-es';
+import { compact, get, isNil, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -19,6 +19,7 @@ import {
 	Grid,
 	Select,
 	Spacer,
+	Table,
 	TagInfo,
 	TagList,
 	TagOption,
@@ -28,6 +29,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { getProfileAlias, getProfileFromUser } from '../../authentication/helpers/get-profile-info';
@@ -42,14 +44,16 @@ import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { CustomError } from '../../shared/helpers';
+import { CustomError, formatDate } from '../../shared/helpers';
+import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { EducationOrganisationService } from '../../shared/services/education-organizations-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import store, { AppState } from '../../store';
+import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
-import { UpdateProfileValues } from '../settings.types';
+import { UpdateProfileValues, UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
 
@@ -69,7 +73,7 @@ interface FieldPermissions {
 	SUBJECTS: FieldPermission;
 	EDUCATION_LEVEL: FieldPermission;
 	EDUCATIONAL_ORGANISATION: FieldPermission;
-	ORGANISATION: FieldPermission;
+	ORGANISATION: FieldPermission & { VIEW_USERS_IN_SAME_COMPANY: boolean };
 }
 
 export interface ProfileProps extends DefaultSecureRouteProps {
@@ -84,10 +88,6 @@ const Profile: FunctionComponent<
 	const [t] = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
-	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
-		label: enumLabel,
-		value: enumLabel,
-	});
 	const gqlOrganizationToSelectOption = (
 		org: Avo.EducationOrganization.Organization
 	): TagInfo => ({
@@ -107,14 +107,16 @@ const Profile: FunctionComponent<
 		[cityAndZipCode: string]: Avo.EducationOrganization.Organization[];
 	}>({});
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
-		get(user, 'profile.educationLevels', []).map(gqlEnumToSelectOption)
+		get(user, 'profile.educationLevels', []).map(stringToSelectOption)
 	);
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
-		get(user, 'profile.subjects', []).map(gqlEnumToSelectOption)
+		get(user, 'profile.subjects', []).map(stringToSelectOption)
 	);
 	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
 		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
 	);
+	const [firstName, setFirstName] = useState<string>(get(user, 'first_name') || '');
+	const [lastName, setLastName] = useState<string>(get(user, 'last_name') || '');
 	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
@@ -137,8 +139,11 @@ const Profile: FunctionComponent<
 	const [profileErrors, setProfileErrors] = useState<
 		Partial<{ [prop in keyof UpdateProfileValues]: string }>
 	>({});
+	const [usersInSameCompany, setUsersInSameCompany] = useState<Partial<Avo.User.Profile>[]>([]);
 
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
+
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 	useEffect(() => {
 		setPermissions({
@@ -196,6 +201,10 @@ const Profile: FunctionComponent<
 					user,
 					PermissionName.REQUIRED_ORGANISATION_ON_PROFILE_PAGE
 				),
+				VIEW_USERS_IN_SAME_COMPANY: PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_USERS_IN_SAME_COMPANY
+				),
 			},
 		});
 	}, [isExceptionAccount, user]);
@@ -246,7 +255,7 @@ const Profile: FunctionComponent<
 		// TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
 		// Waiting for: https://meemoo.atlassian.net/browse/DEV-985
 		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
-			OrganisationService.fetchAllOrganisations()
+			OrganisationService.fetchOrganisations(false)
 				.then(setAllOrganisations)
 				.catch((err) => {
 					console.error(
@@ -256,6 +265,29 @@ const Profile: FunctionComponent<
 						t(
 							'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt'
 						)
+					);
+				});
+		}
+
+		const companyId = get(user, 'profile.company_id');
+		if (companyId && permissions.ORGANISATION.VIEW_USERS_IN_SAME_COMPANY) {
+			OrganisationService.fetchUsersByCompanyId(companyId)
+				.then((usersInSameCompany) => {
+					setUsersInSameCompany(
+						usersInSameCompany.filter(
+							(profile) => profile.id !== get(user, 'profile.id')
+						)
+					);
+				})
+				.catch((err) => {
+					console.error(
+						new CustomError(
+							'Failed to get users in the same company from database',
+							err
+						)
+					);
+					ToastService.danger(
+						t('Het ophalen van de gebruikers in dezelfde organisatie is mislukt')
 					);
 				});
 		}
@@ -357,7 +389,10 @@ const Profile: FunctionComponent<
 		try {
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
-			const newProfileInfo = {
+			const newProfileInfo: Partial<UpdateProfileValues> = {
+				userId: user.uid,
+				firstName,
+				lastName,
 				alias,
 				title,
 				bio,
@@ -375,7 +410,7 @@ const Profile: FunctionComponent<
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
 				})),
-				company_id: companyId || undefined,
+				company_id: companyId || null,
 			};
 			if (!areRequiredFieldsFilledIn(newProfileInfo)) {
 				setIsSaving(false);
@@ -758,6 +793,36 @@ const Profile: FunctionComponent<
 		return null;
 	};
 
+	const renderUsersInSameCompanyTableCell = (
+		profile: Partial<Avo.User.Profile>,
+		columnId: UsersInSameCompanyColumn
+	) => {
+		switch (columnId) {
+			case 'full_name':
+				return get(profile, 'user.full_name') || '-';
+
+			case 'mail':
+				return get(profile, 'user.mail') || '-';
+
+			case 'user_group':
+				// TODO cleanup queries and get paths everywhere to use the singular forms: profile_user_group and group
+				return (
+					get(profile, 'profile_user_group.group.label') ||
+					get(profile, 'profile_user_group.groups[0].label') ||
+					get(profile, 'profile_user_groups[0].group.label') ||
+					get(profile, 'profile_user_groups[0].groups[0].label') ||
+					'-'
+				);
+
+			case 'is_blocked':
+				return get(profile, 'user.is_blocked') || 'Nee';
+
+			case 'last_access_at':
+				const lastAccessDate = get(profile, 'user.last_access_at');
+				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+		}
+	};
+
 	const renderProfilePage = () => {
 		return (
 			<Container mode="vertical" className="p-profile-page">
@@ -767,75 +832,103 @@ const Profile: FunctionComponent<
 							<Form type="standard">
 								<>
 									<FormGroup
-										label={t('settings/components/profile___nickname')}
-										labelFor="alias"
-										error={get(profileErrors, 'alias')}
+										label={t('settings/components/account___voornaam')}
+										labelFor="first_name"
+										error={get(profileErrors, 'first_name')}
 									>
 										<TextInput
-											id="alias"
-											placeholder={t(
-												'settings/components/profile___een-unieke-gebruikersnaam'
-											)}
-											value={alias || ''}
-											onChange={setAlias}
+											id="first_name"
+											value={firstName || ''}
+											onChange={setFirstName}
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t('settings/components/profile___functie')}
-										labelFor="title"
+										label={t('settings/components/account___achternaam')}
+										labelFor="last_name"
+										error={get(profileErrors, 'last_name')}
 									>
 										<TextInput
-											id="title"
-											placeholder={t(
-												'settings/components/profile___bv-leerkracht-basis-onderwijs'
-											)}
-											value={title || ''}
-											onChange={setTitle}
+											id="last_name"
+											value={lastName || ''}
+											onChange={setLastName}
 										/>
 									</FormGroup>
-									{!get(user, 'profile.organisation') && (
-										<FormGroup
-											label={t('settings/components/profile___profielfoto')}
-											labelFor="profilePicture"
-										>
-											<FileUpload
-												label={t(
-													'settings/components/profile___upload-een-profiel-foto'
-												)}
-												urls={compact([avatar])}
-												allowMulti={false}
-												assetType="PROFILE_AVATAR"
-												ownerId={get(user, 'profile.id')}
-												onChange={(urls) => setAvatar(urls[0])}
-											/>
-										</FormGroup>
-									)}
-									{!!get(user, 'profile.organisation.logo_url') && (
-										<div
-											className="c-logo-preview"
-											style={{
-												backgroundImage: `url(${get(
-													user,
-													'profile.organisation.logo_url'
-												)})`,
-											}}
-										/>
-									)}
-									<FormGroup
-										label={t('settings/components/profile___bio')}
-										labelFor="bio"
-									>
-										<TextArea
-											name="bio"
-											id="bio"
-											height="medium"
-											placeholder={t(
-												'settings/components/profile___een-korte-beschrijving-van-jezelf'
+									{!isPupil && (
+										<>
+											<FormGroup
+												label={t('settings/components/profile___nickname')}
+												labelFor="alias"
+												error={get(profileErrors, 'alias')}
+											>
+												<TextInput
+													id="alias"
+													placeholder={t(
+														'settings/components/profile___een-unieke-gebruikersnaam'
+													)}
+													value={alias || ''}
+													onChange={setAlias}
+												/>
+											</FormGroup>
+											<FormGroup
+												label={t('settings/components/profile___functie')}
+												labelFor="title"
+											>
+												<TextInput
+													id="title"
+													placeholder={t(
+														'settings/components/profile___bv-leerkracht-basis-onderwijs'
+													)}
+													value={title || ''}
+													onChange={setTitle}
+												/>
+											</FormGroup>
+											{!get(user, 'profile.organisation') && (
+												<FormGroup
+													label={t(
+														'settings/components/profile___profielfoto'
+													)}
+													labelFor="profilePicture"
+												>
+													<FileUpload
+														label={t(
+															'settings/components/profile___upload-een-profiel-foto'
+														)}
+														urls={compact([avatar])}
+														allowMulti={false}
+														assetType="PROFILE_AVATAR"
+														ownerId={get(user, 'profile.id')}
+														onChange={(urls) => setAvatar(urls[0])}
+													/>
+												</FormGroup>
 											)}
-											value={bio || ''}
-											onChange={setBio}
-										/>
-									</FormGroup>
+											{!!get(user, 'profile.organisation.logo_url') && (
+												<div
+													className="c-logo-preview"
+													style={{
+														backgroundImage: `url(${get(
+															user,
+															'profile.organisation.logo_url'
+														)})`,
+													}}
+												/>
+											)}
+											<FormGroup
+												label={t('settings/components/profile___bio')}
+												labelFor="bio"
+											>
+												<TextArea
+													name="bio"
+													id="bio"
+													height="medium"
+													placeholder={t(
+														'settings/components/profile___een-korte-beschrijving-van-jezelf'
+													)}
+													value={bio || ''}
+													onChange={setBio}
+												/>
+											</FormGroup>
+										</>
+									)}
 								</>
 								{renderFieldVisibleOrRequired('SUBJECTS', renderSubjectsField)}
 								{renderFieldVisibleOrRequired(
@@ -859,26 +952,49 @@ const Profile: FunctionComponent<
 							</Form>
 						</Column>
 						<Column size="3-5">
-							<>
-								{/*<Box>*/}
-								{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
-								{/*	/!* TODO replace with components from component repo *!/*/}
-								{/*	<div className="c-progress-bar" />*/}
-								{/*</Box>*/}
-								<Spacer margin={['top', 'bottom']}>
-									<Box>
-										<p>
-											<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
-												Vul hier wat info over jezelf in! Deze informatie
-												wordt getoond op jouw persoonlijk profiel. Je kan
-												voor elk veld aanduiden of je deze informatie wil
-												delen of niet.
-											</Trans>
-										</p>
-									</Box>
-								</Spacer>
-							</>
+							{!isPupil && (
+								<>
+									{/*<Box>*/}
+									{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
+									{/*	/!* TODO replace with components from component repo *!/*/}
+									{/*	<div className="c-progress-bar" />*/}
+									{/*</Box>*/}
+									<Spacer margin={['top', 'bottom']}>
+										<Box>
+											<p>
+												<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
+													Vul hier wat info over jezelf in! Deze
+													informatie wordt getoond op jouw persoonlijk
+													profiel. Je kan voor elk veld aanduiden of je
+													deze informatie wil delen of niet.
+												</Trans>
+											</p>
+										</Box>
+									</Spacer>
+								</>
+							)}
 						</Column>
+						{get(permissions, 'ORGANISATION.VIEW_USERS_IN_SAME_COMPANY') && (
+							<Column size="3-12">
+								<Spacer margin="top-extra-large">
+									<BlockHeading type="h2">
+										{t('Gebruikers in je organisatie')}
+									</BlockHeading>
+									<Spacer margin="top">
+										<Table
+											data={usersInSameCompany}
+											columns={USERS_IN_SAME_COMPANY_COLUMNS()}
+											emptyStateMessage={t(
+												'Er zitten geen andere gebruikers uit je organisatie op Het Archief voor Onderwijs'
+											)}
+											rowKey="id"
+											renderCell={renderUsersInSameCompanyTableCell as any}
+											variant="bordered"
+										/>
+									</Spacer>
+								</Spacer>
+							</Column>
+						)}
 					</Grid>
 				</Spacer>
 			</Container>

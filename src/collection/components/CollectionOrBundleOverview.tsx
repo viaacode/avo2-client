@@ -35,7 +35,6 @@ import {
 	createDropdownMenuItem,
 	formatDate,
 	formatTimestamp,
-	fromNow,
 	generateAssignmentCreateLink,
 	isMobileWidth,
 	navigate,
@@ -248,8 +247,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				APP_PATH.SEARCH.route,
 				{},
 				isCollection
-					? 'filters={"type":["video","audio"]}'
-					: 'filters={"type":["collectie"]}'
+					? { filters: '{"type":["video","audio"]}' }
+					: { filters: '{"type":["collectie"]}' }
 			)
 		);
 
@@ -449,7 +448,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			case 'created_at':
 			case 'updated_at':
 				const cellData = collection[colKey as 'created_at' | 'updated_at'];
-				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+				return <span title={formatTimestamp(cellData)}>{formatDate(cellData)}</span>;
 
 			default:
 				return null;

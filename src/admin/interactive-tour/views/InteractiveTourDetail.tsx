@@ -100,8 +100,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			ToastService.success(
 				t(
 					'admin/interactive-tour/views/interactive-tour-detail___de-interactive-tour-is-verwijdert'
-				),
-				false
+				)
 			);
 			redirectToClientPage(ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW, history);
 		} catch (err) {
@@ -111,8 +110,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			ToastService.danger(
 				t(
 					'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -174,6 +172,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			pageTitle={t(
 				'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
 			)}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<HeaderButtons>

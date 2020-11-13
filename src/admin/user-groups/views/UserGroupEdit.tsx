@@ -139,8 +139,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-edit___het-ophalen-van-alle-permissies-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	}, [setAllPermissionGroups, t]);
@@ -204,8 +203,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-edit___deze-gebruikersgroep-zit-reeds-in-de-groep'
-				),
-				false
+				)
 			);
 			return;
 		}
@@ -216,8 +214,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-edit___de-geselecteerde-gebruikersgroep-kon-niet-worden-gevonden'
-				),
-				false
+				)
 			);
 			return;
 		}
@@ -227,8 +224,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		});
 		setSelectedPermissionGroupId(null);
 		ToastService.success(
-			t('admin/user-groups/views/user-group-edit___permissie-groep-tegevoegd'),
-			false
+			t('admin/user-groups/views/user-group-edit___permissie-groep-tegevoegd')
 		);
 	};
 
@@ -238,8 +234,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			setFormErrors(errors || {});
 			if (errors) {
 				ToastService.danger(
-					t('admin/user-groups/views/user-group-edit___de-invoer-is-ongeldig'),
-					false
+					t('admin/user-groups/views/user-group-edit___de-invoer-is-ongeldig')
 				);
 				return;
 			}
@@ -248,8 +243,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				ToastService.danger(
 					t(
 						'admin/user-groups/views/user-group-edit___het-opslaan-van-de-permissie-groep-is-mislukt-omdat-de-permissie-groep-nog-niet-is-geladen'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -289,8 +283,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				history
 			);
 			ToastService.success(
-				t('admin/user-groups/views/user-group-edit___de-gebruikersgroep-is-opgeslagen'),
-				false
+				t('admin/user-groups/views/user-group-edit___de-gebruikersgroep-is-opgeslagen')
 			);
 		} catch (err) {
 			console.error(
@@ -302,8 +295,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-edit___het-opslaan-van-de-gebruikersgroep-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 		setIsSaving(false);
@@ -498,6 +490,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_GROUP_OVERVIEW)}
 				pageTitle={t('admin/user-groups/views/user-group-edit___gebruikersgroep-aanpassen')}
+				size="large"
 			>
 				{' '}
 				<AdminLayoutTopBarRight>
@@ -514,11 +507,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 						/>
 					</ButtonToolbar>
 				</AdminLayoutTopBarRight>
-				<AdminLayoutBody>
-					<Container mode="vertical" size="small">
-						<Container mode="horizontal">{renderEditPage()}</Container>
-					</Container>
-				</AdminLayoutBody>
+				<AdminLayoutBody>{renderEditPage()}</AdminLayoutBody>
 			</AdminLayout>
 		);
 	};

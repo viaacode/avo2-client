@@ -1,10 +1,12 @@
 import { flatten, get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
 import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
+import { RelationService } from '../../shared/services/relation-service/relation.service';
 
 import {
 	ITEMS_PER_PAGE,
@@ -17,12 +19,13 @@ import {
 	BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
 	BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
 	BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
+	GET_COLLECTION_IDS,
 	GET_COLLECTIONS,
 } from './collections-or-bundles.gql';
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
-	public static async getCollections(
+	static async getCollections(
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
@@ -44,7 +47,10 @@ export class CollectionsOrBundlesService {
 				variables,
 				query: GET_COLLECTIONS,
 			});
-			const collections = get(response, 'data.app_collections');
+			const collections: Avo.Collection.Collection[] | null = get(
+				response,
+				'data.app_collections'
+			);
 			const collectionsCount = get(
 				response,
 				'data.app_collections_aggregate.aggregate.count'
@@ -56,6 +62,19 @@ export class CollectionsOrBundlesService {
 				});
 			}
 
+			// also fetch if the collection is a copy in a separate query to avoid making the main query slower
+			const relations = (await RelationService.fetchRelationsBySubject(
+				'collection',
+				collections.map((coll: Avo.Collection.Collection) => coll.id),
+				'IS_COPY_OF'
+			)) as RelationEntry<Avo.Collection.Collection>[];
+			relations.forEach((relation) => {
+				const collection = collections.find((coll) => coll.id === relation.subject);
+				if (collection) {
+					collection.relations = [relation];
+				}
+			});
+
 			return [collections, collectionsCount];
 		} catch (err) {
 			throw new CustomError('Failed to get collections from the database', err, {
@@ -65,7 +84,28 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkChangePublicStateForCollections(
+	static async getCollectionIds(where: any): Promise<string[]> {
+		try {
+			const response = await dataService.query({
+				variables: {
+					where,
+				},
+				query: GET_COLLECTION_IDS,
+			});
+			return get(response, 'data.app_collections', []).map(
+				(coll: Partial<Avo.Collection.Collection>) => coll.id
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get collection ids from the database', err, {
+				variables: {
+					where,
+				},
+				query: 'GET_COLLECTION_IDS',
+			});
+		}
+	}
+
+	static async bulkChangePublicStateForCollections(
 		isPublic: boolean,
 		collectionIds: string[],
 		updatedByProfileId: string
@@ -99,7 +139,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkUpdateAuthorForCollections(
+	static async bulkUpdateAuthorForCollections(
 		authorId: string,
 		collectionIds: string[],
 		updatedByProfileId: string
@@ -129,7 +169,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkDeleteCollections(
+	static async bulkDeleteCollections(
 		collectionIds: string[],
 		updatedByProfileId: string
 	): Promise<number> {
@@ -156,7 +196,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkAddLabelsToCollections(
+	static async bulkAddLabelsToCollections(
 		labels: string[],
 		collectionIds: string[],
 		updatedByProfileId: string
@@ -200,7 +240,7 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	public static async bulkRemoveLabelsFromCollections(
+	static async bulkRemoveLabelsFromCollections(
 		labels: string[],
 		collectionIds: string[],
 		updatedByProfileId: string

@@ -1,4 +1,5 @@
 import { getEnv } from '../shared/helpers';
+import i18n from '../shared/translations/i18n';
 
 export const DYNAMIC_ROUTE_RESOLVER_PATH = Object.freeze({
 	ALL_ROUTES: `*`,
@@ -30,4 +31,11 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 		'/nieuws/barend-van-heusden-aan-het-woord-over-cultuur-de-spiegel',
 
 	'/klaar.json': `${getEnv('PROXY_URL')}/klaar/klaar.json`,
+});
+
+export const GET_ERROR_MESSAGES: () => { [key: string]: string } = () => ({
+	DEPUBLISHED_PAGINA: i18n.t('Deze pagina is niet meer beschikbaar'),
+	DEPUBLISHED_EVENT_DETAIL: i18n.t(
+		'Dit event is reeds afgelopen. <a href="/workshops-en-events">Bekijk al onze events</a>'
+	),
 });

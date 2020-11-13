@@ -8,11 +8,11 @@ import {
 	Badge,
 	Button,
 	ButtonToolbar,
-	Container,
 	Flex,
 	IconName,
 	Spacer,
 	Spinner,
+	TagInfo,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -50,7 +50,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
-	const [allUserGroups] = useUserGroupOptions();
+	const [allUserGroups] = useUserGroupOptions('TagInfo', true) as [TagInfo[], boolean];
 
 	// Fetch menu items depending on menu parent param
 	// This is necessary for populating the menu parent options for our form
@@ -67,8 +67,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							{
 								menuName,
 							}
-						),
-						false
+						)
 					);
 					history.push(MENU_PATH.MENU_OVERVIEW);
 				}
@@ -193,8 +192,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					ToastService.danger(
 						t(
 							'admin/menu/views/menu-edit___het-controleren-of-de-permissies-van-de-pagina-overeenkomen-met-de-zichtbaarheid-van-dit-navigatie-item-is-mislukt'
-						),
-						false
+						)
 					);
 				});
 		}
@@ -281,8 +279,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
-					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
-					false
+					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
 				);
 			} else {
 				if (isNil(menuItemId)) {
@@ -302,8 +299,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
-					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet'),
-					false
+					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
 				);
 			}
 		} catch (err) {
@@ -313,8 +309,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
-				false
+				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt')
 			);
 		}
 		setIsSaving(false);
@@ -355,6 +350,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.MENU_OVERVIEW)}
 			pageTitle={pageTitle}
+			size="large"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
@@ -386,18 +382,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					</title>
 					<meta name="description" content={get(menuForm, 'description') || ''} />
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<MenuEditForm
-							formErrors={formErrors}
-							formState={menuForm}
-							menuParentId={menuParentId}
-							menuParentOptions={menuParentOptions}
-							onChange={handleChange}
-							permissionWarning={permissionWarning}
-						/>
-					</Container>
-				</Container>
+				<MenuEditForm
+					formErrors={formErrors}
+					formState={menuForm}
+					menuParentId={menuParentId}
+					menuParentOptions={menuParentOptions}
+					onChange={handleChange}
+					permissionWarning={permissionWarning}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

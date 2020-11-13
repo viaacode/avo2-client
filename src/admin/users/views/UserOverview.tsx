@@ -1,98 +1,176 @@
-import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import classnames from 'classnames';
+import FileSaver from 'file-saver';
+import { compact, get, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
+import reactToString from 'react-to-string';
 
-import { Container } from '@viaa/avo2-components';
+import {
+	Alert,
+	Button,
+	ButtonToolbar,
+	Column,
+	Grid,
+	Modal,
+	ModalBody,
+	ModalFooterRight,
+	RadioButtonGroup,
+	Spacer,
+	TagInfo,
+	Toolbar,
+	ToolbarItem,
+	ToolbarRight,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { SettingsService } from '../../../settings/settings.service';
 import {
 	CheckboxOption,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useBusinessCategories } from '../../../shared/hooks/useBusinessCategory';
+import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
+import AddOrRemoveLinkedElementsModal, {
+	AddOrRemove,
+} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
-	getQueryFilter,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { useUserGroups } from '../../user-groups/hooks';
-import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
+import { PickerItem } from '../../shared/types';
+import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
+import {
+	GET_DELETE_RADIO_OPTIONS,
+	GET_USER_BULK_ACTIONS,
+	GET_USER_OVERVIEW_TABLE_COLS,
+	ITEMS_PER_PAGE,
+} from '../user.const';
 import { UserService } from '../user.service';
-import { UserOverviewTableCol, UserTableState } from '../user.types';
+import {
+	DeleteContentCounts,
+	UserBulkAction,
+	UserDeleteOption,
+	UserOverviewTableCol,
+	UserTableState,
+} from '../user.types';
 
-interface UserOverviewProps extends DefaultSecureRouteProps {}
+import './UserOverview.scss';
 
-const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
+interface UserOverviewProps {}
+
+const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
 	const [profileCount, setProfileCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
-	const [userGroups] = useUserGroups();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
+	const [companies] = useCompanies(false);
+	const [businessCategories] = useBusinessCategories();
+	const [userGroupOptions] = useUserGroupOptions('CheckboxOption', false) as [
+		CheckboxOption[],
+		boolean
+	];
+	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
+	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
+		'DELETE_ALL'
+	);
+	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
+	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
+	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
+	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
+		null
+	);
+	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
+	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
-	const generateWhereObject = (filters: Partial<UserTableState>) => {
-		const andFilters: any[] = [];
-		andFilters.push(
-			...getQueryFilter(
-				filters.query,
-				// @ts-ignore
-				(queryWordWildcard: string, queryWord: string, query: string) => [
-					{ profiles: { stamboek: { _ilike: query } } },
-					{ profiles: { alternative_email: { _ilike: queryWordWildcard } } },
-					{ profiles: { bio: { _ilike: queryWordWildcard } } },
-					{ profiles: { alias: { _ilike: queryWordWildcard } } },
-					{ profiles: { title: { _ilike: queryWordWildcard } } },
-					{ profiles: { organisation: { name: { _ilike: queryWordWildcard } } } },
-					{
-						profiles: {
-							profile_user_groups: {
-								groups: { label: { _ilike: queryWordWildcard } },
+	const generateWhereObject = useCallback(
+		(filters: Partial<UserTableState>, onlySelectedProfiles: boolean) => {
+			const andFilters: any[] = [];
+			if (filters.query) {
+				const query = `%${filters.query}%`;
+				andFilters.push({
+					_or: [
+						{ profiles: { stamboek: { _ilike: query } } },
+						{ profiles: { alternative_email: { _ilike: query } } },
+						{ profiles: { bio: { _ilike: query } } },
+						{ profiles: { alias: { _ilike: query } } },
+						{ profiles: { title: { _ilike: query } } },
+						{ profiles: { organisation: { name: { _ilike: query } } } },
+						{
+							profiles: {
+								profile_user_groups: {
+									groups: { label: { _ilike: query } },
+								},
 							},
 						},
-					},
-					{
-						_or: [
-							{ first_name: { _ilike: queryWordWildcard } },
-							{ last_name: { _ilike: queryWordWildcard } },
-							{ mail: { _ilike: queryWordWildcard } },
-						],
-					},
-				]
-			)
-		);
-		andFilters.push(...getBooleanFilters(filters, ['is_blocked']));
-		andFilters.push(
-			...getMultiOptionFilters(
-				filters,
-				['user_group', 'organisation'],
-				['profiles.profile_user_groups.groups.id', 'profiles.company_id']
-			)
-		);
-		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
+						{
+							_or: [
+								// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
+								{ first_name: { _ilike: query } },
+								{ last_name: { _ilike: query } },
+								{ mail: { _ilike: query } },
+							],
+						},
+					],
+				});
+			}
+			andFilters.push(
+				...getBooleanFilters(
+					filters,
+					['is_blocked', 'is_exception'],
+					['is_blocked', 'profile.is_exception']
+				)
+			);
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['user_group', 'organisation', 'business_category'],
+					[
+						'profiles.profile_user_groups.group.id',
+						'profiles.company_id',
+						'profile.business_category',
+					]
+				)
+			);
+			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
+			if (onlySelectedProfiles) {
+				andFilters.push({ profile: { id: { _in: selectedProfileIds } } });
+			}
+			if (!isNil(filters.stamboek)) {
+				andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
+			}
 
-		return { _and: andFilters };
-	};
+			return { _and: andFilters };
+		},
+		[selectedProfileIds]
+	);
 
-	const fetchUsers = useCallback(async () => {
+	const fetchProfiles = useCallback(async () => {
 		try {
-			const [profilesTemp, profileCountTemp] = await UserService.getUsers(
+			setIsLoading(true);
+			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
-				generateWhereObject(getFilters(tableState))
+				generateWhereObject(getFilters(tableState), false)
 			);
 			setProfiles(profilesTemp);
 			setProfileCount(profileCountTemp);
@@ -107,11 +185,12 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				),
 			});
 		}
-	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, t]);
+		setIsLoading(false);
+	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, generateWhereObject, t]);
 
 	useEffect(() => {
-		fetchUsers();
-	}, [fetchUsers]);
+		fetchProfiles();
+	}, [fetchProfiles]);
 
 	useEffect(() => {
 		if (profiles) {
@@ -119,45 +198,267 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				state: 'loaded',
 			});
 		}
-	}, [fetchUsers, profiles]);
+	}, [fetchProfiles, profiles]);
 
-	const navigateToUserDetail = (id: string | undefined) => {
-		if (!id) {
-			ToastService.danger(
-				t('admin/users/views/user-overview___deze-gebruiker-heeft-geen-geldig-id'),
-				false
+	const bulkChangeSubjects = async (addOrRemove: AddOrRemove, subjects: string[]) => {
+		try {
+			if (!selectedProfileIds || !selectedProfileIds.length) {
+				return;
+			}
+			if (addOrRemove === 'add') {
+				await UserService.bulkAddSubjectsToProfiles(subjects, compact(selectedProfileIds));
+				ToastService.success(
+					t('De vakken zijn toegevoegd aan de geselecteerde gebruikers')
+				);
+			} else {
+				// remove
+				await UserService.bulkRemoveSubjectsFromProfiles(
+					subjects,
+					compact(selectedProfileIds)
+				);
+				ToastService.success(
+					t('De vakken zijn verwijderd van de geselecteerde gebruikers')
+				);
+			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to bulk update subjects of user profiles', err, {
+					addOrRemove,
+					subjects,
+				})
 			);
+			ToastService.danger(t('Het aanpassen van de vakken is mislukt'));
+		}
+	};
+
+	const setAllProfilesAsSelected = async () => {
+		setIsLoading(true);
+		try {
+			const profileIds = await UserService.getProfileIds(
+				generateWhereObject(getFilters(tableState), false)
+			);
+			ToastService.info(
+				t('Je hebt {{numOfSelectedProfiles}} gebuikers geselecteerd', {
+					numOfSelectedProfiles: profileIds.length,
+				})
+			);
+			setSelectedProfileIds(profileIds);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to fetch all profile ids that adhere to the selected filters',
+					err,
+					{ tableState }
+				)
+			);
+			ToastService.danger(t('Het ophalen van alle geselecteerde gebruiker ids is mislukt'));
+		}
+
+		setIsLoading(false);
+	};
+
+	/**
+	 * Blocks or unblocks all users in the selectedProfileIds list
+	 * @param blockOrUnblock set true for block and false for unblock
+	 */
+	const bulkUpdateBlockStatus = async (blockOrUnblock: boolean) => {
+		try {
+			setIsLoading(true);
+			await UserService.updateBlockStatusByProfileIds(selectedProfileIds, blockOrUnblock);
+			await fetchProfiles();
+			ToastService.success(
+				blockOrUnblock
+					? t('De geselecteerde gebruikers zijn geblokkeerd')
+					: t('De geselecteerde gebruikers zijn gedeblokkeerd')
+			);
+		} catch (err) {
+			ToastService.danger(t('Het blokkeren van de geselecteerde gebruikers is mislukt'));
+		}
+		setIsLoading(false);
+	};
+
+	const bulkExport = async () => {
+		try {
+			setIsLoading(true);
+			const [profilesTemp] = await UserService.getProfiles(
+				0,
+				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
+				tableState.sort_order || 'desc',
+				generateWhereObject(getFilters(tableState), true),
+				100000
+			);
+			const columns = GET_USER_OVERVIEW_TABLE_COLS(
+				setSelectedCheckboxes(
+					userGroupOptions,
+					get(tableState, 'author.user_groups', []) as string[]
+				),
+				companyOptions,
+				businessCategoryOptions
+			);
+			const columnIds =
+				tableState.columns && tableState.columns.length
+					? tableState.columns
+					: columns
+							.filter((column) => column.visibleByDefault)
+							.map((column) => column.id);
+			const columnLabels = columnIds.map((columnId) =>
+				get(
+					columns.find((column) => column.id === columnId),
+					'label',
+					columnId
+				)
+			);
+			const csvRowValues: string[] = [columnLabels.join(';')];
+			profilesTemp.forEach((profile) => {
+				const csvCellValues: string[] = [];
+				columnIds.forEach((columnId) => {
+					const csvCellValue = reactToString(
+						renderTableCell(profile, columnId as UserOverviewTableCol)
+					);
+					csvCellValues.push(`"${csvCellValue.replace(/"/g, '""')}"`);
+				});
+				csvRowValues.push(csvCellValues.join(';'));
+			});
+			const csvString = csvRowValues.join('\n');
+			const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+			FileSaver.saveAs(blob, 'gebruikers.csv');
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to export users to csv file', err, { tableState })
+			);
+			ToastService.danger(t('Het exporteren van de geselecteerde gebruikers is mislukt'));
+		}
+
+		setIsLoading(false);
+	};
+
+	const handleBulkAction = async (action: UserBulkAction): Promise<void> => {
+		if (!selectedProfileIds || !selectedProfileIds.length) {
 			return;
 		}
-		const detailRoute = ADMIN_PATH.USER_DETAIL;
-		const link = buildLink(detailRoute, { id });
-		redirectToClientPage(link, history);
+		switch (action) {
+			case 'export':
+				await bulkExport();
+				return;
+
+			case 'block':
+				await bulkUpdateBlockStatus(true);
+				return;
+
+			case 'unblock':
+				await bulkUpdateBlockStatus(false);
+				return;
+
+			case 'delete':
+				setDeleteOptionsModalOpen(true);
+				return;
+
+			case 'change_subjects':
+				setChangeSubjectsModalOpen(true);
+				SettingsService.fetchSubjects()
+					.then((subjects: string[]) => {
+						setAllSubjects(subjects);
+					})
+					.catch((err) => {
+						console.error(
+							new CustomError('Failed to get subjects from the database', err)
+						);
+						ToastService.danger(
+							t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
+						);
+					});
+				return;
+		}
+	};
+
+	const handleOptionsModalClose = () => {
+		setDeleteOptionsModalOpen(false);
+	};
+
+	const handleConfirmModalClose = () => {
+		setDeleteConfirmModalOpen(false);
+		setDeleteContentCounts(null);
+		setSelectedDeleteOption('DELETE_ALL');
+		setTransferToUser(undefined);
+	};
+
+	const handleDeleteUsers = () => {
+		ToastService.info('Nog niet geïmplementeerd');
+	};
+
+	const validateOptionModalAndOpenConfirm = async () => {
+		try {
+			if (
+				(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+					selectedDeleteOption === 'TRANSFER_ALL') &&
+				!transferToUser
+			) {
+				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
+				setTransferToUserError(t('Kies een gebruiker om de content naar over te dragen.'));
+				return;
+			}
+			if (
+				(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+					selectedDeleteOption === 'TRANSFER_ALL') &&
+				transferToUser &&
+				selectedProfileIds.includes(transferToUser.value)
+			) {
+				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
+				setTransferToUserError(
+					t(
+						'Je kan geen content overdragen naar een gebruiker die verwijdert zal worden.'
+					)
+				);
+				return;
+			}
+
+			// Fetch counts to inform the user of what objects they are about to delete
+			setDeleteContentCounts(
+				await UserService.fetchPublicAndPrivateCounts(selectedProfileIds)
+			);
+			handleOptionsModalClose();
+			setDeleteConfirmModalOpen(true);
+		} catch (err) {
+			console.error(
+				new CustomError('Error during validateOptionModalAndOpenConfirm', err, {
+					selectedUsers: selectedProfileIds,
+					transferToUser,
+					selectedDeleteOption,
+				})
+			);
+			ToastService.danger(
+				t('Het ophalen van de content items voor de geselecteerde gebruikers is mislukt')
+			);
+		}
 	};
 
 	const renderTableCell = (
 		rowData: Partial<Avo.User.Profile>,
 		columnId: UserOverviewTableCol
 	) => {
-		const { user, stamboek, created_at, title, organisation } = rowData;
+		const { id, user, created_at, organisation } = rowData;
 
 		switch (columnId) {
 			case 'first_name':
+				return (
+					<Link to={buildLink(ADMIN_PATH.USER_DETAIL, { id })}>
+						{truncateTableValue(get(user, columnId))}
+					</Link>
+				);
+
 			case 'last_name':
 			case 'mail':
 				return truncateTableValue(get(user, columnId));
 
 			case 'user_group':
-				return get(rowData, 'profile_user_groups[0].groups[0].label') || '-';
-
-			case 'oormerk': // TODO replace title with sector after:https://meemoo.atlassian.net/browse/DEV-1062
-				return title || '-';
+				return get(rowData, 'profile_user_groups[0].group.label') || '-';
 
 			case 'is_blocked':
 				const isBlocked = get(rowData, 'user.is_blocked');
 				return isBlocked ? 'Ja' : 'Nee';
 
-			case 'stamboek':
-				return stamboek || '-';
+			case 'is_exception':
+				return get(rowData, 'is_exception') ? 'Ja' : 'Nee';
 
 			case 'organisation':
 				return get(organisation, 'name') || '-';
@@ -170,7 +471,8 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			default:
-				return '';
+				// TODO remove cast after update to typings v2.25.0
+				return truncateTableValue((rowData as any)[columnId] || '-');
 		}
 	};
 
@@ -188,13 +490,126 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		);
 	};
 
-	const userGroupOptions = userGroups.map(
-		(option): CheckboxOption => ({
-			id: String(option.id),
-			label: option.label,
-			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-				String(option.id)
-			),
+	const renderConfirmDeleteMessage = () => {
+		const publicCollections: number = get(deleteContentCounts, 'publicCollections') || 0;
+		const privateCollections: number = get(deleteContentCounts, 'privateCollections') || 0;
+		const assignments: number = get(deleteContentCounts, 'assignments') || 0;
+		const bookmarks: number = get(deleteContentCounts, 'bookmarks') || 0;
+		const publicContentPages: number = get(deleteContentCounts, 'publicContentPages') || 0;
+		const privateContentPages: number = get(deleteContentCounts, 'privateContentPages') || 0;
+
+		const isDeleteAll = selectedDeleteOption === 'DELETE_ALL';
+		const isTransferAll = selectedDeleteOption === 'TRANSFER_ALL';
+
+		const countOutputs: ReactNode[] = [];
+		if (isDeleteAll && publicCollections) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.COLLECTIONS_OVERVIEW,
+						{},
+						{
+							is_public: '1',
+							owner_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${publicCollections} ${t('publieke collecties')}`}
+				</Link>
+			);
+		}
+		if (!isTransferAll && privateCollections) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.COLLECTIONS_OVERVIEW,
+						{},
+						{
+							is_public: '0',
+							owner_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${privateCollections} ${t('privé collecties')}`}
+				</Link>
+			);
+		}
+		if (isDeleteAll && publicContentPages) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
+						{},
+						{
+							is_public: '1',
+							user_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${publicContentPages} ${t("publieke content pagina's")}`}
+				</Link>
+			);
+		}
+		if (!isTransferAll && privateContentPages) {
+			countOutputs.push(
+				<Link
+					to={buildLink(
+						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
+						{},
+						{
+							is_public: '0',
+							user_profile_id: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${privateContentPages} ${t("privé content pagina's")}`}
+				</Link>
+			);
+		}
+		if (!isTransferAll && assignments) {
+			countOutputs.push(`${assignments} ${t('opdrachten')}`);
+		}
+		if (!isTransferAll && bookmarks) {
+			countOutputs.push(`${bookmarks} ${t('bladwijzers')}`);
+		}
+		return (
+			<>
+				{t('Weet je zeker dat je deze gebruikers wil verwijderen?')}
+
+				{!!countOutputs.length && (
+					<Spacer margin="top" className="c-content">
+						<strong>Deze inhoud zal verwijderd worden:</strong>
+						<ul>
+							{countOutputs.map((count, index) => (
+								<li key={`content-count-${index}`}>{count}</li>
+							))}
+						</ul>
+					</Spacer>
+				)}
+
+				<Spacer margin="top">
+					<Alert
+						message={t('Deze actie kan niet ongedaan gemaakt worden!')}
+						type="danger"
+					/>
+				</Spacer>
+			</>
+		);
+	};
+
+	const businessCategoryOptions = businessCategories.map(
+		(option: string): CheckboxOption => ({
+			id: option,
+			label: option,
+			checked: get(tableState, 'business_category', [] as string[]).includes(option),
+		})
+	);
+
+	const companyOptions = companies.map(
+		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+			id: option.or_id as string,
+			label: option.name as string,
+			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
 		})
 	);
 
@@ -205,7 +620,11 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		return (
 			<>
 				<FilterTable
-					columns={GET_USER_OVERVIEW_TABLE_COLS(userGroupOptions)}
+					columns={GET_USER_OVERVIEW_TABLE_COLS(
+						userGroupOptions,
+						companyOptions,
+						businessCategoryOptions
+					)}
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
@@ -219,15 +638,132 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
-					onRowClick={(rowData) => navigateToUserDetail(rowData.id)}
 					renderNoResults={renderNoResults}
+					isLoading={isLoading}
+					showCheckboxes
+					selectedItems={selectedProfileIds}
+					onSelectionChanged={setSelectedProfileIds}
+					onSelectAll={setAllProfilesAsSelected}
+					onSelectBulkAction={handleBulkAction as any}
+					bulkActions={GET_USER_BULK_ACTIONS(user)}
+				/>
+				<Modal
+					title={t('Verwijder opties:')}
+					isOpen={deleteOptionsModalOpen}
+					onClose={() => setDeleteOptionsModalOpen(false)}
+					size="large"
+				>
+					<ModalBody>
+						<Grid className="a-delete-user__grid">
+							<Column size="3-6">
+								<div
+									className={classnames(
+										'a-delete-user__image',
+										selectedDeleteOption
+									)}
+								/>
+							</Column>
+							<Column size="3-6">
+								<RadioButtonGroup
+									options={GET_DELETE_RADIO_OPTIONS()}
+									value={selectedDeleteOption}
+									onChange={setSelectedDeleteOption as any}
+								/>
+								{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+									selectedDeleteOption === 'TRANSFER_ALL') && (
+									<ContentPicker
+										allowedTypes={['PROFILE']}
+										onSelect={(option) =>
+											setTransferToUser(option || undefined)
+										}
+										initialValue={transferToUser}
+										placeholder={t('Overdragen naar gebruiker')}
+										hideTargetSwitch
+										hideTypeDropdown
+										errors={transferToUserError ? [transferToUserError] : []}
+									/>
+								)}
+							</Column>
+						</Grid>
+					</ModalBody>
+					<ModalFooterRight>
+						<Toolbar>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="secondary"
+											label={t(
+												'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
+											)}
+											onClick={handleOptionsModalClose}
+										/>
+										<Button
+											type="danger"
+											label={t('Verwijder gebruikers')}
+											onClick={validateOptionModalAndOpenConfirm}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</ModalFooterRight>
+				</Modal>
+				<Modal
+					isOpen={deleteConfirmModalOpen}
+					title={t('Bevestiging')}
+					size="medium"
+					onClose={handleConfirmModalClose}
+					scrollable
+				>
+					<ModalBody>
+						{renderConfirmDeleteMessage()}
+						<Toolbar>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="secondary"
+											label={t('Annuleren')}
+											onClick={handleConfirmModalClose}
+										/>
+										<Button
+											type="danger"
+											label={t('Verwijder gebruikers')}
+											onClick={handleDeleteUsers}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</ModalBody>
+				</Modal>
+				<AddOrRemoveLinkedElementsModal
+					title={t('Vakken aanpassen')}
+					addOrRemoveLabel={t('Vakken toevoegen of verwijderen')}
+					contentLabel={t('Vakken')}
+					isOpen={changeSubjectsModalOpen}
+					onClose={() => setChangeSubjectsModalOpen(false)}
+					labels={allSubjects.map((subject) => ({
+						label: subject,
+						value: subject,
+					}))}
+					callback={(addOrRemove: AddOrRemove, tags: TagInfo[]) =>
+						bulkChangeSubjects(
+							addOrRemove,
+							tags.map((tag) => tag.value.toString())
+						)
+					}
 				/>
 			</>
 		);
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/users/views/user-overview___gebruikers')}>
+		<AdminLayout
+			pageTitle={t('admin/users/views/user-overview___gebruikers')}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
@@ -244,18 +780,14 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={profiles}
-							render={renderUserOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={profiles}
+					render={renderUserOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };
 
-export default UserOverview;
+export default withUser(UserOverview) as FunctionComponent<UserOverviewProps>;

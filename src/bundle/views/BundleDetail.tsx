@@ -4,6 +4,7 @@ import React, { FunctionComponent, ReactText, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -61,7 +62,7 @@ import {
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
-import { handleRelatedItemClicked } from '../../shared/helpers/handle-related-item-click';
+import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -444,30 +445,31 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			const contentType = toEnglishContentType(relatedItem.administrative_type);
 			return (
 				<Column size="2-6" key={`related-bundle-${relatedItem.id}`}>
-					<MediaCard
-						className="u-clickable"
-						category={contentType}
-						onClick={() => handleRelatedItemClicked(relatedItem, history)}
-						orientation="horizontal"
-						title={relatedItem.dc_title}
-					>
-						<MediaCardThumbnail>
-							<Thumbnail
-								category={contentType}
-								src={relatedItem.thumbnail_path}
-								showCategoryIcon
-							/>
-						</MediaCardThumbnail>
-						<MediaCardMetaData>
-							<MetaData category={contentType}>
-								<MetaDataItem
-									label={String(relatedItem.views_count || 0)}
-									icon="eye"
+					<Link to={generateRelatedItemLink(relatedItem)} className="a-link__no-styles">
+						<MediaCard
+							className="u-clickable"
+							category={contentType}
+							orientation="horizontal"
+							title={relatedItem.dc_title}
+						>
+							<MediaCardThumbnail>
+								<Thumbnail
+									category={contentType}
+									src={relatedItem.thumbnail_path}
+									showCategoryIcon
 								/>
-								<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
-							</MetaData>
-						</MediaCardMetaData>
-					</MediaCard>
+							</MediaCardThumbnail>
+							<MediaCardMetaData>
+								<MetaData category={contentType}>
+									<MetaDataItem
+										label={String(relatedItem.views_count || 0)}
+										icon="eye"
+									/>
+									<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
+								</MetaData>
+							</MediaCardMetaData>
+						</MediaCard>
+					</Link>
 				</Column>
 			);
 		});
@@ -484,44 +486,43 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			}
 			return (
 				<Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
-					<MediaCard
-						className="u-clickable"
-						category="bundle"
-						onClick={() =>
-							redirectToClientPage(
-								buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collection.id }),
-								history
-							)
-						}
-						orientation="vertical"
-						title={
-							fragment.use_custom_fields
-								? fragment.custom_title || ''
-								: collection.title
-						}
+					<Link
+						to={buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collection.id })}
+						className="a-link__no-styles"
 					>
-						<MediaCardThumbnail>
-							<Thumbnail
-								category="collection"
-								src={collection.thumbnail_path || undefined}
-								meta={`${get(
-									collection,
-									'collection_fragments_aggregate.aggregate.count',
-									0
-								)} items`}
-								label="collectie"
-							/>
-						</MediaCardThumbnail>
-						<MediaCardMetaData>
-							<MetaData category="collection">
-								<MetaDataItem
-									label={String(viewCountsById[fragment.external_id] || 0)}
-									icon="eye"
+						<MediaCard
+							className="u-clickable"
+							category="bundle"
+							orientation="vertical"
+							title={
+								fragment.use_custom_fields
+									? fragment.custom_title || ''
+									: collection.title
+							}
+						>
+							<MediaCardThumbnail>
+								<Thumbnail
+									category="collection"
+									src={collection.thumbnail_path || undefined}
+									meta={`${get(
+										collection,
+										'collection_fragments_aggregate.aggregate.count',
+										0
+									)} items`}
+									label="collectie"
 								/>
-								<MetaDataItem label={formatDate(collection.updated_at)} />
-							</MetaData>
-						</MediaCardMetaData>
-					</MediaCard>
+							</MediaCardThumbnail>
+							<MediaCardMetaData>
+								<MetaData category="collection">
+									<MetaDataItem
+										label={String(viewCountsById[fragment.external_id] || 0)}
+										icon="eye"
+									/>
+									<MetaDataItem label={formatDate(collection.updated_at)} />
+								</MetaData>
+							</MediaCardMetaData>
+						</MediaCard>
+					</Link>
 				</Column>
 			);
 		});
@@ -684,7 +685,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					<h3 className="c-h3">{t('bundle/views/bundle-detail___over-deze-bundel')}</h3>
+					<BlockHeading type="h3">
+						{t('bundle/views/bundle-detail___over-deze-bundel')}
+					</BlockHeading>
 					<Grid>
 						<Column size="3-3">
 							<Spacer margin="top-large">
@@ -781,7 +784,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					description={get(bundle, 'description')}
 					image={get(bundle, 'thumbnail_path')}
 					isOrganisation={!!get(bundle, 'profile.organisation')}
-					author={getFullName(get(bundle, 'profile'))}
+					author={getFullName(get(bundle, 'profile'), true, false)}
 					publishedAt={get(bundle, 'published_at')}
 					updatedAt={get(bundle, 'updated_at')}
 					keywords={[
@@ -799,7 +802,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						<Container mode="horizontal">
 							<Grid>
 								<Column size="3-2">
-									<Spacer margin={isMobileWidth() ? 'none' : 'right-large'}>
+									<Spacer margin={isMobileWidth() ? [] : ['right-large']}>
 										<Thumbnail
 											category="bundle"
 											src={thumbnail_path || undefined}
@@ -807,7 +810,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									</Spacer>
 								</Column>
 								<Column size="3-10">
-									<Toolbar autoHeight>
+									<Toolbar autoHeight className="c-bundle-toolbar">
 										<ToolbarLeft>
 											<ToolbarItem>
 												<MetaData spaced={true} category="bundle">
@@ -840,7 +843,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 													/>
 												</MetaData>
 												<Spacer margin="top-small">
-													<h1 className="c-h1 u-m-0">{title}</h1>
+													<BlockHeading type="h1">{title}</BlockHeading>
 												</Spacer>
 											</ToolbarItem>
 										</ToolbarLeft>

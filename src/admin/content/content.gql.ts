@@ -8,13 +8,13 @@ export const GET_CONTENT_PAGES = gql`
 		$orderBy: [app_content_order_by!] = {}
 	) {
 		app_content(where: $where, limit: $limit, offset: $offset, order_by: $orderBy) {
+			id
 			content_type
 			created_at
 			depublish_at
 			description
 			seo_description
 			meta_description
-			id
 			thumbnail_path
 			is_protected
 			is_public
@@ -22,19 +22,19 @@ export const GET_CONTENT_PAGES = gql`
 			user_profile_id
 			profile {
 				organisation {
+					or_id
 					logo_url
 					name
-					or_id
 				}
 				profile_user_groups {
 					groups {
-						label
 						id
+						label
 					}
 				}
 				user: usersByuserId {
-					first_name
-					last_name
+					id
+					full_name
 				}
 			}
 			publish_at
@@ -45,8 +45,9 @@ export const GET_CONTENT_PAGES = gql`
 			user_profile_id
 			content_content_labels {
 				content_label {
-					label
 					id
+					label
+					link_to
 				}
 			}
 		}
@@ -134,8 +135,8 @@ export const GET_CONTENT_BY_ID = gql`
 					}
 				}
 				user: usersByuserId {
-					first_name
-					last_name
+					id
+					full_name
 					mail
 				}
 			}
@@ -149,6 +150,7 @@ export const GET_CONTENT_BY_ID = gql`
 				content_label {
 					label
 					id
+					link_to
 				}
 			}
 			contentBlockssBycontentId(order_by: { position: asc }) {
@@ -212,7 +214,7 @@ export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH = gql`
 `;
 
 export const GET_CONTENT_LABELS_BY_CONTENT_TYPE = gql`
-	query getContentLabls($contentType: String!) {
+	query getContentLabels($contentType: String!) {
 		app_content_labels(where: { content_type: { _eq: $contentType } }) {
 			id
 			label

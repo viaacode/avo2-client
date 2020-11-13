@@ -45,7 +45,7 @@ export function redirectToServerLoginPage(location: Location) {
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
 		returnToUrl,
-		stamboekNumber: localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
+		stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
 	})}`;
 }
 
@@ -139,15 +139,17 @@ export function getBaseUrl(location: Location): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');
 	}
-	return trimEnd(window.location.href.split(location.pathname)[0], '/');
+	return trimEnd(decodeURIComponent(window.location.href).split(location.pathname)[0], '/');
 }
 
 export function getFromPath(
 	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
-	const fromPath =
-		get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
+	let fromPath = get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
+	if (fromPath === `/${ROUTE_PARTS.registerOrLogin}`) {
+		fromPath = '/';
+	}
 	const fromSearch = get(location, 'state.from.search') || get(location, 'search') || '';
 	return `/${trimStart(fromPath + fromSearch, '/')}`;
 }
@@ -177,7 +179,7 @@ export function getRedirectAfterLogin(
 	if (from === '/') {
 		return `${base}${defaultPath}`;
 	}
-	return `${base}${from}${location.hash}${queryString.stringify(
+	return `${base}${from}${location.hash || ''}${queryString.stringify(
 		omit(queryStrings, ['returnToUrl'])
 	)}`;
 }

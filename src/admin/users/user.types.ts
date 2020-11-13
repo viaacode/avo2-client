@@ -1,11 +1,13 @@
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type UserOverviewTableCol =
+	| 'id'
 	| 'first_name'
 	| 'last_name'
 	| 'mail'
 	| 'user_group'
-	| 'oormerk' // Currently stored in the title field
+	| 'business_category'
+	| 'is_exception'
 	| 'is_blocked'
 	| 'stamboek'
 	| 'organisation'
@@ -17,7 +19,11 @@ export interface UserTableState extends FilterableTableState {
 	last_name: string;
 	mail: string;
 	stamboek: string;
+	business_category: string;
+	is_exception: boolean;
+	is_blocked: boolean;
 	created_at: string;
+	columns: string[];
 }
 
 export interface RawUserGroup {
@@ -43,4 +49,60 @@ export interface RawPermissionLink {
 export interface RawPermission {
 	id: number;
 	label: string;
+}
+
+export type UserBulkAction = 'block' | 'unblock' | 'delete' | 'change_subjects' | 'export';
+
+export type UserDeleteOption =
+	| 'DELETE_PRIVATE_KEEP_NAME'
+	| 'TRANSFER_PUBLIC'
+	| 'TRANSFER_ALL'
+	| 'ANONYMIZE_PUBLIC'
+	| 'DELETE_ALL';
+
+export interface DeleteContentCounts {
+	publicCollections: number;
+	privateCollections: number;
+	assignments: number;
+	bookmarks: number;
+	publicContentPages: number;
+	privateContentPages: number;
+}
+
+export interface DeleteContentCountsRaw {
+	publicCollections: {
+		aggregate: {
+			count: number;
+		};
+	};
+	publicContentPages: {
+		aggregate: {
+			count: number;
+		};
+	};
+	privateCollections: {
+		aggregate: {
+			count: number;
+		};
+	};
+	assignments: {
+		aggregate: {
+			count: number;
+		};
+	};
+	collectionBookmarks: {
+		aggregate: {
+			count: number;
+		};
+	};
+	itemBookmarks: {
+		aggregate: {
+			count: number;
+		};
+	};
+	privateContentPages: {
+		aggregate: {
+			count: number;
+		};
+	};
 }

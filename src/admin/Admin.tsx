@@ -31,7 +31,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ADMIN_DASHBOARD)) {
 			const tempUserPermissions = PermissionService.getUserPermissions(user);
 			setUserPermissions(tempUserPermissions);
-			GET_NAV_ITEMS(tempUserPermissions)
+			GET_NAV_ITEMS(tempUserPermissions, user)
 				.then(setNavigationItems)
 				.catch((err) => {
 					console.error(new CustomError('Failed to get nav items', err));

@@ -25,6 +25,7 @@ import {
 	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/constants/wysiwyg';
 import { CustomError, sanitizeHtml, stripHtml } from '../../shared/helpers';
+import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
 import i18n from '../../shared/translations/i18n';
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
@@ -58,18 +59,8 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	useEffect(() => {
 		Promise.all([SettingsService.fetchSubjects(), SettingsService.fetchEducationLevels()])
 			.then((response: [string[], string[]]) => {
-				setSubjects(
-					response[0].map((subject) => ({
-						value: subject,
-						label: subject,
-					}))
-				);
-				setEducationLevels(
-					response[1].map((educationLevel) => ({
-						value: educationLevel,
-						label: educationLevel,
-					}))
-				);
+				setSubjects(response[0].map(stringToSelectOption));
+				setEducationLevels(response[1].map(stringToSelectOption));
 			})
 			.catch((err) => {
 				console.error(
@@ -109,10 +100,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										<TagsInput
 											options={educationLevels}
 											value={(collection.lom_context || []).map(
-												(item: string) => ({
-													value: item,
-													label: item,
-												})
+												stringToSelectOption
 											)}
 											onChange={(values: TagInfo[]) =>
 												updateCollectionMultiProperty(values, 'lom_context')
@@ -128,10 +116,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										<TagsInput
 											options={subjects}
 											value={(collection.lom_classification || []).map(
-												(item: string) => ({
-													value: item,
-													label: item,
-												})
+												stringToSelectOption
 											)}
 											onChange={(values: TagInfo[]) =>
 												updateCollectionMultiProperty(
@@ -162,6 +147,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											value={collection.description || ''}
 											id="shortDescriptionId"
 											height="medium"
+											placeholder={t(
+												'Omschrijf je collectie in enkele kernzinnen. Dit is de tekst die andere gebruikers naast jouw collectie (of bundel) te zien krijgen in de zoekresultaten.'
+											)}
 											onChange={(value: string) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',

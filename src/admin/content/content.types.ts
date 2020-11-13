@@ -21,13 +21,16 @@ export enum ContentWidth {
 export type ContentOverviewTableCols =
 	| 'title'
 	| 'content_type'
-	| 'author'
+	| 'user_profile_id'
 	| 'author_user_group'
 	| 'created_at'
 	| 'updated_at'
+	| 'is_public'
 	| 'published_at'
 	| 'publish_at'
 	| 'depublish_at'
+	| 'labels'
+	| 'user_group_ids'
 	| 'actions';
 
 export interface ContentTableState extends FilterableTableState {
@@ -36,6 +39,8 @@ export interface ContentTableState extends FilterableTableState {
 	updated_at: DateRange;
 	publish_at: DateRange;
 	depublish_at: DateRange;
+	user_group: number[];
+	labels: number[];
 }
 
 // Content Detail

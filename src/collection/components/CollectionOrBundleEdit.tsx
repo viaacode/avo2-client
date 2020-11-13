@@ -29,7 +29,7 @@ import {
 	Tabs,
 	Toolbar,
 	ToolbarItem,
-	ToolbarRight,
+	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -851,10 +851,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
-							collectionId={collectionState.currentCollection.id}
-							collectionFragments={
-								collectionState.currentCollection.collection_fragments
-							}
+							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
 							location={location}
@@ -1060,11 +1057,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
-							<ToolbarRight>
+							<ToolbarLeft>
 								<ToolbarItem>
 									<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
 								</ToolbarItem>
-							</ToolbarRight>
+							</ToolbarLeft>
 						</Toolbar>
 					</Container>
 				</Container>

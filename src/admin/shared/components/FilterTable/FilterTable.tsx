@@ -40,6 +40,7 @@ import {
 	Select,
 	SelectOption,
 	Spacer,
+	Spinner,
 	Table,
 	TableColumn,
 	TextInput,
@@ -56,6 +57,7 @@ import {
 	DateRangeDropdown,
 	DeleteObjectModal,
 } from '../../../../shared/components';
+import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
@@ -69,7 +71,11 @@ export interface FilterableTableState {
 }
 
 export interface FilterableColumn extends TableColumn {
-	filterType?: 'CheckboxDropdownModal' | 'DateRangeDropdown' | 'BooleanCheckboxDropdown';
+	filterType?:
+		| 'CheckboxDropdownModal'
+		| 'DateRangeDropdown'
+		| 'BooleanCheckboxDropdown'
+		| 'MultiUserSelectDropdown';
 	filterProps?: any;
 	visibleByDefault: boolean;
 }
@@ -78,6 +84,7 @@ const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
 	CheckboxDropdownModal: CheckboxListParam,
 	DateRangeDropdown: DateRangeParam,
 	BooleanCheckboxDropdown: BooleanParam,
+	MultiUserSelectDropdown: CheckboxListParam,
 };
 
 interface FilterTableProps extends RouteComponentProps {
@@ -99,6 +106,7 @@ interface FilterTableProps extends RouteComponentProps {
 	onRowClick?: (rowData: any) => void;
 	rowKey?: string;
 	variant?: 'bordered' | 'invisible' | 'styled';
+	isLoading?: boolean;
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
@@ -108,6 +116,7 @@ interface FilterTableProps extends RouteComponentProps {
 	showCheckboxes?: boolean;
 	selectedItems?: any[] | null;
 	onSelectionChanged?: (selectedItems: any[]) => void;
+	onSelectAll?: () => void;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -124,11 +133,13 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	onRowClick,
 	rowKey = 'id',
 	variant = 'bordered',
+	isLoading = false,
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes,
-	onSelectionChanged,
 	selectedItems,
+	onSelectionChanged,
+	onSelectAll,
 }) => {
 	const [t] = useTranslation();
 
@@ -292,7 +303,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 				</Spacer>
 
 				<Spacer margin="bottom">
-					<Toolbar>
+					<Toolbar className="c-filter-table__toolbar">
 						<ToolbarLeft>
 							<Flex spaced="regular" wrap>
 								{columns.map((col) => {
@@ -352,6 +363,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 												/>
 											);
 
+										case 'MultiUserSelectDropdown':
+											return (
+												<MultiUserSelectDropdown
+													{...(col.filterProps || {})}
+													id={col.id}
+													label={col.label}
+													values={(tableState as any)[col.id]}
+													onChange={(value) =>
+														handleTableStateChanged(value, col.id)
+													}
+													key={`filter-${col.id}`}
+												/>
+											);
+
 										default:
 											return null;
 									}
@@ -394,30 +419,46 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			) : (
 				<>
 					{renderFilters()}
-					<Table
-						columns={getSelectedColumns()}
-						data={data}
-						emptyStateMessage={noContentMatchingFiltersMessage}
-						onColumnClick={(columnId) => {
-							handleSortOrderChanged(columnId);
-						}}
-						onRowClick={onRowClick}
-						renderCell={renderCell}
-						rowKey={rowKey}
-						variant={variant}
-						sortColumn={tableState.sort_column}
-						sortOrder={tableState.sort_order}
-						showCheckboxes={(!!bulkActions && !!bulkActions.length) || showCheckboxes}
-						selectedItems={selectedItems || undefined}
-						onSelectionChanged={onSelectionChanged}
-					/>
-					<Spacer margin="top-large">
-						<Pagination
-							pageCount={Math.ceil(dataCount / itemsPerPage)}
-							currentPage={tableState.page || 0}
-							onPageChange={(newPage) => handleTableStateChanged(newPage, 'page')}
-						/>
-					</Spacer>
+					<div className="c-filter-table__loading-wrapper">
+						<div style={{ opacity: isLoading ? 0.2 : 1 }}>
+							<Table
+								columns={getSelectedColumns()}
+								data={data}
+								emptyStateMessage={noContentMatchingFiltersMessage}
+								onColumnClick={(columnId) => {
+									handleSortOrderChanged(columnId);
+								}}
+								onRowClick={onRowClick}
+								renderCell={renderCell}
+								rowKey={rowKey}
+								variant={variant}
+								sortColumn={tableState.sort_column}
+								sortOrder={tableState.sort_order}
+								showCheckboxes={
+									(!!bulkActions && !!bulkActions.length) || showCheckboxes
+								}
+								selectedItemIds={selectedItems || undefined}
+								onSelectionChanged={onSelectionChanged}
+								onSelectAll={onSelectAll}
+							/>
+							<Spacer margin="top-large">
+								<Pagination
+									pageCount={Math.ceil(dataCount / itemsPerPage)}
+									currentPage={tableState.page || 0}
+									onPageChange={(newPage) =>
+										handleTableStateChanged(newPage, 'page')
+									}
+								/>
+							</Spacer>
+						</div>
+						{isLoading && (
+							<Flex center className="c-filter-table__loading">
+								<Spacer margin={['top-large', 'bottom-large']}>
+									<Spinner size="large" />
+								</Spacer>
+							</Flex>
+						)}
+					</div>
 				</>
 			)}
 			{!!bulkActions && !!bulkActions.length && (

@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import {
+	BlockMediaGrid,
+	ButtonAction,
+	MediaListItem,
+	RenderLinkFunction,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import {
@@ -13,12 +18,7 @@ import {
 } from '../../../../../collection/collection.types';
 import { ItemVideoDescription } from '../../../../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
-import {
-	CustomError,
-	formatDate,
-	isMobileWidth,
-	navigateToContentType,
-} from '../../../../../shared/helpers';
+import { formatDate, isMobileWidth } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
@@ -31,6 +31,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQueryLimit: string;
 	elements: { mediaItem: ButtonAction }[];
 	results: ResolvedItemOrCollection[];
+	renderLink?: RenderLinkFunction;
 }
 
 const MediaGridWrapper: FunctionComponent<
@@ -56,8 +57,8 @@ const MediaGridWrapper: FunctionComponent<
 	searchQueryLimit,
 	elements,
 	results,
-	history,
 	user,
+	renderLink,
 }) => {
 	const [t] = useTranslation();
 
@@ -204,8 +205,8 @@ const MediaGridWrapper: FunctionComponent<
 				src: itemOrCollection.thumbnail_path || '',
 			},
 			src: itemOrCollection.src,
-			item_collaterals: (itemOrCollection as any).item_collaterals, // TODO remove cast after update to typings v2.23.0
-		} as any; // TODO remove cast after update to components v1.47.0
+			item_collaterals: get(itemOrCollection, 'item_collaterals', null),
+		} as any;
 	};
 
 	const renderPlayerModalBody = (item: MediaListItem) => {
@@ -227,7 +228,7 @@ const MediaGridWrapper: FunctionComponent<
 	// Render
 	const renderMediaGridBlock = () => {
 		return (
-			<BlockMediaList
+			<BlockMediaGrid
 				title={title}
 				buttonLabel={buttonLabel}
 				buttonAction={buttonAction || searchQuery}
@@ -246,17 +247,7 @@ const MediaGridWrapper: FunctionComponent<
 				ctaButtonAction={ctaButtonAction}
 				fullWidth={isMobileWidth()}
 				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
-				navigate={(buttonAction: any) =>
-					buttonAction
-						? navigateToContentType(buttonAction, history)
-						: () => {
-								console.error(
-									new CustomError(
-										'Failed to navigate because button action is undefined'
-									)
-								);
-						  }
-				}
+				renderLink={renderLink}
 				renderPlayerModalBody={renderPlayerModalBody}
 			/>
 		);

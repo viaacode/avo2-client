@@ -47,6 +47,10 @@ import {
 } from './helpers/generators/content-page-meta';
 import { CTAS_BLOCK_CONFIG, INITIAL_CTAS_COMPONENTS_STATE } from './helpers/generators/ctas';
 import {
+	EVENTBRITE_BLOCK_CONFIG,
+	INITIAL_EVENTBRITE_COMPONENTS_STATE,
+} from './helpers/generators/eventbrite';
+import {
 	HEADING_BLOCK_CONFIG,
 	INITIAL_HEADING_COMPONENTS_STATE,
 } from './helpers/generators/heading';
@@ -59,6 +63,10 @@ import {
 } from './helpers/generators/image-grid';
 import { INITIAL_INTRO_COMPONENTS_STATE, INTRO_BLOCK_CONFIG } from './helpers/generators/intro';
 import { INITIAL_KLAAR_COMPONENTS_STATE, KLAAR_BLOCK_CONFIG } from './helpers/generators/klaar';
+import {
+	INITIAL_LOGO_GRID_COMPONENTS_STATE,
+	LOGO_GRID_BLOCK_CONFIG,
+} from './helpers/generators/logo-grid';
 import {
 	INITIAL_MEDIA_GRID_COMPONENTS_STATE,
 	MEDIA_GRID_BLOCK_CONFIG,
@@ -93,6 +101,10 @@ import {
 	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers/generators/spotlight';
+import {
+	INITIAL_USP_GRID_COMPONENTS_STATE,
+	USP_GRID_BLOCK_CONFIG,
+} from './helpers/generators/usp-grid';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -189,6 +201,18 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		label: i18n.t('admin/content-block/content-block___pagina-metadata'),
 		value: ContentBlockType.ContentPageMeta,
 	},
+	{
+		label: i18n.t("Logo's sign-off"),
+		value: ContentBlockType.LogoGrid,
+	},
+	{
+		label: i18n.t('USP'),
+		value: ContentBlockType.UspGrid,
+	},
+	{
+		label: i18n.t('Eventbrite'),
+		value: ContentBlockType.Eventbrite,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -231,6 +255,9 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.Search]: SEARCH_BLOCK_CONFIG,
 	[ContentBlockType.ContentPageMeta]: CONTENT_PAGE_META_BLOCK_CONFIG,
+	[ContentBlockType.LogoGrid]: LOGO_GRID_BLOCK_CONFIG,
+	[ContentBlockType.UspGrid]: USP_GRID_BLOCK_CONFIG,
+	[ContentBlockType.Eventbrite]: EVENTBRITE_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
@@ -259,6 +286,9 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 	[ContentBlockType.Search]: INITIAL_SEARCH_COMPONENTS_STATE,
 	[ContentBlockType.ContentPageMeta]: INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE,
+	[ContentBlockType.LogoGrid]: INITIAL_LOGO_GRID_COMPONENTS_STATE,
+	[ContentBlockType.UspGrid]: INITIAL_USP_GRID_COMPONENTS_STATE,
+	[ContentBlockType.Eventbrite]: INITIAL_EVENTBRITE_COMPONENTS_STATE,
 };
 
 // Options
@@ -520,6 +550,10 @@ export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOp
 		label: i18n.t('admin/content-block/content-block___6-x-9-400-x-225'),
 		value: '6:9',
 	},
+	{
+		label: i18n.t('400x150'),
+		value: '400x150',
+	},
 ];
 
 export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabStyle>[] = () => [
@@ -549,5 +583,32 @@ export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentIte
 	{
 		label: i18n.t('admin/content-block/content-block___accrodions'),
 		value: 'ACCORDION',
+	},
+];
+
+export type PageOverviewOrderOptions =
+	| 'published_at__asc'
+	| 'published_at__desc'
+	| 'title__asc'
+	| 'title__desc';
+
+export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<
+	PageOverviewOrderOptions
+>[] = () => [
+	{
+		label: i18n.t('Publicatie datum (nieuw > oud)'),
+		value: 'published_at__desc',
+	},
+	{
+		label: i18n.t('Publicatie datum (oud > nieuw)'),
+		value: 'published_at__asc',
+	},
+	{
+		label: i18n.t('Titel (A > Z)'),
+		value: 'title__asc',
+	},
+	{
+		label: i18n.t('Titel (Z > A)'),
+		value: 'title__desc',
 	},
 ];

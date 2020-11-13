@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import {
 	Blankslate,
@@ -61,7 +62,6 @@ import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';
 
-import './ContentDetail.scss';
 import { ContentDetailMetaData } from './ContentDetailMetaData';
 
 export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
@@ -176,8 +176,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				ToastService.success(
 					t(
 						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
-					),
-					false
+					)
 				);
 			})
 			.catch((err) => {
@@ -185,8 +184,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				ToastService.danger(
 					t(
 						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
-					),
-					false
+					)
 				);
 			});
 	};
@@ -219,8 +217,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
 						: t(
 								'admin/content/views/content-detail___de-content-pagina-is-nu-niet-meer-publiek'
-						  ),
-					false
+						  )
 				);
 			}
 		} catch (err) {
@@ -232,8 +229,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___het-opslaan-van-de-publiek-status-van-de-content-pagina-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 
@@ -270,8 +266,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						ToastService.danger(
 							t(
 								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
-							),
-							false
+							)
 						);
 						return;
 					}
@@ -287,8 +282,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						ToastService.danger(
 							t(
 								'admin/content/views/content-detail___de-gedupliceerde-content-pagina-kon-niet-worden-gevonden'
-							),
-							false
+							)
 						);
 						return;
 					}
@@ -301,8 +295,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					);
 
 					ToastService.success(
-						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd'),
-						false
+						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd')
 					);
 				} catch (err) {
 					console.error('Failed to duplicate content page', err, {
@@ -312,8 +305,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					ToastService.danger(
 						t(
 							'admin/content/views/content-detail___het-dupliceren-van-de-content-pagina-is-mislukt'
-						),
-						false
+						)
 					);
 				}
 				break;
@@ -363,11 +355,17 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					onClick={handlePreviewClicked}
 				/>
 				{isAllowedToEdit && (
-					<Button
-						label={t('admin/content/views/content-detail___bewerken')}
-						title={t('admin/content/views/content-detail___bewerk-deze-content-pagina')}
-						onClick={() => navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
-					/>
+					<Link
+						to={buildLink(CONTENT_PATH.CONTENT_PAGE_EDIT, { id })}
+						className="a-link__no-styles"
+					>
+						<Button
+							label={t('admin/content/views/content-detail___bewerken')}
+							title={t(
+								'admin/content/views/content-detail___bewerk-deze-content-pagina'
+							)}
+						/>
+					</Link>
 				)}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
@@ -386,8 +384,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-ingeladen'
-				),
-				false
+				)
 			);
 			return null;
 		}
@@ -412,6 +409,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_OVERVIEW)}
 			pageTitle={pageTitle}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>{renderContentActions()}</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
@@ -436,32 +434,30 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						content={get(contentPageInfo, 'seo_description') || description || ''}
 					/>
 				</MetaTags>
-				<div className="m-content-detail-preview">
-					<LoadingErrorLoadedComponent
-						loadingInfo={loadingInfo}
-						dataObject={contentPageInfo}
-						render={() => renderContentDetail(contentPageInfo)}
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPageInfo}
+					render={() => renderContentDetail(contentPageInfo)}
+				/>
+				<DeleteObjectModal
+					deleteObjectCallback={handleDelete}
+					isOpen={isConfirmModalOpen}
+					onClose={() => setIsConfirmModalOpen(false)}
+					body={
+						isContentProtected
+							? t(
+									'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
+							  )
+							: ''
+					}
+				/>
+				{!!contentPageInfo && (
+					<PublishContentPageModal
+						contentPage={contentPageInfo}
+						isOpen={isPublishModalOpen}
+						onClose={handleShareModalClose}
 					/>
-					<DeleteObjectModal
-						deleteObjectCallback={handleDelete}
-						isOpen={isConfirmModalOpen}
-						onClose={() => setIsConfirmModalOpen(false)}
-						body={
-							isContentProtected
-								? t(
-										'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
-								  )
-								: ''
-						}
-					/>
-					{!!contentPageInfo && (
-						<PublishContentPageModal
-							contentPage={contentPageInfo}
-							isOpen={isPublishModalOpen}
-							onClose={handleShareModalClose}
-						/>
-					)}
-				</div>
+				)}
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

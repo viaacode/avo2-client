@@ -81,9 +81,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			const itemObj = await ItemsService.fetchItemByUuid(match.params.id);
 
 			const replacedByUuid: string | undefined = get(itemObj, 'relations[0].object');
-			if (replacedByUuid) {
-				// TODO remove cast after update to typings v2.23.0
-				(itemObj as any).relations[0].object_meta = await ItemsService.fetchItemByUuid(
+			if (replacedByUuid && itemObj.relations) {
+				itemObj.relations[0].object_meta = await ItemsService.fetchItemByUuid(
 					replacedByUuid
 				);
 			}
@@ -142,8 +141,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			if (!item.is_published) {
 				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
 				ToastService.success(
-					t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
-					false
+					t('admin/items/views/item-detail___het-item-is-gepubliceerd')
 				);
 				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
 				await ItemsService.setItemDepublishReason(item.uid, null);
@@ -157,8 +155,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				new CustomError('Failed to toggle is_published state for item', err, { item })
 			);
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt'),
-				false
+				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
 			);
 		}
 	};
@@ -166,8 +163,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const navigateToItemDetail = () => {
 		if (!item) {
 			ToastService.danger(
-				t('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid'),
-				false
+				t('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -206,14 +202,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				) || null
 			);
 			ToastService.success(
-				t('admin/items/views/item-detail___opmerkingen-opgeslagen'),
-				false
+				t('admin/items/views/item-detail___opmerkingen-opgeslagen')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save item notes', err, { item }));
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt'),
-				false
+				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt')
 			);
 		}
 	};
@@ -472,6 +466,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.ITEMS_OVERVIEW)}
 				pageTitle={`${t('admin/items/views/item-detail___item-details')}: ${item.title}`}
+				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					{!!item && (

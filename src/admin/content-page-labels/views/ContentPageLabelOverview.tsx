@@ -2,8 +2,9 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -15,10 +16,12 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { formatDate, navigate, navigateToContentType } from '../../../shared/helpers';
+import SmartLink from '../../../shared/components/SmartLink/SmartLink';
+import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
+import { ADMIN_PATH } from '../../admin.const';
 import { useContentTypes } from '../../content/hooks';
 import { ItemsTableState } from '../../items/items.types';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
@@ -56,17 +59,19 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ContentPageLabelTableState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [contentTypes] = useContentTypes();
 
 	const [t] = useTranslation();
 
 	const fetchContentPageLabels = useCallback(async () => {
+		setIsLoading(true);
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
-				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ label: { _ilike: queryWordWildcard } },
+				...getQueryFilter(filters.query, (queryWildcard: string) => [
+					{ label: { _ilike: queryWildcard } },
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
@@ -95,6 +100,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				),
 			});
 		}
+		setIsLoading(false);
 	}, [setContentPageLabels, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
@@ -172,8 +178,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		ToastService.success(
 			t(
 				'admin/content-page-labels/views/content-page-label-overview___de-content-pagina-label-is-verwijdert'
-			),
-			false
+			)
 		);
 	};
 
@@ -188,6 +193,13 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		columnId: ContentPageLabelOverviewTableCols
 	) => {
 		switch (columnId) {
+			case 'label':
+				return (
+					<Link to={buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: rowData.id })}>
+						{truncateTableValue(rowData[columnId])}
+					</Link>
+				);
+
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
@@ -199,11 +211,9 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				}
 				const labels = GET_CONTENT_TYPE_LABELS();
 				return (
-					<Button
-						type="inline-link"
-						onClick={() => navigateToContentType(linkTo, history)}
-						autoHeight
-					>{`${labels[linkTo.type]} - ${linkTo.label}`}</Button>
+					<SmartLink action={linkTo} removeStyles={false}>{`${labels[linkTo.type]} - ${
+						linkTo.label
+					}`}</SmartLink>
 				);
 
 			case 'actions':
@@ -300,9 +310,10 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
+					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete()}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>
@@ -315,6 +326,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			pageTitle={t(
 				'admin/content-page-labels/views/content-page-label-overview___content-pagina-labels-overzicht'
 			)}
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<Button
@@ -340,15 +352,11 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 						)}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={contentPageLabel}
-							render={renderContentPageLabelTable}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPageLabel}
+					render={renderContentPageLabelTable}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

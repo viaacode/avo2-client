@@ -15,10 +15,10 @@ import {
 	DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
 	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
 	GET_DISTINCT_SERIES,
-	GET_ITEMS_WITH_FILTERS,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEM_DEPUBLISH_REASON,
+	GET_ITEMS_WITH_FILTERS,
 	GET_PUBLIC_ITEMS,
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
@@ -253,7 +253,9 @@ export class ItemsService {
 		);
 	}
 
-	public static async fetchItemByExternalId(externalId: string): Promise<Avo.Item.Item | null> {
+	public static async fetchItemByExternalId(
+		externalId: string
+	): Promise<(Avo.Item.Item & { replacement_for?: string }) | null> {
 		try {
 			const response = await dataService.query({
 				query: GET_ITEM_BY_EXTERNAL_ID,
@@ -278,12 +280,14 @@ export class ItemsService {
 			if (itemUid) {
 				const relations = await RelationService.fetchRelationsBySubject(
 					'item',
-					itemUid,
+					[itemUid],
 					'IS_REPLACED_BY'
 				);
 				const replacedByItemUid = get(relations, '[0].object', null);
 				if (replacedByItemUid) {
-					return await ItemsService.fetchItemByUuid(replacedByItemUid);
+					const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
+					(replacementItem as any).replacement_for = externalId;
+					return replacementItem;
 				}
 			}
 

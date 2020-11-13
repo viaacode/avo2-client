@@ -1,20 +1,17 @@
-import { capitalize, get, isNil, orderBy, sortBy, uniqBy } from 'lodash-es';
+import { get, isNil, orderBy, uniqBy } from 'lodash-es';
 
-import { TagInfo } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
-import i18n from '../../shared/translations/i18n';
 import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
 
 import { ITEMS_PER_PAGE } from './user-group.const';
 import {
 	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
 	DELETE_USER_GROUP,
-	GET_USER_GROUPS_WITH_FILTERS,
 	GET_USER_GROUP_BY_ID,
+	GET_USER_GROUPS_WITH_FILTERS,
 	INSERT_USER_GROUP,
 	REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
 	UPDATE_USER_GROUP,
@@ -63,38 +60,6 @@ export class UserGroupService {
 	public static async fetchAllUserGroups(): Promise<UserGroup[]> {
 		const response = await UserGroupService.fetchUserGroups(0, 'label', 'asc', {});
 		return response[0];
-	}
-
-	public static async fetchAllUserGroupTagInfos(): Promise<TagInfo[]> {
-		try {
-			const userGroups: UserGroup[] = await UserGroupService.fetchAllUserGroups();
-
-			return [
-				{
-					label: i18n.t(
-						'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
-					),
-					value: SpecialPermissionGroups.loggedOutUsers,
-				},
-				{
-					label: i18n.t(
-						'admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'
-					),
-					value: SpecialPermissionGroups.loggedInUsers,
-				},
-				...sortBy(
-					userGroups.map(
-						(userGroup: UserGroup): TagInfo => ({
-							label: capitalize(userGroup.label),
-							value: userGroup.id,
-						})
-					),
-					'label'
-				),
-			];
-		} catch (err) {
-			throw new CustomError('Failed to get user groups', err);
-		}
 	}
 
 	public static async fetchUserGroupById(id: string): Promise<UserGroup | undefined> {

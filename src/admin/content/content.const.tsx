@@ -1,12 +1,118 @@
 import { TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../shared/helpers/filters';
 
 import { ContentOverviewTableCols, ContentWidth } from './content.types';
 
 export const RichEditorStateKey = 'RichEditorState';
+
+export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
+	contentTypeOptions: CheckboxOption[],
+	userGroupOptions: CheckboxOption[],
+	contentPageLabelOptions: CheckboxOption[]
+) => FilterableColumn[] = (contentTypeOptions, userGroupOptions, contentPageLabelOptions) => [
+	{
+		id: 'title',
+		label: i18n.t('admin/content/content___titel'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'content_type',
+		label: i18n.t('admin/content/content___content-type'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: contentTypeOptions,
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'user_profile_id',
+		label: i18n.t('admin/content/content___auteur'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'MultiUserSelectDropdown',
+	},
+	{
+		id: 'author_user_group',
+		label: i18n.t('admin/users/user___gebruikersgroep'),
+		sortable: true,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...userGroupOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'created_at',
+		label: i18n.t('admin/content/content___aangemaakt'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'updated_at',
+		label: i18n.t('admin/content/content___laatst-bewerkt'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'is_public',
+		label: i18n.t('Publiek'),
+		sortable: true,
+		visibleByDefault: false,
+		filterType: 'BooleanCheckboxDropdown',
+	},
+	{
+		id: 'published_at',
+		label: i18n.t('admin/content/views/content-overview___publicatie'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'publish_at',
+		label: i18n.t('admin/content/views/content-overview___publiceer-op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'depublish_at',
+		label: i18n.t('admin/content/views/content-overview___depubliceer-op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'labels',
+		label: i18n.t('Labels'),
+		sortable: false,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: contentPageLabelOptions,
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'user_group_ids',
+		label: i18n.t('Zichtbaar voor'),
+		sortable: false,
+		visibleByDefault: false,
+	},
+	{
+		id: 'actions',
+		tooltip: i18n.t('admin/content/views/content-overview___acties'),
+		visibleByDefault: true,
+	},
+];
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
@@ -22,11 +128,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
 	}
 > = {
-	author: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { last_name: order } },
+	user_profile_id: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
 	}),
 	author_user_group: (order: Avo.Search.OrderDirection) => ({
-		profile: { profile_user_groups: { groups: { label: order } } },
+		profile: { profile_user_group: { group: { label: order } } },
 	}),
 };
 

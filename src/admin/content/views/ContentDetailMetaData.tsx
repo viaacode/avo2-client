@@ -16,7 +16,7 @@ import {
 
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import Html from '../../../shared/components/Html/Html';
-import { formatDate } from '../../../shared/helpers';
+import { formatDate, getFullName } from '../../../shared/helpers';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -38,7 +38,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 	const [t] = useTranslation();
 
 	const [contentTypes] = useContentTypes();
-	const [allUserGroupOptions] = useUserGroupOptions();
+	const [allUserGroupOptions] = useUserGroupOptions('TagInfo', true) as [TagInfo[], boolean];
 
 	// Methods
 	const getUserGroups = (contentPageInfo: ContentPageInfo): TagOption[] => {
@@ -173,10 +173,7 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 						)}
 						{renderDetailRow(
 							!!get(contentPageInfo, 'profile.user')
-								? `${get(contentPageInfo, 'profile.user.first_name')} ${get(
-										contentPageInfo,
-										'profile.user.last_name'
-								  )}`
+								? getFullName(get(contentPageInfo, 'profile'), false, false)
 								: '-',
 							t('admin/content/views/content-detail___auteur')
 						)}

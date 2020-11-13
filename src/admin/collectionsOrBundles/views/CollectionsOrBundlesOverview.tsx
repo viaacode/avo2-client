@@ -1,12 +1,12 @@
-import { compact, get, truncate, without } from 'lodash-es';
+import { compact, get, isNil, truncate, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import {
 	Button,
 	ButtonToolbar,
-	Container,
 	IconName,
 	TagInfo,
 	TagList,
@@ -37,10 +37,10 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import ChangeLabelsModal, {
+import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
-} from '../../shared/components/ChangeLabelsModal/ChangeLabelsModal';
+} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
+import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -54,7 +54,10 @@ import {
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
-import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.const';
+import {
+	COLLECTIONS_OR_BUNDLES_PATH,
+	GET_COLLECTION_BULK_ACTIONS,
+} from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
 	CollectionBulkAction,
@@ -76,44 +79,41 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const [selectedRows, setSelectedRows] = useState<Partial<Avo.Collection.Collection>[] | null>();
+	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
 	const [changeAuthorModalOpen, setChangeAuthorModalOpen] = useState<boolean>(false);
 
 	const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false);
 
-	const [userGroups] = useUserGroups();
+	const [userGroups] = useUserGroups(false);
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
 
 	// methods
-	const fetchCollectionsOrBundles = useCallback(async () => {
-		const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
+	const generateWhereObject = useCallback(
+		(filters: Partial<CollectionsOrBundlesTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
-				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
-					{ description: { _ilike: queryWordWildcard } },
+				...getQueryFilter(filters.query, (queryWildcard: string) => [
+					{ title: { _ilike: queryWildcard } },
+					{ description: { _ilike: queryWildcard } },
 					{
 						profile: {
-							usersByuserId: { first_name: { _ilike: queryWordWildcard } },
-						},
-					},
-					{
-						profile: {
-							usersByuserId: { last_name: { _ilike: queryWordWildcard } },
+							usersByuserId: { full_name: { _ilike: queryWildcard } },
 						},
 					},
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+			andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
 					['author_user_group'],
-					['profile.profile_user_groups.groups.id']
+					['profile.profile_user_groups.group.id']
 				)
 			);
 			if (filters.collection_labels && filters.collection_labels.length) {
@@ -164,8 +164,26 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 				},
 			});
+
+			if (!isNil(filters.is_copy)) {
+				if (filters.is_copy) {
+					andFilters.push({
+						relations: { predicate: { _eq: 'IS_COPY_OF' } },
+					});
+				} else {
+					andFilters.push({
+						relations: { _not: { predicate: { _eq: 'IS_COPY_OF' } } },
+					});
+				}
+			}
+
 			return { _and: andFilters };
-		};
+		},
+		[isCollection, user]
+	);
+
+	const fetchCollectionsOrBundles = useCallback(async () => {
+		setIsLoading(true);
 
 		try {
 			const [
@@ -194,7 +212,16 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
-	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, user, t]);
+		setIsLoading(false);
+	}, [
+		setLoadingInfo,
+		setCollections,
+		setCollectionCount,
+		tableState,
+		isCollection,
+		t,
+		generateWhereObject,
+	]);
 
 	const fetchCollectionLabels = useCallback(async () => {
 		try {
@@ -204,8 +231,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	}, [setCollectionLabels, t]);
@@ -225,17 +251,42 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		// Update selected rows to always be a subset of the collections array
 		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
 		const collectionIds: string[] = (collections || []).map((coll) => coll.id);
-		setSelectedRows((currentSelectedRows) => {
-			return (currentSelectedRows || []).filter(
-				(coll) => coll.id && collectionIds.includes(coll.id)
+		setSelectedCollectionIds((currentSelectedCollectionIds) => {
+			return (currentSelectedCollectionIds || []).filter(
+				(collId) => collId && collectionIds.includes(collId)
 			);
 		});
-	}, [setLoadingInfo, collections, setSelectedRows]);
+	}, [setLoadingInfo, collections, setSelectedCollectionIds]);
+
+	const setAllCollectionsAsSelected = async () => {
+		setIsLoading(true);
+		try {
+			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
+				generateWhereObject(getFilters(tableState))
+			);
+			ToastService.info(
+				t('Je hebt {{numOfSelectedCollections}} collecties geselecteerd', {
+					numOfSelectedCollections: collectionIds.length,
+				})
+			);
+			setSelectedCollectionIds(collectionIds);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to get all collection ids that match the selected filter',
+					err,
+					{ tableState }
+				)
+			);
+			ToastService.danger('Het ophalen van de collectie ids is mislukt');
+		}
+		setIsLoading(false);
+	};
 
 	const userGroupOptions = userGroups.map(
 		(option): CheckboxOption => ({
 			id: String(option.id),
-			label: option.label,
+			label: option.label as string,
 			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
 				String(option.id)
 			),
@@ -269,12 +320,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			visibleByDefault: true,
 		},
 		{
-			id: 'author',
+			id: 'owner_profile_id',
 			label: i18n.t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
 			),
 			sortable: true,
 			visibleByDefault: true,
+			filterType: 'MultiUserSelectDropdown',
 		},
 		{
 			id: 'author_user_group',
@@ -328,6 +380,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			filterProps: {
 				options: collectionLabelOptions,
 			} as CheckboxDropdownModalProps,
+		},
+		{
+			id: 'is_copy',
+			label: i18n.t('Kopie'),
+			sortable: false,
+			visibleByDefault: false,
+			filterType: 'BooleanCheckboxDropdown',
 		},
 		{
 			id: 'views',
@@ -398,20 +457,18 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
-					  ),
-				false
+					  )
 			);
 			return;
 		}
 		const detailRoute = isCollection
 			? APP_PATH.COLLECTION_DETAIL.route
 			: APP_PATH.BUNDLE_DETAIL.route;
-		const link = buildLink(detailRoute, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(buildLink(detailRoute, { id }), history);
 	};
 
 	const handleBulkActionSelect = async (action: CollectionBulkAction): Promise<void> => {
-		if (!selectedRows || !selectedRows.length) {
+		if (!selectedCollectionIds || !selectedCollectionIds.length) {
 			return;
 		}
 		switch (action) {
@@ -439,12 +496,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangePublishStateForSelectedCollections = async (isPublic: boolean) => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
-				compact(selectedRows.map((collection) => collection.id)),
+				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
 			ToastService.success(
@@ -454,14 +511,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
-					  ),
-				false
+					  )
 			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle publish state for collections', err, {
-					selectedRows,
+					selectedRows: selectedCollectionIds,
 					isPublic,
 				})
 			);
@@ -472,58 +528,54 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-depubliceren-van-de-collecties-is-mislukt'
-					  ),
-				false
+					  )
 			);
 		}
 	};
 
 	const bulkDeleteSelectedCollections = async () => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			await CollectionsOrBundlesService.bulkDeleteCollections(
-				compact(selectedRows.map((collection) => collection.id)),
+				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
-				),
-				false
+				)
 			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk delete collections', err, {
-					selectedRows,
+					selectedRows: selectedCollectionIds,
 				})
 			);
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
 
 	const bulkChangeAuthor = async (authorProfileId: string) => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
-				compact(selectedRows.map((collection) => collection.id)),
+				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
-				),
-				false
+				)
 			);
 			fetchCollectionsOrBundles();
 		} catch (err) {
@@ -535,41 +587,38 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
 
 	const bulkChangeLabels = async (addOrRemove: AddOrRemove, labels: string[]) => {
 		try {
-			if (!selectedRows || !selectedRows.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
-					compact(selectedRows.map((collection) => collection.id)),
+					compact(selectedCollectionIds),
 					getProfileId(user)
 				);
 				ToastService.success(
 					t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
-					),
-					false
+					)
 				);
 			} else {
 				// remove
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
-					compact(selectedRows.map((collection) => collection.id)),
+					compact(selectedCollectionIds),
 					getProfileId(user)
 				);
 				ToastService.success(
 					t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geslecteerde-collecties'
-					),
-					false
+					)
 				);
 			}
 			fetchCollectionsOrBundles();
@@ -583,8 +632,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};
@@ -598,8 +646,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 					: t(
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
-					  ),
-				false
+					  )
 			);
 			return;
 		}
@@ -615,16 +662,45 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		columnId: CollectionsOrBundlesOverviewTableCols
 	) => {
 		switch (columnId) {
-			case 'author':
+			case 'title':
+				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
+				return (
+					<Link
+						to={buildLink(
+							isCollection
+								? APP_PATH.COLLECTION_EDIT.route
+								: APP_PATH.BUNDLE_EDIT.route,
+							{ id: rowData.id }
+						)}
+					>
+						<span>{title}</span>
+						{!!get(rowData, 'relations[0].object') && (
+							<a
+								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+									id: get(rowData, 'relations[0].object'),
+								})}
+							>
+								<TagList
+									tags={[
+										{ id: get(rowData, 'relations[0].object'), label: 'Kopie' },
+									]}
+									swatches={false}
+								/>
+							</a>
+						)}
+					</Link>
+				);
+
+			case 'owner_profile_id':
 				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
-				return user ? truncateTableValue(`${user.first_name} ${user.last_name}`) : '-';
+				return user ? truncateTableValue((user as any).full_name) : '-';
 
 			case 'author_user_group':
 				return getUserGroupLabel(get(rowData, 'profile')) || '-';
 
 			case 'last_updated_by_profile':
 				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
-				return lastEditUser ? `${lastEditUser.first_name} ${lastEditUser.last_name}` : '-';
+				return lastEditUser ? lastEditUser.full_name : '-';
 
 			case 'is_public':
 				return rowData[columnId]
@@ -638,7 +714,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'counts.bookmarks') || '0';
 
 			case 'copies':
-				return get(rowData, 'relations_aggregate.aggregate.count') || '0';
+				return get(rowData, 'counts.copies') || '0';
 
 			case 'in_bundle':
 				return get(rowData, 'counts.in_collection') || '0';
@@ -769,60 +845,32 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
-					rowKey={'id'}
-					bulkActions={[
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
-							),
-							value: 'publish',
-							confirm: true,
-							confirmButtonType: 'primary',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
-							),
-							value: 'depublish',
-							confirm: true,
-							confirmButtonType: 'danger',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
-							),
-							value: 'delete',
-							confirm: true,
-							confirmButtonType: 'danger',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
-							),
-							value: 'change_author',
-						},
-						{
-							label: t(
-								'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
-							),
-							value: 'change_labels',
-						},
-					]}
+					rowKey="id"
+					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
 					onSelectBulkAction={handleBulkActionSelect as any}
-					selectedItems={selectedRows}
-					onSelectionChanged={setSelectedRows}
+					selectedItems={selectedCollectionIds}
+					onSelectionChanged={setSelectedCollectionIds}
+					onSelectAll={setAllCollectionsAsSelected}
+					isLoading={isLoading}
 				/>
 				<ChangeAuthorModal
 					isOpen={changeAuthorModalOpen}
 					onClose={() => setChangeAuthorModalOpen(false)}
 					callback={(newAuthor: PickerItem) => bulkChangeAuthor(newAuthor.value)}
 					initialAuthor={{
-						label: getFullName(user as { profile: Avo.User.Profile }) as string,
+						label: getFullName(
+							user as { profile: Avo.User.Profile },
+							true,
+							false
+						) as string,
 						value: getProfileId(user),
 						type: 'PROFILE',
 					}}
 				/>
-				<ChangeLabelsModal
+				<AddOrRemoveLinkedElementsModal
+					title={t('Labels aanpassen')}
+					addOrRemoveLabel={t('Labels toevoegen of verwijderen')}
+					contentLabel={t('Labels')}
 					isOpen={changeLabelsModalOpen}
 					onClose={() => setAddLabelModalOpen(false)}
 					labels={collectionLabels.map((labelObj) => ({
@@ -851,6 +899,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels'
 					  )
 			}
+			size="full-width"
 		>
 			<AdminLayoutBody>
 				<MetaTags>
@@ -878,15 +927,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						}
 					/>
 				</MetaTags>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal" size="full-width">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={collections}
-							render={renderCollectionsOrBundlesOverview}
-						/>
-					</Container>
-				</Container>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={collections}
+					render={renderCollectionsOrBundlesOverview}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

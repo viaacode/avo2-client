@@ -1,31 +1,35 @@
-import { compact, isArray, isNil, set } from 'lodash-es';
+import { compact, isArray, isNil, set, without } from 'lodash-es';
+
+export const NULL_FILTER = 'null';
 
 export function getQueryFilter(
 	query: string | undefined,
-	getQueryFilterObj: (query: string, queryWord: string, queryWordWildcard: string) => any[]
+	getQueryFilterObj: (queryWildcard: string, query: string) => any[]
 ) {
 	if (query) {
-		return query.split(' ').map((queryWord) => {
-			return {
-				_or: getQueryFilterObj(`%${queryWord}%`, queryWord, query),
-			};
-		});
+		return [
+			{
+				_or: getQueryFilterObj(`%${query}%`, query),
+			},
+		];
 	}
 	return [];
 }
 
 export function getDateRangeFilters(filters: any, props: string[], nestedProps?: string[]): any[] {
-	return setNestedValues(filters, props, nestedProps || props, (value: any) => {
+	return setNestedValues(filters, props, nestedProps || props, (prop: string, value: any) => {
 		return {
-			...(value && value.gte ? { _gte: value.gte } : null),
-			...(value && value.lte ? { _lte: value.lte } : null),
+			[prop]: {
+				...(value && value.gte ? { _gte: value.gte } : null),
+				...(value && value.lte ? { _lte: value.lte } : null),
+			},
 		};
 	});
 }
 
 export function getBooleanFilters(filters: any, props: string[], nestedProps?: string[]): any[] {
-	return setNestedValues(filters, props, nestedProps || props, (value: any) => {
-		return { _eq: value ? 'true' : 'false' };
+	return setNestedValues(filters, props, nestedProps || props, (prop: string, value: any) => {
+		return { [prop]: { _eq: value ? 'true' : 'false' } };
 	});
 }
 
@@ -34,23 +38,49 @@ export function getMultiOptionFilters(
 	props: string[],
 	nestedProps?: string[]
 ): any[] {
-	return setNestedValues(filters, props, nestedProps || props, (value: any) => {
-		return { _in: value };
+	return setNestedValues(filters, props, nestedProps || props, (prop: string, value: any) => {
+		if (isArray(value) && value.includes(NULL_FILTER)) {
+			return {
+				_or: [
+					{ [prop]: { _is_null: true } },
+					{ [prop]: { _in: without(value, NULL_FILTER) } },
+				],
+			};
+		} else {
+			return { [prop]: { _in: value } };
+		}
 	});
 }
 
+/**
+ * Takes a filter object and a list of properties and outputs a valid graphql query object
+ * @param filters object containing the filter props and values set by the ui
+ * @param props which props should be added to the graphql query
+ * @param nestedProps wich props should be added to the graphql query in a nested fashion (matched to props by index in the array)
+ * @param getValue function that returns the last part of the graphql query
+ */
 function setNestedValues(
 	filters: any,
 	props: string[],
 	nestedProps: string[],
-	getValue: (value: any) => any
+	getValue: (nestedProp: string, value: any) => any
 ) {
 	return compact(
 		props.map((prop: string, index: number) => {
 			const value = (filters as any)[prop];
 			if (!isNil(value) && (!isArray(value) || value.length)) {
-				const response = {};
-				return set(response, nestedProps ? nestedProps[index] : prop, getValue(value));
+				const nestedProp = nestedProps ? nestedProps[index] : prop;
+
+				const lastProp = nestedProp.split('.').pop() as string;
+				const path = nestedProp.substring(0, nestedProp.length - lastProp.length - 1);
+
+				if (path) {
+					const response = {};
+					set(response, path, getValue(lastProp, value));
+					return response;
+				} else {
+					return getValue(lastProp, value);
+				}
 			}
 			return null;
 		})

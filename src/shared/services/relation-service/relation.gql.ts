@@ -1,12 +1,12 @@
 import { gql } from 'apollo-boost';
 
-export const FETCH_COLLECTION_RELATIONS_BY_OBJECT = gql`
+export const FETCH_COLLECTION_RELATIONS_BY_OBJECTS = gql`
 	query getCollectionRelationsByObject(
-		$objectId: uuid!
+		$objectIds: [uuid!]!
 		$relationType: lookup_enum_relation_types_enum!
 	) {
 		app_collection_relations(
-			where: { object: { _eq: $objectId }, predicate: { _eq: $relationType } }
+			where: { object: { _in: $objectIds }, predicate: { _eq: $relationType } }
 		) {
 			id
 			object
@@ -16,13 +16,13 @@ export const FETCH_COLLECTION_RELATIONS_BY_OBJECT = gql`
 	}
 `;
 
-export const FETCH_ITEM_RELATIONS_BY_OBJECT = gql`
+export const FETCH_ITEM_RELATIONS_BY_OBJECTS = gql`
 	query getItemRelationsByObject(
-		$objectId: uuid!
+		$objectIds: [uuid!]!
 		$relationType: lookup_enum_relation_types_enum!
 	) {
 		app_item_relations(
-			where: { object: { _eq: $objectId }, predicate: { _eq: $relationType } }
+			where: { object: { _in: $objectIds }, predicate: { _eq: $relationType } }
 		) {
 			id
 			object
@@ -32,13 +32,13 @@ export const FETCH_ITEM_RELATIONS_BY_OBJECT = gql`
 	}
 `;
 
-export const FETCH_COLLECTION_RELATIONS_BY_SUBJECT = gql`
+export const FETCH_COLLECTION_RELATIONS_BY_SUBJECTS = gql`
 	query getCollectionRelationsBySubject(
-		$subjectId: uuid!
+		$subjectIds: [uuid!]!
 		$relationType: lookup_enum_relation_types_enum!
 	) {
 		app_collection_relations(
-			where: { subject: { _eq: $subjectId }, predicate: { _eq: $relationType } }
+			where: { subject: { _in: $subjectIds }, predicate: { _eq: $relationType } }
 		) {
 			id
 			object
@@ -48,13 +48,13 @@ export const FETCH_COLLECTION_RELATIONS_BY_SUBJECT = gql`
 	}
 `;
 
-export const FETCH_ITEM_RELATIONS_BY_SUBJECT = gql`
+export const FETCH_ITEM_RELATIONS_BY_SUBJECTS = gql`
 	query getItemRelationsBySubject(
-		$subjectId: uuid!
+		$subjectIds: [uuid!]!
 		$relationType: lookup_enum_relation_types_enum!
 	) {
 		app_item_relations(
-			where: { subject: { _eq: $subjectId }, predicate: { _eq: $relationType } }
+			where: { subject: { _in: $subjectIds }, predicate: { _eq: $relationType } }
 		) {
 			id
 			object

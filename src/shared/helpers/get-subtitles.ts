@@ -15,8 +15,7 @@ export function getSubtitles(
 		return undefined;
 	}
 	return collaterals.map(
-		(collateral: any, index: number): FlowplayerTrack => {
-			// TODO replace any with Avo.Item.Subtitle after typings update to 2.23.0
+		(collateral: Avo.Item.Subtitle, index: number): FlowplayerTrack => {
 			return {
 				id: collateral.external_id,
 				default: index === 0,

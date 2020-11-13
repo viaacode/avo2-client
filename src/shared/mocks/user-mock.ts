@@ -3,6 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 const mockUser: Avo.User.User = {
 	first_name: 'Bert',
 	last_name: 'Verhelst',
+	full_name: 'Bert Verhelst',
 	created_at: '2019-10-23T16:21:17.984884+00:00',
 	expires_at: null,
 	external_uid: null,
@@ -35,6 +36,6 @@ const mockUser: Avo.User.User = {
 		organisation: null,
 		is_exception: false,
 	},
-};
+} as any; // TODO remove cast after update to typings v2.24.0
 
 export default mockUser;

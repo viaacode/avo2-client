@@ -17,12 +17,12 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
-import { RelationEntry } from '../../../../shared/services/relation-service/relation.types';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 
@@ -64,8 +64,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				ToastService.danger(
 					t(
 						'admin/items/components/depublish-item-modal/depublish-item-modal___reden-mag-niet-leeg-zijn'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -73,8 +72,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				ToastService.danger(
 					t(
 						'admin/items/components/depublish-item-modal/depublish-item-modal___je-moet-een-vervang-item-selecteren'
-					),
-					false
+					)
 				);
 				return;
 			}
@@ -102,8 +100,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					ToastService.danger(
 						t(
 							'admin/items/components/depublish-item-modal/depublish-item-modal___het-bepalen-van-de-id-van-het-vervang-item-is-mislukt'
-						),
-						false
+						)
 					);
 					return;
 				}
@@ -133,11 +130,9 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// B => C
 				const itemsReplacedByCurrentItem: RelationEntry<
 					Avo.Item.Item
-				>[] = (await RelationService.fetchRelationsByObject(
-					'item',
-					'IS_REPLACED_BY',
-					item.uid
-				)) as RelationEntry<Avo.Item.Item>[];
+				>[] = (await RelationService.fetchRelationsByObject('item', 'IS_REPLACED_BY', [
+					item.uid,
+				])) as RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
 					itemsReplacedByCurrentItem.map(
 						async (relation: RelationEntry<Avo.Item.Item>) => {
@@ -161,8 +156,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			ToastService.success(
 				t(
 					'admin/items/components/depublish-item-modal/depublish-item-modal___het-item-is-gedepubliceerd'
-				),
-				false
+				)
 			);
 			handleClose();
 		} catch (err) {
@@ -177,8 +171,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			ToastService.danger(
 				t(
 					'admin/items/components/depublish-item-modal/depublish-item-modal___het-depubliceren-is-mislukt'
-				),
-				false
+				)
 			);
 		}
 	};

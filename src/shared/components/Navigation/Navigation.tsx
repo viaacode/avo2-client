@@ -1,5 +1,5 @@
 import { get, last } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -90,21 +90,24 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 		}
 	});
 
+	const updateNavigationItems = useCallback(async () => {
+		try {
+			const navItems: NavItemMap = await getNavigationItems();
+			setPrimaryNavItems(navItems['hoofdnavigatie-links']);
+			setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
+		} catch (err) {
+			console.error('Failed to get navigation items', err);
+			ToastService.danger(
+				t(
+					'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
+				)
+			);
+		}
+	}, [t]);
+
 	useEffect(() => {
-		getNavigationItems()
-			.then((navItems: NavItemMap) => {
-				setPrimaryNavItems(navItems['hoofdnavigatie-links']);
-				setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
-			})
-			.catch((err) => {
-				console.error('Failed to get navigation items', err);
-				ToastService.danger(
-					t(
-						'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
-					)
-				);
-			});
-	}, [history, t, loginState]);
+		updateNavigationItems();
+	}, [updateNavigationItems]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[], isMobile: boolean) => {
 		return navItems.map((item) => (
