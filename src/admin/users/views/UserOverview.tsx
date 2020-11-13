@@ -298,7 +298,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					const csvCellValue = reactToString(
 						renderTableCell(profile, columnId as UserOverviewTableCol)
 					);
-					csvCellValues.push(csvCellValue);
+					csvCellValues.push(`"${csvCellValue.replace(/"/g, '""')}"`);
 				});
 				csvRowValues.push(csvCellValues.join(';'));
 			});
