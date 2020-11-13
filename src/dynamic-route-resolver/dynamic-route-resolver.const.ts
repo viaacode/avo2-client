@@ -35,5 +35,7 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 
 export const GET_ERROR_MESSAGES: () => { [key: string]: string } = () => ({
 	DEPUBLISHED_PAGINA: i18n.t('Deze pagina is niet meer beschikbaar'),
-	DEPUBLISHED_EVENT_DETAIL: i18n.t('Dit event is reeds afgelopen'),
+	DEPUBLISHED_EVENT_DETAIL: i18n.t(
+		'Dit event is reeds afgelopen. <a href="/workshops-en-events">Bekijk al onze events</a>'
+	),
 });

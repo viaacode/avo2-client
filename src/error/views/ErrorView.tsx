@@ -1,4 +1,4 @@
-import { isArray, isString, omit, uniq } from 'lodash-es';
+import { isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,10 +68,9 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		);
 	}
 
-	const errorMessage: string =
-		(queryParams.message as string) ||
-		message ||
-		i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden');
+	const errorMessage: string = isNil((queryParams.message as string) || message)
+		? i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden')
+		: message || '';
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,

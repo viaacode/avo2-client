@@ -25,6 +25,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	buildLink,
@@ -263,14 +264,15 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		}
 		if (routeInfo && routeInfo.type === 'depublishedContentPage') {
 			return (
-				<ErrorView
-					message={
-						GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
-						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]
-					}
-					icon="clock"
-					actionButtons={['home', 'helpdesk']}
-				/>
+				<ErrorView icon="clock" actionButtons={['home', 'helpdesk']} message="">
+					<Html
+						content={
+							GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
+							GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]
+						}
+						sanitizePreset={'link'}
+					/>
+				</ErrorView>
 			);
 		}
 		console.error(
