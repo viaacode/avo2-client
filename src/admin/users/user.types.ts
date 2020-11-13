@@ -120,6 +120,8 @@ export interface UserSummeryView {
 	acc_created_at: string;
 	role_id: number | null;
 	role_name: string | null;
+	group_id: number | null;
+	group_name: string | null;
 	company_name: string | null;
 	is_exception: boolean;
 	business_category: string | null;

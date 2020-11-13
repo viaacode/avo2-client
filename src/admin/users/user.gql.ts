@@ -85,9 +85,11 @@ export const GET_USERS = gql`
 			profile_id
 			stamboek
 			acc_created_at
-			role_id
-			role_name
+			group_id
+			group_name
 			company_name
+			is_exception
+			business_category
 		}
 		users_summary_view_aggregate(
 			offset: $offset

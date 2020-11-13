@@ -124,7 +124,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				...getMultiOptionFilters(
 					filters,
 					['user_group', 'organisation', 'business_category'],
-					['role_id', 'company_id', 'business_category']
+					['group_id', 'company_id', 'business_category']
 				)
 			);
 			andFilters.push(

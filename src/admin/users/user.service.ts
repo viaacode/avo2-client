@@ -96,15 +96,15 @@ export class UserService {
 									name: user.company_name,
 							  } as Avo.Organization.Organization)
 							: null,
-						// is_exception: user.is_exception,
-						// business_category: user.business_category,
+						is_exception: user.is_exception,
+						business_category: user.business_category,
 						created_at: user.acc_created_at,
-						userGroupIds: isNil(user.role_id) ? [] : [user.role_id],
+						userGroupIds: isNil(user.group_id) ? [] : [user.group_id],
 						user_id: user.user_id,
 						profile_user_group: {
 							group: {
-								label: user.role_name,
-								id: user.role_id,
+								label: user.group_name,
+								id: user.group_id,
 							},
 						},
 						user: {

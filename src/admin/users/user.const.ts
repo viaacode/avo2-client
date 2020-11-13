@@ -133,7 +133,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		mail: order,
 	}),
 	user_group: (order: Avo.Search.OrderDirection) => ({
-		role_name: order,
+		group_name: order,
 	}),
 	business_category: (order: Avo.Search.OrderDirection) => ({
 		business_category: order,
