@@ -131,11 +131,14 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const getBrowserSafeUrl = (src: string): string => {
 		if (hasHlsSupport()) {
 			return src;
-		} else if (src.includes('flowplayer')) {
+		}
+		if (src.includes('flowplayer')) {
 			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
 		} else {
 			ToastService.danger(
-				t('Deze video kan niet worden afgespeeld. Probeer een andere browser.')
+				t(
+					'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
+				)
 			);
 			return src;
 		}

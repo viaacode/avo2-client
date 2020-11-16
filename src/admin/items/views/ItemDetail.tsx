@@ -140,9 +140,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			if (!item.is_published) {
 				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
-				ToastService.success(
-					t('admin/items/views/item-detail___het-item-is-gepubliceerd')
-				);
+				ToastService.success(t('admin/items/views/item-detail___het-item-is-gepubliceerd'));
 				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
@@ -201,9 +199,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					'link'
 				) || null
 			);
-			ToastService.success(
-				t('admin/items/views/item-detail___opmerkingen-opgeslagen')
-			);
+			ToastService.success(t('admin/items/views/item-detail___opmerkingen-opgeslagen'));
 		} catch (err) {
 			console.error(new CustomError('Failed to save item notes', err, { item }));
 			ToastService.danger(

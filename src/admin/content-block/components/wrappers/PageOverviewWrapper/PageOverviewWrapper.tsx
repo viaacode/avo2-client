@@ -133,13 +133,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 			// new format where we save the ids of the labels instead of the full label object
 			// https://meemoo.atlassian.net/browse/AVO-1410
 			return contentTypeAndTabs.selectedLabels || [];
-		} else {
-			// Old format where we save the whole label object
-			// TODO deprecated remove when all content pages with type overview have been resaved
-			return (((contentTypeAndTabs.selectedLabels || []) as unknown) as LabelObj[]).map(
-				(label) => label.id
-			);
 		}
+		// Old format where we save the whole label object
+		// TODO deprecated remove when all content pages with type overview have been resaved
+		return (((contentTypeAndTabs.selectedLabels || []) as unknown) as LabelObj[]).map(
+			(label) => label.id
+		);
 	};
 
 	const fetchPages = useCallback(async () => {
@@ -189,7 +188,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 						)
 					);
 					ToastService.danger(
-						t('Het opgegeven item kon niet worden gevonden: ') + queryParamsState.item
+						t(
+							'admin/content-block/components/wrappers/page-overview-wrapper/page-overview-wrapper___het-opgegeven-item-kon-niet-worden-gevonden'
+						) + queryParamsState.item
 					);
 				}
 			}

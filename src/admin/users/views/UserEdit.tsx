@@ -163,7 +163,9 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 					storedProfile,
 				})
 			);
-			ToastService.danger(t('Het opslaan van de gebruiker is mislukt'));
+			ToastService.danger(
+				t('admin/users/views/user-edit___het-opslaan-van-de-gebruiker-is-mislukt')
+			);
 		}
 		setIsSaving(false);
 	};
@@ -215,7 +217,9 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 						<FormGroup label={t('admin/users/views/user-detail___vakken')}>
 							<TagsInput
 								id="subjects"
-								placeholder={t('Selecteer de vakken die deze gebruiker geeft')}
+								placeholder={t(
+									'admin/users/views/user-edit___selecteer-de-vakken-die-deze-gebruiker-geeft'
+								)}
 								options={(subjects || []).map(stringToSelectOption)}
 								value={selectedSubjects}
 								onChange={(selectedValues) =>
@@ -251,7 +255,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 											type="danger"
 											size="large"
 											ariaLabel={t(
-												'Verbreek de link tussen deze gebruiker en dit bedrijf'
+												'admin/users/views/user-edit___verbreek-de-link-tussen-deze-gebruiker-en-dit-bedrijf'
 											)}
 											icon="trash-2"
 											onClick={() => setCompanyId(undefined)}
@@ -270,7 +274,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 		return (
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
-				pageTitle={t('Bewerk gebruiker')}
+				pageTitle={t('admin/users/views/user-edit___bewerk-gebruiker')}
 				size="large"
 			>
 				<AdminLayoutTopBarRight>

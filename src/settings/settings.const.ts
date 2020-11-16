@@ -24,19 +24,19 @@ export const GET_NEWSLETTER_LABELS = () => ({
 
 export const USERS_IN_SAME_COMPANY_COLUMNS = () => [
 	{
-		label: i18n.t('Naam'),
+		label: i18n.t('settings/settings___naam'),
 		id: 'full_name',
 	},
 	{
-		label: i18n.t('Rol'),
+		label: i18n.t('settings/settings___rol'),
 		id: 'user_group',
 	},
 	{
-		label: i18n.t('Geblokkeerd'),
+		label: i18n.t('settings/settings___geblokkeerd'),
 		id: 'is_blocked',
 	},
 	{
-		label: i18n.t('Laatste login'),
+		label: i18n.t('settings/settings___laatste-login'),
 		id: 'last_access_at',
 	},
 ];

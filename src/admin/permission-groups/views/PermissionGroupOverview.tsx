@@ -2,6 +2,7 @@ import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
@@ -16,6 +17,7 @@ import {
 import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
@@ -34,8 +36,6 @@ import {
 } from '../permission-group.types';
 
 import './PermissionGroupOverview.scss';
-import { Link } from 'react-router-dom';
-import { ADMIN_PATH } from '../../admin.const';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 

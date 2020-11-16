@@ -19,8 +19,8 @@ import {
 	BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
 	BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
 	BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
-	GET_COLLECTION_IDS,
 	GET_COLLECTIONS,
+	GET_COLLECTION_IDS,
 } from './collections-or-bundles.gql';
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
 

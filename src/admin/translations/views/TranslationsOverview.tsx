@@ -91,9 +91,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			await getTranslations();
 
 			ToastService.success(
-				t(
-					'admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen'
-				)
+				t('admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save translations', err));

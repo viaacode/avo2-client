@@ -105,7 +105,14 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 		isPupil &&
 		!get(user, 'idpmaps', []).find((idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF')
 	) {
-		return <ErrorView message={t('Je hebt geen toegang tot de account pagina')} icon="lock" />;
+		return (
+			<ErrorView
+				message={t(
+					'settings/components/account___je-hebt-geen-toegang-tot-de-account-pagina'
+				)}
+				icon="lock"
+			/>
+		);
 	}
 	return (
 		<>

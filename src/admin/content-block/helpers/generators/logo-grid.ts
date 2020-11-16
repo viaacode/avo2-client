@@ -46,14 +46,16 @@ export const INITIAL_LOGO_GRID_BLOCK_STATE = (): BlockLogoGridWrapperProps &
 
 export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t("Logo's sign-off"),
+	name: i18n.t('admin/content-block/helpers/generators/logo-grid___logos-sign-off'),
 	type: ContentBlockType.LogoGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
 		state: INITIAL_LOGO_GRID_COMPONENTS_STATE(),
 		fields: {
 			textAbove: TEXT_FIELD('', {
-				label: i18n.t('Tekst boven afbeelding'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/logo-grid___tekst-boven-afbeelding'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
@@ -89,7 +91,7 @@ export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 				},
 			},
 			itemWidth: {
-				label: i18n.t('Kolom breedte'),
+				label: i18n.t('admin/content-block/helpers/generators/logo-grid___kolom-breedte'),
 				editorType: ContentBlockEditor.MultiRange,
 				editorProps: {
 					min: 0,
