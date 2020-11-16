@@ -558,7 +558,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				if (activeView === 'archived_assignments') {
 					return isSubmitted
 						? t('assignment/views/assignment-overview___gemaakt')
-						: t('Niet gemaakt');
+						: t('assignment/views/assignment-overview___niet-gemaakt');
 				}
 
 				const checkbox = (

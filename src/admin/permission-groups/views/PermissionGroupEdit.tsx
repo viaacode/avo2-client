@@ -190,9 +190,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			setFormErrors(errors || {});
 			if (errors) {
 				ToastService.danger(
-					t(
-						'admin/permission-groups/views/permission-group-edit___de-invoer-is-ongeldig'
-					)
+					t('admin/permission-groups/views/permission-group-edit___de-invoer-is-ongeldig')
 				);
 				return;
 			}

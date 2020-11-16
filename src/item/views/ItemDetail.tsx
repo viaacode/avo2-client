@@ -363,17 +363,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							{!!item.issued && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										{`${t('Uitgezonden op')} ${reorderDate(
-											item.issued || null,
-											'/'
-										)}`}
+										{`${t(
+											'item/views/item-detail___uitgezonden-op'
+										)} ${reorderDate(item.issued || null, '/')}`}
 									</p>
 								</MetaDataItem>
 							)}
 							{!!item.series && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										<span>{`${t('Reeks:')} `}</span>
+										<span>{`${t('item/views/item-detail___reeks')} `}</span>
 										{generateSearchLink('serie', item.series)}
 									</p>
 								</MetaDataItem>

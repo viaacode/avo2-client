@@ -287,7 +287,9 @@ const Profile: FunctionComponent<
 						)
 					);
 					ToastService.danger(
-						t('Het ophalen van de gebruikers in dezelfde organisatie is mislukt')
+						t(
+							'settings/components/profile___het-ophalen-van-de-gebruikers-in-dezelfde-organisatie-is-mislukt'
+						)
 					);
 				});
 		}
@@ -978,14 +980,16 @@ const Profile: FunctionComponent<
 							<Column size="3-12">
 								<Spacer margin="top-extra-large">
 									<BlockHeading type="h2">
-										{t('Gebruikers in je organisatie')}
+										{t(
+											'settings/components/profile___gebruikers-in-je-organisatie'
+										)}
 									</BlockHeading>
 									<Spacer margin="top">
 										<Table
 											data={usersInSameCompany}
 											columns={USERS_IN_SAME_COMPANY_COLUMNS()}
 											emptyStateMessage={t(
-												'Er zitten geen andere gebruikers uit je organisatie op Het Archief voor Onderwijs'
+												'settings/components/profile___er-zitten-geen-andere-gebruikers-uit-je-organisatie-op-het-archief-voor-onderwijs'
 											)}
 											rowKey="id"
 											renderCell={renderUsersInSameCompanyTableCell as any}

@@ -22,7 +22,11 @@ export const useBusinessCategories = (): UseBusinessCategoriesTuple => {
 				console.error(
 					new CustomError('Failed to get distinct business categories from database', err)
 				);
-				ToastService.danger(t('Het ophalen van de oormerken is mislukt'));
+				ToastService.danger(
+					t(
+						'shared/hooks/use-business-category___het-ophalen-van-de-oormerken-is-mislukt'
+					)
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);
