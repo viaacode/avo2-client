@@ -12,8 +12,8 @@ import {
 	ADD_PERMISSIONS_TO_GROUP,
 	DELETE_PERMISSION_GROUP,
 	GET_ALL_PERMISSIONS,
-	GET_PERMISSION_GROUPS,
 	GET_PERMISSION_GROUP_BY_ID,
+	GET_PERMISSION_GROUPS,
 	INSERT_PERMISSIONS_GROUP,
 	REMOVE_PERMISSIONS_FROM_GROUP,
 	UPDATE_PERMISSIONS_GROUP,
@@ -90,7 +90,7 @@ export class PermissionGroupService {
 			return permissionGroups;
 		} catch (err) {
 			throw new CustomError('Failed to get all permissionGroups from database', err, {
-				query: 'GET_ALL_PERMISSIONS',
+				query: 'GET_ALL_PERMISSION_GROUPS',
 			});
 		}
 	}
