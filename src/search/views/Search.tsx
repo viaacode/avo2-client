@@ -1,15 +1,4 @@
-import {
-	cloneDeep,
-	every,
-	get,
-	isArray,
-	isEmpty,
-	isEqual,
-	isNil,
-	isPlainObject,
-	pickBy,
-	set,
-} from 'lodash-es';
+import { cloneDeep, every, get, isArray, isEmpty, isEqual, isNil, isPlainObject, pickBy, set, } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -37,13 +26,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { SearchResultItem } from '@viaa/avo2-types/types/search';
 
-import {
-	PermissionGuard,
-	PermissionGuardFail,
-	PermissionGuardPass,
-} from '../../authentication/components';
+import { PermissionGuard, PermissionGuardFail, PermissionGuardPass, } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
@@ -62,16 +46,12 @@ import { AppState } from '../../store';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FILTER_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import { fetchSearchResults } from '../search.service';
-import {
-	FilterState,
-	SearchFilterFieldValues,
-	SearchFilterMultiOptions,
-	SearchProps,
-} from '../search.types';
+import { FilterState, SearchFilterFieldValues, SearchFilterMultiOptions, SearchProps, } from '../search.types';
 import { getSearchResults } from '../store/actions';
 import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 import './Search.scss';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 
 const Search: FunctionComponent<SearchProps> = ({
 	searchResults,
@@ -131,9 +111,12 @@ const Search: FunctionComponent<SearchProps> = ({
 	}, [setSearchTerms, filterState]);
 
 	useEffect(() => {
+		if (!PermissionService.hasPerm(user, PermissionName.SEARCH)) {
+			return;
+		}
 		onFilterStateChanged();
 		updateSearchTerms();
-	}, [onFilterStateChanged, updateSearchTerms]);
+	}, [onFilterStateChanged, updateSearchTerms, user]);
 
 	/**
 	 * Update the filter values and scroll to the top
@@ -188,7 +171,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {
 			getBookmarkStatuses();
 		}
-	}, [getBookmarkStatuses]);
+	}, [getBookmarkStatuses, user]);
 
 	const handleFilterFieldChange = async (
 		value: SearchFilterFieldValues,

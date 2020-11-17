@@ -96,6 +96,8 @@ export const GET_ITEM_VIEWS = gql`
 			view_counts {
 				count
 			}
+			is_deleted
+			is_published
 		}
 	}
 `;
@@ -116,6 +118,8 @@ export const GET_ITEM_PLAYS = gql`
 			play_counts {
 				count
 			}
+			is_published
+			is_deleted
 		}
 	}
 `;
@@ -218,6 +222,8 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 				item {
 					external_id
 					item_meta {
+						is_deleted
+						is_published
 						type {
 							label
 						}

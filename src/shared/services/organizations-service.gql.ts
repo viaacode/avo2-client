@@ -16,6 +16,8 @@ export const GET_DISTINCT_ORGANISATIONS = gql`
 				or_id
 				name
 			}
+			is_published
+			is_deleted
 		}
 	}
 `;
