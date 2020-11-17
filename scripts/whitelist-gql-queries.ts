@@ -71,13 +71,9 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 									`Extracting graphql queries with javascript template parameters isn't supported: ${name}`
 								);
 							}
-							// Remove leading tabs
-							// Remove query name
+							// Remove new lines and tabs
 							// Trim whitespace
-							queries[name] = query
-								.replace(/^\t/gm, '')
-								.replace(/^(query|mutation)\s?[^({]+([({])/gm, '$1 $2')
-								.trim();
+							queries[name] = query.replace(/[\t\r\n]+/gm, ' ').trim();
 						}
 					} while (matches);
 				} catch (err) {
@@ -127,7 +123,8 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 					definition: {
 						queries: _.map(queries, (query: string, name: string) => ({
 							name,
-							query,
+							// Remove query name
+							query: query.replace(/^(query|mutation)\s?[^({]+([({])/gm, '$1 $2'),
 						})),
 					},
 				},

@@ -43,6 +43,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
@@ -184,7 +185,9 @@ const Search: FunctionComponent<SearchProps> = ({
 	}, [t, setBookmarkStatuses, searchResults, user]);
 
 	useEffect(() => {
-		getBookmarkStatuses();
+		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {
+			getBookmarkStatuses();
+		}
 	}, [getBookmarkStatuses]);
 
 	const handleFilterFieldChange = async (

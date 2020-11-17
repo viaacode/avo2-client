@@ -231,7 +231,6 @@ export class InteractiveTourService {
 				routeId,
 				profileId,
 				interactiveTourId,
-				query: 'INSERT_NOTIFICATION_INTERACTIVE_TOUR_SEEN',
 			});
 		}
 	}
