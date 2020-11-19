@@ -627,7 +627,6 @@ export class CollectionService {
 			throw new CustomError('Failed to fetch collection or bundle by id', err, {
 				collectionId,
 				type,
-				query: 'GET_COLLECTION_BY_ID',
 			});
 		}
 	}
