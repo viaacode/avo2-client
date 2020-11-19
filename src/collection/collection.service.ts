@@ -614,7 +614,7 @@ export class CollectionService {
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
 		try {
-			const collectionObj = await this.getCollectionById(collectionId);
+			const collectionObj = await CollectionService.getCollectionById(collectionId);
 
 			// Collection/bundle loaded successfully
 			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)

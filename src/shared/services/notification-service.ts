@@ -51,7 +51,10 @@ export class NotificationService {
 		throughPlatform: boolean
 	): Promise<void> {
 		try {
-			const notificationEntryExists: boolean = !!(await this.getNotification(key, profileId));
+			const notificationEntryExists: boolean = !!(await NotificationService.getNotification(
+				key,
+				profileId
+			));
 			// If entry already exists => update existing entry
 			// If no entry exists in the notifications table => insert a new entry
 			const mutation = notificationEntryExists ? UPDATE_NOTIFICATION : INSERT_NOTIFICATION;
