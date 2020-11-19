@@ -10,7 +10,7 @@ import {
 } from '../../../shared/types';
 import { GET_BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 export const INITIAL_EVENTBRITE_COMPONENTS_STATE = (): Partial<BlockEventbriteProps> => ({
 	eventId: '',
@@ -63,6 +63,7 @@ export const EVENTBRITE_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	block: {
 		state: INITIAL_EVENTBRITE_BLOCK_STATE(),
 		fields: {
+			align: ALIGN_FIELD(),
 			...BLOCK_FIELD_DEFAULTS(),
 		},
 	},
