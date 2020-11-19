@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -184,14 +184,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 							<Icon name="play" className="c-play-overlay__button" />
 						</div>
 					</div>
-					{props.cuePoints &&
-						(props.cuePoints.start || props.cuePoints.start === 0) &&
-						props.cuePoints.end && (
+					{!isNil(start) &&
+						!isNil(end) &&
+						(start !== 0 || end !== toSeconds(item?.duration)) && (
 							<div className="c-cut-overlay">
 								<Icon name="scissors" />
-								{`${formatDuration(props.cuePoints.start)} - ${formatDuration(
-									props.cuePoints.end
-								)}`}
+								{`${formatDuration(start)} - ${formatDuration(end)}`}
 							</div>
 						)}
 				</div>
