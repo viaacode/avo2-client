@@ -34,7 +34,7 @@ export const EVENTBRITE_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 		state: INITIAL_EVENTBRITE_COMPONENTS_STATE(),
 		fields: {
 			eventId: TEXT_FIELD(undefined, {
-				label: i18n.t('Event id'),
+				label: i18n.t('admin/content-block/helpers/generators/eventbrite___event-id'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			type: {

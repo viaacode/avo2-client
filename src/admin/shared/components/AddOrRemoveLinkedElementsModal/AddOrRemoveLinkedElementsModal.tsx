@@ -73,9 +73,7 @@ const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElement
 							onChange={setAddOrRemove as (value: string) => void}
 						/>
 					</FormGroup>
-					<FormGroup
-						label={contentLabel}
-					>
+					<FormGroup label={contentLabel}>
 						<TagsInput
 							options={labels}
 							value={selectedLabels}

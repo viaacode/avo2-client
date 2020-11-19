@@ -148,7 +148,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											id="shortDescriptionId"
 											height="medium"
 											placeholder={t(
-												'Omschrijf je collectie in enkele kernzinnen. Dit is de tekst die andere gebruikers naast jouw collectie (of bundel) te zien krijgen in de zoekresultaten.'
+												'collection/components/collection-or-bundle-edit-meta-data___omschrijf-je-collectie-in-enkele-kernzinnen-dit-is-de-tekst-die-andere-gebruikers-naast-jouw-collectie-of-bundel-te-zien-krijgen-in-de-zoekresultaten'
 											)}
 											onChange={(value: string) =>
 												changeCollectionState({

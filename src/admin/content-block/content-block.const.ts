@@ -202,15 +202,15 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.ContentPageMeta,
 	},
 	{
-		label: i18n.t("Logo's sign-off"),
+		label: i18n.t('admin/content-block/content-block___logos-sign-off'),
 		value: ContentBlockType.LogoGrid,
 	},
 	{
-		label: i18n.t('USP'),
+		label: i18n.t('admin/content-block/content-block___usp'),
 		value: ContentBlockType.UspGrid,
 	},
 	{
-		label: i18n.t('Eventbrite'),
+		label: i18n.t('admin/content-block/content-block___eventbrite'),
 		value: ContentBlockType.Eventbrite,
 	},
 ];
@@ -551,7 +551,7 @@ export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOp
 		value: '6:9',
 	},
 	{
-		label: i18n.t('400x150'),
+		label: i18n.t('admin/content-block/content-block___400-x-150'),
 		value: '400x150',
 	},
 ];
@@ -596,19 +596,19 @@ export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<
 	PageOverviewOrderOptions
 >[] = () => [
 	{
-		label: i18n.t('Publicatie datum (nieuw > oud)'),
+		label: i18n.t('admin/content-block/content-block___publicatie-datum-nieuw-oud'),
 		value: 'published_at__desc',
 	},
 	{
-		label: i18n.t('Publicatie datum (oud > nieuw)'),
+		label: i18n.t('admin/content-block/content-block___publicatie-datum-oud-nieuw'),
 		value: 'published_at__asc',
 	},
 	{
-		label: i18n.t('Titel (A > Z)'),
+		label: i18n.t('admin/content-block/content-block___titel-a-z'),
 		value: 'title__asc',
 	},
 	{
-		label: i18n.t('Titel (Z > A)'),
+		label: i18n.t('admin/content-block/content-block___titel-z-a'),
 		value: 'title__desc',
 	},
 ];

@@ -45,7 +45,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							{children}
 						</a>
 					);
-				} else {
+				} 
 					// relative url
 					return (
 						<Link
@@ -55,7 +55,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							{children}
 						</Link>
 					);
-				}
+				
 
 			case LinkTarget.Blank:
 			default:
@@ -72,7 +72,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							{children}
 						</a>
 					);
-				} else {
+				} 
 					// relative url
 					return (
 						<a
@@ -84,7 +84,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							{children}
 						</a>
 					);
-				}
+				
 		}
 	};
 

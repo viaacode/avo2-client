@@ -76,7 +76,11 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 							values,
 						})
 					);
-					ToastService.danger(t('Het ophalen van de gebruikersaccount namen is mislukt'));
+					ToastService.danger(
+						t(
+							'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___het-ophalen-van-de-gebruikersaccount-namen-is-mislukt'
+						)
+					);
 				});
 		}
 	}, [values, setSelectedProfiles, t]);
@@ -129,8 +133,12 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 											id: 'users',
 											label: `${selectedProfiles.length} ${
 												selectedProfiles.length > 1
-													? t('gebruikers')
-													: t('gebruiker')
+													? t(
+															'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___gebruikers'
+													  )
+													: t(
+															'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___gebruiker'
+													  )
 											}`,
 										},
 									]}
@@ -177,7 +185,12 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 									hideTargetSwitch
 									allowedTypes={['PROFILE']}
 									hideTypeDropdown
-									placeholder={placeholder || t('Selecteer een gebruiker')}
+									placeholder={
+										placeholder ||
+										t(
+											'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___selecteer-een-gebruiker'
+										)
+									}
 									initialValue={undefined}
 								/>
 							</Spacer>

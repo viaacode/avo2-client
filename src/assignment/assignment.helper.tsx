@@ -51,14 +51,16 @@ export class AssignmentHelper {
 		try {
 			if (isNil(assignment.id)) {
 				ToastService.danger(
-					i18n.t('Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.')
+					i18n.t(
+						'assignment/assignment___je-kan-een-opdracht-pas-dupliceren-nadat-je-hem-hebt-opgeslagen'
+					)
 				);
 				return;
 			}
 			if (!user) {
 				ToastService.danger(
 					i18n.t(
-						'De opdracht kan niet gedupliceerd worden omdat je niet meer bent ingelogd.'
+						'assignment/assignment___de-opdracht-kan-niet-gedupliceerd-worden-omdat-je-niet-meer-bent-ingelogd'
 					)
 				);
 				return;

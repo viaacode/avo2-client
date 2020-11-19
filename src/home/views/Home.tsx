@@ -23,8 +23,13 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, use
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('Ingelogde start pagina titel'))}</title>
-				<meta name="description" content={t('Ingelogde start pagina beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(t('home/views/home___ingelogde-start-pagina-titel'))}
+				</title>
+				<meta
+					name="description"
+					content={t('home/views/home___ingelogde-start-pagina-beschrijving')}
+				/>
 			</MetaTags>
 			<ContentPage path={`/${ROUTE_PARTS.loggedInHome}`} />
 		</>
