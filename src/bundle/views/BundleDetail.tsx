@@ -810,7 +810,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									</Spacer>
 								</Column>
 								<Column size="3-10">
-									<Toolbar autoHeight className="c-bundle-toolbar">
+									<Toolbar
+										autoHeight
+										className={
+											isMobileWidth() ? 'c-bundle-toolbar__mobile' : ''
+										}
+									>
 										<ToolbarLeft>
 											<ToolbarItem>
 												<MetaData spaced={true} category="bundle">
