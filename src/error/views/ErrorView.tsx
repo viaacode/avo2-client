@@ -68,9 +68,10 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		);
 	}
 
-	const errorMessage: string = isNil((queryParams.message as string) || message)
+	const messageText = (queryParams.message as string) || message || '';
+	const errorMessage: string = isNil(messageText)
 		? i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden')
-		: message || '';
+		: messageText;
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,

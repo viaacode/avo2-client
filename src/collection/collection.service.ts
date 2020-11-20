@@ -18,13 +18,13 @@ import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
-	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -614,33 +614,8 @@ export class CollectionService {
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
 		try {
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id: collectionId },
-			});
+			const collectionObj = await CollectionService.getCollectionById(collectionId);
 
-			if (response.errors) {
-				throw new CustomError(
-					`Failed to retrieve ${type} from database because of graphql errors`,
-					null,
-					{
-						collectionId,
-						errors: response.errors,
-					}
-				);
-			}
-
-			const collectionObj: Avo.Collection.Collection | null = get(
-				response,
-				'data.app_collections[0]'
-			);
-
-			if (!collectionObj) {
-				throw new CustomError(`query for ${type} returned empty result`, null, {
-					collectionId,
-					response,
-				});
-			}
 			// Collection/bundle loaded successfully
 			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
 			if (collectionObj.type_id !== ContentTypeNumber[type]) {
@@ -652,7 +627,6 @@ export class CollectionService {
 			throw new CustomError('Failed to fetch collection or bundle by id', err, {
 				collectionId,
 				type,
-				query: 'GET_COLLECTION_BY_ID',
 			});
 		}
 	}

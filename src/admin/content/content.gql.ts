@@ -224,19 +224,6 @@ export const GET_CONTENT_LABELS_BY_CONTENT_TYPE = gql`
 	}
 `;
 
-export const INSERT_CONTENT_LABEL = gql`
-	mutation insertContentLabel($label: String!, $contentType: String!) {
-		insert_app_content_labels(objects: { content_type: $contentType, label: $label }) {
-			returning {
-				id
-				label
-				content_type
-				link_to
-			}
-		}
-	}
-`;
-
 export const INSERT_CONTENT_LABEL_LINKS = gql`
 	mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
 		insert_app_content_content_labels(objects: $objects) {
