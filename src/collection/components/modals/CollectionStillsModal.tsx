@@ -51,7 +51,11 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 				setVideoStills(await VideoStillService.getThumbnailsForCollection(collection));
 			} catch (err) {
 				console.error(err);
-				ToastService.danger(t('Het ophalen van de media thumbnails is mislukt.'));
+				ToastService.danger(
+					t(
+						'collection/components/modals/collection-stills-modal___het-ophalen-van-de-media-thumbnails-is-mislukt'
+					)
+				);
 				setVideoStills([]);
 			}
 		};
@@ -62,7 +66,11 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
 		onClose();
-		ToastService.success(t('De cover afbeelding is ingesteld.'));
+		ToastService.success(
+			t(
+				'collection/components/modals/collection-stills-modal___de-cover-afbeelding-is-ingesteld'
+			)
+		);
 	};
 
 	return (

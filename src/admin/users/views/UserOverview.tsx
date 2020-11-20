@@ -191,7 +191,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			if (addOrRemove === 'add') {
 				await UserService.bulkAddSubjectsToProfiles(subjects, compact(selectedProfileIds));
 				ToastService.success(
-					t('De vakken zijn toegevoegd aan de geselecteerde gebruikers')
+					t(
+						'admin/users/views/user-overview___de-vakken-zijn-toegevoegd-aan-de-geselecteerde-gebruikers'
+					)
 				);
 			} else {
 				// remove
@@ -200,7 +202,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					compact(selectedProfileIds)
 				);
 				ToastService.success(
-					t('De vakken zijn verwijderd van de geselecteerde gebruikers')
+					t(
+						'admin/users/views/user-overview___de-vakken-zijn-verwijderd-van-de-geselecteerde-gebruikers'
+					)
 				);
 			}
 		} catch (err) {
@@ -210,7 +214,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					subjects,
 				})
 			);
-			ToastService.danger(t('Het aanpassen van de vakken is mislukt'));
+			ToastService.danger(
+				t('admin/users/views/user-overview___het-aanpassen-van-de-vakken-is-mislukt')
+			);
 		}
 	};
 
@@ -221,9 +227,12 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				generateWhereObject(getFilters(tableState), false)
 			);
 			ToastService.info(
-				t('Je hebt {{numOfSelectedProfiles}} gebuikers geselecteerd', {
-					numOfSelectedProfiles: profileIds.length,
-				})
+				t(
+					'admin/users/views/user-overview___je-hebt-num-of-selected-profiles-gebuikers-geselecteerd',
+					{
+						numOfSelectedProfiles: profileIds.length,
+					}
+				)
 			);
 			setSelectedProfileIds(profileIds);
 		} catch (err) {
@@ -234,7 +243,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					{ tableState }
 				)
 			);
-			ToastService.danger(t('Het ophalen van alle geselecteerde gebruiker ids is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/users/views/user-overview___het-ophalen-van-alle-geselecteerde-gebruiker-ids-is-mislukt'
+				)
+			);
 		}
 
 		setIsLoading(false);
@@ -251,11 +264,19 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			await fetchProfiles();
 			ToastService.success(
 				blockOrUnblock
-					? t('De geselecteerde gebruikers zijn geblokkeerd')
-					: t('De geselecteerde gebruikers zijn gedeblokkeerd')
+					? t(
+							'admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-geblokkeerd'
+					  )
+					: t(
+							'admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-gedeblokkeerd'
+					  )
 			);
 		} catch (err) {
-			ToastService.danger(t('Het blokkeren van de geselecteerde gebruikers is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/users/views/user-overview___het-blokkeren-van-de-geselecteerde-gebruikers-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};
@@ -309,7 +330,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			console.error(
 				new CustomError('Failed to export users to csv file', err, { tableState })
 			);
-			ToastService.danger(t('Het exporteren van de geselecteerde gebruikers is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/users/views/user-overview___het-exporteren-van-de-geselecteerde-gebruikers-is-mislukt'
+				)
+			);
 		}
 
 		setIsLoading(false);
@@ -377,7 +402,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				!transferToUser
 			) {
 				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
-				setTransferToUserError(t('Kies een gebruiker om de content naar over te dragen.'));
+				setTransferToUserError(
+					t(
+						'admin/users/views/user-overview___kies-een-gebruiker-om-de-content-naar-over-te-dragen'
+					)
+				);
 				return;
 			}
 			if (
@@ -389,7 +418,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
 				setTransferToUserError(
 					t(
-						'Je kan geen content overdragen naar een gebruiker die verwijdert zal worden.'
+						'admin/users/views/user-overview___je-kan-geen-content-overdragen-naar-een-gebruiker-die-verwijdert-zal-worden'
 					)
 				);
 				return;
@@ -410,7 +439,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				})
 			);
 			ToastService.danger(
-				t('Het ophalen van de content items voor de geselecteerde gebruikers is mislukt')
+				t(
+					'admin/users/views/user-overview___het-ophalen-van-de-content-items-voor-de-geselecteerde-gebruikers-is-mislukt'
+				)
 			);
 		}
 	};
@@ -497,7 +528,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						}
 					)}
 				>
-					{`${publicCollections} ${t('publieke collecties')}`}
+					{`${publicCollections} ${t(
+						'admin/users/views/user-overview___publieke-collecties'
+					)}`}
 				</Link>
 			);
 		}
@@ -513,7 +546,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						}
 					)}
 				>
-					{`${privateCollections} ${t('privé collecties')}`}
+					{`${privateCollections} ${t(
+						'admin/users/views/user-overview___prive-collecties'
+					)}`}
 				</Link>
 			);
 		}
@@ -529,7 +564,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						}
 					)}
 				>
-					{`${publicContentPages} ${t("publieke content pagina's")}`}
+					{`${publicContentPages} ${t(
+						'admin/users/views/user-overview___publieke-content-paginas'
+					)}`}
 				</Link>
 			);
 		}
@@ -545,19 +582,25 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						}
 					)}
 				>
-					{`${privateContentPages} ${t("privé content pagina's")}`}
+					{`${privateContentPages} ${t(
+						'admin/users/views/user-overview___prive-content-paginas'
+					)}`}
 				</Link>
 			);
 		}
 		if (!isTransferAll && assignments) {
-			countOutputs.push(`${assignments} ${t('opdrachten')}`);
+			countOutputs.push(
+				`${assignments} ${t('admin/users/views/user-overview___opdrachten')}`
+			);
 		}
 		if (!isTransferAll && bookmarks) {
-			countOutputs.push(`${bookmarks} ${t('bladwijzers')}`);
+			countOutputs.push(`${bookmarks} ${t('admin/users/views/user-overview___bladwijzers')}`);
 		}
 		return (
 			<>
-				{t('Weet je zeker dat je deze gebruikers wil verwijderen?')}
+				{t(
+					'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruikers-wil-verwijderen'
+				)}
 
 				{!!countOutputs.length && (
 					<Spacer margin="top" className="c-content">
@@ -572,7 +615,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 
 				<Spacer margin="top">
 					<Alert
-						message={t('Deze actie kan niet ongedaan gemaakt worden!')}
+						message={t(
+							'admin/users/views/user-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+						)}
 						type="danger"
 					/>
 				</Spacer>
@@ -631,7 +676,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
 				/>
 				<Modal
-					title={t('Verwijder opties:')}
+					title={t('admin/users/views/user-overview___verwijder-opties')}
 					isOpen={deleteOptionsModalOpen}
 					onClose={() => setDeleteOptionsModalOpen(false)}
 					size="large"
@@ -660,7 +705,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 											setTransferToUser(option || undefined)
 										}
 										initialValue={transferToUser}
-										placeholder={t('Overdragen naar gebruiker')}
+										placeholder={t(
+											'admin/users/views/user-overview___overdragen-naar-gebruiker'
+										)}
 										hideTargetSwitch
 										hideTypeDropdown
 										errors={transferToUserError ? [transferToUserError] : []}
@@ -683,7 +730,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 										/>
 										<Button
 											type="danger"
-											label={t('Verwijder gebruikers')}
+											label={t(
+												'admin/users/views/user-overview___verwijder-gebruikers'
+											)}
 											onClick={validateOptionModalAndOpenConfirm}
 										/>
 									</ButtonToolbar>
@@ -694,7 +743,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				</Modal>
 				<Modal
 					isOpen={deleteConfirmModalOpen}
-					title={t('Bevestiging')}
+					title={t('admin/users/views/user-overview___bevestiging')}
 					size="medium"
 					onClose={handleConfirmModalClose}
 					scrollable
@@ -707,12 +756,14 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 									<ButtonToolbar>
 										<Button
 											type="secondary"
-											label={t('Annuleren')}
+											label={t('admin/users/views/user-overview___annuleren')}
 											onClick={handleConfirmModalClose}
 										/>
 										<Button
 											type="danger"
-											label={t('Verwijder gebruikers')}
+											label={t(
+												'admin/users/views/user-overview___verwijder-gebruikers'
+											)}
 											onClick={handleDeleteUsers}
 										/>
 									</ButtonToolbar>
@@ -722,9 +773,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					</ModalBody>
 				</Modal>
 				<AddOrRemoveLinkedElementsModal
-					title={t('Vakken aanpassen')}
-					addOrRemoveLabel={t('Vakken toevoegen of verwijderen')}
-					contentLabel={t('Vakken')}
+					title={t('admin/users/views/user-overview___vakken-aanpassen')}
+					addOrRemoveLabel={t(
+						'admin/users/views/user-overview___vakken-toevoegen-of-verwijderen'
+					)}
+					contentLabel={t('admin/users/views/user-overview___vakken')}
 					isOpen={changeSubjectsModalOpen}
 					onClose={() => setChangeSubjectsModalOpen(false)}
 					labels={allSubjects.map((subject) => ({

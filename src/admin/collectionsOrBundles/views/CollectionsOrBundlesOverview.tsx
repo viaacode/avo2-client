@@ -265,9 +265,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t('Je hebt {{numOfSelectedCollections}} collecties geselecteerd', {
-					numOfSelectedCollections: collectionIds.length,
-				})
+				t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___je-hebt-num-of-selected-collections-collecties-geselecteerd',
+					{
+						numOfSelectedCollections: collectionIds.length,
+					}
+				)
 			);
 			setSelectedCollectionIds(collectionIds);
 		} catch (err) {
@@ -383,7 +386,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		},
 		{
 			id: 'is_copy',
-			label: i18n.t('Kopie'),
+			label: i18n.t(
+				'admin/collections-or-bundles/views/collections-or-bundles-overview___kopie'
+			),
 			sortable: false,
 			visibleByDefault: false,
 			filterType: 'BooleanCheckboxDropdown',
@@ -868,9 +873,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					}}
 				/>
 				<AddOrRemoveLinkedElementsModal
-					title={t('Labels aanpassen')}
-					addOrRemoveLabel={t('Labels toevoegen of verwijderen')}
-					contentLabel={t('Labels')}
+					title={t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
+					)}
+					addOrRemoveLabel={t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-toevoegen-of-verwijderen'
+					)}
+					contentLabel={t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___labels'
+					)}
 					isOpen={changeLabelsModalOpen}
 					onClose={() => setAddLabelModalOpen(false)}
 					labels={collectionLabels.map((labelObj) => ({

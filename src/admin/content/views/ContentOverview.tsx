@@ -16,6 +16,7 @@ import {
 	TagOption,
 } from '@viaa/avo2-components';
 
+import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
@@ -331,6 +332,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								);
 								if (!userGroup) {
 									return null;
+								}
+								if (userGroup.id === SpecialPermissionGroups.loggedInUsers) {
+									return {
+										label: t('Ingelogd'),
+										id: userGroup.id as number,
+									};
+								}
+								if (userGroup.id === SpecialPermissionGroups.loggedOutUsers) {
+									return {
+										label: t('niet-ingelogd'),
+										id: userGroup.id as number,
+									};
 								}
 								return {
 									label: userGroup.label as string,

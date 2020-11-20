@@ -105,7 +105,14 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 		isPupil &&
 		!get(user, 'idpmaps', []).find((idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF')
 	) {
-		return <ErrorView message={t('Je hebt geen toegang tot de account pagina')} icon="lock" />;
+		return (
+			<ErrorView
+				message={t(
+					'settings/components/account___je-hebt-geen-toegang-tot-de-account-pagina'
+				)}
+				icon="lock"
+			/>
+		);
 	}
 	return (
 		<>
@@ -164,29 +171,35 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											)}
 										/>
 									</Spacer>
-									<Spacer margin="top-large">
-										<Alert type="info">
-											<Html
-												className="c-content"
-												content={t(
-													'settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem'
-												)}
-												type="span"
-											/>
-										</Alert>
-									</Spacer>
+									{!isPupil && (
+										<Spacer margin="top-large">
+											<Alert type="info">
+												<Html
+													className="c-content"
+													content={t(
+														'settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem'
+													)}
+													type="span"
+												/>
+											</Alert>
+										</Spacer>
+									)}
 								</Form>
 
-								<div className="c-hr" />
+								{!isPupil && (
+									<>
+										<div className="c-hr" />
 
-								<FormGroup
-									label={t(
-										'settings/components/account___koppel-je-account-met-andere-platformen'
-									)}
-								>
-									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
-									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
-								</FormGroup>
+										<FormGroup
+											label={t(
+												'settings/components/account___koppel-je-account-met-andere-platformen'
+											)}
+										>
+											<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
+											<div>{renderIdpLinkControls('KLASCEMENT')}</div>
+										</FormGroup>
+									</>
+								)}
 							</Form>
 						</Column>
 						<Column size="3-5">

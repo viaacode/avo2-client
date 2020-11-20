@@ -30,7 +30,6 @@ import {
 	GET_PUBLIC_PROJECT_CONTENT_PAGES,
 	GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
 	INSERT_CONTENT,
-	INSERT_CONTENT_LABEL,
 	INSERT_CONTENT_LABEL_LINKS,
 	UPDATE_CONTENT_BY_ID,
 } from './content.gql';
@@ -210,48 +209,6 @@ export class ContentService {
 					query: 'GET_CONTENT_LABELS_BY_CONTENT_TYPE',
 				}
 			);
-		}
-	}
-
-	public static async insertContentLabel(
-		label: string,
-		contentType: string
-	): Promise<Avo.ContentPage.Label> {
-		let variables: any;
-		try {
-			variables = {
-				label,
-				contentType,
-			};
-
-			const response = await dataService.mutate({
-				variables,
-				mutation: INSERT_CONTENT_LABEL,
-				update: ApolloCacheManager.clearContentLabels,
-			});
-
-			if (response.errors) {
-				throw new CustomError(
-					'Failed to insert content labels in the database because of graphql errors',
-					null,
-					{ response }
-				);
-			}
-
-			const contentLabel = get(response, 'data.insert_app_content_labels.returning[0]');
-
-			if (!contentLabel) {
-				throw new CustomError('The response does not contain a label', null, {
-					response,
-				});
-			}
-
-			return contentLabel;
-		} catch (err) {
-			throw new CustomError('Failed to insert content label in the database', err, {
-				variables,
-				query: 'INSERT_CONTENT_LABEL',
-			});
 		}
 	}
 

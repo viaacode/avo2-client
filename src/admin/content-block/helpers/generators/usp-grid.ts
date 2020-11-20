@@ -39,7 +39,7 @@ export const INITIAL_USP_GRID_BLOCK_STATE = (): BlockUspGridWrapperProps &
 
 export const USP_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('USP'),
+	name: i18n.t('admin/content-block/helpers/generators/usp-grid___usp'),
 	type: ContentBlockType.UspGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),

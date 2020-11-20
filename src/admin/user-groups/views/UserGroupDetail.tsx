@@ -209,7 +209,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		}
 		return (
 			<Container mode="vertical" size="small">
-				<Container mode="horizontal">
+				<Container mode="horizontal" size="full-width">
 					<Spacer margin="bottom-extra-large">
 						<Table horizontal variant="invisible" className="c-table_detail-page">
 							<tbody>
@@ -281,7 +281,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.USER_GROUP_OVERVIEW)}
 			pageTitle={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
-			size="large"
+			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>

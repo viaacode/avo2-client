@@ -29,7 +29,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 ) => [
 	{
 		id: 'id',
-		label: i18n.t('Id'),
+		label: i18n.t('admin/users/user___id'),
 		sortable: true,
 		visibleByDefault: false,
 	},
@@ -58,7 +58,10 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [...userGroupOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+			options: [
+				...userGroupOptions,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
 		} as CheckboxDropdownModalProps,
 	},
 	{
@@ -68,12 +71,15 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [...businessCategoryOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+			options: [
+				...businessCategoryOptions,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
 		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'is_exception',
-		label: i18n.t('Uitzonderingsaccount'),
+		label: i18n.t('admin/users/user___uitzonderingsaccount'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
@@ -99,7 +105,10 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [...companyOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+			options: [
+				...companyOptions,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
 		} as CheckboxDropdownModalProps,
 	},
 	{
@@ -159,25 +168,27 @@ type UserDeleteRadioOption = { label: string; value: UserDeleteOption };
 export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 	return [
 		{
-			label: i18n.t('Verwijder alle content'),
+			label: i18n.t('admin/users/user___verwijder-alle-content'),
 			value: 'DELETE_ALL',
 		},
 		{
-			label: i18n.t('Anonimiseer de publieke content, verwijder de rest'),
+			label: i18n.t('admin/users/user___anonimiseer-de-publieke-content-verwijder-de-rest'),
 			value: 'ANONYMIZE_PUBLIC',
 		},
 		{
 			label: i18n.t(
-				'Verwijder privé content, behoud publieke content met de naam van de gebruiker'
+				'admin/users/user___verwijder-prive-content-behoud-publieke-content-met-de-naam-van-de-gebruiker'
 			),
 			value: 'DELETE_PRIVATE_KEEP_NAME',
 		},
 		{
-			label: i18n.t('Zet publieke content over naar een andere gebruiker, verwijder de rest'),
+			label: i18n.t(
+				'admin/users/user___zet-publieke-content-over-naar-een-andere-gebruiker-verwijder-de-rest'
+			),
 			value: 'TRANSFER_PUBLIC',
 		},
 		{
-			label: i18n.t('Zet alle content over naar een andere gebruiker'),
+			label: i18n.t('admin/users/user___zet-alle-content-over-naar-een-andere-gebruiker'),
 			value: 'TRANSFER_ALL',
 		},
 	];
@@ -195,23 +206,23 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 
 	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
 		actions.push({
-			label: i18n.t('Blokkeren'),
+			label: i18n.t('admin/users/user___blokkeren'),
 			value: 'block',
 		});
 		actions.push({
-			label: i18n.t('Deblokkeren'),
+			label: i18n.t('admin/users/user___deblokkeren'),
 			value: 'unblock',
 		});
 		actions.push({
-			label: i18n.t('Verwijderen'),
+			label: i18n.t('admin/users/user___verwijderen'),
 			value: 'delete',
 		});
 		actions.push({
-			label: i18n.t('Vakken aanpassen'),
+			label: i18n.t('admin/users/user___vakken-aanpassen'),
 			value: 'change_subjects',
 		});
 		actions.push({
-			label: i18n.t('Exporteren'),
+			label: i18n.t('admin/users/user___exporteren'),
 			value: 'export',
 		});
 	}

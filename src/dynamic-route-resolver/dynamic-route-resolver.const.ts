@@ -34,8 +34,10 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 });
 
 export const GET_ERROR_MESSAGES: () => { [key: string]: string } = () => ({
-	DEPUBLISHED_PAGINA: i18n.t('Deze pagina is niet meer beschikbaar'),
+	DEPUBLISHED_PAGINA: i18n.t(
+		'dynamic-route-resolver/dynamic-route-resolver___deze-pagina-is-niet-meer-beschikbaar'
+	),
 	DEPUBLISHED_EVENT_DETAIL: i18n.t(
-		'Dit event is reeds afgelopen. <a href="/workshops-en-events">Bekijk al onze events</a>'
+		'dynamic-route-resolver/dynamic-route-resolver___dit-event-is-reeds-afgelopen-a-href-workshops-en-events-bekijk-al-onze-events-a'
 	),
 });

@@ -9,6 +9,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Icon,
@@ -42,6 +43,7 @@ import {
 	buildLink,
 	copyToClipboard,
 	CustomError,
+	isMobileWidth,
 	navigate,
 	sanitizeHtml,
 } from '../../shared/helpers';
@@ -400,30 +402,34 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
-												<Form type="inline">
+												<Form
+													type={isMobileWidth() ? 'standard' : 'inline'}
+												>
 													<FormGroup
 														label={t(
 															'assignment/views/assignment-edit___url'
 														)}
 													>
-														<TextInput
-															value={getAssignmentUrl()}
-															disabled
-														/>
+														<Flex>
+															<TextInput
+																value={getAssignmentUrl()}
+																disabled
+															/>
+															<Spacer margin="left-small">
+																<Button
+																	icon="copy"
+																	type="secondary"
+																	ariaLabel={t(
+																		'assignment/views/assignment-edit___kopieer-de-opdracht-url'
+																	)}
+																	title={t(
+																		'assignment/views/assignment-edit___kopieer-de-opdracht-url'
+																	)}
+																	onClick={copyAssignmentUrl}
+																/>
+															</Spacer>
+														</Flex>
 													</FormGroup>
-													<Spacer margin="left-small">
-														<Button
-															icon="copy"
-															type="secondary"
-															ariaLabel={t(
-																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-															)}
-															title={t(
-																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-															)}
-															onClick={copyAssignmentUrl}
-														/>
-													</Spacer>
 												</Form>
 											</Spacer>
 										)}

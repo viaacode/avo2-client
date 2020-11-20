@@ -21,7 +21,7 @@ export const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => (
 	PROJECTS: i18n.t('admin/shared/components/content-picker/content-picker___projecten'),
 	PROFILE: i18n.t('admin/shared/components/content-picker/content-picker___gebruiker'),
 	ANCHOR_LINK: i18n.t('admin/shared/components/content-picker/content-picker___anchors'),
-	FILE: i18n.t('Bestand'),
+	FILE: i18n.t('admin/shared/components/content-picker/content-picker___bestand'),
 });
 
 export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {

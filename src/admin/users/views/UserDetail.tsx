@@ -305,7 +305,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 										})
 									)}
 								/>,
-								t('Gelinked aan')
+								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
 								<TagList
@@ -389,8 +389,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							/>
 						)}
 						<Button
-							label={t('Bewerken')}
-							ariaLabel={t('Bewerk deze gebruiker')}
+							label={t('admin/users/views/user-detail___bewerken')}
+							ariaLabel={t('admin/users/views/user-detail___bewerk-deze-gebruiker')}
 							onClick={() =>
 								redirectToClientPage(
 									buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),

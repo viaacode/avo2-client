@@ -46,7 +46,10 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [...userGroupOptions, { label: i18n.t('Leeg'), id: NULL_FILTER }],
+			options: [
+				...userGroupOptions,
+				{ label: i18n.t('admin/content/content___leeg'), id: NULL_FILTER },
+			],
 		} as CheckboxDropdownModalProps,
 	},
 	{
@@ -65,7 +68,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'is_public',
-		label: i18n.t('Publiek'),
+		label: i18n.t('admin/content/content___publiek'),
 		sortable: true,
 		visibleByDefault: false,
 		filterType: 'BooleanCheckboxDropdown',
@@ -93,7 +96,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'labels',
-		label: i18n.t('Labels'),
+		label: i18n.t('admin/content/content___labels'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
@@ -103,7 +106,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'user_group_ids',
-		label: i18n.t('Zichtbaar voor'),
+		label: i18n.t('admin/content/content___zichtbaar-voor'),
 		sortable: false,
 		visibleByDefault: false,
 	},

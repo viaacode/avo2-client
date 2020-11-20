@@ -1,4 +1,5 @@
 import { DocumentNode } from 'graphql';
+import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -26,7 +27,6 @@ import {
 	EventContentType,
 	EventContentTypeSimplified,
 } from './bookmarks-views-plays-service.types';
-import { get } from 'lodash-es';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 	bookmarkCount: 0,

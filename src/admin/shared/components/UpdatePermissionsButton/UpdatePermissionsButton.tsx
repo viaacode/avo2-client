@@ -23,9 +23,14 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 
 	const getLabel = () => {
 		if (isNil(progress)) {
-			return t('Permissies toepassen');
+			return t(
+				'admin/shared/components/update-permissions-button/update-permissions-button___permissies-toepassen'
+			);
 		}
-		return t('Bezig met permissies toepassen: {{percentage}}%', { percentage: progress });
+		return t(
+			'admin/shared/components/update-permissions-button/update-permissions-button___bezig-met-permissies-toepassen-percentage',
+			{ percentage: progress }
+		);
 	};
 
 	const updateProgress = useCallback(async (): Promise<void> => {
@@ -33,7 +38,11 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 		setProgress((oldProgress) => {
 			// progress went from percentage to null => that means it completed the task
 			if (!isNil(oldProgress) && isNil(newProgress)) {
-				ToastService.success(t('Het toepassen van de permissies is voltooid'));
+				ToastService.success(
+					t(
+						'admin/shared/components/update-permissions-button/update-permissions-button___het-toepassen-van-de-permissies-is-voltooid'
+					)
+				);
 			}
 			return newProgress;
 		});
@@ -61,7 +70,11 @@ export const UpdatePermissionsButton: FunctionComponent<UpdatePermissionsButtonP
 				error?: string;
 			} = await PermissionService.triggerUpdatePermissions();
 			if (result && result.message === 'started') {
-				ToastService.success(t('Permissie update wordt gestart'));
+				ToastService.success(
+					t(
+						'admin/shared/components/update-permissions-button/update-permissions-button___permissie-update-wordt-gestart'
+					)
+				);
 			} else {
 				console.error(new CustomError('Permission update start failed', { result }));
 				ToastService.info(t(`Permissie update is reeds bezig`));

@@ -143,7 +143,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 			state: INITIAL_PAGE_OVERVIEW_BLOCK_STATE(),
 			fields: {
 				sortOrder: {
-					label: i18n.t('Sorteer volgorde'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/page-overview___sorteer-volgorde'
+					),
 					editorType: ContentBlockEditor.Select,
 					editorProps: {
 						options: GET_PAGE_OVERVIEW_ORDER_OPTIONS(),

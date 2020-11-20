@@ -122,7 +122,11 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 				await handleDateChange(null, rangeId);
 			}
 		} catch (err) {
-			ToastService.danger(`${t('Ongeldig jaar:')} ${value}`);
+			ToastService.danger(
+				`${t(
+					'shared/components/date-range-dropdown/date-range-dropdown___ongeldig-jaar'
+				)} ${value}`
+			);
 		}
 	};
 
