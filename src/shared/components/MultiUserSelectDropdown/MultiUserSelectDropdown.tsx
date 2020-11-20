@@ -52,6 +52,13 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selectedProfiles, setSelectedProfiles] = useState<PickerItem[]>([]);
+	const [selectedProfile, setSelectedProfile] = useState<PickerItem | undefined>(undefined);
+
+	useEffect(() => {
+		if (selectedProfile) {
+			setSelectedProfile(undefined);
+		}
+	}, [selectedProfile, setSelectedProfile]);
 
 	useEffect(() => {
 		if (values.length) {
@@ -171,28 +178,31 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 								/>
 							)}
 							<Spacer margin={['top', 'bottom']}>
-								<ContentPicker
-									onSelect={(selectedProfile) => {
-										if (selectedProfile) {
-											setSelectedProfiles((selectedProfiles) =>
-												uniqBy(
-													[...selectedProfiles, selectedProfile],
-													'value'
-												)
-											);
+								<div key={`profile-content-picker-${selectedProfile?.label}`}>
+									<ContentPicker
+										onSelect={(selectedProfile) => {
+											if (selectedProfile) {
+												setSelectedProfiles((selectedProfiles) =>
+													uniqBy(
+														[...selectedProfiles, selectedProfile],
+														'value'
+													)
+												);
+												setSelectedProfile(selectedProfile);
+											}
+										}}
+										hideTargetSwitch
+										allowedTypes={['PROFILE']}
+										hideTypeDropdown
+										placeholder={
+											placeholder ||
+											t(
+												'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___selecteer-een-gebruiker'
+											)
 										}
-									}}
-									hideTargetSwitch
-									allowedTypes={['PROFILE']}
-									hideTypeDropdown
-									placeholder={
-										placeholder ||
-										t(
-											'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___selecteer-een-gebruiker'
-										)
-									}
-									initialValue={undefined}
-								/>
+										initialValue={selectedProfile}
+									/>
+								</div>
 							</Spacer>
 
 							<FormGroup>
