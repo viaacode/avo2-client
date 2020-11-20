@@ -24,9 +24,11 @@ import {
 	redirectToLoggedOutHome,
 	redirectToServerLogoutPage,
 } from '../../authentication/helpers/redirects';
-import { CustomError } from '../../shared/helpers';
+import { CustomError, isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import i18n from '../../shared/translations/i18n';
+
+import './ErrorView.scss';
 
 export interface ErrorViewQueryParams {
 	message?: string;
@@ -68,9 +70,10 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		);
 	}
 
-	const errorMessage: string = isNil((queryParams.message as string) || message)
+	const messageText = (queryParams.message as string) || message || '';
+	const errorMessage: string = isNil(messageText)
 		? i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden')
-		: message || '';
+		: messageText;
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
@@ -102,32 +105,44 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		}
 	};
 
+	const renderButtons = (btns: string[]) => {
+		const buttons = (
+			<>
+				{btns.includes('home') && (
+					<Button
+						onClick={goToHome}
+						label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
+					/>
+				)}
+				{btns.includes('helpdesk') && (
+					<Button
+						type="danger"
+						onClick={() => window.zE('webWidget', 'toggle')}
+						label={t('error/views/error-view___contacteer-de-helpdesk')}
+					/>
+				)}
+			</>
+		);
+
+		if (isMobileWidth()) {
+			return <div className="c-error-buttons__mobile">{buttons}</div>;
+		} else {
+			return (
+				<Toolbar>
+					<ToolbarCenter>
+						<ButtonToolbar>{buttons}</ButtonToolbar>
+					</ToolbarCenter>
+				</Toolbar>
+			);
+		}
+	};
+
 	return (
 		<Container mode="vertical" background="alt">
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}
-					<Toolbar>
-						<ToolbarCenter>
-							<ButtonToolbar>
-								{buttons.includes('home') && (
-									<Button
-										onClick={goToHome}
-										label={t(
-											'error/views/error-view___ga-terug-naar-de-homepagina'
-										)}
-									/>
-								)}
-								{buttons.includes('helpdesk') && (
-									<Button
-										type="danger"
-										onClick={() => window.zE('webWidget', 'toggle')}
-										label={t('error/views/error-view___contacteer-de-helpdesk')}
-									/>
-								)}
-							</ButtonToolbar>
-						</ToolbarCenter>
-					</Toolbar>
+					{renderButtons(buttons)}
 				</Blankslate>
 			</Container>
 		</Container>
