@@ -17,7 +17,7 @@ import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-or
 
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
-import './MultiUserSelectDropdown.scss';
+import './MultiEducationalOrganisationSelectDropdown.scss';
 
 export interface Tag {
 	label: string;
@@ -29,7 +29,7 @@ export interface MultiEducationalOrganisationSelectDropdownProps {
 	id: string;
 	values: ClientEducationOrganization[];
 	disabled?: boolean;
-	onChange: (organisations: ClientEducationOrganization[], id: string) => void;
+	onChange: (organisations: string[], id: string) => void;
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
@@ -54,7 +54,10 @@ export const MultiEducationalOrganisationSelectDropdown: FunctionComponent<Multi
 	};
 
 	const applyFilter = () => {
-		onChange(selectedOrganisations, id);
+		onChange(
+			selectedOrganisations.map((org) => `${org.organizationId}:${org.unitId || ''}`),
+			id
+		);
 		closeDropdown();
 	};
 

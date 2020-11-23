@@ -151,24 +151,25 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [
-				...subjects,
-				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
-			],
+			options: [...subjects, { label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'subjects',
+		id: 'idps',
 		label: i18n.t('Toegang via'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [
-				...idps,
-				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
-			],
+			options: [...idps, { label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'educational_organisations',
+		label: i18n.t('Educatieve organisaties'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'MultiEducationalOrganisationSelectDropdown',
 	},
 ];
 

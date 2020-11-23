@@ -57,6 +57,7 @@ import {
 	DateRangeDropdown,
 	DeleteObjectModal,
 } from '../../../../shared/components';
+import { MultiEducationalOrganisationSelectDropdown } from '../../../../shared/components/MultiEducationalOrganisationSelectDropdown/MultiEducationalOrganisationSelectDropdown';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
@@ -75,7 +76,8 @@ export interface FilterableColumn extends TableColumn {
 		| 'CheckboxDropdownModal'
 		| 'DateRangeDropdown'
 		| 'BooleanCheckboxDropdown'
-		| 'MultiUserSelectDropdown';
+		| 'MultiUserSelectDropdown'
+		| 'MultiEducationalOrganisationSelectDropdown';
 	filterProps?: any;
 	visibleByDefault: boolean;
 }
@@ -85,6 +87,7 @@ const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
 	DateRangeDropdown: DateRangeParam,
 	BooleanCheckboxDropdown: BooleanParam,
 	MultiUserSelectDropdown: CheckboxListParam,
+	MultiEducationalOrganisationSelectDropdown: CheckboxListParam,
 };
 
 interface FilterTableProps extends RouteComponentProps {
@@ -366,6 +369,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										case 'MultiUserSelectDropdown':
 											return (
 												<MultiUserSelectDropdown
+													{...(col.filterProps || {})}
+													id={col.id}
+													label={col.label}
+													values={(tableState as any)[col.id]}
+													onChange={(value) =>
+														handleTableStateChanged(value, col.id)
+													}
+													key={`filter-${col.id}`}
+												/>
+											);
+
+										case 'MultiEducationalOrganisationSelectDropdown':
+											return (
+												<MultiEducationalOrganisationSelectDropdown
 													{...(col.filterProps || {})}
 													id={col.id}
 													label={col.label}
