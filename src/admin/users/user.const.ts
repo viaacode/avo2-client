@@ -21,11 +21,17 @@ export const ITEMS_PER_PAGE = 50;
 export const GET_USER_OVERVIEW_TABLE_COLS: (
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
-	businessCategoryOptions: CheckboxOption[]
+	businessCategoryOptions: CheckboxOption[],
+	educationLevels: CheckboxOption[],
+	subjects: CheckboxOption[],
+	idps: CheckboxOption[]
 ) => FilterableColumn[] = (
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
-	businessCategoryOptions: CheckboxOption[]
+	businessCategoryOptions: CheckboxOption[],
+	educationLevels: CheckboxOption[],
+	subjects: CheckboxOption[],
+	idps: CheckboxOption[]
 ) => [
 	{
 		id: 'id',
@@ -124,6 +130,45 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'education_levels',
+		label: i18n.t('Onderwijs niveaus'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				...educationLevels,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'subjects',
+		label: i18n.t('Vakken'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				...subjects,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'subjects',
+		label: i18n.t('Toegang via'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				...idps,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
+		} as CheckboxDropdownModalProps,
 	},
 ];
 

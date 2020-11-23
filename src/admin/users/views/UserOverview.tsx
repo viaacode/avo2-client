@@ -37,8 +37,13 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { useBusinessCategories } from '../../../shared/hooks/useBusinessCategory';
-import { useCompanies } from '../../../shared/hooks/useCompanies';
+import {
+	useBusinessCategories,
+	useCompanies,
+	useEducationLevels,
+	useSubjects,
+} from '../../../shared/hooks';
+import { useIdps } from '../../../shared/hooks/useIdps';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import AddOrRemoveLinkedElementsModal, {
@@ -84,6 +89,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
 	const [companies] = useCompanies(false);
 	const [businessCategories] = useBusinessCategories();
+	const [educationLevels] = useEducationLevels();
+	const [subjects] = useSubjects();
+	const [idps] = useIdps();
 	const [userGroupOptions] = useUserGroupOptions('CheckboxOption', false) as [
 		CheckboxOption[],
 		boolean
@@ -100,6 +108,32 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	);
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
+
+	const columns = GET_USER_OVERVIEW_TABLE_COLS(
+		setSelectedCheckboxes(
+			userGroupOptions,
+			get(tableState, 'author.user_groups', []) as string[]
+		),
+		companies.map(
+			(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+				id: option.or_id as string,
+				label: option.name as string,
+				checked: get(tableState, 'organisation', [] as string[]).includes(
+					String(option.or_id)
+				),
+			})
+		),
+		businessCategories.map(
+			(option: string): CheckboxOption => ({
+				id: option,
+				label: option,
+				checked: get(tableState, 'business_category', [] as string[]).includes(option),
+			})
+		),
+		setSelectedCheckboxes(educationLevels, get(tableState, 'education_levels', []) as string[]),
+		setSelectedCheckboxes(subjects, get(tableState, 'subjects', []) as string[]),
+		setSelectedCheckboxes(idps, get(tableState, 'idps', []) as string[])
+	);
 
 	const generateWhereObject = useCallback(
 		(filters: Partial<UserTableState>, onlySelectedProfiles: boolean) => {
@@ -123,8 +157,22 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
-					['user_group', 'organisation', 'business_category'],
-					['group_id', 'company_id', 'business_category']
+					[
+						'user_group',
+						'organisation',
+						'business_category',
+						'education_levels',
+						'subjects',
+						'idps',
+					],
+					[
+						'group_id',
+						'company_id',
+						'business_category',
+						'classifications.key',
+						'contexts.key',
+						'idps.idp',
+					]
 				)
 			);
 			andFilters.push(
@@ -290,14 +338,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState), true),
 				100000
-			);
-			const columns = GET_USER_OVERVIEW_TABLE_COLS(
-				setSelectedCheckboxes(
-					userGroupOptions,
-					get(tableState, 'author.user_groups', []) as string[]
-				),
-				companyOptions,
-				businessCategoryOptions
 			);
 			const columnIds =
 				tableState.columns && tableState.columns.length
@@ -625,22 +665,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		);
 	};
 
-	const businessCategoryOptions = businessCategories.map(
-		(option: string): CheckboxOption => ({
-			id: option,
-			label: option,
-			checked: get(tableState, 'business_category', [] as string[]).includes(option),
-		})
-	);
-
-	const companyOptions = companies.map(
-		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
-			id: option.or_id as string,
-			label: option.name as string,
-			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
-		})
-	);
-
 	const renderUserOverview = () => {
 		if (!profiles) {
 			return null;
@@ -648,11 +672,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		return (
 			<>
 				<FilterTable
-					columns={GET_USER_OVERVIEW_TABLE_COLS(
-						userGroupOptions,
-						companyOptions,
-						businessCategoryOptions
-					)}
+					columns={columns}
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>

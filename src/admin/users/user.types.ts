@@ -12,6 +12,9 @@ export type UserOverviewTableCol =
 	| 'stamboek'
 	| 'organisation'
 	| 'created_at'
+	| 'education_levels'
+	| 'subjects'
+	| 'idps'
 	| 'last_access_at';
 
 export interface UserTableState extends FilterableTableState {
@@ -23,6 +26,9 @@ export interface UserTableState extends FilterableTableState {
 	is_exception: boolean;
 	is_blocked: boolean;
 	created_at: string;
+	educationLevels: string[];
+	subjects: string[];
+	idps: string[];
 	columns: string[];
 }
 

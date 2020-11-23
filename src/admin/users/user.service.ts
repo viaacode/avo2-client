@@ -14,6 +14,7 @@ import {
 	BULK_DELETE_SUBJECTS_FROM_PROFILES,
 	GET_CONTENT_COUNTS_FOR_USERS,
 	GET_DISTINCT_BUSINESS_CATEGORIES,
+	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USER_BY_ID,
@@ -335,6 +336,22 @@ export class UserService {
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {
 				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
+			});
+		}
+	}
+
+	static async fetchIdps() {
+		try {
+			const response = await dataService.query({
+				query: GET_IDPS,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+			return get(response, 'data.users_idps', []).map((idp: { value: string }) => idp.value);
+		} catch (err) {
+			throw new CustomError('Failed to get idps from the database', err, {
+				query: 'GET_IDPS',
 			});
 		}
 	}

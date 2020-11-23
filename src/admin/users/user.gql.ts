@@ -156,6 +156,14 @@ export const GET_DISTINCT_BUSINESS_CATEGORIES = gql`
 	}
 `;
 
+export const GET_IDPS = gql`
+	query getIdps {
+		users_idps {
+			value
+		}
+	}
+`;
+
 export const GET_CONTENT_COUNTS_FOR_USERS = gql`
 	query getContentCountsForUsers($profileIds: [uuid!]!) {
 		publicCollections: app_collections_aggregate(
