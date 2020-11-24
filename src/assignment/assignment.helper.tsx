@@ -201,7 +201,7 @@ export class AssignmentHelper {
 
 		return (
 			<Container mode="horizontal" size="small" className="c-assignment-edit">
-				<Container mode="vertical" size="large">
+				<Container mode="vertical" size="small">
 					<Form>
 						<FormGroup
 							required
