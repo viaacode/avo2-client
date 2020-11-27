@@ -15,6 +15,7 @@ export type UserOverviewTableCol =
 	| 'education_levels'
 	| 'subjects'
 	| 'idps'
+	| 'educational_organisations'
 	| 'last_access_at';
 
 export interface UserTableState extends FilterableTableState {
@@ -131,4 +132,17 @@ export interface UserSummeryView {
 	company_name: string | null;
 	is_exception: boolean;
 	business_category: string | null;
+	idps: {
+		idp: string;
+	}[];
+	classifications: {
+		key: string;
+	}[];
+	contexts: {
+		key: string;
+	}[];
+	organisations: {
+		organization_id: string;
+		unit_id?: string;
+	}[];
 }

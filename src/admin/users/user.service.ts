@@ -2,6 +2,7 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { compact, flatten, get, isNil } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
@@ -97,6 +98,15 @@ export class UserService {
 									name: user.company_name,
 							  } as Avo.Organization.Organization)
 							: null,
+						educational_organisations: user.organisations.map(
+							(org): ClientEducationOrganization => ({
+								organizationId: org.organization_id,
+								unitId: org.unit_id || null,
+								label: '', // TODO find name somehow
+							})
+						),
+						subjects: user.classifications.map((classification) => classification.key),
+						education_levels: user.contexts.map((context) => context.key),
 						is_exception: user.is_exception,
 						business_category: user.business_category,
 						created_at: user.acc_created_at,
@@ -117,10 +127,11 @@ export class UserService {
 							is_blocked: user.is_blocked,
 							created_at: user.acc_created_at,
 							last_access_at: user.last_access_at as string, // TODO remove cast after update to typings 2.26.0
+							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)
 			);
-			const profileCount = get(response, 'data.shared_users_aggregate.aggregate.count');
+			const profileCount = get(response, 'data.users_summary_view_aggregate.aggregate.count');
 
 			if (!profiles) {
 				throw new CustomError('Response does not contain any profiles', null, {

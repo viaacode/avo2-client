@@ -90,13 +90,21 @@ export const GET_USERS = gql`
 			company_name
 			is_exception
 			business_category
+			idps {
+				idp
+			}
+			classifications {
+				key
+			}
+			contexts {
+				key
+			}
+			organisations {
+				organization_id
+				unit_id
+			}
 		}
-		users_summary_view_aggregate(
-			offset: $offset
-			limit: $limit
-			order_by: $orderBy
-			where: $where
-		) {
+		users_summary_view_aggregate(where: $where) {
 			aggregate {
 				count
 			}

@@ -48,6 +48,7 @@ import { EducationalOrganisationsSelect } from '../../shared/components/Educatio
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate } from '../../shared/helpers';
 import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
+import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
@@ -562,14 +563,7 @@ const Profile: FunctionComponent<
 						/>
 					</>
 				) : (
-					<TagList
-						closable={false}
-						swatches={false}
-						tags={selectedOrganisations.map((org) => ({
-							label: org.label,
-							id: org.label,
-						}))}
-					/>
+					stringsToTagList(selectedOrganisations.map((org) => org.label))
 				)}
 			</FormGroup>
 		);

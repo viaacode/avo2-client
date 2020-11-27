@@ -22,6 +22,7 @@ import { ToastService } from '../../services';
 import { EducationOrganisationService } from '../../services/education-organizations-service';
 
 import './EducationalOrganisationsSelect.scss';
+import { stringsToTagList } from '../../helpers/strings-to-taglist';
 
 export interface Tag {
 	label: string;
@@ -223,15 +224,7 @@ export const EducationalOrganisationsSelect: FunctionComponent<EducationalOrgani
 					</Button>
 				</DropdownButton>
 				<DropdownContent>
-					<TagList
-						closable
-						swatches={false}
-						tags={organisations.map((org: ClientEducationOrganization) => ({
-							label: org.label,
-							id: org.label,
-						}))}
-						onTagClosed={removeOrganisation}
-					/>
+					{stringsToTagList(organisations, 'label', undefined, removeOrganisation)}
 					<Spacer margin="top-small">
 						<Select
 							options={[

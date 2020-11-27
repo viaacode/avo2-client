@@ -24,6 +24,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -34,7 +35,9 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
+import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import {
@@ -169,8 +172,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 						'group_id',
 						'company_id',
 						'business_category',
-						'classifications.key',
 						'contexts.key',
+						'classifications.key',
 						'idps.idp',
 					]
 				)
@@ -523,6 +526,22 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			case 'last_access_at':
 				const lastAccessDate = get(rowData, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+
+			case 'idps':
+				return idpMapsToTagList(get(rowData, 'user.idpmaps', [])) || '-';
+
+			case 'education_levels':
+			case 'subjects':
+				const labels = get(rowData, columnId, []);
+				return stringsToTagList(labels) || '-';
+
+			case 'educational_organisations':
+				const orgs: ClientEducationOrganization[] = get(rowData, columnId, []);
+				return (
+					stringsToTagList(
+						orgs.map((org) => org.label || org.unitId || org.organizationId)
+					) || '-'
+				);
 
 			default:
 				// TODO remove cast after update to typings v2.25.0

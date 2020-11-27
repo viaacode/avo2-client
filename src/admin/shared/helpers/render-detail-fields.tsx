@@ -1,10 +1,9 @@
 import { get, isBoolean, isNil, isString } from 'lodash-es';
 import React, { ReactElement, ReactNode } from 'react';
 
-import { TagList, TagOption } from '@viaa/avo2-components';
-
 import { formatDate } from '../../../shared/helpers/formatters';
 import { sanitizeHtml, sanitizePresets } from '../../../shared/helpers/sanitize';
+import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
 	return (
@@ -49,19 +48,7 @@ export function renderMultiOptionDetailRows(
 ): ReactElement[] {
 	return propAndTranslations.map((propAndTranslation) => {
 		return renderDetailRow(
-			obj[propAndTranslation[0]] ? (
-				<TagList
-					swatches={false}
-					tags={obj[propAndTranslation[0]].map(
-						(subject: string): TagOption => ({
-							id: subject,
-							label: subject,
-						})
-					)}
-				/>
-			) : (
-				'-'
-			),
+			obj[propAndTranslation[0]] ? stringsToTagList(obj[propAndTranslation[0]]) : '-',
 			propAndTranslation[1]
 		);
 	});

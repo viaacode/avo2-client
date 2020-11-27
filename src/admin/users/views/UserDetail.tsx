@@ -28,9 +28,11 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
+import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
+import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../../shared/services';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { ADMIN_PATH, IDP_COLORS } from '../../admin.const';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -296,32 +298,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								<TagList
-									tags={get(storedProfile, 'user.idpmaps', []).map(
-										(idpMap: { idp: Avo.Auth.IdpType }): TagOption => ({
-											color: IDP_COLORS[idpMap.idp],
-											label: idpMap.idp,
-											id: idpMap.idp,
-										})
-									)}
-								/>,
+								idpMapsToTagList(user.idpmaps),
 								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
-								<TagList
-									tags={get(
-										storedProfile,
-										'profile_classifications',
-										[] as any[]
-									).map(
-										(subject: { key: string }): TagOption => ({
-											id: subject.key,
-											label: subject.key,
-										})
-									)}
-									swatches={false}
-									closable={false}
-								/>,
+								stringsToTagList(
+									get(storedProfile, 'profile_classifications', [] as any[]),
+									'key'
+								),
 								t('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(

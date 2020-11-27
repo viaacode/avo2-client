@@ -169,7 +169,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('Educatieve organisaties'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'MultiEducationalOrganisationSelectDropdown',
+		// filterType: 'MultiEducationalOrganisationSelectDropdown',
 	},
 ];
 
