@@ -1,30 +1,20 @@
 import classnames from 'classnames';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-	Button,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
-	Form,
-	FormGroup,
-	Icon,
-	Spacer,
-	TagList,
-} from '@viaa/avo2-components';
+import { Button, Icon, Modal, ModalBody, ModalFooterRight, TagList } from '@viaa/avo2-components';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
-import './MultiEducationalOrganisationSelectDropdown.scss';
+import './MultiEducationalOrganisationSelectModal.scss';
 
 export interface Tag {
 	label: string;
 	id: string;
 }
 
-export interface MultiEducationalOrganisationSelectDropdownProps {
+export interface MultiEducationalOrganisationSelectModalProps {
 	label: string;
 	id: string;
 	values: ClientEducationOrganization[];
@@ -33,7 +23,7 @@ export interface MultiEducationalOrganisationSelectDropdownProps {
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
-export const MultiEducationalOrganisationSelectDropdown: FunctionComponent<MultiEducationalOrganisationSelectDropdownProps> = ({
+export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEducationalOrganisationSelectModalProps> = ({
 	label,
 	id,
 	values,
@@ -48,8 +38,11 @@ export const MultiEducationalOrganisationSelectDropdown: FunctionComponent<Multi
 		ClientEducationOrganization[]
 	>(values);
 
-	const closeDropdown = () => {
-		setSelectedOrganisations([]);
+	useEffect(() => {
+		setSelectedOrganisations(values);
+	}, [isOpen, values]);
+
+	const closeModal = () => {
 		setIsOpen(false);
 	};
 
@@ -58,28 +51,25 @@ export const MultiEducationalOrganisationSelectDropdown: FunctionComponent<Multi
 			selectedOrganisations.map((org) => `${org.organizationId}:${org.unitId || ''}`),
 			id
 		);
-		closeDropdown();
+		closeModal();
 	};
 
-	const deleteAllSelectedOrganisations = () => {
+	// @ts-ignore
+	const deleteAllSelectedOrganisations = (tagId: string | number, clickEvent: MouseEvent) => {
 		setSelectedOrganisations([]);
 		onChange([], id);
+		clickEvent.stopPropagation();
 	};
 
 	const renderCheckboxControl = () => {
 		return (
-			<Dropdown
-				label={label}
-				menuClassName="c-user-dropdown__menu"
-				isOpen={isOpen}
-				onOpen={() => setIsOpen(true)}
-				onClose={closeDropdown}
-			>
-				<DropdownButton>
+			<>
+				<div>
 					<Button
 						autoHeight
 						className="c-checkbox-dropdown-modal__trigger"
 						type="secondary"
+						onClick={() => setIsOpen(!isOpen)}
 					>
 						<div className="c-button__content">
 							<div className="c-button__label">{label}</div>
@@ -108,32 +98,32 @@ export const MultiEducationalOrganisationSelectDropdown: FunctionComponent<Multi
 							/>
 						</div>
 					</Button>
-				</DropdownButton>
-				<DropdownContent>
-					<Spacer>
-						<Form>
-							<Spacer margin="bottom">
-								<EducationalOrganisationsSelect
-									organisations={selectedOrganisations}
-									onChange={setSelectedOrganisations}
-								/>
-							</Spacer>
-
-							<FormGroup>
-								<Button
-									label={t(
-										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
-									)}
-									type="primary"
-									className="c-apply-filter-button"
-									block
-									onClick={applyFilter}
-								/>
-							</FormGroup>
-						</Form>
-					</Spacer>
-				</DropdownContent>
-			</Dropdown>
+				</div>
+				<Modal
+					isOpen={isOpen}
+					onClose={closeModal}
+					title={t('Educatieve organisaties')}
+					size={'medium'}
+				>
+					<ModalBody>
+						<EducationalOrganisationsSelect
+							organisations={selectedOrganisations}
+							onChange={setSelectedOrganisations}
+						/>
+					</ModalBody>
+					<ModalFooterRight>
+						<Button
+							label={t(
+								'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
+							)}
+							type="primary"
+							className="c-apply-filter-button"
+							block
+							onClick={applyFilter}
+						/>
+					</ModalFooterRight>
+				</Modal>
+			</>
 		);
 	};
 

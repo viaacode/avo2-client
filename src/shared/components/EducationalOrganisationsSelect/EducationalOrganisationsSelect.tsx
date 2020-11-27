@@ -3,26 +3,16 @@ import { pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-	Alert,
-	Button,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
-	Icon,
-	Select,
-	Spacer,
-	TagList,
-} from '@viaa/avo2-components';
+import { Alert, Select, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { CustomError } from '../../helpers';
+import { stringsToTagList } from '../../helpers/strings-to-taglist';
 import { ToastService } from '../../services';
 import { EducationOrganisationService } from '../../services/education-organizations-service';
 
 import './EducationalOrganisationsSelect.scss';
-import { stringsToTagList } from '../../helpers/strings-to-taglist';
 
 export interface Tag {
 	label: string;
@@ -43,7 +33,6 @@ export const EducationalOrganisationsSelect: FunctionComponent<EducationalOrgani
 }) => {
 	const [t] = useTranslation();
 
-	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [cities, setCities] = useState<string[]>([]);
 	const [organisationsInCity, setOrganisationsInCity] = useState<ClientEducationOrganization[]>(
 		[]
@@ -73,7 +62,6 @@ export const EducationalOrganisationsSelect: FunctionComponent<EducationalOrgani
 		(async () => {
 			try {
 				if (!selectedCity) {
-					onChange([] as Avo.EducationOrganization.Organization[]);
 					return;
 				}
 				setOrganizationsLoadingState('loading');
@@ -124,7 +112,7 @@ export const EducationalOrganisationsSelect: FunctionComponent<EducationalOrgani
 	};
 
 	const onSelectedOrganisationChanged = (orgLabel: string) => {
-		const selectedOrg = organisations.find(
+		const selectedOrg = organisationsInCity.find(
 			(org: ClientEducationOrganization) => org.label === orgLabel
 		);
 		if (!selectedOrg) {
@@ -170,105 +158,51 @@ export const EducationalOrganisationsSelect: FunctionComponent<EducationalOrgani
 		];
 	};
 
-	const closeDropdown = () => {
-		onChange([]);
-		setIsOpen(false);
-	};
-
-	const deleteAllSelectedOrgs = () => {
-		onChange([]);
-		onChange([]);
-	};
-
-	const renderCheckboxControl = () => {
+	const renderOrganisationTagsAndSelects = () => {
 		return (
-			<Dropdown
-				label={t('Educatieve organisaties')}
-				menuClassName="c-educationalOrganisation-dropdown__menu"
-				isOpen={isOpen}
-				onOpen={() => setIsOpen(true)}
-				onClose={closeDropdown}
-			>
-				<DropdownButton>
-					<Button
-						autoHeight
-						className="c-checkbox-dropdown-modal__trigger"
-						type="secondary"
-					>
-						<div className="c-button__content">
-							<div className="c-button__label">{t('Educatieve organisaties')}</div>
-							{!!organisations.length && (
-								<TagList
-									tags={[
-										{
-											id: 'educationalOrganisations',
-											label: `${organisations.length} ${
-												organisations.length > 1
-													? t('Educatieve organisaties')
-													: t('Educatieve organisatie')
-											}`,
-										},
-									]}
-									swatches={false}
-									closable
-									onTagClosed={deleteAllSelectedOrgs}
-								/>
+			<>
+				{stringsToTagList(organisations, 'label', undefined, removeOrganisation)}
+				<Spacer margin="top-small">
+					<Select
+						options={[
+							{
+								label: t('settings/components/profile___voeg-een-organisatie-toe'),
+								value: '',
+							},
+							...(cities || []).map((c) => ({ label: c, value: c })),
+						]}
+						value={selectedCity || ''}
+						onChange={onSelectedCityChanged}
+					/>
+				</Spacer>
+				<Spacer margin={['top-small', 'bottom-small']}>
+					{organizationsLoadingState === 'loading' && (
+						<Alert
+							type="spinner"
+							message={t(
+								'settings/components/profile___bezig-met-ophalen-van-organisaties'
 							)}
-							<Icon
-								className="c-button__icon"
-								name={isOpen ? 'caret-up' : 'caret-down'}
-								size="small"
-								type="arrows"
-							/>
-						</div>
-					</Button>
-				</DropdownButton>
-				<DropdownContent>
-					{stringsToTagList(organisations, 'label', undefined, removeOrganisation)}
-					<Spacer margin="top-small">
-						<Select
-							options={[
-								{
-									label: t(
-										'settings/components/profile___voeg-een-organisatie-toe'
-									),
-									value: '',
-								},
-								...(cities || []).map((c) => ({ label: c, value: c })),
-							]}
-							value={selectedCity || ''}
-							onChange={onSelectedCityChanged}
 						/>
-					</Spacer>
-					<Spacer margin={['top-small', 'bottom-small']}>
-						{organizationsLoadingState === 'loading' && (
-							<Alert
-								type="spinner"
-								message={t(
-									'settings/components/profile___bezig-met-ophalen-van-organisaties'
-								)}
-							/>
-						)}
-						{!!selectedCity && organizationsLoadingState === 'loaded' && (
-							<Select
-								options={getOrganisationOptions()}
-								value={''}
-								onChange={onSelectedOrganisationChanged}
-							/>
-						)}
-					</Spacer>
-				</DropdownContent>
-			</Dropdown>
+					)}
+					{!!selectedCity && organizationsLoadingState === 'loaded' && (
+						<Select
+							options={getOrganisationOptions()}
+							value={''}
+							onChange={onSelectedOrganisationChanged}
+						/>
+					)}
+				</Spacer>
+			</>
 		);
 	};
 
 	if (disabled) {
 		return (
 			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
-				{renderCheckboxControl()}
+				{renderOrganisationTagsAndSelects()}
 			</div>
 		);
 	}
 
-	return renderCheckboxControl();
+	return renderOrganisationTagsAndSelects();
 };

@@ -1,0 +1,26 @@
+.c-button.c-checkbox-dropdown-modal__trigger {
+	padding: 0 1.6rem;
+	margin-bottom: 0.8rem;
+
+	.c-tag-list {
+		width: calc(100% - 20px);
+		margin-left: 6px;
+
+		.c-tag {
+			margin: 0.3rem 0.4rem;
+		}
+	}
+
+	> .c-button__content > .c-button__label {
+		white-space: nowrap;
+	}
+}
+
+.c-dropdown__menu.c-user-dropdown__menu {
+	min-width: 500px;
+	max-width: 500px;
+
+	.c-select__clear-indicator {
+		display: none;
+	}
+}

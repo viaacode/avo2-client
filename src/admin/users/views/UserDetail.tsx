@@ -298,7 +298,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								idpMapsToTagList(user.idpmaps),
+								idpMapsToTagList(user.idpmaps, 'idps'),
 								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(

@@ -27,9 +27,10 @@ export interface UserTableState extends FilterableTableState {
 	is_exception: boolean;
 	is_blocked: boolean;
 	created_at: string;
-	educationLevels: string[];
+	education_levels: string[];
 	subjects: string[];
 	idps: string[];
+	educational_organisations: string[];
 	columns: string[];
 }
 

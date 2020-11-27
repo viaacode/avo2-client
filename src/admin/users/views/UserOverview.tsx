@@ -1,11 +1,19 @@
 import classnames from 'classnames';
 import FileSaver from 'file-saver';
 import { compact, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import reactToString from 'react-to-string';
+import { compose } from 'redux';
 
 import {
 	Alert,
@@ -19,6 +27,8 @@ import {
 	RadioButtonGroup,
 	Spacer,
 	TagInfo,
+	TagList,
+	TagOption,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
@@ -34,7 +44,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { eduOrgToClientOrg } from '../../../shared/helpers/edu-org-string-to-client-org';
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
@@ -81,7 +92,10 @@ import './UserOverview.scss';
 
 interface UserOverviewProps {}
 
-const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }) => {
+const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & UserProps> = ({
+	user,
+	history,
+}) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
@@ -185,6 +199,20 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					['acc_created_at', 'last_access_at']
 				)
 			);
+			if (filters.educational_organisations && filters.educational_organisations.length) {
+				const orFilters: any[] = [];
+				eduOrgToClientOrg(filters.educational_organisations).forEach((org) => {
+					orFilters.push({
+						organisations: {
+							organization_id: { _eq: org.organizationId },
+							unit_id: org.unitId ? { _eq: org.unitId } : { _is_null: true },
+						},
+					});
+				});
+				andFilters.push({
+					_or: orFilters,
+				});
+			}
 			if (onlySelectedProfiles) {
 				andFilters.push({ profile_id: { _in: selectedProfileIds } });
 			}
@@ -330,6 +358,15 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			);
 		}
 		setIsLoading(false);
+	};
+
+	const navigateFilterToOption = (columnId: string) => (tagId: ReactText) => {
+		navigate(
+			history,
+			ADMIN_PATH.USER_OVERVIEW,
+			{},
+			{ [columnId]: tagId.toString(), columns: (tableState.columns || []).join('~') }
+		);
 	};
 
 	const bulkExport = async () => {
@@ -528,19 +565,33 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			case 'idps':
-				return idpMapsToTagList(get(rowData, 'user.idpmaps', [])) || '-';
+				return (
+					idpMapsToTagList(
+						get(rowData, 'user.idpmaps', []),
+						`user_${get(rowData, 'user.uid')}`,
+						navigateFilterToOption(columnId)
+					) || '-'
+				);
 
 			case 'education_levels':
 			case 'subjects':
 				const labels = get(rowData, columnId, []);
-				return stringsToTagList(labels) || '-';
+				return stringsToTagList(labels, null, navigateFilterToOption(columnId)) || '-';
 
 			case 'educational_organisations':
 				const orgs: ClientEducationOrganization[] = get(rowData, columnId, []);
+				const tags = orgs.map(
+					(org): TagOption => ({
+						id: `${org.organizationId}:${org.unitId || ''}`,
+						label: org.label || org.unitId || org.organizationId,
+					})
+				);
 				return (
-					stringsToTagList(
-						orgs.map((org) => org.label || org.unitId || org.organizationId)
-					) || '-'
+					<TagList
+						tags={tags}
+						swatches={false}
+						onTagClicked={navigateFilterToOption(columnId)}
+					/>
 				);
 
 			default:
@@ -865,4 +916,4 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	);
 };
 
-export default withUser(UserOverview) as FunctionComponent<UserOverviewProps>;
+export default compose(withRouter, withUser)(UserOverview) as FunctionComponent<UserOverviewProps>;
