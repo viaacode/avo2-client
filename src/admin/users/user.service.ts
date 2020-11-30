@@ -1,5 +1,6 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, flatten, get, omit } from 'lodash-es';
+import { compact, flatten, get, omit, set } from 'lodash-es';
+import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -24,22 +25,41 @@ import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } fro
 export class UserService {
 	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
 		try {
-			const response = await dataService.query({
+			const userResponse = await dataService.query({
 				query: GET_USER_BY_ID,
 				variables: {
 					id: profileId,
 				},
 				fetchPolicy: 'no-cache',
 			});
-			if (response.errors) {
+			if (userResponse.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
-					response,
+					userResponse,
 				});
 			}
-			const profile = get(response, 'data.users_profiles[0]');
+			const profile = get(userResponse, 'data.users_profiles[0]');
 			if (!profile) {
-				throw new CustomError('Failed to find profile by id', null, { response });
+				throw new CustomError('Failed to find profile by id', null, { userResponse });
 			}
+
+			// Also fetch the block and unblock times from the event database
+			const reply = await fetchWithLogout(
+				`${getEnv('PROXY_URL')}/user/info?${queryString.stringify({
+					profileId: profile.id,
+				})}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+
+			const blockEventsResponse = await reply.json();
+			set(profile, 'user.blockedAt', blockEventsResponse.blockedAt);
+			set(profile, 'user.unblockedAt', blockEventsResponse.unblockedAt);
+
 			return profile;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {

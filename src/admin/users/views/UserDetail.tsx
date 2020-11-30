@@ -284,9 +284,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
-								['created_at', 'Aangemaakt op'],
-								['updated_at', 'Aangepast op'],
-								['user.last_access_at', 'Laatste toegang'],
+								['created_at', t('Aangemaakt op')],
+								['updated_at', t('Aangepast op')],
+								['user.last_access_at', t('Laatste toegang')],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
 								['business_category', t('admin/users/views/user-detail___oormerk')],
@@ -298,6 +298,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									'user.is_blocked',
 									t('admin/users/views/user-detail___geblokkeerd'),
 								],
+							])}
+							{renderDateDetailRows(storedProfile, [
+								['user.blockedAt', t('Laatst geblokeerd op')],
+								['user.unblockedAt', t('Laatst gedeblokkeerd op')],
 							])}
 							{renderDetailRow(
 								<TagList
