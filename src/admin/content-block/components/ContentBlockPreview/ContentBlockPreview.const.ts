@@ -13,7 +13,7 @@ import {
 import BlockSearch from '../../../../search/components/BlockSearch';
 import { ContentBlockType } from '../../../shared/types';
 import {
-	BlockContentPageMeta,
+	ContentPageMeta,
 	BlockImageGridWrapper,
 	BlockLogoGridWrapper,
 	BlockUspGridWrapper,
@@ -51,7 +51,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Spotlight]: BlockSpotlight,
 	[ContentBlockType.Hero]: HeroWrapper,
 	[ContentBlockType.Search]: BlockSearch,
-	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
+	[ContentBlockType.ContentPageMeta]: ContentPageMeta,
 	[ContentBlockType.LogoGrid]: BlockLogoGridWrapper,
 	[ContentBlockType.UspGrid]: BlockUspGridWrapper,
 	[ContentBlockType.Eventbrite]: BlockEventbrite,
