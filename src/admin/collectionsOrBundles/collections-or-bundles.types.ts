@@ -17,6 +17,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'subjects'
 	| 'education_levels'
 	| 'collection_labels'
+	| 'is_copy'
 	| 'actions';
 
 export interface CollectionsOrBundlesTableState extends FilterableTableState {

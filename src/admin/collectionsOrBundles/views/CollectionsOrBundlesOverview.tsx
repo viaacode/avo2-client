@@ -751,6 +751,20 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 				return '-';
 
+			case 'is_copy':
+				if (!!get(rowData, 'relations[0].object')) {
+					return (
+						<a
+							href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+								id: get(rowData, 'relations[0].object'),
+							})}
+						>
+							Ja
+						</a>
+					);
+				}
+				return 'Nee';
+
 			case 'actions':
 				return (
 					<ButtonToolbar>
