@@ -815,7 +815,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const thumbnail =
 			get(fragment, 'thumbnail_path') || get(fragment, 'item_meta.thumbnail_path');
 		return (
-			<Flex className="c-collection-or-bundle-edit__draggable-item">
+			<Flex className="c-collection-or-bundle-edit__draggable-item" center>
 				<FlexItem shrink>
 					{<div style={{ backgroundImage: `url(${thumbnail})` }} />}
 				</FlexItem>
@@ -836,7 +836,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 										'description'
 									) || ''
 								),
-							{ length: 50 }
+							{ length: 45 }
 						)}
 					</BlockHeading>
 				</FlexItem>
