@@ -11,6 +11,10 @@
 			margin: 0.3rem 0.4rem;
 		}
 	}
+
+	> .c-button__content > .c-button__label {
+		white-space: nowrap;
+	}
 }
 
 .c-checkbox-dropdown {

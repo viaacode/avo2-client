@@ -36,8 +36,8 @@ export const GET_USERS_IN_COMPANY = gql`
 				is_blocked
 				last_access_at
 			}
-			profile_user_groups {
-				groups(limit: 1) {
+			profile_user_group {
+				group(limit: 1) {
 					id
 					label
 				}

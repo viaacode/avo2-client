@@ -18,8 +18,8 @@ export const GET_COLLECTIONS = gql`
 			owner_profile_id
 			profile {
 				id
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						label
 						id
 					}
