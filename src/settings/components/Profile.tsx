@@ -340,8 +340,8 @@ const Profile: FunctionComponent<
 				})),
 				organizations: (selectedOrganisations || []).map((option) => ({
 					profile_id: profileId,
-					organization_id: option.label.toString().split(':')[0],
-					unit_id: option.label.toString().split(':')[1] || null,
+					organization_id: option.organizationId,
+					unit_id: option.unitId || null,
 				})),
 				company_id: companyId || null,
 			};
