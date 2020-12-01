@@ -185,30 +185,28 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const profileUserGroup: RawUserGroup[] = get(storedProfile, 'profile_user_group.group', []);
+		const profileUserGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group', []);
 
-		profileUserGroup.forEach((group) => {
-			const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
-				group,
-				'group_user_permission_groups',
-				[]
-			);
-			rawPermissionGroups.forEach((permissionGroup) => {
-				permissionGroups.push({
-					id: permissionGroup.permission_group.id,
-					label: permissionGroup.permission_group.label,
-				});
-				const rawPermissions: RawPermissionLink[] = get(
-					permissionGroup.permission_group,
-					'permission_group_user_permissions'
-				);
-				rawPermissions.map((permission) =>
-					permissions.push({
-						id: permission.permission.id,
-						label: permission.permission.label,
-					})
-				);
+		const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
+			profileUserGroup,
+			'group_user_permission_groups',
+			[]
+		);
+		rawPermissionGroups.forEach((permissionGroup) => {
+			permissionGroups.push({
+				id: permissionGroup.permission_group.id,
+				label: permissionGroup.permission_group.label,
 			});
+			const rawPermissions: RawPermissionLink[] = get(
+				permissionGroup.permission_group,
+				'permission_group_user_permissions'
+			);
+			rawPermissions.map((permission) =>
+				permissions.push({
+					id: permission.permission.id,
+					label: permission.permission.label,
+				})
+			);
 		});
 
 		return (
