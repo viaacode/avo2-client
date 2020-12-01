@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import FileSaver from 'file-saver';
 import { compact, get, isNil } from 'lodash-es';
 import React, {
@@ -19,8 +18,6 @@ import {
 	Alert,
 	Button,
 	ButtonToolbar,
-	Column,
-	Grid,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
@@ -117,7 +114,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
 		'DELETE_ALL'
 	);
-	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
+	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
 	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
 	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
@@ -467,7 +464,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 		setDeleteConfirmModalOpen(false);
 		setDeleteContentCounts(null);
 		setSelectedDeleteOption('DELETE_ALL');
-		setTransferToUser(undefined);
+		setTransferToUser(null);
 	};
 
 	const handleDeleteUsers = () => {
@@ -769,42 +766,28 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					title={t('admin/users/views/user-overview___verwijder-opties')}
 					isOpen={deleteOptionsModalOpen}
 					onClose={() => setDeleteOptionsModalOpen(false)}
-					size="large"
+					size="medium"
 				>
 					<ModalBody>
-						<Grid className="a-delete-user__grid">
-							<Column size="3-6">
-								<div
-									className={classnames(
-										'a-delete-user__image',
-										selectedDeleteOption
-									)}
-								/>
-							</Column>
-							<Column size="3-6">
-								<RadioButtonGroup
-									options={GET_DELETE_RADIO_OPTIONS()}
-									value={selectedDeleteOption}
-									onChange={setSelectedDeleteOption as any}
-								/>
-								{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
-									selectedDeleteOption === 'TRANSFER_ALL') && (
-									<ContentPicker
-										allowedTypes={['PROFILE']}
-										onSelect={(option) =>
-											setTransferToUser(option || undefined)
-										}
-										initialValue={transferToUser}
-										placeholder={t(
-											'admin/users/views/user-overview___overdragen-naar-gebruiker'
-										)}
-										hideTargetSwitch
-										hideTypeDropdown
-										errors={transferToUserError ? [transferToUserError] : []}
-									/>
+						<RadioButtonGroup
+							options={GET_DELETE_RADIO_OPTIONS()}
+							value={selectedDeleteOption}
+							onChange={setSelectedDeleteOption as any}
+						/>
+						{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+							selectedDeleteOption === 'TRANSFER_ALL') && (
+							<ContentPicker
+								allowedTypes={['PROFILE']}
+								onSelect={setTransferToUser}
+								initialValue={transferToUser}
+								placeholder={t(
+									'admin/users/views/user-overview___overdragen-naar-gebruiker'
 								)}
-							</Column>
-						</Grid>
+								hideTargetSwitch
+								hideTypeDropdown
+								errors={transferToUserError ? [transferToUserError] : []}
+							/>
+						)}
 					</ModalBody>
 					<ModalFooterRight>
 						<Toolbar>

@@ -32,7 +32,7 @@ import { parseSearchQuery } from './helpers/parse-picker';
 
 export interface ContentPickerProps {
 	allowedTypes?: ContentPickerType[];
-	initialValue?: PickerItem;
+	initialValue: PickerItem | undefined | null;
 	onSelect: (value: PickerItem | null) => void;
 	placeholder?: string;
 	hideTypeDropdown?: boolean;
@@ -70,7 +70,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
 
 	// apply initial input if INPUT-based type, default to ''
-	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValue));
+	const [input, setInput] = useState<string>(
+		setInitialInput(currentTypeObject, initialValue || undefined)
+	);
 
 	const [isTargetSelf, setIsTargetSelf] = useState<boolean>(
 		(get(initialValue, 'target') || LinkTarget.Self) === LinkTarget.Self
@@ -127,7 +129,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
 		if (itemOptions.length && !hasAppliedInitialItem) {
-			setSelectedItem(setInitialItem(itemOptions, initialValue));
+			setSelectedItem(setInitialItem(itemOptions, initialValue || undefined));
 			setHasAppliedInitialItem(true);
 		}
 	}, [itemOptions, hasAppliedInitialItem, initialValue]);
