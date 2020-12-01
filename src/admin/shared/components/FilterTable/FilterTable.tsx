@@ -49,6 +49,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import {
 	BooleanCheckboxDropdown,
@@ -57,7 +58,9 @@ import {
 	DateRangeDropdown,
 	DeleteObjectModal,
 } from '../../../../shared/components';
+import { MultiEducationalOrganisationSelectModal } from '../../../../shared/components/MultiEducationalOrganisationSelectModal/MultiEducationalOrganisationSelectModal';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
+import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
 import { KeyCode } from '../../../../shared/types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
@@ -75,7 +78,8 @@ export interface FilterableColumn extends TableColumn {
 		| 'CheckboxDropdownModal'
 		| 'DateRangeDropdown'
 		| 'BooleanCheckboxDropdown'
-		| 'MultiUserSelectDropdown';
+		| 'MultiUserSelectDropdown'
+		| 'MultiEducationalOrganisationSelectModal';
 	filterProps?: any;
 	visibleByDefault: boolean;
 }
@@ -85,6 +89,7 @@ const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
 	DateRangeDropdown: DateRangeParam,
 	BooleanCheckboxDropdown: BooleanParam,
 	MultiUserSelectDropdown: CheckboxListParam,
+	MultiEducationalOrganisationSelectModal: CheckboxListParam,
 };
 
 interface FilterTableProps extends RouteComponentProps {
@@ -370,6 +375,24 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													id={col.id}
 													label={col.label}
 													values={(tableState as any)[col.id]}
+													onChange={(value) =>
+														handleTableStateChanged(value, col.id)
+													}
+													key={`filter-${col.id}`}
+												/>
+											);
+
+										case 'MultiEducationalOrganisationSelectModal':
+											const orgs: string[] = (tableState as any)[col.id];
+											const orgObjs: ClientEducationOrganization[] = eduOrgToClientOrg(
+												orgs
+											);
+											return (
+												<MultiEducationalOrganisationSelectModal
+													{...(col.filterProps || {})}
+													id={col.id}
+													label={col.label || ''}
+													values={orgObjs}
 													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}
