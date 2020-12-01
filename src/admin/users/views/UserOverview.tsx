@@ -89,7 +89,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
 		'DELETE_ALL'
 	);
-	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
+	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
 	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
 	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
@@ -401,7 +401,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setDeleteConfirmModalOpen(false);
 		setDeleteContentCounts(null);
 		setSelectedDeleteOption('DELETE_ALL');
-		setTransferToUser(undefined);
+		setTransferToUser(null);
 	};
 
 	const handleDeleteUsers = () => {
@@ -705,7 +705,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 							selectedDeleteOption === 'TRANSFER_ALL') && (
 							<ContentPicker
 								allowedTypes={['PROFILE']}
-								onSelect={(option) => setTransferToUser(option || undefined)}
+								onSelect={setTransferToUser}
 								initialValue={transferToUser}
 								placeholder={t(
 									'admin/users/views/user-overview___overdragen-naar-gebruiker'
