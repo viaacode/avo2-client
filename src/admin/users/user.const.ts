@@ -134,7 +134,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'education_levels',
 		label: i18n.t('Onderwijs niveaus'),
-		sortable: true,
+		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
@@ -147,7 +147,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'subjects',
 		label: i18n.t('Vakken'),
-		sortable: true,
+		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
@@ -157,7 +157,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'idps',
 		label: i18n.t('Toegang via'),
-		sortable: true,
+		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
@@ -167,7 +167,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'educational_organisations',
 		label: i18n.t('Educatieve organisaties'),
-		sortable: true,
+		sortable: false,
 		visibleByDefault: false,
 		filterType: 'MultiEducationalOrganisationSelectModal',
 	},

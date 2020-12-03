@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, flatten, get, isNil, omit, set } from 'lodash-es';
+import { compact, flatten, get, isNil, set } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
