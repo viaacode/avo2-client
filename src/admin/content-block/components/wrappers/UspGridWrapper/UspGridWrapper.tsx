@@ -14,11 +14,11 @@ const BlockUspGridWrapper: FunctionComponent<BlockUspGridWrapperProps> = ({ ...r
 		<div style={{ width: 'calc(100% + 124px)', marginLeft: '-62px' }}>
 			<BlockImageGrid
 				imageWidth={325}
-				imageHeight={86}
+				imageHeight={75}
 				itemWidth={325}
 				horizontalMargin={124}
 				verticalMargin={82}
-				textSize={21}
+				textSize={20}
 				textMargin={20}
 				textWeight={500}
 				fill="contain"
