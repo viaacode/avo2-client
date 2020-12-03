@@ -5,6 +5,7 @@ export const GET_ALL_ORGANISATIONS = gql`
 		shared_organisations(order_by: { name: asc }) {
 			or_id
 			name
+			logo_url
 		}
 	}
 `;
@@ -15,6 +16,7 @@ export const GET_DISTINCT_ORGANISATIONS = gql`
 			organisation {
 				or_id
 				name
+				logo_url
 			}
 			is_published
 			is_deleted
