@@ -46,9 +46,8 @@ export function getMultiOptionFilters(
 					{ [prop]: { _in: without(value, NULL_FILTER) } },
 				],
 			};
-		} 
-			return { [prop]: { _in: value } };
-		
+		}
+		return { [prop]: { _in: value } };
 	});
 }
 
@@ -78,9 +77,8 @@ function setNestedValues(
 					const response = {};
 					set(response, path, getValue(lastProp, value));
 					return response;
-				} 
-					return getValue(lastProp, value);
-				
+				}
+				return getValue(lastProp, value);
 			}
 			return null;
 		})

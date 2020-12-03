@@ -335,13 +335,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								}
 								if (userGroup.id === SpecialPermissionGroups.loggedInUsers) {
 									return {
-										label: t('Ingelogd'),
+										label: t('admin/content/views/content-overview___ingelogd'),
 										id: userGroup.id as number,
 									};
 								}
 								if (userGroup.id === SpecialPermissionGroups.loggedOutUsers) {
 									return {
-										label: t('niet-ingelogd'),
+										label: t(
+											'admin/content/views/content-overview___niet-ingelogd'
+										),
 										id: userGroup.id as number,
 									};
 								}

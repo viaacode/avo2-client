@@ -45,17 +45,16 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							{children}
 						</a>
 					);
-				} 
-					// relative url
-					return (
-						<Link
-							to={fullUrl}
-							className={classnames({ 'a-link__no-styles': removeStyles })}
-						>
-							{children}
-						</Link>
-					);
-				
+				}
+				// relative url
+				return (
+					<Link
+						to={fullUrl}
+						className={classnames({ 'a-link__no-styles': removeStyles })}
+					>
+						{children}
+					</Link>
+				);
 
 			case LinkTarget.Blank:
 			default:
@@ -72,19 +71,18 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							{children}
 						</a>
 					);
-				} 
-					// relative url
-					return (
-						<a
-							href={`${window.location.origin}${fullUrl}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							className={classnames({ 'a-link__no-styles': removeStyles })}
-						>
-							{children}
-						</a>
-					);
-				
+				}
+				// relative url
+				return (
+					<a
+						href={`${window.location.origin}${fullUrl}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						className={classnames({ 'a-link__no-styles': removeStyles })}
+					>
+						{children}
+					</a>
+				);
 		}
 	};
 

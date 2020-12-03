@@ -126,7 +126,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 
 		if (isMobileWidth()) {
 			return <div className="c-error-buttons__mobile">{buttons}</div>;
-		} else {
+		} 
 			return (
 				<Toolbar>
 					<ToolbarCenter>
@@ -134,7 +134,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 					</ToolbarCenter>
 				</Toolbar>
 			);
-		}
+		
 	};
 
 	return (
