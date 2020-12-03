@@ -134,7 +134,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 		if (src.includes('flowplayer')) {
 			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
-		} else if (src.endsWith('.m3u8')) {
+		}
+		if (src.endsWith('.m3u8')) {
 			ToastService.danger(
 				t(
 					'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'

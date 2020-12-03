@@ -7,9 +7,9 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import {
 	DELETE_MENU_ITEM,
-	GET_MENU_ITEM_BY_ID,
-	GET_MENU_ITEMS_BY_PLACEMENT,
 	GET_MENUS,
+	GET_MENU_ITEMS_BY_PLACEMENT,
+	GET_MENU_ITEM_BY_ID,
 	INSERT_MENU_ITEM,
 	UPDATE_MENU_ITEM_BY_ID,
 } from './menu.gql';

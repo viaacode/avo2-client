@@ -19,8 +19,8 @@ import {
 	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
-	GET_USER_BY_ID,
 	GET_USERS,
+	GET_USER_BY_ID,
 } from './user.gql';
 import {
 	DeleteContentCounts,

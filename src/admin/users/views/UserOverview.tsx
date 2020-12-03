@@ -510,9 +510,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 		} catch (err) {
 			console.error(
 				new CustomError('Error during validateOptionModalAndOpenConfirm', err, {
-					selectedUsers: selectedProfileIds,
 					transferToUser,
 					selectedDeleteOption,
+					selectedUsers: selectedProfileIds,
 				})
 			);
 			ToastService.danger(

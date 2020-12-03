@@ -14,8 +14,8 @@ import { ToastService } from '../toast-service';
 
 import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
-	GET_BOOKMARK_STATUSES,
 	GET_BOOKMARKS_FOR_USER,
+	GET_BOOKMARK_STATUSES,
 	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
@@ -64,8 +64,8 @@ export class BookmarksViewsPlaysService {
 				);
 
 				const response = await dataService.mutate({
-					mutation: query,
 					variables,
+					mutation: query,
 					update: ApolloCacheManager.clearBookmarksViewsPlays,
 				});
 
@@ -369,8 +369,8 @@ export class BookmarksViewsPlaysService {
 			);
 
 			const response = await dataService.mutate({
-				mutation: query,
 				variables,
+				mutation: query,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 
@@ -413,8 +413,8 @@ export class BookmarksViewsPlaysService {
 			);
 
 			const response = await dataService.mutate({
-				mutation: query,
 				variables,
+				mutation: query,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 

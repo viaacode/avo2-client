@@ -522,8 +522,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle publish state for collections', err, {
-					selectedRows: selectedCollectionIds,
 					isPublic,
+					selectedRows: selectedCollectionIds,
 				})
 			);
 			ToastService.danger(

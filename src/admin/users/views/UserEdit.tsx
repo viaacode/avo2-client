@@ -121,12 +121,12 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 
 			const profileId = match.params.id;
 			const newProfileInfo = {
-				userId: get(storedProfile, 'user.uid'),
 				firstName,
 				lastName,
 				alias,
 				title,
 				bio,
+				userId: get(storedProfile, 'user.uid'),
 				avatar: avatar || null,
 				subjects: (selectedSubjects || []).map((option) => ({
 					profile_id: profileId,
