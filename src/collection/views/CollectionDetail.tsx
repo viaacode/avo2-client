@@ -160,10 +160,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			if (collectionId !== uuid) {
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
-				redirectToClientPage(
-					buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
-					history
-				);
+				history.replace(buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }));
 
 				return;
 			}
