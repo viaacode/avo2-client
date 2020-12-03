@@ -1,5 +1,4 @@
 import {
-	BlockButtons,
 	BlockEventbrite,
 	BlockHeading,
 	BlockIFrame,
@@ -13,10 +12,10 @@ import {
 import BlockSearch from '../../../../search/components/BlockSearch';
 import { ContentBlockType } from '../../../shared/types';
 import {
-	BlockContentPageMeta,
 	BlockImageGridWrapper,
 	BlockLogoGridWrapper,
 	BlockUspGridWrapper,
+	ContentPageMeta,
 	CtaWrapper,
 	HeroWrapper,
 	MediaGridWrapper,
@@ -25,11 +24,12 @@ import {
 	PageOverviewWrapper,
 	ProjectSpotlightWrapper,
 } from '../wrappers';
+import ButtonsWrapper from '../wrappers/ButtonsWrapper/ButtonsWrapper';
 import RichTextWrapper from '../wrappers/RichTextWrapper/RichTextWrapper';
 
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.AnchorLinks]: BlockButtons,
-	[ContentBlockType.Buttons]: BlockButtons,
+	[ContentBlockType.AnchorLinks]: ButtonsWrapper,
+	[ContentBlockType.Buttons]: ButtonsWrapper,
 	[ContentBlockType.CTAs]: CtaWrapper,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.IFrame]: BlockIFrame,
@@ -51,7 +51,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Spotlight]: BlockSpotlight,
 	[ContentBlockType.Hero]: HeroWrapper,
 	[ContentBlockType.Search]: BlockSearch,
-	[ContentBlockType.ContentPageMeta]: BlockContentPageMeta,
+	[ContentBlockType.ContentPageMeta]: ContentPageMeta,
 	[ContentBlockType.LogoGrid]: BlockLogoGridWrapper,
 	[ContentBlockType.UspGrid]: BlockUspGridWrapper,
 	[ContentBlockType.Eventbrite]: BlockEventbrite,

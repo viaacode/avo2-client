@@ -11,11 +11,11 @@ import { normalizeTimestamp } from '../../../../../shared/helpers/formatters';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { getPublishedDate } from '../../../../content/helpers/get-published-state';
 
-export interface BlockContentPageMetaProps {
+export interface ContentPageMetaProps {
 	contentPageInfo: ContentPageInfo;
 }
 
-const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps & RouteComponentProps> = ({
+const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentProps> = ({
 	contentPageInfo,
 	history,
 }) => {
@@ -81,4 +81,4 @@ const BlockContentPageMeta: FunctionComponent<BlockContentPageMetaProps & RouteC
 	);
 };
 
-export default withRouter(BlockContentPageMeta);
+export default withRouter(ContentPageMeta);

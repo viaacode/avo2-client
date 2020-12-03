@@ -45,8 +45,8 @@ export const GET_USER_BY_ID = gql`
 				unit_id
 				organization_id
 			}
-			profile_user_groups {
-				groups {
+			profile_user_group {
+				group {
 					id
 					label
 					group_user_permission_groups {
@@ -71,35 +71,40 @@ export const GET_USERS = gql`
 	query getUsers(
 		$offset: Int!
 		$limit: Int!
-		$orderBy: [shared_users_order_by!]!
-		$where: shared_users_bool_exp!
+		$orderBy: [users_summary_view_order_by!]!
+		$where: users_summary_view_bool_exp!
 	) {
-		shared_users(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
+		users_summary_view(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
+			user_id
 			full_name
 			first_name
 			last_name
 			mail
-			id
 			last_access_at
 			is_blocked
-			profiles {
-				id
-				stamboek
-				created_at
-				business_category
-				is_exception
-				profile_user_groups {
-					group {
-						label
-						id
-					}
-				}
-				organisation {
-					name
-				}
+			profile_id
+			stamboek
+			acc_created_at
+			group_id
+			group_name
+			company_name
+			is_exception
+			business_category
+			idps {
+				idp
+			}
+			classifications {
+				key
+			}
+			contexts {
+				key
+			}
+			organisations {
+				organization_id
+				unit_id
 			}
 		}
-		shared_users_aggregate(where: $where) {
+		users_summary_view_aggregate(where: $where) {
 			aggregate {
 				count
 			}
@@ -155,6 +160,14 @@ export const GET_DISTINCT_BUSINESS_CATEGORIES = gql`
 			where: { business_category: { _is_null: false } }
 		) {
 			business_category
+		}
+	}
+`;
+
+export const GET_IDPS = gql`
+	query getIdps {
+		users_idps {
+			value
 		}
 	}
 `;

@@ -12,6 +12,10 @@ export type UserOverviewTableCol =
 	| 'stamboek'
 	| 'organisation'
 	| 'created_at'
+	| 'education_levels'
+	| 'subjects'
+	| 'idps'
+	| 'educational_organisations'
 	| 'last_access_at';
 
 export interface UserTableState extends FilterableTableState {
@@ -23,6 +27,10 @@ export interface UserTableState extends FilterableTableState {
 	is_exception: boolean;
 	is_blocked: boolean;
 	created_at: string;
+	education_levels: string[];
+	subjects: string[];
+	idps: string[];
+	educational_organisations: string[];
 	columns: string[];
 }
 
@@ -105,4 +113,37 @@ export interface DeleteContentCountsRaw {
 			count: number;
 		};
 	};
+}
+
+export interface UserSummeryView {
+	user_id: string;
+	full_name: string;
+	first_name: string;
+	last_name: string;
+	mail: string;
+	last_access_at: string | null;
+	is_blocked: boolean;
+	profile_id: string;
+	stamboek: string | null;
+	acc_created_at: string;
+	role_id: number | null;
+	role_name: string | null;
+	group_id: number | null;
+	group_name: string | null;
+	company_name: string | null;
+	is_exception: boolean;
+	business_category: string | null;
+	idps: {
+		idp: string;
+	}[];
+	classifications: {
+		key: string;
+	}[];
+	contexts: {
+		key: string;
+	}[];
+	organisations: {
+		organization_id: string;
+		unit_id?: string;
+	}[];
 }

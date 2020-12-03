@@ -1,5 +1,5 @@
-import { compact, get, isNil, pullAllBy, remove, uniq } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
+import { compact, get, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
@@ -28,6 +28,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -43,12 +44,13 @@ import {
 import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
+import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate } from '../../shared/helpers';
 import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
+import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
-import { EducationOrganisationService } from '../../shared/services/education-organizations-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import store, { AppState } from '../../store';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
@@ -88,33 +90,15 @@ const Profile: FunctionComponent<
 	const [t] = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
-	const gqlOrganizationToSelectOption = (
-		org: Avo.EducationOrganization.Organization
-	): TagInfo => ({
-		label: `${org.label}`,
-		value: `${org.organizationId}:${org.unitId || ''}`,
-	});
-	const [cities, setCities] = useState<string[]>([]);
-	const [selectedCity, setSelectedCity] = useState<string>('');
-	const [organizations, setOrganizations] = useState<Avo.EducationOrganization.Organization[]>(
-		[]
-	);
-	const [organizationsLoadingState, setOrganizationsLoadingState] = useState<
-		'loading' | 'loaded' | 'error'
-	>('loaded');
-	// Cache organizations since the user will probably select multiple schools in the same city
-	const [organizationsCache, setOrganizationsCache] = useState<{
-		[cityAndZipCode: string]: Avo.EducationOrganization.Organization[];
-	}>({});
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
 		get(user, 'profile.educationLevels', []).map(stringToSelectOption)
 	);
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
 		get(user, 'profile.subjects', []).map(stringToSelectOption)
 	);
-	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
-		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
-	);
+	const [selectedOrganisations, setSelectedOrganisations] = useState<
+		ClientEducationOrganization[]
+	>(get(user, 'profile.organizations', []));
 	const [firstName, setFirstName] = useState<string>(get(user, 'first_name') || '');
 	const [lastName, setLastName] = useState<string>(get(user, 'last_name') || '');
 	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
@@ -213,16 +197,6 @@ const Profile: FunctionComponent<
 		if (!permissions) {
 			return;
 		}
-		if (permissions.EDUCATIONAL_ORGANISATION.EDIT || isCompleteProfileStep) {
-			EducationOrganisationService.fetchCities()
-				.then(setCities)
-				.catch((err) => {
-					console.error(new CustomError('Failed to get cities', err));
-					ToastService.danger(
-						t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
-					);
-				});
-		}
 		if (permissions.SUBJECTS.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchSubjects()
 				.then((subjects: string[]) => {
@@ -298,53 +272,10 @@ const Profile: FunctionComponent<
 		isCompleteProfileStep,
 		t,
 		user,
-		setCities,
 		setAllSubjects,
 		setAllEducationLevels,
 		setAllOrganisations,
 	]);
-
-	useEffect(() => {
-		(async () => {
-			try {
-				if (!selectedCity) {
-					setOrganizations([]);
-					return;
-				}
-				setOrganizationsLoadingState('loading');
-				const [city, zipCode] = selectedCity.split(/[()]/g).map((s) => s.trim());
-				let orgs: Avo.EducationOrganization.Organization[];
-				if (organizationsCache[selectedCity]) {
-					// get from cache
-					orgs = [...organizationsCache[selectedCity]];
-				} else {
-					// fetch from server
-					orgs = await EducationOrganisationService.fetchEducationOrganisations(
-						city,
-						zipCode
-					);
-					setOrganizationsCache({
-						...organizationsCache,
-						...{ [selectedCity]: orgs },
-					});
-				}
-				pullAllBy(orgs, selectedOrganizations, 'label');
-				setOrganizations(orgs);
-				setOrganizationsLoadingState('loaded');
-			} catch (err) {
-				setOrganizations([]);
-				setOrganizationsLoadingState('loaded');
-				console.error('Failed to get educational organizations', err, {
-					selectedCity,
-				});
-				ToastService.danger(
-					t(
-						'settings/components/profile___het-ophalen-van-de-onderwijsinstellingen-is-mislukt'
-					)
-				);
-			}
-		})();
-	}, [organizationsCache, selectedOrganizations, selectedCity, t]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<UpdateProfileValues>) => {
 		if (!permissions) {
@@ -407,10 +338,10 @@ const Profile: FunctionComponent<
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				organizations: (selectedOrganizations || []).map((option) => ({
+				organizations: (selectedOrganisations || []).map((option) => ({
 					profile_id: profileId,
-					organization_id: option.value.toString().split(':')[0],
-					unit_id: option.value.toString().split(':')[1] || null,
+					organization_id: option.organizationId,
+					unit_id: option.unitId || null,
 				})),
 				company_id: companyId || null,
 			};
@@ -484,56 +415,6 @@ const Profile: FunctionComponent<
 			);
 			setIsSaving(false);
 		}
-	};
-
-	const onSelectedCityChanged = async (cityAndZipCode: string) => {
-		setSelectedCity(cityAndZipCode);
-	};
-
-	const onSelectedOrganizationChanged = (orgLabel: string) => {
-		const selectedOrg = organizations.find((org) => org.label === orgLabel);
-		if (!selectedOrg) {
-			ToastService.danger(
-				t(
-					'settings/components/profile___de-geselecteerde-instelling-kon-niet-worden-gevonden'
-				)
-			);
-			return;
-		}
-		setSelectedOrganizations(
-			uniq([...selectedOrganizations, ...[selectedOrg].map(gqlOrganizationToSelectOption)])
-		);
-	};
-
-	const removeOrganization = async (orgLabel: ReactText) => {
-		const newOrganizations = [...selectedOrganizations];
-		remove(newOrganizations, (org) => org.label === orgLabel);
-		setSelectedOrganizations(newOrganizations);
-	};
-
-	const getOrganizationOptions = () => {
-		if (organizations.length === 0 && organizationsLoadingState === 'loaded') {
-			return [
-				{
-					label: t(
-						'settings/components/profile___er-zijn-geen-andere-organisaties-gekend-in-deze-gemeente'
-					),
-					value: '',
-					disabled: true,
-				},
-			];
-		}
-		return [
-			{
-				label: t('settings/components/profile___selecteer-een-instelling'),
-				value: '',
-				disabled: true,
-			},
-			...organizations.map((org: Avo.EducationOrganization.Organization) => ({
-				label: org.label,
-				value: org.label,
-			})),
-		];
 	};
 
 	const renderSubjectsField = (editable: boolean, required: boolean) => {
@@ -659,7 +540,7 @@ const Profile: FunctionComponent<
 	};
 
 	const renderEducationOrganisationsField = (editable: boolean, required: boolean) => {
-		if (!editable && !selectedOrganizations.length) {
+		if (!editable && !selectedOrganisations.length) {
 			return null;
 		}
 		return (
@@ -670,47 +551,10 @@ const Profile: FunctionComponent<
 			>
 				{editable ? (
 					<>
-						<TagList
-							closable
-							swatches={false}
-							tags={selectedOrganizations.map((org) => ({
-								label: org.label,
-								id: org.label,
-							}))}
-							onTagClosed={removeOrganization}
+						<EducationalOrganisationsSelect
+							organisations={selectedOrganisations}
+							onChange={setSelectedOrganisations}
 						/>
-						<Spacer margin="top-small">
-							<Select
-								options={[
-									{
-										label: t(
-											'settings/components/profile___voeg-een-organisatie-toe'
-										),
-										value: '',
-									},
-									...(cities || []).map((c) => ({ label: c, value: c })),
-								]}
-								value={selectedCity || ''}
-								onChange={onSelectedCityChanged}
-							/>
-						</Spacer>
-						<Spacer margin={['top-small', 'bottom-small']}>
-							{organizationsLoadingState === 'loading' && (
-								<Alert
-									type="spinner"
-									message={t(
-										'settings/components/profile___bezig-met-ophalen-van-organisaties'
-									)}
-								/>
-							)}
-							{!!selectedCity && organizationsLoadingState === 'loaded' && (
-								<Select
-									options={getOrganizationOptions()}
-									value={''}
-									onChange={onSelectedOrganizationChanged}
-								/>
-							)}
-						</Spacer>
 						<Alert
 							type="info"
 							message={t(
@@ -719,14 +563,7 @@ const Profile: FunctionComponent<
 						/>
 					</>
 				) : (
-					<TagList
-						closable={false}
-						swatches={false}
-						tags={selectedOrganizations.map((org) => ({
-							label: org.label,
-							id: org.label,
-						}))}
-					/>
+					stringsToTagList(selectedOrganisations.map((org) => org.label))
 				)}
 			</FormGroup>
 		);
@@ -807,14 +644,7 @@ const Profile: FunctionComponent<
 				return get(profile, 'user.mail') || '-';
 
 			case 'user_group':
-				// TODO cleanup queries and get paths everywhere to use the singular forms: profile_user_group and group
-				return (
-					get(profile, 'profile_user_group.group.label') ||
-					get(profile, 'profile_user_group.groups[0].label') ||
-					get(profile, 'profile_user_groups[0].group.label') ||
-					get(profile, 'profile_user_groups[0].groups[0].label') ||
-					'-'
-				);
+				return get(profile, 'profile_user_group.group.label') || '-';
 
 			case 'is_blocked':
 				return get(profile, 'user.is_blocked') || 'Nee';

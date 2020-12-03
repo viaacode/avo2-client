@@ -1,29 +1,37 @@
-import classnames from 'classnames';
 import FileSaver from 'file-saver';
 import { compact, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import reactToString from 'react-to-string';
+import { compose } from 'redux';
 
 import {
 	Alert,
 	Button,
 	ButtonToolbar,
-	Column,
-	Grid,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
 	RadioButtonGroup,
 	Spacer,
 	TagInfo,
+	TagList,
+	TagOption,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -33,12 +41,20 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { eduOrgToClientOrg } from '../../../shared/helpers/edu-org-string-to-client-org';
+import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
+import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { useBusinessCategories } from '../../../shared/hooks/useBusinessCategory';
-import { useCompanies } from '../../../shared/hooks/useCompanies';
+import {
+	useBusinessCategories,
+	useCompanies,
+	useEducationLevels,
+	useSubjects,
+} from '../../../shared/hooks';
+import { useIdps } from '../../../shared/hooks/useIdps';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import AddOrRemoveLinkedElementsModal, {
@@ -73,7 +89,10 @@ import './UserOverview.scss';
 
 interface UserOverviewProps {}
 
-const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }) => {
+const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & UserProps> = ({
+	user,
+	history,
+}) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
@@ -84,6 +103,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
 	const [companies] = useCompanies(false);
 	const [businessCategories] = useBusinessCategories();
+	const [educationLevels] = useEducationLevels();
+	const [subjects] = useSubjects();
+	const [idps] = useIdps();
 	const [userGroupOptions] = useUserGroupOptions('CheckboxOption', false) as [
 		CheckboxOption[],
 		boolean
@@ -92,7 +114,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
 		'DELETE_ALL'
 	);
-	const [transferToUser, setTransferToUser] = useState<PickerItem | undefined>();
+	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
 	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
 	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
@@ -101,6 +123,32 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
+	const columns = GET_USER_OVERVIEW_TABLE_COLS(
+		setSelectedCheckboxes(
+			userGroupOptions,
+			get(tableState, 'author.user_groups', []) as string[]
+		),
+		companies.map(
+			(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+				id: option.or_id as string,
+				label: option.name as string,
+				checked: get(tableState, 'organisation', [] as string[]).includes(
+					String(option.or_id)
+				),
+			})
+		),
+		businessCategories.map(
+			(option: string): CheckboxOption => ({
+				id: option,
+				label: option,
+				checked: get(tableState, 'business_category', [] as string[]).includes(option),
+			})
+		),
+		setSelectedCheckboxes(educationLevels, get(tableState, 'education_levels', []) as string[]),
+		setSelectedCheckboxes(subjects, get(tableState, 'subjects', []) as string[]),
+		setSelectedCheckboxes(idps, get(tableState, 'idps', []) as string[])
+	);
+
 	const generateWhereObject = useCallback(
 		(filters: Partial<UserTableState>, onlySelectedProfiles: boolean) => {
 			const andFilters: any[] = [];
@@ -108,54 +156,65 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				const query = `%${filters.query}%`;
 				andFilters.push({
 					_or: [
-						{ profiles: { stamboek: { _ilike: query } } },
-						{ profiles: { alternative_email: { _ilike: query } } },
-						{ profiles: { bio: { _ilike: query } } },
-						{ profiles: { alias: { _ilike: query } } },
-						{ profiles: { title: { _ilike: query } } },
-						{ profiles: { organisation: { name: { _ilike: query } } } },
-						{
-							profiles: {
-								profile_user_groups: {
-									groups: { label: { _ilike: query } },
-								},
-							},
-						},
-						{
-							_or: [
-								// TODO replace with full_name after https://meemoo.atlassian.net/browse/DEV-1301
-								{ first_name: { _ilike: query } },
-								{ last_name: { _ilike: query } },
-								{ mail: { _ilike: query } },
-							],
-						},
+						{ stamboek: { _ilike: query } },
+						{ mail: { _ilike: query } },
+						{ bio: { _ilike: query } },
+						{ alias: { _ilike: query } },
+						{ title: { _ilike: query } },
+						{ full_name: { _ilike: query } },
+						{ company_name: { _ilike: query } },
+						{ role: { _ilike: query } },
 					],
 				});
 			}
-			andFilters.push(
-				...getBooleanFilters(
-					filters,
-					['is_blocked', 'is_exception'],
-					['is_blocked', 'profile.is_exception']
-				)
-			);
+			andFilters.push(...getBooleanFilters(filters, ['is_blocked', 'is_exception']));
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
-					['user_group', 'organisation', 'business_category'],
 					[
-						'profiles.profile_user_groups.group.id',
-						'profiles.company_id',
-						'profile.business_category',
+						'user_group',
+						'organisation',
+						'business_category',
+						'education_levels',
+						'subjects',
+						'idps',
+					],
+					[
+						'group_id',
+						'company_id',
+						'business_category',
+						'contexts.key',
+						'classifications.key',
+						'idps.idp',
 					]
 				)
 			);
-			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'last_access_at']));
+			andFilters.push(
+				...getDateRangeFilters(
+					filters,
+					['created_at', 'last_access_at'],
+					['acc_created_at', 'last_access_at']
+				)
+			);
+			if (filters.educational_organisations && filters.educational_organisations.length) {
+				const orFilters: any[] = [];
+				eduOrgToClientOrg(filters.educational_organisations).forEach((org) => {
+					orFilters.push({
+						organisations: {
+							organization_id: { _eq: org.organizationId },
+							unit_id: org.unitId ? { _eq: org.unitId } : { _is_null: true },
+						},
+					});
+				});
+				andFilters.push({
+					_or: orFilters,
+				});
+			}
 			if (onlySelectedProfiles) {
-				andFilters.push({ profile: { id: { _in: selectedProfileIds } } });
+				andFilters.push({ profile_id: { _in: selectedProfileIds } });
 			}
 			if (!isNil(filters.stamboek)) {
-				andFilters.push({ profile: { stamboek: { _is_null: !filters.stamboek } } });
+				andFilters.push({ stamboek: { _is_null: !filters.stamboek } });
 			}
 
 			return { _and: andFilters };
@@ -298,6 +357,15 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setIsLoading(false);
 	};
 
+	const navigateFilterToOption = (columnId: string) => (tagId: ReactText) => {
+		navigate(
+			history,
+			ADMIN_PATH.USER_OVERVIEW,
+			{},
+			{ [columnId]: tagId.toString(), columns: (tableState.columns || []).join('~') }
+		);
+	};
+
 	const bulkExport = async () => {
 		try {
 			setIsLoading(true);
@@ -307,14 +375,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState), true),
 				100000
-			);
-			const columns = GET_USER_OVERVIEW_TABLE_COLS(
-				setSelectedCheckboxes(
-					userGroupOptions,
-					get(tableState, 'author.user_groups', []) as string[]
-				),
-				companyOptions,
-				businessCategoryOptions
 			);
 			const columnIds =
 				tableState.columns && tableState.columns.length
@@ -404,7 +464,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		setDeleteConfirmModalOpen(false);
 		setDeleteContentCounts(null);
 		setSelectedDeleteOption('DELETE_ALL');
-		setTransferToUser(undefined);
+		setTransferToUser(null);
 	};
 
 	const handleDeleteUsers = () => {
@@ -482,7 +542,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 				return truncateTableValue(get(user, columnId));
 
 			case 'user_group':
-				return get(rowData, 'profile_user_groups[0].group.label') || '-';
+				return get(rowData, 'profile_user_group.group.label') || '-';
 
 			case 'is_blocked':
 				const isBlocked = get(rowData, 'user.is_blocked');
@@ -500,6 +560,36 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 			case 'last_access_at':
 				const lastAccessDate = get(rowData, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+
+			case 'idps':
+				return (
+					idpMapsToTagList(
+						get(rowData, 'user.idpmaps', []),
+						`user_${get(rowData, 'user.uid')}`,
+						navigateFilterToOption(columnId)
+					) || '-'
+				);
+
+			case 'education_levels':
+			case 'subjects':
+				const labels = get(rowData, columnId, []);
+				return stringsToTagList(labels, null, navigateFilterToOption(columnId)) || '-';
+
+			case 'educational_organisations':
+				const orgs: ClientEducationOrganization[] = get(rowData, columnId, []);
+				const tags = orgs.map(
+					(org): TagOption => ({
+						id: `${org.organizationId}:${org.unitId || ''}`,
+						label: org.label || org.unitId || org.organizationId,
+					})
+				);
+				return (
+					<TagList
+						tags={tags}
+						swatches={false}
+						onTagClicked={navigateFilterToOption(columnId)}
+					/>
+				);
 
 			default:
 				// TODO remove cast after update to typings v2.25.0
@@ -642,22 +732,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		);
 	};
 
-	const businessCategoryOptions = businessCategories.map(
-		(option: string): CheckboxOption => ({
-			id: option,
-			label: option,
-			checked: get(tableState, 'business_category', [] as string[]).includes(option),
-		})
-	);
-
-	const companyOptions = companies.map(
-		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
-			id: option.or_id as string,
-			label: option.name as string,
-			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
-		})
-	);
-
 	const renderUserOverview = () => {
 		if (!profiles) {
 			return null;
@@ -665,11 +739,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 		return (
 			<>
 				<FilterTable
-					columns={GET_USER_OVERVIEW_TABLE_COLS(
-						userGroupOptions,
-						companyOptions,
-						businessCategoryOptions
-					)}
+					columns={columns}
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
@@ -696,42 +766,28 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					title={t('admin/users/views/user-overview___verwijder-opties')}
 					isOpen={deleteOptionsModalOpen}
 					onClose={() => setDeleteOptionsModalOpen(false)}
-					size="large"
+					size="medium"
 				>
 					<ModalBody>
-						<Grid className="a-delete-user__grid">
-							<Column size="3-6">
-								<div
-									className={classnames(
-										'a-delete-user__image',
-										selectedDeleteOption
-									)}
-								/>
-							</Column>
-							<Column size="3-6">
-								<RadioButtonGroup
-									options={GET_DELETE_RADIO_OPTIONS()}
-									value={selectedDeleteOption}
-									onChange={setSelectedDeleteOption as any}
-								/>
-								{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
-									selectedDeleteOption === 'TRANSFER_ALL') && (
-									<ContentPicker
-										allowedTypes={['PROFILE']}
-										onSelect={(option) =>
-											setTransferToUser(option || undefined)
-										}
-										initialValue={transferToUser}
-										placeholder={t(
-											'admin/users/views/user-overview___overdragen-naar-gebruiker'
-										)}
-										hideTargetSwitch
-										hideTypeDropdown
-										errors={transferToUserError ? [transferToUserError] : []}
-									/>
+						<RadioButtonGroup
+							options={GET_DELETE_RADIO_OPTIONS()}
+							value={selectedDeleteOption}
+							onChange={setSelectedDeleteOption as any}
+						/>
+						{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
+							selectedDeleteOption === 'TRANSFER_ALL') && (
+							<ContentPicker
+								allowedTypes={['PROFILE']}
+								onSelect={setTransferToUser}
+								initialValue={transferToUser}
+								placeholder={t(
+									'admin/users/views/user-overview___overdragen-naar-gebruiker'
 								)}
-							</Column>
-						</Grid>
+								hideTargetSwitch
+								hideTypeDropdown
+								errors={transferToUserError ? [transferToUserError] : []}
+							/>
+						)}
 					</ModalBody>
 					<ModalFooterRight>
 						<Toolbar>
@@ -843,4 +899,4 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 	);
 };
 
-export default withUser(UserOverview) as FunctionComponent<UserOverviewProps>;
+export default compose(withRouter, withUser)(UserOverview) as FunctionComponent<UserOverviewProps>;

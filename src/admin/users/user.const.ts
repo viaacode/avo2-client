@@ -21,11 +21,17 @@ export const ITEMS_PER_PAGE = 50;
 export const GET_USER_OVERVIEW_TABLE_COLS: (
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
-	businessCategoryOptions: CheckboxOption[]
+	businessCategoryOptions: CheckboxOption[],
+	educationLevels: CheckboxOption[],
+	subjects: CheckboxOption[],
+	idps: CheckboxOption[]
 ) => FilterableColumn[] = (
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
-	businessCategoryOptions: CheckboxOption[]
+	businessCategoryOptions: CheckboxOption[],
+	educationLevels: CheckboxOption[],
+	subjects: CheckboxOption[],
+	idps: CheckboxOption[]
 ) => [
 	{
 		id: 'id',
@@ -125,6 +131,46 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
+	{
+		id: 'education_levels',
+		label: i18n.t('Onderwijs niveaus'),
+		sortable: true,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				...educationLevels,
+				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+			],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'subjects',
+		label: i18n.t('Vakken'),
+		sortable: true,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...subjects, { label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'idps',
+		label: i18n.t('Toegang via'),
+		sortable: true,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [...idps, { label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER }],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'educational_organisations',
+		label: i18n.t('Educatieve organisaties'),
+		sortable: true,
+		visibleByDefault: false,
+		filterType: 'MultiEducationalOrganisationSelectModal',
+	},
 ];
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
@@ -142,22 +188,22 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		mail: order,
 	}),
 	user_group: (order: Avo.Search.OrderDirection) => ({
-		profile: { profile_user_group: { group: { label: order } } },
+		group_name: order,
 	}),
 	business_category: (order: Avo.Search.OrderDirection) => ({
-		profile: { business_category: order },
+		business_category: order,
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({
-		profile: { stamboek: order },
+		stamboek: order,
 	}),
 	organisation: (order: Avo.Search.OrderDirection) => ({
-		profile: { organisation: { name: order } },
+		company_name: order,
 	}),
 	created_at: (order: Avo.Search.OrderDirection) => ({
-		created_at: order,
+		acc_created_at: order,
 	}),
 	last_access_at: (order: Avo.Search.OrderDirection) => ({
 		last_access_at: order,

@@ -14,5 +14,9 @@ export function getValidStartAndEnd(
 	const validStart = clampDuration(Math.min(start || 0, end || maxTime || start || 0));
 	const validEnd = clampDuration(Math.max(start || 0, end || maxTime || start || 0));
 
+	if (validStart === validEnd) {
+		return [0, duration || 0];
+	}
+
 	return [validStart, validEnd];
 }
