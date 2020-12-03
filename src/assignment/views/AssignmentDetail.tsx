@@ -10,6 +10,8 @@ import {
 	Box,
 	Checkbox,
 	Container,
+	Flex,
+	FlexItem,
 	Icon,
 	IconName,
 	Navbar,
@@ -361,79 +363,88 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
-							<Toolbar
-								justify
-								wrap={isMobileWidth()}
-								size="huge"
-								className="c-toolbar--drop-columns-low-mq"
-							>
-								<ToolbarLeft>
-									<ToolbarItem>
-										{renderBackLink()}
-										<BlockHeading className="u-m-0" type="h2">
-											{title}
-										</BlockHeading>
-									</ToolbarItem>
-								</ToolbarLeft>
-								<ToolbarRight>
-									{!isOwner() && (
-										<ToolbarItem>
-											<Checkbox
-												label={t(
-													'assignment/views/assignment-detail___opdracht-gemaakt'
-												)}
-												checked={
-													!!get(
-														assignment,
-														'assignment_responses[0].submitted_at'
-													)
-												}
-												onChange={handleSubmittedAtChanged}
-											/>
-										</ToolbarItem>
-									)}
-									<ToolbarItem>
-										<TagList tags={tags} closable={false} swatches bordered />
-									</ToolbarItem>
-									{!!profile && (
-										<ToolbarItem>
-											{renderAvatar(profile, {
-												small: true,
-												dark: true,
-											})}
-										</ToolbarItem>
-									)}
+							{renderBackLink()}
+							<Flex>
+								<FlexItem>
+									<Toolbar
+										justify
+										wrap={isMobileWidth()}
+										size="huge"
+										className="c-toolbar--drop-columns-low-mq"
+									>
+										<ToolbarLeft>
+											<ToolbarItem>
+												<BlockHeading className="u-m-0" type="h2">
+													{title}
+												</BlockHeading>
+											</ToolbarItem>
+										</ToolbarLeft>
+										<ToolbarRight>
+											{!isOwner() && (
+												<ToolbarItem>
+													<Checkbox
+														label={t(
+															'assignment/views/assignment-detail___opdracht-gemaakt'
+														)}
+														checked={
+															!!get(
+																assignment,
+																'assignment_responses[0].submitted_at'
+															)
+														}
+														onChange={handleSubmittedAtChanged}
+													/>
+												</ToolbarItem>
+											)}
+											<ToolbarItem>
+												<TagList
+													tags={tags}
+													closable={false}
+													swatches
+													bordered
+												/>
+											</ToolbarItem>
+											{!!profile && (
+												<ToolbarItem>
+													{renderAvatar(profile, {
+														small: true,
+														dark: true,
+													})}
+												</ToolbarItem>
+											)}
+											<ToolbarItem>
+												<InteractiveTour showButton />
+											</ToolbarItem>
+										</ToolbarRight>
+									</Toolbar>
+								</FlexItem>
+								<FlexItem shrink className="c-more-options-dropdown">
 									{PermissionService.hasPerm(
 										user,
 										PermissionName.EDIT_ASSIGNMENTS
 									) && (
-										<ToolbarItem>
-											<MoreOptionsDropdown
-												isOpen={isActionsDropdownOpen}
-												onOpen={() => setActionsDropdownOpen(true)}
-												onClose={() => setActionsDropdownOpen(false)}
-												menuItems={[
-													{
-														icon: 'archive',
-														id: 'archive',
-														label: assignment.is_archived
-															? t(
-																	'assignment/views/assignment-detail___dearchiveer'
-															  )
-															: t(
-																	'assignment/views/assignment-detail___archiveer'
-															  ),
-													},
-												]}
-												onOptionClicked={handleExtraOptionsClick as any}
-											/>
-										</ToolbarItem>
+										<MoreOptionsDropdown
+											isOpen={isActionsDropdownOpen}
+											onOpen={() => setActionsDropdownOpen(true)}
+											onClose={() => setActionsDropdownOpen(false)}
+											menuItems={[
+												{
+													icon: 'archive',
+													id: 'archive',
+													label: assignment.is_archived
+														? t(
+																'assignment/views/assignment-detail___dearchiveer'
+														  )
+														: t(
+																'assignment/views/assignment-detail___archiveer'
+														  ),
+												},
+											]}
+											onOptionClicked={handleExtraOptionsClick as any}
+										/>
 									)}
-									<ToolbarItem>
-										<InteractiveTour showButton />
-									</ToolbarItem>
-								</ToolbarRight>
-							</Toolbar>
+								</FlexItem>
+							</Flex>
 						</Container>
 						<Spacer margin="top">
 							<Container mode="horizontal">
