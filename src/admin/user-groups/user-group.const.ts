@@ -16,7 +16,7 @@ export const USER_GROUP_PATH = {
 
 export const ITEMS_PER_PAGE = 20;
 
-export const SPECIAL_USER_GROUPS: Partial<UserGroup>[] = [
+export const GET_SPECIAL_USER_GROUPS: () => Partial<UserGroup>[] = () => [
 	{
 		label: i18n.t(
 			'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'

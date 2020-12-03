@@ -6,7 +6,7 @@ import { TagInfo } from '@viaa/avo2-components';
 import { CheckboxOption } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { SPECIAL_USER_GROUPS } from '../user-group.const';
+import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 
 type UseUserGroupsTuple = [TagInfo[] | CheckboxOption[], boolean];
@@ -25,7 +25,7 @@ export const useUserGroupOptions = (
 		UserGroupService.fetchAllUserGroups()
 			.then((options) => {
 				const allOptions = [
-					...(includeSpecialGroups ? SPECIAL_USER_GROUPS : []),
+					...(includeSpecialGroups ? GET_SPECIAL_USER_GROUPS() : []),
 					...options,
 				];
 				if (type === 'TagInfo') {
