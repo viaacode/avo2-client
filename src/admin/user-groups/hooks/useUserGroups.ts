@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { SPECIAL_USER_GROUPS } from '../user-group.const';
+import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup } from '../user-group.types';
 
@@ -17,7 +17,7 @@ export const useUserGroups = (includeSpecialGroups: boolean): UseUserGroupsTuple
 			.then((groups) => {
 				if (groups) {
 					setUserGroups([
-						...(includeSpecialGroups ? SPECIAL_USER_GROUPS : []),
+						...(includeSpecialGroups ? GET_SPECIAL_USER_GROUPS() : []),
 						...groups,
 					]);
 				}
