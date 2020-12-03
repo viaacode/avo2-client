@@ -174,9 +174,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 					{titleElement}
 				</Link>
 			);
-		} 
-			return titleElement;
-		
+		}
+		return titleElement;
 	};
 
 	const renderDescription = () => {

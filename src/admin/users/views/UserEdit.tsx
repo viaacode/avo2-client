@@ -154,7 +154,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }),
 				history
 			);
-			ToastService.success(t('De gebruiker is aangepast'));
+			ToastService.success(t('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save user', err, {
