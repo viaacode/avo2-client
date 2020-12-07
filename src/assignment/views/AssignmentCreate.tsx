@@ -263,7 +263,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const renderAssignmentEditForm = () => {
 		return (
-			<>
+			<div className="c-assignment-create-and-edit">
 				<Navbar autoHeight>
 					<Container mode="vertical" background="alt">
 						<Container mode="horizontal">
@@ -372,7 +372,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						</Toolbar>
 					</Container>
 				</Container>
-			</>
+			</div>
 		);
 	};
 
