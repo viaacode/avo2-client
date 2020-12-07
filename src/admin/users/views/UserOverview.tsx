@@ -761,6 +761,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					onSelectAll={setAllProfilesAsSelected}
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
+					rowKey={(row: Avo.User.Profile) => row.id || get(row, 'user.mail')}
 				/>
 				<Modal
 					title={t('admin/users/views/user-overview___verwijder-opties')}

@@ -109,7 +109,7 @@ interface FilterTableProps extends RouteComponentProps {
 	className?: string;
 	onTableStateChanged: (tableState: { [id: string]: any }) => void;
 	onRowClick?: (rowData: any) => void;
-	rowKey?: string;
+	rowKey?: string | ((row: any) => string);
 	variant?: 'bordered' | 'invisible' | 'styled';
 	isLoading?: boolean;
 
