@@ -158,12 +158,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					_or: [
 						{ stamboek: { _ilike: query } },
 						{ mail: { _ilike: query } },
-						{ bio: { _ilike: query } },
-						{ alias: { _ilike: query } },
-						{ title: { _ilike: query } },
 						{ full_name: { _ilike: query } },
 						{ company_name: { _ilike: query } },
-						{ role: { _ilike: query } },
+						{ group_name: { _ilike: query } },
 					],
 				});
 			}
