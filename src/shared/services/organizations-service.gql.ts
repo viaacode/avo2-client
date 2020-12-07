@@ -39,7 +39,7 @@ export const GET_USERS_IN_COMPANY = gql`
 				last_access_at
 			}
 			profile_user_group {
-				group(limit: 1) {
+				group {
 					id
 					label
 				}
