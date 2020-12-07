@@ -554,9 +554,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			</Navbar>
 			{searchResultsError ? (
 				<ErrorView
-					message={t(
-						'search/views/search___er-ging-iets-mis-tijdens-het-ophalen-van-de-zoek-resultaten-br-probeer-later-opnieuw-of-rapporteer-het-probleem-via-de-feedback-knop'
-					)}
+					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
 					actionButtons={['home']}
 				/>
 			) : (

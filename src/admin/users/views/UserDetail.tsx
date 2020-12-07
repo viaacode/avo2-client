@@ -280,9 +280,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
-								['created_at', t('Aangemaakt op')],
-								['updated_at', t('Aangepast op')],
-								['user.last_access_at', t('Laatste toegang')],
+								['created_at', t('admin/users/views/user-detail___aangemaakt-op')],
+								['updated_at', t('admin/users/views/user-detail___aangepast-op')],
+								[
+									'user.last_access_at',
+									t('admin/users/views/user-detail___laatste-toegang'),
+								],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
 								['business_category', t('admin/users/views/user-detail___oormerk')],
@@ -296,8 +299,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDateDetailRows(storedProfile, [
-								['user.blockedAt', t('Laatst geblokeerd op')],
-								['user.unblockedAt', t('Laatst gedeblokkeerd op')],
+								[
+									'user.blockedAt',
+									t('admin/users/views/user-detail___laatst-geblokeerd-op'),
+								],
+								[
+									'user.unblockedAt',
+									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
+								],
 							])}
 							{renderDetailRow(
 								idpMapsToTagList(user.idpmaps, 'idps'),

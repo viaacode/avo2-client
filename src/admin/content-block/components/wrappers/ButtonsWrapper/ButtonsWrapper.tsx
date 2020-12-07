@@ -12,7 +12,7 @@ const ButtonsWrapper: FunctionComponent<BlockButtonsProps> = (props) => {
 	elements.forEach((element) => {
 		if (get(element, 'buttonAction.type') === 'FILE') {
 			element.tooltip = t(
-				'Gebruik rechtermuisknop en kies save om het bestand te downloaden'
+				'admin/content-block/components/wrappers/buttons-wrapper/buttons-wrapper___gebruik-rechtermuisknop-en-kies-save-om-het-bestand-te-downloaden'
 			);
 		}
 	});

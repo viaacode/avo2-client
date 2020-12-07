@@ -80,8 +80,12 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 											id: 'users',
 											label: `${selectedOrganisations.length} ${
 												selectedOrganisations.length > 1
-													? t('Educatieve organisaties')
-													: t('Educatieve organisatie')
+													? t(
+															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisaties'
+													  )
+													: t(
+															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisatie'
+													  )
 											}`,
 										},
 									]}
@@ -102,7 +106,9 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 				<Modal
 					isOpen={isOpen}
 					onClose={closeModal}
-					title={t('Educatieve organisaties')}
+					title={t(
+						'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisaties'
+					)}
 					size={'medium'}
 				>
 					<ModalBody>

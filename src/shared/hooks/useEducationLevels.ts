@@ -24,7 +24,11 @@ export const useEducationLevels = (): UseEducationLevelsTuple => {
 				console.error(
 					new CustomError('Failed to get educationLevels from the database', err)
 				);
-				ToastService.danger(t('Ophalen van de opleidingsniveaus is mislukt'));
+				ToastService.danger(
+					t(
+						'shared/hooks/use-education-levels___ophalen-van-de-opleidingsniveaus-is-mislukt'
+					)
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);

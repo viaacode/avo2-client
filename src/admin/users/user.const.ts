@@ -133,7 +133,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'education_levels',
-		label: i18n.t('Onderwijs niveaus'),
+		label: i18n.t('admin/users/user___onderwijs-niveaus'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
@@ -146,7 +146,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'subjects',
-		label: i18n.t('Vakken'),
+		label: i18n.t('admin/users/user___vakken'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
@@ -156,7 +156,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'idps',
-		label: i18n.t('Toegang via'),
+		label: i18n.t('admin/users/user___toegang-via'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
@@ -166,7 +166,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'educational_organisations',
-		label: i18n.t('Educatieve organisaties'),
+		label: i18n.t('admin/users/user___educatieve-organisaties'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'MultiEducationalOrganisationSelectModal',

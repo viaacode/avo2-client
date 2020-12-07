@@ -22,7 +22,7 @@ export const useIdps = (): UseIdpsTuple => {
 			})
 			.catch((err) => {
 				console.error(new CustomError('Failed to get idps from the database', err));
-				ToastService.danger(t('Ophalen van de idps is mislukt'));
+				ToastService.danger(t('shared/hooks/use-idps___ophalen-van-de-idps-is-mislukt'));
 			})
 			.finally(() => {
 				setIsLoading(false);

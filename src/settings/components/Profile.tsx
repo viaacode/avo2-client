@@ -323,12 +323,12 @@ const Profile: FunctionComponent<
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
 			const newProfileInfo: Partial<UpdateProfileValues> = {
-				userId: user.uid,
 				firstName,
 				lastName,
 				alias,
 				title,
 				bio,
+				userId: user.uid,
 				avatar: avatar || null,
 				educationLevels: (selectedEducationLevels || []).map((option) => ({
 					profile_id: profileId,
