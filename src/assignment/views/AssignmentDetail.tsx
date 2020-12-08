@@ -85,7 +85,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					);
 					setLoadingInfo({
 						state: 'error',
-						message: t('De opdracht kon niet worden gevonden'),
+						message: t(
+							'assignment/views/assignment-detail___de-opdracht-kon-niet-worden-gevonden'
+						),
 						icon: 'search',
 					});
 					return;

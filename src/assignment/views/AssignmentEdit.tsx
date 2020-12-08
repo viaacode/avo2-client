@@ -111,7 +111,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						);
 						setLoadingInfo({
 							state: 'error',
-							message: t('De opdracht kon niet worden gevonden'),
+							message: t(
+								'assignment/views/assignment-edit___de-opdracht-kon-niet-worden-gevonden'
+							),
 							icon: 'search',
 						});
 						return;

@@ -346,8 +346,8 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 `;
 
 export const GET_ASSIGNMENT_UUID_FROM_LEGACY_ID = gql`
-	query getAssignmentUuidFromLegacyId($legacyId: Int!, limit: 1) {
-		app_assignments(where: { _id: { _eq: $legacyId } }) {
+	query getAssignmentUuidFromLegacyId($legacyId: Int!) {
+		app_assignments(where: { _id: { _eq: $legacyId } }, limit: 1) {
 			uuid
 		}
 	}
