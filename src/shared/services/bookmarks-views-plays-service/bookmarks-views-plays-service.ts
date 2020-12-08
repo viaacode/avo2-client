@@ -64,8 +64,8 @@ export class BookmarksViewsPlaysService {
 				);
 
 				const response = await dataService.mutate({
-					mutation: query,
 					variables,
+					mutation: query,
 					update: ApolloCacheManager.clearBookmarksViewsPlays,
 				});
 
@@ -369,8 +369,8 @@ export class BookmarksViewsPlaysService {
 			);
 
 			const response = await dataService.mutate({
-				mutation: query,
 				variables,
+				mutation: query,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 
@@ -413,8 +413,8 @@ export class BookmarksViewsPlaysService {
 			);
 
 			const response = await dataService.mutate({
-				mutation: query,
 				variables,
+				mutation: query,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 

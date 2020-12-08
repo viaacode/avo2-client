@@ -113,7 +113,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				...getMultiOptionFilters(
 					filters,
 					['author_user_group'],
-					['profile.profile_user_groups.group.id']
+					['profile.profile_user_group.group.id']
 				)
 			);
 			if (filters.collection_labels && filters.collection_labels.length) {
@@ -522,8 +522,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle publish state for collections', err, {
-					selectedRows: selectedCollectionIds,
 					isPublic,
+					selectedRows: selectedCollectionIds,
 				})
 			);
 			ToastService.danger(
@@ -750,6 +750,20 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				}
 
 				return '-';
+
+			case 'is_copy':
+				if (!!get(rowData, 'relations[0].object')) {
+					return (
+						<a
+							href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+								id: get(rowData, 'relations[0].object'),
+							})}
+						>
+							Ja
+						</a>
+					);
+				}
+				return 'Nee';
 
 			case 'actions':
 				return (

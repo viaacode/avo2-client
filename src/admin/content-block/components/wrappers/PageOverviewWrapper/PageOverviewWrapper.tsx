@@ -182,8 +182,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 							'Failed to find content page by path to set it as the expanded item for the page overview wrapper component',
 							null,
 							{
-								path: queryParamsState.item,
 								contentPage,
+								path: queryParamsState.item,
 							}
 						)
 					);

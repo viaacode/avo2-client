@@ -261,8 +261,8 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					name
 					or_id
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						label
 						id
 					}

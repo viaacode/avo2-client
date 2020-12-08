@@ -27,7 +27,6 @@ import {
 	MetaDataItem,
 	Spacer,
 	Table,
-	TagList,
 	Thumbnail,
 	ToggleButton,
 } from '@viaa/avo2-components';
@@ -61,6 +60,7 @@ import {
 	reorderDate,
 } from '../../shared/helpers';
 import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
+import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -632,23 +632,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 														</Trans>
 													</th>
 													<td>
-														<TagList
-															tags={item.lom_keywords.map(
-																(keyword) => ({
-																	label: keyword,
-																	id: keyword,
-																})
-															)}
-															swatches={false}
-															onTagClicked={(
-																tagId: string | number
-															) =>
+														{stringsToTagList(
+															item.lom_keywords || [],
+															null,
+															(tagId: string | number) =>
 																goToSearchPage(
 																	'keyword',
 																	tagId as string
 																)
-															}
-														/>
+														)}
 													</td>
 												</tr>
 											)}

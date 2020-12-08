@@ -28,9 +28,11 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
+import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
+import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../../shared/services';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { ADMIN_PATH, IDP_COLORS } from '../../admin.const';
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -183,34 +185,28 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const profileUserGroup: RawUserGroup[] = get(
-			storedProfile,
-			'profile_user_groups[0].groups',
+		const profileUserGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group', []);
+
+		const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
+			profileUserGroup,
+			'group_user_permission_groups',
 			[]
 		);
-
-		profileUserGroup.forEach((group) => {
-			const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
-				group,
-				'group_user_permission_groups',
-				[]
-			);
-			rawPermissionGroups.forEach((permissionGroup) => {
-				permissionGroups.push({
-					id: permissionGroup.permission_group.id,
-					label: permissionGroup.permission_group.label,
-				});
-				const rawPermissions: RawPermissionLink[] = get(
-					permissionGroup.permission_group,
-					'permission_group_user_permissions'
-				);
-				rawPermissions.map((permission) =>
-					permissions.push({
-						id: permission.permission.id,
-						label: permission.permission.label,
-					})
-				);
+		rawPermissionGroups.forEach((permissionGroup) => {
+			permissionGroups.push({
+				id: permissionGroup.permission_group.id,
+				label: permissionGroup.permission_group.label,
 			});
+			const rawPermissions: RawPermissionLink[] = get(
+				permissionGroup.permission_group,
+				'permission_group_user_permissions'
+			);
+			rawPermissions.map((permission) =>
+				permissions.push({
+					id: permission.permission.id,
+					label: permission.permission.label,
+				})
+			);
 		});
 
 		return (
@@ -246,7 +242,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_groups[0].group', []);
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group', []);
 
 		return (
 			<Container mode="vertical" size="small">
@@ -284,9 +280,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
-								['created_at', 'Aangemaakt op'],
-								['updated_at', 'Aangepast op'],
-								['user.last_access_at', 'Laatste toegang'],
+								['created_at', t('admin/users/views/user-detail___aangemaakt-op')],
+								['updated_at', t('admin/users/views/user-detail___aangepast-op')],
+								[
+									'user.last_access_at',
+									t('admin/users/views/user-detail___laatste-toegang'),
+								],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
 								['business_category', t('admin/users/views/user-detail___oormerk')],
@@ -299,33 +298,25 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___geblokkeerd'),
 								],
 							])}
+							{renderDateDetailRows(storedProfile, [
+								[
+									'user.blockedAt',
+									t('admin/users/views/user-detail___laatst-geblokeerd-op'),
+								],
+								[
+									'user.unblockedAt',
+									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
+								],
+							])}
 							{renderDetailRow(
-								<TagList
-									tags={get(storedProfile, 'user.idpmaps', []).map(
-										(idpMap: { idp: Avo.Auth.IdpType }): TagOption => ({
-											color: IDP_COLORS[idpMap.idp],
-											label: idpMap.idp,
-											id: idpMap.idp,
-										})
-									)}
-								/>,
+								idpMapsToTagList(user.idpmaps, 'idps'),
 								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
-								<TagList
-									tags={get(
-										storedProfile,
-										'profile_classifications',
-										[] as any[]
-									).map(
-										(subject: { key: string }): TagOption => ({
-											id: subject.key,
-											label: subject.key,
-										})
-									)}
-									swatches={false}
-									closable={false}
-								/>,
+								stringsToTagList(
+									get(storedProfile, 'profile_classifications', [] as any[]),
+									'key'
+								),
 								t('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(

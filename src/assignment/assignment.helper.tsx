@@ -200,8 +200,8 @@ export class AssignmentHelper {
 		const now = new Date(Date.now());
 
 		return (
-			<Container mode="horizontal" size="small" className="c-assignment-edit">
-				<Container mode="vertical" size="large">
+			<Container mode="horizontal" size="small" className="c-assignment-create-and-edit">
+				<Container mode="vertical" size="small">
 					<Form>
 						<FormGroup
 							required

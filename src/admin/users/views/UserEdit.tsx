@@ -121,12 +121,12 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 
 			const profileId = match.params.id;
 			const newProfileInfo = {
-				userId: get(storedProfile, 'user.uid'),
 				firstName,
 				lastName,
 				alias,
 				title,
 				bio,
+				userId: get(storedProfile, 'user.uid'),
 				avatar: avatar || null,
 				subjects: (selectedSubjects || []).map((option) => ({
 					profile_id: profileId,
@@ -178,12 +178,17 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			return;
 		}
 
+		const companyLogo = get(
+			(companies || []).find((company) => company.or_id === companyId),
+			'logo_url',
+			null
+		);
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Form>
-						{!companyId && (
-							<FormGroup label={t('admin/users/views/user-detail___avatar')}>
+						<FormGroup label={t('admin/users/views/user-detail___avatar')}>
+							{!companyId && (
 								<FileUpload
 									urls={avatar ? [avatar] : []}
 									onChange={(urls) => setAvatar(urls[0])}
@@ -192,8 +197,18 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 									allowedTypes={PHOTO_TYPES}
 									ownerId={match.params.id}
 								/>
-							</FormGroup>
-						)}
+							)}
+							{!!companyId && !!companyLogo && (
+								<div
+									className="c-logo-preview"
+									style={{
+										backgroundImage: `url(${companyLogo})`,
+									}}
+								/>
+							)}
+							{!!companyId && !companyLogo && 'geen avatar'}
+						</FormGroup>
+
 						<FormGroup label={t('admin/users/views/user-detail___voornaam')}>
 							<TextInput value={firstName} onChange={setFirstName} />
 						</FormGroup>

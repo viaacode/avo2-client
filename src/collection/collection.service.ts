@@ -614,33 +614,8 @@ export class CollectionService {
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
 		try {
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id: collectionId },
-			});
+			const collectionObj = await CollectionService.getCollectionById(collectionId);
 
-			if (response.errors) {
-				throw new CustomError(
-					`Failed to retrieve ${type} from database because of graphql errors`,
-					null,
-					{
-						collectionId,
-						errors: response.errors,
-					}
-				);
-			}
-
-			const collectionObj: Avo.Collection.Collection | null = get(
-				response,
-				'data.app_collections[0]'
-			);
-
-			if (!collectionObj) {
-				throw new CustomError(`query for ${type} returned empty result`, null, {
-					collectionId,
-					response,
-				});
-			}
 			// Collection/bundle loaded successfully
 			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
 			if (collectionObj.type_id !== ContentTypeNumber[type]) {
@@ -652,7 +627,6 @@ export class CollectionService {
 			throw new CustomError('Failed to fetch collection or bundle by id', err, {
 				collectionId,
 				type,
-				query: 'GET_COLLECTION_BY_ID',
 			});
 		}
 	}

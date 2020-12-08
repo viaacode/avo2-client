@@ -43,6 +43,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
@@ -130,9 +131,12 @@ const Search: FunctionComponent<SearchProps> = ({
 	}, [setSearchTerms, filterState]);
 
 	useEffect(() => {
+		if (!PermissionService.hasPerm(user, PermissionName.SEARCH)) {
+			return;
+		}
 		onFilterStateChanged();
 		updateSearchTerms();
-	}, [onFilterStateChanged, updateSearchTerms]);
+	}, [onFilterStateChanged, updateSearchTerms, user]);
 
 	/**
 	 * Update the filter values and scroll to the top
@@ -184,8 +188,10 @@ const Search: FunctionComponent<SearchProps> = ({
 	}, [t, setBookmarkStatuses, searchResults, user]);
 
 	useEffect(() => {
-		getBookmarkStatuses();
-	}, [getBookmarkStatuses]);
+		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {
+			getBookmarkStatuses();
+		}
+	}, [getBookmarkStatuses, user]);
 
 	const handleFilterFieldChange = async (
 		value: SearchFilterFieldValues,
@@ -548,9 +554,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			</Navbar>
 			{searchResultsError ? (
 				<ErrorView
-					message={t(
-						'search/views/search___er-ging-iets-mis-tijdens-het-ophalen-van-de-zoek-resultaten-br-probeer-later-opnieuw-of-rapporteer-het-probleem-via-de-feedback-knop'
-					)}
+					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
 					actionButtons={['home']}
 				/>
 			) : (

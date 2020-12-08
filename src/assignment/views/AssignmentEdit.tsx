@@ -54,6 +54,8 @@ import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 
+import './AssignmentEdit.scss';
+
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
 	location,
@@ -379,7 +381,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderAssignmentEditForm = () => {
 		return (
-			<div className="c-assignment-edit">
+			<div className="c-assignment-create-and-edit">
 				<Navbar autoHeight>
 					<Container mode="vertical" background="alt">
 						<Container mode="horizontal">
@@ -511,7 +513,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					setAssignmentLabels
 				)}
 				<Container background="alt" mode="vertical">
-					<Container size="small" mode="horizontal">
+					<Container size="small" mode="horizontal" className="c-last-vertical-container">
 						<Toolbar autoHeight>
 							<ToolbarRight>
 								<ToolbarItem>

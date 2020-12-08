@@ -26,8 +26,8 @@ export const GET_CONTENT_PAGES = gql`
 					logo_url
 					name
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						id
 						label
 					}
@@ -128,8 +128,8 @@ export const GET_CONTENT_BY_ID = gql`
 					name
 					or_id
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						label
 						id
 					}
@@ -220,19 +220,6 @@ export const GET_CONTENT_LABELS_BY_CONTENT_TYPE = gql`
 			label
 			content_type
 			link_to
-		}
-	}
-`;
-
-export const INSERT_CONTENT_LABEL = gql`
-	mutation insertContentLabel($label: String!, $contentType: String!) {
-		insert_app_content_labels(objects: { content_type: $contentType, label: $label }) {
-			returning {
-				id
-				label
-				content_type
-				link_to
-			}
 		}
 	}
 `;
