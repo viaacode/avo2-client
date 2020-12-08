@@ -343,7 +343,7 @@ export class AssignmentService {
 			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT,
 				variables: {
-					id: assignment.id,
+					assignmentUuid: assignment.uuid,
 					assignment: assignmentToSave,
 				},
 				update: ApolloCacheManager.clearAssignmentCache,
@@ -459,9 +459,9 @@ export class AssignmentService {
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			const id = get(response, 'data.insert_app_assignments.returning[0].id');
+			const assignmentUuid = get(response, 'data.insert_app_assignments.returning[0].uuid');
 
-			if (isNil(id)) {
+			if (isNil(assignmentUuid)) {
 				throw new CustomError(
 					'Saving the assignment failed, response id was undefined',
 					null,
@@ -476,13 +476,13 @@ export class AssignmentService {
 				const addedLabelIds = addedLabels.map((labelObj) => labelObj.id);
 
 				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(id, addedLabelIds),
+					AssignmentLabelsService.linkLabelsFromAssignment(assignmentUuid, addedLabelIds),
 				]);
 			}
 
 			return {
 				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
-				id,
+				assignmentUuid,
 			} as Avo.Assignment.Assignment;
 		} catch (err) {
 			console.error(err);
