@@ -3,17 +3,16 @@ import { get, isNil } from 'lodash-es';
 import { LabelObj } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../shared/helpers';
+import { CustomError, getEnv } from '../../shared/helpers';
+import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import {
 	DELETE_CONTENT_PAGE_LABEL,
-	GET_CONTENT_PAGE_LABELS,
-	GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID,
-	GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL,
 	GET_CONTENT_PAGE_LABEL_BY_ID,
+	GET_CONTENT_PAGE_LABELS,
 	INSERT_CONTENT_PAGE_LABEL,
 	UPDATE_CONTENT_PAGE_LABEL,
 } from './content-page-label.gql';
@@ -207,23 +206,27 @@ export class ContentPageLabelService {
 		labels: string[]
 	): Promise<LabelObj[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL,
-				variables: { contentType, labels },
+			const reply = await fetchWithLogout(`${getEnv('PROXY_URL')}/content-pages/labels`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					contentType,
+					labels,
+				}),
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_content_labels') || [];
+			const labelObj = await reply.json();
+			return labelObj;
 		} catch (err) {
 			throw new CustomError(
-				'Failed to get content page label objects by type and label',
+				'Failed to get content page label objects by content type and labels',
 				err,
 				{
-					query: 'GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL',
-					variables: { contentType, labels },
+					contentType,
+					labels,
 				}
 			);
 		}
@@ -234,23 +237,27 @@ export class ContentPageLabelService {
 		labelIds: number[]
 	): Promise<LabelObj[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID,
-				variables: { contentType, labelIds },
+			const reply = await fetchWithLogout(`${getEnv('PROXY_URL')}/content-pages/labels`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					contentType,
+					labelIds,
+				}),
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_content_labels') || [];
+			const labelObj = await reply.json();
+			return labelObj;
 		} catch (err) {
 			throw new CustomError(
-				'Failed to get content page label objects by type and label',
+				'Failed to get content page labels by content type and label ids',
 				err,
 				{
-					query: 'GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID',
-					variables: { contentType, labelIds },
+					contentType,
+					labelIds,
 				}
 			);
 		}

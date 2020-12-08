@@ -44,26 +44,6 @@ export const GET_CONTENT_PAGE_LABEL_BY_ID = gql`
 	}
 `;
 
-export const GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_LABEL = gql`
-	query getContentPageLabelsByTypeAndLabels($contentType: String!, $labels: [String!]!) {
-		app_content_labels(
-			where: { label: { _in: $labels }, content_type: { _eq: $contentType } }
-		) {
-			label
-			id
-		}
-	}
-`;
-
-export const GET_CONTENT_PAGE_LABELS_BY_TYPE_AND_ID = gql`
-	query getContentPageLabelsByTypeAndIds($contentType: String!, $labelIds: [Int!]!) {
-		app_content_labels(where: { id: { _in: $labelIds }, content_type: { _eq: $contentType } }) {
-			label
-			id
-		}
-	}
-`;
-
 export const INSERT_CONTENT_PAGE_LABEL = gql`
 	mutation insertContentPageLabel($contentPageLabel: app_content_labels_insert_input!) {
 		insert_app_content_labels(objects: [$contentPageLabel]) {
