@@ -174,9 +174,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			}
 		};
 
-		const fetchAssignment = async (uuid: string): Promise<Avo.Assignment.Assignment | null> => {
+		const fetchAssignment = async (
+			assignmentUuid: string
+		): Promise<Avo.Assignment.Assignment | null> => {
 			try {
-				return await AssignmentService.fetchAssignmentByUuid(uuid);
+				return await AssignmentService.fetchAssignmentByUuid(assignmentUuid);
 			} catch (err) {
 				console.error(err);
 				setLoadingInfo({
@@ -211,7 +213,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
 		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
-			currentAssignment.id
+			currentAssignment.uuid
 		}`;
 	};
 
@@ -220,7 +222,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		trackEvents(
 			{
-				object: String(currentAssignment.id),
+				object: String(currentAssignment.uuid),
 				object_type: 'assignment',
 				message: `Gebruiker ${getProfileName(user)} heeft een opdracht url gekopieerd`,
 				action: 'share',
@@ -232,13 +234,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
-		if (currentAssignment.id) {
+		if (currentAssignment.uuid) {
 			trackEvents(
 				{
-					object: String(currentAssignment.id),
+					object: String(currentAssignment.uuid),
 					object_type: 'avo_assignment' as any, // TODO add this object type to the database
 					message: `Gebruiker ${getProfileName(user)} heeft de permalink voor opdracht ${
-						currentAssignment.id
+						currentAssignment.uuid
 					} gekopieert`,
 					action: 'view',
 				},
@@ -342,7 +344,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			trackEvents(
 				{
-					object: String(assignment.id),
+					object: String(assignment.uuid),
 					object_type: 'assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft een opdracht aangepast`,
 					action: 'edit',
@@ -365,16 +367,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const onDeleteAssignment = async () => {
 		try {
-			if (isNil(currentAssignment.id)) {
-				throw new CustomError('Assignment does not have an id', null, {
+			if (isNil(currentAssignment.uuid)) {
+				throw new CustomError('Assignment does not have an uuid', null, {
 					assignment: currentAssignment,
 				});
 			}
-			await AssignmentService.deleteAssignment(currentAssignment.id);
+			await AssignmentService.deleteAssignment(currentAssignment.uuid);
 
 			trackEvents(
 				{
-					object: String(currentAssignment.id),
+					object: String(currentAssignment.uuid),
 					object_type: 'assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
 					action: 'delete',
@@ -389,7 +391,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			trackEvents(
 				{
-					object: String(currentAssignment.id),
+					object: String(currentAssignment.uuid),
 					object_type: 'assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
 					action: 'delete',
@@ -429,7 +431,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 										<BlockHeading className="u-m-0" type="h2">
 											{currentAssignment.title}
 										</BlockHeading>
-										{currentAssignment.id && (
+										{currentAssignment.uuid && (
 											<Spacer margin="top-small">
 												<Form
 													type={isMobileWidth() ? 'standard' : 'inline'}

@@ -18,13 +18,13 @@ import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
-	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -636,7 +636,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
-	 * @param assignmentId Collection can be fetched if it's not public and you're not the owner,
+	 * @param assignmentUuid Collection can be fetched if it's not public and you're not the owner,
 	 *        but if it is linked to an assignment that you're trying to view
 	 *
 	 * @returns Collection or bundle.
@@ -644,13 +644,13 @@ export class CollectionService {
 	public static async fetchCollectionOrBundleWithItemsById(
 		collectionId: string,
 		type: 'collection' | 'bundle',
-		assignmentId: number | undefined
+		assignmentUuid: string | undefined
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
-					assignmentId,
+					assignmentId: assignmentUuid,
 					id: collectionId,
 				})}`,
 				{

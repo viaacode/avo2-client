@@ -158,13 +158,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				);
 
 				if (assignmentResponse) {
-					response.assignment.assignment_responses = [assignmentResponse];
+					response.assignment.responses = [assignmentResponse];
 				}
 			}
 
 			trackEvents(
 				{
-					object: String(response.assignment.id),
+					object: String(response.assignment.uuid),
 					object_type: 'assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft een opdracht bekeken`,
 					action: 'view',
@@ -220,7 +220,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					return;
 				}
 				const archived = !(get(assignment, 'is_archived') || false);
-				await AssignmentService.toggleAssignmentArchiveStatus(assignment.id, archived);
+				await AssignmentService.toggleAssignmentArchiveStatus(assignment.uuid, archived);
 				fetchAssignmentAndContent();
 				ToastService.success(
 					archived
@@ -244,7 +244,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 	const handleSubmittedAtChanged = async (checked: boolean) => {
 		try {
-			const assignmentResponse = get(assignment, 'assignment_responses[0]');
+			const assignmentResponse = get(assignment, 'responses[0]');
 			if (!assignmentResponse) {
 				console.error(
 					new CustomError(
@@ -419,7 +419,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 														checked={
 															!!get(
 																assignment,
-																'assignment_responses[0].submitted_at'
+																'responses[0].submitted_at'
 															)
 														}
 														onChange={handleSubmittedAtChanged}

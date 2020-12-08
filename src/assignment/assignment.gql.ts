@@ -1,10 +1,10 @@
 import { gql } from 'apollo-boost';
 
-export const GET_ASSIGNMENT_BY_ID = gql`
-	query getAssignmentsById($id: uuid!) {
-		app_assignments(where: { id: { _eq: $id } }) {
+export const GET_ASSIGNMENT_BY_UUID = gql`
+	query getAssignmentsById($uuid: uuid!) {
+		app_assignments(where: { uuid: { _eq: $uuid } }) {
 			answer_url
-			assignment_assignment_tags {
+			tags {
 				assignment_tag {
 					color_enum_value
 					color_override
@@ -16,7 +16,7 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 					label
 				}
 			}
-			assignment_responses {
+			responses {
 				id
 			}
 			assignment_type
@@ -28,7 +28,7 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 			created_at
 			deadline_at
 			description
-			_id
+			uuid
 			id
 			is_archived
 			is_collaborative
@@ -52,7 +52,7 @@ export const GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE = gql`
 				is_deleted: { _eq: false }
 			}
 		) {
-			id
+			uuid
 			title
 			profile {
 				user: usersByuserId {
@@ -84,7 +84,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			limit: $limit
 			order_by: [$order]
 		) {
-			assignment_assignment_tags(order_by: { assignment_tag: { label: asc } }) {
+			tags(order_by: { assignment_tag: { label: asc } }) {
 				assignment_tag {
 					color_enum_value
 					color_override
@@ -96,13 +96,13 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 					label
 				}
 			}
-			assignment_responses {
+			responses {
 				id
 			}
 			assignment_type
 			class_room
 			deadline_at
-			id
+			uuid
 			is_archived
 			is_deleted
 			title
@@ -133,7 +133,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 	) {
 		app_assignments(
 			where: {
-				assignment_responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
+				responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
 				is_deleted: { _eq: false }
 				_and: $filter
 			}
@@ -141,7 +141,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 			offset: $offset
 			order_by: [$order]
 		) {
-			assignment_assignment_tags {
+			tags {
 				assignment_tag {
 					color_enum_value
 					color_override
@@ -153,14 +153,14 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 					label
 				}
 			}
-			assignment_responses {
+			responses {
 				id
 				submitted_at
 			}
 			assignment_type
 			class_room
 			deadline_at
-			id
+			uuid
 			is_archived
 			is_deleted
 			title
@@ -183,7 +183,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 		}
 		count: app_assignments_aggregate(
 			where: {
-				assignment_responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
+				responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
 				is_deleted: { _eq: false }
 				_or: $filter
 			}
@@ -196,11 +196,11 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_RESPONSES = gql`
-	query getAssignmentResponses($profileId: String!, $assignmentId: Int) {
+	query getAssignmentResponses($profileId: String!, $assignmentUuid: uuid!) {
 		app_assignment_responses(
 			where: {
 				owner_profile_ids: { _has_key: $profileId }
-				assignment_id: { _eq: $assignmentId }
+				assignment_id: { _eq: $assignmentUuid }
 			}
 		) {
 			id
@@ -210,16 +210,16 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: String!) {
+	query getAssignmentWithResponse($assignmentUuid: uuid!, $pupilUuid: String!) {
 		assignments: app_assignments(
 			where: {
-				id: { _eq: $assignmentId }
+				id: { _eq: $assignmentUuid }
 				is_deleted: { _eq: false }
 				is_archived: { _eq: false }
 			}
 			order_by: [{ deadline_at: desc }]
 		) {
-			assignment_assignment_tags {
+			tags {
 				id
 				assignment_tag {
 					color_enum_value
@@ -232,7 +232,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					label
 				}
 			}
-			assignment_responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {
+			responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {
 				id
 				created_at
 				submitted_at
@@ -243,7 +243,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			assignment_type
 			class_room
 			deadline_at
-			id
+			uuid
 			is_archived
 			is_deleted
 			title
@@ -283,23 +283,26 @@ export const INSERT_ASSIGNMENT = gql`
 		insert_app_assignments(objects: [$assignment]) {
 			affected_rows
 			returning {
-				id
+				uuid
 			}
 		}
 	}
 `;
 
 export const UPDATE_ASSIGNMENT = gql`
-	mutation updateAssignmentById($id: Int!, $assignment: app_assignments_set_input!) {
-		update_app_assignments(where: { id: { _eq: $id } }, _set: $assignment) {
+	mutation updateAssignmentById($assignmentUuid: uuid!, $assignment: app_assignments_set_input!) {
+		update_app_assignments(where: { uuid: { _eq: $assignmentUuid } }, _set: $assignment) {
 			affected_rows
 		}
 	}
 `;
 
 export const UPDATE_ASSIGNMENT_ARCHIVE_STATUS = gql`
-	mutation toggleAssignmentArchiveStatus($id: Int!, $archived: Boolean!) {
-		update_app_assignments(where: { id: { _eq: $id } }, _set: { is_archived: $archived }) {
+	mutation toggleAssignmentArchiveStatus($assignmentUuid: uuid!, $archived: Boolean!) {
+		update_app_assignments(
+			where: { uuid: { _eq: $assignmentUuid } }
+			_set: { is_archived: $archived }
+		) {
 			affected_rows
 		}
 	}
@@ -317,8 +320,8 @@ export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
 `;
 
 export const DELETE_ASSIGNMENT = gql`
-	mutation deleteAssignmentById($id: Int!) {
-		delete_app_assignments(where: { id: { _eq: $id } }) {
+	mutation deleteAssignmentById($assignmentUuid: uuid!) {
+		delete_app_assignments(where: { uuid: { _eq: $assignmentUuid } }) {
 			affected_rows
 		}
 	}
@@ -331,7 +334,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 		insert_app_assignment_responses(objects: $assignmentResponses) {
 			affected_rows
 			returning {
-				id
+				uuid
 				created_at
 				submitted_at
 				owner_profile_ids
@@ -345,7 +348,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 export const GET_ASSIGNMENT_UUID_FROM_LEGACY_ID = gql`
 	query getAssignmentUuidFromLegacyId($legacyId: Int!, limit: 1) {
 		app_assignments(where: { _id: { _eq: $legacyId } }) {
-			id
+			uuid
 		}
 	}
 `;
