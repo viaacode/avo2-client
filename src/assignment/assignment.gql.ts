@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_BY_ID = gql`
-	query getAssignmentsById($id: Int!) {
+	query getAssignmentsById($id: uuid!) {
 		app_assignments(where: { id: { _eq: $id } }) {
 			answer_url
 			assignment_assignment_tags {
@@ -28,6 +28,7 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 			created_at
 			deadline_at
 			description
+			_id
 			id
 			is_archived
 			is_collaborative
@@ -209,7 +210,7 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentId: Int!, $pupilUuid: String!) {
+	query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: String!) {
 		assignments: app_assignments(
 			where: {
 				id: { _eq: $assignmentId }
@@ -337,6 +338,14 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 				assignment_id
 				collection_uuid
 			}
+		}
+	}
+`;
+
+export const GET_ASSIGNMENT_UUID_FROM_LEGACY_ID = gql`
+	query getAssignmentUuidFromLegacyId($legacyId: Int!, limit: 1) {
+		app_assignments(where: { _id: { _eq: $legacyId } }) {
+			id
 		}
 	}
 `;

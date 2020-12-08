@@ -19,12 +19,13 @@ import i18n from '../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENT_RESPONSES,
+	GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
@@ -164,11 +165,11 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(id: string | number): Promise<Avo.Assignment.Assignment> {
+	static async fetchAssignmentByUuid(assignmentUuid: string): Promise<Avo.Assignment.Assignment> {
 		try {
 			const assignmentQuery = {
 				query: GET_ASSIGNMENT_BY_ID,
-				variables: { id },
+				variables: { id: assignmentUuid },
 			};
 
 			// Get the assignment from graphql
@@ -194,7 +195,7 @@ export class AssignmentService {
 			return assignmentResponse;
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
-				id,
+				assignmentUuid,
 				query: 'GET_ASSIGNMENT_BY_ID',
 			});
 		}
@@ -617,7 +618,7 @@ export class AssignmentService {
 
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
-		assignmentId: number | string
+		assignmentId: string
 	): Promise<
 		| {
 				assignmentContent: Avo.Assignment.Content | null;
@@ -777,6 +778,36 @@ export class AssignmentService {
 			throw new CustomError('Failed to insert an assignment response in the database', err, {
 				assignment,
 			});
+		}
+	}
+
+	static isLegacyAssignmentId(assignmentId: string | number): boolean {
+		return !String(assignmentId).includes('-');
+	}
+
+	static async getAssignmentUuidFromLegacyId(
+		legacyAssignmentId: string | number
+	): Promise<string | undefined> {
+		try {
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+				query: GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
+				variables: { legacyAssignmentId },
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			return get(response, 'data.app_assignments.id');
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get assignment uuid from legacy id from the database',
+				err,
+				{
+					legacyAssignmentId,
+					query: 'GET_ASSIGNMENT_UUID_FROM_LEGACY_ID',
+				}
+			);
 		}
 	}
 }

@@ -48,6 +48,7 @@ import './AssignmentDetail.scss';
 interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
+	history,
 	location,
 	match,
 	user,
@@ -66,9 +67,37 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	// Retrieve data from GraphQL
 	const fetchAssignmentAndContent = useCallback(async () => {
 		try {
+			const assignmentId = match.params.id;
+
+			if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
+				const assignmentUuid:
+					| string
+					| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
+					assignmentId
+				);
+				if (!assignmentUuid) {
+					console.error(
+						new CustomError(
+							'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
+							null,
+							{ legacyId: assignmentId }
+						)
+					);
+					setLoadingInfo({
+						state: 'error',
+						message: t('De opdracht kon niet worden gevonden'),
+						icon: 'search',
+					});
+					return;
+				}
+				history.replace(
+					buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentUuid })
+				);
+			}
+
 			const response = await AssignmentService.fetchAssignmentAndContent(
 				getProfileId(user),
-				match.params.id
+				assignmentId
 			);
 
 			if (isString(response)) {
@@ -278,6 +307,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 							assignment.content_layout === AssignmentLayout.PlayerAndText
 						}
 						linkToItems={false}
+						history={history}
 						location={location}
 						match={match}
 						user={user}

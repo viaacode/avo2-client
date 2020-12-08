@@ -207,10 +207,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	};
 
-	const archiveAssignment = async (assignmentId: number | string) => {
+	const archiveAssignment = async (assignmentUuid: string) => {
 		try {
-			const assignment: Avo.Assignment.Assignment | null = await AssignmentService.fetchAssignmentById(
-				assignmentId
+			const assignment: Avo.Assignment.Assignment | null = await AssignmentService.fetchAssignmentByUuid(
+				assignmentUuid
 			);
 
 			if (assignment) {
@@ -312,7 +312,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 			case 'duplicate':
 				try {
-					const assignment: Avo.Assignment.Assignment = await AssignmentService.fetchAssignmentById(
+					const assignment: Avo.Assignment.Assignment = await AssignmentService.fetchAssignmentByUuid(
 						dataRow.id
 					);
 

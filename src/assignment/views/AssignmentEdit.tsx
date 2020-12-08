@@ -92,10 +92,39 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	useEffect(() => {
 		const initAssignmentData = async () => {
 			try {
+				// Redirect if id is a legacy numeric assignment id instead of a guid
+				const assignmentId = match.params.id;
+
+				if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
+					const assignmentUuid:
+						| string
+						| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
+						assignmentId
+					);
+					if (!assignmentUuid) {
+						console.error(
+							new CustomError(
+								'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
+								null,
+								{ legacyId: assignmentId }
+							)
+						);
+						setLoadingInfo({
+							state: 'error',
+							message: t('De opdracht kon niet worden gevonden'),
+							icon: 'search',
+						});
+						return;
+					}
+					history.replace(
+						buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentUuid })
+					);
+				}
+
 				// Determine if this is an edit or create page and initialize or fetch the assignment
 				const tempAssignment: Partial<
 					Avo.Assignment.Assignment
-				> | null = await fetchAssignment(match.params.id);
+				> | null = await fetchAssignment(assignmentId);
 
 				if (!tempAssignment) {
 					// Something went wrong during init/fetch
@@ -145,11 +174,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			}
 		};
 
-		const fetchAssignment = async (
-			id: string | number
-		): Promise<Avo.Assignment.Assignment | null> => {
+		const fetchAssignment = async (uuid: string): Promise<Avo.Assignment.Assignment | null> => {
 			try {
-				return await AssignmentService.fetchAssignmentById(id);
+				return await AssignmentService.fetchAssignmentByUuid(uuid);
 			} catch (err) {
 				console.error(err);
 				setLoadingInfo({
