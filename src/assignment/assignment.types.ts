@@ -7,7 +7,7 @@ export type AssignmentOverviewTableColumns =
 	| 'author'
 	| 'class_room'
 	| 'deadline_at'
-	| 'assignment_responses'
+	| 'responses'
 	| 'submitted_at'
 	| 'created_at'
 	| 'actions';

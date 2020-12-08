@@ -22,8 +22,9 @@ import {
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
-	GET_ASSIGNMENT_BY_ID,
+	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_RESPONSES,
+	GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -85,7 +86,7 @@ export class AssignmentService {
 					_or: [
 						{ title: { _ilike: `%${trimmedFilterString}%` } },
 						{
-							assignment_assignment_tags: {
+							tags: {
 								assignment_tag: { label: { _ilike: `%${trimmedFilterString}%` } },
 							},
 						},
@@ -96,7 +97,7 @@ export class AssignmentService {
 			}
 			if (labelIds && labelIds.length) {
 				filterArray.push({
-					assignment_assignment_tags: { assignment_tag_id: { _in: labelIds } },
+					tags: { assignment_tag_id: { _in: labelIds } },
 				});
 			}
 			if (!isNil(archived)) {
@@ -164,11 +165,11 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(id: string | number): Promise<Avo.Assignment.Assignment> {
+	static async fetchAssignmentByUuid(assignmentUuid: string): Promise<Avo.Assignment.Assignment> {
 		try {
 			const assignmentQuery = {
-				query: GET_ASSIGNMENT_BY_ID,
-				variables: { id },
+				query: GET_ASSIGNMENT_BY_UUID,
+				variables: { uuid: assignmentUuid },
 			};
 
 			// Get the assignment from graphql
@@ -194,8 +195,8 @@ export class AssignmentService {
 			return assignmentResponse;
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
-				id,
-				query: 'GET_ASSIGNMENT_BY_ID',
+				assignmentUuid,
+				query: 'GET_ASSIGNMENT_BY_UUID',
 			});
 		}
 	}
@@ -209,7 +210,7 @@ export class AssignmentService {
 					(await CollectionService.fetchCollectionOrBundleWithItemsById(
 						assignment.content_id,
 						'collection',
-						assignment.id
+						assignment.uuid
 					)) || null
 				);
 			}
@@ -293,24 +294,24 @@ export class AssignmentService {
 		assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 		assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 		assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
-		delete assignmentToSave.assignment_responses; // = assignmentToSave.assignment_responses || [];
-		delete assignmentToSave.assignment_assignment_tags; // = assignmentToSave.assignment_assignment_tags || {
+		delete assignmentToSave.responses; // = assignmentToSave.responses || [];
+		delete assignmentToSave.tags; // = assignmentToSave.tags || {
 		// 	assignment_tag: [],
 		// };
 		delete (assignmentToSave as any).__typename;
 		return [errors, assignmentToSave as Avo.Assignment.Assignment];
 	}
 
-	static async deleteAssignment(id: number | string) {
+	static async deleteAssignment(assignmentUuid: number | string) {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENT,
-				variables: { id },
+				variables: { assignmentUuid },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			console.error(err);
-			throw new CustomError('Failed to delete assignment', err, { id });
+			throw new CustomError('Failed to delete assignment', err, { assignmentUuid });
 		}
 	}
 
@@ -362,9 +363,12 @@ export class AssignmentService {
 				const deletedLabelIds = without(initialLabelIds, ...updatedLabelIds);
 
 				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(assignment.id, newLabelIds),
+					AssignmentLabelsService.linkLabelsFromAssignment(
+						assignment.uuid as string,
+						newLabelIds
+					),
 					AssignmentLabelsService.unlinkLabelsFromAssignment(
-						assignment.id,
+						assignment.uuid as string,
 						deletedLabelIds
 					),
 				]);
@@ -378,14 +382,14 @@ export class AssignmentService {
 	}
 
 	static async toggleAssignmentArchiveStatus(
-		id: number | string,
+		assignmentUuid: string,
 		archived: boolean
 	): Promise<void> {
 		try {
 			const response = await dataService.mutate<Avo.Assignment.Assignment>({
 				mutation: UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
 				variables: {
-					id,
+					assignmentUuid,
 					archived,
 				},
 				update: ApolloCacheManager.clearAssignmentCache,
@@ -396,7 +400,7 @@ export class AssignmentService {
 			}
 		} catch (err) {
 			throw new CustomError('Failed to toggle archived status for assignment', err, {
-				id,
+				assignmentUuid,
 				archived,
 			});
 		}
@@ -617,7 +621,7 @@ export class AssignmentService {
 
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
-		assignmentId: number | string
+		assignmentUuid: string
 	): Promise<
 		| {
 				assignmentContent: Avo.Assignment.Content | null;
@@ -630,7 +634,7 @@ export class AssignmentService {
 			const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
 				query: GET_ASSIGNMENT_WITH_RESPONSE,
 				variables: {
-					assignmentId,
+					assignmentUuid,
 					pupilUuid: pupilProfileId,
 				},
 			});
@@ -665,7 +669,7 @@ export class AssignmentService {
 
 			throw new CustomError('Failed to fetch assignment with content', err, {
 				pupilProfileId,
-				assignmentId,
+				assignmentUuid,
 			});
 		}
 	}
@@ -679,12 +683,12 @@ export class AssignmentService {
 
 	static async getAssignmentResponses(
 		profileId: string,
-		assignmentId: number
+		assignmentUuid: string
 	): Promise<string[]> {
 		try {
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSES,
-				variables: { profileId, assignmentId },
+				variables: { profileId, assignmentUuid },
 			});
 
 			if (response.errors) {
@@ -722,7 +726,7 @@ export class AssignmentService {
 			}
 			const existingAssignmentResponses: string[] = await AssignmentService.getAssignmentResponses(
 				get(user, 'profile.id'),
-				get(assignment, 'id')
+				get(assignment, 'uuid')
 			);
 
 			if (!!existingAssignmentResponses.length) {
@@ -741,7 +745,7 @@ export class AssignmentService {
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response> = {
 				owner_profile_ids: [getProfileId(user)],
-				assignment_id: assignment.id,
+				assignment_id: assignment.uuid,
 				collection: null,
 				collection_uuid: null,
 				submitted_at: null,
@@ -777,6 +781,36 @@ export class AssignmentService {
 			throw new CustomError('Failed to insert an assignment response in the database', err, {
 				assignment,
 			});
+		}
+	}
+
+	static isLegacyAssignmentId(assignmentId: string | number): boolean {
+		return !String(assignmentId).includes('-');
+	}
+
+	static async getAssignmentUuidFromLegacyId(
+		legacyAssignmentId: string | number
+	): Promise<string | undefined> {
+		try {
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+				query: GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
+				variables: { legacyAssignmentId },
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			return get(response, 'data.app_assignments.id');
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get assignment uuid from legacy id from the database',
+				err,
+				{
+					legacyAssignmentId,
+					query: 'GET_ASSIGNMENT_UUID_FROM_LEGACY_ID',
+				}
+			);
 		}
 	}
 }
