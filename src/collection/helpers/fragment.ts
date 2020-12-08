@@ -4,8 +4,6 @@ import moment from 'moment';
 import { Avo } from '@viaa/avo2-types';
 import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
-
 export const getFragmentProperty = (
 	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,
 	fragment: Avo.Collection.Fragment,
@@ -33,7 +31,7 @@ export const showReplacementWarning = (
 ): boolean => {
 	const item = collectionFragment.item_meta as Avo.Item.Item;
 	const replacedRelation: RelationEntry<Avo.Item.Item> | undefined = get(item, 'relations[0]');
-	const ownsCollection: boolean = collection.owner_profile_id === getProfileId(user);
+	const ownsCollection: boolean = collection.owner_profile_id === get(user, 'profile.id');
 
 	return (
 		ownsCollection &&
