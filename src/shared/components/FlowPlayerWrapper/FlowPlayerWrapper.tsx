@@ -66,7 +66,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			setSrc(await fetchPlayerTicket(item.external_id));
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to initFlowlayer in FlowPlayerWrapper', err, {
+				new CustomError('Failed to initFlowPlayer in FlowPlayerWrapper', err, {
 					item,
 				})
 			);

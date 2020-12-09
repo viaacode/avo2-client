@@ -102,9 +102,20 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					{ description: { _ilike: queryWildcard } },
 					{
 						profile: {
-							usersByuserId: { full_name: { _ilike: queryWildcard } },
+							usersByuserId: { first_name: { _ilike: queryWildcard } },
 						},
 					},
+					{
+						profile: {
+							usersByuserId: { last_name: { _ilike: queryWildcard } },
+						},
+					},
+					// TODO replace first and last name once this becomes possible in the database
+					// {
+					// 	profile: {
+					// 		usersByuserId: { full_name: { _ilike: queryWildcard } },
+					// 	},
+					// },
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
