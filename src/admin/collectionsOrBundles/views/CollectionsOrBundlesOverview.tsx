@@ -101,8 +101,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					{ title: { _ilike: queryWildcard } },
 					{ description: { _ilike: queryWildcard } },
 					{
-						profile: {
-							usersByuserId: { full_name: { _ilike: queryWildcard } },
+						owner: {
+							full_name: { _ilike: queryWildcard },
 						},
 					},
 				])

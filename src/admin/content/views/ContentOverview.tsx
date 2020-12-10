@@ -110,26 +110,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							{ title: { _ilike: queryWildcard } },
 							{ path: { _ilike: queryWildcard } },
 							{
-								profile: {
-									_or: [
-										{
-											usersByuserId: {
-												first_name: { _ilike: queryWildcard },
-											},
-										},
-										{
-											usersByuserId: {
-												last_name: { _ilike: queryWildcard },
-											},
-										},
-									],
+								owner: {
+									full_name: { _ilike: queryWildcard },
 								},
 							},
 							{
-								profile: {
-									profile_user_group: {
-										group: { label: { _ilike: queryWildcard } },
-									},
+								owner: {
+									group_name: { _ilike: queryWildcard },
 								},
 							},
 							{
