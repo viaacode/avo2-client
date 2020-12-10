@@ -697,7 +697,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									className="c-assignment-overview__archive-select"
 								/>
 							) : (
-								<ButtonGroup>
+								<ButtonGroup className="c-assignment-overview__archive-buttons">
 									<Button
 										type="secondary"
 										label={t(
@@ -753,6 +753,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							<Form type="inline">
 								<FormGroup>
 									<TextInput
+										className="c-assignment-overview__search-input"
 										icon="filter"
 										value={filterString}
 										onChange={setFilterString}

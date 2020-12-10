@@ -190,7 +190,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				),
 			});
 		}
-	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user]);
+	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user, history]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
@@ -351,7 +351,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 		const isOwner = getProfileId(user) === assignment.owner_profile_id;
 		const backLink = isOwner
-			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })
+			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.uuid })
 			: buildLink(APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 
 		return isOwner ? (

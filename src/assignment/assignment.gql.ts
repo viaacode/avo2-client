@@ -200,11 +200,10 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 		app_assignment_responses(
 			where: {
 				owner_profile_ids: { _has_key: $profileId }
-				assignment_id: { _eq: $assignmentUuid }
+				assignment_uuid: { _eq: $assignmentUuid }
 			}
 		) {
 			id
-			assignment_id
 		}
 	}
 `;
@@ -213,7 +212,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 	query getAssignmentWithResponse($assignmentUuid: uuid!, $pupilUuid: String!) {
 		assignments: app_assignments(
 			where: {
-				id: { _eq: $assignmentUuid }
+				uuid: { _eq: $assignmentUuid }
 				is_deleted: { _eq: false }
 				is_archived: { _eq: false }
 			}
@@ -237,7 +236,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 				created_at
 				submitted_at
 				owner_profile_ids
-				assignment_id
+				assignment_uuid
 				collection_uuid
 			}
 			assignment_type
@@ -284,6 +283,7 @@ export const INSERT_ASSIGNMENT = gql`
 			affected_rows
 			returning {
 				uuid
+				id
 			}
 		}
 	}
@@ -338,7 +338,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 				created_at
 				submitted_at
 				owner_profile_ids
-				assignment_id
+				assignment_uuid
 				collection_uuid
 			}
 		}

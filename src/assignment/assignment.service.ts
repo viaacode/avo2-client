@@ -19,13 +19,13 @@ import i18n from '../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
@@ -285,7 +285,6 @@ export class AssignmentService {
 
 		assignmentToSave.content_layout =
 			assignmentToSave.content_layout || AssignmentLayout.PlayerAndText;
-
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
 		}
@@ -294,11 +293,17 @@ export class AssignmentService {
 		assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 		assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 		assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
-		delete assignmentToSave.responses; // = assignmentToSave.responses || [];
-		delete assignmentToSave.tags; // = assignmentToSave.tags || {
-		// 	assignment_tag: [],
-		// };
+		assignmentToSave.description =
+			(assignmentToSave as any).descriptionRichEditorState &&
+			(assignmentToSave as any).descriptionRichEditorState.toHTML
+				? (assignmentToSave as any).descriptionRichEditorState.toHTML()
+				: assignmentToSave.description || '';
+
+		delete (assignmentToSave as any).responses;
+		delete (assignmentToSave as any).tags;
 		delete (assignmentToSave as any).__typename;
+		delete (assignmentToSave as any).descriptionRichEditorState;
+
 		return [errors, assignmentToSave as Avo.Assignment.Assignment];
 	}
 
@@ -310,8 +315,9 @@ export class AssignmentService {
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
-			console.error(err);
-			throw new CustomError('Failed to delete assignment', err, { assignmentUuid });
+			const error = new CustomError('Failed to delete assignment', err, { assignmentUuid });
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -321,7 +327,7 @@ export class AssignmentService {
 		updatedLabels?: Avo.Assignment.Label[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
-			if (isNil(assignment.id)) {
+			if (isNil(assignment.uuid)) {
 				throw new CustomError(
 					'Failed to update assignment because its id is undefined',
 					null,
@@ -365,6 +371,7 @@ export class AssignmentService {
 				await Promise.all([
 					AssignmentLabelsService.linkLabelsFromAssignment(
 						assignment.uuid as string,
+						assignment.id as number,
 						newLabelIds
 					),
 					AssignmentLabelsService.unlinkLabelsFromAssignment(
@@ -376,8 +383,13 @@ export class AssignmentService {
 
 			return assignment as Avo.Assignment.Assignment;
 		} catch (err) {
-			console.error(err);
-			throw err;
+			const error = new CustomError('Failed to update assignment', err, {
+				updatedLabels,
+				initialLabels,
+				assignment,
+			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -460,6 +472,7 @@ export class AssignmentService {
 			});
 
 			const assignmentUuid = get(response, 'data.insert_app_assignments.returning[0].uuid');
+			const assignmentId = get(response, 'data.insert_app_assignments.returning[0].id');
 
 			if (isNil(assignmentUuid)) {
 				throw new CustomError(
@@ -476,17 +489,21 @@ export class AssignmentService {
 				const addedLabelIds = addedLabels.map((labelObj) => labelObj.id);
 
 				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(assignmentUuid, addedLabelIds),
+					AssignmentLabelsService.linkLabelsFromAssignment(
+						assignmentUuid,
+						assignmentId,
+						addedLabelIds
+					),
 				]);
 			}
 
 			return {
-				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
-				assignmentUuid,
-			} as Avo.Assignment.Assignment;
+				...(assignment as Avo.Assignment.Assignment), // Do not copy the auto modified fields from the validation back into the input controls
+				uuid: assignmentUuid,
+				id: assignmentId,
+			};
 		} catch (err) {
-			console.error(err);
-			throw err;
+			throw new CustomError('Failed to insert assignment', err, { assignment, addedLabels });
 		}
 	}
 
@@ -507,11 +524,14 @@ export class AssignmentService {
 		};
 
 		delete newAssignment.id;
+		delete newAssignment.uuid;
 
 		try {
 			return await AssignmentService.insertAssignment(newAssignment);
 		} catch (err) {
-			console.error(err);
+			console.error(
+				new CustomError('Failed to insert duplicate assignment', err, { title, assignment })
+			);
 			ToastService.danger(
 				i18n.t('assignment/assignment___het-dupliceren-van-de-opdracht-is-mislukt')
 			);
@@ -745,7 +765,8 @@ export class AssignmentService {
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response> = {
 				owner_profile_ids: [getProfileId(user)],
-				assignment_id: assignment.uuid,
+				assignment_uuid: assignment.uuid,
+				assignment_id: assignment.id,
 				collection: null,
 				collection_uuid: null,
 				submitted_at: null,

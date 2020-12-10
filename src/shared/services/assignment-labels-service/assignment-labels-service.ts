@@ -125,6 +125,7 @@ export class AssignmentLabelsService {
 
 	public static async linkLabelsFromAssignment(
 		assignmentUuid: string,
+		assignmentId: number, // TODO remove once foreign key has been moved to assignment_uuid and field has been made optional
 		labelIds: number[]
 	): Promise<void> {
 		let variables;
@@ -134,7 +135,8 @@ export class AssignmentLabelsService {
 			}
 			variables = {
 				objects: labelIds.map((labelId) => ({
-					assignment_id: assignmentUuid,
+					assignment_uuid: assignmentUuid,
+					assignment_id: assignmentId,
 					assignment_tag_id: labelId,
 				})),
 			};

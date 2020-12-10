@@ -157,7 +157,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
 		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
-			currentAssignment.id
+			currentAssignment.uuid
 		}`;
 	};
 
@@ -167,13 +167,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
-		if (currentAssignment.id && user) {
+		if (currentAssignment.uuid && user) {
 			trackEvents(
 				{
-					object: String(currentAssignment.id),
+					object: String(currentAssignment.uuid),
 					object_type: 'avo_assignment' as any, // TODO add this object type to the database
 					message: `Gebruiker ${getProfileName(user)} heeft de permalink voor opdracht ${
-						currentAssignment.id
+						currentAssignment.uuid
 					} gekopieert`,
 					action: 'view',
 				},
@@ -238,7 +238,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 				trackEvents(
 					{
-						object: String(assignment.id),
+						object: String(assignment.uuid),
 						object_type: 'assignment',
 						message: `Gebruiker ${getProfileName(user)} heeft een opdracht aangemaakt`,
 						action: 'create',
@@ -249,7 +249,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: insertedAssignment.id });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: insertedAssignment.uuid });
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -286,7 +286,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 												'assignment/views/assignment-edit___nieuwe-opdracht'
 											)}
 										</BlockHeading>
-										{currentAssignment.id && (
+										{currentAssignment.uuid && (
 											<Spacer margin="top-small">
 												<Form type="inline">
 													<FormGroup
