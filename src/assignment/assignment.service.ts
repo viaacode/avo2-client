@@ -371,7 +371,6 @@ export class AssignmentService {
 				await Promise.all([
 					AssignmentLabelsService.linkLabelsFromAssignment(
 						assignment.uuid as string,
-						assignment.id as number,
 						newLabelIds
 					),
 					AssignmentLabelsService.unlinkLabelsFromAssignment(
@@ -491,7 +490,6 @@ export class AssignmentService {
 				await Promise.all([
 					AssignmentLabelsService.linkLabelsFromAssignment(
 						assignmentUuid,
-						assignmentId,
 						addedLabelIds
 					),
 				]);
@@ -766,7 +764,6 @@ export class AssignmentService {
 			const assignmentResponse: Partial<Avo.Assignment.Response> = {
 				owner_profile_ids: [getProfileId(user)],
 				assignment_uuid: assignment.uuid,
-				assignment_id: assignment.id,
 				collection: null,
 				collection_uuid: null,
 				submitted_at: null,
