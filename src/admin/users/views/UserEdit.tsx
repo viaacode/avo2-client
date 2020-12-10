@@ -132,7 +132,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				company_id: companyId || undefined,
+				company_id: companyId || null,
 			};
 			try {
 				await SettingsService.updateProfileInfo(storedProfile, newProfileInfo);
