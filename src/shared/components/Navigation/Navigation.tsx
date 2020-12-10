@@ -324,7 +324,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 				</Container>
 			</Navbar>
 			{isMobileMenuOpen ? (
-				<Container mode="horizontal">
+				<Container mode="horizontal" className="c-mobile-menu">
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
 							{mapNavItems(getPrimaryNavigationItems(), true)}

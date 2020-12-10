@@ -19,6 +19,10 @@ $g-base-background: #FFF !default;
 	box-sizing: border-box;
 }
 
+html, body {
+	overflow-x: hidden;
+}
+
 html {
 	font-size: 54.16%; // 13px
 
@@ -31,6 +35,7 @@ html {
 }
 
 body {
+	position: relative;
 	font-family: $g-base-font-family;
 	font-size: $g-base-font-size;
 	line-height: $base-line-height;
