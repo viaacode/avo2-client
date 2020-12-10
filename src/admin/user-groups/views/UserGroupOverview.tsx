@@ -21,7 +21,6 @@ import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -268,7 +267,6 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
-					<UpdatePermissionsButton />
 					<Button
 						label={t(
 							'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'

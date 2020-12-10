@@ -20,7 +20,6 @@ import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { UpdatePermissionsButton } from '../../shared/components/UpdatePermissionsButton/UpdatePermissionsButton';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import {
@@ -242,7 +241,6 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
-					<UpdatePermissionsButton />
 					<Button
 						label={t(
 							'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
