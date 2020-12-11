@@ -56,15 +56,6 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
-// TODO add relations back into the collections query to show which collections are a copy of which collection
-// We first want to test how fast the query is, before we make it heavier again:
-//
-// relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
-// 	subject
-// 	predicate
-// 	object
-// }
-
 export const GET_COLLECTION_IDS = gql`
 	query getCollections($where: app_collections_bool_exp!) {
 		app_collections(where: $where) {
@@ -81,7 +72,7 @@ export const BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS = gql`
 		$updatedByProfileId: uuid!
 	) {
 		update_app_collections(
-			where: { id: { _in: $collectionIds } }
+			where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
 			_set: {
 				is_public: $isPublic
 				updated_at: $now
@@ -101,7 +92,7 @@ export const BULK_UPDATE_AUTHOR_FOR_COLLECTIONS = gql`
 		$updatedByProfileId: uuid!
 	) {
 		update_app_collections(
-			where: { id: { _in: $collectionIds } }
+			where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
 			_set: {
 				owner_profile_id: $authorId
 				updated_at: $now
@@ -120,7 +111,7 @@ export const BULK_DELETE_COLLECTIONS = gql`
 		$updatedByProfileId: uuid!
 	) {
 		update_app_collections(
-			where: { id: { _in: $collectionIds } }
+			where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
 			_set: { is_deleted: true, updated_at: $now, updated_by_profile_id: $updatedByProfileId }
 		) {
 			affected_rows
@@ -153,7 +144,7 @@ export const BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS = gql`
 		$updatedByProfileId: uuid!
 	) {
 		update_app_collections(
-			where: { id: { _in: $collectionIds } }
+			where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
 			_set: { updated_at: $now, updated_by_profile_id: $updatedByProfileId }
 		) {
 			affected_rows

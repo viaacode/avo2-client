@@ -254,7 +254,7 @@ export class UserService {
 				transferToProfileId,
 			};
 			const response = await fetchWithLogout(url, {
-				method: 'POST',
+				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
 				},

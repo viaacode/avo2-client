@@ -177,6 +177,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				}
 			}
 
+			andFilters.push({ is_deleted: { _eq: false } });
+
 			return { _and: andFilters };
 		},
 		[isCollection, user]

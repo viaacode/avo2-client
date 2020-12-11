@@ -16,7 +16,7 @@ import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
-	DELETE_COLLECTION,
+	SOFT_DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
 	GET_BUNDLE_TITLES_BY_OWNER,
@@ -358,7 +358,7 @@ export class CollectionService {
 		try {
 			// delete collection by id
 			await dataService.mutate({
-				mutation: DELETE_COLLECTION,
+				mutation: SOFT_DELETE_COLLECTION,
 				variables: {
 					id: collectionId,
 				},

@@ -14,13 +14,16 @@ export const IDP_COLORS: { [idp in Avo.Auth.IdpType]: string } = {
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 export function idpMapsToTagList(
-	ipdMaps: Avo.Auth.IdpType[],
+	idpMaps: Avo.Auth.IdpType[],
 	key: string,
 	onTagClicked: (tagId: ReactText) => void = noop
 ) {
+	if (!idpMaps || !idpMaps.length) {
+		return null;
+	}
 	return (
 		<TagList
-			tags={ipdMaps.map(
+			tags={idpMaps.map(
 				(idpMap: Avo.Auth.IdpType): TagOption => {
 					return {
 						color: IDP_COLORS[idpMap],
