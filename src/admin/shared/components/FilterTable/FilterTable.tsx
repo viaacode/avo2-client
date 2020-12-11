@@ -119,8 +119,8 @@ interface FilterTableProps extends RouteComponentProps {
 
 	// Used for manual handling of selected rows
 	showCheckboxes?: boolean;
-	selectedItems?: any[] | null;
-	onSelectionChanged?: (selectedItems: any[]) => void;
+	selectedItemIds?: (string | number)[] | null;
+	onSelectionChanged?: (selectedItemIds: (string | number)[]) => void;
 	onSelectAll?: () => void;
 }
 
@@ -142,7 +142,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes,
-	selectedItems,
+	selectedItemIds,
 	onSelectionChanged,
 	onSelectAll,
 }) => {
@@ -411,7 +411,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										placeholder={t(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
-										disabled={!(selectedItems || []).length}
+										disabled={!(selectedItemIds || []).length}
 										className="c-bulk-action-select"
 									/>
 								)}
@@ -460,7 +460,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes
 								}
-								selectedItemIds={selectedItems || undefined}
+								selectedItemIds={selectedItemIds || undefined}
 								onSelectionChanged={onSelectionChanged}
 								onSelectAll={onSelectAll}
 							/>
