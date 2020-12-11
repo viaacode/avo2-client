@@ -36,45 +36,45 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const [tableState, setTableState] = useState<Partial<UnpublishedItemsTableState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
+	const generateWhereObject = useCallback((filters: Partial<UnpublishedItemsTableState>) => {
+		const andFilters: any[] = [];
+		andFilters.push(
+			...getQueryFilter(
+				filters.query,
+				// @ts-ignore
+				(queryWildcard: string, query: string) => [
+					{ pid: { _eq: query } },
+					{ title: { _ilike: queryWildcard } },
+				]
+			)
+		);
+		andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
+
+		// The status column in the shared_items table indicated the MAM update status.
+		// This is not the status we want to display in the UI
+		// We want 'NEW' if the item does not exist in the app.item_meta table yet,
+		// and 'UPDATE' if the item already exist in the app.item_meta table
+		if (filters.status && filters.status.length === 1) {
+			if (filters.status[0] === 'NEW') {
+				andFilters.push({
+					status: { _in: ['NEW', 'UPDATE'] },
+					_not: { item_meta: {} },
+				});
+			} else {
+				andFilters.push({
+					status: { _in: ['NEW', 'UPDATE'] },
+					item_meta: {},
+				});
+			}
+		} else {
+			andFilters.push({ status: { _in: ['NEW', 'UPDATE'] } });
+		}
+		return { _and: andFilters };
+	}, []);
+
 	// methods
 	const fetchItems = useCallback(async () => {
 		setIsLoading(true);
-		const generateWhereObject = (filters: Partial<UnpublishedItemsTableState>) => {
-			const andFilters: any[] = [];
-			andFilters.push(
-				...getQueryFilter(
-					filters.query,
-					// @ts-ignore
-					(queryWildcard: string, query: string) => [
-						{ pid: { _eq: query } },
-						{ title: { _ilike: queryWildcard } },
-					]
-				)
-			);
-			andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
-
-			// The status column in the shared_items table indicated the MAM update status.
-			// This is not the status we want to display in the UI
-			// We want 'NEW' if the item does not exist in the app.item_meta table yet,
-			// and 'UPDATE' if the item already exist in the app.item_meta table
-			if (filters.status && filters.status.length === 1) {
-				if (filters.status[0] === 'NEW') {
-					andFilters.push({
-						status: { _in: ['NEW', 'UPDATE'] },
-						_not: { item_meta: {} },
-					});
-				} else {
-					andFilters.push({
-						status: { _in: ['NEW', 'UPDATE'] },
-						item_meta: {},
-					});
-				}
-			} else {
-				andFilters.push({ status: { _in: ['NEW', 'UPDATE'] } });
-			}
-			return { _and: andFilters };
-		};
-
 		try {
 			const [
 				itemsTemp,
@@ -99,7 +99,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setItems, setItemCount, tableState, t]);
+	}, [setLoadingInfo, setItems, setItemCount, tableState, t, generateWhereObject]);
 
 	useEffect(() => {
 		fetchItems();
@@ -188,6 +188,32 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				)
 			);
 		}
+	};
+
+	const setAllItemsAsSelected = async () => {
+		setIsLoading(true);
+		try {
+			const itemPids: string[] = await ItemsService.getUnpublishedItemPids(
+				generateWhereObject(getFilters(tableState))
+			);
+			ToastService.info(
+				t('Je hebt {{numOfSelectedItems}} items geselecteerd', {
+					numOfSelectedItems: itemPids.length,
+				})
+			);
+			setSelectedItemIds(itemPids);
+		} catch (err) {
+			console.error(
+				new CustomError(
+					'Failed to fetch all item pids that adhere to the selected filters',
+					err,
+					{ tableState }
+				)
+			);
+			ToastService.danger(t('Het ophalen van alle item ids is mislukt'));
+		}
+
+		setIsLoading(false);
 	};
 
 	const renderTableCell = (
@@ -286,6 +312,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					onSelectionChanged={(newSelectedIds) => {
 						setSelectedItemIds(newSelectedIds as string[]);
 					}}
+					onSelectAll={setAllItemsAsSelected}
 					isLoading={isLoading}
 				/>
 			</>
