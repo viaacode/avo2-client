@@ -1,5 +1,5 @@
 import { compact, get, isNil, truncate, without } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -853,8 +853,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					rowKey="id"
 					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
 					onSelectBulkAction={handleBulkActionSelect as any}
-					selectedItems={selectedCollectionIds}
-					onSelectionChanged={setSelectedCollectionIds}
+					selectedItemIds={selectedCollectionIds}
+					onSelectionChanged={setSelectedCollectionIds as (ids: ReactText[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
 				/>

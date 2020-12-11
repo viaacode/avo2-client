@@ -1,7 +1,14 @@
 import classnames from 'classnames';
 import FileSaver from 'file-saver';
 import { compact, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -686,8 +693,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & UserProps> = ({ user }
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
 					showCheckboxes
-					selectedItems={selectedProfileIds}
-					onSelectionChanged={setSelectedProfileIds}
+					selectedItemIds={selectedProfileIds}
+					onSelectionChanged={setSelectedProfileIds as (ids: ReactText[]) => void}
 					onSelectAll={setAllProfilesAsSelected}
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_USER_BULK_ACTIONS(user)}

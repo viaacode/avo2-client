@@ -30,7 +30,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const [t] = useTranslation();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
-	const [selectedItems, setSelectedItems] = useState<UnpublishedItem[]>([]);
+	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<UnpublishedItemsTableState>>({});
@@ -137,7 +137,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 
 	const publishSelection = async () => {
 		try {
-			if (!selectedItems.length) {
+			if (!selectedItemIds.length) {
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
@@ -145,10 +145,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				);
 				return;
 			}
-			await ItemsService.setSharedItemsStatus(
-				(selectedItems || []).map((item) => item.pid),
-				'OK'
-			);
+			await ItemsService.setSharedItemsStatus(selectedItemIds || [], 'OK');
 			ToastService.success(
 				t(
 					'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o'
@@ -157,7 +154,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			fetchItems();
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to set status for shared.items', err, { selectedItems })
+				new CustomError('Failed to set status for shared.items', err, { selectedItemIds })
 			);
 			ToastService.danger(
 				t(
@@ -285,11 +282,9 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderNoResults={renderNoResults}
 					rowKey="pid"
 					showCheckboxes
-					selectedItems={items.filter((item) =>
-						selectedItems.map((item) => item.pid).includes(item.pid)
-					)}
-					onSelectionChanged={(newSelection) => {
-						setSelectedItems(newSelection);
+					selectedItemIds={selectedItemIds}
+					onSelectionChanged={(newSelectedIds) => {
+						setSelectedItemIds(newSelectedIds as string[]);
 					}}
 					isLoading={isLoading}
 				/>
