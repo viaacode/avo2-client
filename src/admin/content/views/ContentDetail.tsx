@@ -57,7 +57,7 @@ import {
 import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import PublishContentPageModal from '../components/PublishContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
-import { DELETE_CONTENT } from '../content.gql';
+import { SOFT_DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';
@@ -89,7 +89,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 
-	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
+	const [triggerContentDelete] = useMutation(SOFT_DELETE_CONTENT);
 
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),

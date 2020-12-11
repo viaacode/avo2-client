@@ -158,6 +158,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					// Add filter to only allow the content pages for which the user is the author
 					andFilters.push({ user_profile_id: { _eq: get(user, 'profile.id') } });
 				}
+
+				andFilters.push({ is_deleted: { _eq: false } });
+
 				return { _and: andFilters };
 			};
 
