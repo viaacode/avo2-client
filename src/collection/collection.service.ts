@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
+import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
@@ -18,13 +19,13 @@ import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
-	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -148,10 +149,12 @@ export class CollectionService {
 	 *
 	 * @param initialCollection Original collection object.
 	 * @param updatedCollection Collection that must be updated.
+	 * @param user
 	 */
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Partial<Avo.Collection.Collection>
+		updatedCollection: Partial<Avo.Collection.Collection>,
+		user: Avo.User.User
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// abort if updatedCollection is empty
@@ -279,23 +282,31 @@ export class CollectionService {
 
 			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
-			// Update collection labels
-			const initialLabels: string[] = this.getLabels(initialCollection).map(
-				(labelObj: any) => labelObj.label
-			);
-			const updatedLabels: string[] = this.getLabels(newCollection).map(
-				(labelObj: any) => labelObj.label
-			);
+			if (
+				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_LABELS) ||
+				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_LABELS)
+			) {
+				// Update collection labels
+				const initialLabels: string[] = this.getLabels(initialCollection).map(
+					(labelObj: any) => labelObj.label
+				);
+				const updatedLabels: string[] = this.getLabels(newCollection).map(
+					(labelObj: any) => labelObj.label
+				);
 
-			const addedLabels: string[] = without(updatedLabels, ...initialLabels);
-			const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
-			await Promise.all([
-				CollectionService.addLabelsToCollection(newCollection.id as string, addedLabels),
-				CollectionService.deleteLabelsFromCollection(
-					newCollection.id as string,
-					deletedLabels
-				),
-			]);
+				const addedLabels: string[] = without(updatedLabels, ...initialLabels);
+				const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
+				await Promise.all([
+					CollectionService.addLabelsToCollection(
+						newCollection.id as string,
+						addedLabels
+					),
+					CollectionService.deleteLabelsFromCollection(
+						newCollection.id as string,
+						deletedLabels
+					),
+				]);
+			}
 
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
