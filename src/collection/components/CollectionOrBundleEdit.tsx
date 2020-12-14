@@ -455,7 +455,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
 				collectionState.initialCollection,
-				updatedCollection as Partial<Avo.Collection.Collection>
+				updatedCollection as Partial<Avo.Collection.Collection>,
+				user
 			);
 
 			if (newCollection) {
@@ -511,7 +512,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 			// Immediately store the new name, without the user having to click the save button twice
 			const newCollection = await CollectionService.updateCollection(
 				collectionState.initialCollection,
-				collectionWithNewName
+				collectionWithNewName,
+				user
 			);
 
 			if (newCollection) {

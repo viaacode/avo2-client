@@ -2,7 +2,11 @@ import { gql } from 'apollo-boost';
 
 export const GET_USER_BY_ID = gql`
 	query getUserById($id: uuid!) {
-		users_profiles(offset: 0, limit: 1, where: { id: { _eq: $id } }) {
+		users_profiles(
+			offset: 0
+			limit: 1
+			where: { id: { _eq: $id }, is_deleted: { _eq: false } }
+		) {
 			id
 			user: usersByuserId {
 				uid
@@ -124,7 +128,7 @@ export const GET_PROFILE_IDS = gql`
 
 export const GET_PROFILE_NAMES = gql`
 	query getProfileNames($profileIds: [uuid!]!) {
-		users_profiles(where: { id: { _in: $profileIds } }) {
+		users_profiles(where: { id: { _in: $profileIds }, is_deleted: { _eq: false } }) {
 			id
 			user: usersByuserId {
 				id
@@ -157,7 +161,7 @@ export const GET_DISTINCT_BUSINESS_CATEGORIES = gql`
 	query getDistinctBusinessCategories {
 		users_profiles(
 			distinct_on: business_category
-			where: { business_category: { _is_null: false } }
+			where: { business_category: { _is_null: false }, is_deleted: { _eq: false } }
 		) {
 			business_category
 		}
@@ -175,27 +179,41 @@ export const GET_IDPS = gql`
 export const GET_CONTENT_COUNTS_FOR_USERS = gql`
 	query getContentCountsForUsers($profileIds: [uuid!]!) {
 		publicCollections: app_collections_aggregate(
-			where: { profile: { id: { _in: $profileIds } }, is_public: { _eq: true } }
+			where: {
+				profile: { id: { _in: $profileIds } }
+				is_public: { _eq: true }
+				is_deleted: { _eq: false }
+			}
 		) {
 			aggregate {
 				count
 			}
 		}
 		publicContentPages: app_content_aggregate(
-			where: { user_profile_id: { _in: $profileIds }, is_public: { _eq: true } }
+			where: {
+				user_profile_id: { _in: $profileIds }
+				is_public: { _eq: true }
+				is_deleted: { _eq: false }
+			}
 		) {
 			aggregate {
 				count
 			}
 		}
 		privateCollections: app_collections_aggregate(
-			where: { profile: { id: { _in: $profileIds } }, is_public: { _eq: false } }
+			where: {
+				profile: { id: { _in: $profileIds } }
+				is_public: { _eq: false }
+				is_deleted: { _eq: false }
+			}
 		) {
 			aggregate {
 				count
 			}
 		}
-		assignments: app_assignments_aggregate(where: { owner_profile_id: { _in: $profileIds } }) {
+		assignments: app_assignments_aggregate(
+			where: { owner_profile_id: { _in: $profileIds }, is_deleted: { _eq: false } }
+		) {
 			aggregate {
 				count
 			}
@@ -213,7 +231,11 @@ export const GET_CONTENT_COUNTS_FOR_USERS = gql`
 			}
 		}
 		privateContentPages: app_content_aggregate(
-			where: { user_profile_id: { _in: $profileIds }, is_public: { _eq: false } }
+			where: {
+				user_profile_id: { _in: $profileIds }
+				is_public: { _eq: false }
+				is_deleted: { _eq: false }
+			}
 		) {
 			aggregate {
 				count

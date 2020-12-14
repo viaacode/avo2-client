@@ -28,7 +28,7 @@ export const GET_USERS_IN_COMPANY = gql`
 	query getUsersByCompanyId($companyId: String!) {
 		users_profiles(
 			order_by: { usersByuserId: { first_name: asc } }
-			where: { company_id: { _eq: $companyId } }
+			where: { company_id: { _eq: $companyId }, is_deleted: { _eq: false } }
 		) {
 			id
 			user: usersByuserId {

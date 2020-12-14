@@ -19,12 +19,15 @@ import {
 	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
-	GET_USERS,
 	GET_USER_BY_ID,
+	GET_USERS,
 } from './user.gql';
 import {
+	BulkBlockUsersBody,
+	BulkDeleteUsersBody,
 	DeleteContentCounts,
 	DeleteContentCountsRaw,
+	UserDeleteOption,
 	UserOverviewTableCol,
 	UserSummeryView,
 } from './user.types';
@@ -206,16 +209,17 @@ export class UserService {
 		let url: string | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
+			const body: BulkBlockUsersBody = {
+				profileIds,
+				isBlocked,
+			};
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
-				body: JSON.stringify({
-					profileIds,
-					isBlocked,
-				}),
+				body: JSON.stringify(body),
 			});
 
 			if (response.status < 200 || response.status >= 400) {
@@ -233,6 +237,43 @@ export class UserService {
 					isBlocked,
 				}
 			);
+		}
+	}
+
+	static async bulkDeleteUsers(
+		profileIds: string[],
+		deleteOption: UserDeleteOption,
+		transferToProfileId?: string
+	): Promise<void> {
+		let url: string | undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/user/bulk-delete`;
+			const body: BulkDeleteUsersBody = {
+				profileIds,
+				deleteOption,
+				transferToProfileId,
+			};
+			const response = await fetchWithLogout(url, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(body),
+			});
+
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Status code was unexpected', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError('Failed to bulk delete users from the database', err, {
+				url,
+				profileIds,
+				deleteOption,
+				transferToProfileId,
+			});
 		}
 	}
 

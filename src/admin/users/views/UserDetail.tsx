@@ -242,7 +242,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group', []);
+		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group');
 
 		return (
 			<Container mode="vertical" size="small">
@@ -270,13 +270,17 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								<Link
-									to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
-										id: userGroup.id,
-									})}
-								>
-									{userGroup.label}
-								</Link>,
+								!!userGroup ? (
+									<Link
+										to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
+											id: userGroup.id,
+										})}
+									>
+										{userGroup.label}
+									</Link>
+								) : (
+									'-'
+								),
 								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
@@ -309,42 +313,55 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								idpMapsToTagList(user.idpmaps, 'idps'),
+								idpMapsToTagList(get(storedProfile, 'user.idpmaps', []), 'idps') ||
+									'-',
 								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
 								stringsToTagList(
 									get(storedProfile, 'profile_classifications', [] as any[]),
 									'key'
-								),
+								) || '-',
 								t('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(
-								<TagList
-									tags={get(storedProfile, 'profile_contexts', [] as any[]).map(
-										(educationLevel: { key: string }): TagOption => ({
-											id: educationLevel.key,
-											label: educationLevel.key,
-										})
-									)}
-									swatches={false}
-									closable={false}
-								/>,
+								get(storedProfile, 'profile_contexts', [] as any[]).length ? (
+									<TagList
+										tags={get(
+											storedProfile,
+											'profile_contexts',
+											[] as any[]
+										).map(
+											(educationLevel: { key: string }): TagOption => ({
+												id: educationLevel.key,
+												label: educationLevel.key,
+											})
+										)}
+										swatches={false}
+										closable={false}
+									/>
+								) : (
+									'-'
+								),
 								t('admin/users/views/user-detail___opleidingsniveaus')
 							)}
 							{renderDetailRow(
-								<TagList
-									closable={false}
-									swatches={false}
-									tags={eduOrgNames.map((eduOrgName) => ({
-										label: eduOrgName,
-										id: eduOrgName,
-									}))}
-								/>,
+								!!eduOrgNames.length ? (
+									<TagList
+										closable={false}
+										swatches={false}
+										tags={eduOrgNames.map((eduOrgName) => ({
+											label: eduOrgName,
+											id: eduOrgName,
+										}))}
+									/>
+								) : (
+									''
+								),
 								t('admin/users/views/user-detail___educatieve-organisaties')
 							)}
 							{renderDetailRow(
-								get(storedProfile, 'organisation.name'),
+								get(storedProfile, 'organisation.name', '-'),
 								t('admin/users/views/user-detail___bedrijf')
 							)}
 						</tbody>

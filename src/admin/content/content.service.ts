@@ -20,7 +20,7 @@ import {
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
 import {
-	DELETE_CONTENT,
+	SOFT_DELETE_CONTENT,
 	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
@@ -47,7 +47,7 @@ export class ContentService {
 			variables: {
 				limit,
 				orderBy: { title: 'asc' },
-				where: { is_public: { _eq: true } },
+				where: { is_public: { _eq: true }, is_deleted: { _eq: false } },
 			},
 		};
 
@@ -89,7 +89,11 @@ export class ContentService {
 			variables: {
 				limit: limit || null,
 				orderBy: { title: 'asc' },
-				where: { title: { _ilike: `%${title}%` }, is_public: { _eq: true } },
+				where: {
+					title: { _ilike: `%${title}%` },
+					is_public: { _eq: true },
+					is_deleted: { _eq: false },
+				},
 			},
 		};
 
@@ -584,7 +588,7 @@ export class ContentService {
 		try {
 			const response = await dataService.mutate({
 				variables: { id },
-				mutation: DELETE_CONTENT,
+				mutation: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
 
@@ -594,7 +598,7 @@ export class ContentService {
 		} catch (err) {
 			throw new CustomError('Failed to delete content page from the database', err, {
 				id,
-				query: 'DELETE_CONTENT',
+				query: 'SOFT_DELETE_CONTENT',
 			});
 		}
 	}

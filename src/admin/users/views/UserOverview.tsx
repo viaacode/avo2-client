@@ -213,6 +213,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			if (!isNil(filters.stamboek)) {
 				andFilters.push({ stamboek: { _is_null: !filters.stamboek } });
 			}
+			// TODO wait for is_deleted to be added to the users_summary_view
+			// andFilters.push({ profile: { is_deleted: { _eq: false } } });
 
 			return { _and: andFilters };
 		},
@@ -464,8 +466,20 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 		setTransferToUser(null);
 	};
 
-	const handleDeleteUsers = () => {
-		ToastService.info('Nog niet geïmplementeerd');
+	const handleDeleteUsers = async () => {
+		try {
+			setDeleteConfirmModalOpen(false);
+			await UserService.bulkDeleteUsers(
+				selectedProfileIds,
+				selectedDeleteOption,
+				transferToUser?.value
+			);
+			await fetchProfiles();
+			ToastService.success(t('De geselecteerde gebruikers zijn verwijderd'));
+		} catch (err) {
+			console.error(new CustomError('Failed to remove users', err));
+			ToastService.danger(t('Het verwijderen van de geselecteerde gebruikers is mislukt'));
+		}
 	};
 
 	const validateOptionModalAndOpenConfirm = async () => {
@@ -749,7 +763,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						'admin/users/views/user-overview___er-zijn-geen-gebruikers-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
-					onTableStateChanged={setTableState}
+					onTableStateChanged={(newTableState) => {
+						setTableState(newTableState);
+					}}
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
 					showCheckboxes
