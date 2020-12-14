@@ -769,8 +769,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
 					showCheckboxes
-					selectedItems={selectedProfileIds}
-					onSelectionChanged={setSelectedProfileIds}
+					selectedItemIds={selectedProfileIds}
+					onSelectionChanged={setSelectedProfileIds as (ids: ReactText[]) => void}
 					onSelectAll={setAllProfilesAsSelected}
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
