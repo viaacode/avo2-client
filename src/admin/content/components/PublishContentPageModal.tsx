@@ -8,6 +8,7 @@ import {
 	DatePicker,
 	Form,
 	FormGroup,
+	Icon,
 	Modal,
 	ModalBody,
 	RadioButtonGroup,
@@ -15,11 +16,17 @@ import {
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 
+import Html from '../../../shared/components/Html/Html';
 import { ToastService } from '../../../shared/services';
 import { ContentPageInfo } from '../content.types';
 import { getPublishedState } from '../helpers/get-published-state';
+
+import './PublishContentPageModal.scss';
 
 type publishOption = 'private' | 'public' | 'timebound';
 
@@ -40,6 +47,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 	const [selectedOption, setSelectedOption] = useState<publishOption>(
 		getPublishedState(contentPage)
 	);
+	const [publishedAt, setPublishedAt] = useState<string | null>(contentPage.published_at);
 	const [publishAt, setPublishAt] = useState<string | null>(contentPage.publish_at);
 	const [depublishAt, setDepublishAt] = useState<string | null>(contentPage.depublish_at);
 
@@ -47,7 +55,8 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 		try {
 			const newContent: Partial<ContentPageInfo> = {
 				is_public: selectedOption === 'public',
-				published_at: selectedOption === 'public' ? new Date().toISOString() : null,
+				published_at:
+					publishedAt || (selectedOption === 'public' ? new Date().toISOString() : null),
 				publish_at: selectedOption === 'timebound' ? publishAt : null,
 				depublish_at: selectedOption === 'timebound' ? depublishAt : null,
 			} as Partial<ContentPageInfo>;
@@ -154,6 +163,31 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 						</FormGroup>
 					</Form>
 				</Spacer>
+
+				<FormGroup
+					label={t('Display datum (optioneel)')}
+					className="c-content-page-publish-modal__display-date"
+				>
+					<Spacer>
+						<DatePicker
+							value={publishedAt ? new Date(publishedAt) : null}
+							onChange={(date) => setPublishedAt(date ? date.toISOString() : null)}
+						/>
+						<Tooltip position="right">
+							<TooltipTrigger>
+								<Icon className="a-info-icon" name="info" size="small" />
+							</TooltipTrigger>
+							<TooltipContent>
+								<Html
+									content={t(
+										"Dit is de datum die getoond wordt als publiceer datum.<br/>Op deze datum worden de pagina's in een overzicht gesorteerd."
+									)}
+									sanitizePreset={'basic'}
+								/>
+							</TooltipContent>
+						</Tooltip>
+					</Spacer>
+				</FormGroup>
 
 				<Toolbar spaced>
 					<ToolbarRight>

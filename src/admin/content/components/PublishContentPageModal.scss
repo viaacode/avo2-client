@@ -1,0 +1,22 @@
+.c-content-page-publish-modal__display-date {
+	margin-top: 3.2rem;
+
+	.o-form-group__label {
+		font-weight: 500;
+	}
+
+	.u-spacer {
+		position: relative;
+		display: inline-block;
+
+		.c-tooltip-trigger {
+			position: absolute;
+			right: 10px;
+			top: 6px;
+		}
+
+		.c-tooltip[data-popper-placement^=right] > .c-tooltip__arrow {
+			left: -4px;
+		}
+	}
+}
