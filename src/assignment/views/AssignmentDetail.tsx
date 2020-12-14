@@ -48,6 +48,7 @@ import './AssignmentDetail.scss';
 interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
+	history,
 	location,
 	match,
 	user,
@@ -66,9 +67,39 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	// Retrieve data from GraphQL
 	const fetchAssignmentAndContent = useCallback(async () => {
 		try {
+			const assignmentId = match.params.id;
+
+			if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
+				const assignmentUuid:
+					| string
+					| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
+					assignmentId
+				);
+				if (!assignmentUuid) {
+					console.error(
+						new CustomError(
+							'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
+							null,
+							{ legacyId: assignmentId }
+						)
+					);
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'assignment/views/assignment-detail___de-opdracht-kon-niet-worden-gevonden'
+						),
+						icon: 'search',
+					});
+					return;
+				}
+				history.replace(
+					buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentUuid })
+				);
+			}
+
 			const response = await AssignmentService.fetchAssignmentAndContent(
 				getProfileId(user),
-				match.params.id
+				assignmentId
 			);
 
 			if (isString(response)) {
@@ -129,13 +160,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				);
 
 				if (assignmentResponse) {
-					response.assignment.assignment_responses = [assignmentResponse];
+					response.assignment.responses = [assignmentResponse];
 				}
 			}
 
 			trackEvents(
 				{
-					object: String(response.assignment.id),
+					object: String(response.assignment.uuid),
 					object_type: 'assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft een opdracht bekeken`,
 					action: 'view',
@@ -159,7 +190,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				),
 			});
 		}
-	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user]);
+	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user, history]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
@@ -191,7 +222,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					return;
 				}
 				const archived = !(get(assignment, 'is_archived') || false);
-				await AssignmentService.toggleAssignmentArchiveStatus(assignment.id, archived);
+				await AssignmentService.toggleAssignmentArchiveStatus(assignment.uuid, archived);
 				fetchAssignmentAndContent();
 				ToastService.success(
 					archived
@@ -215,7 +246,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 	const handleSubmittedAtChanged = async (checked: boolean) => {
 		try {
-			const assignmentResponse = get(assignment, 'assignment_responses[0]');
+			const assignmentResponse = get(assignment, 'responses[0]');
 			if (!assignmentResponse) {
 				console.error(
 					new CustomError(
@@ -278,6 +309,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 							assignment.content_layout === AssignmentLayout.PlayerAndText
 						}
 						linkToItems={false}
+						history={history}
 						location={location}
 						match={match}
 						user={user}
@@ -319,7 +351,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 		const isOwner = getProfileId(user) === assignment.owner_profile_id;
 		const backLink = isOwner
-			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })
+			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.uuid })
 			: buildLink(APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 
 		return isOwner ? (
@@ -389,7 +421,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 														checked={
 															!!get(
 																assignment,
-																'assignment_responses[0].submitted_at'
+																'responses[0].submitted_at'
 															)
 														}
 														onChange={handleSubmittedAtChanged}
