@@ -20,7 +20,6 @@ import {
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
 import {
-	SOFT_DELETE_CONTENT,
 	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
@@ -31,6 +30,7 @@ import {
 	GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
 	INSERT_CONTENT,
 	INSERT_CONTENT_LABEL_LINKS,
+	SOFT_DELETE_CONTENT,
 	UPDATE_CONTENT_BY_ID,
 } from './content.gql';
 import { ContentOverviewTableCols, ContentPageInfo } from './content.types';

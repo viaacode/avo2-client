@@ -8,7 +8,7 @@ import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import { UserBulkAction, UserDeleteOption, UserOverviewTableCol } from './user.types';
+import { UserBulkAction, UserOverviewTableCol } from './user.types';
 
 export const USER_PATH = {
 	USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.user}`,
@@ -210,7 +210,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 };
 
-type UserDeleteRadioOption = { label: string; value: UserDeleteOption };
+type UserDeleteRadioOption = { label: string; value: Avo.User.UserDeleteOption };
 export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 	return [
 		{

@@ -80,7 +80,6 @@ import { UserService } from '../user.service';
 import {
 	DeleteContentCounts,
 	UserBulkAction,
-	UserDeleteOption,
 	UserOverviewTableCol,
 	UserTableState,
 } from '../user.types';
@@ -111,7 +110,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 		boolean
 	];
 	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
-	const [selectedDeleteOption, setSelectedDeleteOption] = useState<UserDeleteOption>(
+	const [selectedDeleteOption, setSelectedDeleteOption] = useState<Avo.User.UserDeleteOption>(
 		'DELETE_ALL'
 	);
 	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
@@ -475,10 +474,16 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				transferToUser?.value
 			);
 			await fetchProfiles();
-			ToastService.success(t('De geselecteerde gebruikers zijn verwijderd'));
+			ToastService.success(
+				t('admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-verwijderd')
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to remove users', err));
-			ToastService.danger(t('Het verwijderen van de geselecteerde gebruikers is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/users/views/user-overview___het-verwijderen-van-de-geselecteerde-gebruikers-is-mislukt'
+				)
+			);
 		}
 	};
 

@@ -165,7 +165,9 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 				</Spacer>
 
 				<FormGroup
-					label={t('Display datum (optioneel)')}
+					label={t(
+						'admin/content/components/publish-content-page-modal___display-datum-optioneel'
+					)}
 					className="c-content-page-publish-modal__display-date"
 				>
 					<Spacer>
@@ -180,7 +182,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 							<TooltipContent>
 								<Html
 									content={t(
-										"Dit is de datum die getoond wordt als publiceer datum.<br/>Op deze datum worden de pagina's in een overzicht gesorteerd."
+										'admin/content/components/publish-content-page-modal___tooltip-display-date'
 									)}
 									sanitizePreset={'basic'}
 								/>

@@ -19,15 +19,12 @@ import {
 	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
-	GET_USER_BY_ID,
 	GET_USERS,
+	GET_USER_BY_ID,
 } from './user.gql';
 import {
-	BulkBlockUsersBody,
-	BulkDeleteUsersBody,
 	DeleteContentCounts,
 	DeleteContentCountsRaw,
-	UserDeleteOption,
 	UserOverviewTableCol,
 	UserSummeryView,
 } from './user.types';
@@ -209,7 +206,7 @@ export class UserService {
 		let url: string | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
-			const body: BulkBlockUsersBody = {
+			const body: Avo.User.BulkBlockUsersBody = {
 				profileIds,
 				isBlocked,
 			};
@@ -242,13 +239,13 @@ export class UserService {
 
 	static async bulkDeleteUsers(
 		profileIds: string[],
-		deleteOption: UserDeleteOption,
+		deleteOption: Avo.User.UserDeleteOption,
 		transferToProfileId?: string
 	): Promise<void> {
 		let url: string | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/user/bulk-delete`;
-			const body: BulkDeleteUsersBody = {
+			const body: Avo.User.BulkDeleteUsersBody = {
 				profileIds,
 				deleteOption,
 				transferToProfileId,

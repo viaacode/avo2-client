@@ -19,13 +19,13 @@ import i18n from '../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
@@ -488,10 +488,7 @@ export class AssignmentService {
 				const addedLabelIds = addedLabels.map((labelObj) => labelObj.id);
 
 				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(
-						assignmentUuid,
-						addedLabelIds
-					),
+					AssignmentLabelsService.linkLabelsFromAssignment(assignmentUuid, addedLabelIds),
 				]);
 			}
 
