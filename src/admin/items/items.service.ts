@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
@@ -15,12 +15,13 @@ import {
 	DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
 	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
 	GET_DISTINCT_SERIES,
-	GET_ITEMS_WITH_FILTERS,
 	GET_ITEM_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEM_DEPUBLISH_REASON,
+	GET_ITEMS_WITH_FILTERS,
 	GET_PUBLIC_ITEMS,
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+	GET_UNPUBLISHED_ITEM_PIDS,
 	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
 	REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
 	UPDATE_ITEM_DEPUBLISH_REASON,
@@ -512,6 +513,37 @@ export class ItemsService {
 		} catch (err) {
 			throw new CustomError('Failed to trigger MAM sync', err, {
 				url,
+			});
+		}
+	}
+
+	static async getUnpublishedItemPids(where: any = {}): Promise<string[]> {
+		let variables: any;
+		try {
+			variables = where
+				? {
+						where,
+				  }
+				: {};
+			const response = await dataService.query({
+				variables,
+				query: GET_UNPUBLISHED_ITEM_PIDS,
+				fetchPolicy: 'no-cache',
+			});
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+			return compact(
+				get(response, 'data.shared_items' || []).map((item: { pid: string }) =>
+					get(item, 'pid')
+				)
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get unpublished item pids from the database', err, {
+				variables,
+				query: 'GET_UNPUBLISHED_ITEM_PIDS',
 			});
 		}
 	}

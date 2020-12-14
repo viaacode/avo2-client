@@ -360,3 +360,11 @@ export const UPDATE_SHARED_ITEMS_STATUS = gql`
 		}
 	}
 `;
+
+export const GET_UNPUBLISHED_ITEM_PIDS = gql`
+	query getUnpublishedItemPids($where: shared_items_bool_exp!) {
+		shared_items(where: $where) {
+			pid
+		}
+	}
+`;
