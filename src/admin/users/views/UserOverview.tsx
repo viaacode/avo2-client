@@ -770,9 +770,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					isLoading={isLoading}
 					showCheckboxes
 					selectedItems={selectedProfileIds}
-					onSelectionChanged={(newSelectedProfileIds) => {
-						setSelectedProfileIds(newSelectedProfileIds);
-					}}
+					onSelectionChanged={setSelectedProfileIds}
 					onSelectAll={setAllProfilesAsSelected}
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
