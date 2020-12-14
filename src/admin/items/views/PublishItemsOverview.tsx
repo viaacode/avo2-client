@@ -137,7 +137,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 
 	const publishSelection = async () => {
 		try {
-			if (!selectedItemIds.length) {
+			if (!selectedItemIds || !selectedItemIds.length) {
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
