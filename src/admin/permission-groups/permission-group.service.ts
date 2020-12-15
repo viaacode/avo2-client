@@ -90,7 +90,7 @@ export class PermissionGroupService {
 			return permissionGroups;
 		} catch (err) {
 			throw new CustomError('Failed to get all permissionGroups from database', err, {
-				query: 'GET_ALL_PERMISSIONS',
+				query: 'GET_ALL_PERMISSION_GROUPS',
 			});
 		}
 	}

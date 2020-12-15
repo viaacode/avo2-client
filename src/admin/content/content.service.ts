@@ -20,7 +20,6 @@ import {
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
 import {
-	DELETE_CONTENT,
 	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
@@ -30,8 +29,8 @@ import {
 	GET_PUBLIC_PROJECT_CONTENT_PAGES,
 	GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
 	INSERT_CONTENT,
-	INSERT_CONTENT_LABEL,
 	INSERT_CONTENT_LABEL_LINKS,
+	SOFT_DELETE_CONTENT,
 	UPDATE_CONTENT_BY_ID,
 } from './content.gql';
 import { ContentOverviewTableCols, ContentPageInfo } from './content.types';
@@ -48,7 +47,7 @@ export class ContentService {
 			variables: {
 				limit,
 				orderBy: { title: 'asc' },
-				where: { is_public: { _eq: true } },
+				where: { is_public: { _eq: true }, is_deleted: { _eq: false } },
 			},
 		};
 
@@ -90,7 +89,11 @@ export class ContentService {
 			variables: {
 				limit: limit || null,
 				orderBy: { title: 'asc' },
-				where: { title: { _ilike: `%${title}%` }, is_public: { _eq: true } },
+				where: {
+					title: { _ilike: `%${title}%` },
+					is_public: { _eq: true },
+					is_deleted: { _eq: false },
+				},
 			},
 		};
 
@@ -210,48 +213,6 @@ export class ContentService {
 					query: 'GET_CONTENT_LABELS_BY_CONTENT_TYPE',
 				}
 			);
-		}
-	}
-
-	public static async insertContentLabel(
-		label: string,
-		contentType: string
-	): Promise<Avo.ContentPage.Label> {
-		let variables: any;
-		try {
-			variables = {
-				label,
-				contentType,
-			};
-
-			const response = await dataService.mutate({
-				variables,
-				mutation: INSERT_CONTENT_LABEL,
-				update: ApolloCacheManager.clearContentLabels,
-			});
-
-			if (response.errors) {
-				throw new CustomError(
-					'Failed to insert content labels in the database because of graphql errors',
-					null,
-					{ response }
-				);
-			}
-
-			const contentLabel = get(response, 'data.insert_app_content_labels.returning[0]');
-
-			if (!contentLabel) {
-				throw new CustomError('The response does not contain a label', null, {
-					response,
-				});
-			}
-
-			return contentLabel;
-		} catch (err) {
-			throw new CustomError('Failed to insert content label in the database', err, {
-				variables,
-				query: 'INSERT_CONTENT_LABEL',
-			});
 		}
 	}
 
@@ -627,7 +588,7 @@ export class ContentService {
 		try {
 			const response = await dataService.mutate({
 				variables: { id },
-				mutation: DELETE_CONTENT,
+				mutation: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
 
@@ -637,7 +598,7 @@ export class ContentService {
 		} catch (err) {
 			throw new CustomError('Failed to delete content page from the database', err, {
 				id,
-				query: 'DELETE_CONTENT',
+				query: 'SOFT_DELETE_CONTENT',
 			});
 		}
 	}

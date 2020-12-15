@@ -6,6 +6,6 @@ export { default as ProjectSpotlightWrapper } from './ProjectSpotlightWrapper/Pr
 export { default as BlockImageGridWrapper } from './ImageGridWrapper/ImageGridWrapper';
 export { default as BlockLogoGridWrapper } from './LogoGridWrapper/LogoGridWrapper';
 export { default as BlockUspGridWrapper } from './UspGridWrapper/UspGridWrapper';
-export { default as BlockContentPageMeta } from './BlockContentPageMeta/BlockContentPageMeta';
+export { default as ContentPageMeta } from './ContentPageMeta/ContentPageMeta';
 export { default as HeroWrapper } from './HeroWrapper/HeroWrapper';
 export { default as CtaWrapper } from './CtaWrapper/CtaWrapper';

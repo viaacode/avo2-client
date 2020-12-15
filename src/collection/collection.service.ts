@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
+import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
@@ -15,7 +16,6 @@ import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
-	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
 	GET_BUNDLES_CONTAINING_COLLECTION,
@@ -32,6 +32,7 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
+	SOFT_DELETE_COLLECTION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from './collection.gql';
@@ -148,10 +149,12 @@ export class CollectionService {
 	 *
 	 * @param initialCollection Original collection object.
 	 * @param updatedCollection Collection that must be updated.
+	 * @param user
 	 */
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Partial<Avo.Collection.Collection>
+		updatedCollection: Partial<Avo.Collection.Collection>,
+		user: Avo.User.User
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// abort if updatedCollection is empty
@@ -279,23 +282,31 @@ export class CollectionService {
 
 			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
-			// Update collection labels
-			const initialLabels: string[] = this.getLabels(initialCollection).map(
-				(labelObj: any) => labelObj.label
-			);
-			const updatedLabels: string[] = this.getLabels(newCollection).map(
-				(labelObj: any) => labelObj.label
-			);
+			if (
+				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_LABELS) ||
+				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_LABELS)
+			) {
+				// Update collection labels
+				const initialLabels: string[] = this.getLabels(initialCollection).map(
+					(labelObj: any) => labelObj.label
+				);
+				const updatedLabels: string[] = this.getLabels(newCollection).map(
+					(labelObj: any) => labelObj.label
+				);
 
-			const addedLabels: string[] = without(updatedLabels, ...initialLabels);
-			const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
-			await Promise.all([
-				CollectionService.addLabelsToCollection(newCollection.id as string, addedLabels),
-				CollectionService.deleteLabelsFromCollection(
-					newCollection.id as string,
-					deletedLabels
-				),
-			]);
+				const addedLabels: string[] = without(updatedLabels, ...initialLabels);
+				const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
+				await Promise.all([
+					CollectionService.addLabelsToCollection(
+						newCollection.id as string,
+						addedLabels
+					),
+					CollectionService.deleteLabelsFromCollection(
+						newCollection.id as string,
+						deletedLabels
+					),
+				]);
+			}
 
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
@@ -347,7 +358,7 @@ export class CollectionService {
 		try {
 			// delete collection by id
 			await dataService.mutate({
-				mutation: DELETE_COLLECTION,
+				mutation: SOFT_DELETE_COLLECTION,
 				variables: {
 					id: collectionId,
 				},
@@ -614,33 +625,8 @@ export class CollectionService {
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
 		try {
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id: collectionId },
-			});
+			const collectionObj = await CollectionService.getCollectionById(collectionId);
 
-			if (response.errors) {
-				throw new CustomError(
-					`Failed to retrieve ${type} from database because of graphql errors`,
-					null,
-					{
-						collectionId,
-						errors: response.errors,
-					}
-				);
-			}
-
-			const collectionObj: Avo.Collection.Collection | null = get(
-				response,
-				'data.app_collections[0]'
-			);
-
-			if (!collectionObj) {
-				throw new CustomError(`query for ${type} returned empty result`, null, {
-					collectionId,
-					response,
-				});
-			}
 			// Collection/bundle loaded successfully
 			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
 			if (collectionObj.type_id !== ContentTypeNumber[type]) {
@@ -652,7 +638,6 @@ export class CollectionService {
 			throw new CustomError('Failed to fetch collection or bundle by id', err, {
 				collectionId,
 				type,
-				query: 'GET_COLLECTION_BY_ID',
 			});
 		}
 	}
@@ -662,7 +647,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
-	 * @param assignmentId Collection can be fetched if it's not public and you're not the owner,
+	 * @param assignmentUuid Collection can be fetched if it's not public and you're not the owner,
 	 *        but if it is linked to an assignment that you're trying to view
 	 *
 	 * @returns Collection or bundle.
@@ -670,13 +655,13 @@ export class CollectionService {
 	public static async fetchCollectionOrBundleWithItemsById(
 		collectionId: string,
 		type: 'collection' | 'bundle',
-		assignmentId: number | undefined
+		assignmentUuid: string | undefined
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
-					assignmentId,
+					assignmentId: assignmentUuid,
 					id: collectionId,
 				})}`,
 				{

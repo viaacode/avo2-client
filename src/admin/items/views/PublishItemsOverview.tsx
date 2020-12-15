@@ -137,7 +137,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 
 	const publishSelection = async () => {
 		try {
-			if (!selectedItemIds.length) {
+			if (!selectedItemIds || !selectedItemIds.length) {
 				ToastService.info(
 					t(
 						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
@@ -197,9 +197,12 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t('Je hebt {{numOfSelectedItems}} items geselecteerd', {
-					numOfSelectedItems: itemPids.length,
-				})
+				t(
+					'admin/items/views/publish-items-overview___je-hebt-num-of-selected-items-items-geselecteerd',
+					{
+						numOfSelectedItems: itemPids.length,
+					}
+				)
 			);
 			setSelectedItemIds(itemPids);
 		} catch (err) {
@@ -210,7 +213,11 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					{ tableState }
 				)
 			);
-			ToastService.danger(t('Het ophalen van alle item ids is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/items/views/publish-items-overview___het-ophalen-van-alle-item-ids-is-mislukt'
+				)
+			);
 		}
 
 		setIsLoading(false);

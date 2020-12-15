@@ -26,8 +26,8 @@ export const GET_CONTENT_PAGES = gql`
 					logo_url
 					name
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						id
 						label
 					}
@@ -64,7 +64,11 @@ export const GET_PUBLIC_PROJECT_CONTENT_PAGES = gql`
 		app_content(
 			limit: $limit
 			order_by: $orderBy
-			where: { content_type: { _eq: PROJECT }, is_public: { _eq: true } }
+			where: {
+				content_type: { _eq: PROJECT }
+				is_public: { _eq: true }
+				is_deleted: { _eq: false }
+			}
 		) {
 			path
 			title
@@ -96,6 +100,7 @@ export const GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE = gql`
 				title: { _ilike: $title }
 				content_type: { _eq: PROJECT }
 				is_public: { _eq: true }
+				is_deleted: { _eq: false }
 			}
 			limit: $limit
 			order_by: $orderBy
@@ -108,7 +113,7 @@ export const GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE = gql`
 
 export const GET_CONTENT_BY_ID = gql`
 	query getContentById($id: Int!) {
-		app_content(where: { id: { _eq: $id } }) {
+		app_content(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
 			content_type
 			content_width
 			created_at
@@ -128,8 +133,8 @@ export const GET_CONTENT_BY_ID = gql`
 					name
 					or_id
 				}
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						label
 						id
 					}
@@ -181,7 +186,10 @@ export const GET_CONTENT_TYPES = gql`
 
 export const UPDATE_CONTENT_BY_ID = gql`
 	mutation updateContentById($id: Int!, $contentPage: app_content_set_input!) {
-		update_app_content(where: { id: { _eq: $id } }, _set: $contentPage) {
+		update_app_content(
+			where: { id: { _eq: $id }, is_deleted: { _eq: false } }
+			_set: $contentPage
+		) {
 			affected_rows
 		}
 	}
@@ -197,9 +205,9 @@ export const INSERT_CONTENT = gql`
 	}
 `;
 
-export const DELETE_CONTENT = gql`
-	mutation deleteContent($id: Int!) {
-		delete_app_content(where: { id: { _eq: $id } }) {
+export const SOFT_DELETE_CONTENT = gql`
+	mutation softDeleteContent($id: Int!) {
+		update_app_content(where: { id: { _eq: $id } }, _set: { is_deleted: true }) {
 			affected_rows
 		}
 	}
@@ -207,7 +215,7 @@ export const DELETE_CONTENT = gql`
 
 export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH = gql`
 	query GetPermissionsFromContentPageByPath($path: String!) {
-		app_content(where: { path: { _eq: $path } }) {
+		app_content(where: { path: { _eq: $path }, is_deleted: { _eq: false } }) {
 			user_group_ids
 		}
 	}
@@ -220,19 +228,6 @@ export const GET_CONTENT_LABELS_BY_CONTENT_TYPE = gql`
 			label
 			content_type
 			link_to
-		}
-	}
-`;
-
-export const INSERT_CONTENT_LABEL = gql`
-	mutation insertContentLabel($label: String!, $contentType: String!) {
-		insert_app_content_labels(objects: { content_type: $contentType, label: $label }) {
-			returning {
-				id
-				label
-				content_type
-				link_to
-			}
 		}
 	}
 `;

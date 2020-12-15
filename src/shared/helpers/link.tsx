@@ -55,7 +55,7 @@ export const navigate = (
 	history: History,
 	route: string,
 	params: RouteParams = {},
-	search?: string
+	search?: string | { [paramName: string]: string }
 ) => {
 	const missingParams = getMissingParams(route);
 

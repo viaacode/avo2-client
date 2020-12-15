@@ -124,7 +124,7 @@ export class AssignmentLabelsService {
 	}
 
 	public static async linkLabelsFromAssignment(
-		assignmentId: number,
+		assignmentUuid: string,
 		labelIds: number[]
 	): Promise<void> {
 		let variables;
@@ -134,7 +134,7 @@ export class AssignmentLabelsService {
 			}
 			variables = {
 				objects: labelIds.map((labelId) => ({
-					assignment_id: assignmentId,
+					assignment_uuid: assignmentUuid,
 					assignment_tag_id: labelId,
 				})),
 			};
@@ -156,7 +156,7 @@ export class AssignmentLabelsService {
 	}
 
 	public static async unlinkLabelsFromAssignment(
-		assignmentId: number,
+		assignmentUuid: string,
 		labelIds: number[]
 	): Promise<void> {
 		let variables;
@@ -165,7 +165,7 @@ export class AssignmentLabelsService {
 				return;
 			}
 			variables = {
-				assignmentId,
+				assignmentUuid,
 				labelIds,
 			};
 			const response = await dataService.mutate({
@@ -206,7 +206,7 @@ export class AssignmentLabelsService {
 	public static getLabelsFromAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>
 	): Avo.Assignment.Label[] {
-		return (get(assignment, 'assignment_assignment_tags', []) as {
+		return (get(assignment, 'tags', []) as {
 			assignment_tag: Avo.Assignment.Label;
 		}[]).map((assignmentLabelLink) => assignmentLabelLink.assignment_tag);
 	}

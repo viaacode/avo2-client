@@ -49,7 +49,7 @@ export class AssignmentHelper {
 		history: History
 	) {
 		try {
-			if (isNil(assignment.id)) {
+			if (isNil(assignment.uuid)) {
 				ToastService.danger(
 					i18n.t(
 						'assignment/assignment___je-kan-een-opdracht-pas-dupliceren-nadat-je-hem-hebt-opgeslagen'
@@ -73,7 +73,7 @@ export class AssignmentHelper {
 
 			trackEvents(
 				{
-					object: String(assignment.id),
+					object: String(assignment.uuid),
 					object_type: 'assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft een opdracht gedupliceerd`,
 					action: 'copy',
@@ -84,7 +84,7 @@ export class AssignmentHelper {
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id });
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.uuid });
 			ToastService.success(
 				i18n.t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
@@ -200,8 +200,8 @@ export class AssignmentHelper {
 		const now = new Date(Date.now());
 
 		return (
-			<Container mode="horizontal" size="small" className="c-assignment-edit">
-				<Container mode="vertical" size="large">
+			<Container mode="horizontal" size="small" className="c-assignment-create-and-edit">
+				<Container mode="vertical" size="small">
 					<Form>
 						<FormGroup
 							required

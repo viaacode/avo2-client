@@ -1,7 +1,9 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, flatten, get, omit } from 'lodash-es';
+import { compact, flatten, get, isNil, set } from 'lodash-es';
+import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
@@ -14,32 +16,57 @@ import {
 	BULK_DELETE_SUBJECTS_FROM_PROFILES,
 	GET_CONTENT_COUNTS_FOR_USERS,
 	GET_DISTINCT_BUSINESS_CATEGORIES,
+	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USERS,
 	GET_USER_BY_ID,
 } from './user.gql';
-import { DeleteContentCounts, DeleteContentCountsRaw, UserOverviewTableCol } from './user.types';
+import {
+	DeleteContentCounts,
+	DeleteContentCountsRaw,
+	UserOverviewTableCol,
+	UserSummeryView,
+} from './user.types';
 
 export class UserService {
 	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
 		try {
-			const response = await dataService.query({
+			const userResponse = await dataService.query({
 				query: GET_USER_BY_ID,
 				variables: {
 					id: profileId,
 				},
 				fetchPolicy: 'no-cache',
 			});
-			if (response.errors) {
+			if (userResponse.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
-					response,
+					userResponse,
 				});
 			}
-			const profile = get(response, 'data.users_profiles[0]');
+			const profile = get(userResponse, 'data.users_profiles[0]');
 			if (!profile) {
-				throw new CustomError('Failed to find profile by id', null, { response });
+				throw new CustomError('Failed to find profile by id', null, { userResponse });
 			}
+
+			// Also fetch the block and unblock times from the event database
+			const reply = await fetchWithLogout(
+				`${getEnv('PROXY_URL')}/user/info?${queryString.stringify({
+					profileId: profile.id,
+				})}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+
+			const blockEventsResponse = await reply.json();
+			set(profile, 'user.blockedAt', blockEventsResponse.blockedAt);
+			set(profile, 'user.unblockedAt', blockEventsResponse.unblockedAt);
+
 			return profile;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
@@ -78,14 +105,53 @@ export class UserService {
 					response,
 				});
 			}
-			const users = get(response, 'data.shared_users');
+			const users: UserSummeryView[] = get(response, 'data.users_summary_view');
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
-			const profiles = users.map((user: any) => ({
-				...user.profiles[0],
-				user: omit(user, 'profiles'),
-			}));
-			const profileCount = get(response, 'data.shared_users_aggregate.aggregate.count');
+			const profiles: Partial<Avo.User.Profile>[] = users.map(
+				(user: UserSummeryView): Avo.User.Profile =>
+					({
+						id: user.profile_id,
+						stamboek: user.stamboek,
+						organisation: user.company_name
+							? ({
+									name: user.company_name,
+							  } as Avo.Organization.Organization)
+							: null,
+						educational_organisations: user.organisations.map(
+							(org): ClientEducationOrganization => ({
+								organizationId: org.organization_id,
+								unitId: org.unit_id || null,
+								label: '', // TODO find name somehow
+							})
+						),
+						subjects: user.classifications.map((classification) => classification.key),
+						education_levels: user.contexts.map((context) => context.key),
+						is_exception: user.is_exception,
+						business_category: user.business_category,
+						created_at: user.acc_created_at,
+						userGroupIds: isNil(user.group_id) ? [] : [user.group_id],
+						user_id: user.user_id,
+						profile_user_group: {
+							group: {
+								label: user.group_name,
+								id: user.group_id,
+							},
+						},
+						user: {
+							uid: user.user_id,
+							mail: user.mail,
+							full_name: user.full_name,
+							first_name: user.first_name,
+							last_name: user.last_name,
+							is_blocked: user.is_blocked,
+							created_at: user.acc_created_at,
+							last_access_at: user.last_access_at as string, // TODO remove cast after update to typings 2.26.0
+							idpmaps: user.idps.map((idp) => idp.idp),
+						},
+					} as any)
+			);
+			const profileCount = get(response, 'data.users_summary_view_aggregate.aggregate.count');
 
 			if (!profiles) {
 				throw new CustomError('Response does not contain any profiles', null, {
@@ -93,7 +159,7 @@ export class UserService {
 				});
 			}
 
-			return [profiles, profileCount];
+			return [profiles as any[], profileCount];
 		} catch (err) {
 			throw new CustomError('Failed to get profiles from the database', err, {
 				variables,
@@ -140,16 +206,17 @@ export class UserService {
 		let url: string | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
+			const body: Avo.User.BulkBlockUsersBody = {
+				profileIds,
+				isBlocked,
+			};
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
-				body: JSON.stringify({
-					profileIds,
-					isBlocked,
-				}),
+				body: JSON.stringify(body),
 			});
 
 			if (response.status < 200 || response.status >= 400) {
@@ -167,6 +234,43 @@ export class UserService {
 					isBlocked,
 				}
 			);
+		}
+	}
+
+	static async bulkDeleteUsers(
+		profileIds: string[],
+		deleteOption: Avo.User.UserDeleteOption,
+		transferToProfileId?: string
+	): Promise<void> {
+		let url: string | undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/user/bulk-delete`;
+			const body: Avo.User.BulkDeleteUsersBody = {
+				profileIds,
+				deleteOption,
+				transferToProfileId,
+			};
+			const response = await fetchWithLogout(url, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(body),
+			});
+
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Status code was unexpected', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError('Failed to bulk delete users from the database', err, {
+				url,
+				profileIds,
+				deleteOption,
+				transferToProfileId,
+			});
 		}
 	}
 
@@ -301,6 +405,22 @@ export class UserService {
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {
 				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
+			});
+		}
+	}
+
+	static async fetchIdps() {
+		try {
+			const response = await dataService.query({
+				query: GET_IDPS,
+			});
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+			return get(response, 'data.users_idps', []).map((idp: { value: string }) => idp.value);
+		} catch (err) {
+			throw new CustomError('Failed to get idps from the database', err, {
+				query: 'GET_IDPS',
 			});
 		}
 	}

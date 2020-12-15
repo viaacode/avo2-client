@@ -76,6 +76,8 @@ export const GET_UNPUBLISHED_ITEMS_WITH_FILTERS = gql`
 				id
 				external_id
 				uid
+				is_published
+				is_deleted
 			}
 		}
 		shared_items_aggregate(where: $where) {
@@ -180,6 +182,8 @@ export const GET_PUBLIC_ITEMS = gql`
 		) {
 			external_id
 			title
+			is_published
+			is_deleted
 		}
 	}
 `;
@@ -188,6 +192,8 @@ export const FETCH_ITEM_UUID_BY_EXTERNAL_ID = gql`
 	query fetchItemUuidByExternalId($externalId: bpchar!) {
 		app_item_meta(where: { external_id: { _eq: $externalId } }) {
 			uid
+			is_published
+			is_deleted
 		}
 	}
 `;
@@ -201,6 +207,8 @@ export const GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
 		) {
 			external_id
 			title
+			is_published
+			is_deleted
 		}
 		itemsByExternalId: app_item_meta(
 			order_by: { title: asc }
@@ -209,6 +217,8 @@ export const GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
 		) {
 			external_id
 			title
+			is_published
+			is_deleted
 		}
 	}
 `;
@@ -285,6 +295,8 @@ export const GET_ITEM_DEPUBLISH_REASON = gql`
 			}
 		) {
 			depublish_reason
+			is_published
+			is_deleted
 		}
 	}
 `;
@@ -293,6 +305,8 @@ export const GET_DISTINCT_SERIES = gql`
 	query getDistinctSeries {
 		app_item_meta(distinct_on: series, where: { series: { _is_null: false } }) {
 			series
+			is_published
+			is_deleted
 		}
 	}
 `;

@@ -3,7 +3,7 @@ import { gql } from 'apollo-boost';
 // TODO: Reduce to only what we need.
 export const GET_COLLECTION_BY_ID = gql`
 	query getCollectionById($id: uuid!) {
-		app_collections(where: { id: { _eq: $id } }) {
+		app_collections(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
 			id
 			description
 			description_long
@@ -41,8 +41,8 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 				stamboek
 				updated_at
-				profile_user_groups {
-					groups {
+				profile_user_group {
+					group {
 						label
 						id
 					}
@@ -84,8 +84,8 @@ export const GET_COLLECTION_BY_ID = gql`
 					first_name
 					last_name
 					profile {
-						profile_user_groups {
-							groups {
+						profile_user_group {
+							group {
 								label
 								id
 							}
@@ -109,7 +109,10 @@ export const GET_COLLECTION_BY_ID = gql`
 
 export const UPDATE_COLLECTION = gql`
 	mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
-		update_app_collections(where: { id: { _eq: $id } }, _set: $collection) {
+		update_app_collections(
+			where: { id: { _eq: $id }, is_deleted: { _eq: false } }
+			_set: $collection
+		) {
 			affected_rows
 		}
 	}
@@ -130,9 +133,9 @@ export const INSERT_COLLECTION = gql`
 	}
 `;
 
-export const DELETE_COLLECTION = gql`
-	mutation deleteCollectionById($id: uuid!) {
-		delete_app_collections(where: { id: { _eq: $id } }) {
+export const SOFT_DELETE_COLLECTION = gql`
+	mutation softDeleteCollectionById($id: uuid!) {
+		update_app_collections(where: { id: { _eq: $id } }, _set: { is_deleted: true }) {
 			affected_rows
 		}
 	}
@@ -180,7 +183,11 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 		$order: [app_collections_order_by!] = { updated_at: desc }
 	) {
 		app_collections(
-			where: { type_id: { _eq: $type_id }, owner_profile_id: { _eq: $owner_profile_id } }
+			where: {
+				type_id: { _eq: $type_id }
+				owner_profile_id: { _eq: $owner_profile_id }
+				is_deleted: { _eq: false }
+			}
 			offset: $offset
 			limit: $limit
 			order_by: $order
@@ -215,8 +222,8 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 					first_name
 					last_name
 					profile {
-						profile_user_groups {
-							groups {
+						profile_user_group {
+							group {
 								label
 								id
 							}
@@ -244,7 +251,11 @@ export const GET_PUBLIC_COLLECTIONS = gql`
 	query getCollections($limit: Int!, $typeId: Int!) {
 		app_collections(
 			order_by: { title: asc }
-			where: { type_id: { _eq: $typeId }, is_public: { _eq: true } }
+			where: {
+				type_id: { _eq: $typeId }
+				is_public: { _eq: true }
+				is_deleted: { _eq: false }
+			}
 			limit: $limit
 		) {
 			id
@@ -257,7 +268,12 @@ export const GET_PUBLIC_COLLECTIONS_BY_ID = gql`
 	query getCollections($id: uuid!, $typeId: Int!, $limit: Int!) {
 		app_collections(
 			order_by: { title: asc }
-			where: { type_id: { _eq: $typeId }, id: { _eq: $id }, is_public: { _eq: true } }
+			where: {
+				type_id: { _eq: $typeId }
+				id: { _eq: $id }
+				is_public: { _eq: true }
+				is_deleted: { _eq: false }
+			}
 			limit: $limit
 		) {
 			id
@@ -274,6 +290,7 @@ export const GET_PUBLIC_COLLECTIONS_BY_TITLE = gql`
 				type_id: { _eq: $typeId }
 				title: { _ilike: $title }
 				is_public: { _eq: true }
+				is_deleted: { _eq: false }
 			}
 			limit: $limit
 		) {
@@ -286,7 +303,11 @@ export const GET_PUBLIC_COLLECTIONS_BY_TITLE = gql`
 export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
 		app_collections(
-			where: { type_id: { _eq: 3 }, owner_profile_id: { _eq: $owner_profile_id } }
+			where: {
+				type_id: { _eq: 3 }
+				owner_profile_id: { _eq: $owner_profile_id }
+				is_deleted: { _eq: false }
+			}
 			order_by: { updated_at: desc }
 		) {
 			id
@@ -298,7 +319,11 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 export const GET_BUNDLE_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
 		app_collections(
-			where: { type_id: { _eq: 4 }, owner_profile_id: { _eq: $owner_profile_id } }
+			where: {
+				type_id: { _eq: 4 }
+				owner_profile_id: { _eq: $owner_profile_id }
+				is_deleted: { _eq: false }
+			}
 			order_by: { updated_at: desc }
 		) {
 			id
@@ -310,7 +335,11 @@ export const GET_BUNDLE_TITLES_BY_OWNER = gql`
 export const GET_BUNDLES_CONTAINING_COLLECTION = gql`
 	query getPublishedBundlesContainingCollection($id: String!) {
 		app_collections(
-			where: { is_public: { _eq: true }, collection_fragments: { external_id: { _eq: $id } } }
+			where: {
+				is_public: { _eq: true }
+				collection_fragments: { external_id: { _eq: $id } }
+				is_deleted: { _eq: false }
+			}
 		) {
 			id
 			title
@@ -381,7 +410,12 @@ export const GET_COLLECTION_BY_TITLE_OR_DESCRIPTION = gql`
 
 export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 	query getCollectionsByItemUuid($fragmentId: String!) {
-		app_collections(where: { collection_fragments: { external_id: { _eq: $fragmentId } } }) {
+		app_collections(
+			where: {
+				collection_fragments: { external_id: { _eq: $fragmentId } }
+				is_deleted: { _eq: false }
+			}
+		) {
 			id
 			title
 			is_public

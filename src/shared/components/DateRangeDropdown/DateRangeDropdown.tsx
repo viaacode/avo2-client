@@ -187,8 +187,8 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		tillYear = (till || yearInputLte || '').split('-')[0];
 	}
 
-	const fromDate: Date | null = from ? new Date(from) : null;
-	const tillDate: Date | null = till ? new Date(till) : null;
+	const fromDate: Date | null = from ? moment(from, 'YYYY-MM-DD HH:mm:ss').toDate() : null;
+	const tillDate: Date | null = till ? moment(till, 'YYYY-MM-DD HH:mm:ss').toDate() : null;
 
 	return (
 		<Dropdown

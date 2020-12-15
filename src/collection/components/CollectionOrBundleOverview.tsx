@@ -43,7 +43,7 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { DELETE_COLLECTION } from '../collection.gql';
+import { SOFT_DELETE_COLLECTION } from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeNumber, toDutchContentType } from '../collection.types';
 
@@ -79,7 +79,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [page, setPage] = useState<number>(0);
 
 	// Mutations
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [triggerCollectionDelete] = useMutation(SOFT_DELETE_COLLECTION);
 
 	// Listeners
 	const onClickDelete = (collectionId: string) => {

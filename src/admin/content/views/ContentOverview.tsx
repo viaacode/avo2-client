@@ -110,26 +110,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							{ title: { _ilike: queryWildcard } },
 							{ path: { _ilike: queryWildcard } },
 							{
-								profile: {
-									_or: [
-										{
-											usersByuserId: {
-												first_name: { _ilike: queryWildcard },
-											},
-										},
-										{
-											usersByuserId: {
-												last_name: { _ilike: queryWildcard },
-											},
-										},
-									],
+								owner: {
+									full_name: { _ilike: queryWildcard },
 								},
 							},
 							{
-								profile: {
-									profile_user_groups: {
-										groups: { label: { _ilike: queryWildcard } },
-									},
+								owner: {
+									group_name: { _ilike: queryWildcard },
 								},
 							},
 							{
@@ -171,6 +158,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					// Add filter to only allow the content pages for which the user is the author
 					andFilters.push({ user_profile_id: { _eq: get(user, 'profile.id') } });
 				}
+
+				andFilters.push({ is_deleted: { _eq: false } });
+
 				return { _and: andFilters };
 			};
 
