@@ -172,7 +172,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					});
 				} else {
 					andFilters.push({
-						relations: { _not: { predicate: { _eq: 'IS_COPY_OF' } } },
+						_not: { relations: { predicate: { _eq: 'IS_COPY_OF' } } },
 					});
 				}
 			}

@@ -313,8 +313,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								idpMapsToTagList(get(storedProfile, 'user.idpmaps', []), 'idps') ||
-									'-',
+								idpMapsToTagList(
+									get(storedProfile, 'user.idpmaps', []).map(
+										(idpMap: any) => idpMap.idp
+									),
+									'idps'
+								) || '-',
 								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
