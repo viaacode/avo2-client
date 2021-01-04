@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash-es';
+import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -86,13 +86,18 @@ const MediaGridWrapper: FunctionComponent<
 				// and we should resolve the results ourselves using a separate route on the server
 				const searchQueryLimitNumber =
 					parseIntOrDefault<undefined>(searchQueryLimit, undefined) || 8;
-				const searchQueryValue = get(searchQuery, 'value') as string | undefined;
+				const searchQueryValue: string | null =
+					(get(searchQuery, 'value') as string | undefined) || null;
 
 				if (
+					(elements && elements.length && isNil(searchQueryValue)) ||
 					searchQueryValue !== lastSearchQuery ||
 					searchQueryLimitNumber > (lastSearchQueryLimit || 0)
 				) {
-					// Only fetch items from the server if the search query changed or if the number of items increased
+					// Only fetch items from the server if
+					// - the manually selected elements changed without a search query being set or
+					// - the search query changed or
+					// - if the number of items increased
 					setLastSearchQuery(searchQueryValue || null);
 					setLastSearchQueryLimit(searchQueryLimitNumber);
 					const searchResults = await ContentPageService.resolveMediaItems(
@@ -103,6 +108,7 @@ const MediaGridWrapper: FunctionComponent<
 
 					setResolvedResults((r) => {
 						if (
+							!isNil(searchQueryValue) &&
 							r &&
 							r.length &&
 							searchResults.length !== (searchQueryLimitNumber || 8)
@@ -227,6 +233,7 @@ const MediaGridWrapper: FunctionComponent<
 
 	// Render
 	const renderMediaGridBlock = () => {
+		const elements = (resolvedResults || []).map(mapCollectionOrItemData);
 		return (
 			<BlockMediaGrid
 				title={title}
@@ -246,7 +253,7 @@ const MediaGridWrapper: FunctionComponent<
 				openMediaInModal={openMediaInModal}
 				ctaButtonAction={ctaButtonAction}
 				fullWidth={isMobileWidth()}
-				elements={(resolvedResults || []).map(mapCollectionOrItemData)}
+				elements={elements}
 				renderLink={renderLink}
 				renderPlayerModalBody={renderPlayerModalBody}
 			/>
