@@ -1,6 +1,11 @@
 import { CustomError } from '../helpers';
 import { insideIframe } from '../helpers/inside-iframe';
 
+interface SmartschoolEvent {
+	event: string;
+	metadata: Record<string, Record<string, number | boolean | string | undefined | null>>;
+}
+
 export class SmartschoolAnalyticsService {
 	/**
 	 * Notify parent frame that link was clicked. This is custom code for Smartschool analytics
@@ -8,8 +13,8 @@ export class SmartschoolAnalyticsService {
 	 * @param url
 	 * @param title
 	 */
-	public static triggerUrlEvent(url: string, title?: string): void {
-		let message: any | undefined;
+	static triggerUrlEvent(url: string, title?: string): void {
+		let message: SmartschoolEvent | undefined;
 		try {
 			if (insideIframe()) {
 				message = {
@@ -41,12 +46,12 @@ export class SmartschoolAnalyticsService {
 	 * @param identifier
 	 * @param duration
 	 */
-	public static triggerVideoPlayEvent(
+	static triggerVideoPlayEvent(
 		title: string | undefined,
 		identifier: string | undefined,
-		duration: number| undefined
+		duration: number | undefined
 	): void {
-		let message: any | undefined;
+		let message: SmartschoolEvent | undefined;
 		try {
 			if (insideIframe()) {
 				message = {
