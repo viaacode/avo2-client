@@ -28,8 +28,10 @@ interface MediaPlayerTitleTextButtonWrapperProps {
 	mediaSrc?: string;
 	mediaPoster?: string;
 	mediaTitle: string;
+	mediaExternalId: string;
 	mediaIssued?: string;
 	mediaOrganisation?: Avo.Organization.Organization;
+	mediaDuration?: string;
 	mediaAutoplay?: boolean;
 	headingType: HeadingTypeOption;
 	headingTitle: string;
@@ -48,8 +50,10 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 	mediaSrc,
 	mediaPoster,
 	mediaTitle,
+	mediaExternalId,
 	mediaIssued,
 	mediaOrganisation,
+	mediaDuration,
 	headingTitle,
 	headingType,
 	content,
@@ -71,6 +75,8 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 				<MediaPlayerWrapper
 					item={mediaItem}
 					title={mediaTitle}
+					external_id={mediaExternalId}
+					duration={mediaDuration}
 					autoplay={mediaAutoplay}
 					src={mediaSrc}
 					poster={mediaPoster}

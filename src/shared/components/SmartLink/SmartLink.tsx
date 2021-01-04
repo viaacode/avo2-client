@@ -6,22 +6,30 @@ import { Link } from 'react-router-dom';
 
 import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 
+import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { BUNDLE_PATH } from '../../../bundle/bundle.const';
 import { APP_PATH } from '../../../constants';
 import { buildLink, getEnv } from '../../helpers';
 import { insideIframe } from '../../helpers/inside-iframe';
+import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
 export interface SmartLinkProps {
 	action?: ButtonAction | null;
 	removeStyles?: boolean;
+	label?: string;
 	children: ReactNode;
 }
 
 const SmartLink: FunctionComponent<SmartLinkProps> = ({
 	action,
 	removeStyles = true,
+	label,
 	children,
 }) => {
+	const handleAdditionalTriggers = (url: string) => {
+		SmartschoolAnalyticsService.triggerUrlEvent(toAbsoluteUrl(url), label);
+	};
+
 	const renderLink = (
 		url: string,
 		target: LinkTarget = LinkTarget.Self
@@ -41,6 +49,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							href={fullUrl}
 							target="_self"
 							className={classnames({ 'a-link__no-styles': removeStyles })}
+							onClick={() => handleAdditionalTriggers(fullUrl)}
 						>
 							{children}
 						</a>
@@ -51,6 +60,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 					<Link
 						to={fullUrl}
 						className={classnames({ 'a-link__no-styles': removeStyles })}
+						onClick={() => handleAdditionalTriggers(fullUrl)}
 					>
 						{children}
 					</Link>
@@ -67,6 +77,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							target="_blank"
 							rel="noopener noreferrer"
 							className={classnames({ 'a-link__no-styles': removeStyles })}
+							onClick={() => handleAdditionalTriggers(fullUrl)}
 						>
 							{children}
 						</a>
@@ -79,6 +90,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						target="_blank"
 						rel="noopener noreferrer"
 						className={classnames({ 'a-link__no-styles': removeStyles })}
+						onClick={() => handleAdditionalTriggers(fullUrl)}
 					>
 						{children}
 					</a>

@@ -203,6 +203,9 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						...itemMetaData,
 						thumbnail_path: fragment.thumbnail_path || itemMetaData.thumbnail_path,
 					}}
+					external_id={itemMetaData.external_id}
+					duration={itemMetaData.duration}
+					title={itemMetaData.title}
 					seekTime={fragmentStart}
 					cuePoints={{
 						start: fragmentStart,
