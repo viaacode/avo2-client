@@ -13,6 +13,7 @@ import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
+import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
 import './FlowPlayerWrapper.scss';
 
@@ -25,6 +26,9 @@ type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
 	src?: string;
 	poster?: string;
+	external_id?: string;
+	title?: string;
+	duration?: string;
 	organisationName?: string;
 	organisationLogo?: string;
 	issuedDate?: string;
@@ -110,6 +114,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			}
 			setTriggeredForUrl(src || null);
 		}
+
+		SmartschoolAnalyticsService.triggerVideoPlayEvent(
+			props.title || get(item, 'title'),
+			props.external_id || get(item, 'external_id'),
+			toSeconds(props.duration || get(item, 'duration'), true) || undefined
+		);
 	};
 
 	const handlePosterClicked = () => {
