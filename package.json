@@ -28,7 +28,7 @@
 		"@apollo/react-hooks": "^3.0.0",
 		"@popperjs/core": "^2.5.4",
 		"@storybook/addon-actions": "^6.0.21",
-		"@viaa/avo2-components": "^1.64.1",
+		"@viaa/avo2-components": "^1.65.0",
 		"@viaa/avo2-types": "^2.27.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
