@@ -57,7 +57,7 @@ export const GET_COLLECTIONS = gql`
 `;
 
 export const GET_COLLECTION_IDS = gql`
-	query getCollections($where: app_collections_bool_exp!) {
+	query getCollectionsByIds($where: app_collections_bool_exp!) {
 		app_collections(where: $where) {
 			id
 		}

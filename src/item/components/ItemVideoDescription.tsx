@@ -153,6 +153,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 				cuePoints={cuePoints}
 				seekTime={time}
 				onPlay={onPlay}
+				external_id={itemMetaData.external_id}
+				duration={itemMetaData.duration}
+				title={title}
 			/>
 		);
 	};

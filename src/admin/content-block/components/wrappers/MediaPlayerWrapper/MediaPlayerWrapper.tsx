@@ -20,6 +20,8 @@ interface MediaPlayerWrapperProps {
 	src?: string;
 	poster?: string;
 	title: string;
+	external_id?: string;
+	duration?: string;
 	annotationTitle?: string;
 	annotationText?: string;
 	issued?: string;
@@ -33,6 +35,8 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 	src,
 	poster,
 	title,
+	external_id,
+	duration,
 	annotationTitle,
 	annotationText,
 	issued,
@@ -104,6 +108,9 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 					}
 					src={src}
 					poster={videoStill}
+					external_id={external_id || get(mediaItem, 'external_id')}
+					duration={duration || get(mediaItem, 'duration')}
+					title={title || get(mediaItem, 'title')}
 					organisationName={get(organisation || get(mediaItem, 'organisation'), 'name')}
 					organisationLogo={get(
 						organisation || get(mediaItem, 'organisation'),

@@ -373,6 +373,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 										poster={
 											fragment.thumbnail_path || itemMetaData.thumbnail_path
 										}
+										external_id={itemMetaData.external_id}
+										duration={itemMetaData.duration}
+										title={itemMetaData.title}
 										cuePoints={{
 											start: fragment.start_oc,
 											end: fragment.end_oc,

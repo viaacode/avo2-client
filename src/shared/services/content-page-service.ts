@@ -48,7 +48,7 @@ export class ContentPageService {
 	}
 
 	public static async resolveMediaItems(
-		searchQuery: string | undefined,
+		searchQuery: string | null,
 		searchQueryLimit: number | undefined,
 		mediaItems:
 			| {
