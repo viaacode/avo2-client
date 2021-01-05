@@ -176,7 +176,7 @@ export function getRedirectAfterLogin(
 
 	const base = getBaseUrl(location);
 	const from = getFromPath(location, defaultPath);
-	if (from === '/') {
+	if (from === '/' || from.startsWith('/error')) {
 		return `${base}${defaultPath}`;
 	}
 	return `${base}${from}${location.hash || ''}${queryString.stringify(
