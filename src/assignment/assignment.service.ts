@@ -809,14 +809,14 @@ export class AssignmentService {
 		try {
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 				query: GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
-				variables: { legacyAssignmentId },
+				variables: { legacyId: legacyAssignmentId },
 			});
 
 			if (response.errors) {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			return get(response, 'data.app_assignments.id');
+			return get(response, 'data.app_assignments[0].uuid');
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get assignment uuid from legacy id from the database',
