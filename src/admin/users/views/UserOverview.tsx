@@ -65,7 +65,7 @@ import FilterTable, { getFilters } from '../../shared/components/FilterTable/Fil
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
-	getMultiOptionFilters,
+	getMultiOptionFilters, getMultiOptionsFilters,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -160,6 +160,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						{ full_name: { _ilike: query } },
 						{ company_name: { _ilike: query } },
 						{ group_name: { _ilike: query } },
+						{ business_category: { _ilike: query } },
 					],
 				});
 			}
@@ -167,22 +168,16 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
-					[
-						'user_group',
-						'organisation',
-						'business_category',
-						'education_levels',
-						'subjects',
-						'idps',
-					],
-					[
-						'group_id',
-						'company_id',
-						'business_category',
-						'contexts.key',
-						'classifications.key',
-						'idps.idp',
-					]
+					['user_group', 'organisation', 'business_category'],
+					['group_id', 'company_id', 'business_category']
+				)
+			);
+			andFilters.push(
+				...getMultiOptionsFilters(
+					filters,
+					['education_levels', 'subjects', 'idps'],
+					['contexts', 'classifications', 'idps'],
+					['key', 'key', 'idp']
 				)
 			);
 			andFilters.push(
