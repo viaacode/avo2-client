@@ -278,6 +278,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				item: undefined,
 			};
 		});
+		setFocusedPage(null);
 	};
 
 	const handleSelectedTabsChanged = (tabs: LabelObj[]) => {
