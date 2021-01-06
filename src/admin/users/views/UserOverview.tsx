@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import { compact, get, isNil } from 'lodash-es';
+import { compact, get, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -65,7 +65,9 @@ import FilterTable, { getFilters } from '../../shared/components/FilterTable/Fil
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
-	getMultiOptionFilters, getMultiOptionsFilters,
+	getMultiOptionFilters,
+	getMultiOptionsFilters,
+	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -189,14 +191,23 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			);
 			if (filters.educational_organisations && filters.educational_organisations.length) {
 				const orFilters: any[] = [];
-				eduOrgToClientOrg(filters.educational_organisations).forEach((org) => {
+				eduOrgToClientOrg(without(filters.educational_organisations, NULL_FILTER)).forEach(
+					(org) => {
+						orFilters.push({
+							organisations: {
+								organization_id: { _eq: org.organizationId },
+								unit_id: org.unitId ? { _eq: org.unitId } : { _is_null: true },
+							},
+						});
+					}
+				);
+				if (filters.educational_organisations.includes(NULL_FILTER)) {
 					orFilters.push({
-						organisations: {
-							organization_id: { _eq: org.organizationId },
-							unit_id: org.unitId ? { _eq: org.unitId } : { _is_null: true },
+						_not: {
+							organisations: {},
 						},
 					});
-				});
+				}
 				andFilters.push({
 					_or: orFilters,
 				});
