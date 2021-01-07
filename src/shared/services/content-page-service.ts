@@ -47,6 +47,53 @@ export class ContentPageService {
 		}
 	}
 
+	/**
+	 * Check if content page with path already exists
+	 * @param path The path to identify the content page including the leading slash. eg: /over
+	 * @param id pass the id of the page you're trying to update, when creating a page, omi this param
+	 * @return returns the title of the page if it exists, otherwise returns null
+	 */
+	public static async doesContentPagePathExist(
+		path: string,
+		id?: number
+	): Promise<string | null> {
+		try {
+			const response = await fetchWithLogout(
+				`${getEnv('PROXY_URL')}/content-pages/path-exist?${queryString.stringify({
+					path,
+				})}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+			let responseContent: any;
+			try {
+				responseContent = await response.json();
+			} catch (err) {}
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError(
+					'Failed to check if content page exists from /content-pages/path-exist',
+					null,
+					{
+						path,
+						response,
+						responseContent,
+					}
+				);
+			}
+			if (id === responseContent.id) {
+				return null;
+			}
+			return responseContent.title;
+		} catch (err) {
+			throw new CustomError('Failed to get content page by path', err);
+		}
+	}
+
 	public static async resolveMediaItems(
 		searchQuery: string | null,
 		searchQueryLimit: number | undefined,

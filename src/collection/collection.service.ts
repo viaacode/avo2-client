@@ -685,6 +685,9 @@ export class CollectionService {
 			}
 			return await response.json();
 		} catch (err) {
+			if (JSON.stringify(err).includes('COLLECTION_NOT_FOUND')) {
+				return null;
+			}
 			throw new CustomError('Failed to get collection or bundle with items', err, {
 				collectionId,
 				type,

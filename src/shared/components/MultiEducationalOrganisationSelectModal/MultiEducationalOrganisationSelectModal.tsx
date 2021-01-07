@@ -77,16 +77,6 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 	};
 
 	const renderCheckboxControl = () => {
-		// const orgTags = (selectedOrganisations || []).map((org) => ({
-		// 	id: org.label,
-		// 	label: org.label,
-		// }));
-		// if (includeEmpty) {
-		// 	orgTags.push({
-		// 		id: NULL_FILTER,
-		// 		label: t('admin/users/user___leeg'),
-		// 	});
-		// }
 		const selected: number = selectedOrganisations.length + (includeEmpty ? 1 : 0);
 		return (
 			<>
@@ -99,7 +89,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 					>
 						<div className="c-button__content">
 							<div className="c-button__label">{label}</div>
-							{!!selectedOrganisations.length && showSelectedValuesOnCollapsed && (
+							{!!selected && showSelectedValuesOnCollapsed && (
 								<TagList
 									tags={[
 										{
