@@ -2,9 +2,19 @@ import classnames from 'classnames';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Icon, Modal, ModalBody, ModalFooterRight, TagList } from '@viaa/avo2-components';
+import {
+	Button,
+	Checkbox,
+	Icon,
+	Modal,
+	ModalBody,
+	ModalFooterRight,
+	Spacer,
+	TagList,
+} from '@viaa/avo2-components';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
+import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
 import './MultiEducationalOrganisationSelectModal.scss';
@@ -34,12 +44,14 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 	const [t] = useTranslation();
 
 	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [includeEmpty, setIncludeEmpty] = useState<boolean>(false);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		ClientEducationOrganization[]
 	>(values);
 
 	useEffect(() => {
-		setSelectedOrganisations(values);
+		setSelectedOrganisations(values.filter((org) => org.label !== NULL_FILTER));
+		setIncludeEmpty(!!values.find((org) => org.label === NULL_FILTER));
 	}, [isOpen, values]);
 
 	const closeModal = () => {
@@ -48,7 +60,10 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 
 	const applyFilter = () => {
 		onChange(
-			selectedOrganisations.map((org) => `${org.organizationId}:${org.unitId || ''}`),
+			[
+				...selectedOrganisations.map((org) => `${org.organizationId}:${org.unitId || ''}`),
+				...(includeEmpty ? [NULL_FILTER] : []),
+			],
 			id
 		);
 		closeModal();
@@ -62,6 +77,17 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 	};
 
 	const renderCheckboxControl = () => {
+		// const orgTags = (selectedOrganisations || []).map((org) => ({
+		// 	id: org.label,
+		// 	label: org.label,
+		// }));
+		// if (includeEmpty) {
+		// 	orgTags.push({
+		// 		id: NULL_FILTER,
+		// 		label: t('admin/users/user___leeg'),
+		// 	});
+		// }
+		const selected: number = selectedOrganisations.length + (includeEmpty ? 1 : 0);
 		return (
 			<>
 				<div>
@@ -78,14 +104,10 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 									tags={[
 										{
 											id: 'users',
-											label: `${selectedOrganisations.length} ${
-												selectedOrganisations.length > 1
-													? t(
-															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisaties'
-													  )
-													: t(
-															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisatie'
-													  )
+											label: `${selected} ${
+												selected > 1
+													? t('items geselecteerd')
+													: t('item geselecteerd')
 											}`,
 										},
 									]}
@@ -112,6 +134,13 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 					size={'medium'}
 				>
 					<ModalBody>
+						<Spacer margin="bottom-small">
+							<Checkbox
+								label={t('admin/users/user___leeg')}
+								checked={includeEmpty}
+								onChange={setIncludeEmpty}
+							/>
+						</Spacer>
 						<EducationalOrganisationsSelect
 							organisations={selectedOrganisations}
 							onChange={setSelectedOrganisations}

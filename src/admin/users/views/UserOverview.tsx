@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import { compact, get, isNil } from 'lodash-es';
+import { compact, get, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -66,6 +66,8 @@ import {
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
+	getMultiOptionsFilters,
+	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -160,6 +162,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						{ full_name: { _ilike: query } },
 						{ company_name: { _ilike: query } },
 						{ group_name: { _ilike: query } },
+						{ business_category: { _ilike: query } },
 					],
 				});
 			}
@@ -167,22 +170,16 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
-					[
-						'user_group',
-						'organisation',
-						'business_category',
-						'education_levels',
-						'subjects',
-						'idps',
-					],
-					[
-						'group_id',
-						'company_id',
-						'business_category',
-						'contexts.key',
-						'classifications.key',
-						'idps.idp',
-					]
+					['user_group', 'organisation', 'business_category'],
+					['group_id', 'company_id', 'business_category']
+				)
+			);
+			andFilters.push(
+				...getMultiOptionsFilters(
+					filters,
+					['education_levels', 'subjects', 'idps'],
+					['contexts', 'classifications', 'idps'],
+					['key', 'key', 'idp']
 				)
 			);
 			andFilters.push(
@@ -194,14 +191,23 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			);
 			if (filters.educational_organisations && filters.educational_organisations.length) {
 				const orFilters: any[] = [];
-				eduOrgToClientOrg(filters.educational_organisations).forEach((org) => {
+				eduOrgToClientOrg(without(filters.educational_organisations, NULL_FILTER)).forEach(
+					(org) => {
+						orFilters.push({
+							organisations: {
+								organization_id: { _eq: org.organizationId },
+								unit_id: org.unitId ? { _eq: org.unitId } : { _is_null: true },
+							},
+						});
+					}
+				);
+				if (filters.educational_organisations.includes(NULL_FILTER)) {
 					orFilters.push({
-						organisations: {
-							organization_id: { _eq: org.organizationId },
-							unit_id: org.unitId ? { _eq: org.unitId } : { _is_null: true },
+						_not: {
+							organisations: {},
 						},
 					});
-				});
+				}
 				andFilters.push({
 					_or: orFilters,
 				});
