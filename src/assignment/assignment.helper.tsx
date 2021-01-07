@@ -239,7 +239,7 @@ export class AssignmentHelper {
 								options={AssignmentHelper.getContentLayoutOptions()}
 								value={
 									isNil(assignment.content_layout)
-										? null
+										? AssignmentLayout.PlayerAndText
 										: (assignment.content_layout as any)
 								}
 								onChange={(value: string) => {

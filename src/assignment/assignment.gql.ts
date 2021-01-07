@@ -334,7 +334,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 		insert_app_assignment_responses(objects: $assignmentResponses) {
 			affected_rows
 			returning {
-				uuid
+				id
 				created_at
 				submitted_at
 				owner_profile_ids
@@ -347,7 +347,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 
 export const GET_ASSIGNMENT_UUID_FROM_LEGACY_ID = gql`
 	query getAssignmentUuidFromLegacyId($legacyId: Int!) {
-		app_assignments(where: { _id: { _eq: $legacyId } }, limit: 1) {
+		app_assignments(where: { id: { _eq: $legacyId } }, limit: 1) {
 			uuid
 		}
 	}
