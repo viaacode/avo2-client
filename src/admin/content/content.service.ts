@@ -383,13 +383,7 @@ export class ContentService {
 
 			return null;
 		} catch (err) {
-			console.error('Failed to insert content blocks', err);
-			ToastService.danger(
-				i18n.t(
-					'admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'
-				)
-			);
-
+			console.error('Failed to insert content page into the database', err);
 			return null;
 		}
 	}
@@ -435,12 +429,6 @@ export class ContentService {
 			return contentPage;
 		} catch (err) {
 			console.error('Failed to save content', err);
-			ToastService.danger(
-				i18n.t(
-					'admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'
-				)
-			);
-
 			return null;
 		}
 	}

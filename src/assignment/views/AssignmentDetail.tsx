@@ -92,9 +92,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					});
 					return;
 				}
+
+				// Reload the page with the uuid url instead of the legacy url
 				history.replace(
 					buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentUuid })
 				);
+				return;
 			}
 
 			const response = await AssignmentService.fetchAssignmentAndContent(

@@ -57,10 +57,10 @@ import {
 	PageType,
 } from '../content.types';
 import {
+	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
-	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
@@ -398,14 +398,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const path = ContentService.getPathOrDefault(contentPageState.currentContentPageInfo);
 
 		try {
-			const page: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
-				path
+			const existingContentPageTitle:
+				| string
+				| null = await ContentPageService.doesContentPagePathExist(
+				path,
+				contentPageState.currentContentPageInfo.id
 			);
-			if (page && String(page.id) !== id) {
+			if (existingContentPageTitle) {
 				errors.path = t(
 					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
 					{
-						pageTitle: page.title,
+						pageTitle: existingContentPageTitle,
 					}
 				);
 			} else {
@@ -413,6 +416,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			}
 		} catch (err) {
 			// ignore error if content page does not exist yet, since we're trying to save it
+			if (!JSON.stringify(err).includes('NotFound')) {
+				throw err;
+			}
 		}
 
 		if (
