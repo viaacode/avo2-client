@@ -21,10 +21,7 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
-import {
-	redirectToClientPage,
-	redirectToExternalPage,
-} from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
@@ -112,10 +109,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return `${getEnv('LDAP_DASHBOARD_PEOPLE_URL')}/${ipdMapEntry.idp_user_id}`;
 		}
 		return null;
-	};
-
-	const handleLdapDashboardClick = () => {
-		redirectToExternalPage(getLdapDashboardUrl() as string, '_blank');
 	};
 
 	const canBanUser = (): boolean => {
@@ -414,23 +407,26 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								)
 							}
 						/>
-						<Button
-							label={t('admin/users/views/user-detail___beheer-in-account-manager')}
-							ariaLabel={t(
-								'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
-							)}
-							disabled={!getLdapDashboardUrl()}
-							title={
-								getLdapDashboardUrl()
-									? t(
-											'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
-									  )
-									: t(
-											'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
-									  )
-							}
-							onClick={handleLdapDashboardClick}
-						/>
+						<a href={getLdapDashboardUrl() || ''} target="_blank" rel="noopener noreferrer">
+							<Button
+								label={t(
+									'admin/users/views/user-detail___beheer-in-account-manager'
+								)}
+								ariaLabel={t(
+									'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+								)}
+								disabled={!getLdapDashboardUrl()}
+								title={
+									getLdapDashboardUrl()
+										? t(
+												'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+										  )
+										: t(
+												'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
+										  )
+								}
+							/>
+						</a>
 					</ButtonToolbar>
 				</AdminLayoutTopBarRight>
 				<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
