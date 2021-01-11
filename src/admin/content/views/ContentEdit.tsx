@@ -57,10 +57,10 @@ import {
 	PageType,
 } from '../content.types';
 import {
-	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
+	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
