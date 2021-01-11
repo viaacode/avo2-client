@@ -26,7 +26,7 @@ import {
 } from '../../authentication/helpers/redirects';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import i18n from '../../shared/translations/i18n';
+import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
 
@@ -71,9 +71,12 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	}
 
 	const messageText = (queryParams.message as string) || message || '';
-	const errorMessage: string = isNil(messageText)
-		? i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden')
-		: messageText;
+	let errorMessage: string;
+	if (isNil(messageText)) {
+		errorMessage = getPageNotFoundError(!!user);
+	} else {
+		errorMessage = messageText;
+	}
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
