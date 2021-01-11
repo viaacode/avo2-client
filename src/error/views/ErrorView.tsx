@@ -137,7 +137,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	};
 
 	return (
-		<Container mode="vertical" background="alt">
+		<Container mode="vertical" background="alt" className="m-error-view">
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}
