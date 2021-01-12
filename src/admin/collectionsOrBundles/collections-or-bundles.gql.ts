@@ -56,6 +56,198 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
+export const GET_COLLECTION_ACTUALISATION = gql`
+	query getCollectionActualisations(
+		$where: app_collections_bool_exp!
+		$orderBy: [app_collections_order_by!]!
+		$offset: Int!
+		$limit: Int!
+	) {
+		app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+			id
+			title
+			created_at
+			owner_profile_id
+			profile {
+				id
+				profile_user_group {
+					group {
+						label
+						id
+					}
+				}
+				user: usersByuserId {
+					id
+					full_name
+				}
+			}
+			updated_by {
+				id
+				user: usersByuserId {
+					id
+					full_name
+				}
+			}
+			updated_at
+			is_public
+			collection_labels {
+				id
+				label
+			}
+			actualisation: management {
+				id
+				current_status
+				status_valid_until
+				manager {
+					full_name
+				}
+				actualised_at: QC(
+					where: { qc_label: { _eq: KWALITEITSCHECK } }
+					order_by: { created_at: desc_nulls_last }
+					limit: 1
+				) {
+					id
+					created_at
+				}
+				approved_at: QC(
+					where: { qc_label: { _eq: EINDCHECK } }
+					order_by: { created_at: desc_nulls_last }
+					limit: 1
+				) {
+					id
+					created_at
+				}
+			}
+		}
+		app_collections_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_COLLECTION_QUALITY_CHECK = gql`
+	query getCollectionQualityCheck(
+		$where: app_collections_bool_exp!
+		$orderBy: [app_collections_order_by!]!
+		$offset: Int!
+		$limit: Int!
+	) {
+		app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+			id
+			title
+			created_at
+			owner_profile_id
+			profile {
+				id
+				profile_user_group {
+					group {
+						label
+						id
+					}
+				}
+				user: usersByuserId {
+					id
+					full_name
+				}
+			}
+			updated_by {
+				id
+				user: usersByuserId {
+					id
+					full_name
+				}
+			}
+			updated_at
+			is_public
+			collection_labels {
+				id
+				label
+			}
+			actualisation: management {
+				id
+				language_check: QC(
+					where: { qc_label: { _eq: TAALCHECK } }
+					order_by: { created_at: desc_nulls_last }
+					limit: 1
+				) {
+					id
+					qc_status
+				}
+				quality_check: QC(
+					where: { qc_label: { _eq: KWALITEITSCHECK } }
+					order_by: { created_at: desc_nulls_last }
+					limit: 1
+				) {
+					id
+					qc_status
+				}
+				approved_at: QC(
+					where: { qc_label: { _eq: EINDCHECK } }
+					order_by: { created_at: desc_nulls_last }
+					limit: 1
+				) {
+					id
+					created_at
+				}
+			}
+		}
+		app_collections_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_COLLECTION_MARCOM = gql`
+	query getCollectionMarcom(
+		$where: app_collections_bool_exp!
+		$orderBy: [app_collections_order_by!]!
+		$offset: Int!
+		$limit: Int!
+	) {
+		app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+			id
+			title
+			created_at
+			owner_profile_id
+			profile {
+				id
+				profile_user_group {
+					group {
+						label
+						id
+					}
+				}
+				user: usersByuserId {
+					id
+					full_name
+				}
+			}
+			updated_by {
+				id
+				user: usersByuserId {
+					id
+					full_name
+				}
+			}
+			updated_at
+			is_public
+			collection_labels {
+				id
+				label
+			}
+		}
+		app_collections_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
 export const GET_COLLECTION_IDS = gql`
 	query getCollectionsByIds($where: app_collections_bool_exp!) {
 		app_collections(where: $where) {

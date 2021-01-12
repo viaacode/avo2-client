@@ -22,13 +22,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
-import {
-	BooleanParam,
-	NumberParam,
-	QueryParamConfig,
-	StringParam,
-	useQueryParams,
-} from 'use-query-params';
+import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
 import {
 	Button,
@@ -78,6 +72,7 @@ export interface FilterableColumn extends TableColumn {
 		| 'CheckboxDropdownModal'
 		| 'DateRangeDropdown'
 		| 'BooleanCheckboxDropdown'
+		| 'OkNokEmptyCheckboxDropdown'
 		| 'MultiUserSelectDropdown'
 		| 'MultiEducationalOrganisationSelectModal';
 	filterProps?: any;
@@ -87,7 +82,8 @@ export interface FilterableColumn extends TableColumn {
 const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
 	CheckboxDropdownModal: CheckboxListParam,
 	DateRangeDropdown: DateRangeParam,
-	BooleanCheckboxDropdown: BooleanParam,
+	BooleanCheckboxDropdown: CheckboxListParam,
+	OkNokEmptyCheckboxDropdown: CheckboxListParam,
 	MultiUserSelectDropdown: CheckboxListParam,
 	MultiEducationalOrganisationSelectModal: CheckboxListParam,
 };
@@ -364,6 +360,12 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}
+													trueLabel={get(col, 'filterProps.trueLabel')}
+													falseLabel={get(col, 'filterProps.falseLabel')}
+													includeEmpty={get(
+														col,
+														'filterProps.includeEmpty'
+													)}
 													key={`filter-${col.id}`}
 												/>
 											);
