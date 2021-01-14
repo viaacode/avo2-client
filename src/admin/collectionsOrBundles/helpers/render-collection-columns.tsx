@@ -108,6 +108,7 @@ export const renderCollectionOverviewColumns = (
 			return formatDate(get(rowData, 'actualisation.status_valid_until')) || '-';
 
 		case 'actualisation_approved_at':
+		case 'quality_check_approved_at':
 			return formatDate(get(rowData, 'actualisation.approved_at[0].created_at')) || '-';
 
 		case 'actualisation_manager':
@@ -118,9 +119,6 @@ export const renderCollectionOverviewColumns = (
 
 		case 'quality_check_quality_check':
 			return get(rowData, 'actualisation.quality_check[0].qc_status') || '-';
-
-		case 'quality_check_approved_at':
-			return formatDate(get(rowData, 'actualisation.approved_at[0].created_at')) || '-';
 
 		default:
 			return truncate((rowData as any)[columnId] || '-', { length: 50 });
