@@ -58,16 +58,24 @@ function checkIfSessionExpires(expiresAt: string) {
 	}
 }
 
+let loading: boolean = false;
+
 export const getLoginStateAction = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const { loginMessage } = getState();
 
-		// don't fetch login state if we already logged in
+		// Don't fetch login state if we already logged in
 		if (loginMessage && loginMessage.message === LoginMessage.LOGGED_IN) {
 			return null;
 		}
 
-		dispatch(setLoginLoading());
+		// Don't fetch login state from server if a call is already in progress
+		if (loading) {
+			return null;
+		}
+
+		dispatch(setLoginLoading(true));
+		loading = true;
 
 		try {
 			const loginStateResponse = await getLoginResponse();
@@ -85,6 +93,7 @@ export const getLoginStateAction = () => {
 				);
 			}
 
+			dispatch(setLoginLoading(false));
 			return dispatch(setLoginSuccess(loginStateResponse));
 		} catch (err) {
 			console.error('failed to check login state', err);
@@ -103,9 +112,9 @@ export const setLoginError = (): SetLoginErrorAction => ({
 	error: true,
 });
 
-export const setLoginLoading = (): SetLoginLoadingAction => ({
+export const setLoginLoading = (isLoading: boolean): SetLoginLoadingAction => ({
 	type: LoginActionTypes.SET_LOGIN_LOADING,
-	loading: true,
+	loading: isLoading,
 });
 
 export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
