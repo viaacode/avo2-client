@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
 	BlockHeading,
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -433,6 +434,23 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 											/>
 										</FormGroup>
 									)}
+									<FormGroup>
+										<Checkbox
+											label={t('Redactie')}
+											checked={get(collection, 'is_managed', false)}
+											onChange={() => {
+												changeCollectionState({
+													type: 'UPDATE_COLLECTION_PROP',
+													collectionProp: 'is_managed',
+													collectionPropValue: !get(
+														collection,
+														'is_managed',
+														false
+													),
+												});
+											}}
+										/>
+									</FormGroup>
 								</Column>
 								<Column size="3-5">
 									<></>

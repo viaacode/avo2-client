@@ -53,6 +53,7 @@
 		"query-string": "^6.8.3",
 		"react": "16.13.1",
 		"react-apollo": "^2.5.8",
+		"react-beforeunload-component": "^1.2.3",
 		"react-copy-to-clipboard": "^5.0.2",
 		"react-datepicker": "^2.9.6",
 		"react-dom": "16.13.1",

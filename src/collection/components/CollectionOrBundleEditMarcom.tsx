@@ -1,6 +1,6 @@
 import H from 'history';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { Column, Container, Form, Grid, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -19,8 +19,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	CollectionOrBundleEditMarcomProps & UserProps
 	// @ts-ignore
 > = ({ collection, changeCollectionState }) => {
-	// @ts-ignore
-	const [t] = useTranslation();
+	// const [t] = useTranslation();
 
 	return (
 		<>

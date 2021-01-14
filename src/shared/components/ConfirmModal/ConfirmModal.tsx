@@ -11,11 +11,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { sanitizeHtml } from '../../helpers/sanitize';
+import { sanitizeHtml } from '../../helpers';
 import i18n from '../../translations/i18n';
 import Html from '../Html/Html';
 
-interface DeleteObjectModalProps {
+interface ConfirmModalProps {
 	title?: string;
 	body?: string;
 	cancelLabel?: string;
@@ -26,7 +26,7 @@ interface DeleteObjectModalProps {
 	deleteObjectCallback: () => void;
 }
 
-const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
+const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	title = i18n.t(
 		'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
 	),
@@ -74,4 +74,4 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	);
 };
 
-export default DeleteObjectModal;
+export default ConfirmModal;

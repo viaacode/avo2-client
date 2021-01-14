@@ -282,6 +282,7 @@ export class CollectionService {
 
 			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
+			// Update collection labels
 			if (
 				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_LABELS) ||
 				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_LABELS)
@@ -306,6 +307,11 @@ export class CollectionService {
 						deletedLabels
 					),
 				]);
+			}
+
+			// Update collection management
+			if (get(updatedCollection, 'is_managed', false)) {
+
 			}
 
 			return newCollection as Avo.Collection.Collection;

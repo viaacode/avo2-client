@@ -323,6 +323,8 @@ export const cleanCollectionBeforeSave = (
 		'collection_labels',
 		'relations',
 		'id',
+		'management',
+		'QC',
 	];
 
 	return omit(collection, propertiesToDelete);
