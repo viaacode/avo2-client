@@ -58,7 +58,7 @@ function checkIfSessionExpires(expiresAt: string) {
 	}
 }
 
-let loading: boolean = false;
+let loading = false;
 
 export const getLoginStateAction = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
