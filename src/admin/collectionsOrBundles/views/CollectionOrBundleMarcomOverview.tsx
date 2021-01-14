@@ -218,18 +218,15 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 		rowData: Partial<Avo.Collection.Collection>,
 		columnId: CollectionOrBundleMarcomOverviewTableCols
 	) => {
+		const editLink = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id: rowData.id, tabId: 'marcom' }
+		);
 		switch (columnId) {
 			case 'title':
 				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
 				return (
-					<Link
-						to={buildLink(
-							isCollection
-								? APP_PATH.COLLECTION_EDIT.route
-								: APP_PATH.BUNDLE_EDIT.route,
-							{ id: rowData.id }
-						)}
-					>
+					<Link to={editLink}>
 						<span>{title}</span>
 						{!!get(rowData, 'relations[0].object') && (
 							<a
@@ -251,7 +248,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			case 'actions':
 				return (
 					<ButtonToolbar>
-						<Link to={buildLink(APP_PATH.COLLECTION_EDIT.route, { id: rowData.id })}>
+						<Link to={editLink}>
 							<Button
 								type="secondary"
 								icon="edit"

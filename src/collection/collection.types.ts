@@ -50,3 +50,11 @@ export interface Relation {
 		title: string;
 	};
 }
+
+export type EditCollectionTab =
+	| 'content'
+	| 'metadata'
+	| 'admin'
+	| 'actualisation'
+	| 'quality_check'
+	| 'marcom';

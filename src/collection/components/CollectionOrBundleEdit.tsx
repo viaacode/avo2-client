@@ -1,4 +1,4 @@
-import { cloneDeep, get, isEmpty, truncate } from 'lodash-es';
+import { cloneDeep, get, isEmpty, set, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -62,18 +62,22 @@ import { BookmarksViewsPlaysService, ToastService } from '../../shared/services'
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import i18n from '../../shared/translations/i18n';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
+import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { toDutchContentType } from '../collection.types';
+import { EditCollectionTab, toDutchContentType } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
 
+import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
+import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
+import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 type FragmentPropUpdateAction = {
@@ -107,7 +111,7 @@ type CollectionUpdateAction = {
 
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection;
+	collectionProp: keyof Avo.Collection.Collection | string; // nested values are also allowed
 	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };
@@ -130,13 +134,14 @@ interface CollectionOrBundleEditProps {
 }
 
 const CollectionOrBundleEdit: FunctionComponent<
-	CollectionOrBundleEditProps & DefaultSecureRouteProps<{ id: string }>
+	CollectionOrBundleEditProps &
+		DefaultSecureRouteProps<{ id: string; tabId: EditCollectionTab | undefined }>
 > = ({ type, history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	// State
 	const [collectionId] = useState<string>(match.params.id);
-	const [currentTab, setCurrentTab] = useState<string>('inhoud');
+	const [currentTab, setCurrentTab] = useState<EditCollectionTab | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -243,10 +248,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 				break;
 
 			case 'UPDATE_COLLECTION_PROP':
-				(newCurrentCollection as any)[action.collectionProp] = action.collectionPropValue;
-				if (action.updateInitialCollection) {
-					(newInitialCollection as any)[action.collectionProp] =
-						action.collectionPropValue;
+				set(newCurrentCollection, action.collectionProp, action.collectionPropValue);
+				if (action.updateInitialCollection && newInitialCollection) {
+					set(newInitialCollection, action.collectionProp, action.collectionPropValue);
 				}
 				break;
 		}
@@ -409,13 +413,90 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	}, [collectionState.currentCollection, collectionState.initialCollection, permissions]);
 
+	// react to route changes by navigating back wih the browser history back button
+	useEffect(() => {
+		setCurrentTab(match.params.tabId || 'content');
+	}, [match.params.tabId]);
+
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
-		setCurrentTab(String(selectedTab));
+		const tabName = String(selectedTab) as EditCollectionTab;
+		navigate(history, APP_PATH.COLLECTION_EDIT_TAB.route, { id: collectionId, tabId: tabName });
+		setCurrentTab(tabName);
+	};
+
+	const getCollectionEditTabs = (
+		user: Avo.User.User | undefined,
+		isCollection: boolean
+	): TabProps[] => {
+		const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(
+			user,
+			isCollection
+				? [
+						PermissionName.EDIT_COLLECTION_LABELS,
+						PermissionName.EDIT_COLLECTION_AUTHOR,
+						PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS,
+				  ]
+				: [
+						PermissionName.EDIT_BUNDLE_LABELS,
+						PermissionName.EDIT_BUNDLE_AUTHOR,
+						PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS,
+				  ]
+		);
+		const showEditorialTabs: boolean =
+			(isCollection &&
+				get(collectionState, 'currentCollection.is_managed') &&
+				PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
+				)) ||
+			(!isCollection &&
+				get(collectionState, 'currentCollection.is_managed') &&
+				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS));
+		return [
+			{
+				id: 'content',
+				label: i18n.t('collection/collection___inhoud'),
+				icon: 'collection',
+			},
+			{
+				id: 'metadata',
+				label: i18n.t('collection/collection___publicatiedetails'),
+				icon: 'file-text',
+			},
+			...(showAdminTab
+				? [
+						{
+							id: 'admin',
+							label: i18n.t('collection/collection___beheer'),
+							icon: 'settings',
+						} as TabProps,
+				  ]
+				: []),
+			...(showEditorialTabs
+				? [
+						{
+							id: 'actualisation',
+							label: i18n.t('Actualisatie'),
+							icon: 'check-circle',
+						} as TabProps,
+						{
+							id: 'quality_check',
+							label: i18n.t('kwaliteitscontrole'),
+							icon: 'check-square',
+						} as TabProps,
+						{
+							id: 'marcom',
+							label: i18n.t('Marcom'),
+							icon: 'send',
+						} as TabProps,
+				  ]
+				: []),
+		];
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS(user, isCollection).map((tab: TabProps) => ({
+	const tabs: TabProps[] = getCollectionEditTabs(user, isCollection).map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));
@@ -849,7 +930,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
-				case 'inhoud':
+				case 'content':
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
@@ -872,6 +953,30 @@ const CollectionOrBundleEdit: FunctionComponent<
 				case 'admin':
 					return (
 						<CollectionOrBundleEditAdmin
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+							history={history}
+						/>
+					);
+				case 'actualisation':
+					return (
+						<CollectionOrBundleEditActualisation
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+							history={history}
+						/>
+					);
+				case 'quality_check':
+					return (
+						<CollectionOrBundleEditQualityCheck
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+							history={history}
+						/>
+					);
+				case 'marcom':
+					return (
+						<CollectionOrBundleEditMarcom
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}

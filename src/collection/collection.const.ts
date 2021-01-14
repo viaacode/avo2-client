@@ -1,39 +1,3 @@
-import { TabProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
-import i18n from '../shared/translations/i18n';
-
-export const GET_COLLECTION_EDIT_TABS = (
-	user: Avo.User.User | undefined,
-	isCollection: boolean
-): TabProps[] => [
-	{
-		id: 'inhoud',
-		label: i18n.t('collection/collection___inhoud'),
-		icon: 'collection',
-	},
-	{
-		id: 'metadata',
-		label: i18n.t('collection/collection___publicatiedetails'),
-		icon: 'file-text',
-	},
-	...(PermissionService.hasAtLeastOnePerm(
-		user,
-		isCollection
-			? [PermissionName.EDIT_COLLECTION_LABELS, PermissionName.EDIT_COLLECTION_AUTHOR]
-			: [PermissionName.EDIT_BUNDLE_LABELS, PermissionName.EDIT_BUNDLE_AUTHOR]
-	)
-		? [
-				{
-					id: 'admin',
-					label: i18n.t('collection/collection___beheer'),
-					icon: 'settings',
-				} as TabProps,
-		  ]
-		: []),
-];
-
 export const STILL_DIMENSIONS = {
 	width: 177,
 	height: 100,

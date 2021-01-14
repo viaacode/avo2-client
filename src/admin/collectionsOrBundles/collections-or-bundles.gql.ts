@@ -94,7 +94,7 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 				id
 				label
 			}
-			actualisation: management {
+			management {
 				id
 				current_status
 				status_valid_until
@@ -165,7 +165,7 @@ export const GET_COLLECTION_QUALITY_CHECK = gql`
 				id
 				label
 			}
-			actualisation: management {
+			management {
 				id
 				language_check: QC(
 					where: { qc_label: { _eq: TAALCHECK } }

@@ -70,7 +70,7 @@ export interface CollectionsOrBundlesTableState extends CollectionOrBundleTableS
 export interface CollectionOrBundleActualisationTableState
 	extends CollectionOrBundleTableStateBase {
 	actualisation_status: ManagementStatus;
-	actualisation_last_actualised_at: string; // equals to created_at of the collection_management entry
+	actualisation_last_actualised_at: string; // equals to updated_at of the collection_management entry
 	actualisation_status_valid_until: string;
 	actualisation_approved_at: string; // equal to created_at of the collection_management_QC table where qc_label === EINDCHECK
 }

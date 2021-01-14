@@ -18,4 +18,10 @@ export const renderCollectionRoutes = (): ReactNode[] => [
 		path={APP_PATH.COLLECTION_EDIT.route}
 		key={APP_PATH.COLLECTION_EDIT.route}
 	/>,
+	<SecuredRoute
+		component={CollectionEdit}
+		exact
+		path={APP_PATH.COLLECTION_EDIT_TAB.route}
+		key={APP_PATH.COLLECTION_EDIT_TAB.route}
+	/>,
 ];
