@@ -71,12 +71,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	}
 
 	const messageText = (queryParams.message as string) || message || '';
-	let errorMessage: string;
-	if (isNil(messageText)) {
-		errorMessage = getPageNotFoundError(!!user);
-	} else {
-		errorMessage = messageText;
-	}
+	const errorMessage: string = isNil(messageText) ? getPageNotFoundError(!!user) : messageText;
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
