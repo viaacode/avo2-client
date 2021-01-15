@@ -9,6 +9,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 
 import {
+	EDITORIAL_QUERIES,
 	ITEMS_PER_PAGE,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './collections-or-bundles.const';
@@ -19,10 +20,16 @@ import {
 	BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
 	BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
 	BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
-	GET_COLLECTIONS,
 	GET_COLLECTION_IDS,
+	GET_COLLECTIONS,
 } from './collections-or-bundles.gql';
-import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
+import {
+	CollectionOrBundleActualisationOverviewTableCols,
+	CollectionOrBundleMarcomOverviewTableCols,
+	CollectionOrBundleQualityCheckOverviewTableCols,
+	CollectionsOrBundlesOverviewTableCols,
+	EditorialType,
+} from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
 	static async getCollections(
@@ -102,6 +109,62 @@ export class CollectionsOrBundlesService {
 				},
 				query: 'GET_COLLECTION_IDS',
 			});
+		}
+	}
+
+	static async getCollectionEditorial(
+		page: number,
+		sortColumn:
+			| CollectionOrBundleActualisationOverviewTableCols
+			| CollectionOrBundleQualityCheckOverviewTableCols
+			| CollectionOrBundleMarcomOverviewTableCols,
+		sortOrder: Avo.Search.OrderDirection,
+		where: any,
+		editorialType: EditorialType
+	): Promise<[Avo.Collection.Collection[], number]> {
+		let variables: any;
+		try {
+			variables = {
+				where,
+				offset: ITEMS_PER_PAGE * page,
+				limit: ITEMS_PER_PAGE,
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
+			};
+			const response = await dataService.query({
+				variables,
+				query: EDITORIAL_QUERIES[editorialType],
+			});
+			const collections: Avo.Collection.Collection[] | null = get(
+				response,
+				'data.app_collections'
+			);
+			const collectionsCount = get(
+				response,
+				'data.app_collections_aggregate.aggregate.count'
+			);
+
+			if (!collections) {
+				throw new CustomError('Response does not contain any collections', null, {
+					response,
+				});
+			}
+
+			return [collections, collectionsCount];
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get collection editorial entries from the database',
+				err,
+				{
+					variables,
+					editorialType,
+					query:
+						'GET_COLLECTION_ACTUALISATION | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
+				}
+			);
 		}
 	}
 

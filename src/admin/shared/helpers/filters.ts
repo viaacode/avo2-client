@@ -29,7 +29,21 @@ export function getDateRangeFilters(filters: any, props: string[], nestedProps?:
 
 export function getBooleanFilters(filters: any, props: string[], nestedProps?: string[]): any[] {
 	return setNestedValues(filters, props, nestedProps || props, (prop: string, value: any) => {
-		return { [prop]: { _eq: value ? 'true' : 'false' } };
+		const orFilters = [];
+		if (!value || !value.length) {
+			return {};
+		}
+		if (value.includes(NULL_FILTER)) {
+			orFilters.push({
+				[prop]: { _is_null: true },
+			});
+		}
+		orFilters.push(
+			...without(value, NULL_FILTER).map((val) => ({
+				[prop]: { _eq: val === 'true' },
+			}))
+		);
+		return orFilters;
 	});
 }
 
@@ -70,15 +84,15 @@ export function getMultiOptionsFilters(
 	filters: any,
 	props: string[],
 	nestedReferenceTables: string[],
-	labelPaths: string[]
+	labelPaths?: string[]
 ): any[] {
 	return compact(
 		props.map((prop: string, index: number) => {
 			const filterValues = (filters as any)[prop];
-			const nestedPathParts = nestedReferenceTables[index].split('.');
-			const referenceTable = nestedPathParts.pop();
-			const nestedPath = nestedPathParts.join('.');
-			const labelPath = labelPaths[index];
+			const nestedPathParts: string[] = nestedReferenceTables[index].split('.');
+			const referenceTable: string | null = nestedPathParts.pop() || null;
+			const nestedPath: string = nestedPathParts.join('.');
+			const labelPath: string | null = labelPaths ? labelPaths[index] : null;
 
 			if (
 				isNil(filterValues) ||
@@ -108,19 +122,37 @@ export function getMultiOptionsFilters(
 								[referenceTable]: {}, // empty value => no reference table entries exist
 							},
 						},
-						{
-							[referenceTable]: {
-								[labelPath]: { _in: without(filterValues, NULL_FILTER) },
-							}, // selected values => referenceTable.prop in selected values array
-						},
+
+						// selected values => referenceTable.props in selected values array
+						...without(filterValues, NULL_FILTER).map((value: string) => {
+							if (labelPath) {
+								return {
+									[referenceTable]: {
+										[labelPath]: { _has_key: value },
+									},
+								};
+							}
+							return {
+								[referenceTable]: { _has_key: value },
+							};
+						}),
 					],
 				};
 			} else {
-				// only selected values with empty filter
+				// only selected values without an empty filter
 				filterObject = {
-					[referenceTable]: {
-						[labelPath]: { _in: without(filterValues, NULL_FILTER) },
-					}, // selected values => referenceTable.prop in selected values array
+					...filterValues.map((value: string) => {
+						if (labelPath) {
+							return {
+								[referenceTable]: {
+									[labelPath]: { _has_key: value },
+								},
+							};
+						}
+						return {
+							[referenceTable]: { _has_key: value },
+						};
+					}),
 				};
 			}
 

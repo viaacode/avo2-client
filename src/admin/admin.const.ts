@@ -1,4 +1,4 @@
-import { every, get, some } from 'lodash-es';
+import { every, get, isArray, some } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
@@ -99,19 +99,20 @@ function hasPermissions(
 	permissions: string[],
 	booleanOperator: 'AND' | 'OR',
 	userPermissions: string[],
-	navInfo: NavigationItemInfo
+	navInfos: NavigationItemInfo | NavigationItemInfo[]
 ): NavigationItemInfo[] {
+	const navInfoObj: NavigationItemInfo[] = isArray(navInfos) ? navInfos : [navInfos];
 	if (booleanOperator === 'OR') {
 		// OR
 		// If at least one of the permissions is met, render the routes
 		if (some(permissions, (permission) => userPermissions.includes(permission))) {
-			return [navInfo];
+			return navInfoObj;
 		}
 	} else {
 		// AND
 		// All permissions have to be met
 		if (every(permissions, (permission) => userPermissions.includes(permission))) {
-			return [navInfo];
+			return navInfoObj;
 		}
 	}
 	return [];
@@ -247,110 +248,56 @@ export const GET_NAV_ITEMS = async (
 			location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
 			key: 'collections',
 			exact: false,
-			// subLinks: [
-			// 	{
-			// 		label: i18n.t('admin/admin___actualisatie'),
-			// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
-			// 			columns: [
-			// 				'title',
-			// 				'author',
-			// 				'created_at',
-			// 				'last_updated_by_profile',
-			// 				'updated_at',
-			// 				'is_public',
-			// 				'collection_labels',
-			// 			],
-			// 		})}`,
-			// 		key: 'collections',
-			// 		exact: false,
-			// 	},
-			// 	{
-			// 		label: i18n.t('admin/admin___kwaliteitscontrole'),
-			// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
-			// 			columns: [
-			// 				'title',
-			// 				'author',
-			// 				'created_at',
-			// 				'last_updated_by_profile',
-			// 				'updated_at',
-			// 				'is_public',
-			// 				'collection_labels',
-			// 			],
-			// 		})}`,
-			// 		key: 'collections',
-			// 		exact: false,
-			// 	},
-			// 	{
-			// 		label: i18n.t('admin/admin___marcom'),
-			// 		location: `${ADMIN_PATH.COLLECTIONS_OVERVIEW}?${queryString.stringify({
-			// 			columns: [
-			// 				'title',
-			// 				'author',
-			// 				'created_at',
-			// 				'updated_at',
-			// 				'is_public',
-			// 				'collection_labels',
-			// 			],
-			// 		})}`,
-			// 		key: 'collections',
-			// 		exact: false,
-			// 	},
-			// ],
+			subLinks: [
+				...hasPermissions(['VIEW_BUNDLE_EDITORIAL_OVERVIEWS'], 'OR', userPermissions, [
+					{
+						label: i18n.t('admin/admin___actualisatie'),
+						location: ADMIN_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
+						key: 'collections',
+						exact: false,
+					},
+					{
+						label: i18n.t('admin/admin___kwaliteitscontrole'),
+						location: ADMIN_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
+						key: 'collections',
+						exact: false,
+					},
+					{
+						label: i18n.t('admin/admin___marcom'),
+						location: ADMIN_PATH.COLLECTION_MARCOM_OVERVIEW,
+						key: 'collections',
+						exact: false,
+					},
+				]),
+			],
 		}),
 		...hasPermissions(['VIEW_BUNDLES_OVERVIEW'], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___bundelbeheer'),
 			location: ADMIN_PATH.BUNDLES_OVERVIEW,
 			key: 'bundels',
 			exact: false,
-			// subLinks: [
-			// 	{
-			// 		label: i18n.t('admin/admin___actualisatie'),
-			// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
-			// 			columns: [
-			// 				'title',
-			// 				'author',
-			// 				'created_at',
-			// 				'last_updated_by_profile',
-			// 				'updated_at',
-			// 				'is_public',
-			// 				'collection_labels',
-			// 			],
-			// 		})}`,
-			// 		key: 'bundels',
-			// 		exact: false,
-			// 	},
-			// 	{
-			// 		label: i18n.t('admin/admin___kwaliteitscontrole'),
-			// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
-			// 			columns: [
-			// 				'title',
-			// 				'author',
-			// 				'created_at',
-			// 				'last_updated_by_profile',
-			// 				'updated_at',
-			// 				'is_public',
-			// 				'collection_labels',
-			// 			],
-			// 		})}`,
-			// 		key: 'bundels',
-			// 		exact: false,
-			// 	},
-			// 	{
-			// 		label: i18n.t('admin/admin___marcom'),
-			// 		location: `${ADMIN_PATH.BUNDLES_OVERVIEW}?${queryString.stringify({
-			// 			columns: [
-			// 				'title',
-			// 				'author',
-			// 				'created_at',
-			// 				'updated_at',
-			// 				'is_public',
-			// 				'collection_labels',
-			// 			],
-			// 		})}`,
-			// 		key: 'bundels',
-			// 		exact: false,
-			// 	},
-			// ],
+			subLinks: [
+				...hasPermissions(['VIEW_BUNDLE_EDITORIAL_OVERVIEWS'], 'OR', userPermissions, [
+					{
+						label: i18n.t('admin/admin___actualisatie'),
+						location: ADMIN_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
+						key: 'collections',
+						exact: false,
+					},
+					{
+						label: i18n.t('admin/admin___kwaliteitscontrole'),
+						location: ADMIN_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
+						key: 'collections',
+						exact: false,
+					},
+					{
+						label: i18n.t('admin/admin___marcom'),
+						location: ADMIN_PATH.BUNDLE_MARCOM_OVERVIEW,
+						key: 'collections',
+						exact: false,
+					},
+				]),
+			],
 		}),
 		...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___items-publiceren'),

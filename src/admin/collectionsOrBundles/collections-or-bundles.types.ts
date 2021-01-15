@@ -1,6 +1,6 @@
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
-export type CollectionsOrBundlesOverviewTableCols =
+type CollectionsOrBundlesOverviewTableColsBase =
 	| 'title'
 	| 'owner_profile_id'
 	| 'author_user_group'
@@ -8,19 +8,44 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'created_at'
 	| 'updated_at'
 	| 'is_public'
-	| 'labels'
+	| 'collection_labels'
+	| 'subjects'
+	| 'education_levels'
+	| 'actions';
+
+export type CollectionsOrBundlesOverviewTableCols =
+	| CollectionsOrBundlesOverviewTableColsBase
 	| 'views'
 	| 'bookmarks'
 	| 'copies'
 	| 'in_bundle'
 	| 'in_assignment'
-	| 'subjects'
-	| 'education_levels'
-	| 'collection_labels'
-	| 'is_copy'
-	| 'actions';
+	| 'is_copy';
 
-export interface CollectionsOrBundlesTableState extends FilterableTableState {
+export type CollectionOrBundleActualisationOverviewTableCols =
+	| CollectionsOrBundlesOverviewTableColsBase
+	| 'actualisation_status'
+	| 'actualisation_last_actualised_at'
+	| 'actualisation_status_valid_until'
+	| 'actualisation_approved_at'
+	| 'actualisation_manager';
+
+export type CollectionOrBundleQualityCheckOverviewTableCols =
+	| CollectionsOrBundlesOverviewTableColsBase
+	| 'quality_check_language_check'
+	| 'quality_check_quality_check'
+	| 'quality_check_approved_at';
+
+export type CollectionOrBundleMarcomOverviewTableCols =
+	| CollectionsOrBundlesOverviewTableColsBase
+	| 'marcom_last_communication_medium'
+	| 'marcom_last_communication_at'
+	| 'marcom_klascement'
+	| 'marcom_other_platforms';
+
+export type EditorialType = 'actualisation' | 'quality_check' | 'marcom';
+
+export interface CollectionOrBundleTableStateBase extends FilterableTableState {
 	title: string;
 	author: string;
 	author_user_group: string;
@@ -28,17 +53,46 @@ export interface CollectionsOrBundlesTableState extends FilterableTableState {
 	created_at: string;
 	updated_at: string;
 	is_public: boolean;
-	labels: string[];
+	collection_labels: string[];
+	subjects: string[];
+	education_levels: string[];
+}
+
+export interface CollectionsOrBundlesTableState extends CollectionOrBundleTableStateBase {
 	views: number;
 	bookmarks: number;
 	copies: number;
 	in_bundle: boolean;
 	in_assignment: boolean;
-	subjects: string[];
-	education_levels: string[];
-	collection_labels: string[];
 	is_copy: boolean;
 }
+
+export interface CollectionOrBundleActualisationTableState
+	extends CollectionOrBundleTableStateBase {
+	actualisation_status: ManagementStatus;
+	actualisation_last_actualised_at: string; // equals to created_at of the collection_management entry
+	actualisation_status_valid_until: string;
+	actualisation_approved_at: string; // equal to created_at of the collection_management_QC table where qc_label === EINDCHECK
+}
+
+export interface CollectionOrBundleQualityCheckTableState extends CollectionOrBundleTableStateBase {
+	quality_check_language_check: boolean | null;
+	quality_check_quality_check: boolean | null;
+	quality_check_approved_at: string;
+}
+
+export interface CollectionOrBundleMarcomTableState extends CollectionOrBundleTableStateBase {
+	marcom_last_communication_medium: string;
+	marcom_last_communication_at: string;
+	marcom_klascement: boolean;
+	marcom_other_platforms: boolean;
+}
+
+export type CollectionTableStates =
+	| CollectionsOrBundlesTableState
+	| CollectionOrBundleActualisationTableState
+	| CollectionOrBundleQualityCheckTableState
+	| CollectionOrBundleMarcomTableState;
 
 export type CollectionBulkAction =
 	| 'publish'
@@ -46,3 +100,12 @@ export type CollectionBulkAction =
 	| 'delete'
 	| 'change_author'
 	| 'change_labels';
+
+export type ManagementStatus =
+	| null
+	| 'Actueel'
+	| 'Te actualiseren'
+	| 'Volledig te herzien'
+	| 'Gearchiveerd';
+
+export type QualityCheckLabel = 'TAALCHECK' | 'KWALITEITSCHECK' | 'EINDCHECK';
