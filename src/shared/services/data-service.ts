@@ -6,7 +6,9 @@ import { get } from 'lodash-es';
 import { getEnv } from '../helpers';
 import { goToLoginBecauseOfUnauthorizedError } from '../helpers/fetch-with-logout';
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+	addTypename: false,
+});
 const httpLink = new HttpLink({ uri: `${getEnv('PROXY_URL')}/data`, credentials: 'include' });
 
 const logoutMiddleware = onError(({ networkError }) => {

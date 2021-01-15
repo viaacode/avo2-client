@@ -661,7 +661,7 @@ export class CollectionService {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
-					assignmentId: assignmentUuid,
+					assignmentUuid,
 					id: collectionId,
 				})}`,
 				{
