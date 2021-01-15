@@ -449,3 +449,43 @@ export const INSERT_COLLECTION_RELATION = gql`
 		}
 	}
 `;
+
+export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
+	mutation insertCollectionManagementEntry(
+		$collection_id: uuid!
+		$current_status: String
+		$manager_profile_id: uuid
+		$status_valid_until: timestamptz
+	) {
+		insert_app_collection_management(
+			objects: {
+				collection_id: $collection_id
+				current_status: $current_status
+				manager_profile_id: $manager_profile_id
+				status_valid_until: $status_valid_until
+			}
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
+	mutation updateCollectionManagementEntry(
+		$collection_id: uuid!
+		$current_status: String
+		$manager_profile_id: uuid
+		$status_valid_until: timestamptz
+	) {
+		update_app_collection_management(
+			where: { collection_id: { _eq: $collection_id } }
+			_set: {
+				current_status: $current_status
+				manager_profile_id: $manager_profile_id
+				status_valid_until: $status_valid_until
+			}
+		) {
+			affected_rows
+		}
+	}
+`;

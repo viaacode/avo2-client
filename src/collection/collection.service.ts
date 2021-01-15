@@ -18,13 +18,13 @@ import i18n from '../shared/translations/i18n';
 import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
-	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -32,9 +32,11 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
+	INSERT_COLLECTION_MANAGEMENT_ENTRY,
 	SOFT_DELETE_COLLECTION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
+	UPDATE_COLLECTION_MANAGEMENT_ENTRY,
 } from './collection.gql';
 import {
 	cleanCollectionBeforeSave,
@@ -311,7 +313,11 @@ export class CollectionService {
 
 			// Update collection management
 			if (get(updatedCollection, 'is_managed', false)) {
-
+				await CollectionService.saveCollectionManagementData(
+					newCollection.id as string,
+					initialCollection,
+					updatedCollection
+				);
 			}
 
 			return newCollection as Avo.Collection.Collection;
@@ -331,6 +337,94 @@ export class CollectionService {
 			return null;
 		}
 	}
+
+	private static saveCollectionManagementData = async (
+		collectionId: string,
+		initialCollection: Partial<Avo.Collection.Collection> | null,
+		updatedCollection: Partial<Avo.Collection.Collection>
+	) => {
+		try {
+			if (!get(initialCollection, 'management') && !!get(updatedCollection, 'management')) {
+				// Create management entry
+				await CollectionService.createManagementEntry(collectionId, {
+					current_status: get(updatedCollection, 'management.current_status', null),
+					manager_profile_id: get(
+						updatedCollection,
+						'management.manager_profile_id',
+						null
+					),
+					status_valid_until: get(
+						updatedCollection,
+						'management.status_valid_until',
+						null
+					),
+				});
+			} else if (
+				!!get(initialCollection, 'management') &&
+				!!get(updatedCollection, 'management')
+			) {
+				// Update management entry
+				await CollectionService.updateManagementEntry(collectionId, {
+					current_status: get(updatedCollection, 'management.current_status', null),
+					manager_profile_id: get(
+						updatedCollection,
+						'management.manager_profile_id',
+						null
+					),
+					status_valid_until: get(
+						updatedCollection,
+						'management.status_valid_until',
+						null
+					),
+				});
+			}
+		} catch (err) {
+			throw new CustomError('Failed to save management data to the database', err, {
+				initialCollection,
+				updatedCollection,
+			});
+		}
+	};
+
+	private static createManagementEntry = async (collectionId: string, managementData: any) => {
+		try {
+			await dataService.mutate({
+				mutation: INSERT_COLLECTION_MANAGEMENT_ENTRY,
+				variables: {
+					...managementData,
+					collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to create collection management entry', err, {
+					collectionId,
+					managementData,
+				})
+			);
+		}
+	};
+
+	private static updateManagementEntry = async (collectionId: string, managementData: any) => {
+		try {
+			await dataService.mutate({
+				mutation: UPDATE_COLLECTION_MANAGEMENT_ENTRY,
+				variables: {
+					...managementData,
+					collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to update collection management entry', err, {
+					collectionId,
+					managementData,
+				})
+			);
+		}
+	};
 
 	public static updateCollectionProperties = async (
 		id: string,
