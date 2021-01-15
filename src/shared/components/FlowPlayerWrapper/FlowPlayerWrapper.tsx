@@ -156,11 +156,16 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		return src;
 	};
 
-	const [start, end] = getValidStartAndEnd(
+	let [start, end]: [number | null, number | null] = getValidStartAndEnd(
 		props.cuePoints?.start,
 		props.cuePoints?.end,
 		toSeconds(item?.duration)
 	);
+
+	if (start === 0 && end === toSeconds(item?.duration)) {
+		start = null;
+		end = null;
+	}
 
 	return (
 		<div className="c-video-player t-player-skin--dark">
