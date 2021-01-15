@@ -652,6 +652,7 @@ export class AssignmentService {
 					assignmentUuid,
 					pupilUuid: pupilProfileId,
 				},
+				fetchPolicy: 'no-cache',
 			});
 
 			if (response.errors) {
@@ -704,6 +705,7 @@ export class AssignmentService {
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSES,
 				variables: { profileId, assignmentUuid },
+				fetchPolicy: 'no-cache',
 			});
 
 			if (response.errors) {
