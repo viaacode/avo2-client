@@ -56,9 +56,9 @@ import {
 	isMobileWidth,
 	navigate,
 	renderAvatar,
-	sanitizeHtml,
 	stripHtml,
 } from '../../shared/helpers';
+import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
@@ -169,31 +169,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 	// Computed values
 	const isCollection = type === 'collection';
 
-	const convertFragmentDescriptionsToHtml = (
-		collection: Partial<Avo.Collection.Collection> | null
-	): Partial<Avo.Collection.Collection> | null => {
-		if (!collection) {
-			return collection;
-		}
-		const clonedCollection = cloneDeep(collection);
-		getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
-			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
-				fragment.custom_description = sanitizeHtml(
-					(fragment.custom_description as any).toHTML(),
-					'link'
-				);
-			}
-		});
-		return clonedCollection;
-	};
-
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
 		currentCollection: Avo.Collection.Collection | null
 	): void => {
 		const hasChanges =
-			JSON.stringify(convertFragmentDescriptionsToHtml(initialCollection)) !==
-			JSON.stringify(convertFragmentDescriptionsToHtml(currentCollection));
+			JSON.stringify(convertRteToString(initialCollection)) !==
+			JSON.stringify(convertRteToString(currentCollection));
 		setUnsavedChanges(hasChanges);
 	};
 
@@ -594,16 +576,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				return;
 			}
 
-			// Convert fragment description editor states to html strings
-			const updatedCollection = convertFragmentDescriptionsToHtml({
-				...(collectionState.currentCollection as Avo.Collection.Collection),
-				updated_by_profile_id: get(user, 'profile.id', null),
-			});
-
 			if (collectionState.currentCollection) {
 				const newCollection = await CollectionService.updateCollection(
 					collectionState.initialCollection,
-					updatedCollection as Partial<Avo.Collection.Collection>,
+					collectionState.currentCollection,
 					user
 				);
 

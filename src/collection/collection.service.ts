@@ -1,5 +1,5 @@
 import { FetchResult } from 'apollo-link';
-import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isNil, omit, without } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
@@ -9,6 +9,7 @@ import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
+import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
@@ -151,16 +152,20 @@ export class CollectionService {
 	/**
 	 * Update collection and underlying collection fragments.
 	 *
-	 * @param initialCollection Original collection object.
-	 * @param updatedCollection Collection that must be updated.
+	 * @param initialColl
+	 * @param updatedColl
 	 * @param user
 	 */
 	public static async updateCollection(
-		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Partial<Avo.Collection.Collection>,
+		initialColl: Avo.Collection.Collection | null,
+		updatedColl: Partial<Avo.Collection.Collection>,
 		user: Avo.User.User
 	): Promise<Avo.Collection.Collection | null> {
 		try {
+			// Convert fragment description editor states to html strings
+			const updatedCollection = convertRteToString(updatedColl);
+			const initialCollection = convertRteToString(initialColl);
+
 			// abort if updatedCollection is empty
 			if (!updatedCollection) {
 				ToastService.danger(
@@ -284,6 +289,18 @@ export class CollectionService {
 				newCollection
 			);
 
+			// set updated_at date if collection has changes (without taking into account the management fields)
+			if (
+				JSON.stringify(omit(updatedCollection, 'management', 'is_managed', 'QC')) !==
+					JSON.stringify(omit(initialCollection, 'management', 'is_managed', 'QC')) ||
+				newFragments.length ||
+				deleteFragmentIds.length ||
+				updateFragmentIds.length
+			) {
+				cleanedCollection.updated_at = new Date().toISOString();
+				cleanedCollection.updated_by_profile_id = getProfileId(user);
+			}
+
 			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
 			// Update collection labels
@@ -325,8 +342,8 @@ export class CollectionService {
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
 			throw new CustomError('Failed to update collection or its fragments', err, {
-				initialCollection,
-				updatedCollection,
+				initialColl,
+				updatedColl,
 			});
 		}
 	}
