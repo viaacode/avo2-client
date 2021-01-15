@@ -250,28 +250,33 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 	}
 	const actions: UserBulkActionOption[] = [];
 
-	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
-		actions.push({
-			label: i18n.t('admin/users/user___blokkeren'),
-			value: 'block',
-		});
-		actions.push({
-			label: i18n.t('admin/users/user___deblokkeren'),
-			value: 'unblock',
-		});
-		actions.push({
-			label: i18n.t('admin/users/user___verwijderen'),
-			value: 'delete',
-		});
+	// TODO re-enable in v1.7.0
+	// if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
+	// actions.push({
+	// 	label: i18n.t('admin/users/user___blokkeren'),
+	// 	value: 'block',
+	// });
+	// actions.push({
+	// 	label: i18n.t('admin/users/user___deblokkeren'),
+	// 	value: 'unblock',
+	// });
+	// }
+	// if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
+	// actions.push({
+	// 	label: i18n.t('admin/users/user___verwijderen'),
+	// 	value: 'delete',
+	// });
+	// }
+	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
 		actions.push({
 			label: i18n.t('admin/users/user___vakken-aanpassen'),
 			value: 'change_subjects',
 		});
-		actions.push({
-			label: i18n.t('admin/users/user___exporteren'),
-			value: 'export',
-		});
 	}
+	actions.push({
+		label: i18n.t('admin/users/user___exporteren'),
+		value: 'export',
+	});
 
 	return actions;
 };
