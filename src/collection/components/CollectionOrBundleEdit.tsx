@@ -164,9 +164,38 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+	const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
 
 	// Computed values
 	const isCollection = type === 'collection';
+
+	const convertFragmentDescriptionsToHtml = (
+		collection: Partial<Avo.Collection.Collection> | null
+	): Partial<Avo.Collection.Collection> | null => {
+		if (!collection) {
+			return collection;
+		}
+		const clonedCollection = cloneDeep(collection);
+		getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
+			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
+				fragment.custom_description = sanitizeHtml(
+					(fragment.custom_description as any).toHTML(),
+					'link'
+				);
+			}
+		});
+		return clonedCollection;
+	};
+
+	const updateHasUnsavedChanges = (
+		initialCollection: Avo.Collection.Collection | null,
+		currentCollection: Avo.Collection.Collection | null
+	): void => {
+		const hasChanges =
+			JSON.stringify(convertFragmentDescriptionsToHtml(initialCollection)) !==
+			JSON.stringify(convertFragmentDescriptionsToHtml(currentCollection));
+		setUnsavedChanges(hasChanges);
+	};
 
 	// Main collection reducer
 	function currentCollectionReducer(
@@ -174,6 +203,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		action: CollectionAction
 	): CollectionState {
 		if (action.type === 'UPDATE_COLLECTION') {
+			updateHasUnsavedChanges(action.newCollection, action.newCollection);
 			return {
 				currentCollection: action.newCollection,
 				initialCollection: cloneDeep(action.newCollection),
@@ -257,6 +287,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 				break;
 		}
 
+		updateHasUnsavedChanges(newInitialCollection, newCurrentCollection);
+
 		return {
 			currentCollection: newCurrentCollection,
 			initialCollection: newInitialCollection,
@@ -270,20 +302,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 
-	const hasUnsavedChanges = useCallback((): boolean => {
-		return (
-			JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.currentCollection)) !==
-			JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.initialCollection))
-		);
-	}, [collectionState]);
-
 	const shouldBlockNavigation = useCallback(() => {
 		const editPath = isCollection
 			? APP_PATH.COLLECTION_EDIT_TAB.route
 			: APP_PATH.BUNDLE_EDIT_TAB.route;
 		const changingRoute: boolean = !matchPath(history.location.pathname, editPath);
-		return hasUnsavedChanges() && changingRoute;
-	}, [history, hasUnsavedChanges, isCollection]);
+		return unsavedChanges && changingRoute;
+	}, [history, unsavedChanges, isCollection]);
 
 	const onUnload = useCallback(
 		(event: any) => {
@@ -305,7 +330,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return () => window.removeEventListener('beforeunload', onUnload);
 	}, [onUnload]);
 
-	const checkPermissionsAndGetBundle = useCallback(async () => {
+	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
@@ -427,8 +452,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
 
 	useEffect(() => {
-		checkPermissionsAndGetBundle();
-	}, [checkPermissionsAndGetBundle]);
+		checkPermissionsAndGetCollection();
+	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
 		if (
@@ -530,62 +555,90 @@ const CollectionOrBundleEdit: FunctionComponent<
 		active: currentTab === tab.id,
 	}));
 
-	const convertFragmentDescriptionsToHtml = (
-		collection: Partial<Avo.Collection.Collection> | null
-	): Partial<Avo.Collection.Collection> | null => {
-		if (!collection) {
-			return collection;
+	const isCollectionValid = (): string | null => {
+		if (
+			get(collectionState.currentCollection, 'is_managed', true) &&
+			!get(
+				collectionState.currentCollection,
+				'management.language_check[0].assignee_profile_id'
+			)
+		) {
+			history.push(
+				buildLink(
+					isCollection
+						? APP_PATH.COLLECTION_EDIT_TAB.route
+						: APP_PATH.BUNDLE_EDIT_TAB.route,
+					{
+						id: collectionId,
+						tabId: 'quality_check',
+					}
+				)
+			);
+			return isCollection
+				? t(
+						'Een collectie met redactie moet een kwaliteitscontrole verantwoordelijke hebben'
+				  )
+				: t('Een bundel met redactie moet een kwaliteitscontrole verantwoordelijke hebben');
 		}
-		const clonedCollection = cloneDeep(collection);
-		getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
-			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
-				fragment.custom_description = sanitizeHtml(
-					(fragment.custom_description as any).toHTML(),
-					'link'
-				);
-			}
-		});
-		return clonedCollection;
+		return null;
 	};
 
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
+		try {
+			const validationError: string | null = isCollectionValid();
+			if (validationError) {
+				ToastService.danger(validationError);
+				setIsSavingCollection(false);
+				return;
+			}
 
-		// Convert fragment description editor states to html strings
-		const updatedCollection = convertFragmentDescriptionsToHtml({
-			...(collectionState.currentCollection as Avo.Collection.Collection),
-			updated_by_profile_id: get(user, 'profile.id', null),
-		});
+			// Convert fragment description editor states to html strings
+			const updatedCollection = convertFragmentDescriptionsToHtml({
+				...(collectionState.currentCollection as Avo.Collection.Collection),
+				updated_by_profile_id: get(user, 'profile.id', null),
+			});
 
-		if (collectionState.currentCollection) {
-			const newCollection = await CollectionService.updateCollection(
-				collectionState.initialCollection,
-				updatedCollection as Partial<Avo.Collection.Collection>,
-				user
-			);
-
-			if (newCollection) {
-				checkPermissionsAndGetBundle();
-				ToastService.success(
-					isCollection
-						? t(
-								'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
-						  )
-						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
-				);
-				trackEvents(
-					{
-						object: String(newCollection.id),
-						object_type: type,
-						message: `Gebruiker ${getProfileName(user)} heeft een ${type} aangepast`,
-						action: 'edit',
-					},
+			if (collectionState.currentCollection) {
+				const newCollection = await CollectionService.updateCollection(
+					collectionState.initialCollection,
+					updatedCollection as Partial<Avo.Collection.Collection>,
 					user
 				);
-			}
-		}
 
+				if (newCollection) {
+					checkPermissionsAndGetCollection();
+					ToastService.success(
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___bundle-opgeslagen'
+							  )
+					);
+					trackEvents(
+						{
+							object: String(newCollection.id),
+							object_type: type,
+							message: `Gebruiker ${getProfileName(
+								user
+							)} heeft een ${type} aangepast`,
+							action: 'edit',
+						},
+						user
+					);
+				}
+			}
+		} catch (err) {
+			console.error('Failed to save collection/bundle to the database', err);
+			ToastService.danger(
+				isCollection
+					? t('Het opslaan van de collectie is mislukt')
+					: t('Het opslaan van de bundel is mislukt')
+			);
+		}
 		setIsSavingCollection(false);
 	};
 
@@ -728,7 +781,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				break;
 
 			case 'openPublishModal':
-				if (hasUnsavedChanges() && !get(collectionState.initialCollection, 'is_public')) {
+				if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
 					ToastService.info(
 						t(
 							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
@@ -1037,7 +1090,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const isPublic =
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
 		let publishButtonTooltip: string;
-		if (hasUnsavedChanges() && !get(collectionState.initialCollection, 'is_public')) {
+		if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
 			publishButtonTooltip = t(
 				'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 			);
@@ -1064,7 +1117,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<Button
 					type="secondary"
 					disabled={
-						hasUnsavedChanges() && !get(collectionState.initialCollection, 'is_public')
+						unsavedChanges && !get(collectionState.initialCollection, 'is_public')
 					}
 					title={publishButtonTooltip}
 					ariaLabel={publishButtonTooltip}
@@ -1153,7 +1206,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return (
 			<>
 				<BeforeUnloadComponent
-					blockRoute={true}
+					blockRoute={unsavedChanges}
 					modalComponentHandler={({
 						handleModalLeave,
 						handleModalCancel,

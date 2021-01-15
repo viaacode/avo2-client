@@ -101,11 +101,6 @@ export type CollectionBulkAction =
 	| 'change_author'
 	| 'change_labels';
 
-export type ManagementStatus =
-	| null
-	| 'Actueel'
-	| 'Te actualiseren'
-	| 'Volledig te herzien'
-	| 'Gearchiveerd';
+export type ManagementStatus = null | 'ACTUEEL' | 'ACTUALISEREN' | 'HERZIEN' | 'GEARCHIVEERD';
 
 export type QualityCheckLabel = 'TAALCHECK' | 'KWALITEITSCHECK' | 'EINDCHECK';

@@ -18,8 +18,9 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
-import { toDateObject } from '../../shared/helpers';
+import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
 
@@ -33,6 +34,18 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 	CollectionOrBundleEditQualityCheckProps & UserProps
 > = ({ collection, changeCollectionState }) => {
 	const [t] = useTranslation();
+
+	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
+		if (
+			get(collection, 'management.language_check[0].qc_status') &&
+			get(collection, 'management.quality_check[0].qc_status')
+		) {
+			return (
+				toDateObject(get(collection, 'management.approved_at[0].created_at')) || new Date()
+			);
+		}
+		return null;
+	};
 
 	return (
 		<>
@@ -53,16 +66,18 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
 														'management.language_check[0].qc_status',
-													collectionPropValue: selectedOption,
+													collectionPropValue: okNokToBoolean(
+														selectedOption as any
+													),
 												})
 											}
 											clearable
-											value={
+											value={booleanToOkNok(
 												get(
 													collection,
 													'management.language_check[0].qc_status'
-												) || null
-											}
+												) ?? null
+											)}
 										/>
 									</FormGroup>
 									<FormGroup label={t('Kwaliteitscontrole')}>
@@ -76,26 +91,23 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
 														'management.quality_check[0].qc_status',
-													collectionPropValue: selectedOption,
+													collectionPropValue: okNokToBoolean(
+														selectedOption as any
+													),
 												})
 											}
 											clearable
-											value={
+											value={booleanToOkNok(
 												get(
 													collection,
 													'management.quality_check[0].qc_status'
-												) || null
-											}
+												) ?? null
+											)}
 										/>
 									</FormGroup>
 									<FormGroup label={t('Datum goedkeuring')}>
 										<DatePicker
-											value={toDateObject(
-												get(
-													collection,
-													'management.approved_at[0].created_at'
-												)
-											)}
+											value={getApprovedAtDate(collection)}
 											onChange={(selectedDate) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
@@ -106,14 +118,27 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 														: null,
 												})
 											}
+											disabled
 										/>
 									</FormGroup>
 									<FormGroup label={t('Verantwoordelijke kwaliteitscontrole')}>
 										<ContentPicker
-											initialValue={get(
-												collection,
-												'management.quality_check[0].assignee_profile_id'
-											)}
+											initialValue={{
+												label:
+													getFullName(
+														get(
+															collection,
+															'management.language_check[0].assignee'
+														),
+														false,
+														true
+													) || '',
+												value: get(
+													collection,
+													'management.language_check[0].assignee_profile_id'
+												),
+												type: 'PROFILE',
+											}}
 											hideTargetSwitch
 											hideTypeDropdown
 											placeholder={t('Selecteer een verantwoordelijke')}
@@ -122,7 +147,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.quality_check[0].assignee_profile_id',
+														'management.language_check[0].assignee_profile_id',
 													collectionPropValue: value ? value.value : null,
 												});
 											}}
@@ -134,14 +159,14 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											value={
 												get(
 													collection,
-													'management.quality_check[0].comment'
+													'management.language_check[0].comment'
 												) || ''
 											}
 											onChange={(newNotes: string) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.quality_check[0].comment',
+														'management.language_check[0].comment',
 													collectionPropValue: newNotes || null,
 												})
 											}

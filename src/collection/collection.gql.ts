@@ -458,12 +458,14 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$status_valid_until: timestamptz
 	) {
 		insert_app_collection_management(
-			objects: {
-				collection_id: $collection_id
-				current_status: $current_status
-				manager_profile_id: $manager_profile_id
-				status_valid_until: $status_valid_until
-			}
+			objects: [
+				{
+					collection_id: $collection_id
+					current_status: $current_status
+					manager_profile_id: $manager_profile_id
+					status_valid_until: $status_valid_until
+				}
+			]
 		) {
 			affected_rows
 		}
@@ -486,6 +488,28 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 			}
 		) {
 			affected_rows
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_MANAGEMENT_QC_ENTRY = gql`
+	mutation insertCollectionManagementEntry(
+		$collection_id: uuid!
+		$comment: String
+		$assignee_profile_id: uuid
+		$qc_label: lookup_enum_collection_management_qc_label_enum
+		$qc_status: Boolean
+	) {
+		insert_app_collection_management_QC_one(
+			object: {
+				comment: $comment
+				assignee_profile_id: $assignee_profile_id
+				qc_label: $qc_label
+				qc_status: $qc_status
+				collection_id: $collection_id
+			}
+		) {
+			id
 		}
 	}
 `;

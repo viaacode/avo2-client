@@ -1,5 +1,5 @@
 import H from 'history';
-import { get, without } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +11,7 @@ import {
 	FormGroup,
 	Grid,
 	Select,
+	SelectOption,
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
@@ -20,8 +21,7 @@ import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundle
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { NULL_FILTER } from '../../admin/shared/helpers/filters';
 import { PickerItem } from '../../admin/shared/types';
-import { toDateObject } from '../../shared/helpers';
-import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
+import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
@@ -37,6 +37,15 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 > = ({ collection, changeCollectionState }) => {
 	const [t] = useTranslation();
 
+	const actualisationStatuses = getCollectionManagementStatuses()
+		.filter((option) => option.id !== NULL_FILTER)
+		.map(
+			(option): SelectOption<string> => ({
+				label: option.label,
+				value: option.id,
+			})
+		);
+
 	return (
 		<>
 			<Container mode="vertical">
@@ -47,19 +56,14 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 								<Column size="3-7">
 									<FormGroup label={t('Status')}>
 										<Select
-											options={without(
-												getCollectionManagementStatuses().map(
-													(option) => option.id
-												),
-												NULL_FILTER
-											).map(stringToSelectOption)}
-											onChange={(selectedOption) =>
+											options={actualisationStatuses}
+											onChange={(selectedOption) => {
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp: 'management.current_status',
 													collectionPropValue: selectedOption,
-												})
-											}
+												});
+											}}
 											clearable
 											value={
 												get(collection, 'management.current_status') || null
@@ -100,10 +104,19 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 									</FormGroup>
 									<FormGroup label={t('Verantwoordelijke actualisatie')}>
 										<ContentPicker
-											initialValue={get(
-												collection,
-												'management.manager_profile_id'
-											)}
+											initialValue={{
+												label:
+													getFullName(
+														get(collection, 'management.manager'),
+														false,
+														true
+													) || '',
+												value: get(
+													collection,
+													'management.manager_profile_id'
+												),
+												type: 'PROFILE',
+											}}
 											placeholder={t('Selecteer een verantwoordelijke')}
 											hideTargetSwitch
 											hideTypeDropdown

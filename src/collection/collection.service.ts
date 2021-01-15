@@ -5,6 +5,7 @@ import queryString from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
+import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
@@ -33,6 +34,7 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
 	INSERT_COLLECTION_MANAGEMENT_ENTRY,
+	INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
 	SOFT_DELETE_COLLECTION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
@@ -322,19 +324,10 @@ export class CollectionService {
 
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
-			// handle error
-			const customError = new CustomError(
-				'Failed to update collection or its fragments',
-				err,
-				{
-					initialCollection,
-					updatedCollection,
-				}
-			);
-
-			console.error(customError);
-
-			return null;
+			throw new CustomError('Failed to update collection or its fragments', err, {
+				initialCollection,
+				updatedCollection,
+			});
 		}
 	}
 
@@ -346,7 +339,7 @@ export class CollectionService {
 		try {
 			if (!get(initialCollection, 'management') && !!get(updatedCollection, 'management')) {
 				// Create management entry
-				await CollectionService.createManagementEntry(collectionId, {
+				await CollectionService.insertManagementEntry(collectionId, {
 					current_status: get(updatedCollection, 'management.current_status', null),
 					manager_profile_id: get(
 						updatedCollection,
@@ -378,6 +371,97 @@ export class CollectionService {
 					),
 				});
 			}
+
+			if (!!get(updatedCollection, 'management')) {
+				// Insert QC entries
+				const initialLanguageCheckStatus = get(
+					initialCollection,
+					'management.language_check[0].qc_status'
+				);
+				const updatedLanguageCheckStatus = get(
+					updatedCollection,
+					'management.language_check[0].qc_status'
+				);
+				const initialQualityCheckStatus = get(
+					initialCollection,
+					'management.quality_check[0].qc_status'
+				);
+				const updatedQualityCheckStatus = get(
+					updatedCollection,
+					'management.quality_check[0].qc_status'
+				);
+				const equalLanguageCheckStatus =
+					initialLanguageCheckStatus !== updatedLanguageCheckStatus;
+				const equalQualityCheckStatus =
+					initialQualityCheckStatus !== updatedQualityCheckStatus;
+				const equalLanguageCheckAssignee =
+					get(initialCollection, 'management.language_check[0].assignee_profile_id') !==
+					get(updatedCollection, 'management.language_check[0].assignee_profile_id');
+				const equalLanguageCheckComment =
+					get(initialCollection, 'management.language_check[0].comment') !==
+					get(updatedCollection, 'management.language_check[0].comment');
+
+				const initialApprovedStatus =
+					initialLanguageCheckStatus && initialQualityCheckStatus;
+				const updatedApprovedStatus =
+					updatedLanguageCheckStatus && updatedQualityCheckStatus;
+
+				if (
+					equalLanguageCheckStatus ||
+					equalLanguageCheckAssignee ||
+					equalLanguageCheckComment
+				) {
+					await CollectionService.createManagementQCEntry(collectionId, {
+						qc_label: 'TAALCHECK' as QualityCheckLabel,
+						qc_status:
+							get(updatedCollection, 'management.language_check[0].qc_status') ??
+							null,
+						assignee_profile_id: get(
+							updatedCollection,
+							'management.language_check[0].assignee_profile_id',
+							null
+						),
+						comment: get(
+							updatedCollection,
+							'management.language_check[0].comment',
+							null
+						),
+					});
+				}
+				// We use language check for assignee because the UI only requests this info once from the user
+				// Unfortunately the database assumes this can be set per QC entry
+				if (
+					equalQualityCheckStatus ||
+					equalLanguageCheckAssignee ||
+					equalLanguageCheckComment
+				) {
+					await CollectionService.createManagementQCEntry(collectionId, {
+						qc_label: 'KWALITEITSCHECK' as QualityCheckLabel,
+						qc_status:
+							get(updatedCollection, 'management.quality_check[0].qc_status') ?? null,
+						assignee_profile_id: get(
+							updatedCollection,
+							'management.language_check[0].assignee_profile_id',
+							null
+						),
+						comment: null,
+					});
+				}
+
+				// Save approved_at entry when updated statuses are both OK and initial statuses are not both OK
+				if (initialApprovedStatus !== updatedApprovedStatus && updatedApprovedStatus) {
+					await CollectionService.createManagementQCEntry(collectionId, {
+						qc_label: 'EINDCHECK' as QualityCheckLabel,
+						qc_status: null,
+						assignee_profile_id: get(
+							updatedCollection,
+							'management.language_check[0].assignee_profile_id',
+							null
+						),
+						comment: null,
+					});
+				}
+			}
 		} catch (err) {
 			throw new CustomError('Failed to save management data to the database', err, {
 				initialCollection,
@@ -386,42 +470,69 @@ export class CollectionService {
 		}
 	};
 
-	private static createManagementEntry = async (collectionId: string, managementData: any) => {
+	private static insertManagementEntry = async (collectionId: string, managementData: any) => {
 		try {
 			await dataService.mutate({
 				mutation: INSERT_COLLECTION_MANAGEMENT_ENTRY,
 				variables: {
 					...managementData,
-					collectionId,
+					collection_id: collectionId,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to create collection management entry', err, {
-					collectionId,
-					managementData,
-				})
-			);
+			throw new CustomError('Failed to create collection management entry', err, {
+				collectionId,
+				managementData,
+				query: 'INSERT_COLLECTION_MANAGEMENT_ENTRY',
+			});
 		}
 	};
 
-	private static updateManagementEntry = async (collectionId: string, managementData: any) => {
+	private static updateManagementEntry = async (
+		collectionId: string,
+		managementData: Partial<Avo.Collection.Management>
+	) => {
 		try {
 			await dataService.mutate({
 				mutation: UPDATE_COLLECTION_MANAGEMENT_ENTRY,
 				variables: {
 					...managementData,
-					collectionId,
+					collection_id: collectionId,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to update collection management entry', err, {
+			throw new CustomError('Failed to update collection management entry', err, {
+				collectionId,
+				managementData,
+				query: 'UPDATE_COLLECTION_MANAGEMENT_ENTRY',
+			});
+		}
+	};
+
+	private static createManagementQCEntry = async (
+		collectionId: string,
+		managementQCData: Partial<Avo.Collection.ManagementQualityCheck>
+	) => {
+		try {
+			await dataService.mutate({
+				mutation: INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
+				variables: {
+					...managementQCData,
+					collection_id: collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			throw new CustomError(
+				'Failed to create collection management quality check entry',
+				err,
+				{
 					collectionId,
-					managementData,
-				})
+					managementQCData,
+					query: 'INSERT_COLLECTION_MANAGEMENT_QC_ENTRY',
+				}
 			);
 		}
 	};
@@ -440,12 +551,11 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to update collection properties', err, {
-					id,
-					collection,
-				})
-			);
+			throw new CustomError('Failed to update collection properties', err, {
+				id,
+				collection,
+				query: 'UPDATE_COLLECTION',
+			});
 		}
 	};
 
@@ -465,11 +575,9 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
-			console.error(
-				new CustomError(`Failed to delete collection or bundle'}`, err, {
-					collectionId,
-				})
-			);
+			throw new CustomError(`Failed to delete collection or bundle'}`, err, {
+				collectionId,
+			});
 		}
 	};
 
@@ -507,7 +615,6 @@ export class CollectionService {
 					user
 				);
 			} catch (err) {
-				// handle error
 				const customError = new CustomError(
 					'Failed to retrieve title for duplicate collection',
 					err,
@@ -567,15 +674,10 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
 				variables: { limit },
 			});
-
-			console.error(customError);
-
-			throw customError;
 		}
 	}
 
@@ -692,23 +794,14 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError(
-				'Failed to fetch existing bundle titles by owner',
-				err,
-				{
-					user,
-					type,
-					query:
-						type === 'collection'
-							? 'GET_COLLECTION_TITLES_BY_OWNER'
-							: 'GET_BUNDLE_TITLES_BY_OWNER',
-				}
-			);
-
-			console.error(customError);
-
-			throw customError;
+			throw new CustomError('Failed to fetch existing bundle titles by owner', err, {
+				user,
+				type,
+				query:
+					type === 'collection'
+						? 'GET_COLLECTION_TITLES_BY_OWNER'
+						: 'GET_BUNDLE_TITLES_BY_OWNER',
+			});
 		}
 	}
 

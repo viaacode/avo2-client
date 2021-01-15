@@ -522,10 +522,10 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 ];
 
 export const getCollectionManagementStatuses = (): CheckboxOption[] => [
-	{ checked: false, label: 'Actueel', id: 'Actueel' },
-	{ checked: false, label: 'Te actualiseren', id: 'Te actualiseren' },
-	{ checked: false, label: 'Volledig te herzien', id: 'Volledig te herzien' },
-	{ checked: false, label: 'Gearchiveerd', id: 'Gearchiveerd' },
+	{ checked: false, label: 'Actueel', id: 'ACTUEEL' },
+	{ checked: false, label: 'Te actualiseren', id: 'ACTUALISEREN' },
+	{ checked: false, label: 'Volledig te herzien', id: 'HERZIEN' },
+	{ checked: false, label: 'Gearchiveerd', id: 'GEARCHIVEERD' },
 	{ checked: false, label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 ];
 

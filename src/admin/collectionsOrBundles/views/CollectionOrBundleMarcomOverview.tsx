@@ -8,8 +8,6 @@ import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { CollectionService } from '../../../collection/collection.service';
-import { QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -19,6 +17,7 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
@@ -49,7 +48,6 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 	const [collectionCount, setCollectionCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionOrBundleMarcomTableState>>({});
-	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
@@ -57,6 +55,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
+	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
 	const isCollection =
@@ -122,23 +121,9 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 		generateWhereObject,
 	]);
 
-	const fetchCollectionLabels = useCallback(async () => {
-		try {
-			setCollectionLabels(await CollectionService.fetchQualityLabels());
-		} catch (err) {
-			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(
-				t(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				)
-			);
-		}
-	}, [setCollectionLabels, t]);
-
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchCollectionLabels]);
+	}, [fetchCollectionsOrBundles]);
 
 	useEffect(() => {
 		if (collections) {

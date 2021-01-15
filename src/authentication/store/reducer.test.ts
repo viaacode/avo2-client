@@ -17,7 +17,7 @@ describe('login > store > reducer', () => {
 	});
 
 	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_LOADING}`, () => {
-		const state = loginReducer(initialState, setLoginLoading());
+		const state = loginReducer(initialState, setLoginLoading(true));
 
 		expect(state.loading).toEqual(true);
 	});

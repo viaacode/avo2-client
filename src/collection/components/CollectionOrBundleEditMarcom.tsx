@@ -28,7 +28,9 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 					<Form>
 						<Spacer margin="bottom">
 							<Grid>
-								<Column size="3-7">TODO Database voorzien om marcom velden</Column>
+								<Column size="3-7">
+									TODO Database voorzien om marcom velden op te slaan
+								</Column>
 								<Column size="3-5">
 									<></>
 								</Column>
