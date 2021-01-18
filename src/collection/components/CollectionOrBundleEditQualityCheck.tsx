@@ -37,11 +37,11 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
 		if (
-			get(collection, 'management.language_check[0].qc_status') &&
-			get(collection, 'management.quality_check[0].qc_status')
+			get(collection, 'management_language_check[0].qc_status') &&
+			get(collection, 'management_quality_check[0].qc_status')
 		) {
 			return (
-				toDateObject(get(collection, 'management.approved_at[0].created_at')) || new Date()
+				toDateObject(get(collection, 'management_approved_at[0].created_at')) || new Date()
 			);
 		}
 		return null;
@@ -65,7 +65,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.language_check[0].qc_status',
+														'management_language_check[0].qc_status',
 													collectionPropValue: okNokToBoolean(
 														selectedOption as any
 													),
@@ -75,7 +75,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											value={booleanToOkNok(
 												get(
 													collection,
-													'management.language_check[0].qc_status'
+													'management_language_check[0].qc_status'
 												) ?? null
 											)}
 										/>
@@ -90,7 +90,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.quality_check[0].qc_status',
+														'management_quality_check[0].qc_status',
 													collectionPropValue: okNokToBoolean(
 														selectedOption as any
 													),
@@ -100,7 +100,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											value={booleanToOkNok(
 												get(
 													collection,
-													'management.quality_check[0].qc_status'
+													'management_quality_check[0].qc_status'
 												) ?? null
 											)}
 										/>
@@ -112,7 +112,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.approved_at[0].created_at',
+														'management_approved_at[0].created_at',
 													collectionPropValue: selectedDate
 														? selectedDate.toISOString()
 														: null,
@@ -128,14 +128,14 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													getFullName(
 														get(
 															collection,
-															'management.language_check[0].assignee'
+															'management_language_check[0].assignee'
 														),
 														false,
 														true
 													) || '',
 												value: get(
 													collection,
-													'management.language_check[0].assignee_profile_id'
+													'management_language_check[0].assignee_profile_id'
 												),
 												type: 'PROFILE',
 											}}
@@ -147,7 +147,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.language_check[0].assignee_profile_id',
+														'management_language_check[0].assignee_profile_id',
 													collectionPropValue: value ? value.value : null,
 												});
 											}}
@@ -159,14 +159,14 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											value={
 												get(
 													collection,
-													'management.language_check[0].comment'
+													'management_language_check[0].comment'
 												) || ''
 											}
 											onChange={(newNotes: string) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management.language_check[0].comment',
+														'management_language_check[0].comment',
 													collectionPropValue: newNotes || null,
 												})
 											}

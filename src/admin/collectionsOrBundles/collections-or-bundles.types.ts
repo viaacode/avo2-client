@@ -43,6 +43,12 @@ export type CollectionOrBundleMarcomOverviewTableCols =
 	| 'marcom_klascement'
 	| 'marcom_other_platforms';
 
+export type CollectionTableCols =
+	| CollectionsOrBundlesOverviewTableCols
+	| CollectionOrBundleActualisationOverviewTableCols
+	| CollectionOrBundleQualityCheckOverviewTableCols
+	| CollectionOrBundleMarcomOverviewTableCols;
+
 export type EditorialType = 'actualisation' | 'quality_check' | 'marcom';
 
 export interface CollectionOrBundleTableStateBase extends FilterableTableState {

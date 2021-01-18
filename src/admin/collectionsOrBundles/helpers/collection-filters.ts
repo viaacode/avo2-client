@@ -195,7 +195,7 @@ export function generateCollectionWhereObject(
 		const dateFilters = getDateRangeFilters(
 			filters,
 			['actualisation_approved_at'],
-			['management.QC.created_at']
+			['QC.created_at']
 		);
 		andFilters.push({
 			management: {

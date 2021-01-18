@@ -6,25 +6,26 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import { QualityLabel } from '../../../collection/collection.types';
+import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
-import { buildLink } from '../../../shared/helpers';
-import { formatDate } from '../../../shared/helpers/formatters';
+import { buildLink, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import i18n from '../../../shared/translations/i18n';
-import {
-	CollectionOrBundleActualisationOverviewTableCols,
-	CollectionOrBundleMarcomOverviewTableCols,
-	CollectionOrBundleQualityCheckOverviewTableCols,
-	CollectionsOrBundlesOverviewTableCols,
-} from '../collections-or-bundles.types';
+import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
+import { CollectionTableCols, ManagementStatus } from '../collections-or-bundles.types';
+
+export const getDisplayTextForManagementStatus = (status: ManagementStatus): string | null => {
+	return (
+		get(
+			getCollectionManagementStatuses().find((option) => option.id === status),
+			'label'
+		) || null
+	);
+};
 
 export const renderCollectionOverviewColumns = (
 	rowData: Partial<Avo.Collection.Collection>,
-	columnId:
-		| CollectionsOrBundlesOverviewTableCols
-		| CollectionOrBundleActualisationOverviewTableCols
-		| CollectionOrBundleQualityCheckOverviewTableCols
-		| CollectionOrBundleMarcomOverviewTableCols,
+	columnId: CollectionTableCols,
 	collectionLabels: QualityLabel[]
 ) => {
 	switch (columnId) {
@@ -99,26 +100,28 @@ export const renderCollectionOverviewColumns = (
 			return 'Nee';
 
 		case 'actualisation_status':
-			return get(rowData, 'management.current_status') || '-';
+			return (
+				getDisplayTextForManagementStatus(get(rowData, 'management.current_status')) || '-'
+			);
 
 		case 'actualisation_last_actualised_at':
-			return formatDate(get(rowData, 'management.actualised_at[0].updated_at')) || '-';
+			return formatDate(get(rowData, 'management_actualised_at[0].created_at')) || '-';
 
 		case 'actualisation_status_valid_until':
 			return formatDate(get(rowData, 'management.status_valid_until')) || '-';
 
 		case 'actualisation_approved_at':
 		case 'quality_check_approved_at':
-			return formatDate(get(rowData, 'management.approved_at[0].created_at')) || '-';
+			return formatDate(get(rowData, 'management_approved_at[0].created_at')) || '-';
 
 		case 'actualisation_manager':
 			return get(rowData, 'management.manager.full_name') || '-';
 
 		case 'quality_check_language_check':
-			return get(rowData, 'management.language_check[0].qc_status') || '-';
+			return booleanToOkNok(get(rowData, 'management_language_check[0].qc_status')) || '-';
 
 		case 'quality_check_quality_check':
-			return get(rowData, 'management.quality_check[0].qc_status') || '-';
+			return booleanToOkNok(get(rowData, 'management_quality_check[0].qc_status')) || '-';
 
 		default:
 			return truncate((rowData as any)[columnId] || '-', { length: 50 });

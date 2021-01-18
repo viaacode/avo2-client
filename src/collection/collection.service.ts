@@ -1,5 +1,5 @@
 import { FetchResult } from 'apollo-link';
-import { cloneDeep, compact, fromPairs, get, isNil, omit, without } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
@@ -47,6 +47,7 @@ import {
 	getFragmentsFromCollection,
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
+	keepCoreCollectionProperties,
 } from './collection.helpers';
 import { ContentTypeNumber, QualityLabel } from './collection.types';
 
@@ -291,8 +292,8 @@ export class CollectionService {
 
 			// set updated_at date if collection has changes (without taking into account the management fields)
 			if (
-				JSON.stringify(omit(updatedCollection, 'management', 'is_managed', 'QC')) !==
-					JSON.stringify(omit(initialCollection, 'management', 'is_managed', 'QC')) ||
+				JSON.stringify(keepCoreCollectionProperties(updatedCollection)) !==
+					JSON.stringify(keepCoreCollectionProperties(initialCollection)) ||
 				newFragments.length ||
 				deleteFragmentIds.length ||
 				updateFragmentIds.length
@@ -393,30 +394,30 @@ export class CollectionService {
 				// Insert QC entries
 				const initialLanguageCheckStatus = get(
 					initialCollection,
-					'management.language_check[0].qc_status'
+					'management_language_check[0].qc_status'
 				);
 				const updatedLanguageCheckStatus = get(
 					updatedCollection,
-					'management.language_check[0].qc_status'
+					'management_language_check[0].qc_status'
 				);
 				const initialQualityCheckStatus = get(
 					initialCollection,
-					'management.quality_check[0].qc_status'
+					'management_quality_check[0].qc_status'
 				);
 				const updatedQualityCheckStatus = get(
 					updatedCollection,
-					'management.quality_check[0].qc_status'
+					'management_quality_check[0].qc_status'
 				);
 				const equalLanguageCheckStatus =
 					initialLanguageCheckStatus !== updatedLanguageCheckStatus;
 				const equalQualityCheckStatus =
 					initialQualityCheckStatus !== updatedQualityCheckStatus;
 				const equalLanguageCheckAssignee =
-					get(initialCollection, 'management.language_check[0].assignee_profile_id') !==
-					get(updatedCollection, 'management.language_check[0].assignee_profile_id');
+					get(initialCollection, 'management_language_check[0].assignee_profile_id') !==
+					get(updatedCollection, 'management_language_check[0].assignee_profile_id');
 				const equalLanguageCheckComment =
-					get(initialCollection, 'management.language_check[0].comment') !==
-					get(updatedCollection, 'management.language_check[0].comment');
+					get(initialCollection, 'management_language_check[0].comment') !==
+					get(updatedCollection, 'management_language_check[0].comment');
 
 				const initialApprovedStatus =
 					initialLanguageCheckStatus && initialQualityCheckStatus;
@@ -431,16 +432,16 @@ export class CollectionService {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: 'TAALCHECK' as QualityCheckLabel,
 						qc_status:
-							get(updatedCollection, 'management.language_check[0].qc_status') ??
+							get(updatedCollection, 'management_language_check[0].qc_status') ??
 							null,
 						assignee_profile_id: get(
 							updatedCollection,
-							'management.language_check[0].assignee_profile_id',
+							'management_language_check[0].assignee_profile_id',
 							null
 						),
 						comment: get(
 							updatedCollection,
-							'management.language_check[0].comment',
+							'management_language_check[0].comment',
 							null
 						),
 					});
@@ -455,10 +456,10 @@ export class CollectionService {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: 'KWALITEITSCHECK' as QualityCheckLabel,
 						qc_status:
-							get(updatedCollection, 'management.quality_check[0].qc_status') ?? null,
+							get(updatedCollection, 'management_quality_check[0].qc_status') ?? null,
 						assignee_profile_id: get(
 							updatedCollection,
-							'management.language_check[0].assignee_profile_id',
+							'management_language_check[0].assignee_profile_id',
 							null
 						),
 						comment: null,
@@ -472,7 +473,7 @@ export class CollectionService {
 						qc_status: null,
 						assignee_profile_id: get(
 							updatedCollection,
-							'management.language_check[0].assignee_profile_id',
+							'management_language_check[0].assignee_profile_id',
 							null
 						),
 						comment: null,

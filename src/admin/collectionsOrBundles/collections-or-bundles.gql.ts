@@ -101,22 +101,22 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 				manager {
 					full_name
 				}
-				actualised_at: QC(
-					where: { qc_label: { _eq: KWALITEITSCHECK } }
-					order_by: { created_at: desc_nulls_last }
-					limit: 1
-				) {
-					id
-					created_at
-				}
-				approved_at: QC(
-					where: { qc_label: { _eq: EINDCHECK } }
-					order_by: { created_at: desc_nulls_last }
-					limit: 1
-				) {
-					id
-					created_at
-				}
+			}
+			management_actualised_at: QC(
+				where: { qc_label: { _eq: KWALITEITSCHECK } }
+				order_by: { created_at: desc_nulls_last }
+				limit: 1
+			) {
+				id
+				created_at
+			}
+			management_approved_at: QC(
+				where: { qc_label: { _eq: EINDCHECK } }
+				order_by: { created_at: desc_nulls_last }
+				limit: 1
+			) {
+				id
+				created_at
 			}
 		}
 		app_collections_aggregate(where: $where) {
@@ -165,32 +165,29 @@ export const GET_COLLECTION_QUALITY_CHECK = gql`
 				id
 				label
 			}
-			management {
+			management_language_check: QC(
+				where: { qc_label: { _eq: TAALCHECK } }
+				order_by: { created_at: desc_nulls_last }
+				limit: 1
+			) {
 				id
-				language_check: QC(
-					where: { qc_label: { _eq: TAALCHECK } }
-					order_by: { created_at: desc_nulls_last }
-					limit: 1
-				) {
-					id
-					qc_status
-				}
-				quality_check: QC(
-					where: { qc_label: { _eq: KWALITEITSCHECK } }
-					order_by: { created_at: desc_nulls_last }
-					limit: 1
-				) {
-					id
-					qc_status
-				}
-				approved_at: QC(
-					where: { qc_label: { _eq: EINDCHECK } }
-					order_by: { created_at: desc_nulls_last }
-					limit: 1
-				) {
-					id
-					created_at
-				}
+				qc_status
+			}
+			management_quality_check: QC(
+				where: { qc_label: { _eq: KWALITEITSCHECK } }
+				order_by: { created_at: desc_nulls_last }
+				limit: 1
+			) {
+				id
+				qc_status
+			}
+			management_approved_at: QC(
+				where: { qc_label: { _eq: EINDCHECK } }
+				order_by: { created_at: desc_nulls_last }
+				limit: 1
+			) {
+				id
+				created_at
 			}
 		}
 		app_collections_aggregate(where: $where) {

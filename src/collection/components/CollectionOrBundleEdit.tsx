@@ -404,6 +404,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 			}
 
+			// check quality check approved_at date
+			if (
+				!get(collectionObj, 'management_language_check[0].qc_status') ||
+				!get(collectionObj, 'management_quality_check[0].qc_status')
+			) {
+				set(collectionObj, 'management_approved_at[0].created_at', null);
+			}
+
 			setPermissions(permissionObj);
 			changeCollectionState({
 				type: 'UPDATE_COLLECTION',
@@ -542,7 +550,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			get(collectionState.currentCollection, 'is_managed', true) &&
 			!get(
 				collectionState.currentCollection,
-				'management.language_check[0].assignee_profile_id'
+				'management_language_check[0].assignee_profile_id'
 			)
 		) {
 			history.push(
