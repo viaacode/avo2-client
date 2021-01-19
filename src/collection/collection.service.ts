@@ -22,7 +22,6 @@ import {
 	DELETE_COLLECTION_LABELS,
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_BUNDLES_CONTAINING_COLLECTION,
-	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
@@ -53,32 +52,6 @@ import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
-
-	public static async getCollectionById(id: string): Promise<Avo.Collection.Collection> {
-		try {
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id },
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, response);
-			}
-
-			const collection = get(response, 'data.app_collections[0]');
-
-			if (!collection) {
-				throw new CustomError('Response does not contain a collection', null, { response });
-			}
-
-			return collection;
-		} catch (err) {
-			throw new CustomError('Failed to fetch collection by id from the database', err, {
-				query: 'GET_COLLECTION_BY_ID',
-				variables: { id },
-			});
-		}
-	}
 
 	/**
 	 * Insert collection and underlying collection fragments.
@@ -824,36 +797,6 @@ export class CollectionService {
 	}
 
 	/**
-	 * Retrieve collection or bundle by id.
-	 *
-	 * @param collectionId Unique id of the collection that must be fetched.
-	 * @param type Type of which items should be fetched.
-	 *
-	 * @returns Collection or bundle.
-	 */
-	public static async fetchCollectionOrBundleById(
-		collectionId: string,
-		type: 'collection' | 'bundle'
-	): Promise<Avo.Collection.Collection | undefined> {
-		try {
-			const collectionObj = await CollectionService.getCollectionById(collectionId);
-
-			// Collection/bundle loaded successfully
-			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
-			if (collectionObj.type_id !== ContentTypeNumber[type]) {
-				return undefined;
-			}
-
-			return collectionObj;
-		} catch (err) {
-			throw new CustomError('Failed to fetch collection or bundle by id', err, {
-				collectionId,
-				type,
-			});
-		}
-	}
-
-	/**
 	 * Retrieve collection or bundle and underlying items or collections by id.
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
@@ -861,12 +804,14 @@ export class CollectionService {
 	 * @param assignmentUuid Collection can be fetched if it's not public and you're not the owner,
 	 *        but if it is linked to an assignment that you're trying to view
 	 *
+	 * @param includeFragments
 	 * @returns Collection or bundle.
 	 */
-	public static async fetchCollectionOrBundleWithItemsById(
+	public static async fetchCollectionOrBundleById(
 		collectionId: string,
 		type: 'collection' | 'bundle',
-		assignmentUuid: string | undefined
+		assignmentUuid: string | undefined,
+		includeFragments: boolean = true
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
@@ -874,6 +819,7 @@ export class CollectionService {
 					type,
 					assignmentUuid,
 					id: collectionId,
+					includeFragments: includeFragments ? 'true' : 'false',
 				})}`,
 				{
 					method: 'GET',

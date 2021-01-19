@@ -238,7 +238,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				showPopup = true;
 			}
 
-			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				uuid,
 				'collection',
 				undefined
