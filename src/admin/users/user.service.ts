@@ -19,8 +19,8 @@ import {
 	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
-	GET_USERS,
 	GET_USER_BY_ID,
+	GET_USERS,
 } from './user.gql';
 import {
 	DeleteContentCounts,
@@ -187,8 +187,8 @@ export class UserService {
 				});
 			}
 			return compact(
-				get(response, 'data.shared_users' || []).map((user: Partial<Avo.User.User>) =>
-					get(user, 'profile.id')
+				get(response, 'data.users_summary_view' || []).map((user: Partial<Avo.User.User>) =>
+					get(user, 'profile_id')
 				)
 			);
 		} catch (err) {
@@ -322,7 +322,11 @@ export class UserService {
 				});
 			}
 
-			return get(response, 'data.users_profiles');
+			return get(response, 'data.users_summary_view').map((profileEntry: any) => ({
+				id: profileEntry.profile_id,
+				full_name: profileEntry.full_name,
+				mail: profileEntry.mail,
+			}));
 		} catch (err) {
 			throw new CustomError('Failed to get profile names from the database', err, {
 				profileIds,
