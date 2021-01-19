@@ -121,6 +121,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					history.replace(
 						buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentUuid })
 					);
+					return;
 				}
 
 				// Determine if this is an edit or create page and initialize or fetch the assignment
