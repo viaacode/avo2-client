@@ -548,6 +548,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const isCollectionValid = (): string | null => {
 		if (
 			get(collectionState.currentCollection, 'is_managed', true) &&
+			(!!get(collectionState.currentCollection, 'management_language_check[0]') ||
+				!!get(collectionState.currentCollection, 'management_quality_check[0]')) &&
 			!get(
 				collectionState.currentCollection,
 				'management_language_check[0].assignee_profile_id'

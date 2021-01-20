@@ -43,6 +43,7 @@ import { VideoStillService } from '../../../shared/services/video-stills-service
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
+import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 
 interface AddToCollectionModalProps extends DefaultSecureRouteProps {
 	externalId: string;
@@ -232,6 +233,12 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 						(await getFragment(newCollection)) as Avo.Collection.Fragment,
 					],
 				});
+			}
+
+			// Enable is_managed by default when one of these user groups creates a collection/bundle
+			// https://meemoo.atlassian.net/browse/AVO-1453
+			if (canManageEditorial(user)) {
+				(newCollection as any).is_managed = true; // TODO remove cast to any once update to typings v2.28.0
 			}
 
 			const insertedCollection: Partial<Avo.Collection.Collection> = await CollectionService.insertCollection(
