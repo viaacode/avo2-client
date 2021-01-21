@@ -16,6 +16,8 @@ import { logoutAndRedirectToLogin } from '../helpers/redirects';
 
 import {
 	LoginActionTypes,
+	LoginState,
+	SetAcceptConditionsAction,
 	SetLoginErrorAction,
 	SetLoginLoadingAction,
 	SetLoginSuccessAction,
@@ -58,24 +60,24 @@ function checkIfSessionExpires(expiresAt: string) {
 	}
 }
 
-let loading = false;
-
 export const getLoginStateAction = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
-		const { loginMessage } = getState();
+		const state = getState();
+		const loginState: LoginState = state.loginState;
+
+		let response: Action | null = null;
 
 		// Don't fetch login state if we already logged in
-		if (loginMessage && loginMessage.message === LoginMessage.LOGGED_IN) {
+		if (loginState.data?.message && loginState.data?.message === LoginMessage.LOGGED_IN) {
 			return null;
 		}
 
 		// Don't fetch login state from server if a call is already in progress
-		if (loading) {
+		if (loginState.loading) {
 			return null;
 		}
 
-		dispatch(setLoginLoading(true));
-		loading = true;
+		dispatch(setLoginLoading());
 
 		try {
 			const loginStateResponse = await getLoginResponse();
@@ -92,13 +94,18 @@ export const getLoginStateAction = () => {
 					5 * 60 * 1000
 				);
 			}
-
-			dispatch(setLoginLoading(false));
-			return dispatch(setLoginSuccess(loginStateResponse));
+			response = dispatch(setLoginSuccess(loginStateResponse));
 		} catch (err) {
 			console.error('failed to check login state', err);
-			return dispatch(setLoginError());
+			response = dispatch(setLoginError());
 		}
+		return response;
+	};
+};
+
+export const acceptConditionsAction = () => {
+	return async (dispatch: Dispatch): Promise<Action | null> => {
+		return dispatch(setAcceptConditions());
 	};
 };
 
@@ -112,9 +119,12 @@ export const setLoginError = (): SetLoginErrorAction => ({
 	error: true,
 });
 
-export const setLoginLoading = (isLoading: boolean): SetLoginLoadingAction => ({
+export const setLoginLoading = (): SetLoginLoadingAction => ({
 	type: LoginActionTypes.SET_LOGIN_LOADING,
-	loading: isLoading,
+});
+
+export const setAcceptConditions = (): SetAcceptConditionsAction => ({
+	type: LoginActionTypes.SET_ACCEPT_CONDITIONS,
 });
 
 export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
