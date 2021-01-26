@@ -179,10 +179,10 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}
 > = {
 	first_name: (order: Avo.Search.OrderDirection) => ({
-		first_name: order,
+		first_name_lower: order,
 	}),
 	last_name: (order: Avo.Search.OrderDirection) => ({
-		last_name: order,
+		last_name_lower: order,
 	}),
 	mail: (order: Avo.Search.OrderDirection) => ({
 		mail: order,
