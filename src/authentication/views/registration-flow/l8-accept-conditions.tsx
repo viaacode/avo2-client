@@ -21,14 +21,14 @@ import { NotificationService } from '../../../shared/services/notification-servi
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
-import { getLoginStateAction } from '../../store/actions';
+import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 
 export interface AcceptConditionsProps extends DefaultSecureRouteProps {
-	getLoginState: () => Dispatch;
+	acceptConditions: () => Dispatch;
 	loginState: Avo.Auth.LoginResponse | null;
 }
 
@@ -36,7 +36,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	history,
 	location,
 	user,
-	getLoginState,
+	acceptConditions,
 	loginState,
 }) => {
 	const [t] = useTranslation();
@@ -118,7 +118,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				);
 			}
 
-			getLoginState();
+			acceptConditions();
 		} catch (err) {
 			console.error(
 				new CustomError(
@@ -202,7 +202,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
+		acceptConditions: () => dispatch(acceptConditionsAction() as any),
 	};
 };
 
