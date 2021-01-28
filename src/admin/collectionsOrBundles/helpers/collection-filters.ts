@@ -15,36 +15,7 @@ import {
 	getQueryFilter,
 	NULL_FILTER,
 } from '../../shared/helpers/filters';
-import { CollectionTableStates, QualityCheckLabel } from '../collections-or-bundles.types';
-
-function generateQualityCheckFilter(
-	filters: Partial<CollectionTableStates>,
-	prop: string,
-	label: QualityCheckLabel
-): any[] {
-	const allLanguageCheckValues = get(filters, prop) || [];
-	const languageCheckValues = without(allLanguageCheckValues, NULL_FILTER);
-	const containsNullValue = allLanguageCheckValues.includes(NULL_FILTER);
-	if (allLanguageCheckValues && allLanguageCheckValues.length) {
-		const orFilters: any[] = languageCheckValues.map((value) => ({
-			qc_status: { _eq: value },
-		}));
-		if (containsNullValue) {
-			orFilters.push({ qc_status: { _is_null: true } });
-		}
-		return [
-			{
-				management: {
-					QC: {
-						qc_label: { _eq: label },
-						_or: orFilters,
-					},
-				},
-			},
-		];
-	}
-	return [];
-}
+import { CollectionTableStates } from '../collections-or-bundles.types';
 
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,
@@ -67,24 +38,17 @@ export function generateCollectionWhereObject(
 	);
 	andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
-	andFilters.push(
-		...getMultiOptionFilters(
-			filters,
-			['author_user_group'],
-			['profile.profile_user_group.group.id']
-		)
-	);
 	if (filters.collection_labels && filters.collection_labels.length) {
 		andFilters.push({
 			_or: [
 				...getMultiOptionFilters(
 					{
-						collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+						collection_labels: without(filters.collection_labels, NULL_FILTER),
 					},
 					['collection_labels'],
 					['collection_labels.label']
 				),
-				...(filters.collection_labels.includes('NO_LABEL')
+				...(filters.collection_labels.includes(NULL_FILTER)
 					? [{ _not: { collection_labels: {} } }]
 					: []),
 			],
@@ -95,7 +59,7 @@ export function generateCollectionWhereObject(
 			_or: [
 				...getMultiOptionsFilters(
 					{
-						subjects: without(filters.collection_labels, 'NO_LABEL'),
+						subjects: without(filters.subjects, NULL_FILTER),
 					},
 					['subjects'],
 					['lom_classification']
@@ -108,7 +72,7 @@ export function generateCollectionWhereObject(
 			_or: [
 				...getMultiOptionsFilters(
 					{
-						education_levels: without(filters.education_levels, 'NO_LABEL'),
+						education_levels: without(filters.education_levels, NULL_FILTER),
 					},
 					['education_levels'],
 					['lom_context']
@@ -209,14 +173,15 @@ export function generateCollectionWhereObject(
 
 	// Quality check filters
 	andFilters.push(
-		...generateQualityCheckFilter(filters, 'quality_check_language_check', 'TAALCHECK')
-	);
-	andFilters.push(
-		...generateQualityCheckFilter(filters, 'quality_check_quality_check', 'KWALITEITSCHECK')
+		...getBooleanFilters(
+			filters,
+			['quality_check_language_check', 'quality_check_quality_check'],
+			['mgmt_quality_check', 'mgmt_language_check']
+		)
 	);
 
 	// Marcom filters
-	// TODO after the database supports marcom fields
+	andFilters.push(...getBooleanFilters(filters, ['marcom_klascement'], ['klascement']));
 
 	return andFilters;
 }

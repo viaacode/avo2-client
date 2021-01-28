@@ -43,7 +43,9 @@ export function getBooleanFilters(filters: any, props: string[], nestedProps?: s
 				[prop]: { _eq: val === 'true' },
 			}))
 		);
-		return orFilters;
+		return {
+			_or: orFilters,
+		};
 	});
 }
 
@@ -140,20 +142,15 @@ export function getMultiOptionsFilters(
 				};
 			} else {
 				// only selected values without an empty filter
-				filterObject = {
-					...filterValues.map((value: string) => {
-						if (labelPath) {
-							return {
-								[referenceTable]: {
-									[labelPath]: { _has_key: value },
-								},
-							};
-						}
-						return {
-							[referenceTable]: { _has_key: value },
+				filterObject = {};
+				filterValues.forEach((value: string) => {
+					if (labelPath) {
+						filterObject[referenceTable] = {
+							[labelPath]: { _has_key: value },
 						};
-					}),
-				};
+					}
+					filterObject[referenceTable] = { _has_key: value };
+				});
 			}
 
 			// Set filter query on main query object
@@ -179,9 +176,9 @@ function setNestedValues(
 	props: string[],
 	nestedProps: string[],
 	getValue: (prop: string, value: any) => any
-) {
+): any[] {
 	return compact(
-		props.map((prop: string, index: number) => {
+		props.map((prop: string, index: number): any => {
 			const value = (filters as any)[prop];
 			if (!isNil(value) && (!isArray(value) || value.length)) {
 				const nestedProp = nestedProps ? nestedProps[index] : prop;

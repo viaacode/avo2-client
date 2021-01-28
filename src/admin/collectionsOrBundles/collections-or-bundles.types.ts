@@ -38,10 +38,10 @@ export type CollectionOrBundleQualityCheckOverviewTableCols =
 
 export type CollectionOrBundleMarcomOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
-	| 'marcom_last_communication_medium'
+	| 'marcom_last_communication_channel_type'
+	| 'marcom_last_communication_channel_name'
 	| 'marcom_last_communication_at'
-	| 'marcom_klascement'
-	| 'marcom_other_platforms';
+	| 'marcom_klascement';
 
 export type CollectionTableCols =
 	| CollectionsOrBundlesOverviewTableCols
@@ -91,7 +91,6 @@ export interface CollectionOrBundleMarcomTableState extends CollectionOrBundleTa
 	marcom_last_communication_medium: string;
 	marcom_last_communication_at: string;
 	marcom_klascement: boolean;
-	marcom_other_platforms: boolean;
 }
 
 export type CollectionTableStates =

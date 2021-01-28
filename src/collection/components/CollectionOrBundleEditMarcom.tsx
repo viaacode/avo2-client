@@ -1,11 +1,37 @@
 import H from 'history';
-import React, { FunctionComponent } from 'react';
-// import { useTranslation } from 'react-i18next';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Column, Container, Form, Grid, Spacer } from '@viaa/avo2-components';
+import {
+	BlockHeading,
+	Button,
+	Container,
+	DatePicker,
+	Flex,
+	FlexItem,
+	Form,
+	FormGroup,
+	Select,
+	Spacer,
+	Spinner,
+	Table,
+	TextArea,
+	TextInput,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { CustomError, formatDate } from '../../shared/helpers';
+import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { ToastService } from '../../shared/services';
+import {
+	GET_MARCOM_CHANNEL_NAME_OPTIONS,
+	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+	GET_MARCOM_ENTRY_TABLE_COLUMNS,
+} from '../collection.const';
+import { CollectionService } from '../collection.service';
+import { ContentTypeNumber, MarcomEntry } from '../collection.types';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
 
@@ -17,25 +43,162 @@ interface CollectionOrBundleEditMarcomProps {
 
 const CollectionOrBundleEditMarcom: FunctionComponent<
 	CollectionOrBundleEditMarcomProps & UserProps
-	// @ts-ignore
-> = ({ collection, changeCollectionState }) => {
-	// const [t] = useTranslation();
+> = ({ collection }) => {
+	const [t] = useTranslation();
+
+	const isCollection = collection.type_id === ContentTypeNumber.collection;
+
+	const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
+	const [marcomChannelType, setMarcomChannelType] = useState<string>(
+		GET_MARCOM_CHANNEL_TYPE_OPTIONS()[0].value
+	);
+	const [marcomChannelName, setMarcomChannelName] = useState<string>(
+		GET_MARCOM_CHANNEL_NAME_OPTIONS()[0].value
+	);
+	const [marcomLink, setMarcomLink] = useState<string>('');
+	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
+
+	const fetchMarcomEntries = useCallback(async () => {
+		try {
+			setMarcomEntries(await CollectionService.getMarcomEntries(collection.id));
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch marcom entries from the database', err, {
+					collectionId: collection.id,
+				})
+			);
+			ToastService.danger(t('Het ophalen van de marcom entries is mislukt'));
+		}
+	}, [collection.id, t, setMarcomEntries]);
+
+	useEffect(() => {
+		fetchMarcomEntries();
+	}, [fetchMarcomEntries]);
+
+	const renderMarcomTableCell = (
+		rowData: Partial<MarcomEntry>,
+		columnId: keyof MarcomEntry
+	): ReactNode => {
+		const value = get(rowData, columnId);
+		switch (columnId) {
+			case 'publish_date':
+				return formatDate(value) || '-';
+
+			case 'external_link':
+				return value ? (
+					<a href={value} target="_blank">
+						{truncateTableValue(value)}
+					</a>
+				) : (
+					'-'
+				);
+
+			default:
+				return truncateTableValue(value) || '-';
+		}
+	};
+
+	const addMarcomEntry = async () => {
+		let marcomEntry: Partial<MarcomEntry> | null = null;
+		try {
+			marcomEntry = {
+				channel_type: marcomChannelType || null,
+				channel_name: marcomChannelName || null,
+				collection_id: collection.id,
+				external_link: marcomLink.trim() || null,
+				publish_date: marcomDate?.toISOString(),
+			};
+			await CollectionService.insertMarcomEntry([marcomEntry]);
+			await fetchMarcomEntries();
+			ToastService.success(t('Het toevoegen van de marcom entry is gelukt'));
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to insert a new marcom entry into the database', err, {
+					collectionId: collection.id,
+				})
+			);
+			ToastService.danger(t('Het toevoegen van de marcom entry is mislukt'));
+		}
+	};
 
 	return (
 		<>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Form>
-						<Spacer margin="bottom">
-							<Grid>
-								<Column size="3-7">
-									TODO Database voorzien om marcom velden op te slaan
-								</Column>
-								<Column size="3-5">
-									<></>
-								</Column>
-							</Grid>
+						<BlockHeading type="h3">{t('Meest recente communicatie')}</BlockHeading>
+						<Flex justify="between" spaced="wide">
+							<FlexItem>
+								<FormGroup label={t('Datum communicatie')}>
+									<DatePicker onChange={setMarcomDate} value={marcomDate} />
+								</FormGroup>
+							</FlexItem>
+							<FlexItem>
+								<FormGroup label={t('Kanaal type')}>
+									<Select
+										options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
+										onChange={setMarcomChannelType}
+										value={marcomChannelType}
+									/>
+								</FormGroup>
+							</FlexItem>
+							<FlexItem>
+								<FormGroup label={t('Kanaal naam')}>
+									<Select
+										options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
+										onChange={setMarcomChannelName}
+										value={marcomChannelName}
+									/>
+								</FormGroup>
+							</FlexItem>
+							<FlexItem>
+								<FormGroup label={t('Link')}>
+									<TextInput
+										onChange={setMarcomLink}
+										value={marcomLink || undefined}
+									/>
+								</FormGroup>
+							</FlexItem>
+							<FlexItem>
+								<FormGroup label=" ">
+									<Button
+										label={t('Toevoegen')}
+										onClick={addMarcomEntry}
+										type="primary"
+									/>
+								</FormGroup>
+							</FlexItem>
+						</Flex>
+						<Spacer margin={['top-extra-large', 'bottom-large']}>
+							<BlockHeading type="h3">{t('Eerdere communicatie')}</BlockHeading>
+							{marcomEntries ? (
+								<Table
+									data={marcomEntries}
+									columns={GET_MARCOM_ENTRY_TABLE_COLUMNS()}
+									renderCell={renderMarcomTableCell as any}
+									emptyStateMessage={
+										isCollection
+											? t(
+													'Er zijn nog geen marcom entries voor deze collectie'
+											  )
+											: t('Er zijn nog geen marcom entries voor deze bundel')
+									}
+									rowKey="id"
+								/>
+							) : (
+								<Spacer margin={['top-large', 'bottom-large']}>
+									<Flex center>
+										<Spinner size="large" />
+									</Flex>
+								</Spacer>
+							)}
 						</Spacer>
+						<FormGroup label={t('Opmerkingen')}>
+							<TextArea
+								disabled
+								placeholder="TODO: add field to database (DEV-1456)"
+							/>
+						</FormGroup>
 					</Form>
 				</Container>
 			</Container>

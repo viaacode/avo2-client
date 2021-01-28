@@ -43,6 +43,7 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import { getMultiOptionFilters, NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionsOrBundlesOverviewProps extends DefaultSecureRouteProps {}
 
@@ -82,6 +83,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				isCollection,
 				false,
 				true
+			);
+
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['author_user_group'],
+					['profile.profile_user_group.group.id']
+				)
 			);
 
 			return { _and: andFilters };
@@ -191,11 +200,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({

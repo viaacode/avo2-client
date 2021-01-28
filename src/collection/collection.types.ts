@@ -58,3 +58,12 @@ export type EditCollectionTab =
 	| 'actualisation'
 	| 'quality_check'
 	| 'marcom';
+
+export interface MarcomEntry {
+	id: string;
+	channel_name: string | null;
+	channel_type: string | null;
+	external_link: string | null;
+	publish_date: string;
+	collection_id: string;
+}

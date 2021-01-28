@@ -56,70 +56,59 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
+// TODO add collection labels when they are added to the the views
+// https://meemoo.atlassian.net/browse/DEV-1438
+// collection_labels: labels {
+// 	label
+// 	id
+// }
 export const GET_COLLECTION_ACTUALISATION = gql`
 	query getCollectionActualisations(
-		$where: app_collections_bool_exp!
-		$orderBy: [app_collections_order_by!]!
+		$where: app_collection_actualisation_overview_bool_exp!
+		$orderBy: [app_collection_actualisation_overview_order_by!]!
 		$offset: Int!
 		$limit: Int!
 	) {
-		app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
-			id
-			title
+		app_collections: app_collection_actualisation_overview(
+			where: $where
+			order_by: $orderBy
+			offset: $offset
+			limit: $limit
+		) {
+			id: collection_id
 			created_at
+			is_public
+			subjects: lom_classification
+			education_levels: lom_context
+			mgmt_created_at
+			mgmt_current_status
+			mgmt_last_eindcheck_date
+			mgmt_status_expires_at
+			mgmt_updated_at
 			owner_profile_id
-			profile {
-				id
-				profile_user_group {
-					group {
-						label
-						id
+			title
+			type_id
+			updated_at
+			updated_by_profile_id
+			owner {
+				profile {
+					id
+					profile_user_group {
+						group {
+							label
+							id
+						}
 					}
 				}
-				user: usersByuserId {
-					id
-					full_name
-				}
+				user_id
+				full_name
 			}
-			updated_by {
-				id
-				user: usersByuserId {
-					id
-					full_name
-				}
-			}
-			updated_at
-			is_public
-			collection_labels {
-				id
-				label
-			}
-			management {
-				id
-				current_status
-				status_valid_until
-				manager {
-					full_name
-				}
-			}
-			management_actualised_at: QC(
-				where: { qc_label: { _eq: KWALITEITSCHECK } }
-				order_by: { created_at: desc_nulls_last }
-				limit: 1
-			) {
-				id
-				created_at
-			}
-			management_approved_at: QC(
-				where: { qc_label: { _eq: EINDCHECK } }
-				order_by: { created_at: desc_nulls_last }
-				limit: 1
-			) {
-				id
-				created_at
+			last_editor {
+				profile_id
+				full_name
 			}
 		}
-		app_collections_aggregate(where: $where) {
+		app_collections_aggregate: app_collection_actualisation_overview_aggregate(where: $where) {
 			aggregate {
 				count
 			}
@@ -127,70 +116,57 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 	}
 `;
 
+// TODO add created_at and fix last_editor names when task is completed
+// https://meemoo.atlassian.net/browse/DEV-1438
+// created_at
+// last_editor {
+// 	full_name
+// }
 export const GET_COLLECTION_QUALITY_CHECK = gql`
 	query getCollectionQualityCheck(
-		$where: app_collections_bool_exp!
-		$orderBy: [app_collections_order_by!]!
+		$where: app_collection_qc_overview_bool_exp!
+		$orderBy: [app_collection_qc_overview_order_by!]!
 		$offset: Int!
 		$limit: Int!
 	) {
-		app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
-			id
-			title
-			created_at
-			owner_profile_id
-			profile {
-				id
-				profile_user_group {
-					group {
-						label
-						id
+		app_collections: app_collection_qc_overview(
+			where: $where
+			order_by: $orderBy
+			offset: $offset
+			limit: $limit
+		) {
+			id: collection_id
+			is_public
+			subjects: lom_classification
+			education_levels: lom_context
+			owner {
+				profile {
+					id
+					profile_user_group {
+						group {
+							label
+							id
+						}
 					}
 				}
-				user: usersByuserId {
-					id
-					full_name
-				}
-			}
-			updated_by {
-				id
-				user: usersByuserId {
-					id
-					full_name
-				}
+				user_id
+				full_name
 			}
 			updated_at
-			is_public
-			collection_labels {
+			title
+			updated_by_profile_id
+			collection_labels: labels {
 				id
 				label
 			}
-			management_language_check: QC(
-				where: { qc_label: { _eq: TAALCHECK } }
-				order_by: { created_at: desc_nulls_last }
-				limit: 1
-			) {
-				id
-				qc_status
+			last_editor_name {
+				full_name
 			}
-			management_quality_check: QC(
-				where: { qc_label: { _eq: KWALITEITSCHECK } }
-				order_by: { created_at: desc_nulls_last }
-				limit: 1
-			) {
-				id
-				qc_status
-			}
-			management_approved_at: QC(
-				where: { qc_label: { _eq: EINDCHECK } }
-				order_by: { created_at: desc_nulls_last }
-				limit: 1
-			) {
-				id
-				created_at
-			}
+			mgmt_quality_check
+			mgmt_language_check
+			mgmt_eind_check_date
 		}
-		app_collections_aggregate(where: $where) {
+		app_collections_aggregate: app_collection_qc_overview_aggregate(where: $where) {
 			aggregate {
 				count
 			}
@@ -200,44 +176,50 @@ export const GET_COLLECTION_QUALITY_CHECK = gql`
 
 export const GET_COLLECTION_MARCOM = gql`
 	query getCollectionMarcom(
-		$where: app_collections_bool_exp!
-		$orderBy: [app_collections_order_by!]!
+		$where: app_collection_marcom_overview_bool_exp!
+		$orderBy: [app_collection_marcom_overview_order_by!]!
 		$offset: Int!
 		$limit: Int!
 	) {
-		app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
-			id
-			title
+		app_collections: app_collection_marcom_overview(
+			where: $where
+			order_by: $orderBy
+			offset: $offset
+			limit: $limit
+		) {
+			channel_name
+			channel_type
+			id: collection_id
 			created_at
-			owner_profile_id
-			profile {
+			is_public
+			klascement
+			collection_labels: labels {
+				label
 				id
-				profile_user_group {
-					group {
-						label
-						id
+			}
+			last_editor {
+				full_name
+			}
+			subjects: lom_classification
+			education_levels: lom_context
+			owner {
+				profile {
+					id
+					profile_user_group {
+						group {
+							label
+							id
+						}
 					}
 				}
-				user: usersByuserId {
-					id
-					full_name
-				}
+				user_id
+				full_name
 			}
-			updated_by {
-				id
-				user: usersByuserId {
-					id
-					full_name
-				}
-			}
+			publish_date
+			title
 			updated_at
-			is_public
-			collection_labels {
-				id
-				label
-			}
 		}
-		app_collections_aggregate(where: $where) {
+		app_collections_aggregate: app_collection_marcom_overview_aggregate(where: $where) {
 			aggregate {
 				count
 			}
