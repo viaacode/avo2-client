@@ -119,9 +119,6 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 // TODO add created_at and fix last_editor names when task is completed
 // https://meemoo.atlassian.net/browse/DEV-1438
 // created_at
-// last_editor {
-// 	full_name
-// }
 export const GET_COLLECTION_QUALITY_CHECK = gql`
 	query getCollectionQualityCheck(
 		$where: app_collection_qc_overview_bool_exp!
@@ -159,7 +156,7 @@ export const GET_COLLECTION_QUALITY_CHECK = gql`
 				id
 				label
 			}
-			last_editor_name {
+			last_editor {
 				full_name
 			}
 			mgmt_quality_check
