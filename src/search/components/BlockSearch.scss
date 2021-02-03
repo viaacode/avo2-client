@@ -1,11 +1,20 @@
 @import '../../styles/settings/colors';
 
 .m-search-block {
+	.c-dropdown__wrapper {
+		position: relative;
+
+		> div {
+			max-width: 100%;
+		}
+	}
+
 	.c-menu {
 		margin-top: 5px;
+		max-width: 100%;
 
 		.c-dropdown-results {
-			height: 240px;
+			max-width: 100%;
 
 			.c-menu__item {
 				border-bottom: 0.1rem solid $color-gray-100;
