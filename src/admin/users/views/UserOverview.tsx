@@ -218,8 +218,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			if (!isNil(filters.stamboek)) {
 				andFilters.push({ stamboek: { _is_null: !filters.stamboek } });
 			}
-			// TODO wait for is_deleted to be added to the users_summary_view
-			// andFilters.push({ profile: { is_deleted: { _eq: false } } });
+			andFilters.push({ profile: { is_deleted: { _eq: false } } });
 
 			return { _and: andFilters };
 		},
