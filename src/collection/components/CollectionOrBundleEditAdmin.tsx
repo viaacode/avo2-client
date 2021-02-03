@@ -455,12 +455,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 														),
 													});
 												}}
-												disabled={PermissionService.hasPerm(
-													user,
-													isCollection
-														? PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS
-														: PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS
-												)}
 											/>
 										</FormGroup>
 									) : (
