@@ -292,62 +292,62 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 };
 
 // Options
-const transparentOption = {
+const transparentOption = () => ({
 	label: i18n.t('admin/content-block/content-block___geen'),
 	value: Color.Transparent,
-};
-const whiteOption = {
+});
+const whiteOption = () => ({
 	label: i18n.t('admin/content-block/content-block___wit'),
 	value: Color.White,
-};
-const gray50Option = {
+});
+const gray50Option = () => ({
 	label: i18n.t('admin/content-block/content-block___grijs'),
 	value: Color.Gray50,
-};
-const softBlueOption = {
+});
+const softBlueOption = () => ({
 	label: i18n.t('admin/content-block/content-block___zachtblauw'),
 	value: Color.SoftBlue,
-};
-const nightBlueOption = {
+});
+const nightBlueOption = () => ({
 	label: i18n.t('admin/content-block/content-block___nachtblauw'),
 	value: Color.NightBlue,
-};
-const tealOption = {
+});
+const tealOption = () => ({
 	label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
 	value: Color.Teal,
-};
-const tealBrightOption = {
+});
+const tealBrightOption = () => ({
 	label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
 	value: Color.TealBright,
-};
-const oceanGreenOption = {
+});
+const oceanGreenOption = () => ({
 	label: i18n.t('admin/content-block/content-block___oceaangroen'),
 	value: Color.OceanGreen,
-};
-const yellowOption = {
+});
+const yellowOption = () => ({
 	label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
 	value: Color.Yellow,
-};
+});
 
 export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
-	transparentOption,
-	whiteOption,
-	gray50Option,
-	softBlueOption,
-	nightBlueOption,
-	tealOption,
-	tealBrightOption,
-	oceanGreenOption,
-	yellowOption,
+	transparentOption(),
+	whiteOption(),
+	gray50Option(),
+	softBlueOption(),
+	nightBlueOption(),
+	tealOption(),
+	tealBrightOption(),
+	oceanGreenOption(),
+	yellowOption(),
 ];
 
 export const GET_HERO_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
-	softBlueOption,
-	nightBlueOption,
-	tealOption,
-	tealBrightOption,
-	oceanGreenOption,
-	yellowOption,
+	softBlueOption(),
+	nightBlueOption(),
+	tealOption(),
+	tealBrightOption(),
+	oceanGreenOption(),
+	yellowOption(),
 ];
 
 // TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
