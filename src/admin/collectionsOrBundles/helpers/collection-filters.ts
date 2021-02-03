@@ -15,49 +15,31 @@ import {
 	getQueryFilter,
 	NULL_FILTER,
 } from '../../shared/helpers/filters';
-import { CollectionTableStates, QualityCheckLabel } from '../collections-or-bundles.types';
+import { CollectionTableStates } from '../collections-or-bundles.types';
 
-function generateQualityCheckFilter(
-	filters: Partial<CollectionTableStates>,
-	prop: string,
-	label: QualityCheckLabel
-): any[] {
-	const allLanguageCheckValues = get(filters, prop) || [];
-	const languageCheckValues = without(allLanguageCheckValues, NULL_FILTER);
-	const containsNullValue = allLanguageCheckValues.includes(NULL_FILTER);
-	if (allLanguageCheckValues && allLanguageCheckValues.length) {
-		const orFilters: any[] = languageCheckValues.map((value) => ({
-			qc_status: { _eq: value },
-		}));
-		if (containsNullValue) {
-			orFilters.push({ qc_status: { _is_null: true } });
-		}
-		return [
-			{
-				management: {
-					QC: {
-						qc_label: { _eq: label },
-						_or: orFilters,
-					},
-				},
-			},
-		];
-	}
-	return [];
-}
-
+/**
+ * Generates the filters for the collections and bundles screens and the actualisation, quality check and marcom screens
+ * @param filters: the filter object containing the selected values. this is also stored in the url of the overview page
+ * @param user
+ * @param isCollection: switch between collection and bundles since they are loaded from the same table
+ * @param includeDeleted: determines of a filter for omitting deleted collections should be added or not
+ * @param checkPermissions: for the collection and bundle overview you need a specific permission
+ * @param isCollectionTableOrView: small differences between the editorial views and the collection/bundle table are switched using this boolean
+ */
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,
 	user: Avo.User.User,
 	isCollection: boolean,
 	includeDeleted: boolean,
-	checkPermissions: boolean
+	checkPermissions: boolean,
+	isCollectionTableOrView: 'collectionTable' | 'view'
 ) {
+	const isCollectionTable: boolean = isCollectionTableOrView === 'collectionTable';
 	const andFilters: any[] = [];
 	andFilters.push(
 		...getQueryFilter(filters.query, (queryWildcard: string) => [
 			{ title: { _ilike: queryWildcard } },
-			{ description: { _ilike: queryWildcard } },
+			...(isCollectionTable ? [{ description: { _ilike: queryWildcard } }] : []),
 			{
 				owner: {
 					full_name: { _ilike: queryWildcard },
@@ -65,26 +47,31 @@ export function generateCollectionWhereObject(
 			},
 		])
 	);
-	andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
-	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
+
 	andFilters.push(
 		...getMultiOptionFilters(
 			filters,
 			['author_user_group'],
-			['profile.profile_user_group.group.id']
+			[
+				isCollectionTable
+					? 'profile.profile_user_group.group.id'
+					: 'owner.profile.profile_user_group.group.id',
+			]
 		)
 	);
+	andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 	if (filters.collection_labels && filters.collection_labels.length) {
 		andFilters.push({
 			_or: [
 				...getMultiOptionFilters(
 					{
-						collection_labels: without(filters.collection_labels, 'NO_LABEL'),
+						collection_labels: without(filters.collection_labels, NULL_FILTER),
 					},
 					['collection_labels'],
-					['collection_labels.label']
+					[isCollectionTable ? 'collection_labels.label' : 'labels.label']
 				),
-				...(filters.collection_labels.includes('NO_LABEL')
+				...(filters.collection_labels.includes(NULL_FILTER)
 					? [{ _not: { collection_labels: {} } }]
 					: []),
 			],
@@ -95,7 +82,7 @@ export function generateCollectionWhereObject(
 			_or: [
 				...getMultiOptionsFilters(
 					{
-						subjects: without(filters.collection_labels, 'NO_LABEL'),
+						subjects: without(filters.subjects, NULL_FILTER),
 					},
 					['subjects'],
 					['lom_classification']
@@ -108,7 +95,7 @@ export function generateCollectionWhereObject(
 			_or: [
 				...getMultiOptionsFilters(
 					{
-						education_levels: without(filters.education_levels, 'NO_LABEL'),
+						education_levels: without(filters.education_levels, NULL_FILTER),
 					},
 					['education_levels'],
 					['lom_context']
@@ -167,56 +154,48 @@ export function generateCollectionWhereObject(
 
 	// Actualisation filters
 	andFilters.push(
-		...getMultiOptionFilters(filters, ['actualisation_status'], ['management.current_status'])
+		...getMultiOptionFilters(filters, ['actualisation_status'], ['mgmt_current_status'])
 	);
+	// TODO bart add to actualisation view
+	// andFilters.push(
+	// 	...getMultiOptionFilters(
+	// 		filters,
+	// 		['actualisation_manager'],
+	// 		['management.manager_profile_id']
+	// 	)
+	// );
 	andFilters.push(
-		...getMultiOptionFilters(
-			filters,
-			['actualisation_manager'],
-			['management.manager_profile_id']
-		)
-	);
-	andFilters.push(
-		...getDateRangeFilters(
-			filters,
-			['actualisation_last_actualised_at'],
-			['management.updated_at']
-		)
+		...getDateRangeFilters(filters, ['actualisation_last_actualised_at'], ['mgmt_updated_at'])
 	);
 	andFilters.push(
 		...getDateRangeFilters(
 			filters,
 			['actualisation_status_valid_until'],
-			['management.status_valid_until']
+			['mgmt_status_expires_at']
 		)
 	);
 	const approvedFilter = get(filters, 'actualisation_approved_at');
 	if (get(approvedFilter, 'gte') || get(approvedFilter, 'lte')) {
-		const dateFilters = getDateRangeFilters(
-			filters,
-			['actualisation_approved_at'],
-			['QC.created_at']
+		andFilters.push(
+			...getDateRangeFilters(
+				filters,
+				['actualisation_approved_at'],
+				['mgmt_last_eindcheck_date']
+			)
 		);
-		andFilters.push({
-			management: {
-				QC: {
-					qc_label: { _eq: 'EINDCHECK' },
-					...dateFilters[0].management.QC,
-				},
-			},
-		});
 	}
 
 	// Quality check filters
 	andFilters.push(
-		...generateQualityCheckFilter(filters, 'quality_check_language_check', 'TAALCHECK')
-	);
-	andFilters.push(
-		...generateQualityCheckFilter(filters, 'quality_check_quality_check', 'KWALITEITSCHECK')
+		...getBooleanFilters(
+			filters,
+			['quality_check_language_check', 'quality_check_quality_check'],
+			['mgmt_quality_check', 'mgmt_language_check']
+		)
 	);
 
 	// Marcom filters
-	// TODO after the database supports marcom fields
+	andFilters.push(...getBooleanFilters(filters, ['marcom_klascement'], ['klascement']));
 
 	return andFilters;
 }

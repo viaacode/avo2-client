@@ -35,6 +35,7 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleMarcomOverviewProps extends DefaultSecureRouteProps {}
 
@@ -69,10 +70,12 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 				user,
 				isCollection,
 				true,
-				false
+				false,
+				'view'
 			);
+
 			andFilters.push({
-				is_managed: { _eq: true },
+				last_marcom_date: { _is_null: false },
 			});
 
 			return { _and: andFilters };
@@ -90,10 +93,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			] = await CollectionsOrBundlesService.getCollectionEditorial(
 				tableState.page || 0,
 				(tableState.sort_column ||
-					'created_at') as CollectionOrBundleMarcomOverviewTableCols,
+					'updated_at') as CollectionOrBundleMarcomOverviewTableCols,
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState)),
-				'quality_check'
+				'marcom'
 			);
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
@@ -182,11 +185,11 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({

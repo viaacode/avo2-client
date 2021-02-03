@@ -34,6 +34,7 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleQualityCheckOverviewProps extends DefaultSecureRouteProps {}
 
@@ -70,11 +71,9 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 				user,
 				isCollection,
 				true,
-				false
+				false,
+				'view'
 			);
-			andFilters.push({
-				is_managed: { _eq: true },
-			});
 
 			return { _and: andFilters };
 		},
@@ -91,7 +90,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 			] = await CollectionsOrBundlesService.getCollectionEditorial(
 				tableState.page || 0,
 				(tableState.sort_column ||
-					'created_at') as CollectionOrBundleQualityCheckOverviewTableCols,
+					'updated_at') as CollectionOrBundleQualityCheckOverviewTableCols,
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState)),
 				'quality_check'
@@ -183,11 +182,11 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({

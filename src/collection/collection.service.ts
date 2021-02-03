@@ -6,9 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
 import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
-import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
-import { getUserGroupId } from '../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
@@ -28,6 +26,7 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
 	GET_COLLECTIONS_BY_OWNER,
+	GET_MARCOM_ENTRIES,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -37,6 +36,7 @@ import {
 	INSERT_COLLECTION_LABELS,
 	INSERT_COLLECTION_MANAGEMENT_ENTRY,
 	INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
+	INSERT_MARCOM_ENTRY,
 	SOFT_DELETE_COLLECTION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
@@ -50,7 +50,7 @@ import {
 	getValidationErrorsForPublish,
 	keepCoreCollectionProperties,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel } from './collection.types';
+import { ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export class CollectionService {
@@ -61,7 +61,7 @@ export class CollectionService {
 	 *
 	 * @param newCollection Collection that must be inserted.
 	 */
-	public static async insertCollection(
+	static async insertCollection(
 		newCollection: Partial<Avo.Collection.Collection>
 	): Promise<Avo.Collection.Collection> {
 		try {
@@ -133,7 +133,7 @@ export class CollectionService {
 	 * @param updatedColl
 	 * @param user
 	 */
-	public static async updateCollection(
+	static async updateCollection(
 		initialColl: Avo.Collection.Collection | null,
 		updatedColl: Partial<Avo.Collection.Collection>,
 		user: Avo.User.User
@@ -345,7 +345,8 @@ export class CollectionService {
 						'management.status_valid_until',
 						null
 					),
-				});
+					note: get(updatedCollection, 'management.note', null),
+				} as any); // TODO remove cast to any after update to typings v2.28.1
 			} else if (
 				!!get(initialCollection, 'management') &&
 				!!get(updatedCollection, 'management')
@@ -363,7 +364,8 @@ export class CollectionService {
 						'management.status_valid_until',
 						null
 					),
-				});
+					note: get(updatedCollection, 'management.note', null),
+				} as any); // TODO remove cast to any after update to typings v2.28.1
 			}
 
 			if (!!get(updatedCollection, 'management')) {
@@ -464,7 +466,10 @@ export class CollectionService {
 		}
 	};
 
-	private static insertManagementEntry = async (collectionId: string, managementData: any) => {
+	private static insertManagementEntry = async (
+		collectionId: string,
+		managementData: Partial<Avo.Collection.Management>
+	) => {
 		try {
 			await dataService.mutate({
 				mutation: INSERT_COLLECTION_MANAGEMENT_ENTRY,
@@ -531,7 +536,7 @@ export class CollectionService {
 		}
 	};
 
-	public static updateCollectionProperties = async (
+	static updateCollectionProperties = async (
 		id: string,
 		collection: Partial<Avo.Collection.Collection>
 	) => {
@@ -558,7 +563,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique identifier of the collection.
 	 */
-	public static deleteCollection = async (collectionId: string) => {
+	static deleteCollection = async (collectionId: string) => {
 		try {
 			// delete collection by id
 			await dataService.mutate({
@@ -585,7 +590,7 @@ export class CollectionService {
 	 *
 	 * @returns Duplicate collection.
 	 */
-	public static async duplicateCollection(
+	static async duplicateCollection(
 		collection: Avo.Collection.Collection,
 		user: Avo.User.User,
 		copyPrefix: string,
@@ -662,7 +667,7 @@ export class CollectionService {
 	 * @param typeId 3 for collections, 4 for bundles
 	 * @returns Collections limited by `limit`.
 	 */
-	public static async fetchCollectionsOrBundles(
+	static async fetchCollectionsOrBundles(
 		limit: number,
 		typeId: ContentTypeNumber
 	): Promise<Avo.Collection.Collection[]> {
@@ -682,7 +687,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchCollectionsOrBundlesByTitleOrId(
+	static async fetchCollectionsOrBundlesByTitleOrId(
 		isCollection: boolean,
 		titleOrId: string,
 		limit: number
@@ -727,7 +732,7 @@ export class CollectionService {
 	 *
 	 * @returns Collections limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	public static async fetchCollectionsByTitleOrId(
+	static async fetchCollectionsByTitleOrId(
 		titleOrId: string,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
@@ -742,14 +747,14 @@ export class CollectionService {
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	public static async fetchBundlesByTitleOrId(
+	static async fetchBundlesByTitleOrId(
 		titleOrId: string,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
 		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(false, titleOrId, limit);
 	}
 
-	public static async fetchQualityLabels(): Promise<QualityLabel[]> {
+	static async fetchQualityLabels(): Promise<QualityLabel[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_QUALITY_LABELS,
@@ -775,7 +780,7 @@ export class CollectionService {
 	 *
 	 * @returns Collections or bundles owned by the user.
 	 */
-	public static async fetchCollectionsOrBundlesByUser(
+	static async fetchCollectionsOrBundlesByUser(
 		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
@@ -811,7 +816,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
-	 * @param assignmentUuid Collection can be fetched if it's not public and you're not the owner,
+	 * @param assignmentUuid Collection can be fetched if it's not and you're not the owner,
 	 *        but if it is linked to an assignment that you're trying to view
 	 *
 	 * @param includeFragments
@@ -862,7 +867,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async getPublishedBundlesContainingCollection(
+	static async getPublishedBundlesContainingCollection(
 		id: string
 	): Promise<Avo.Collection.Collection[]> {
 		const response = await dataService.query({
@@ -884,7 +889,7 @@ export class CollectionService {
 		return get(response, 'data.app_collections', []);
 	}
 
-	public static async insertFragments(
+	static async insertFragments(
 		collectionId: string,
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
@@ -984,7 +989,7 @@ export class CollectionService {
 	 *
 	 * @returns Potential title for duplicate collection.
 	 */
-	public static getCopyTitleForCollection = async (
+	static getCopyTitleForCollection = async (
 		copyPrefix: string,
 		copyRegex: RegExp,
 		existingTitle: string,
@@ -1008,10 +1013,7 @@ export class CollectionService {
 		return candidateTitle;
 	};
 
-	public static async addLabelsToCollection(
-		collectionId: string,
-		labels: string[]
-	): Promise<void> {
+	static async addLabelsToCollection(collectionId: string, labels: string[]): Promise<void> {
 		let variables: any;
 		try {
 			variables = {
@@ -1036,10 +1038,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async deleteLabelsFromCollection(
-		collectionId: string,
-		labels: string[]
-	): Promise<void> {
+	static async deleteLabelsFromCollection(collectionId: string, labels: string[]): Promise<void> {
 		let variables: any;
 		try {
 			variables = {
@@ -1062,7 +1061,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async getCollectionLabels(): Promise<{ [id: string]: string }> {
+	static async getCollectionLabels(): Promise<{ [id: string]: string }> {
 		try {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
@@ -1131,7 +1130,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchCollectionsByFragmentId(
+	static async fetchCollectionsByFragmentId(
 		fragmentId: string
 	): Promise<Avo.Collection.Collection[]> {
 		try {
@@ -1155,7 +1154,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchCollectionsByOwner(
+	static async fetchCollectionsByOwner(
 		user: Avo.User.User,
 		offset: number,
 		limit: number,
@@ -1190,7 +1189,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
+	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
@@ -1217,6 +1216,59 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to get collection or bundle uuid by avo1 id', err, {
 				avo1Id,
+			});
+		}
+	}
+
+	static async getMarcomEntries(collectionUuid: string): Promise<MarcomEntry[]> {
+		let variables: any;
+		try {
+			variables = {
+				collectionUuid,
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_MARCOM_ENTRIES,
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_collection_marcom_log', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError(
+				'Fetch collections marcom entries from the database failed',
+				err,
+				{
+					variables,
+					query: 'GET_MARCOM_ENTRIES',
+				}
+			);
+		}
+	}
+
+	static async insertMarcomEntry(marcomEntries: Partial<MarcomEntry>[]): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				objects: marcomEntries,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_MARCOM_ENTRY,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			// handle error
+			throw new CustomError('Failed to insert marcom entry into the database', err, {
+				variables,
+				query: 'INSERT_MARCOM_ENTRY',
 			});
 		}
 	}

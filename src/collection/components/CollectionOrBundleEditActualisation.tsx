@@ -133,14 +133,11 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 									<FormGroup label={t('Opmerkingen')}>
 										<TextArea
 											height="auto"
-											disabled
-											value={
-												'TODO add field to database' /*get(collection, 'management.comments') || ''*/
-											}
+											value={get(collection, 'management.note') || ''}
 											onChange={(newNotes: string) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
-													collectionProp: 'management.notes',
+													collectionProp: 'management.note',
 													collectionPropValue: newNotes || null,
 												})
 											}

@@ -21,6 +21,7 @@ import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQ
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
@@ -70,11 +71,9 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 				user,
 				isCollection,
 				true,
-				false
+				false,
+				'view'
 			);
-			andFilters.push({
-				is_managed: { _eq: true },
-			});
 
 			return { _and: andFilters };
 		},
@@ -183,11 +182,11 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({

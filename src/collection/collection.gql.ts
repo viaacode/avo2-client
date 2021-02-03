@@ -333,6 +333,7 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$current_status: String
 		$manager_profile_id: uuid
 		$status_valid_until: timestamptz
+		$note: String
 	) {
 		insert_app_collection_management(
 			objects: [
@@ -341,6 +342,7 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 					current_status: $current_status
 					manager_profile_id: $manager_profile_id
 					status_valid_until: $status_valid_until
+					note: $note
 				}
 			]
 		) {
@@ -355,6 +357,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$current_status: String
 		$manager_profile_id: uuid
 		$status_valid_until: timestamptz
+		$note: String
 	) {
 		update_app_collection_management(
 			where: { collection_id: { _eq: $collection_id } }
@@ -362,6 +365,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 				current_status: $current_status
 				manager_profile_id: $manager_profile_id
 				status_valid_until: $status_valid_until
+				note: $note
 			}
 		) {
 			affected_rows
@@ -387,6 +391,30 @@ export const INSERT_COLLECTION_MANAGEMENT_QC_ENTRY = gql`
 			}
 		) {
 			id
+		}
+	}
+`;
+
+export const GET_MARCOM_ENTRIES = gql`
+	query getCollectionMarcomEntries($collectionUuid: uuid!) {
+		app_collection_marcom_log(
+			where: { collection_id: { _eq: $collectionUuid } }
+			limit: 10
+			order_by: [{ created_at: desc_nulls_last }]
+		) {
+			id
+			channel_name
+			channel_type
+			external_link
+			publish_date
+		}
+	}
+`;
+
+export const INSERT_MARCOM_ENTRY = gql`
+	mutation insertMarcomEntry($objects: [app_collection_marcom_log_insert_input!]!) {
+		insert_app_collection_marcom_log(objects: $objects) {
+			affected_rows
 		}
 	}
 `;

@@ -434,23 +434,45 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 											/>
 										</FormGroup>
 									)}
-									<FormGroup>
-										<Checkbox
-											label={t('Redactie')}
-											checked={get(collection, 'is_managed', false)}
-											onChange={() => {
-												changeCollectionState({
-													type: 'UPDATE_COLLECTION_PROP',
-													collectionProp: 'is_managed',
-													collectionPropValue: !get(
-														collection,
-														'is_managed',
-														false
-													),
-												});
-											}}
-										/>
-									</FormGroup>
+									{PermissionService.hasPerm(
+										user,
+										isCollection
+											? PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS
+											: PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS
+									) ? (
+										<FormGroup>
+											<Checkbox
+												label={t('Redactie')}
+												checked={get(collection, 'is_managed', false)}
+												onChange={() => {
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'is_managed',
+														collectionPropValue: !get(
+															collection,
+															'is_managed',
+															false
+														),
+													});
+												}}
+												disabled={PermissionService.hasPerm(
+													user,
+													isCollection
+														? PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS
+														: PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS
+												)}
+											/>
+										</FormGroup>
+									) : (
+										<Spacer margin="top">
+											{`${t('Redactie')}: ${
+												get(collection, 'is_managed', false)
+													? t('Ja')
+													: t('Nee')
+											}
+											`}
+										</Spacer>
+									)}
 								</Column>
 								<Column size="3-5">
 									<></>
