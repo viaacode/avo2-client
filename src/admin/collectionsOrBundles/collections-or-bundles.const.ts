@@ -73,6 +73,23 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			in_assignment: order,
 		},
 	}),
+};
+
+export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	...TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+	owner_profile_id: (order: Avo.Search.OrderDirection) => ({
+		owner: { profile: { usersByuserId: { last_name: order } } },
+	}),
+	author_user_group: (order: Avo.Search.OrderDirection) => ({
+		owner: { profile: { profile_user_group: { group: { label: order } } } },
+	}),
+	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
+		last_editor: { last_name: order },
+	}),
 	actualisation_status: (order: Avo.Search.OrderDirection) => ({
 		mgmt_current_status: order,
 	}),
