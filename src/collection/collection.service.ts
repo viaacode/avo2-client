@@ -6,7 +6,9 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
 import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
+import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
+import { getUserGroupId } from '../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
@@ -49,6 +51,7 @@ import {
 	keepCoreCollectionProperties,
 } from './collection.helpers';
 import { ContentTypeNumber, QualityLabel } from './collection.types';
+import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -620,6 +623,13 @@ export class CollectionService {
 				collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${
 					collectionToInsert.title
 				}`;
+			}
+
+			// Check is_managed status
+			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
+			// Otherwise should be false
+			if (!canManageEditorial(user)) {
+				(collectionToInsert as any).is_managed = false; // TODO remove cast to any once update to typings v2.28.0
 			}
 
 			// insert duplicated collection

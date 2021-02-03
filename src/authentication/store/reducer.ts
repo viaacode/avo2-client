@@ -1,18 +1,15 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { createReducer } from '../../shared/helpers';
 
 import initialState from './initial-state';
-import {
-	LoginActionTypes,
-	SetLoginErrorAction,
-	SetLoginLoadingAction,
-	SetLoginSuccessAction,
-} from './types';
+import { LoginActionTypes, SetLoginErrorAction, SetLoginSuccessAction } from './types';
 
 const loginReducer = createReducer(initialState, {
-	[LoginActionTypes.SET_LOGIN_LOADING]: (state, action: SetLoginLoadingAction) => ({
+	[LoginActionTypes.SET_LOGIN_LOADING]: (state) => ({
 		...state,
 		data: null,
-		loading: action.loading,
+		loading: true,
 		error: false,
 	}),
 	[LoginActionTypes.SET_LOGIN_SUCCESS]: (state, action: SetLoginSuccessAction) => ({
@@ -26,6 +23,13 @@ const loginReducer = createReducer(initialState, {
 		data: null,
 		loading: false,
 		error: action.error,
+	}),
+	[LoginActionTypes.SET_ACCEPT_CONDITIONS]: (state) => ({
+		...state,
+		data: {
+			...state.data,
+			acceptedConditions: true,
+		} as Avo.Auth.LoginResponse,
 	}),
 });
 
