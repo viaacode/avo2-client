@@ -62,6 +62,13 @@ export const GET_COLLECTIONS = gql`
 // 	label
 // 	id
 // }
+// TODO Add manager when his task is completed
+// https://meemoo.atlassian.net/browse/DEV-1474
+// mgmt_manager {
+// 	id
+// 	full_name
+// 	mail
+// }
 export const GET_COLLECTION_ACTUALISATION = gql`
 	query getCollectionActualisations(
 		$where: app_collection_actualisation_overview_bool_exp!
@@ -116,9 +123,6 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 	}
 `;
 
-// TODO add created_at and fix last_editor names when task is completed
-// https://meemoo.atlassian.net/browse/DEV-1438
-// created_at
 export const GET_COLLECTION_QUALITY_CHECK = gql`
 	query getCollectionQualityCheck(
 		$where: app_collection_qc_overview_bool_exp!
@@ -149,6 +153,7 @@ export const GET_COLLECTION_QUALITY_CHECK = gql`
 				user_id
 				full_name
 			}
+			created_at
 			updated_at
 			title
 			updated_by_profile_id
@@ -212,7 +217,7 @@ export const GET_COLLECTION_MARCOM = gql`
 				user_id
 				full_name
 			}
-			publish_date
+			last_marcom_date
 			title
 			updated_at
 		}

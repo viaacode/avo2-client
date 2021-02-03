@@ -21,7 +21,7 @@ import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQ
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { getMultiOptionFilters, NULL_FILTER } from '../../shared/helpers/filters';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
@@ -71,15 +71,8 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 				user,
 				isCollection,
 				true,
-				false
-			);
-
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['author_user_group'],
-					['owner.profile.profile_user_group.group.id']
-				)
+				false,
+				'view'
 			);
 
 			return { _and: andFilters };

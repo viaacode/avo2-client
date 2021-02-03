@@ -35,7 +35,7 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
-import { getMultiOptionFilters, NULL_FILTER } from '../../shared/helpers/filters';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleMarcomOverviewProps extends DefaultSecureRouteProps {}
 
@@ -70,19 +70,12 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 				user,
 				isCollection,
 				true,
-				false
-			);
-
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['author_user_group'],
-					['owner.profile.profile_user_group.group.id']
-				)
+				false,
+				'view'
 			);
 
 			andFilters.push({
-				publish_date: { _is_null: false },
+				last_marcom_date: { _is_null: false },
 			});
 
 			return { _and: andFilters };

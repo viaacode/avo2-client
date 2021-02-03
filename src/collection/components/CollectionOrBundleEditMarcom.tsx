@@ -86,7 +86,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 
 			case 'external_link':
 				return value ? (
-					<a href={value} target="_blank">
+					<a href={value} target="_blank" rel="noopener noreferrer">
 						{truncateTableValue(value)}
 					</a>
 				) : (

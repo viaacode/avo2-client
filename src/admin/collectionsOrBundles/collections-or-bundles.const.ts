@@ -5,6 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import { DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { stringToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import i18n from '../../shared/translations/i18n';
@@ -342,6 +343,10 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
+	filterProps: {
+		showPastFutureOptions: true,
+		defaultControls: 'past',
+	} as Partial<DateRangeDropdownProps>,
 });
 
 const getActualisationApprovedAtColumn = (): FilterableColumn => ({

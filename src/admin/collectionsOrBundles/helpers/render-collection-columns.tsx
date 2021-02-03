@@ -1,4 +1,5 @@
 import { compact, get, truncate } from 'lodash-es';
+import moment from 'moment';
 import React from 'react';
 
 import { TagList, TagOption } from '@viaa/avo2-components';
@@ -12,7 +13,7 @@ import {
 import { QualityLabel } from '../../../collection/collection.types';
 import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
-import { buildLink, formatDate } from '../../../shared/helpers';
+import { buildLink, formatDate, normalizeTimestamp } from '../../../shared/helpers';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import i18n from '../../../shared/translations/i18n';
@@ -121,13 +122,19 @@ export const renderCollectionOverviewColumns = (
 			return formatDate(get(rowData, 'mgmt_updated_at')) || '-';
 
 		case 'actualisation_status_valid_until':
-			return formatDate(get(rowData, 'mgmt_status_expires_at')) || '-';
+			const validDate = get(rowData, 'mgmt_status_expires_at');
+			const isValid = !validDate || !normalizeTimestamp(validDate).isBefore(moment());
+			return (
+				<span className={isValid ? '' : 'a-table-cell__invalid'}>
+					{formatDate(validDate) || '-'}
+				</span>
+			);
 
 		case 'actualisation_approved_at':
 			return formatDate(get(rowData, 'mgmt_last_eindcheck_date')) || '-';
 
 		case 'actualisation_manager':
-			return get(rowData, 'management.manager.full_name') || '-';
+			return get(rowData, 'owner.full_name') || '-';
 
 		case 'quality_check_language_check':
 			return booleanToOkNok(get(rowData, 'mgmt_language_check')) || '-';
@@ -155,9 +162,7 @@ export const renderCollectionOverviewColumns = (
 			).label;
 
 		case 'marcom_last_communication_at':
-			// TODO check exact name after task has been completed
-			// https://meemoo.atlassian.net/browse/DEV-1438
-			return formatDate(get(rowData, 'publish_date')) || '-';
+			return formatDate(get(rowData, 'last_marcom_date')) || '-';
 
 		case 'marcom_klascement':
 			return get(rowData, 'klascement') ? 'Ja' : 'Nee';

@@ -34,7 +34,7 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
-import { getMultiOptionFilters, NULL_FILTER } from '../../shared/helpers/filters';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleQualityCheckOverviewProps extends DefaultSecureRouteProps {}
 
@@ -71,15 +71,8 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 				user,
 				isCollection,
 				true,
-				false
-			);
-
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['author_user_group'],
-					['owner.profile.profile_user_group.group.id']
-				)
+				false,
+				'view'
 			);
 
 			return { _and: andFilters };

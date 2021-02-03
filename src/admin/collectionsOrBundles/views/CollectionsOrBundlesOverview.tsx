@@ -27,6 +27,7 @@ import AddOrRemoveLinkedElementsModal, {
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
@@ -43,7 +44,6 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
-import { getMultiOptionFilters, NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionsOrBundlesOverviewProps extends DefaultSecureRouteProps {}
 
@@ -82,15 +82,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				user,
 				isCollection,
 				false,
-				true
-			);
-
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['author_user_group'],
-					['profile.profile_user_group.group.id']
-				)
+				true,
+				'collectionTable'
 			);
 
 			return { _and: andFilters };
