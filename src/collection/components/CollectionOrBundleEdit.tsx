@@ -368,7 +368,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				canCreate: rawPermissions[2],
 				canViewItems: rawPermissions[3],
 			};
-			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				collectionId,
 				type,
 				undefined
@@ -883,11 +883,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 			} else {
 				// We're adding a collection to the bundle
-				const collection:
-					| Avo.Collection.Collection
-					| undefined = await CollectionService.fetchCollectionOrBundleById(
+				const collection: Avo.Collection.Collection | null = await CollectionService.fetchCollectionOrBundleById(
 					id,
-					'collection'
+					'collection',
+					undefined,
+					false
 				);
 				if (!collection) {
 					ToastService.danger(

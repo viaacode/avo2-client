@@ -174,7 +174,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				showPopup = true;
 			}
 
-			const bundleObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
+			const bundleObj = await CollectionService.fetchCollectionOrBundleById(
 				bundleId,
 				'bundle',
 				undefined

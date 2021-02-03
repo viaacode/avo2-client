@@ -4,8 +4,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../helpers';
 
+import { INSERT_COLLECTION_BOOKMARK, INSERT_ITEM_BOOKMARK } from './bookmarks-views-plays-service';
 import { dataService } from './data-service';
-import { INSERT_COLLECTION_BOOKMARK, INSERT_ITEM_BOOKMARK } from './event-service.gql';
 
 const EVENT_QUERIES = {
 	bookmark: {

@@ -53,9 +53,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewBundle, setCreateNewBundle] = useState<boolean>(false);
 	const [selectedBundleId, setSelectedBundleId] = useState<string>('');
-	const [selectedBundle, setSelectedBundle] = useState<Avo.Collection.Collection | undefined>(
-		undefined
-	);
+	const [selectedBundle, setSelectedBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [newBundleTitle, setNewBundleTitle] = useState<string>('');
 	const [bundles, setBundles] = useState<Partial<Avo.Collection.Collection>[]>([]);
 
@@ -92,9 +90,14 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
 		try {
-			setSelectedBundle(undefined);
+			setSelectedBundle(null);
 			setSelectedBundleId(id);
-			const collection = await CollectionService.getCollectionById(id);
+			const collection = await CollectionService.fetchCollectionOrBundleById(
+				id,
+				'collection',
+				undefined,
+				false
+			);
 			setSelectedBundle(collection);
 		} catch (err) {
 			ToastService.danger(
