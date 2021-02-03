@@ -101,7 +101,12 @@ export class PermissionService {
 			case PermissionName.DELETE_OWN_COLLECTIONS:
 			case PermissionName.VIEW_OWN_COLLECTIONS:
 				const collection = isString(obj)
-					? await CollectionService.fetchCollectionOrBundleById(obj, 'collection')
+					? await CollectionService.fetchCollectionOrBundleById(
+							obj,
+							'collection',
+							undefined,
+							false
+					  )
 					: obj;
 				const collectionOwnerId = get(collection, 'owner_profile_id');
 				return !!profileId && !!collectionOwnerId && profileId === collectionOwnerId;
@@ -111,7 +116,12 @@ export class PermissionService {
 			case PermissionName.DELETE_OWN_BUNDLES:
 			case PermissionName.VIEW_OWN_BUNDLES:
 				const bundle = isString(obj)
-					? await CollectionService.fetchCollectionOrBundleById(obj, 'bundle')
+					? await CollectionService.fetchCollectionOrBundleById(
+							obj,
+							'bundle',
+							undefined,
+							false
+					  )
 					: obj;
 				const bundleOwnerId = get(bundle, 'owner_profile_id');
 				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;

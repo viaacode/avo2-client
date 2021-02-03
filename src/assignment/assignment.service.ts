@@ -19,13 +19,13 @@ import i18n from '../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_UUID_FROM_LEGACY_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
@@ -207,7 +207,7 @@ export class AssignmentService {
 		if (assignment.content_id && assignment.content_label) {
 			if (assignment.content_label === 'COLLECTIE' && assignment.content_id) {
 				return (
-					(await CollectionService.fetchCollectionOrBundleWithItemsById(
+					(await CollectionService.fetchCollectionOrBundleById(
 						assignment.content_id,
 						'collection',
 						assignment.uuid
@@ -538,11 +538,13 @@ export class AssignmentService {
 		collectionIdOrCollection: string | Avo.Collection.Collection,
 		user: Avo.User.User
 	): Promise<string> {
-		let collection: Avo.Collection.Collection | undefined;
+		let collection: Avo.Collection.Collection | null;
 		if (isString(collectionIdOrCollection)) {
 			collection = await CollectionService.fetchCollectionOrBundleById(
 				collectionIdOrCollection as string,
-				'collection'
+				'collection',
+				undefined,
+				true
 			);
 		} else {
 			collection = collectionIdOrCollection as Avo.Collection.Collection;

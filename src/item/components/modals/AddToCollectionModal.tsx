@@ -64,9 +64,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
-	const [selectedCollection, setSelectedCollection] = useState<
-		Avo.Collection.Collection | undefined
-	>(undefined);
+	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Collection | null>(
+		null
+	);
 	const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
 
 	const [fragmentStartString, setFragmentStartString] = useState<string>(
@@ -119,7 +119,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			// Reset the state
 			setCreateNewCollection(!collections.length);
 			setSelectedCollectionId('');
-			setSelectedCollection(undefined);
+			setSelectedCollection(null);
 			setNewCollectionTitle('');
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
@@ -128,10 +128,15 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
-			setSelectedCollection(undefined);
+			setSelectedCollection(null);
 			setSelectedCollectionId(id);
 			setSelectedCollection(
-				await CollectionService.fetchCollectionOrBundleById(id, 'collection')
+				await CollectionService.fetchCollectionOrBundleById(
+					id,
+					'collection',
+					undefined,
+					false
+				)
 			);
 		} catch (err) {
 			ToastService.danger(
