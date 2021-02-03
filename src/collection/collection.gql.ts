@@ -1,112 +1,5 @@
 import { gql } from 'apollo-boost';
 
-// TODO: Reduce to only what we need.
-export const GET_COLLECTION_BY_ID = gql`
-	query getCollectionById($id: uuid!) {
-		app_collections(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
-			id
-			description
-			description_long
-			collection_fragments(order_by: { position: asc }) {
-				use_custom_fields
-				updated_at
-				start_oc
-				position
-				id
-				external_id
-				end_oc
-				custom_title
-				custom_description
-				created_at
-				collection_uuid
-				type
-				thumbnail_path
-			}
-			updated_at
-			type_id
-			type {
-				label
-				id
-			}
-			title
-			note
-			thumbnail_path
-			publish_at
-			owner_profile_id
-			profile {
-				alias
-				title
-				alternative_email
-				avatar
-				id
-				stamboek
-				updated_at
-				profile_user_group {
-					group {
-						label
-						id
-					}
-				}
-				user_id
-				user: usersByuserId {
-					id
-					created_at
-					expires_at
-					external_uid
-					first_name
-					last_name
-					mail
-					uid
-					updated_at
-				}
-				created_at
-				updated_at
-				organisation {
-					logo_url
-					name
-					or_id
-				}
-			}
-			is_public
-			external_id
-			depublish_at
-			created_at
-			lom_classification
-			lom_context
-			lom_intendedenduserrole
-			lom_keywords
-			lom_languages
-			lom_typicalagerange
-			updated_by {
-				id
-				user: usersByuserId {
-					id
-					first_name
-					last_name
-					profile {
-						profile_user_group {
-							group {
-								label
-								id
-							}
-						}
-					}
-				}
-			}
-			collection_labels {
-				label
-				id
-			}
-			relations(where: { predicate: { _eq: "IS_COPY_OF" } }) {
-				object_meta {
-					id
-					title
-				}
-			}
-		}
-	}
-`;
-
 export const UPDATE_COLLECTION = gql`
 	mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
 		update_app_collections(
@@ -434,18 +327,94 @@ export const GET_COLLECTIONS_BY_FRAGMENT_ID = gql`
 	}
 `;
 
-export const INSERT_COLLECTION_RELATION = gql`
-	mutation insertCollectionRelation(
-		$originalId: uuid!
-		$otherId: uuid!
-		$relationType: lookup_enum_relation_types_enum!
+export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
+	mutation insertCollectionManagementEntry(
+		$collection_id: uuid!
+		$current_status: String
+		$manager_profile_id: uuid
+		$status_valid_until: timestamptz
+		$note: String
 	) {
-		insert_app_collection_relations(
-			objects: [{ object: $originalId, subject: $otherId, predicate: $relationType }]
+		insert_app_collection_management(
+			objects: [
+				{
+					collection_id: $collection_id
+					current_status: $current_status
+					manager_profile_id: $manager_profile_id
+					status_valid_until: $status_valid_until
+					note: $note
+				}
+			]
 		) {
-			returning {
-				id
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
+	mutation updateCollectionManagementEntry(
+		$collection_id: uuid!
+		$current_status: String
+		$manager_profile_id: uuid
+		$status_valid_until: timestamptz
+		$note: String
+	) {
+		update_app_collection_management(
+			where: { collection_id: { _eq: $collection_id } }
+			_set: {
+				current_status: $current_status
+				manager_profile_id: $manager_profile_id
+				status_valid_until: $status_valid_until
+				note: $note
 			}
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_MANAGEMENT_QC_ENTRY = gql`
+	mutation insertCollectionManagementEntry(
+		$collection_id: uuid!
+		$comment: String
+		$assignee_profile_id: uuid
+		$qc_label: lookup_enum_collection_management_qc_label_enum
+		$qc_status: Boolean
+	) {
+		insert_app_collection_management_QC_one(
+			object: {
+				comment: $comment
+				assignee_profile_id: $assignee_profile_id
+				qc_label: $qc_label
+				qc_status: $qc_status
+				collection_id: $collection_id
+			}
+		) {
+			id
+		}
+	}
+`;
+
+export const GET_MARCOM_ENTRIES = gql`
+	query getCollectionMarcomEntries($collectionUuid: uuid!) {
+		app_collection_marcom_log(
+			where: { collection_id: { _eq: $collectionUuid } }
+			limit: 10
+			order_by: [{ created_at: desc_nulls_last }]
+		) {
+			id
+			channel_name
+			channel_type
+			external_link
+			publish_date
+		}
+	}
+`;
+
+export const INSERT_MARCOM_ENTRY = gql`
+	mutation insertMarcomEntry($objects: [app_collection_marcom_log_insert_input!]!) {
+		insert_app_collection_marcom_log(objects: $objects) {
+			affected_rows
 		}
 	}
 `;

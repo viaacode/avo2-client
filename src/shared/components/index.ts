@@ -2,7 +2,7 @@ export * from './CheckboxDropdownModal/CheckboxDropdownModal';
 export { default as ControlledDropdown } from './ControlledDropdown/ControlledDropdown';
 export { default as DataQueryComponent } from './DataQueryComponent/DataQueryComponent';
 export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropdown';
-export { default as DeleteObjectModal } from './DeleteObjectModal/DeleteObjectModal';
+export { default as DeleteObjectModal } from './ConfirmModal/ConfirmModal';
 export { default as Footer } from './Footer/Footer';
 export { default as InputModal } from './InputModal/InputModal';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';

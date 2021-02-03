@@ -213,7 +213,7 @@ export class AssignmentService {
 		if (assignment.content_id && assignment.content_label) {
 			if (assignment.content_label === 'COLLECTIE' && assignment.content_id) {
 				return (
-					(await CollectionService.fetchCollectionOrBundleWithItemsById(
+					(await CollectionService.fetchCollectionOrBundleById(
 						assignment.content_id,
 						'collection',
 						assignment.uuid
@@ -544,11 +544,13 @@ export class AssignmentService {
 		collectionIdOrCollection: string | Avo.Collection.Collection,
 		user: Avo.User.User
 	): Promise<string> {
-		let collection: Avo.Collection.Collection | undefined;
+		let collection: Avo.Collection.Collection | null;
 		if (isString(collectionIdOrCollection)) {
 			collection = await CollectionService.fetchCollectionOrBundleById(
 				collectionIdOrCollection as string,
-				'collection'
+				'collection',
+				undefined,
+				true
 			);
 		} else {
 			collection = collectionIdOrCollection as Avo.Collection.Collection;

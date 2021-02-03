@@ -9,6 +9,7 @@ export const ROUTE_PARTS = Object.freeze({
 	qualitycheck: 'kwaliteitscontrole',
 	marcom: 'marcom',
 	content: 'content',
+	publicationDetails: 'publicatie-details',
 	contentPageLabels: 'content-pagina-labels',
 	create: 'maak',
 	detail: 'detail',

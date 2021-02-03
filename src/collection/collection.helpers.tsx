@@ -323,6 +323,43 @@ export const cleanCollectionBeforeSave = (
 		'collection_labels',
 		'relations',
 		'id',
+		'management',
+		'QC',
+		'management_language_check',
+		'management_quality_check',
+		'management_approved_at',
+		'management_actualised_at',
+	];
+
+	return omit(collection, propertiesToDelete);
+};
+
+/**
+ * Clean the collection of properties before comparing if the collection core values have been changes
+ * Used to determine if update_at should be updated.
+ * This should only happen for core collection values and not for management changes
+ */
+export const keepCoreCollectionProperties = (
+	collection: Partial<Avo.Collection.Collection> | null
+): Partial<Avo.Collection.Collection> | null => {
+	if (!collection) {
+		return collection;
+	}
+	const propertiesToDelete = [
+		'__typename',
+		'type',
+		'profile',
+		'updated_by',
+		'collection_labels',
+		'relations',
+		'id',
+		'is_managed',
+		'management',
+		'QC',
+		'management_language_check',
+		'management_quality_check',
+		'management_approved_at',
+		'management_actualised_at',
 	];
 
 	return omit(collection, propertiesToDelete);

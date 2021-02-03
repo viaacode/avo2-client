@@ -10,6 +10,7 @@ import { RelationService } from '../../shared/services/relation-service/relation
 
 import {
 	EDITORIAL_QUERIES,
+	EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 	ITEMS_PER_PAGE,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './collections-or-bundles.const';
@@ -131,7 +132,7 @@ export class CollectionsOrBundlesService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
 			const response = await dataService.query({

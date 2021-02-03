@@ -28,7 +28,7 @@ import { UpdateProfileValues } from '../../../settings/settings.types';
 import { FileUpload, LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
-import { stringToSelectOption } from '../../../shared/helpers/string-to-select-options';
+import { stringToTagInfo } from '../../../shared/helpers/string-to-select-options';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { useSubjects } from '../../../shared/hooks/useSubjects';
 import { ToastService } from '../../../shared/services';
@@ -75,7 +75,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			setSelectedSubjects(
 				(get(profile, 'profile_classifications') || [])
 					.map((classification: { key: string }) => classification.key)
-					.map(stringToSelectOption)
+					.map(stringToTagInfo)
 			);
 
 			setStoredProfile(profile);
@@ -233,7 +233,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 								placeholder={t(
 									'admin/users/views/user-edit___selecteer-de-vakken-die-deze-gebruiker-geeft'
 								)}
-								options={(subjects || []).map(stringToSelectOption)}
+								options={(subjects || []).map(stringToTagInfo)}
 								value={selectedSubjects}
 								onChange={(selectedValues) =>
 									setSelectedSubjects(selectedValues || [])

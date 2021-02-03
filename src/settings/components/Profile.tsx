@@ -47,7 +47,7 @@ import { FileUpload } from '../../shared/components';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate } from '../../shared/helpers';
-import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
+import { stringToTagInfo } from '../../shared/helpers/string-to-select-options';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
@@ -91,10 +91,10 @@ const Profile: FunctionComponent<
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
-		get(user, 'profile.educationLevels', []).map(stringToSelectOption)
+		get(user, 'profile.educationLevels', []).map(stringToTagInfo)
 	);
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
-		get(user, 'profile.subjects', []).map(stringToSelectOption)
+		get(user, 'profile.subjects', []).map(stringToTagInfo)
 	);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		ClientEducationOrganization[]

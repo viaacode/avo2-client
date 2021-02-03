@@ -50,3 +50,20 @@ export interface Relation {
 		title: string;
 	};
 }
+
+export type EditCollectionTab =
+	| 'content'
+	| 'metadata'
+	| 'admin'
+	| 'actualisation'
+	| 'quality_check'
+	| 'marcom';
+
+export interface MarcomEntry {
+	id: string;
+	channel_name: string | null;
+	channel_type: string | null;
+	external_link: string | null;
+	publish_date: string;
+	collection_id: string;
+}
