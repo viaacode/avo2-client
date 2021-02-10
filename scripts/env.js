@@ -20,12 +20,13 @@ if (fs.existsSync('.env')) {
 	const lines = envFile.split('\n').map(line => line.trim());
 
 	lines.forEach(line => {
-		const lineParts = line.split('=');
+		const [envKey, ...envValueParts] = line.split('=');
+		const envValue = envValueParts.join('=')
 
-		if (!CI_ENV_VARIABLES[lineParts[0]] || CI_ENV_VARIABLES[lineParts[0]][0] === '$') {
-			envVariables[lineParts[0]] = lineParts[1];
+		if (!CI_ENV_VARIABLES[envKey] || CI_ENV_VARIABLES[envKey][0] === '$') {
+			envVariables[envKey] = envValue;
 		} else {
-			envVariables[lineParts[0]] = CI_ENV_VARIABLES[lineParts[0]];
+			envVariables[envKey] = CI_ENV_VARIABLES[envKey];
 		}
 	});
 } else {
