@@ -329,6 +329,7 @@ export const cleanCollectionBeforeSave = (
 		'management_quality_check',
 		'management_approved_at',
 		'management_actualised_at',
+		'marcom_note',
 	];
 
 	return omit(collection, propertiesToDelete);

@@ -43,7 +43,7 @@ interface CollectionOrBundleEditMarcomProps {
 
 const CollectionOrBundleEditMarcom: FunctionComponent<
 	CollectionOrBundleEditMarcomProps & UserProps
-> = ({ collection }) => {
+> = ({ collection, changeCollectionState }) => {
 	const [t] = useTranslation();
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
@@ -195,8 +195,17 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 						</Spacer>
 						<FormGroup label={t('Opmerkingen')}>
 							<TextArea
-								disabled
-								placeholder="TODO: add field to database (DEV-1456)"
+								value={get(collection, 'marcom_note.note', '')}
+								onChange={(newNote: string) => {
+									changeCollectionState({
+										type: 'UPDATE_COLLECTION_PROP',
+										collectionProp: 'marcom_note',
+										collectionPropValue: {
+											...get(collection, 'marcom_note', {}),
+											note: newNote,
+										},
+									});
+								}}
 							/>
 						</FormGroup>
 					</Form>
