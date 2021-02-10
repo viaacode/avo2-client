@@ -9,6 +9,8 @@ export type UserOverviewTableCol =
 	| 'business_category'
 	| 'is_exception'
 	| 'is_blocked'
+	| 'blocked_at'
+	| 'unblocked_at'
 	| 'stamboek'
 	| 'organisation'
 	| 'created_at'
@@ -26,6 +28,12 @@ export interface UserTableState extends FilterableTableState {
 	business_category: string;
 	is_exception: boolean;
 	is_blocked: boolean;
+	blocked_at: {
+		date: string;
+	};
+	unblocked_at: {
+		date: string;
+	};
 	created_at: string;
 	education_levels: string[];
 	subjects: string[];
@@ -116,6 +124,12 @@ export interface UserSummeryView {
 	mail: string;
 	last_access_at: string | null;
 	is_blocked: boolean;
+	blocked_at: {
+		date: string;
+	};
+	unblocked_at: {
+		date: string;
+	};
 	profile_id: string;
 	stamboek: string | null;
 	acc_created_at: string;

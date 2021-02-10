@@ -125,6 +125,20 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterType: 'DateRangeDropdown',
 	},
 	{
+		id: 'blocked_at',
+		label: i18n.t('Geblokkeerd op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'unblocked_at',
+		label: i18n.t('Ongeblokkeerd op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
 		id: 'last_access_at',
 		label: i18n.t('admin/users/user___laatste-toegang'),
 		sortable: true,
@@ -195,6 +209,16 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
+	}),
+	blocked_at: (order: Avo.Search.OrderDirection) => ({
+		blocked_at: {
+			max: order,
+		},
+	}),
+	unblocked_at: (order: Avo.Search.OrderDirection) => ({
+		unblocked_at: {
+			max: order,
+		},
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({
 		stamboek: order,
