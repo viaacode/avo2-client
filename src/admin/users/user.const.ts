@@ -99,14 +99,14 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'blocked_at',
-		label: i18n.t('Geblokkeerd op'),
+		label: i18n.t('admin/users/user___geblokkeerd-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'unblocked_at',
-		label: i18n.t('Ongeblokkeerd op'),
+		label: i18n.t('admin/users/user___ongeblokkeerd-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
