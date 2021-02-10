@@ -138,6 +138,7 @@ export class CollectionsOrBundlesService {
 			const response = await dataService.query({
 				variables,
 				query: EDITORIAL_QUERIES[editorialType],
+				fetchPolicy: 'no-cache',
 			});
 			const collections: Avo.Collection.Collection[] | null = get(
 				response,
