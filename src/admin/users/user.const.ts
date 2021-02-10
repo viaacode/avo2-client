@@ -98,6 +98,20 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
+		id: 'blocked_at',
+		label: i18n.t('Geblokkeerd op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'unblocked_at',
+		label: i18n.t('Ongeblokkeerd op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
 		id: 'stamboek',
 		label: i18n.t('admin/users/user___stamboek'),
 		sortable: true,
@@ -120,20 +134,6 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'created_at',
 		label: i18n.t('admin/users/user___gebruiker-sinds'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-	},
-	{
-		id: 'blocked_at',
-		label: i18n.t('Geblokkeerd op'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-	},
-	{
-		id: 'unblocked_at',
-		label: i18n.t('Ongeblokkeerd op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
