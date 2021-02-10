@@ -19,14 +19,14 @@ import {
 	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
-	GET_USER_BY_ID,
 	GET_USERS,
+	GET_USER_BY_ID,
 } from './user.gql';
 import {
 	DeleteContentCounts,
 	DeleteContentCountsRaw,
 	UserOverviewTableCol,
-	UserSummeryView,
+	UserSummaryView,
 } from './user.types';
 
 export class UserService {
@@ -105,11 +105,11 @@ export class UserService {
 					response,
 				});
 			}
-			const users: UserSummeryView[] = get(response, 'data.users_summary_view');
+			const users: UserSummaryView[] = get(response, 'data.users_summary_view');
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
 			const profiles: Partial<Avo.User.Profile>[] = users.map(
-				(user: UserSummeryView): Avo.User.Profile =>
+				(user: UserSummaryView): Avo.User.Profile =>
 					({
 						id: user.profile_id,
 						stamboek: user.stamboek,
