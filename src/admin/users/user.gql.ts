@@ -86,6 +86,12 @@ export const GET_USERS = gql`
 			mail
 			last_access_at
 			is_blocked
+			blocked_at {
+				date: max
+			}
+			unblocked_at {
+				date: max
+			}
 			profile_id
 			stamboek
 			acc_created_at

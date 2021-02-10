@@ -145,6 +145,8 @@ export class UserService {
 							first_name: user.first_name,
 							last_name: user.last_name,
 							is_blocked: user.is_blocked,
+							blocked_at: get(user, 'blocked_at.date'),
+							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
 							last_access_at: user.last_access_at as string, // TODO remove cast after update to typings 2.26.0
 							idpmaps: user.idps.map((idp) => idp.idp),

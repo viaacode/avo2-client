@@ -168,6 +168,13 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			}
 			andFilters.push(...getBooleanFilters(filters, ['is_blocked', 'is_exception']));
 			andFilters.push(
+				...getDateRangeFilters(
+					filters,
+					['blocked_at', 'unblocked_at'],
+					['blocked_at.max', 'unblocked_at.max']
+				)
+			);
+			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
 					['user_group', 'organisation', 'business_category'],
@@ -568,6 +575,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			case 'is_blocked':
 				const isBlocked = get(rowData, 'user.is_blocked');
 				return isBlocked ? 'Ja' : 'Nee';
+
+			case 'blocked_at':
+			case 'unblocked_at':
+				return formatDate(get(rowData, ['user', columnId])) || '-';
 
 			case 'is_exception':
 				return get(rowData, 'is_exception') ? 'Ja' : 'Nee';
