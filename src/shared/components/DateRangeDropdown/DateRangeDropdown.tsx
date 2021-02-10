@@ -253,11 +253,15 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									...(showPastFutureOptions
 										? [
 												{
-													label: t('In het verleden'),
+													label: t(
+														'shared/components/date-range-dropdown/date-range-dropdown___in-het-verleden'
+													),
 													value: 'past',
 												},
 												{
-													label: t('In de toekomst'),
+													label: t(
+														'shared/components/date-range-dropdown/date-range-dropdown___in-de-toekomst'
+													),
 													value: 'future',
 												},
 										  ]

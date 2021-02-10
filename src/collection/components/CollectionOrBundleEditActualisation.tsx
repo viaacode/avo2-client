@@ -54,7 +54,11 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<FormGroup label={t('Status')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-actualisation___status'
+										)}
+									>
 										<Select
 											options={actualisationStatuses}
 											onChange={(selectedOption) => {
@@ -70,7 +74,11 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 											}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Datum laatste actualisatie')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-actualisation___datum-laatste-actualisatie'
+										)}
+									>
 										<DatePicker
 											value={toDateObject(
 												get(collection, 'management.updated_at')
@@ -86,7 +94,11 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 											}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Vervaldatum')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-actualisation___vervaldatum'
+										)}
+									>
 										<DatePicker
 											value={toDateObject(
 												get(collection, 'management.status_valid_until')
@@ -102,7 +114,11 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 											}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Verantwoordelijke actualisatie')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-actualisation___verantwoordelijke-actualisatie'
+										)}
+									>
 										<ContentPicker
 											initialValue={{
 												label:
@@ -117,7 +133,9 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 												),
 												type: 'PROFILE',
 											}}
-											placeholder={t('Selecteer een verantwoordelijke')}
+											placeholder={t(
+												'collection/components/collection-or-bundle-edit-actualisation___selecteer-een-verantwoordelijke'
+											)}
 											hideTargetSwitch
 											hideTypeDropdown
 											allowedTypes={['PROFILE']}
@@ -130,7 +148,11 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 											}}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Opmerkingen')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-actualisation___opmerkingen'
+										)}
+									>
 										<TextArea
 											height="auto"
 											value={get(collection, 'management.note') || ''}

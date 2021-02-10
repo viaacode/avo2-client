@@ -318,7 +318,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 
 const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 	id: 'subjects',
-	label: i18n.t('Vakken'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
@@ -329,7 +329,7 @@ const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 
 const getCollectionEducationLevelsColumn = (educationLevels: string[]): FilterableColumn => ({
 	id: 'education_levels',
-	label: i18n.t('Opleidingsniveaus'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
@@ -340,7 +340,7 @@ const getCollectionEducationLevelsColumn = (educationLevels: string[]): Filterab
 
 const getActualisationStatusColumn = (): FilterableColumn => ({
 	id: 'actualisation_status',
-	label: i18n.t('Status'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___status'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'CheckboxDropdownModal',
@@ -351,7 +351,9 @@ const getActualisationStatusColumn = (): FilterableColumn => ({
 
 const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
 	id: 'actualisation_last_actualised_at',
-	label: i18n.t('Datum laatste actualisatie'),
+	label: i18n.t(
+		'admin/collections-or-bundles/collections-or-bundles___datum-laatste-actualisatie'
+	),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -359,7 +361,7 @@ const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
 
 const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 	id: 'actualisation_status_valid_until',
-	label: i18n.t('Vervaldatum'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vervaldatum'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -371,7 +373,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 
 const getActualisationApprovedAtColumn = (): FilterableColumn => ({
 	id: 'actualisation_approved_at',
-	label: i18n.t('Datum goedkeuring'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -379,7 +381,9 @@ const getActualisationApprovedAtColumn = (): FilterableColumn => ({
 
 const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
 	id: 'actualisation_manager',
-	label: i18n.t('Actualisatie verantwoordelijke'),
+	label: i18n.t(
+		'admin/collections-or-bundles/collections-or-bundles___actualisatie-verantwoordelijke'
+	),
 	sortable: true,
 	visibleByDefault: false,
 	filterType: 'MultiUserSelectDropdown',
@@ -387,61 +391,67 @@ const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
 
 const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
 	id: 'quality_check_language_check',
-	label: i18n.t('Taalcheck'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___taalcheck'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
 	filterProps: {
-		trueLabel: i18n.t('OK'),
-		falseLabel: i18n.t('NOK'),
+		trueLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___ok'),
+		falseLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___nok'),
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
 });
 
 const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
 	id: 'quality_check_quality_check',
-	label: i18n.t('Kwaliteitscontrole'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___kwaliteitscontrole'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
 	filterProps: {
-		trueLabel: i18n.t('OK'),
-		falseLabel: i18n.t('NOK'),
+		trueLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___ok'),
+		falseLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___nok'),
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
 });
 
 const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 	id: 'quality_check_approved_at',
-	label: i18n.t('Datum goedkeuring'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
 });
 
 const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_type',
-	label: i18n.t('Laatste communicatie kanaal type'),
+	label: i18n.t(
+		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-type'
+	),
 	sortable: true,
 	visibleByDefault: true,
 });
 
 const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_name',
-	label: i18n.t('Laatste communicatie kanaal naam'),
+	label: i18n.t(
+		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-naam'
+	),
 	sortable: true,
 	visibleByDefault: true,
 });
 
 const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 	id: 'marcom_last_communication_at',
-	label: i18n.t('Laatste communicatiedatum'),
+	label: i18n.t(
+		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatiedatum'
+	),
 	sortable: true,
 	visibleByDefault: true,
 });
 
 const getMarcomKlascementColumn = (): FilterableColumn => ({
 	id: 'marcom_klascement',
-	label: i18n.t('KlasCement'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___klas-cement'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',

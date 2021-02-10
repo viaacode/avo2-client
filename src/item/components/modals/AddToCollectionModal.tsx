@@ -30,6 +30,7 @@ import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 import {
 	formatDurationHoursMinutesSeconds,
 	isMobileWidth,
@@ -43,7 +44,6 @@ import { VideoStillService } from '../../../shared/services/video-stills-service
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
-import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 
 interface AddToCollectionModalProps extends DefaultSecureRouteProps {
 	externalId: string;
