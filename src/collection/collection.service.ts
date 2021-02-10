@@ -37,10 +37,12 @@ import {
 	INSERT_COLLECTION_MANAGEMENT_ENTRY,
 	INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
 	INSERT_MARCOM_ENTRY,
+	INSERT_MARCOM_NOTE,
 	SOFT_DELETE_COLLECTION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 	UPDATE_COLLECTION_MANAGEMENT_ENTRY,
+	UPDATE_MARCOM_NOTE,
 } from './collection.gql';
 import {
 	cleanCollectionBeforeSave,
@@ -457,6 +459,16 @@ export class CollectionService {
 						comment: null,
 					});
 				}
+			}
+
+			const marcomNoteId = get(updatedCollection, 'marcom_note.id');
+			const marcomNoteText = get(updatedCollection, 'marcom_note.note');
+			if (!isNil(marcomNoteId)) {
+				// Already have note id => so we should update the note text
+				await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText);
+			} else if (marcomNoteText) {
+				// We don't have a note id, but do have a note, so we should do an insert
+				await CollectionService.insertMarcomNote(collectionId, marcomNoteText);
 			}
 		} catch (err) {
 			throw new CustomError('Failed to save management data to the database', err, {
@@ -1269,6 +1281,54 @@ export class CollectionService {
 			throw new CustomError('Failed to insert marcom entry into the database', err, {
 				variables,
 				query: 'INSERT_MARCOM_ENTRY',
+			});
+		}
+	}
+
+	static async insertMarcomNote(collectionId: string, note: string): Promise<number> {
+		let variables: any;
+		try {
+			variables = {
+				collectionId,
+				note,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_MARCOM_NOTE,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'insert_app_collection_marcom_notes.returning.id');
+		} catch (err) {
+			throw new CustomError('Failed to insert marcom note into the database', err, {
+				variables,
+				query: 'INSERT_MARCOM_NOTE',
+			});
+		}
+	}
+
+	static async updateMarcomNote(id: string, note: string): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				id,
+				note,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: UPDATE_MARCOM_NOTE,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update marcom note in the database', err, {
+				variables,
+				query: 'UPDATE_MARCOM_NOTE',
 			});
 		}
 	}

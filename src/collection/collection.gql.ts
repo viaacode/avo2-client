@@ -418,3 +418,23 @@ export const INSERT_MARCOM_ENTRY = gql`
 		}
 	}
 `;
+
+export const INSERT_MARCOM_NOTE = gql`
+	mutation insertMarcomNote($collectionId: uuid, $note: String) {
+		insert_app_collection_marcom_notes(objects: { note: $note, collection_id: $collectionId }) {
+			returning {
+				id
+			}
+		}
+	}
+`;
+
+export const UPDATE_MARCOM_NOTE = gql`
+	mutation updateMarcomNote($id: Int, $note: String) {
+		update_app_collection_marcom_notes(where: { id: { _eq: $id } }, _set: { note: $note }) {
+			returning {
+				id
+			}
+		}
+	}
+`;
