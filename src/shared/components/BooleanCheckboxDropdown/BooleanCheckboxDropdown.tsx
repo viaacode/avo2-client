@@ -1,7 +1,7 @@
-import { isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
@@ -11,15 +11,25 @@ export interface BooleanCheckboxDropdownProps {
 	label: string;
 	id: string;
 	disabled?: boolean;
-	value: boolean | null | undefined;
-	onChange: (value: boolean | null, id: string) => void;
+	value: string[];
+	trueLabel?: string;
+	falseLabel?: string;
+	trueValue?: string;
+	falseValue?: string;
+	includeEmpty?: boolean;
+	onChange: (value: string[], id: string) => void;
 }
 
 const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> = ({
 	label,
 	id,
 	disabled,
-	value,
+	value = [],
+	trueLabel,
+	falseLabel,
+	trueValue = 'true',
+	falseValue = 'false',
+	includeEmpty = false,
 	onChange,
 }) => {
 	const [t] = useTranslation();
@@ -27,30 +37,42 @@ const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> =
 	const getOptions = (): CheckboxOption[] => {
 		return [
 			{
-				label: t(
-					'shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___ja'
-				),
-				id: 'true',
-				checked: isNil(value) ? false : value,
+				label:
+					trueLabel ||
+					t('shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___ja'),
+				id: trueValue,
+				checked: value.includes(trueValue),
 			},
 			{
-				label: t(
-					'shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___nee'
-				),
-				id: 'false',
-				checked: isNil(value) ? false : !value,
+				label:
+					falseLabel ||
+					t(
+						'shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___nee'
+					),
+				id: falseValue,
+				checked: value.includes(falseValue),
 			},
+			...(includeEmpty
+				? [
+						{
+							label: t('admin/users/user___leeg'),
+							id: NULL_FILTER,
+							checked: value.includes(NULL_FILTER),
+						},
+				  ]
+				: []),
 		];
 	};
 
 	// Methods
 	const handleCheckboxChange = (selectedCheckboxes: string[]) => {
-		if (selectedCheckboxes.length === 0 || selectedCheckboxes.length === 2) {
-			onChange(null, id);
-		} else if (selectedCheckboxes[0] === 'true') {
-			onChange(true, id);
+		if (
+			selectedCheckboxes.length === 0 ||
+			selectedCheckboxes.length === (includeEmpty ? 3 : 2)
+		) {
+			onChange([], id);
 		} else {
-			onChange(false, id);
+			onChange(selectedCheckboxes, id);
 		}
 	};
 

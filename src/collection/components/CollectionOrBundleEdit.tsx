@@ -1,4 +1,4 @@
-import { cloneDeep, get, isEmpty, truncate } from 'lodash-es';
+import { cloneDeep, get, isEmpty, set, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -8,9 +8,10 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
+import BeforeUnloadComponent from 'react-beforeunload-component';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Prompt, withRouter } from 'react-router';
+import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import {
@@ -40,6 +41,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	DeleteObjectModal,
 	DraggableListModal,
 	InputModal,
 	InteractiveTour,
@@ -54,26 +56,30 @@ import {
 	isMobileWidth,
 	navigate,
 	renderAvatar,
-	sanitizeHtml,
 	stripHtml,
 } from '../../shared/helpers';
+import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import i18n from '../../shared/translations/i18n';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
+import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { toDutchContentType } from '../collection.types';
+import { EditCollectionTab, toDutchContentType } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
 
+import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
+import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
+import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 type FragmentPropUpdateAction = {
@@ -107,7 +113,7 @@ type CollectionUpdateAction = {
 
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection;
+	collectionProp: keyof Avo.Collection.Collection | string; // nested values are also allowed
 	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };
@@ -130,13 +136,14 @@ interface CollectionOrBundleEditProps {
 }
 
 const CollectionOrBundleEdit: FunctionComponent<
-	CollectionOrBundleEditProps & DefaultSecureRouteProps<{ id: string }>
+	CollectionOrBundleEditProps &
+		DefaultSecureRouteProps<{ id: string; tabId: EditCollectionTab | undefined }>
 > = ({ type, history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	// State
 	const [collectionId] = useState<string>(match.params.id);
-	const [currentTab, setCurrentTab] = useState<string>('inhoud');
+	const [currentTab, setCurrentTab] = useState<EditCollectionTab | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -157,9 +164,20 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+	const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
 
 	// Computed values
 	const isCollection = type === 'collection';
+
+	const updateHasUnsavedChanges = (
+		initialCollection: Avo.Collection.Collection | null,
+		currentCollection: Avo.Collection.Collection | null
+	): void => {
+		const hasChanges =
+			JSON.stringify(convertRteToString(initialCollection)) !==
+			JSON.stringify(convertRteToString(currentCollection));
+		setUnsavedChanges(hasChanges);
+	};
 
 	// Main collection reducer
 	function currentCollectionReducer(
@@ -167,6 +185,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		action: CollectionAction
 	): CollectionState {
 		if (action.type === 'UPDATE_COLLECTION') {
+			updateHasUnsavedChanges(action.newCollection, action.newCollection);
 			return {
 				currentCollection: action.newCollection,
 				initialCollection: cloneDeep(action.newCollection),
@@ -243,13 +262,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				break;
 
 			case 'UPDATE_COLLECTION_PROP':
-				(newCurrentCollection as any)[action.collectionProp] = action.collectionPropValue;
-				if (action.updateInitialCollection) {
-					(newInitialCollection as any)[action.collectionProp] =
-						action.collectionPropValue;
+				set(newCurrentCollection, action.collectionProp, action.collectionPropValue);
+				if (action.updateInitialCollection && newInitialCollection) {
+					set(newInitialCollection, action.collectionProp, action.collectionPropValue);
 				}
 				break;
 		}
+
+		updateHasUnsavedChanges(newInitialCollection, newCurrentCollection);
 
 		return {
 			currentCollection: newCurrentCollection,
@@ -264,15 +284,35 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 
+	const shouldBlockNavigation = useCallback(() => {
+		const editPath = isCollection
+			? APP_PATH.COLLECTION_EDIT_TAB.route
+			: APP_PATH.BUNDLE_EDIT_TAB.route;
+		const changingRoute: boolean = !matchPath(history.location.pathname, editPath);
+		return unsavedChanges && changingRoute;
+	}, [history, unsavedChanges, isCollection]);
+
+	const onUnload = useCallback(
+		(event: any) => {
+			if (shouldBlockNavigation()) {
+				event.preventDefault();
+
+				// Chrome requires returnValue to be set
+				event.returnValue = '';
+			}
+		},
+		[shouldBlockNavigation]
+	);
+
 	useEffect(() => {
 		// Register listener once when the component loads
 		window.addEventListener('beforeunload', onUnload);
 
 		// Remove listener when the component unloads
 		return () => window.removeEventListener('beforeunload', onUnload);
-	});
+	}, [onUnload]);
 
-	const checkPermissionsAndGetBundle = useCallback(async () => {
+	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
@@ -328,7 +368,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				canCreate: rawPermissions[2],
 				canViewItems: rawPermissions[3],
 			};
-			const collectionObj = await CollectionService.fetchCollectionOrBundleWithItemsById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				collectionId,
 				type,
 				undefined
@@ -364,6 +404,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 			}
 
+			// check quality check approved_at date
+			if (
+				!get(collectionObj, 'management_language_check[0].qc_status') ||
+				!get(collectionObj, 'management_quality_check[0].qc_status')
+			) {
+				set(collectionObj, 'management_approved_at[0].created_at', null);
+			}
+
 			setPermissions(permissionObj);
 			changeCollectionState({
 				type: 'UPDATE_COLLECTION',
@@ -394,8 +442,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
 
 	useEffect(() => {
-		checkPermissionsAndGetBundle();
-	}, [checkPermissionsAndGetBundle]);
+		checkPermissionsAndGetCollection();
+	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
 		if (
@@ -409,77 +457,186 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	}, [collectionState.currentCollection, collectionState.initialCollection, permissions]);
 
+	// react to route changes by navigating back wih the browser history back button
+	useEffect(() => {
+		setCurrentTab(match.params.tabId || 'content');
+	}, [match.params.tabId]);
+
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
-		setCurrentTab(String(selectedTab));
+		const tabName = String(selectedTab) as EditCollectionTab;
+		navigate(history, APP_PATH.COLLECTION_EDIT_TAB.route, { id: collectionId, tabId: tabName });
+		setCurrentTab(tabName);
+	};
+
+	const getCollectionEditTabs = (
+		user: Avo.User.User | undefined,
+		isCollection: boolean
+	): TabProps[] => {
+		const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(
+			user,
+			isCollection
+				? [
+						PermissionName.EDIT_COLLECTION_LABELS,
+						PermissionName.EDIT_COLLECTION_AUTHOR,
+						PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS,
+				  ]
+				: [
+						PermissionName.EDIT_BUNDLE_LABELS,
+						PermissionName.EDIT_BUNDLE_AUTHOR,
+						PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS,
+				  ]
+		);
+		const showEditorialTabs: boolean =
+			(isCollection &&
+				get(collectionState, 'currentCollection.is_managed') &&
+				PermissionService.hasPerm(
+					user,
+					PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
+				)) ||
+			(!isCollection &&
+				get(collectionState, 'currentCollection.is_managed') &&
+				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS));
+		return [
+			{
+				id: 'content',
+				label: i18n.t('collection/collection___inhoud'),
+				icon: 'collection',
+			},
+			{
+				id: 'metadata',
+				label: i18n.t('collection/collection___publicatiedetails'),
+				icon: 'file-text',
+			},
+			...(showAdminTab
+				? [
+						{
+							id: 'admin',
+							label: i18n.t('collection/collection___beheer'),
+							icon: 'settings',
+						} as TabProps,
+				  ]
+				: []),
+			...(showEditorialTabs
+				? [
+						{
+							id: 'actualisation',
+							label: i18n.t(
+								'collection/components/collection-or-bundle-edit___actualisatie'
+							),
+							icon: 'check-circle',
+						} as TabProps,
+						{
+							id: 'quality_check',
+							label: i18n.t(
+								'collection/components/collection-or-bundle-edit___kwaliteitscontrole'
+							),
+							icon: 'check-square',
+						} as TabProps,
+						{
+							id: 'marcom',
+							label: i18n.t(
+								'collection/components/collection-or-bundle-edit___marcom'
+							),
+							icon: 'send',
+						} as TabProps,
+				  ]
+				: []),
+		];
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS(user, isCollection).map((tab: TabProps) => ({
+	const tabs: TabProps[] = getCollectionEditTabs(user, isCollection).map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));
 
-	const convertFragmentDescriptionsToHtml = (
-		collection: Partial<Avo.Collection.Collection> | null
-	): Partial<Avo.Collection.Collection> | null => {
-		if (!collection) {
-			return collection;
+	const isCollectionValid = (): string | null => {
+		if (
+			get(collectionState.currentCollection, 'is_managed', true) &&
+			(!!get(collectionState.currentCollection, 'management_language_check[0]') ||
+				!!get(collectionState.currentCollection, 'management_quality_check[0]')) &&
+			!get(
+				collectionState.currentCollection,
+				'management_language_check[0].assignee_profile_id'
+			)
+		) {
+			history.push(
+				buildLink(
+					isCollection
+						? APP_PATH.COLLECTION_EDIT_TAB.route
+						: APP_PATH.BUNDLE_EDIT_TAB.route,
+					{
+						id: collectionId,
+						tabId: 'quality_check',
+					}
+				)
+			);
+			return isCollection
+				? t(
+						'collection/components/collection-or-bundle-edit___een-collectie-met-redactie-moet-een-kwaliteitscontrole-verantwoordelijke-hebben'
+				  )
+				: t(
+						'collection/components/collection-or-bundle-edit___een-bundel-met-redactie-moet-een-kwaliteitscontrole-verantwoordelijke-hebben'
+				  );
 		}
-		const clonedCollection = cloneDeep(collection);
-		getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
-			if (fragment.custom_description && (fragment.custom_description as any).toHTML) {
-				fragment.custom_description = sanitizeHtml(
-					(fragment.custom_description as any).toHTML(),
-					'link'
-				);
-			}
-		});
-		return clonedCollection;
+		return null;
 	};
-
-	const hasUnsavedChanged = () =>
-		JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.currentCollection)) !==
-		JSON.stringify(convertFragmentDescriptionsToHtml(collectionState.initialCollection));
 
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
+		try {
+			const validationError: string | null = isCollectionValid();
+			if (validationError) {
+				ToastService.danger(validationError);
+				setIsSavingCollection(false);
+				return;
+			}
 
-		// Convert fragment description editor states to html strings
-		const updatedCollection = convertFragmentDescriptionsToHtml({
-			...(collectionState.currentCollection as Avo.Collection.Collection),
-			updated_by_profile_id: get(user, 'profile.id', null),
-		});
-
-		if (collectionState.currentCollection) {
-			const newCollection = await CollectionService.updateCollection(
-				collectionState.initialCollection,
-				updatedCollection as Partial<Avo.Collection.Collection>,
-				user
-			);
-
-			if (newCollection) {
-				checkPermissionsAndGetBundle();
-				ToastService.success(
-					isCollection
-						? t(
-								'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
-						  )
-						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
-				);
-				trackEvents(
-					{
-						object: String(newCollection.id),
-						object_type: type,
-						message: `Gebruiker ${getProfileName(user)} heeft een ${type} aangepast`,
-						action: 'edit',
-					},
+			if (collectionState.currentCollection) {
+				const newCollection = await CollectionService.updateCollection(
+					collectionState.initialCollection,
+					collectionState.currentCollection,
 					user
 				);
-			}
-		}
 
+				if (newCollection) {
+					checkPermissionsAndGetCollection();
+					ToastService.success(
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___bundle-opgeslagen'
+							  )
+					);
+					trackEvents(
+						{
+							object: String(newCollection.id),
+							object_type: type,
+							message: `Gebruiker ${getProfileName(
+								user
+							)} heeft een ${type} aangepast`,
+							action: 'edit',
+						},
+						user
+					);
+				}
+			}
+		} catch (err) {
+			console.error('Failed to save collection/bundle to the database', err);
+			ToastService.danger(
+				isCollection
+					? t(
+							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-collectie-is-mislukt'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-bundel-is-mislukt'
+					  )
+			);
+		}
 		setIsSavingCollection(false);
 	};
 
@@ -622,7 +779,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				break;
 
 			case 'openPublishModal':
-				if (hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')) {
+				if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
 					ToastService.info(
 						t(
 							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
@@ -673,15 +830,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 				collectionPropValue: collection.publish_at,
 				updateInitialCollection: true,
 			});
-		}
-	};
-
-	const onUnload = (event: any) => {
-		if (hasUnsavedChanged()) {
-			event.preventDefault();
-
-			// Chrome requires returnValue to be set
-			event.returnValue = '';
 		}
 	};
 
@@ -747,11 +895,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 			} else {
 				// We're adding a collection to the bundle
-				const collection:
-					| Avo.Collection.Collection
-					| undefined = await CollectionService.fetchCollectionOrBundleById(
+				const collection: Avo.Collection.Collection | null = await CollectionService.fetchCollectionOrBundleById(
 					id,
-					'collection'
+					'collection',
+					undefined,
+					false
 				);
 				if (!collection) {
 					ToastService.danger(
@@ -849,7 +997,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
-				case 'inhoud':
+				case 'content':
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
@@ -872,6 +1020,30 @@ const CollectionOrBundleEdit: FunctionComponent<
 				case 'admin':
 					return (
 						<CollectionOrBundleEditAdmin
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+							history={history}
+						/>
+					);
+				case 'actualisation':
+					return (
+						<CollectionOrBundleEditActualisation
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+							history={history}
+						/>
+					);
+				case 'quality_check':
+					return (
+						<CollectionOrBundleEditQualityCheck
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+							history={history}
+						/>
+					);
+				case 'marcom':
+					return (
+						<CollectionOrBundleEditMarcom
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
@@ -916,7 +1088,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const isPublic =
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
 		let publishButtonTooltip: string;
-		if (hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')) {
+		if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
 			publishButtonTooltip = t(
 				'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 			);
@@ -943,7 +1115,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<Button
 					type="secondary"
 					disabled={
-						hasUnsavedChanged() && !get(collectionState.initialCollection, 'is_public')
+						unsavedChanges && !get(collectionState.initialCollection, 'is_public')
 					}
 					title={publishButtonTooltip}
 					ariaLabel={publishButtonTooltip}
@@ -1031,119 +1203,149 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 		return (
 			<>
-				<Prompt
-					when={hasUnsavedChanged()}
-					message={t(
-						'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-					)}
-				/>
-				<Header
-					title={title}
-					onClickTitle={() => setIsRenameModalOpen(true)}
-					category={type}
-					showMetaData
-					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-					views={String(bookmarkViewPlayCounts.viewCount || 0)}
+				<BeforeUnloadComponent
+					blockRoute={unsavedChanges}
+					modalComponentHandler={({
+						handleModalLeave,
+						handleModalCancel,
+					}: {
+						handleModalLeave: () => void;
+						handleModalCancel: () => void;
+					}) => {
+						return (
+							<DeleteObjectModal
+								isOpen={true}
+								body={t(
+									'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+								)}
+								onClose={handleModalCancel}
+								deleteObjectCallback={handleModalLeave}
+								cancelLabel={t(
+									'collection/components/collection-or-bundle-edit___blijven'
+								)}
+								confirmLabel={t(
+									'collection/components/collection-or-bundle-edit___verlaten'
+								)}
+								title={t(
+									'collection/components/collection-or-bundle-edit___niet-opgeslagen-wijzigingen'
+								)}
+								confirmButtonType="primary"
+							/>
+						);
+					}}
 				>
-					<HeaderButtons>
-						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
-					</HeaderButtons>
-					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
-				</Header>
-				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">
-						<Tabs tabs={tabs} onClick={selectTab} />
+					<Header
+						title={title}
+						onClickTitle={() => setIsRenameModalOpen(true)}
+						category={type}
+						showMetaData
+						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+						views={String(bookmarkViewPlayCounts.viewCount || 0)}
+					>
+						<HeaderButtons>
+							{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+						</HeaderButtons>
+						<HeaderAvatar>
+							{profile && renderAvatar(profile, { dark: true })}
+						</HeaderAvatar>
+					</Header>
+					<Navbar background="alt" placement="top" autoHeight>
+						<Container mode="horizontal">
+							<Tabs tabs={tabs} onClick={selectTab} />
+						</Container>
+					</Navbar>
+					{renderTab()}
+					<Container background="alt" mode="vertical">
+						<Container mode="horizontal">
+							<Toolbar autoHeight>
+								<ToolbarLeft>
+									<ToolbarItem>
+										<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
+									</ToolbarItem>
+								</ToolbarLeft>
+							</Toolbar>
+						</Container>
 					</Container>
-				</Navbar>
-				{renderTab()}
-				<Container background="alt" mode="vertical">
-					<Container mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarLeft>
-						</Toolbar>
-					</Container>
-				</Container>
-				{!!collectionState.currentCollection && (
-					<PublishCollectionModal
-						collection={collectionState.currentCollection}
-						isOpen={isPublishModalOpen}
-						onClose={onCloseShareCollectionModal}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
+					{!!collectionState.currentCollection && (
+						<PublishCollectionModal
+							collection={collectionState.currentCollection}
+							isOpen={isPublishModalOpen}
+							onClose={onCloseShareCollectionModal}
+							history={history}
+							location={location}
+							match={match}
+							user={user}
+						/>
+					)}
+					<DeleteCollectionModal
+						collectionId={
+							(collectionState.currentCollection as Avo.Collection.Collection).id
+						}
+						isOpen={isDeleteModalOpen}
+						onClose={() => setIsDeleteModalOpen(false)}
+						deleteObjectCallback={onDeleteCollection}
 					/>
-				)}
-				<DeleteCollectionModal
-					collectionId={
-						(collectionState.currentCollection as Avo.Collection.Collection).id
-					}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={onDeleteCollection}
-				/>
-				<InputModal
-					title={
-						isCollection
-							? t('collection/views/collection-edit___hernoem-deze-collectie')
-							: t(
-									'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
-							  )
-					}
-					inputLabel={
-						isCollection
-							? t('collection/components/collection-or-bundle-edit___naam-collectie')
-							: t('collection/components/collection-or-bundle-edit___naam-bundel')
-					}
-					inputValue={title}
-					maxLength={MAX_TITLE_LENGTH}
-					isOpen={isRenameModalOpen}
-					onClose={() => setIsRenameModalOpen(false)}
-					inputCallback={onRenameCollection}
-					emptyMessage={
-						isCollection
-							? t(
-									'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
-							  )
-							: t(
-									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
-							  )
-					}
-				/>
-				<InputModal
-					title={
-						isCollection
-							? t(
-									'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
-							  )
-							: t(
-									'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
-							  )
-					}
-					inputLabel={t('collection/components/collection-or-bundle-edit___id')}
-					inputPlaceholder={
-						isCollection
-							? t(
-									'collection/components/collection-or-bundle-edit___bijvoorbeeld-zg-6-g-181-x-5-j'
-							  )
-							: t(
-									'collection/components/collection-or-bundle-edit___bijvoorbeeld-c-8-a-48-b-7-e-d-27-d-4-b-9-a-a-793-9-ba-79-fff-41-df'
-							  )
-					}
-					isOpen={isEnterItemIdModalOpen}
-					onClose={() => setEnterItemIdModalOpen(false)}
-					inputCallback={handleAddItemById}
-				/>
-				<DraggableListModal
-					items={getFragmentsFromCollection(collectionState.currentCollection)}
-					renderItem={renderDraggableFragment}
-					isOpen={isReorderModalOpen}
-					onClose={handleReorderModalClosed}
-				/>
+					<InputModal
+						title={
+							isCollection
+								? t('collection/views/collection-edit___hernoem-deze-collectie')
+								: t(
+										'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
+								  )
+						}
+						inputLabel={
+							isCollection
+								? t(
+										'collection/components/collection-or-bundle-edit___naam-collectie'
+								  )
+								: t('collection/components/collection-or-bundle-edit___naam-bundel')
+						}
+						inputValue={title}
+						maxLength={MAX_TITLE_LENGTH}
+						isOpen={isRenameModalOpen}
+						onClose={() => setIsRenameModalOpen(false)}
+						inputCallback={onRenameCollection}
+						emptyMessage={
+							isCollection
+								? t(
+										'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
+								  )
+								: t(
+										'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
+								  )
+						}
+					/>
+					<InputModal
+						title={
+							isCollection
+								? t(
+										'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
+								  )
+								: t(
+										'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
+								  )
+						}
+						inputLabel={t('collection/components/collection-or-bundle-edit___id')}
+						inputPlaceholder={
+							isCollection
+								? t(
+										'collection/components/collection-or-bundle-edit___bijvoorbeeld-zg-6-g-181-x-5-j'
+								  )
+								: t(
+										'collection/components/collection-or-bundle-edit___bijvoorbeeld-c-8-a-48-b-7-e-d-27-d-4-b-9-a-a-793-9-ba-79-fff-41-df'
+								  )
+						}
+						isOpen={isEnterItemIdModalOpen}
+						onClose={() => setEnterItemIdModalOpen(false)}
+						inputCallback={handleAddItemById}
+					/>
+					<DraggableListModal
+						items={getFragmentsFromCollection(collectionState.currentCollection)}
+						renderItem={renderDraggableFragment}
+						isOpen={isReorderModalOpen}
+						onClose={handleReorderModalClosed}
+					/>
+				</BeforeUnloadComponent>
 			</>
 		);
 	};

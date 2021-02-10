@@ -2,11 +2,17 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AspectRatioWrapper, FlowPlayer, formatDuration, Icon } from '@viaa/avo2-components';
+import { AspectRatioWrapper, FlowPlayer, Icon } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { CustomError, getEnv, reorderDate, toSeconds } from '../../helpers';
+import {
+	CustomError,
+	formatDurationHoursMinutesSeconds,
+	getEnv,
+	reorderDate,
+	toSeconds,
+} from '../../helpers';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -156,11 +162,16 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		return src;
 	};
 
-	const [start, end] = getValidStartAndEnd(
+	let [start, end]: [number | null, number | null] = getValidStartAndEnd(
 		props.cuePoints?.start,
 		props.cuePoints?.end,
 		toSeconds(item?.duration)
 	);
+
+	if (start === 0 && end === toSeconds(item?.duration)) {
+		start = null;
+		end = null;
+	}
 
 	return (
 		<div className="c-video-player t-player-skin--dark">
@@ -204,7 +215,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						(start !== 0 || end !== toSeconds(item?.duration)) && (
 							<div className="c-cut-overlay">
 								<Icon name="scissors" />
-								{`${formatDuration(start)} - ${formatDuration(end)}`}
+								{`${formatDurationHoursMinutesSeconds(
+									start
+								)} - ${formatDurationHoursMinutesSeconds(end)}`}
 							</div>
 						)}
 				</div>

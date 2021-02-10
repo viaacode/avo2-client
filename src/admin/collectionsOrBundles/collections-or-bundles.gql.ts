@@ -56,6 +56,179 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
+// TODO add collection labels when they are added to the the views
+// https://meemoo.atlassian.net/browse/DEV-1438
+// collection_labels: labels {
+// 	label
+// 	id
+// }
+// TODO Add manager when his task is completed
+// https://meemoo.atlassian.net/browse/DEV-1474
+// mgmt_manager {
+// 	id
+// 	full_name
+// 	mail
+// }
+export const GET_COLLECTION_ACTUALISATION = gql`
+	query getCollectionActualisations(
+		$where: app_collection_actualisation_overview_bool_exp!
+		$orderBy: [app_collection_actualisation_overview_order_by!]!
+		$offset: Int!
+		$limit: Int!
+	) {
+		app_collections: app_collection_actualisation_overview(
+			where: $where
+			order_by: $orderBy
+			offset: $offset
+			limit: $limit
+		) {
+			id: collection_id
+			created_at
+			is_public
+			subjects: lom_classification
+			education_levels: lom_context
+			mgmt_created_at
+			mgmt_current_status
+			mgmt_last_eindcheck_date
+			mgmt_status_expires_at
+			mgmt_updated_at
+			owner_profile_id
+			title
+			type_id
+			updated_at
+			updated_by_profile_id
+			owner {
+				profile {
+					id
+					profile_user_group {
+						group {
+							label
+							id
+						}
+					}
+				}
+				user_id
+				full_name
+			}
+			last_editor {
+				profile_id
+				full_name
+			}
+		}
+		app_collections_aggregate: app_collection_actualisation_overview_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_COLLECTION_QUALITY_CHECK = gql`
+	query getCollectionQualityCheck(
+		$where: app_collection_qc_overview_bool_exp!
+		$orderBy: [app_collection_qc_overview_order_by!]!
+		$offset: Int!
+		$limit: Int!
+	) {
+		app_collections: app_collection_qc_overview(
+			where: $where
+			order_by: $orderBy
+			offset: $offset
+			limit: $limit
+		) {
+			id: collection_id
+			is_public
+			subjects: lom_classification
+			education_levels: lom_context
+			owner {
+				profile {
+					id
+					profile_user_group {
+						group {
+							label
+							id
+						}
+					}
+				}
+				user_id
+				full_name
+			}
+			created_at
+			updated_at
+			title
+			updated_by_profile_id
+			collection_labels: labels {
+				id
+				label
+			}
+			last_editor {
+				full_name
+			}
+			mgmt_quality_check
+			mgmt_language_check
+			mgmt_eind_check_date
+		}
+		app_collections_aggregate: app_collection_qc_overview_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_COLLECTION_MARCOM = gql`
+	query getCollectionMarcom(
+		$where: app_collection_marcom_overview_bool_exp!
+		$orderBy: [app_collection_marcom_overview_order_by!]!
+		$offset: Int!
+		$limit: Int!
+	) {
+		app_collections: app_collection_marcom_overview(
+			where: $where
+			order_by: $orderBy
+			offset: $offset
+			limit: $limit
+		) {
+			channel_name
+			channel_type
+			id: collection_id
+			created_at
+			is_public
+			klascement
+			collection_labels: labels {
+				label
+				id
+			}
+			last_editor {
+				full_name
+			}
+			subjects: lom_classification
+			education_levels: lom_context
+			owner {
+				profile {
+					id
+					profile_user_group {
+						group {
+							label
+							id
+						}
+					}
+				}
+				user_id
+				full_name
+			}
+			last_marcom_date
+			title
+			updated_at
+		}
+		app_collections_aggregate: app_collection_marcom_overview_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
 export const GET_COLLECTION_IDS = gql`
 	query getCollectionsByIds($where: app_collections_bool_exp!) {
 		app_collections(where: $where) {

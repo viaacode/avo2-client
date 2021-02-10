@@ -8,6 +8,7 @@ import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
+import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import {
 	ApolloCacheManager,
 	AssignmentLabelsService,
@@ -16,7 +17,7 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { ITEMS_PER_PAGE } from './assignment.const';
+import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
@@ -32,7 +33,11 @@ import {
 	UPDATE_ASSIGNMENT_ARCHIVE_STATUS,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
-import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
+import {
+	AssignmentLayout,
+	AssignmentOverviewTableColumns,
+	AssignmentRetrieveError,
+} from './assignment.types';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -69,7 +74,8 @@ export class AssignmentService {
 		user: Avo.User.User,
 		archived: boolean | null,
 		pastDeadline: boolean | null,
-		order: any,
+		sortColumn: AssignmentOverviewTableColumns,
+		sortOrder: Avo.Search.OrderDirection,
 		page: number,
 		filterString: string | undefined,
 		labelIds: string[] | undefined
@@ -117,7 +123,7 @@ export class AssignmentService {
 				}
 			}
 			variables = {
-				order,
+				order: getOrderObject(sortColumn, sortOrder, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT),
 				owner_profile_id: getProfileId(user),
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
@@ -207,7 +213,7 @@ export class AssignmentService {
 		if (assignment.content_id && assignment.content_label) {
 			if (assignment.content_label === 'COLLECTIE' && assignment.content_id) {
 				return (
-					(await CollectionService.fetchCollectionOrBundleWithItemsById(
+					(await CollectionService.fetchCollectionOrBundleById(
 						assignment.content_id,
 						'collection',
 						assignment.uuid
@@ -538,11 +544,13 @@ export class AssignmentService {
 		collectionIdOrCollection: string | Avo.Collection.Collection,
 		user: Avo.User.User
 	): Promise<string> {
-		let collection: Avo.Collection.Collection | undefined;
+		let collection: Avo.Collection.Collection | null;
 		if (isString(collectionIdOrCollection)) {
 			collection = await CollectionService.fetchCollectionOrBundleById(
 				collectionIdOrCollection as string,
-				'collection'
+				'collection',
+				undefined,
+				true
 			);
 		} else {
 			collection = collectionIdOrCollection as Avo.Collection.Collection;

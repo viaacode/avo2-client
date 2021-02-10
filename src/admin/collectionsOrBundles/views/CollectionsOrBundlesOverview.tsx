@@ -1,61 +1,39 @@
-import { compact, get, isNil, truncate, without } from 'lodash-es';
+import { compact, get, truncate } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import {
-	Button,
-	ButtonToolbar,
-	IconName,
-	TagInfo,
-	TagList,
-	TagOption,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, TagInfo, TagList } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { CollectionService } from '../../../collection/collection.service';
-import { ContentTypeNumber, QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
-	CheckboxDropdownModalProps,
 	CheckboxOption,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { buildLink, CustomError, formatDate, getFullName } from '../../../shared/helpers';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
+import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
+import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
-import i18n from '../../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import FilterTable, {
-	FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
-import {
-	getBooleanFilters,
-	getDateRangeFilters,
-	getMultiOptionFilters,
-	getQueryFilter,
-} from '../../shared/helpers/filters';
+import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
+	GET_COLLECTIONS_COLUMNS,
 	GET_COLLECTION_BULK_ACTIONS,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
@@ -64,6 +42,8 @@ import {
 	CollectionsOrBundlesOverviewTableCols,
 	CollectionsOrBundlesTableState,
 } from '../collections-or-bundles.types';
+import { generateCollectionWhereObject } from '../helpers/collection-filters';
+import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
 interface CollectionsOrBundlesOverviewProps extends DefaultSecureRouteProps {}
 
@@ -78,7 +58,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionCount, setCollectionCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
-	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
@@ -88,6 +67,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false);
 
 	const [userGroups] = useUserGroups(false);
+	const [subjects] = useSubjects();
+	const [educationLevels] = useEducationLevels();
+	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -95,89 +77,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	// methods
 	const generateWhereObject = useCallback(
 		(filters: Partial<CollectionsOrBundlesTableState>) => {
-			const andFilters: any[] = [];
-			andFilters.push(
-				...getQueryFilter(filters.query, (queryWildcard: string) => [
-					{ title: { _ilike: queryWildcard } },
-					{ description: { _ilike: queryWildcard } },
-					{
-						owner: {
-							full_name: { _ilike: queryWildcard },
-						},
-					},
-				])
+			const andFilters: any[] = generateCollectionWhereObject(
+				filters,
+				user,
+				isCollection,
+				false,
+				true,
+				'collectionTable'
 			);
-			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
-			andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
-			andFilters.push(
-				...getMultiOptionFilters(
-					filters,
-					['author_user_group'],
-					['profile.profile_user_group.group.id']
-				)
-			);
-			if (filters.collection_labels && filters.collection_labels.length) {
-				andFilters.push({
-					_or: [
-						...getMultiOptionFilters(
-							{
-								collection_labels: without(filters.collection_labels, 'NO_LABEL'),
-							},
-							['collection_labels'],
-							['collection_labels.label']
-						),
-						...(filters.collection_labels.includes('NO_LABEL')
-							? [{ _not: { collection_labels: {} } }]
-							: []),
-					],
-				});
-			}
-			andFilters.push(...getBooleanFilters(filters, ['is_public']));
-			andFilters.push({ is_deleted: { _eq: false } });
-
-			// Only show published/unpublished collections/bundles based on permissions
-			if (
-				(isCollection &&
-					!PermissionService.hasPerm(
-						user,
-						PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
-					)) ||
-				(!isCollection &&
-					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
-			) {
-				andFilters.push({ is_public: { _eq: false } });
-			}
-			if (
-				(isCollection &&
-					!PermissionService.hasPerm(
-						user,
-						PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
-					)) ||
-				(!isCollection &&
-					!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
-			) {
-				andFilters.push({ is_public: { _eq: true } });
-			}
-
-			andFilters.push({
-				type_id: {
-					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-				},
-			});
-
-			if (!isNil(filters.is_copy)) {
-				if (filters.is_copy) {
-					andFilters.push({
-						relations: { predicate: { _eq: 'IS_COPY_OF' } },
-					});
-				} else {
-					andFilters.push({
-						_not: { relations: { predicate: { _eq: 'IS_COPY_OF' } } },
-					});
-				}
-			}
-
-			andFilters.push({ is_deleted: { _eq: false } });
 
 			return { _and: andFilters };
 		},
@@ -225,23 +132,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		generateWhereObject,
 	]);
 
-	const fetchCollectionLabels = useCallback(async () => {
-		try {
-			setCollectionLabels(await CollectionService.fetchQualityLabels());
-		} catch (err) {
-			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(
-				t(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				)
-			);
-		}
-	}, [setCollectionLabels, t]);
-
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchCollectionLabels]);
+	}, [fetchCollectionsOrBundles]);
 
 	useEffect(() => {
 		if (collections) {
@@ -300,11 +193,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({
@@ -315,144 +208,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				),
 			})
 		),
-	];
-
-	const getUserOverviewTableCols = (): FilterableColumn[] => [
-		{
-			id: 'title',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		{
-			id: 'owner_profile_id',
-			label: i18n.t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'
-			),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'MultiUserSelectDropdown',
-		},
-		{
-			id: 'author_user_group',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'CheckboxDropdownModal',
-			filterProps: {
-				options: userGroupOptions,
-			} as CheckboxDropdownModalProps,
-		},
-		{
-			id: 'last_updated_by_profile',
-			label: i18n.t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
-			),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		{
-			id: 'created_at',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-			filterProps: {},
-		},
-		{
-			id: 'updated_at',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-			filterProps: {},
-		},
-		{
-			id: 'is_public',
-			label: i18n.t('admin/collections-or-bundles/collections-or-bundles___publiek'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'BooleanCheckboxDropdown',
-		},
-		{
-			id: 'collection_labels',
-			label: i18n.t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels'
-			),
-			sortable: false,
-			visibleByDefault: true,
-			filterType: 'CheckboxDropdownModal',
-			filterProps: {
-				options: collectionLabelOptions,
-			} as CheckboxDropdownModalProps,
-		},
-		{
-			id: 'is_copy',
-			label: i18n.t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___kopie'
-			),
-			sortable: false,
-			visibleByDefault: false,
-			filterType: 'BooleanCheckboxDropdown',
-		},
-		{
-			id: 'views',
-			tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
-			icon: 'eye',
-			sortable: true,
-			visibleByDefault: true,
-		},
-		{
-			id: 'bookmarks',
-			tooltip: i18n.t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
-			),
-			icon: 'bookmark',
-			sortable: true,
-			visibleByDefault: true,
-		},
-		{
-			id: 'copies',
-			tooltip: i18n.t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-gekopieerd'
-			),
-			icon: 'copy',
-			sortable: true,
-			visibleByDefault: true,
-		},
-		...(isCollection
-			? [
-					{
-						id: 'in_bundle',
-						tooltip: i18n.t(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bundel'
-						),
-						icon: 'folder' as IconName,
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]
-			: []),
-		...(isCollection
-			? [
-					{
-						id: 'in_assignment',
-						tooltip: i18n.t(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
-						),
-						icon: 'clipboard' as IconName,
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]
-			: []),
-		{
-			id: 'actions',
-			tooltip: t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___acties'
-			),
-			visibleByDefault: true,
-		},
 	];
 
 	const navigateToCollectionDetail = (id: string | undefined) => {
@@ -698,75 +453,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					</Link>
 				);
 
-			case 'owner_profile_id':
-				const user: Avo.User.User | undefined = get(rowData, 'profile.user');
-				return user ? truncateTableValue((user as any).full_name) : '-';
-
-			case 'author_user_group':
-				return getUserGroupLabel(get(rowData, 'profile')) || '-';
-
-			case 'last_updated_by_profile':
-				const lastEditUser: Avo.User.User | undefined = get(rowData, 'updated_by.user');
-				return lastEditUser ? lastEditUser.full_name : '-';
-
-			case 'is_public':
-				return rowData[columnId]
-					? t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
-					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
-
-			case 'views':
-				return get(rowData, 'counts.views') || '0';
-
-			case 'bookmarks':
-				return get(rowData, 'counts.bookmarks') || '0';
-
-			case 'copies':
-				return get(rowData, 'counts.copies') || '0';
-
-			case 'in_bundle':
-				return get(rowData, 'counts.in_collection') || '0';
-
-			case 'in_assignment':
-				return get(rowData, 'counts.in_assignment') || '0';
-
-			case 'created_at':
-			case 'updated_at':
-				return formatDate(rowData[columnId]) || '-';
-
-			case 'collection_labels':
-				const labels: { id: number; label: string }[] =
-					get(rowData, 'collection_labels') || [];
-				const tags: TagOption[] = compact(
-					labels.map((labelObj: any): TagOption | null => {
-						const prettyLabel = collectionLabels.find(
-							(collectionLabel) => collectionLabel.value === labelObj.label
-						);
-						if (!prettyLabel) {
-							return null;
-						}
-						return { label: prettyLabel.description, id: labelObj.id };
-					})
-				);
-				if (tags.length) {
-					return <TagList tags={tags} swatches={false} />;
-				}
-
-				return '-';
-
-			case 'is_copy':
-				if (!!get(rowData, 'relations[0].object')) {
-					return (
-						<a
-							href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-								id: get(rowData, 'relations[0].object'),
-							})}
-						>
-							Ja
-						</a>
-					);
-				}
-				return 'Nee';
-
 			case 'actions':
 				return (
 					<ButtonToolbar>
@@ -820,7 +506,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				);
 
 			default:
-				return truncate((rowData as any)[columnId] || '-', { length: 50 });
+				return renderCollectionOverviewColumns(rowData, columnId, collectionLabels);
 		}
 	};
 
@@ -847,12 +533,18 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		return (
 			<>
 				<FilterTable
-					columns={getUserOverviewTableCols()}
+					columns={GET_COLLECTIONS_COLUMNS(
+						isCollection,
+						userGroupOptions,
+						collectionLabelOptions,
+						subjects,
+						educationLevels
+					)}
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
 					searchTextPlaceholder={t(
-						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-auteur-rol'
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-beschrijving-auteur'
 					)}
 					noContentMatchingFiltersMessage={
 						isCollection

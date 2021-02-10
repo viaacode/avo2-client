@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
 	BlockHeading,
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -432,6 +433,47 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 												}}
 											/>
 										</FormGroup>
+									)}
+									{PermissionService.hasPerm(
+										user,
+										isCollection
+											? PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS
+											: PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS
+									) ? (
+										<FormGroup>
+											<Checkbox
+												label={t(
+													'collection/components/collection-or-bundle-edit-admin___redactie'
+												)}
+												checked={get(collection, 'is_managed', false)}
+												onChange={() => {
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'is_managed',
+														collectionPropValue: !get(
+															collection,
+															'is_managed',
+															false
+														),
+													});
+												}}
+											/>
+										</FormGroup>
+									) : (
+										<Spacer margin="top">
+											{`${t(
+												'collection/components/collection-or-bundle-edit-admin___redactie'
+											)}: ${
+												get(collection, 'is_managed', false)
+													? t(
+															'collection/components/collection-or-bundle-edit-admin___ja'
+													  )
+													: t(
+															'collection/components/collection-or-bundle-edit-admin___nee'
+													  )
+											}
+											`}
+										</Spacer>
 									)}
 								</Column>
 								<Column size="3-5">

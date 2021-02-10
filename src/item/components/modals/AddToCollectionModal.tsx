@@ -30,6 +30,7 @@ import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 import {
 	formatDurationHoursMinutesSeconds,
 	isMobileWidth,
@@ -63,9 +64,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
-	const [selectedCollection, setSelectedCollection] = useState<
-		Avo.Collection.Collection | undefined
-	>(undefined);
+	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Collection | null>(
+		null
+	);
 	const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
 
 	const [fragmentStartString, setFragmentStartString] = useState<string>(
@@ -118,7 +119,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			// Reset the state
 			setCreateNewCollection(!collections.length);
 			setSelectedCollectionId('');
-			setSelectedCollection(undefined);
+			setSelectedCollection(null);
 			setNewCollectionTitle('');
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
@@ -127,10 +128,15 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
-			setSelectedCollection(undefined);
+			setSelectedCollection(null);
 			setSelectedCollectionId(id);
 			setSelectedCollection(
-				await CollectionService.fetchCollectionOrBundleById(id, 'collection')
+				await CollectionService.fetchCollectionOrBundleById(
+					id,
+					'collection',
+					undefined,
+					false
+				)
 			);
 		} catch (err) {
 			ToastService.danger(
@@ -232,6 +238,12 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 						(await getFragment(newCollection)) as Avo.Collection.Fragment,
 					],
 				});
+			}
+
+			// Enable is_managed by default when one of these user groups creates a collection/bundle
+			// https://meemoo.atlassian.net/browse/AVO-1453
+			if (canManageEditorial(user)) {
+				(newCollection as any).is_managed = true; // TODO remove cast to any once update to typings v2.28.0
 			}
 
 			const insertedCollection: Partial<Avo.Collection.Collection> = await CollectionService.insertCollection(

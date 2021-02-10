@@ -1,38 +1,6 @@
-import { TabProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { SelectOption, TableColumn } from '@viaa/avo2-components';
 
-import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import i18n from '../shared/translations/i18n';
-
-export const GET_COLLECTION_EDIT_TABS = (
-	user: Avo.User.User | undefined,
-	isCollection: boolean
-): TabProps[] => [
-	{
-		id: 'inhoud',
-		label: i18n.t('collection/collection___inhoud'),
-		icon: 'collection',
-	},
-	{
-		id: 'metadata',
-		label: i18n.t('collection/collection___publicatiedetails'),
-		icon: 'file-text',
-	},
-	...(PermissionService.hasAtLeastOnePerm(
-		user,
-		isCollection
-			? [PermissionName.EDIT_COLLECTION_LABELS, PermissionName.EDIT_COLLECTION_AUTHOR]
-			: [PermissionName.EDIT_BUNDLE_LABELS, PermissionName.EDIT_BUNDLE_AUTHOR]
-	)
-		? [
-				{
-					id: 'admin',
-					label: i18n.t('collection/collection___beheer'),
-					icon: 'settings',
-				} as TabProps,
-		  ]
-		: []),
-];
 
 export const STILL_DIMENSIONS = {
 	width: 177,
@@ -57,3 +25,39 @@ export const NEW_FRAGMENT = {
 		type: 'TEXT',
 	},
 };
+
+export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] = () => [
+	{ label: i18n.t('collection/collection___leeg'), value: '' },
+	{ label: i18n.t('collection/collection___nieuwsbericht'), value: 'NIEUWSBERICHT' },
+	{ label: i18n.t('collection/collection___nieuwsbrief'), value: 'NIEUWSBRIEF' },
+	{ label: i18n.t('collection/collection___social'), value: 'SOCIAL' },
+	{ label: i18n.t('collection/collection___campagne'), value: 'CAMPAGNE' },
+	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
+];
+
+export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] = () => [
+	{ label: i18n.t('collection/collection___leeg'), value: '' },
+	{ label: i18n.t('collection/collection___facebook'), value: 'FACEBOOK' },
+	{ label: i18n.t('collection/collection___twitter'), value: 'TWITTER' },
+	{ label: i18n.t('collection/collection___nieuwsbrief-meemoo'), value: 'NIEUWSBRIEF_MEEMOO' },
+	{ label: i18n.t('collection/collection___nieuwsbrief-avo'), value: 'NIEUWSBRIEF_AVO' },
+	{ label: i18n.t('collection/collection___klas-cement'), value: 'KLAS_CEMENT' },
+	{ label: i18n.t('collection/collection___zill'), value: 'ZILL' },
+	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
+];
+
+export const GET_MARCOM_ENTRY_TABLE_COLUMNS: () => TableColumn[] = () => [
+	{ label: i18n.t('collection/collection___datum'), id: 'publish_date' },
+	{
+		label: i18n.t('collection/collection___kanaal-type'),
+		id: 'channel_type',
+	},
+	{
+		label: i18n.t('collection/collection___kanaal-naam'),
+		id: 'channel_name',
+	},
+	{
+		label: i18n.t('collection/collection___link'),
+		id: 'external_link',
+	},
+];

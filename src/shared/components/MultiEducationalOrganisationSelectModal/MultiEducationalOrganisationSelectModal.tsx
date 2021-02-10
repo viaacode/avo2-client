@@ -96,8 +96,12 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEdu
 											id: 'users',
 											label: `${selected} ${
 												selected > 1
-													? t('items geselecteerd')
-													: t('item geselecteerd')
+													? t(
+															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___items-geselecteerd'
+													  )
+													: t(
+															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___item-geselecteerd'
+													  )
 											}`,
 										},
 									]}

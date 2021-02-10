@@ -98,6 +98,20 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterType: 'BooleanCheckboxDropdown',
 	},
 	{
+		id: 'blocked_at',
+		label: i18n.t('admin/users/user___geblokkeerd-op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
+		id: 'unblocked_at',
+		label: i18n.t('admin/users/user___ongeblokkeerd-op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+	},
+	{
 		id: 'stamboek',
 		label: i18n.t('admin/users/user___stamboek'),
 		sortable: true,
@@ -179,10 +193,10 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}
 > = {
 	first_name: (order: Avo.Search.OrderDirection) => ({
-		first_name: order,
+		first_name_lower: order,
 	}),
 	last_name: (order: Avo.Search.OrderDirection) => ({
-		last_name: order,
+		last_name_lower: order,
 	}),
 	mail: (order: Avo.Search.OrderDirection) => ({
 		mail: order,
@@ -195,6 +209,16 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 	is_blocked: (order: Avo.Search.OrderDirection) => ({
 		is_blocked: order,
+	}),
+	blocked_at: (order: Avo.Search.OrderDirection) => ({
+		blocked_at: {
+			max: order,
+		},
+	}),
+	unblocked_at: (order: Avo.Search.OrderDirection) => ({
+		unblocked_at: {
+			max: order,
+		},
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({
 		stamboek: order,
@@ -250,23 +274,22 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 	}
 	const actions: UserBulkActionOption[] = [];
 
-	// TODO re-enable in v1.7.0
-	// if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
-	// actions.push({
-	// 	label: i18n.t('admin/users/user___blokkeren'),
-	// 	value: 'block',
-	// });
-	// actions.push({
-	// 	label: i18n.t('admin/users/user___deblokkeren'),
-	// 	value: 'unblock',
-	// });
-	// }
-	// if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
-	// actions.push({
-	// 	label: i18n.t('admin/users/user___verwijderen'),
-	// 	value: 'delete',
-	// });
-	// }
+	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
+		actions.push({
+			label: i18n.t('admin/users/user___blokkeren'),
+			value: 'block',
+		});
+		actions.push({
+			label: i18n.t('admin/users/user___deblokkeren'),
+			value: 'unblock',
+		});
+	}
+	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
+		actions.push({
+			label: i18n.t('admin/users/user___verwijderen'),
+			value: 'delete',
+		});
+	}
 	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
 		actions.push({
 			label: i18n.t('admin/users/user___vakken-aanpassen'),

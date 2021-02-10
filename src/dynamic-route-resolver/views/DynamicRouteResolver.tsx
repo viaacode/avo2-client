@@ -35,6 +35,7 @@ import {
 	stripHtml,
 } from '../../shared/helpers';
 import { ContentPageService } from '../../shared/services/content-page-service';
+import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
@@ -175,7 +176,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('error/views/error-view___de-pagina-werd-niet-gevonden'),
+				message: getPageNotFoundError(loginState?.message === 'LOGGED_IN'),
 				icon: 'search',
 			});
 		}
@@ -283,7 +284,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		);
 		return (
 			<ErrorView
-				message={t('error/views/error-view___de-pagina-werd-niet-gevonden')}
+				message={getPageNotFoundError(loginState?.message === 'LOGGED_IN')}
 				icon="search"
 				actionButtons={['home', 'helpdesk']}
 			/>

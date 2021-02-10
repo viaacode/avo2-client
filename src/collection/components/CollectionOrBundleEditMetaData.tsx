@@ -25,7 +25,7 @@ import {
 	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/constants/wysiwyg';
 import { CustomError, sanitizeHtml, stripHtml } from '../../shared/helpers';
-import { stringToSelectOption } from '../../shared/helpers/string-to-select-options';
+import { stringToTagInfo } from '../../shared/helpers/string-to-select-options';
 import i18n from '../../shared/translations/i18n';
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
@@ -59,8 +59,8 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	useEffect(() => {
 		Promise.all([SettingsService.fetchSubjects(), SettingsService.fetchEducationLevels()])
 			.then((response: [string[], string[]]) => {
-				setSubjects(response[0].map(stringToSelectOption));
-				setEducationLevels(response[1].map(stringToSelectOption));
+				setSubjects(response[0].map(stringToTagInfo));
+				setEducationLevels(response[1].map(stringToTagInfo));
 			})
 			.catch((err) => {
 				console.error(
@@ -100,7 +100,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										<TagsInput
 											options={educationLevels}
 											value={(collection.lom_context || []).map(
-												stringToSelectOption
+												stringToTagInfo
 											)}
 											onChange={(values: TagInfo[]) =>
 												updateCollectionMultiProperty(values, 'lom_context')
@@ -116,7 +116,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										<TagsInput
 											options={subjects}
 											value={(collection.lom_classification || []).map(
-												stringToSelectOption
+												stringToTagInfo
 											)}
 											onChange={(values: TagInfo[]) =>
 												updateCollectionMultiProperty(

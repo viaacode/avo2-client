@@ -13,10 +13,11 @@ import {
 	FormGroup,
 	Grid,
 	RadioButtonGroup,
+	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { reorderDate } from '../../helpers/formatters';
+import { reorderDate } from '../../helpers';
 import { ToastService } from '../../services';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
@@ -24,6 +25,8 @@ export interface DateRangeDropdownProps {
 	label: string;
 	id: string;
 	range?: { gte: string; lte: string };
+	showPastFutureOptions?: boolean;
+	defaultControls?: DateRangeControls;
 	onChange: (dateRange: { gte: string; lte: string }, id: string) => void;
 }
 
@@ -32,20 +35,31 @@ export interface DateRange {
 	lte: string;
 }
 
+export type DateRangeControls = 'year' | 'date' | 'past' | 'future';
+
 const DEFAULT_DATE_RANGE = { gte: '', lte: '' };
+const DEFAULT_PAST_DATE_RANGE = {
+	gte: '',
+	lte: new Date().toISOString(),
+};
+const DEFAULT_FUTURE_DATE_RANGE = {
+	gte: new Date().toISOString(),
+	lte: '',
+};
 
 const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	label,
 	id,
 	range = DEFAULT_DATE_RANGE,
+	showPastFutureOptions = false,
+	defaultControls = 'year',
 	onChange,
 }) => {
 	const [t] = useTranslation();
 
 	// Internal range state (copied to external range state when the user clicks on the apply button
 	const [rangeState, setRangeState] = useState<DateRange>(range);
-	// const [showYearControls, setShowYearControls] = useState<boolean>(true);
-	const [dateControls, setDateControls] = useState<'year' | 'date'>('year');
+	const [dateControls, setDateControls] = useState<DateRangeControls>(defaultControls);
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 	const [yearInputGte, setYearInputGte] = useState<string>('');
 	const [yearInputLte, setYearInputLte] = useState<string>('');
@@ -59,15 +73,20 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	useEffect(() => {
 		if (dateControls === 'year') {
 			// Round selected dates to the larger year
-			const newRangeState = {
-				gte: rangeState.gte ? `${rangeState.gte.split('-')[0]}-01-01` : '',
-				lte: rangeState.lte ? `${rangeState.lte.split('-')[0]}-12-31` : '',
-			};
-			setRangeState(newRangeState);
-			setYearInputGte(rangeState.gte ? rangeState.gte.split('-')[0] : '');
-			setYearInputLte(rangeState.lte ? rangeState.lte.split('-')[0] : '');
+			setRangeState((oldRangeState) => {
+				setYearInputGte(oldRangeState.gte ? oldRangeState.gte.split('-')[0] : '');
+				setYearInputLte(oldRangeState.lte ? oldRangeState.lte.split('-')[0] : '');
+				return {
+					gte: oldRangeState.gte ? `${oldRangeState.gte.split('-')[0]}-01-01` : '',
+					lte: oldRangeState.lte ? `${oldRangeState.lte.split('-')[0]}-12-31` : '',
+				};
+			});
+		} else if (dateControls === 'past') {
+			setRangeState(DEFAULT_PAST_DATE_RANGE);
+		} else if (dateControls === 'future') {
+			setRangeState(DEFAULT_FUTURE_DATE_RANGE);
 		}
-	}, [dateControls, rangeState.gte, rangeState.lte]);
+	}, [dateControls]);
 
 	/**
 	 * State is only passed from the component to the parent when the user clicks the "Apply" button
@@ -173,8 +192,15 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
 	};
 
-	const from = rangeState.gte;
-	const till = rangeState.lte;
+	let dateRange = rangeState;
+	if (dateControls === 'past') {
+		dateRange = DEFAULT_PAST_DATE_RANGE;
+	}
+	if (dateControls === 'future') {
+		dateRange = DEFAULT_FUTURE_DATE_RANGE;
+	}
+	const from = dateRange.gte;
+	const till = dateRange.lte;
 	let fromYear: string;
 	let tillYear: string;
 
@@ -202,7 +228,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 				{renderDropdownButton(label, isDropdownOpen, getTag(), removeFilter)}
 			</DropdownButton>
 			<DropdownContent>
-				<div className="u-spacer">
+				<Spacer className="c-date-range-dropdown__content">
 					<Form>
 						<FormGroup
 							label={t(
@@ -210,7 +236,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							)}
 						>
 							<RadioButtonGroup
-								inline
+								inline={!showPastFutureOptions}
 								options={[
 									{
 										label: t(
@@ -224,9 +250,25 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										),
 										value: 'date',
 									},
+									...(showPastFutureOptions
+										? [
+												{
+													label: t(
+														'shared/components/date-range-dropdown/date-range-dropdown___in-het-verleden'
+													),
+													value: 'past',
+												},
+												{
+													label: t(
+														'shared/components/date-range-dropdown/date-range-dropdown___in-de-toekomst'
+													),
+													value: 'future',
+												},
+										  ]
+										: []),
 								]}
 								value={dateControls}
-								onChange={(value) => setDateControls(value as 'year' | 'date')}
+								onChange={(value) => setDateControls(value as DateRangeControls)}
 							/>
 							{dateControls === 'year' && (
 								<Grid>
@@ -268,7 +310,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									</Column>
 								</Grid>
 							)}
-							{dateControls === 'date' && (
+							{(dateControls === 'date' ||
+								dateControls === 'past' ||
+								dateControls === 'future') && (
 								<Grid>
 									<Column size="6">
 										<FormGroup
@@ -279,6 +323,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 											<DatePicker
 												value={fromDate}
 												onChange={(value) => handleDateChange(value, 'gte')}
+												disabled={dateControls !== 'date'}
 											/>
 										</FormGroup>
 									</Column>
@@ -291,6 +336,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 											<DatePicker
 												value={tillDate}
 												onChange={(value) => handleDateChange(value, 'lte')}
+												disabled={dateControls !== 'date'}
 											/>
 										</FormGroup>
 									</Column>
@@ -309,7 +355,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							/>
 						</FormGroup>
 					</Form>
-				</div>
+				</Spacer>
 			</DropdownContent>
 		</Dropdown>
 	);
