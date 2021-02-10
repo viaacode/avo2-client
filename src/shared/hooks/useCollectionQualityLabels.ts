@@ -25,7 +25,11 @@ export const useCollectionQualityLabels = (): UseCollectionQualityLabelsTuple =>
 				console.error(
 					new CustomError('Failed to get collectionQualityLabels from the database', err)
 				);
-				ToastService.danger(t('Het ophalen van de collectie kwaliteitslabels is mislukt'));
+				ToastService.danger(
+					t(
+						'shared/hooks/use-collection-quality-labels___het-ophalen-van-de-collectie-kwaliteitslabels-is-mislukt'
+					)
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);

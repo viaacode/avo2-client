@@ -30,9 +30,9 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
 import { ContentTypeNumber } from '../../collection.types';
+import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 import './AddToBundleModal.scss';
-import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 interface AddToBundleModalProps extends DefaultSecureRouteProps {
 	collectionId: string;

@@ -21,6 +21,7 @@ import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQ
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
@@ -34,7 +35,6 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
-import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleQualityCheckOverviewProps extends DefaultSecureRouteProps {}
 
@@ -106,8 +106,12 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t('Het ophalen van de collectie actualisaties is mislukt')
-					: t('Het ophalen van de bundel actualisaties is mislukt'),
+					? t(
+							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-collectie-actualisaties-is-mislukt'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt'
+					  ),
 			});
 		}
 		setIsLoading(false);
@@ -297,14 +301,16 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
-					searchTextPlaceholder={t('Zoek op titel, beschrijving, auteur')}
+					searchTextPlaceholder={t(
+						'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___zoek-op-titel-beschrijving-auteur'
+					)}
 					noContentMatchingFiltersMessage={
 						isCollection
 							? t(
-									'Er zijn geen collectie kwaliteitscontrole items die voldoen aan de opgegeven filters'
+									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___er-zijn-geen-collectie-kwaliteitscontrole-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
 							: t(
-									'Er zijn geen bundel kwaliteitscontrole items die voldoen aan de opgegeven filters'
+									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___er-zijn-geen-bundel-kwaliteitscontrole-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
 					}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -323,7 +329,13 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 	return (
 		<AdminLayout
 			pageTitle={
-				isCollection ? t('Collecties Kwaliteitscontrole') : t('Bundels Kwaliteitscontrole')
+				isCollection
+					? t(
+							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collecties-kwaliteitscontrole'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundels-kwaliteitscontrole'
+					  )
 			}
 			size="full-width"
 		>
@@ -332,8 +344,12 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t('collectie-kwaliteitscontrole-beheer-overview-pagina-titel')
-								: t('bundel-kwaliteitscontrole-beheer-overview-pagina-titel')
+								? t(
+										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-titel'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta
@@ -341,9 +357,11 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 						content={
 							isCollection
 								? t(
-										'collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
+										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
 								  )
-								: t('bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving')
+								: t(
+										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
+								  )
 						}
 					/>
 				</MetaTags>

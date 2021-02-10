@@ -67,7 +67,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 					collectionId: collection.id,
 				})
 			);
-			ToastService.danger(t('Het ophalen van de marcom entries is mislukt'));
+			ToastService.danger(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-ophalen-van-de-marcom-entries-is-mislukt'
+				)
+			);
 		}
 	}, [collection.id, t, setMarcomEntries]);
 
@@ -110,14 +114,22 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			};
 			await CollectionService.insertMarcomEntry([marcomEntry]);
 			await fetchMarcomEntries();
-			ToastService.success(t('Het toevoegen van de marcom entry is gelukt'));
+			ToastService.success(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt'
+				)
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to insert a new marcom entry into the database', err, {
 					collectionId: collection.id,
 				})
 			);
-			ToastService.danger(t('Het toevoegen van de marcom entry is mislukt'));
+			ToastService.danger(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -126,15 +138,27 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Form>
-						<BlockHeading type="h3">{t('Meest recente communicatie')}</BlockHeading>
+						<BlockHeading type="h3">
+							{t(
+								'collection/components/collection-or-bundle-edit-marcom___meest-recente-communicatie'
+							)}
+						</BlockHeading>
 						<Flex justify="between" spaced="wide">
 							<FlexItem>
-								<FormGroup label={t('Datum communicatie')}>
+								<FormGroup
+									label={t(
+										'collection/components/collection-or-bundle-edit-marcom___datum-communicatie'
+									)}
+								>
 									<DatePicker onChange={setMarcomDate} value={marcomDate} />
 								</FormGroup>
 							</FlexItem>
 							<FlexItem>
-								<FormGroup label={t('Kanaal type')}>
+								<FormGroup
+									label={t(
+										'collection/components/collection-or-bundle-edit-marcom___kanaal-type'
+									)}
+								>
 									<Select
 										options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
 										onChange={setMarcomChannelType}
@@ -143,7 +167,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								</FormGroup>
 							</FlexItem>
 							<FlexItem>
-								<FormGroup label={t('Kanaal naam')}>
+								<FormGroup
+									label={t(
+										'collection/components/collection-or-bundle-edit-marcom___kanaal-naam'
+									)}
+								>
 									<Select
 										options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
 										onChange={setMarcomChannelName}
@@ -152,7 +180,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								</FormGroup>
 							</FlexItem>
 							<FlexItem>
-								<FormGroup label={t('Link')}>
+								<FormGroup
+									label={t(
+										'collection/components/collection-or-bundle-edit-marcom___link'
+									)}
+								>
 									<TextInput
 										onChange={setMarcomLink}
 										value={marcomLink || undefined}
@@ -162,7 +194,9 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							<FlexItem>
 								<FormGroup label=" ">
 									<Button
-										label={t('Toevoegen')}
+										label={t(
+											'collection/components/collection-or-bundle-edit-marcom___toevoegen'
+										)}
 										onClick={addMarcomEntry}
 										type="primary"
 									/>
@@ -170,7 +204,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 						</Flex>
 						<Spacer margin={['top-extra-large', 'bottom-large']}>
-							<BlockHeading type="h3">{t('Eerdere communicatie')}</BlockHeading>
+							<BlockHeading type="h3">
+								{t(
+									'collection/components/collection-or-bundle-edit-marcom___eerdere-communicatie'
+								)}
+							</BlockHeading>
 							{marcomEntries ? (
 								<Table
 									data={marcomEntries}
@@ -179,9 +217,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 									emptyStateMessage={
 										isCollection
 											? t(
-													'Er zijn nog geen marcom entries voor deze collectie'
+													'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
 											  )
-											: t('Er zijn nog geen marcom entries voor deze bundel')
+											: t(
+													'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-bundel'
+											  )
 									}
 									rowKey="id"
 								/>
@@ -193,7 +233,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								</Spacer>
 							)}
 						</Spacer>
-						<FormGroup label={t('Opmerkingen')}>
+						<FormGroup
+							label={t(
+								'collection/components/collection-or-bundle-edit-marcom___opmerkingen'
+							)}
+						>
 							<TextArea
 								value={get(collection, 'marcom_note.note', '')}
 								onChange={(newNote: string) => {

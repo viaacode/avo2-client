@@ -106,8 +106,12 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t('Het ophalen van de collectie actualisaties is mislukt')
-					: t('Het ophalen van de bundel actualisaties is mislukt'),
+					? t(
+							'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___het-ophalen-van-de-collectie-actualisaties-is-mislukt'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt'
+					  ),
 			});
 		}
 		setIsLoading(false);
@@ -298,14 +302,16 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
-					searchTextPlaceholder={t('Zoek op titel, beschrijving, auteur')}
+					searchTextPlaceholder={t(
+						'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___zoek-op-titel-beschrijving-auteur'
+					)}
 					noContentMatchingFiltersMessage={
 						isCollection
 							? t(
-									'Er zijn geen collectie actualisaties die voldoen aan de opgegeven filters'
+									'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___er-zijn-geen-collectie-actualisaties-die-voldoen-aan-de-opgegeven-filters'
 							  )
 							: t(
-									'Er zijn geen bundel actualisaties die voldoen aan de opgegeven filters'
+									'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___er-zijn-geen-bundel-actualisaties-die-voldoen-aan-de-opgegeven-filters'
 							  )
 					}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -323,7 +329,15 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 
 	return (
 		<AdminLayout
-			pageTitle={isCollection ? t('Collecties Actualisatie') : t('Bundels Actualisatie')}
+			pageTitle={
+				isCollection
+					? t(
+							'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___collecties-actualisatie'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bundels-actualisatie'
+					  )
+			}
 			size="full-width"
 		>
 			<AdminLayoutBody>
@@ -331,16 +345,24 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t('collectie-actualisation-beheer-overview-pagina-titel')
-								: t('bundel-actualisation-beheer-overview-pagina-titel')
+								? t(
+										'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___collectie-actualisation-beheer-overview-pagina-titel'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bundel-actualisation-beheer-overview-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta
 						name="description"
 						content={
 							isCollection
-								? t('collectie-actualisation-beheer-overview-pagina-beschrijving')
-								: t('bundel-actualisation-beheer-overview-pagina-beschrijving')
+								? t(
+										'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___collectie-actualisation-beheer-overview-pagina-beschrijving'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bundel-actualisation-beheer-overview-pagina-beschrijving'
+								  )
 						}
 					/>
 				</MetaTags>

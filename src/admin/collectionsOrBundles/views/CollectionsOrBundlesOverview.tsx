@@ -33,8 +33,8 @@ import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
-	GET_COLLECTION_BULK_ACTIONS,
 	GET_COLLECTIONS_COLUMNS,
+	GET_COLLECTION_BULK_ACTIONS,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -543,7 +543,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
-					searchTextPlaceholder={t('Zoek op titel, beschrijving, auteur')}
+					searchTextPlaceholder={t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-beschrijving-auteur'
+					)}
 					noContentMatchingFiltersMessage={
 						isCollection
 							? t(

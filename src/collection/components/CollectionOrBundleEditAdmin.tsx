@@ -442,7 +442,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 									) ? (
 										<FormGroup>
 											<Checkbox
-												label={t('Redactie')}
+												label={t(
+													'collection/components/collection-or-bundle-edit-admin___redactie'
+												)}
 												checked={get(collection, 'is_managed', false)}
 												onChange={() => {
 													changeCollectionState({
@@ -459,10 +461,16 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									) : (
 										<Spacer margin="top">
-											{`${t('Redactie')}: ${
+											{`${t(
+												'collection/components/collection-or-bundle-edit-admin___redactie'
+											)}: ${
 												get(collection, 'is_managed', false)
-													? t('Ja')
-													: t('Nee')
+													? t(
+															'collection/components/collection-or-bundle-edit-admin___ja'
+													  )
+													: t(
+															'collection/components/collection-or-bundle-edit-admin___nee'
+													  )
 											}
 											`}
 										</Spacer>

@@ -521,17 +521,23 @@ const CollectionOrBundleEdit: FunctionComponent<
 				? [
 						{
 							id: 'actualisation',
-							label: i18n.t('Actualisatie'),
+							label: i18n.t(
+								'collection/components/collection-or-bundle-edit___actualisatie'
+							),
 							icon: 'check-circle',
 						} as TabProps,
 						{
 							id: 'quality_check',
-							label: i18n.t('kwaliteitscontrole'),
+							label: i18n.t(
+								'collection/components/collection-or-bundle-edit___kwaliteitscontrole'
+							),
 							icon: 'check-square',
 						} as TabProps,
 						{
 							id: 'marcom',
-							label: i18n.t('Marcom'),
+							label: i18n.t(
+								'collection/components/collection-or-bundle-edit___marcom'
+							),
 							icon: 'send',
 						} as TabProps,
 				  ]
@@ -568,9 +574,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 			);
 			return isCollection
 				? t(
-						'Een collectie met redactie moet een kwaliteitscontrole verantwoordelijke hebben'
+						'collection/components/collection-or-bundle-edit___een-collectie-met-redactie-moet-een-kwaliteitscontrole-verantwoordelijke-hebben'
 				  )
-				: t('Een bundel met redactie moet een kwaliteitscontrole verantwoordelijke hebben');
+				: t(
+						'collection/components/collection-or-bundle-edit___een-bundel-met-redactie-moet-een-kwaliteitscontrole-verantwoordelijke-hebben'
+				  );
 		}
 		return null;
 	};
@@ -621,8 +629,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 			console.error('Failed to save collection/bundle to the database', err);
 			ToastService.danger(
 				isCollection
-					? t('Het opslaan van de collectie is mislukt')
-					: t('Het opslaan van de bundel is mislukt')
+					? t(
+							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-collectie-is-mislukt'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-bundel-is-mislukt'
+					  )
 			);
 		}
 		setIsSavingCollection(false);
@@ -1208,9 +1220,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 								)}
 								onClose={handleModalCancel}
 								deleteObjectCallback={handleModalLeave}
-								cancelLabel={t('Blijven')}
-								confirmLabel={t('Verlaten')}
-								title={t('Niet opgeslagen wijzigingen')}
+								cancelLabel={t(
+									'collection/components/collection-or-bundle-edit___blijven'
+								)}
+								confirmLabel={t(
+									'collection/components/collection-or-bundle-edit___verlaten'
+								)}
+								title={t(
+									'collection/components/collection-or-bundle-edit___niet-opgeslagen-wijzigingen'
+								)}
 								confirmButtonType="primary"
 							/>
 						);

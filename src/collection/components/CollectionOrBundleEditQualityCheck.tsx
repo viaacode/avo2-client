@@ -55,11 +55,25 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<FormGroup label={t('Taalcheck')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-quality-check___taalcheck'
+										)}
+									>
 										<Select
 											options={[
-												{ label: t('OK'), value: 'OK' },
-												{ label: t('NOK'), value: 'NOK' },
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-quality-check___ok'
+													),
+													value: 'OK',
+												},
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-quality-check___nok'
+													),
+													value: 'NOK',
+												},
 											]}
 											onChange={(selectedOption) =>
 												changeCollectionState({
@@ -80,11 +94,25 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											)}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Kwaliteitscontrole')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-quality-check___kwaliteitscontrole'
+										)}
+									>
 										<Select
 											options={[
-												{ label: t('OK'), value: 'OK' },
-												{ label: t('NOK'), value: 'NOK' },
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-quality-check___ok'
+													),
+													value: 'OK',
+												},
+												{
+													label: t(
+														'collection/components/collection-or-bundle-edit-quality-check___nok'
+													),
+													value: 'NOK',
+												},
 											]}
 											onChange={(selectedOption) =>
 												changeCollectionState({
@@ -105,7 +133,11 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											)}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Datum goedkeuring')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-quality-check___datum-goedkeuring'
+										)}
+									>
 										<DatePicker
 											value={getApprovedAtDate(collection)}
 											onChange={(selectedDate) =>
@@ -121,7 +153,11 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											disabled
 										/>
 									</FormGroup>
-									<FormGroup label={t('Verantwoordelijke kwaliteitscontrole')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-quality-check___verantwoordelijke-kwaliteitscontrole'
+										)}
+									>
 										<ContentPicker
 											initialValue={{
 												label:
@@ -141,7 +177,9 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											}}
 											hideTargetSwitch
 											hideTypeDropdown
-											placeholder={t('Selecteer een verantwoordelijke')}
+											placeholder={t(
+												'collection/components/collection-or-bundle-edit-quality-check___selecteer-een-verantwoordelijke'
+											)}
 											allowedTypes={['PROFILE']}
 											onSelect={(value: PickerItem | null) => {
 												changeCollectionState({
@@ -153,7 +191,11 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 											}}
 										/>
 									</FormGroup>
-									<FormGroup label={t('Opmerkingen')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-quality-check___opmerkingen'
+										)}
+									>
 										<TextArea
 											height="auto"
 											value={

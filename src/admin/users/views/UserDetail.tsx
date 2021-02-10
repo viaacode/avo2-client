@@ -407,7 +407,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								)
 							}
 						/>
-						<a href={getLdapDashboardUrl() || ''} target="_blank" rel="noopener noreferrer">
+						<a
+							href={getLdapDashboardUrl() || ''}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							<Button
 								label={t(
 									'admin/users/views/user-detail___beheer-in-account-manager'

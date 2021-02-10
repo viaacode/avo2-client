@@ -21,6 +21,7 @@ import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQ
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
@@ -35,7 +36,6 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
-import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleMarcomOverviewProps extends DefaultSecureRouteProps {}
 
@@ -109,8 +109,12 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t('Het ophalen van de collectie actualisaties is mislukt')
-					: t('Het ophalen van de bundel actualisaties is mislukt'),
+					? t(
+							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-collectie-actualisaties-is-mislukt'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt'
+					  ),
 			});
 		}
 		setIsLoading(false);
@@ -300,14 +304,16 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
-					searchTextPlaceholder={t('Zoek op titel, beschrijving, auteur')}
+					searchTextPlaceholder={t(
+						'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___zoek-op-titel-beschrijving-auteur'
+					)}
 					noContentMatchingFiltersMessage={
 						isCollection
 							? t(
-									'Er zijn geen collectie marcom items die voldoen aan de opgegeven filters'
+									'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___er-zijn-geen-collectie-marcom-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
 							: t(
-									'Er zijn geen collectie marcom items die voldoen aan de opgegeven filters'
+									'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___er-zijn-geen-collectie-marcom-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
 					}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -325,7 +331,15 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 
 	return (
 		<AdminLayout
-			pageTitle={isCollection ? t('Collecties Marcom') : t('Bundels Marcom')}
+			pageTitle={
+				isCollection
+					? t(
+							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collecties-marcom'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundels-marcom'
+					  )
+			}
 			size="full-width"
 		>
 			<AdminLayoutBody>
@@ -333,16 +347,24 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t('collectie-marcom-beheer-overview-pagina-titel')
-								: t('bundel-marcom-beheer-overview-pagina-titel')
+								? t(
+										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-titel'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-titel'
+								  )
 						)}
 					</title>
 					<meta
 						name="description"
 						content={
 							isCollection
-								? t('collectie-marcom-beheer-overview-pagina-beschrijving')
-								: t('bundel-marcom-beheer-overview-pagina-beschrijving')
+								? t(
+										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving'
+								  )
+								: t(
+										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-beschrijving'
+								  )
 						}
 					/>
 				</MetaTags>
