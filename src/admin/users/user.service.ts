@@ -26,7 +26,7 @@ import {
 	DeleteContentCounts,
 	DeleteContentCountsRaw,
 	UserOverviewTableCol,
-	UserSummeryView,
+	UserSummaryView,
 } from './user.types';
 
 export class UserService {
@@ -105,11 +105,11 @@ export class UserService {
 					response,
 				});
 			}
-			const users: UserSummeryView[] = get(response, 'data.users_summary_view');
+			const users: UserSummaryView[] = get(response, 'data.users_summary_view');
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
 			const profiles: Partial<Avo.User.Profile>[] = users.map(
-				(user: UserSummeryView): Avo.User.Profile =>
+				(user: UserSummaryView): Avo.User.Profile =>
 					({
 						id: user.profile_id,
 						stamboek: user.stamboek,
@@ -189,8 +189,8 @@ export class UserService {
 				});
 			}
 			return compact(
-				get(response, 'data.shared_users' || []).map((user: Partial<Avo.User.User>) =>
-					get(user, 'profile.id')
+				get(response, 'data.users_summary_view' || []).map((user: Partial<Avo.User.User>) =>
+					get(user, 'profile_id')
 				)
 			);
 		} catch (err) {
@@ -324,7 +324,11 @@ export class UserService {
 				});
 			}
 
-			return get(response, 'data.users_profiles');
+			return get(response, 'data.users_summary_view').map((profileEntry: any) => ({
+				id: profileEntry.profile_id,
+				full_name: profileEntry.full_name,
+				mail: profileEntry.mail,
+			}));
 		} catch (err) {
 			throw new CustomError('Failed to get profile names from the database', err, {
 				profileIds,

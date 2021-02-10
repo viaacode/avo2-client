@@ -20,8 +20,10 @@ export type RouteId =
 	| 'STAMBOEK'
 	| 'COLLECTION_DETAIL'
 	| 'COLLECTION_EDIT'
+	| 'COLLECTION_EDIT_TAB'
 	| 'BUNDLE_DETAIL'
 	| 'BUNDLE_EDIT'
+	| 'BUNDLE_EDIT_TAB'
 	| 'LOGGED_OUT_HOME'
 	| 'LOGGED_IN_HOME'
 	| 'ITEM_DETAIL'
@@ -94,6 +96,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
+	COLLECTION_EDIT_TAB: {
+		route: `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}/:tabId`,
+		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
 	BUNDLE_DETAIL: {
 		route: `/${ROUTE_PARTS.bundles}/:id`,
 		showInContentPicker: false,
@@ -101,6 +108,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	BUNDLE_EDIT: {
 		route: `/${ROUTE_PARTS.bundles}/:id/${ROUTE_PARTS.edit}`,
+		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
+	BUNDLE_EDIT_TAB: {
+		route: `/${ROUTE_PARTS.bundles}/:id/${ROUTE_PARTS.edit}/:tabId`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},

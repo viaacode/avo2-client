@@ -1,6 +1,6 @@
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -134,19 +134,17 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 		<Container mode="horizontal" size="medium" className="m-search-block">
 			<Spacer>
 				<BlockHeading type="h2" className="u-text-center">
-					<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
-						Vind alles wat je nodig hebt om je lessen te verrijken.
-					</Trans>
+					{t('home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken')}
 				</BlockHeading>
 				<div className="u-text-center">
-					<Spacer margin="large">
+					<Spacer margin="large" className="c-dropdown__wrapper">
 						<Dropdown
 							triggerWidth="full-width"
 							isOpen={isAutocompleteSearchOpen}
 							onOpen={() => setAutocompleteSearchOpen(true)}
 							onClose={() => setAutocompleteSearchOpen(false)}
 							searchMenu
-							placement="top"
+							placement="bottom-start"
 						>
 							<DropdownButton>
 								<TextInput

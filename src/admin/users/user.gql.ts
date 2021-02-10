@@ -123,24 +123,20 @@ export const GET_USERS = gql`
 `;
 
 export const GET_PROFILE_IDS = gql`
-	query getProfileIds($where: shared_users_bool_exp!) {
-		shared_users(where: $where) {
-			profile {
-				id
-			}
+	query getProfileIds($where: users_summary_view_bool_exp!) {
+		users_summary_view(where: $where) {
+			profile_id
 		}
 	}
 `;
 
+// TODO add is_deleted = false when this becomes available in the database view
 export const GET_PROFILE_NAMES = gql`
 	query getProfileNames($profileIds: [uuid!]!) {
-		users_profiles(where: { id: { _in: $profileIds }, is_deleted: { _eq: false } }) {
-			id
-			user: usersByuserId {
-				id
-				full_name
-				mail
-			}
+		users_summary_view(where: { profile_id: { _in: $profileIds } }) {
+			profile_id
+			full_name
+			mail
 		}
 	}
 `;

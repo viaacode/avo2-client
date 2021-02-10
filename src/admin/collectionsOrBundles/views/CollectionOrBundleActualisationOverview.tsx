@@ -8,8 +8,6 @@ import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { CollectionService } from '../../../collection/collection.service';
-import { QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -19,9 +17,11 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
@@ -50,7 +50,6 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 	const [tableState, setTableState] = useState<
 		Partial<CollectionOrBundleActualisationTableState>
 	>({});
-	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
@@ -58,6 +57,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
+	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
 	const isCollection =
@@ -71,11 +71,9 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 				user,
 				isCollection,
 				true,
-				false
+				false,
+				'view'
 			);
-			andFilters.push({
-				is_managed: { _eq: true },
-			});
 
 			return { _and: andFilters };
 		},
@@ -123,23 +121,9 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 		generateWhereObject,
 	]);
 
-	const fetchCollectionLabels = useCallback(async () => {
-		try {
-			setCollectionLabels(await CollectionService.fetchQualityLabels());
-		} catch (err) {
-			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(
-				t(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				)
-			);
-		}
-	}, [setCollectionLabels, t]);
-
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchCollectionLabels]);
+	}, [fetchCollectionsOrBundles]);
 
 	useEffect(() => {
 		if (collections) {
@@ -198,11 +182,11 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({
@@ -219,19 +203,16 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 		rowData: Partial<Avo.Collection.Collection>,
 		columnId: CollectionOrBundleActualisationOverviewTableCols
 	) => {
+		const editLink = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id: rowData.id, tabId: 'actualisation' }
+		);
 		switch (columnId) {
 			case 'title':
 				// TODO remove cast to any once update to typings v2.28.0
 				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
 				return (
-					<Link
-						to={buildLink(
-							isCollection
-								? APP_PATH.COLLECTION_EDIT.route
-								: APP_PATH.BUNDLE_EDIT.route,
-							{ id: rowData.id }
-						)}
-					>
+					<Link to={editLink}>
 						<span>{title}</span>
 						{!!get(rowData, 'relations[0].object') && (
 							<a
@@ -253,7 +234,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 			case 'actions':
 				return (
 					<ButtonToolbar>
-						<Link to={buildLink(APP_PATH.COLLECTION_EDIT.route, { id: rowData.id })}>
+						<Link to={editLink}>
 							<Button
 								type="secondary"
 								icon="edit"

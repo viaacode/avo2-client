@@ -8,8 +8,6 @@ import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { CollectionService } from '../../../collection/collection.service';
-import { QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -19,6 +17,7 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
@@ -36,6 +35,7 @@ import {
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 
 interface CollectionOrBundleMarcomOverviewProps extends DefaultSecureRouteProps {}
 
@@ -49,7 +49,6 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 	const [collectionCount, setCollectionCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionOrBundleMarcomTableState>>({});
-	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
@@ -57,6 +56,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
+	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
 	const isCollection =
@@ -70,10 +70,12 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 				user,
 				isCollection,
 				true,
-				false
+				false,
+				'view'
 			);
+
 			andFilters.push({
-				is_managed: { _eq: true },
+				last_marcom_date: { _is_null: false },
 			});
 
 			return { _and: andFilters };
@@ -91,10 +93,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			] = await CollectionsOrBundlesService.getCollectionEditorial(
 				tableState.page || 0,
 				(tableState.sort_column ||
-					'created_at') as CollectionOrBundleMarcomOverviewTableCols,
+					'updated_at') as CollectionOrBundleMarcomOverviewTableCols,
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState)),
-				'quality_check'
+				'marcom'
 			);
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
@@ -122,23 +124,9 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 		generateWhereObject,
 	]);
 
-	const fetchCollectionLabels = useCallback(async () => {
-		try {
-			setCollectionLabels(await CollectionService.fetchQualityLabels());
-		} catch (err) {
-			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(
-				t(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				)
-			);
-		}
-	}, [setCollectionLabels, t]);
-
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchCollectionLabels]);
+	}, [fetchCollectionsOrBundles]);
 
 	useEffect(() => {
 		if (collections) {
@@ -197,11 +185,11 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({
@@ -218,18 +206,15 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 		rowData: Partial<Avo.Collection.Collection>,
 		columnId: CollectionOrBundleMarcomOverviewTableCols
 	) => {
+		const editLink = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id: rowData.id, tabId: 'marcom' }
+		);
 		switch (columnId) {
 			case 'title':
 				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
 				return (
-					<Link
-						to={buildLink(
-							isCollection
-								? APP_PATH.COLLECTION_EDIT.route
-								: APP_PATH.BUNDLE_EDIT.route,
-							{ id: rowData.id }
-						)}
-					>
+					<Link to={editLink}>
 						<span>{title}</span>
 						{!!get(rowData, 'relations[0].object') && (
 							<a
@@ -251,7 +236,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			case 'actions':
 				return (
 					<ButtonToolbar>
-						<Link to={buildLink(APP_PATH.COLLECTION_EDIT.route, { id: rowData.id })}>
+						<Link to={editLink}>
 							<Button
 								type="secondary"
 								icon="edit"

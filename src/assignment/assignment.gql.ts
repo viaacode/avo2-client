@@ -71,7 +71,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 		$owner_profile_id: uuid
 		$offset: Int = 0
 		$limit: Int
-		$order: app_assignments_order_by! = { deadline_at: desc }
+		$order: [app_assignments_order_by!]! = [{ deadline_at: desc }]
 		$filter: [app_assignments_bool_exp]
 	) {
 		app_assignments(
@@ -82,7 +82,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			}
 			offset: $offset
 			limit: $limit
-			order_by: [$order]
+			order_by: $order
 		) {
 			tags(order_by: { assignment_tag: { label: asc } }) {
 				assignment_tag {
@@ -129,7 +129,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 		$offset: Int = 0
 		$limit: Int
 		$filter: [app_assignments_bool_exp]
-		$order: app_assignments_order_by!
+		$order: [app_assignments_order_by!]!
 	) {
 		app_assignments(
 			where: {
@@ -139,7 +139,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 			}
 			limit: $limit
 			offset: $offset
-			order_by: [$order]
+			order_by: $order
 		) {
 			tags {
 				assignment_tag {

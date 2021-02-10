@@ -5,9 +5,11 @@ import queryString from 'query-string';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
+import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
+import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
@@ -18,13 +20,13 @@ import i18n from '../shared/translations/i18n';
 import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
-	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
-	GET_COLLECTION_BY_ID,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_OWNER,
+	GET_MARCOM_ENTRIES,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -32,9 +34,15 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
+	INSERT_COLLECTION_MANAGEMENT_ENTRY,
+	INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
+	INSERT_MARCOM_ENTRY,
+	INSERT_MARCOM_NOTE,
 	SOFT_DELETE_COLLECTION,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
+	UPDATE_COLLECTION_MANAGEMENT_ENTRY,
+	UPDATE_MARCOM_NOTE,
 } from './collection.gql';
 import {
 	cleanCollectionBeforeSave,
@@ -42,44 +50,20 @@ import {
 	getFragmentsFromCollection,
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
+	keepCoreCollectionProperties,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel } from './collection.types';
+import { ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
+import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
-
-	public static async getCollectionById(id: string): Promise<Avo.Collection.Collection> {
-		try {
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id },
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, response);
-			}
-
-			const collection = get(response, 'data.app_collections[0]');
-
-			if (!collection) {
-				throw new CustomError('Response does not contain a collection', null, { response });
-			}
-
-			return collection;
-		} catch (err) {
-			throw new CustomError('Failed to fetch collection by id from the database', err, {
-				query: 'GET_COLLECTION_BY_ID',
-				variables: { id },
-			});
-		}
-	}
 
 	/**
 	 * Insert collection and underlying collection fragments.
 	 *
 	 * @param newCollection Collection that must be inserted.
 	 */
-	public static async insertCollection(
+	static async insertCollection(
 		newCollection: Partial<Avo.Collection.Collection>
 	): Promise<Avo.Collection.Collection> {
 		try {
@@ -147,16 +131,20 @@ export class CollectionService {
 	/**
 	 * Update collection and underlying collection fragments.
 	 *
-	 * @param initialCollection Original collection object.
-	 * @param updatedCollection Collection that must be updated.
+	 * @param initialColl
+	 * @param updatedColl
 	 * @param user
 	 */
-	public static async updateCollection(
-		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Partial<Avo.Collection.Collection>,
+	static async updateCollection(
+		initialColl: Avo.Collection.Collection | null,
+		updatedColl: Partial<Avo.Collection.Collection>,
 		user: Avo.User.User
 	): Promise<Avo.Collection.Collection | null> {
 		try {
+			// Convert fragment description editor states to html strings
+			const updatedCollection = convertRteToString(updatedColl);
+			const initialCollection = convertRteToString(initialColl);
+
 			// abort if updatedCollection is empty
 			if (!updatedCollection) {
 				ToastService.danger(
@@ -280,8 +268,21 @@ export class CollectionService {
 				newCollection
 			);
 
+			// set updated_at date if collection has changes (without taking into account the management fields)
+			if (
+				JSON.stringify(keepCoreCollectionProperties(updatedCollection)) !==
+					JSON.stringify(keepCoreCollectionProperties(initialCollection)) ||
+				newFragments.length ||
+				deleteFragmentIds.length ||
+				updateFragmentIds.length
+			) {
+				cleanedCollection.updated_at = new Date().toISOString();
+				cleanedCollection.updated_by_profile_id = getProfileId(user);
+			}
+
 			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
 
+			// Update collection labels
 			if (
 				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_LABELS) ||
 				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_LABELS)
@@ -308,25 +309,246 @@ export class CollectionService {
 				]);
 			}
 
+			// Update collection management
+			if (get(updatedCollection, 'is_managed', false)) {
+				await CollectionService.saveCollectionManagementData(
+					newCollection.id as string,
+					initialCollection,
+					updatedCollection
+				);
+			}
+
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
-			// handle error
-			const customError = new CustomError(
-				'Failed to update collection or its fragments',
-				err,
-				{
-					initialCollection,
-					updatedCollection,
-				}
-			);
-
-			console.error(customError);
-
-			return null;
+			throw new CustomError('Failed to update collection or its fragments', err, {
+				initialColl,
+				updatedColl,
+			});
 		}
 	}
 
-	public static updateCollectionProperties = async (
+	private static saveCollectionManagementData = async (
+		collectionId: string,
+		initialCollection: Partial<Avo.Collection.Collection> | null,
+		updatedCollection: Partial<Avo.Collection.Collection>
+	) => {
+		try {
+			if (!get(initialCollection, 'management') && !!get(updatedCollection, 'management')) {
+				// Create management entry
+				await CollectionService.insertManagementEntry(collectionId, {
+					current_status: get(updatedCollection, 'management.current_status', null),
+					manager_profile_id: get(
+						updatedCollection,
+						'management.manager_profile_id',
+						null
+					),
+					status_valid_until: get(
+						updatedCollection,
+						'management.status_valid_until',
+						null
+					),
+					note: get(updatedCollection, 'management.note', null),
+				} as any); // TODO remove cast to any after update to typings v2.28.1
+			} else if (
+				!!get(initialCollection, 'management') &&
+				!!get(updatedCollection, 'management')
+			) {
+				// Update management entry
+				await CollectionService.updateManagementEntry(collectionId, {
+					current_status: get(updatedCollection, 'management.current_status', null),
+					manager_profile_id: get(
+						updatedCollection,
+						'management.manager_profile_id',
+						null
+					),
+					status_valid_until: get(
+						updatedCollection,
+						'management.status_valid_until',
+						null
+					),
+					note: get(updatedCollection, 'management.note', null),
+				} as any); // TODO remove cast to any after update to typings v2.28.1
+			}
+
+			if (!!get(updatedCollection, 'management')) {
+				// Insert QC entries
+				const initialLanguageCheckStatus = get(
+					initialCollection,
+					'management_language_check[0].qc_status'
+				);
+				const updatedLanguageCheckStatus = get(
+					updatedCollection,
+					'management_language_check[0].qc_status'
+				);
+				const initialQualityCheckStatus = get(
+					initialCollection,
+					'management_quality_check[0].qc_status'
+				);
+				const updatedQualityCheckStatus = get(
+					updatedCollection,
+					'management_quality_check[0].qc_status'
+				);
+				const equalLanguageCheckStatus =
+					initialLanguageCheckStatus !== updatedLanguageCheckStatus;
+				const equalQualityCheckStatus =
+					initialQualityCheckStatus !== updatedQualityCheckStatus;
+				const equalLanguageCheckAssignee =
+					get(initialCollection, 'management_language_check[0].assignee_profile_id') !==
+					get(updatedCollection, 'management_language_check[0].assignee_profile_id');
+				const equalLanguageCheckComment =
+					get(initialCollection, 'management_language_check[0].comment') !==
+					get(updatedCollection, 'management_language_check[0].comment');
+
+				const initialApprovedStatus =
+					initialLanguageCheckStatus && initialQualityCheckStatus;
+				const updatedApprovedStatus =
+					updatedLanguageCheckStatus && updatedQualityCheckStatus;
+
+				if (
+					equalLanguageCheckStatus ||
+					equalLanguageCheckAssignee ||
+					equalLanguageCheckComment
+				) {
+					await CollectionService.createManagementQCEntry(collectionId, {
+						qc_label: 'TAALCHECK' as QualityCheckLabel,
+						qc_status:
+							get(updatedCollection, 'management_language_check[0].qc_status') ??
+							null,
+						assignee_profile_id: get(
+							updatedCollection,
+							'management_language_check[0].assignee_profile_id',
+							null
+						),
+						comment: get(
+							updatedCollection,
+							'management_language_check[0].comment',
+							null
+						),
+					});
+				}
+				// We use language check for assignee because the UI only requests this info once from the user
+				// Unfortunately the database assumes this can be set per QC entry
+				if (
+					equalQualityCheckStatus ||
+					equalLanguageCheckAssignee ||
+					equalLanguageCheckComment
+				) {
+					await CollectionService.createManagementQCEntry(collectionId, {
+						qc_label: 'KWALITEITSCHECK' as QualityCheckLabel,
+						qc_status:
+							get(updatedCollection, 'management_quality_check[0].qc_status') ?? null,
+						assignee_profile_id: get(
+							updatedCollection,
+							'management_language_check[0].assignee_profile_id',
+							null
+						),
+						comment: null,
+					});
+				}
+
+				// Save approved_at entry when updated statuses are both OK and initial statuses are not both OK
+				if (initialApprovedStatus !== updatedApprovedStatus && updatedApprovedStatus) {
+					await CollectionService.createManagementQCEntry(collectionId, {
+						qc_label: 'EINDCHECK' as QualityCheckLabel,
+						qc_status: null,
+						assignee_profile_id: get(
+							updatedCollection,
+							'management_language_check[0].assignee_profile_id',
+							null
+						),
+						comment: null,
+					});
+				}
+			}
+
+			const marcomNoteId = get(updatedCollection, 'marcom_note.id');
+			const marcomNoteText = get(updatedCollection, 'marcom_note.note');
+			if (!isNil(marcomNoteId)) {
+				// Already have note id => so we should update the note text
+				await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText);
+			} else if (marcomNoteText) {
+				// We don't have a note id, but do have a note, so we should do an insert
+				await CollectionService.insertMarcomNote(collectionId, marcomNoteText);
+			}
+		} catch (err) {
+			throw new CustomError('Failed to save management data to the database', err, {
+				initialCollection,
+				updatedCollection,
+			});
+		}
+	};
+
+	private static insertManagementEntry = async (
+		collectionId: string,
+		managementData: Partial<Avo.Collection.Management>
+	) => {
+		try {
+			await dataService.mutate({
+				mutation: INSERT_COLLECTION_MANAGEMENT_ENTRY,
+				variables: {
+					...managementData,
+					collection_id: collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to create collection management entry', err, {
+				collectionId,
+				managementData,
+				query: 'INSERT_COLLECTION_MANAGEMENT_ENTRY',
+			});
+		}
+	};
+
+	private static updateManagementEntry = async (
+		collectionId: string,
+		managementData: Partial<Avo.Collection.Management>
+	) => {
+		try {
+			await dataService.mutate({
+				mutation: UPDATE_COLLECTION_MANAGEMENT_ENTRY,
+				variables: {
+					...managementData,
+					collection_id: collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to update collection management entry', err, {
+				collectionId,
+				managementData,
+				query: 'UPDATE_COLLECTION_MANAGEMENT_ENTRY',
+			});
+		}
+	};
+
+	private static createManagementQCEntry = async (
+		collectionId: string,
+		managementQCData: Partial<Avo.Collection.ManagementQualityCheck>
+	) => {
+		try {
+			await dataService.mutate({
+				mutation: INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
+				variables: {
+					...managementQCData,
+					collection_id: collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			throw new CustomError(
+				'Failed to create collection management quality check entry',
+				err,
+				{
+					collectionId,
+					managementQCData,
+					query: 'INSERT_COLLECTION_MANAGEMENT_QC_ENTRY',
+				}
+			);
+		}
+	};
+
+	static updateCollectionProperties = async (
 		id: string,
 		collection: Partial<Avo.Collection.Collection>
 	) => {
@@ -340,12 +562,11 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to update collection properties', err, {
-					id,
-					collection,
-				})
-			);
+			throw new CustomError('Failed to update collection properties', err, {
+				id,
+				collection,
+				query: 'UPDATE_COLLECTION',
+			});
 		}
 	};
 
@@ -354,7 +575,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique identifier of the collection.
 	 */
-	public static deleteCollection = async (collectionId: string) => {
+	static deleteCollection = async (collectionId: string) => {
 		try {
 			// delete collection by id
 			await dataService.mutate({
@@ -365,11 +586,9 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
-			console.error(
-				new CustomError(`Failed to delete collection or bundle'}`, err, {
-					collectionId,
-				})
-			);
+			throw new CustomError(`Failed to delete collection or bundle'}`, err, {
+				collectionId,
+			});
 		}
 	};
 
@@ -383,7 +602,7 @@ export class CollectionService {
 	 *
 	 * @returns Duplicate collection.
 	 */
-	public static async duplicateCollection(
+	static async duplicateCollection(
 		collection: Avo.Collection.Collection,
 		user: Avo.User.User,
 		copyPrefix: string,
@@ -407,7 +626,6 @@ export class CollectionService {
 					user
 				);
 			} catch (err) {
-				// handle error
 				const customError = new CustomError(
 					'Failed to retrieve title for duplicate collection',
 					err,
@@ -422,6 +640,13 @@ export class CollectionService {
 				collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${
 					collectionToInsert.title
 				}`;
+			}
+
+			// Check is_managed status
+			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
+			// Otherwise should be false
+			if (!canManageEditorial(user)) {
+				(collectionToInsert as any).is_managed = false; // TODO remove cast to any once update to typings v2.28.0
 			}
 
 			// insert duplicated collection
@@ -454,7 +679,7 @@ export class CollectionService {
 	 * @param typeId 3 for collections, 4 for bundles
 	 * @returns Collections limited by `limit`.
 	 */
-	public static async fetchCollectionsOrBundles(
+	static async fetchCollectionsOrBundles(
 		limit: number,
 		typeId: ContentTypeNumber
 	): Promise<Avo.Collection.Collection[]> {
@@ -467,19 +692,14 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
 				variables: { limit },
 			});
-
-			console.error(customError);
-
-			throw customError;
 		}
 	}
 
-	public static async fetchCollectionsOrBundlesByTitleOrId(
+	static async fetchCollectionsOrBundlesByTitleOrId(
 		isCollection: boolean,
 		titleOrId: string,
 		limit: number
@@ -524,7 +744,7 @@ export class CollectionService {
 	 *
 	 * @returns Collections limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	public static async fetchCollectionsByTitleOrId(
+	static async fetchCollectionsByTitleOrId(
 		titleOrId: string,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
@@ -539,14 +759,14 @@ export class CollectionService {
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	public static async fetchBundlesByTitleOrId(
+	static async fetchBundlesByTitleOrId(
 		titleOrId: string,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
 		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(false, titleOrId, limit);
 	}
 
-	public static async fetchQualityLabels(): Promise<QualityLabel[]> {
+	static async fetchQualityLabels(): Promise<QualityLabel[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_QUALITY_LABELS,
@@ -572,7 +792,7 @@ export class CollectionService {
 	 *
 	 * @returns Collections or bundles owned by the user.
 	 */
-	public static async fetchCollectionsOrBundlesByUser(
+	static async fetchCollectionsOrBundlesByUser(
 		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
@@ -592,52 +812,13 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError(
-				'Failed to fetch existing bundle titles by owner',
-				err,
-				{
-					user,
-					type,
-					query:
-						type === 'collection'
-							? 'GET_COLLECTION_TITLES_BY_OWNER'
-							: 'GET_BUNDLE_TITLES_BY_OWNER',
-				}
-			);
-
-			console.error(customError);
-
-			throw customError;
-		}
-	}
-
-	/**
-	 * Retrieve collection or bundle by id.
-	 *
-	 * @param collectionId Unique id of the collection that must be fetched.
-	 * @param type Type of which items should be fetched.
-	 *
-	 * @returns Collection or bundle.
-	 */
-	public static async fetchCollectionOrBundleById(
-		collectionId: string,
-		type: 'collection' | 'bundle'
-	): Promise<Avo.Collection.Collection | undefined> {
-		try {
-			const collectionObj = await CollectionService.getCollectionById(collectionId);
-
-			// Collection/bundle loaded successfully
-			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
-			if (collectionObj.type_id !== ContentTypeNumber[type]) {
-				return undefined;
-			}
-
-			return collectionObj;
-		} catch (err) {
-			throw new CustomError('Failed to fetch collection or bundle by id', err, {
-				collectionId,
+			throw new CustomError('Failed to fetch existing bundle titles by owner', err, {
+				user,
 				type,
+				query:
+					type === 'collection'
+						? 'GET_COLLECTION_TITLES_BY_OWNER'
+						: 'GET_BUNDLE_TITLES_BY_OWNER',
 			});
 		}
 	}
@@ -647,15 +828,17 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
-	 * @param assignmentUuid Collection can be fetched if it's not public and you're not the owner,
+	 * @param assignmentUuid Collection can be fetched if it's not and you're not the owner,
 	 *        but if it is linked to an assignment that you're trying to view
 	 *
+	 * @param includeFragments
 	 * @returns Collection or bundle.
 	 */
-	public static async fetchCollectionOrBundleWithItemsById(
+	public static async fetchCollectionOrBundleById(
 		collectionId: string,
 		type: 'collection' | 'bundle',
-		assignmentUuid: string | undefined
+		assignmentUuid: string | undefined,
+		includeFragments: boolean = true
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
@@ -663,6 +846,7 @@ export class CollectionService {
 					type,
 					assignmentUuid,
 					id: collectionId,
+					includeFragments: includeFragments ? 'true' : 'false',
 				})}`,
 				{
 					method: 'GET',
@@ -695,7 +879,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async getPublishedBundlesContainingCollection(
+	static async getPublishedBundlesContainingCollection(
 		id: string
 	): Promise<Avo.Collection.Collection[]> {
 		const response = await dataService.query({
@@ -717,7 +901,7 @@ export class CollectionService {
 		return get(response, 'data.app_collections', []);
 	}
 
-	public static async insertFragments(
+	static async insertFragments(
 		collectionId: string,
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
@@ -817,7 +1001,7 @@ export class CollectionService {
 	 *
 	 * @returns Potential title for duplicate collection.
 	 */
-	public static getCopyTitleForCollection = async (
+	static getCopyTitleForCollection = async (
 		copyPrefix: string,
 		copyRegex: RegExp,
 		existingTitle: string,
@@ -841,10 +1025,7 @@ export class CollectionService {
 		return candidateTitle;
 	};
 
-	public static async addLabelsToCollection(
-		collectionId: string,
-		labels: string[]
-	): Promise<void> {
+	static async addLabelsToCollection(collectionId: string, labels: string[]): Promise<void> {
 		let variables: any;
 		try {
 			variables = {
@@ -869,10 +1050,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async deleteLabelsFromCollection(
-		collectionId: string,
-		labels: string[]
-	): Promise<void> {
+	static async deleteLabelsFromCollection(collectionId: string, labels: string[]): Promise<void> {
 		let variables: any;
 		try {
 			variables = {
@@ -895,7 +1073,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async getCollectionLabels(): Promise<{ [id: string]: string }> {
+	static async getCollectionLabels(): Promise<{ [id: string]: string }> {
 		try {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
@@ -964,7 +1142,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchCollectionsByFragmentId(
+	static async fetchCollectionsByFragmentId(
 		fragmentId: string
 	): Promise<Avo.Collection.Collection[]> {
 		try {
@@ -988,7 +1166,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchCollectionsByOwner(
+	static async fetchCollectionsByOwner(
 		user: Avo.User.User,
 		offset: number,
 		limit: number,
@@ -1023,7 +1201,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
+	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
@@ -1050,6 +1228,107 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to get collection or bundle uuid by avo1 id', err, {
 				avo1Id,
+			});
+		}
+	}
+
+	static async getMarcomEntries(collectionUuid: string): Promise<MarcomEntry[]> {
+		let variables: any;
+		try {
+			variables = {
+				collectionUuid,
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_MARCOM_ENTRIES,
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_collection_marcom_log', []);
+		} catch (err) {
+			// handle error
+			throw new CustomError(
+				'Fetch collections marcom entries from the database failed',
+				err,
+				{
+					variables,
+					query: 'GET_MARCOM_ENTRIES',
+				}
+			);
+		}
+	}
+
+	static async insertMarcomEntry(marcomEntries: Partial<MarcomEntry>[]): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				objects: marcomEntries,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_MARCOM_ENTRY,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			// handle error
+			throw new CustomError('Failed to insert marcom entry into the database', err, {
+				variables,
+				query: 'INSERT_MARCOM_ENTRY',
+			});
+		}
+	}
+
+	static async insertMarcomNote(collectionId: string, note: string): Promise<number> {
+		let variables: any;
+		try {
+			variables = {
+				collectionId,
+				note,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_MARCOM_NOTE,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			return get(response, 'insert_app_collection_marcom_notes.returning.id');
+		} catch (err) {
+			throw new CustomError('Failed to insert marcom note into the database', err, {
+				variables,
+				query: 'INSERT_MARCOM_NOTE',
+			});
+		}
+	}
+
+	static async updateMarcomNote(id: string, note: string): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				id,
+				note,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: UPDATE_MARCOM_NOTE,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to update marcom note in the database', err, {
+				variables,
+				query: 'UPDATE_MARCOM_NOTE',
 			});
 		}
 	}

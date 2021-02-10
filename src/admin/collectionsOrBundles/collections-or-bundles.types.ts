@@ -38,10 +38,16 @@ export type CollectionOrBundleQualityCheckOverviewTableCols =
 
 export type CollectionOrBundleMarcomOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
-	| 'marcom_last_communication_medium'
+	| 'marcom_last_communication_channel_type'
+	| 'marcom_last_communication_channel_name'
 	| 'marcom_last_communication_at'
-	| 'marcom_klascement'
-	| 'marcom_other_platforms';
+	| 'marcom_klascement';
+
+export type CollectionTableCols =
+	| CollectionsOrBundlesOverviewTableCols
+	| CollectionOrBundleActualisationOverviewTableCols
+	| CollectionOrBundleQualityCheckOverviewTableCols
+	| CollectionOrBundleMarcomOverviewTableCols;
 
 export type EditorialType = 'actualisation' | 'quality_check' | 'marcom';
 
@@ -70,7 +76,7 @@ export interface CollectionsOrBundlesTableState extends CollectionOrBundleTableS
 export interface CollectionOrBundleActualisationTableState
 	extends CollectionOrBundleTableStateBase {
 	actualisation_status: ManagementStatus;
-	actualisation_last_actualised_at: string; // equals to created_at of the collection_management entry
+	actualisation_last_actualised_at: string; // equals to updated_at of the collection_management entry
 	actualisation_status_valid_until: string;
 	actualisation_approved_at: string; // equal to created_at of the collection_management_QC table where qc_label === EINDCHECK
 }
@@ -85,7 +91,6 @@ export interface CollectionOrBundleMarcomTableState extends CollectionOrBundleTa
 	marcom_last_communication_medium: string;
 	marcom_last_communication_at: string;
 	marcom_klascement: boolean;
-	marcom_other_platforms: boolean;
 }
 
 export type CollectionTableStates =
@@ -101,11 +106,6 @@ export type CollectionBulkAction =
 	| 'change_author'
 	| 'change_labels';
 
-export type ManagementStatus =
-	| null
-	| 'Actueel'
-	| 'Te actualiseren'
-	| 'Volledig te herzien'
-	| 'Gearchiveerd';
+export type ManagementStatus = null | 'ACTUEEL' | 'ACTUALISEREN' | 'HERZIEN' | 'GEARCHIVEERD';
 
 export type QualityCheckLabel = 'TAALCHECK' | 'KWALITEITSCHECK' | 'EINDCHECK';

@@ -10,8 +10,6 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { CollectionService } from '../../../collection/collection.service';
-import { QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -21,6 +19,7 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import AddOrRemoveLinkedElementsModal, {
@@ -28,6 +27,7 @@ import AddOrRemoveLinkedElementsModal, {
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
@@ -58,7 +58,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionCount, setCollectionCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
-	const [collectionLabels, setCollectionLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
@@ -70,6 +69,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
+	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -82,7 +82,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				user,
 				isCollection,
 				false,
-				true
+				true,
+				'collectionTable'
 			);
 
 			return { _and: andFilters };
@@ -131,23 +132,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		generateWhereObject,
 	]);
 
-	const fetchCollectionLabels = useCallback(async () => {
-		try {
-			setCollectionLabels(await CollectionService.fetchQualityLabels());
-		} catch (err) {
-			console.error(new CustomError('Failed to get quality labels from the database', err));
-			ToastService.danger(
-				t(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-labels-is-mislukt'
-				)
-			);
-		}
-	}, [setCollectionLabels, t]);
-
 	useEffect(() => {
 		fetchCollectionsOrBundles();
-		fetchCollectionLabels();
-	}, [fetchCollectionsOrBundles, fetchCollectionLabels]);
+	}, [fetchCollectionsOrBundles]);
 
 	useEffect(() => {
 		if (collections) {
@@ -206,11 +193,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const collectionLabelOptions = [
 		{
-			id: 'NO_LABEL',
+			id: NULL_FILTER,
 			label: t(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes('NO_LABEL'),
+			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
 		},
 		...collectionLabels.map(
 			(option): CheckboxOption => ({

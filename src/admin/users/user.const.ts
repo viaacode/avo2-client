@@ -193,10 +193,10 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}
 > = {
 	first_name: (order: Avo.Search.OrderDirection) => ({
-		first_name: order,
+		first_name_lower: order,
 	}),
 	last_name: (order: Avo.Search.OrderDirection) => ({
-		last_name: order,
+		last_name_lower: order,
 	}),
 	mail: (order: Avo.Search.OrderDirection) => ({
 		mail: order,
@@ -274,23 +274,22 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 	}
 	const actions: UserBulkActionOption[] = [];
 
-	// TODO re-enable in v1.7.0
-	// if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
-	// actions.push({
-	// 	label: i18n.t('admin/users/user___blokkeren'),
-	// 	value: 'block',
-	// });
-	// actions.push({
-	// 	label: i18n.t('admin/users/user___deblokkeren'),
-	// 	value: 'unblock',
-	// });
-	// }
-	// if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
-	// actions.push({
-	// 	label: i18n.t('admin/users/user___verwijderen'),
-	// 	value: 'delete',
-	// });
-	// }
+	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
+		actions.push({
+			label: i18n.t('admin/users/user___blokkeren'),
+			value: 'block',
+		});
+		actions.push({
+			label: i18n.t('admin/users/user___deblokkeren'),
+			value: 'unblock',
+		});
+	}
+	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
+		actions.push({
+			label: i18n.t('admin/users/user___verwijderen'),
+			value: 'delete',
+		});
+	}
 	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
 		actions.push({
 			label: i18n.t('admin/users/user___vakken-aanpassen'),

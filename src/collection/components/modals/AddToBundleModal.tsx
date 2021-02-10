@@ -32,6 +32,7 @@ import { CollectionService } from '../../collection.service';
 import { ContentTypeNumber } from '../../collection.types';
 
 import './AddToBundleModal.scss';
+import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 interface AddToBundleModalProps extends DefaultSecureRouteProps {
 	collectionId: string;
@@ -52,9 +53,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewBundle, setCreateNewBundle] = useState<boolean>(false);
 	const [selectedBundleId, setSelectedBundleId] = useState<string>('');
-	const [selectedBundle, setSelectedBundle] = useState<Avo.Collection.Collection | undefined>(
-		undefined
-	);
+	const [selectedBundle, setSelectedBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [newBundleTitle, setNewBundleTitle] = useState<string>('');
 	const [bundles, setBundles] = useState<Partial<Avo.Collection.Collection>[]>([]);
 
@@ -91,9 +90,14 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
 		try {
-			setSelectedBundle(undefined);
+			setSelectedBundle(null);
 			setSelectedBundleId(id);
-			const collection = await CollectionService.getCollectionById(id);
+			const collection = await CollectionService.fetchCollectionOrBundleById(
+				id,
+				'collection',
+				undefined,
+				false
+			);
 			setSelectedBundle(collection);
 		} catch (err) {
 			ToastService.danger(
@@ -189,6 +193,12 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				console.error('Failed to find cover image for new collection', err, {
 					collectionFragments: [getFragment(newBundle) as Avo.Collection.Fragment],
 				});
+			}
+
+			// Enable is_managed by default when one of these user groups creates a collection/bundle
+			// https://meemoo.atlassian.net/browse/AVO-1453
+			if (canManageEditorial(user)) {
+				(newBundle as any).is_managed = true; // TODO remove cast to any once update to typings v2.28.0
 			}
 
 			const insertedBundle = await CollectionService.insertCollection(newBundle);

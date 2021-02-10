@@ -5,6 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import { DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { stringToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import i18n from '../../shared/translations/i18n';
@@ -16,10 +17,7 @@ import {
 	GET_COLLECTION_MARCOM,
 	GET_COLLECTION_QUALITY_CHECK,
 } from './collections-or-bundles.gql';
-import {
-	CollectionsOrBundlesOverviewTableCols,
-	EditorialType,
-} from './collections-or-bundles.types';
+import { CollectionTableCols, EditorialType } from './collections-or-bundles.types';
 
 export const COLLECTIONS_OR_BUNDLES_PATH = {
 	COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,
@@ -36,9 +34,7 @@ export const ITEMS_PER_PAGE = 10;
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	{
-		[columnId in CollectionsOrBundlesOverviewTableCols]: (
-			order: Avo.Search.OrderDirection
-		) => any;
+		[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
 	}
 > = {
 	owner_profile_id: (order: Avo.Search.OrderDirection) => ({
@@ -76,6 +72,56 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		counts: {
 			in_assignment: order,
 		},
+	}),
+};
+
+export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	...TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+	owner_profile_id: (order: Avo.Search.OrderDirection) => ({
+		owner: { profile: { usersByuserId: { last_name: order } } },
+	}),
+	author_user_group: (order: Avo.Search.OrderDirection) => ({
+		owner: { profile: { profile_user_group: { group: { label: order } } } },
+	}),
+	last_updated_by_profile: (order: Avo.Search.OrderDirection) => ({
+		last_editor: { last_name: order },
+	}),
+	actualisation_status: (order: Avo.Search.OrderDirection) => ({
+		mgmt_current_status: order,
+	}),
+	actualisation_last_actualised_at: (order: Avo.Search.OrderDirection) => ({
+		mgmt_updated_at: order,
+	}),
+	actualisation_status_valid_until: (order: Avo.Search.OrderDirection) => ({
+		mgmt_status_expires_at: order,
+	}),
+	actualisation_approved_at: (order: Avo.Search.OrderDirection) => ({
+		mgmt_last_eindcheck_date: order,
+	}),
+	quality_check_language_check: (order: Avo.Search.OrderDirection) => ({
+		mgmt_language_check: order,
+	}),
+	quality_check_quality_check: (order: Avo.Search.OrderDirection) => ({
+		mgmt_quality_check: order,
+	}),
+	quality_check_approved_at: (order: Avo.Search.OrderDirection) => ({
+		mgmt_eind_check_date: order,
+	}),
+	marcom_last_communication_channel_type: (order: Avo.Search.OrderDirection) => ({
+		channel_type: order,
+	}),
+	marcom_last_communication_channel_name: (order: Avo.Search.OrderDirection) => ({
+		channel_name: order,
+	}),
+	marcom_last_communication_at: (order: Avo.Search.OrderDirection) => ({
+		last_marcom_date: order,
+	}),
+	marcom_klascement: (order: Avo.Search.OrderDirection) => ({
+		klascement: order,
 	}),
 };
 
@@ -271,7 +317,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 };
 
 const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
-	id: 'lom_classification',
+	id: 'subjects',
 	label: i18n.t('Vakken'),
 	sortable: false,
 	visibleByDefault: false,
@@ -282,7 +328,7 @@ const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 });
 
 const getCollectionEducationLevelsColumn = (educationLevels: string[]): FilterableColumn => ({
-	id: 'lom_context',
+	id: 'education_levels',
 	label: i18n.t('Opleidingsniveaus'),
 	sortable: false,
 	visibleByDefault: false,
@@ -317,6 +363,10 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
+	filterProps: {
+		showPastFutureOptions: true,
+		defaultControls: 'past',
+	} as Partial<DateRangeDropdownProps>,
 });
 
 const getActualisationApprovedAtColumn = (): FilterableColumn => ({
@@ -344,8 +394,6 @@ const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
 	filterProps: {
 		trueLabel: i18n.t('OK'),
 		falseLabel: i18n.t('NOK'),
-		trueValue: 'OK',
-		falseValue: 'NOK',
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
 });
@@ -359,8 +407,6 @@ const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
 	filterProps: {
 		trueLabel: i18n.t('OK'),
 		falseLabel: i18n.t('NOK'),
-		trueValue: 'OK',
-		falseValue: 'NOK',
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
 });
@@ -372,9 +418,16 @@ const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 	visibleByDefault: true,
 });
 
-const getMarcomLastCommunicationMediumColumn = (): FilterableColumn => ({
-	id: 'marcom_last_communication_medium',
-	label: i18n.t('Laatste communicatiemedium'),
+const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
+	id: 'marcom_last_communication_channel_type',
+	label: i18n.t('Laatste communicatie kanaal type'),
+	sortable: true,
+	visibleByDefault: true,
+});
+
+const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
+	id: 'marcom_last_communication_channel_name',
+	label: i18n.t('Laatste communicatie kanaal naam'),
 	sortable: true,
 	visibleByDefault: true,
 });
@@ -389,14 +442,6 @@ const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 const getMarcomKlascementColumn = (): FilterableColumn => ({
 	id: 'marcom_klascement',
 	label: i18n.t('KlasCement'),
-	sortable: true,
-	visibleByDefault: true,
-	filterType: 'BooleanCheckboxDropdown',
-});
-
-const getMarcomOhterPlatformsColumn = (): FilterableColumn => ({
-	id: 'marcom_other_platforms',
-	label: i18n.t('Andere platformen'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
@@ -504,10 +549,10 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getCollectionLastUpdatedByColumn(),
 	getCollectionCreatedAtColumn(),
 	getCollectionUpdatedAtColumn(),
-	getMarcomLastCommunicationMediumColumn(),
+	getMarcomLastCommunicationChannelTypeColumn(),
+	getMarcomLastCommunicationChannelNameColumn(),
 	getMarcomLastCommunicationAtColumn(),
 	getMarcomKlascementColumn(),
-	getMarcomOhterPlatformsColumn(),
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
@@ -522,10 +567,10 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 ];
 
 export const getCollectionManagementStatuses = (): CheckboxOption[] => [
-	{ checked: false, label: 'Actueel', id: 'Actueel' },
-	{ checked: false, label: 'Te actualiseren', id: 'Te actualiseren' },
-	{ checked: false, label: 'Volledig te herzien', id: 'Volledig te herzien' },
-	{ checked: false, label: 'Gearchiveerd', id: 'Gearchiveerd' },
+	{ checked: false, label: 'Actueel', id: 'ACTUEEL' },
+	{ checked: false, label: 'Te actualiseren', id: 'ACTUALISEREN' },
+	{ checked: false, label: 'Volledig te herzien', id: 'HERZIEN' },
+	{ checked: false, label: 'Gearchiveerd', id: 'GEARCHIVEERD' },
 	{ checked: false, label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 ];
 

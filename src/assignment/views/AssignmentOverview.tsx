@@ -54,8 +54,9 @@ import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
+import { AssignmentOverviewTableColumns } from '../assignment.types';
 
 import './AssignmentOverview.scss';
 
@@ -126,9 +127,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				user,
 				canEditAssignments ? activeView === 'archived_assignments' : false, // Teachers can see archived assignments
 				canEditAssignments ? null : activeView === 'archived_assignments', // pupils can see assignments past deadline
-				{
-					[sortColumn]: sortOrder,
-				},
+				sortColumn,
+				sortOrder,
 				page,
 				filterString,
 				selectedAssignmentLabelsIds
@@ -585,66 +585,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	};
 
-	const columns: AssignmentColumn[] = [
-		{
-			id: 'title',
-			label: t('assignment/views/assignment-overview___titel'),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
-		...(isMobileWidth()
-			? []
-			: [
-					{
-						id: 'labels',
-						label: t('assignment/views/assignment-overview___vak-of-project'),
-						sortable: false,
-					},
-			  ]),
-		...(canEditAssignments
-			? []
-			: [
-					{
-						id: 'author',
-						label: t('assignment/views/assignment-overview___leerkracht'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]), // Only show teacher for pupils
-		...(isMobileWidth()
-			? []
-			: [
-					{
-						id: 'class_room',
-						label: t('assignment/views/assignment-overview___klas'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]),
-		{
-			id: 'deadline_at',
-			label: t('assignment/views/assignment-overview___deadline'),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		...(canEditAssignments
-			? []
-			: [
-					{
-						id: 'submitted_at',
-						label: t('assignment/views/assignment-overview___status'),
-						tooltip: t(
-							'assignment/views/assignment-overview___heb-je-deze-opdracht-reeds-ingediend'
-						),
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]), // Only show teacher for pupils
-		// { id: 'responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
-		{ id: 'actions', label: '' },
-	] as AssignmentColumn[];
-
 	const getLabelOptions = (): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels.map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
@@ -861,7 +801,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<>
 				{renderHeader()}
 				<Table
-					columns={columns}
+					columns={GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments)}
 					data={assignments}
 					emptyStateMessage={
 						filterString

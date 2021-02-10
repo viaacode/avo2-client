@@ -116,7 +116,7 @@ export interface DeleteContentCountsRaw {
 	};
 }
 
-export interface UserSummeryView {
+export interface UserSummaryView {
 	user_id: string;
 	full_name: string;
 	first_name: string;

@@ -32,14 +32,17 @@ export function normalizeTimestamp(timestamp: DateLike): Moment {
  * Convert viaa format to relative date
  * @param timestamp
  */
-export function fromNow(timestamp: DateLikeNullable) {
+export function fromNow(timestamp: DateLikeNullable): string {
 	if (!timestamp) {
 		return '';
 	}
 	return normalizeTimestamp(timestamp).fromNow();
 }
 
-export function formatTimestamp(timestamp: DateLikeNullable, includeSeconds: boolean = true) {
+export function formatTimestamp(
+	timestamp: DateLikeNullable,
+	includeSeconds: boolean = true
+): string {
 	if (!timestamp) {
 		return '';
 	}
@@ -48,16 +51,23 @@ export function formatTimestamp(timestamp: DateLikeNullable, includeSeconds: boo
 		.format(`DD-MM-YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
 }
 
-export function formatDate(timestamp: DateLikeNullable) {
+export function formatDate(timestamp: DateLikeNullable): string {
 	if (!timestamp) {
 		return '';
 	}
 	return normalizeTimestamp(timestamp).local().format('DD-MM-YYYY');
 }
 
-export function toIsoDate(timestamp: DateLikeNullable) {
+export function toIsoDate(timestamp: DateLikeNullable): string {
 	if (!timestamp) {
 		return '';
 	}
 	return normalizeTimestamp(timestamp).format('YYYY-MM-DD');
+}
+
+export function toDateObject(timestamp: DateLikeNullable): Date | null {
+	if (!timestamp) {
+		return null;
+	}
+	return normalizeTimestamp(timestamp).toDate();
 }
