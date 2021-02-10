@@ -114,8 +114,11 @@ export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	marcom_last_communication_channel_type: (order: Avo.Search.OrderDirection) => ({
 		channel_type: order,
 	}),
-	marcom_last_communication_at: (order: Avo.Search.OrderDirection) => ({
+	marcom_last_communication_channel_name: (order: Avo.Search.OrderDirection) => ({
 		channel_name: order,
+	}),
+	marcom_last_communication_at: (order: Avo.Search.OrderDirection) => ({
+		last_marcom_date: order,
 	}),
 	marcom_klascement: (order: Avo.Search.OrderDirection) => ({
 		klascement: order,
