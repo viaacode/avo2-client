@@ -61,7 +61,9 @@ export function generateCollectionWhereObject(
 	);
 	andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
-	if (filters.collection_labels && filters.collection_labels.length) {
+
+	// TODO remove isCollectionTable after https://meemoo.atlassian.net/browse/DEV-1438
+	if (filters.collection_labels && filters.collection_labels.length && isCollectionTable) {
 		andFilters.push({
 			_or: [
 				...getMultiOptionFilters(
@@ -156,14 +158,9 @@ export function generateCollectionWhereObject(
 	andFilters.push(
 		...getMultiOptionFilters(filters, ['actualisation_status'], ['mgmt_current_status'])
 	);
-	// TODO bart add to actualisation view
-	// andFilters.push(
-	// 	...getMultiOptionFilters(
-	// 		filters,
-	// 		['actualisation_manager'],
-	// 		['management.manager_profile_id']
-	// 	)
-	// );
+	andFilters.push(
+		...getMultiOptionFilters(filters, ['actualisation_manager'], ['manager.profile_id'])
+	);
 	andFilters.push(
 		...getDateRangeFilters(filters, ['actualisation_last_actualised_at'], ['mgmt_updated_at'])
 	);

@@ -63,15 +63,12 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 	useEffect(() => {
 		if (values.length) {
 			UserService.getNamesByProfileIds(values)
-				.then((profiles: Avo.User.Profile[]) => {
+				.then((users: Avo.User.User[]) => {
 					setSelectedProfiles(
-						profiles.map(
-							(profile): PickerItem => ({
-								label: `${get(profile, 'user.full_name')} (${get(
-									profile,
-									'user.mail'
-								)})`,
-								value: profile.id as string,
+						users.map(
+							(user): PickerItem => ({
+								label: `${get(user, 'full_name')} (${get(user, 'mail')})`,
+								value: get(user, 'profile.id') as string,
 								type: 'PROFILE',
 							})
 						)

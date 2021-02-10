@@ -85,10 +85,14 @@ export class UserService {
 	): Promise<[Avo.User.Profile[], number]> {
 		let variables: any;
 		try {
+			const whereWithoutDeleted = {
+				...where,
+				is_deleted: { _eq: false },
+			};
 			variables = {
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
-				...(where ? { where } : {}),
+				where: whereWithoutDeleted,
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
@@ -309,7 +313,7 @@ export class UserService {
 		}
 	}
 
-	static async getNamesByProfileIds(profileIds: string[]): Promise<Avo.User.Profile[]> {
+	static async getNamesByProfileIds(profileIds: string[]): Promise<Avo.User.User[]> {
 		try {
 			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
 				query: GET_PROFILE_NAMES,
@@ -325,7 +329,9 @@ export class UserService {
 			}
 
 			return get(response, 'data.users_summary_view').map((profileEntry: any) => ({
-				id: profileEntry.profile_id,
+				profile: {
+					id: profileEntry.profile_id,
+				},
 				full_name: profileEntry.full_name,
 				mail: profileEntry.mail,
 			}));

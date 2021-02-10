@@ -225,7 +225,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			if (!isNil(filters.stamboek)) {
 				andFilters.push({ stamboek: { _is_null: !filters.stamboek } });
 			}
-			andFilters.push({ profile: { is_deleted: { _eq: false } } });
 
 			return { _and: andFilters };
 		},

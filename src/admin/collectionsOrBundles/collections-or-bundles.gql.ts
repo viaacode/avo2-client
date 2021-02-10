@@ -62,13 +62,6 @@ export const GET_COLLECTIONS = gql`
 // 	label
 // 	id
 // }
-// TODO Add manager when his task is completed
-// https://meemoo.atlassian.net/browse/DEV-1474
-// mgmt_manager {
-// 	id
-// 	full_name
-// 	mail
-// }
 export const GET_COLLECTION_ACTUALISATION = gql`
 	query getCollectionActualisations(
 		$where: app_collection_actualisation_overview_bool_exp!
@@ -92,6 +85,11 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 			mgmt_last_eindcheck_date
 			mgmt_status_expires_at
 			mgmt_updated_at
+			manager {
+				full_name
+				mail
+				profile_id
+			}
 			owner_profile_id
 			title
 			type_id
