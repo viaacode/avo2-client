@@ -134,7 +134,7 @@ export function generateCollectionWhereObject(
 			andFilters.push({
 				relations: { predicate: { _eq: 'IS_COPY_OF' } },
 			});
-		} else {
+		} else if (isCopy === 'false') {
 			andFilters.push({
 				_not: { relations: { predicate: { _eq: 'IS_COPY_OF' } } },
 			});
