@@ -465,7 +465,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
 		const tabName = String(selectedTab) as EditCollectionTab;
-		navigate(history, APP_PATH.COLLECTION_EDIT_TAB.route, { id: collectionId, tabId: tabName });
+		navigate(
+			history,
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id: collectionId, tabId: tabName }
+		);
 		setCurrentTab(tabName);
 	};
 
