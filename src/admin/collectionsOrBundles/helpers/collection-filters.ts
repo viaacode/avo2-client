@@ -1,4 +1,4 @@
-import { get, isNil, without } from 'lodash-es';
+import { first, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -127,9 +127,10 @@ export function generateCollectionWhereObject(
 		}
 	}
 
-	const isCopy = get(filters, 'is_copy');
+	const isCopy = first(get(filters, 'is_copy'));
+
 	if (!isNil(isCopy)) {
-		if (isCopy) {
+		if (isCopy === 'true') {
 			andFilters.push({
 				relations: { predicate: { _eq: 'IS_COPY_OF' } },
 			});
