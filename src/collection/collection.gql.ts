@@ -210,7 +210,7 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 `;
 
 export const GET_BUNDLE_TITLES_BY_OWNER = gql`
-	query getCollectionNamesByOwner($owner_profile_id: uuid) {
+	query getBundleNamesByOwner($owner_profile_id: uuid) {
 		app_collections(
 			where: {
 				type_id: { _eq: 4 }
@@ -374,7 +374,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 `;
 
 export const INSERT_COLLECTION_MANAGEMENT_QC_ENTRY = gql`
-	mutation insertCollectionManagementEntry(
+	mutation insertCollectionManagementQualityCheckEntry(
 		$collection_id: uuid!
 		$comment: String
 		$assignee_profile_id: uuid
