@@ -3,6 +3,7 @@
  * This script runs over all files that match *.gql.ts and extracts the gql queries and outputs them to the client-whitelist.json file in /scripts
  */
 import glob from 'glob';
+import { split } from 'lodash';
 import * as path from 'path';
 
 const fs = require('fs-extra');
@@ -20,6 +21,16 @@ if (!process.env.GRAPHQL_SECRET) {
 	);
 }
 
+/**
+ * Extracts label of query
+ * example: query getCollectionNamesByOwner($owner_profile_id: uuid) { app_collections( wher...
+ * would return: getCollectionNamesByOwner
+ * @param query
+ */
+function getQueryLabel(query: string): string {
+	return split(query, /[ ({]/)[1];
+}
+
 function extractQueriesFromCode(gqlRegex: RegExp) {
 	const options = {
 		cwd: path.join(__dirname, '../src'),
@@ -27,6 +38,7 @@ function extractQueriesFromCode(gqlRegex: RegExp) {
 
 	glob('**/*.gql.ts', options, async (err, files) => {
 		const queries: { [queryName: string]: string } = {};
+		const queryLabels: string[] = [];
 
 		try {
 			if (err) {
@@ -54,9 +66,17 @@ function extractQueriesFromCode(gqlRegex: RegExp) {
 
 							if (queries[name]) {
 								console.error(
-									`Query with the same label is found twice. This will cause a conflicts in the query whitelist: ${name}`
+									`Query with the same variable name is found twice. This will cause a conflicts in the query whitelist: ${name}`
 								);
 							}
+
+							const label = getQueryLabel(query);
+							if (queryLabels.includes(label)) {
+								console.error(
+									`Query with the same label is found twice. This will cause a conflicts in the query whitelist: ${label}`
+								);
+							}
+							queryLabels.push(label);
 
 							// Remove new lines and tabs
 							// Trim whitespace
