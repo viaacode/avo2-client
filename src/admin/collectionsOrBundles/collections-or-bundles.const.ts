@@ -254,6 +254,14 @@ const getCollectionIsCopyColumn = (): FilterableColumn => ({
 	filterType: 'BooleanCheckboxDropdown',
 });
 
+const getCollectionManagedColumn = (): FilterableColumn => ({
+	id: 'is_managed',
+	label: i18n.t('Redactie'),
+	sortable: true,
+	visibleByDefault: false,
+	filterType: 'BooleanCheckboxDropdown',
+});
+
 const getCollectionViewsColumn = (): FilterableColumn => ({
 	id: 'views',
 	tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
@@ -482,6 +490,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionIsCopyColumn(),
+	getCollectionManagedColumn(),
 	getCollectionViewsColumn(),
 	getCollectionBookmarksColumn(),
 	getCollectionCopiesColumn(),

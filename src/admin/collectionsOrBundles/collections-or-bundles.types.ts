@@ -15,6 +15,7 @@ type CollectionsOrBundlesOverviewTableColsBase =
 
 export type CollectionsOrBundlesOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
+	| 'is_managed'
 	| 'views'
 	| 'bookmarks'
 	| 'copies'

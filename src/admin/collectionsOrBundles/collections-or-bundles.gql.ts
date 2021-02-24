@@ -47,6 +47,7 @@ export const GET_COLLECTIONS = gql`
 				views
 				copies
 			}
+			is_managed
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {
