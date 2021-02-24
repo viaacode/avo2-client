@@ -457,6 +457,15 @@ const getMarcomKlascementColumn = (): FilterableColumn => ({
 	filterType: 'BooleanCheckboxDropdown',
 });
 
+const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
+	id: 'last_updated_by_profile',
+	label: i18n.t(
+		'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
+	),
+	sortable: true,
+	visibleByDefault: false,
+});
+
 export const GET_COLLECTIONS_COLUMNS = (
 	isCollection: boolean,
 	userGroupOptions: CheckboxOption[],
@@ -556,7 +565,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),
-	getCollectionLastUpdatedByColumn(),
+	getMarcomLastUpdatedByColumn(),
 	getCollectionCreatedAtColumn(),
 	getCollectionUpdatedAtColumn(),
 	getMarcomLastCommunicationChannelTypeColumn(),
