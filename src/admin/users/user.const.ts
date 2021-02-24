@@ -36,7 +36,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'id',
 		label: i18n.t('admin/users/user___id'),
-		sortable: true,
+		sortable: false,
 		visibleByDefault: false,
 	},
 	{
