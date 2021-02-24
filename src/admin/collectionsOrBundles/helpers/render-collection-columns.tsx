@@ -1,4 +1,4 @@
-import { compact, get, truncate } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';
 
@@ -147,19 +147,25 @@ export const renderCollectionOverviewColumns = (
 
 		case 'marcom_last_communication_channel_type':
 			const channelTypeId = get(rowData, 'channel_type') || '';
-			return (
-				GET_MARCOM_CHANNEL_TYPE_OPTIONS().find(
-					(option) => option.value === channelTypeId
-				) || GET_MARCOM_CHANNEL_TYPE_OPTIONS()[0]
-			).label;
+			return truncateTableValue(
+				get(
+					GET_MARCOM_CHANNEL_TYPE_OPTIONS().find(
+						(option) => option.value === channelTypeId
+					),
+					'label'
+				)
+			);
 
 		case 'marcom_last_communication_channel_name':
 			const channelNameId = get(rowData, 'channel_name') || '';
-			return (
-				GET_MARCOM_CHANNEL_NAME_OPTIONS().find(
-					(option) => option.value === channelNameId
-				) || GET_MARCOM_CHANNEL_NAME_OPTIONS()[0]
-			).label;
+			return truncateTableValue(
+				get(
+					GET_MARCOM_CHANNEL_NAME_OPTIONS().find(
+						(option) => option.value === channelNameId
+					),
+					'label'
+				)
+			);
 
 		case 'marcom_last_communication_at':
 			return formatDate(get(rowData, 'last_marcom_date')) || '-';
@@ -168,6 +174,6 @@ export const renderCollectionOverviewColumns = (
 			return get(rowData, 'klascement') ? 'Ja' : 'Nee';
 
 		default:
-			return truncate((rowData as any)[columnId] || '-', { length: 50 });
+			return truncateTableValue((rowData as any)[columnId]);
 	}
 };
