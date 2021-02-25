@@ -49,12 +49,8 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
 
 	const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
-	const [marcomChannelType, setMarcomChannelType] = useState<string>(
-		GET_MARCOM_CHANNEL_TYPE_OPTIONS()[0].value
-	);
-	const [marcomChannelName, setMarcomChannelName] = useState<string>(
-		GET_MARCOM_CHANNEL_NAME_OPTIONS()[0].value
-	);
+	const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
+	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
 
@@ -89,12 +85,31 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				return formatDate(value) || '-';
 
 			case 'external_link':
+				const valueLink: string = (value || '').includes('//') ? value || '' : `//${value}`;
 				return value ? (
-					<a href={value} target="_blank" rel="noopener noreferrer">
+					<a href={valueLink} target="_blank" rel="noopener noreferrer">
 						{truncateTableValue(value)}
 					</a>
 				) : (
 					'-'
+				);
+
+			case 'channel_type':
+				return truncateTableValue(
+					get(
+						GET_MARCOM_CHANNEL_TYPE_OPTIONS().find((option) => option.value === value),
+						'label',
+						'-'
+					)
+				);
+
+			case 'channel_name':
+				return truncateTableValue(
+					get(
+						GET_MARCOM_CHANNEL_NAME_OPTIONS().find((option) => option.value === value),
+						'label',
+						'-'
+					)
 				);
 
 			default:
@@ -161,8 +176,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								>
 									<Select
 										options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
+										placeholder={'-'}
 										onChange={setMarcomChannelType}
 										value={marcomChannelType}
+										clearable
 									/>
 								</FormGroup>
 							</FlexItem>
@@ -174,8 +191,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								>
 									<Select
 										options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
+										placeholder={'-'}
 										onChange={setMarcomChannelName}
 										value={marcomChannelName}
+										clearable
 									/>
 								</FormGroup>
 							</FlexItem>

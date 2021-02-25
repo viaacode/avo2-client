@@ -27,7 +27,6 @@ export const NEW_FRAGMENT = {
 };
 
 export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] = () => [
-	{ label: i18n.t('collection/collection___leeg'), value: '' },
 	{ label: i18n.t('collection/collection___nieuwsbericht'), value: 'NIEUWSBERICHT' },
 	{ label: i18n.t('collection/collection___nieuwsbrief'), value: 'NIEUWSBRIEF' },
 	{ label: i18n.t('collection/collection___social'), value: 'SOCIAL' },
@@ -36,12 +35,11 @@ export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] = () 
 ];
 
 export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] = () => [
-	{ label: i18n.t('collection/collection___leeg'), value: '' },
 	{ label: i18n.t('collection/collection___facebook'), value: 'FACEBOOK' },
 	{ label: i18n.t('collection/collection___twitter'), value: 'TWITTER' },
 	{ label: i18n.t('collection/collection___nieuwsbrief-meemoo'), value: 'NIEUWSBRIEF_MEEMOO' },
 	{ label: i18n.t('collection/collection___nieuwsbrief-avo'), value: 'NIEUWSBRIEF_AVO' },
-	{ label: i18n.t('collection/collection___klas-cement'), value: 'KLAS_CEMENT' },
+	{ label: i18n.t('collection/collection___klas-cement'), value: 'KLASCEMENT' },
 	{ label: i18n.t('collection/collection___zill'), value: 'ZILL' },
 	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
 ];
