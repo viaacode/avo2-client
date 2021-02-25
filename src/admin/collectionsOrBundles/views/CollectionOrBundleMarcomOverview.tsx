@@ -74,10 +74,6 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 				'view'
 			);
 
-			andFilters.push({
-				last_marcom_date: { _is_null: false },
-			});
-
 			return { _and: andFilters };
 		},
 		[isCollection, user]
