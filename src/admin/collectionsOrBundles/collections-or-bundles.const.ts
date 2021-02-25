@@ -256,7 +256,7 @@ const getCollectionIsCopyColumn = (): FilterableColumn => ({
 
 const getCollectionManagedColumn = (): FilterableColumn => ({
 	id: 'is_managed',
-	label: i18n.t('Redactie'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___redactie'),
 	sortable: true,
 	visibleByDefault: false,
 	filterType: 'BooleanCheckboxDropdown',
