@@ -143,7 +143,7 @@ export function generateCollectionWhereObject(
 		}
 	}
 
-	andFilters.push(...getBooleanFilters(filters, ['is_public']));
+	andFilters.push(...getBooleanFilters(filters, ['is_public', 'is_managed']));
 
 	if (!includeDeleted) {
 		andFilters.push({ is_deleted: { _eq: false } });

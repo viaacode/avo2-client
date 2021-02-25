@@ -52,6 +52,7 @@ export const renderCollectionOverviewColumns = (
 			return lastEditUser ? lastEditUser.full_name : '-';
 
 		case 'is_public':
+		case 'is_managed':
 			return rowData[columnId]
 				? i18n.t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
 				: i18n.t(

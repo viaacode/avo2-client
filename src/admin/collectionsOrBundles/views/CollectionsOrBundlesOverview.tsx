@@ -33,8 +33,8 @@ import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
-	GET_COLLECTIONS_COLUMNS,
 	GET_COLLECTION_BULK_ACTIONS,
+	GET_COLLECTIONS_COLUMNS,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
