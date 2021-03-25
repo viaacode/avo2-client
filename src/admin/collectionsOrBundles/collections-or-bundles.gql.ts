@@ -15,26 +15,17 @@ export const GET_COLLECTIONS = gql`
 			description
 			is_public
 			created_at
-			owner_profile_id
-			profile {
-				id
-				profile_user_group {
-					group {
-						label
-						id
-					}
-				}
-				user: usersByuserId {
-					id
-					full_name
-				}
+			owner {
+				full_name
+				group_id
+				group_name
+				profile_id
+				user_id
 			}
-			updated_by {
-				id
-				user: usersByuserId {
-					id
-					full_name
-				}
+			last_editor {
+				full_name
+				profile_id
+				user_id
 			}
 			collection_labels {
 				id
