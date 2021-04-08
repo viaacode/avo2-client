@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_BY_UUID = gql`
 	query getAssignmentsById($uuid: uuid!) {
-		app_assignments(where: { uuid: { _eq: $uuid } }) {
+		app_assignments(where: { uuid: { _eq: $uuid }, is_deleted: { _eq: false } }) {
 			answer_url
 			tags {
 				assignment_tag {
