@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const GET_PERMISSION_GROUPS = gql`
-	query getAllPermissionGroups(
+	query getPermissionGroups(
 		$where: users_permission_groups_bool_exp!
 		$offset: Int!
 		$limit: Int!
