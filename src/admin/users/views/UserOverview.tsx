@@ -639,8 +639,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				);
 
 			default:
-				// TODO remove cast after update to typings v2.25.0
-				return truncateTableValue((rowData as any)[columnId] || '-');
+				return truncateTableValue(rowData[columnId] || '-');
 		}
 	};
 

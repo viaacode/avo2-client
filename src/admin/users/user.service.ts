@@ -152,7 +152,7 @@ export class UserService {
 							blocked_at: get(user, 'blocked_at.date'),
 							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
-							last_access_at: user.last_access_at as string, // TODO remove cast after update to typings 2.26.0
+							last_access_at: user.last_access_at,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)
@@ -412,7 +412,7 @@ export class UserService {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
 			return get(response, 'data.users_profiles', []).map(
-				(profile: Partial<Avo.User.Profile>) => (profile as any).business_category // TODO Remove cast after update to typings v2.25.0
+				(profile: Partial<Avo.User.Profile>) => profile.business_category
 			);
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {

@@ -199,6 +199,18 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
+					googleAnalyticsId={window._ENV_.GOOGLE_ANALYTICS_ID}
+					googleAnalyticsEvents={
+						[
+							'video_player_load',
+							'video_start',
+							'video_click_play',
+							'video_25_percent',
+							'video_50_percent',
+							'video_75_percent',
+							'video_complete',
+						] as any
+					}
 				/>
 			) : (
 				<div className="c-video-player__overlay" onClick={handlePosterClicked}>

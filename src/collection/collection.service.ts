@@ -349,7 +349,7 @@ export class CollectionService {
 					),
 					note: get(updatedCollection, 'management.note', null),
 					updated_at: get(updatedCollection, 'management.updated_at', null),
-				} as any); // TODO remove cast to any after update to typings v2.28.1
+				} as any); // TODO: type
 			} else if (
 				!!get(initialCollection, 'management') &&
 				!!get(updatedCollection, 'management')
@@ -369,7 +369,7 @@ export class CollectionService {
 					),
 					note: get(updatedCollection, 'management.note', null),
 					updated_at: get(updatedCollection, 'management.updated_at', null),
-				} as any); // TODO remove cast to any after update to typings v2.28.1
+				} as any); // TODO: type
 			}
 
 			if (
@@ -651,7 +651,7 @@ export class CollectionService {
 			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
 			// Otherwise should be false
 			if (!canManageEditorial(user)) {
-				(collectionToInsert as any).is_managed = false; // TODO remove cast to any once update to typings v2.28.0
+				collectionToInsert.is_managed = false;
 			}
 
 			// insert duplicated collection

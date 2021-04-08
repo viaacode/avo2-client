@@ -198,7 +198,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			// Enable is_managed by default when one of these user groups creates a collection/bundle
 			// https://meemoo.atlassian.net/browse/AVO-1453
 			if (canManageEditorial(user)) {
-				(newBundle as any).is_managed = true; // TODO remove cast to any once update to typings v2.28.0
+				newBundle.is_managed = true;
 			}
 
 			const insertedBundle = await CollectionService.insertCollection(newBundle);

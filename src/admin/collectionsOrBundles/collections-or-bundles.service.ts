@@ -54,6 +54,7 @@ export class CollectionsOrBundlesService {
 			const response = await dataService.query({
 				variables,
 				query: GET_COLLECTIONS,
+				fetchPolicy: 'no-cache',
 			});
 			const collections: Avo.Collection.Collection[] | null = get(
 				response,

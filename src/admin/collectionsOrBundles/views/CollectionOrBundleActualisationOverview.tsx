@@ -213,8 +213,8 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 		);
 		switch (columnId) {
 			case 'title':
-				// TODO remove cast to any once update to typings v2.28.0
-				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
+				const title = truncate(rowData[columnId] || '-', { length: 50 });
+
 				return (
 					<Link to={editLink}>
 						<span>{title}</span>
