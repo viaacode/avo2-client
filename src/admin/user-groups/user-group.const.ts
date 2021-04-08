@@ -102,4 +102,8 @@ export enum SpecialUserGroup {
 	Pupil = 4,
 	Editor = 7,
 	EditorInChief = 8,
+	ContentPartner = 9,
+	EducativeAuthor = 10,
+	EducativePublisher = 11,
+	EducativePartner = 12,
 }
