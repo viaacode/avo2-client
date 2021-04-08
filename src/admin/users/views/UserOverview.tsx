@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import { compact, get, isNil, without } from 'lodash-es';
+import { compact, first, get, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -153,6 +153,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const generateWhereObject = useCallback(
 		(filters: Partial<UserTableState>, onlySelectedProfiles: boolean) => {
 			const andFilters: any[] = [];
+
 			if (filters.query) {
 				const query = `%${filters.query}%`;
 				andFilters.push({
@@ -166,7 +167,9 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					],
 				});
 			}
+
 			andFilters.push(...getBooleanFilters(filters, ['is_blocked', 'is_exception']));
+
 			andFilters.push(
 				...getDateRangeFilters(
 					filters,
@@ -174,6 +177,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					['blocked_at.max', 'unblocked_at.max']
 				)
 			);
+
 			andFilters.push(
 				...getMultiOptionFilters(
 					filters,
@@ -181,6 +185,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					['group_id', 'company_id', 'business_category']
 				)
 			);
+
 			andFilters.push(
 				...getMultiOptionsFilters(
 					filters,
@@ -189,6 +194,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					['key', 'key', 'idp']
 				)
 			);
+
 			andFilters.push(
 				...getDateRangeFilters(
 					filters,
@@ -196,8 +202,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					['acc_created_at', 'last_access_at']
 				)
 			);
+
 			if (filters.educational_organisations && filters.educational_organisations.length) {
 				const orFilters: any[] = [];
+
 				eduOrgToClientOrg(without(filters.educational_organisations, NULL_FILTER)).forEach(
 					(org) => {
 						orFilters.push({
@@ -208,6 +216,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						});
 					}
 				);
+
 				if (filters.educational_organisations.includes(NULL_FILTER)) {
 					orFilters.push({
 						_not: {
@@ -215,15 +224,22 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						},
 					});
 				}
+
 				andFilters.push({
 					_or: orFilters,
 				});
 			}
+
 			if (onlySelectedProfiles) {
 				andFilters.push({ profile_id: { _in: selectedProfileIds } });
 			}
+
+			// Filter users by wether the user has a Stamboeknummer or not.
 			if (!isNil(filters.stamboek)) {
-				andFilters.push({ stamboek: { _is_null: !filters.stamboek } });
+				const hasStamboek = first(filters.stamboek) === 'true';
+				const isStamboekNull = !hasStamboek;
+
+				andFilters.push({ stamboek: { _is_null: isStamboekNull } });
 			}
 
 			return { _and: andFilters };
