@@ -102,22 +102,23 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
 				);
 			});
-			if (props.user) {
-				trackEvents(
-					{
-						object: item.external_id,
-						object_type: 'item',
-						message: `Gebruiker ${getProfileName(props.user)} heeft het item ${
-							item.external_id
-						} afgespeeld`,
-						action: 'view',
-					},
-					props.user
-				);
-				if (props.onPlay) {
-					props.onPlay();
-				}
+
+			trackEvents(
+				{
+					object: item.external_id,
+					object_type: 'item',
+					message: `Gebruiker ${
+						props.user ? getProfileName(props.user) : ''
+					} heeft het item ${item.external_id} afgespeeld`,
+					action: 'view',
+				},
+				props.user
+			);
+
+			if (props.onPlay) {
+				props.onPlay();
 			}
+
 			setTriggeredForUrl(src || null);
 		}
 

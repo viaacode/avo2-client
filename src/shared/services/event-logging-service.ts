@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
+import { insideIframe } from '../helpers/inside-iframe';
 
 interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
@@ -18,22 +19,26 @@ export function trackEvents(
 ) {
 	try {
 		let eventsArray: MinimalClientEvent[];
+
 		if (Array.isArray(events)) {
 			eventsArray = events;
 		} else {
 			eventsArray = [events];
 		}
+
 		const eventLogEntries = eventsArray.map(
 			(event: MinimalClientEvent): Avo.EventLogging.Event => {
 				return {
 					occurred_at: new Date().toISOString(),
 					source_url: window.location.href, // url when the event was triggered
-					subject: get(user, 'profile.id', ''), // Entity making causing the event
+					subject: get(user, 'profile.id', 'anonymous'), // Entity making causing the event
 					subject_type: 'user',
+					source_querystring: insideIframe() ? window.parent.location.href : '',
 					...event,
 				};
 			}
 		);
+
 		fetchWithLogout(`${getEnv('PROXY_URL')}/event-logging`, {
 			method: 'POST',
 			body: JSON.stringify(eventLogEntries),
