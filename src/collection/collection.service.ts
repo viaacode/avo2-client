@@ -348,6 +348,7 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
+					updated_at: get(updatedCollection, 'management.updated_at', null),
 				} as any); // TODO remove cast to any after update to typings v2.28.1
 			} else if (
 				!!get(initialCollection, 'management') &&
@@ -367,10 +368,14 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
+					updated_at: get(updatedCollection, 'management.updated_at', null),
 				} as any); // TODO remove cast to any after update to typings v2.28.1
 			}
 
-			if (!!get(updatedCollection, 'management')) {
+			if (
+				!!get(updatedCollection, 'management_language_check') &&
+				!!get(updatedCollection, 'management_quality_check')
+			) {
 				// Insert QC entries
 				const initialLanguageCheckStatus = get(
 					initialCollection,
