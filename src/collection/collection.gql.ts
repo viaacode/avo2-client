@@ -334,6 +334,7 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$manager_profile_id: uuid
 		$status_valid_until: timestamptz
 		$note: String
+		$updated_at: timestamptz
 	) {
 		insert_app_collection_management(
 			objects: [
@@ -343,6 +344,7 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 					manager_profile_id: $manager_profile_id
 					status_valid_until: $status_valid_until
 					note: $note
+					updated_at: $updated_at
 				}
 			]
 		) {
@@ -358,6 +360,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$manager_profile_id: uuid
 		$status_valid_until: timestamptz
 		$note: String
+		$updated_at: timestamptz
 	) {
 		update_app_collection_management(
 			where: { collection_id: { _eq: $collection_id } }
@@ -366,6 +369,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 				manager_profile_id: $manager_profile_id
 				status_valid_until: $status_valid_until
 				note: $note
+				updated_at: $updated_at
 			}
 		) {
 			affected_rows
