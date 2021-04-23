@@ -81,6 +81,7 @@ export const renderCollectionOverviewColumns = (
 		case 'collection_labels':
 			const labelObjects: { id: number; label: string }[] =
 				get(rowData, 'collection_labels') || [];
+
 			const tags: TagOption[] = compact(
 				labelObjects.map((labelObj: any): TagOption | null => {
 					const prettyLabel = collectionLabels.find(
@@ -92,9 +93,11 @@ export const renderCollectionOverviewColumns = (
 					return { label: prettyLabel.description, id: labelObj.id };
 				})
 			);
+
 			if (tags.length) {
 				return <TagList tags={tags} swatches={false} />;
 			}
+
 			return '-';
 
 		case 'is_copy':
