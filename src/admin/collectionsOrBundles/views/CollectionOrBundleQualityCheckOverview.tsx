@@ -95,6 +95,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 				generateWhereObject(getFilters(tableState)),
 				'quality_check'
 			);
+
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
@@ -103,6 +104,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 					tableState,
 				})
 			);
+
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
@@ -114,6 +116,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 					  ),
 			});
 		}
+
 		setIsLoading(false);
 	}, [
 		generateWhereObject,

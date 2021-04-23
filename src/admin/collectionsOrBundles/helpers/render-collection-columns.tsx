@@ -87,9 +87,11 @@ export const renderCollectionOverviewColumns = (
 					const prettyLabel = collectionLabels.find(
 						(collectionLabel) => collectionLabel.value === labelObj.label
 					);
+
 					if (!prettyLabel) {
 						return null;
 					}
+
 					return { label: prettyLabel.description, id: labelObj.id };
 				})
 			);

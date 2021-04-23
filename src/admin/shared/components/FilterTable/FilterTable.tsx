@@ -182,6 +182,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 	const handleTableStateChanged = (value: any, id: string) => {
 		let newTableState: any = cloneDeep(tableState);
+
 		newTableState = cleanupObject({
 			...newTableState,
 			[id]: value,
@@ -193,6 +194,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 	const handleSortOrderChanged = (columnId: string) => {
 		let newTableState: any = cloneDeep(tableState);
+
 		newTableState = cleanupObject({
 			...newTableState,
 			sort_column: columnId,
@@ -212,6 +214,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 		const bulkActionInfo = (bulkActions || []).find(
 			(action) => action.value === selectedAction
 		);
+
 		if (bulkActionInfo && onSelectBulkAction) {
 			if (bulkActionInfo.confirm) {
 				setSelectedBulkAction(selectedAction);
@@ -254,6 +257,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 				})
 			);
 		}
+
 		return columns.filter((column) => column.visibleByDefault);
 	};
 
@@ -273,6 +277,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 		const page = tableState.page | 0;
 		const from = page * itemsPerPage + 1;
 		const to = Math.min(page * itemsPerPage + itemsPerPage, dataCount);
+
 		return (
 			<>
 				<Spacer margin="bottom">
@@ -512,7 +517,9 @@ export function getFilters(tableState: any | undefined) {
 	if (!tableState) {
 		return tableState;
 	}
+
 	const { page, sort_column, sort_order, ...filters } = tableState;
+
 	return cleanupObject(filters);
 }
 
