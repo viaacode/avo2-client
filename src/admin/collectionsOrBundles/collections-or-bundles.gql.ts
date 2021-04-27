@@ -15,6 +15,8 @@ export const GET_COLLECTIONS = gql`
 			description
 			is_public
 			created_at
+			subjects: lom_classification
+			education_levels: lom_context
 			owner {
 				full_name
 				group_id
@@ -87,6 +89,10 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 			type_id
 			updated_at
 			updated_by_profile_id
+			collection_labels: labels {
+				id
+				label
+			}
 			owner {
 				profile {
 					id
