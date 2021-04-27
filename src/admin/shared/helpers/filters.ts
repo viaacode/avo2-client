@@ -143,12 +143,14 @@ export function getMultiOptionsFilters(
 			} else {
 				// only selected values without an empty filter
 				filterObject = {};
+
 				filterValues.forEach((value: string) => {
 					if (labelPath) {
 						filterObject[referenceTable] = {
 							[labelPath]: { _has_key: value },
 						};
 					}
+
 					filterObject[referenceTable] = { _has_key: value };
 				});
 			}

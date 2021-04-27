@@ -134,6 +134,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt'
 				)
 			);
+
+			setMarcomChannelType(null);
+			setMarcomChannelName(null);
+			setMarcomLink('');
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to insert a new marcom entry into the database', err, {

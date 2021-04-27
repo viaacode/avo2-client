@@ -135,7 +135,7 @@ export const renderCollectionOverviewColumns = (
 			return formatDate(get(rowData, 'mgmt_last_eindcheck_date')) || '-';
 
 		case 'actualisation_manager':
-			return get(rowData, 'owner.full_name') || '-';
+			return get(rowData, 'manager.full_name') || '-';
 
 		case 'quality_check_language_check':
 			return booleanToOkNok(get(rowData, 'mgmt_language_check')) || '-';
