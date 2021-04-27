@@ -620,6 +620,10 @@ export class CollectionService {
 			collectionToInsert.owner_profile_id = getProfileId(user);
 			collectionToInsert.is_public = false;
 
+			if (canManageEditorial(user)) {
+				collectionToInsert.redaction = true;
+			}
+
 			// remove id from duplicate
 			delete (collectionToInsert as any).id;
 

@@ -46,6 +46,7 @@ const Login: FunctionComponent<LoginProps> = ({
 		// Redirect to previous requested path or the default page for that user group (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
 		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
 			let path = get(location, 'state.from.pathname');
+
 			if (!path) {
 				if (
 					getUserGroupId(get(loginState, 'userInfo.profile')) === SpecialUserGroup.Pupil
@@ -55,7 +56,9 @@ const Login: FunctionComponent<LoginProps> = ({
 					path = APP_PATH.LOGGED_IN_HOME.route;
 				}
 			}
+
 			history.push(path);
+
 			return;
 		}
 

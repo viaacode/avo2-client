@@ -1,5 +1,12 @@
 import moment from 'moment';
-import React, { FunctionComponent, MouseEvent, ReactText, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	MouseEvent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -64,13 +71,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	const [yearInputGte, setYearInputGte] = useState<string>('');
 	const [yearInputLte, setYearInputLte] = useState<string>('');
 
-	// @ts-ignore
-	const resetInternalRangeState = async (tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
-		evt && evt.stopPropagation();
-		setRangeState(range);
-	};
-
-	useEffect(() => {
+	const applyDefaultRangeState = useCallback(() => {
 		if (dateControls === 'year') {
 			// Round selected dates to the larger year
 			setRangeState((oldRangeState) => {
@@ -86,7 +87,17 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		} else if (dateControls === 'future') {
 			setRangeState(DEFAULT_FUTURE_DATE_RANGE);
 		}
-	}, [dateControls]);
+	}, [dateControls, setRangeState]);
+
+	// @ts-ignore
+	const resetInternalRangeState = async (tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
+		evt && evt.stopPropagation();
+		applyDefaultRangeState();
+	};
+
+	useEffect(() => {
+		applyDefaultRangeState();
+	}, [applyDefaultRangeState]);
 
 	/**
 	 * State is only passed from the component to the parent when the user clicks the "Apply" button
