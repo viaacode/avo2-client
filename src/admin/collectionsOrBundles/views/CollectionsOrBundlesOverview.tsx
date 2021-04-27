@@ -104,12 +104,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState))
 			);
+
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get collections from the database', err, { tableState })
 			);
+
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
@@ -121,6 +123,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
+
 		setIsLoading(false);
 	}, [
 		setLoadingInfo,
@@ -146,6 +149,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		// Update selected rows to always be a subset of the collections array
 		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
 		const collectionIds: string[] = (collections || []).map((coll) => coll.id);
+
 		setSelectedCollectionIds((currentSelectedCollectionIds) => {
 			return (currentSelectedCollectionIds || []).filter(
 				(collId) => collId && collectionIds.includes(collId)
@@ -155,6 +159,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const setAllCollectionsAsSelected = async () => {
 		setIsLoading(true);
+
 		try {
 			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
 				generateWhereObject(getFilters(tableState))
@@ -167,6 +172,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					}
 				)
 			);
+
 			setSelectedCollectionIds(collectionIds);
 		} catch (err) {
 			console.error(
@@ -176,8 +182,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					{ tableState }
 				)
 			);
+
 			ToastService.danger('Het ophalen van de collectie ids is mislukt');
 		}
+
 		setIsLoading(false);
 	};
 
@@ -223,6 +231,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			);
 			return;
 		}
+
 		const detailRoute = isCollection
 			? APP_PATH.COLLECTION_DETAIL.route
 			: APP_PATH.BUNDLE_DETAIL.route;
@@ -233,6 +242,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		if (!selectedCollectionIds || !selectedCollectionIds.length) {
 			return;
 		}
+
 		switch (action) {
 			case 'publish':
 				await bulkChangePublishStateForSelectedCollections(true);
@@ -261,11 +271,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
 				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
+
 			ToastService.success(
 				isPublic
 					? t(
@@ -275,6 +287,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
 					  )
 			);
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -283,6 +296,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					selectedRows: selectedCollectionIds,
 				})
 			);
+
 			ToastService.danger(
 				isPublic
 					? t(
@@ -300,15 +314,18 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			await CollectionsOrBundlesService.bulkDeleteCollections(
 				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
+
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
 				)
 			);
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -316,6 +333,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					selectedRows: selectedCollectionIds,
 				})
 			);
+
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt'
@@ -329,16 +347,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
 				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
+
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
 				)
 			);
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -346,6 +367,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					authorProfileId,
 				})
 			);
+
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt'
@@ -359,12 +381,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
 					compact(selectedCollectionIds),
 					getProfileId(user)
 				);
+
 				ToastService.success(
 					t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
@@ -383,6 +407,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					)
 				);
 			}
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -391,6 +416,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					labels,
 				})
 			);
+
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt'
@@ -410,12 +436,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
 					  )
 			);
+
 			return;
 		}
+
 		const detailRoute = isCollection
 			? APP_PATH.COLLECTION_EDIT.route
 			: APP_PATH.BUNDLE_EDIT.route;
 		const link = buildLink(detailRoute, { id });
+
 		redirectToClientPage(link, history);
 	};
 
@@ -426,6 +455,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'title':
 				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
+
 				return (
 					<Link
 						to={buildLink(
@@ -530,6 +560,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		if (!collections) {
 			return null;
 		}
+
 		return (
 			<>
 				<FilterTable

@@ -36,6 +36,7 @@ export function generateCollectionWhereObject(
 ) {
 	const isCollectionTable: boolean = isCollectionTableOrView === 'collectionTable';
 	const andFilters: any[] = [];
+
 	andFilters.push(
 		...getQueryFilter(filters.query, (queryWildcard: string) => [
 			{ title: { _ilike: queryWildcard } },
@@ -63,7 +64,7 @@ export function generateCollectionWhereObject(
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 
 	// TODO remove isCollectionTable after https://meemoo.atlassian.net/browse/DEV-1438
-	if (filters.collection_labels && filters.collection_labels.length && isCollectionTable) {
+	if (filters.collection_labels && filters.collection_labels.length) {
 		andFilters.push({
 			_or: [
 				...getMultiOptionFilters(
