@@ -89,6 +89,7 @@ function extractQueriesFromCode(gqlRegex: RegExp) {
 			});
 
 			const outputFile = path.join(__dirname, 'client-whitelist.json');
+
 			await fs.writeFile(outputFile, JSON.stringify(queries, null, 2));
 
 			console.log(
