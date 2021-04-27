@@ -101,6 +101,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
 			let perms: boolean[][];
+
 			if (isCollection) {
 				perms = await Promise.all(
 					(collections || []).map((collection: Avo.Collection.Collection) => {

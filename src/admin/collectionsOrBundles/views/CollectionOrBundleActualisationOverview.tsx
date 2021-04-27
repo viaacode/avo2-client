@@ -211,6 +211,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
 			{ id: rowData.id, tabId: 'actualisation' }
 		);
+
 		switch (columnId) {
 			case 'title':
 				const title = truncate(rowData[columnId] || '-', { length: 50 });

@@ -89,6 +89,10 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 			type_id
 			updated_at
 			updated_by_profile_id
+			collection_labels: labels {
+				id
+				label
+			}
 			owner {
 				profile {
 					id

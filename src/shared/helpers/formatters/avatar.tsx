@@ -86,6 +86,7 @@ export const renderAvatar = (
 	}
 
 	const props: AvatarProps = getAvatarProps(profile, options);
+
 	return <Avatar dark={options.dark} {...props} />;
 };
 
