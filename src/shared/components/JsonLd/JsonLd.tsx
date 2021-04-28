@@ -63,8 +63,9 @@ const JsonLd: FunctionComponent<JsonLdProps> = ({
 		keywords: (keywords || []).join(','),
 	};
 
-	window.ga('set', 'title', title);
-	window.ga('send', 'pageview');
+	const tracker = window.ga.getAll()[0].get('name');
+	window.ga(`${tracker}.set`, 'title', title);
+	window.ga(`${tracker}.send`, 'pageview');
 
 	const scriptElem = document.createElement('script');
 	scriptElem.setAttribute('type', 'application/ld+json');

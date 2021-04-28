@@ -199,7 +199,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
-					googleAnalyticsId={window._ENV_.GOOGLE_ANALYTICS_ID}
+					googleAnalyticsId={window.ga.getAll()[0].get('trackingId')}
 					googleAnalyticsEvents={
 						[
 							'video_player_load',
