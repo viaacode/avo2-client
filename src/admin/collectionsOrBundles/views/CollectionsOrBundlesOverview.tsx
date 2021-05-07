@@ -1,5 +1,12 @@
 import { compact, get, truncate } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -26,7 +33,10 @@ import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -72,7 +82,52 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
+	const userGroupOptions = useMemo(
+		() =>
+			userGroups.map(
+				(option): CheckboxOption => ({
+					id: String(option.id),
+					label: option.label as string,
+					checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+						String(option.id)
+					),
+				})
+			),
+		[tableState, userGroups]
+	);
+	const collectionLabelOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
+				),
+				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
+			},
+			...collectionLabels.map(
+				(option): CheckboxOption => ({
+					id: String(option.value),
+					label: option.description,
+					checked: get(tableState, 'collection_labels', [] as string[]).includes(
+						String(option.value)
+					),
+				})
+			),
+		],
+		[collectionLabels, t, tableState]
+	);
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
+	const tableColumns = useMemo(
+		() =>
+			GET_COLLECTIONS_COLUMNS(
+				isCollection,
+				userGroupOptions,
+				collectionLabelOptions,
+				subjects,
+				educationLevels
+			),
+		[collectionLabelOptions, educationLevels, isCollection, subjects, userGroupOptions]
+	);
 
 	// methods
 	const generateWhereObject = useCallback(
@@ -95,6 +150,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		setIsLoading(true);
 
 		try {
+			const column = tableColumns.find(
+				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+			);
+			const columnDataType: string = get(column, 'dataType', '');
 			const [
 				collectionsTemp,
 				collectionsCountTemp,
@@ -102,6 +161,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as CollectionsOrBundlesOverviewTableCols,
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState))
 			);
 
@@ -125,15 +185,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 
 		setIsLoading(false);
-	}, [
-		setLoadingInfo,
-		setCollections,
-		setCollectionCount,
-		tableState,
-		isCollection,
-		t,
-		generateWhereObject,
-	]);
+	}, [tableColumns, tableState, generateWhereObject, isCollection, t]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
@@ -188,35 +240,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 		setIsLoading(false);
 	};
-
-	const userGroupOptions = userGroups.map(
-		(option): CheckboxOption => ({
-			id: String(option.id),
-			label: option.label as string,
-			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-				String(option.id)
-			),
-		})
-	);
-
-	const collectionLabelOptions = [
-		{
-			id: NULL_FILTER,
-			label: t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
-			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
-		},
-		...collectionLabels.map(
-			(option): CheckboxOption => ({
-				id: String(option.value),
-				label: option.description,
-				checked: get(tableState, 'collection_labels', [] as string[]).includes(
-					String(option.value)
-				),
-			})
-		),
-	];
 
 	const navigateToCollectionDetail = (id: string | undefined) => {
 		if (!id) {
@@ -564,13 +587,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		return (
 			<>
 				<FilterTable
-					columns={GET_COLLECTIONS_COLUMNS(
-						isCollection,
-						userGroupOptions,
-						collectionLabelOptions,
-						subjects,
-						educationLevels
-					)}
+					columns={tableColumns}
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}

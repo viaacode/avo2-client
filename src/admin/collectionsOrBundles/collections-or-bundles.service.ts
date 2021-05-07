@@ -37,6 +37,7 @@ export class CollectionsOrBundlesService {
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
@@ -49,6 +50,7 @@ export class CollectionsOrBundlesService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
@@ -127,6 +129,7 @@ export class CollectionsOrBundlesService {
 			| CollectionOrBundleQualityCheckOverviewTableCols
 			| CollectionOrBundleMarcomOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any,
 		editorialType: EditorialType
 	): Promise<[Avo.Collection.Collection[], number]> {
@@ -134,12 +137,16 @@ export class CollectionsOrBundlesService {
 
 		try {
 			variables = {
-				where,
+				where: {
+					...where,
+					// TODO: is_deleted: { _eq: false },
+				},
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};

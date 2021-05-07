@@ -382,17 +382,24 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									label: t('admin/items/views/item-detail___titel'),
 									id: 'title',
 									sortable: true,
+									dataType: 'string',
 								},
 								{
 									label: t('admin/items/views/item-detail___auteur'),
 									id: 'author',
 									sortable: true,
+									dataType: 'string',
 								},
-								{ label: 'Organisatie', id: 'organization', sortable: false },
+								{
+									label: 'Organisatie',
+									id: 'organization',
+									sortable: false,
+								},
 								{
 									label: t('admin/items/items___publiek'),
 									id: 'is_public',
 									sortable: true,
+									dataType: 'boolean',
 								},
 								{
 									tooltip: t('admin/items/views/item-detail___acties'),

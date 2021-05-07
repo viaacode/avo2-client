@@ -1,5 +1,12 @@
 import { compact, get } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -43,7 +50,10 @@ import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-chec
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { useContentPageLabelOptions } from '../../content-page-labels/hooks/useContentPageLabelOptions';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -90,6 +100,34 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [contentPageLabelOptions] = useContentPageLabelOptions();
 
 	const [t] = useTranslation();
+
+	const contentTypeOptions = useMemo(
+		() =>
+			contentTypes.map(
+				(option): CheckboxOption => ({
+					id: option.value,
+					label: option.label,
+					checked: get(tableState, 'content_type', [] as string[]).includes(option.value),
+				})
+			),
+		[contentTypes, tableState]
+	);
+
+	const tableColumns = useMemo(
+		() =>
+			GET_CONTENT_PAGE_OVERVIEW_COLUMNS(
+				contentTypeOptions,
+				setSelectedCheckboxes(
+					userGroupOptions,
+					get(tableState, 'user_group', []) as string[]
+				),
+				setSelectedCheckboxes(
+					contentPageLabelOptions,
+					get(tableState, 'label', []) as string[]
+				)
+			),
+		[contentPageLabelOptions, contentTypeOptions, tableState, userGroupOptions]
+	);
 
 	const hasPerm = useCallback(
 		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
@@ -164,6 +202,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return { _and: andFilters };
 			};
 
+			const column = tableColumns.find(
+				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+			);
+			const columnDataType: string = get(column, 'dataType', '');
 			const [
 				contentPagesArray,
 				contentPageCountTemp,
@@ -171,6 +213,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				tableState.page || 0,
 				(tableState.sort_column as ContentOverviewTableCols) || 'updated_at',
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState))
 			);
 
@@ -192,7 +235,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			});
 		}
 		setIsLoading(false);
-	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, hasPerm, t]);
+	}, [tableColumns, tableState, hasPerm, user, t]);
 
 	useEffect(() => {
 		fetchContentPages();
@@ -203,14 +246,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [contentPages]);
-
-	const contentTypeOptions = contentTypes.map(
-		(option): CheckboxOption => ({
-			id: option.value,
-			label: option.label,
-			checked: get(tableState, 'content_type', [] as string[]).includes(option.value),
-		})
-	);
 
 	// Methods
 	const handleDelete = async () => {
@@ -462,17 +497,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				<FilterTable
 					data={contentPages}
 					itemsPerPage={ITEMS_PER_PAGE}
-					columns={GET_CONTENT_PAGE_OVERVIEW_COLUMNS(
-						contentTypeOptions,
-						setSelectedCheckboxes(
-							userGroupOptions,
-							get(tableState, 'user_group', []) as string[]
-						),
-						setSelectedCheckboxes(
-							contentPageLabelOptions,
-							get(tableState, 'label', []) as string[]
-						)
-					)}
+					columns={tableColumns}
 					dataCount={contentPageCount}
 					searchTextPlaceholder={t(
 						'admin/content/views/content-overview___zoeken-op-auteur-titel-rol'

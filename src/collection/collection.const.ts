@@ -45,14 +45,20 @@ export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] = () 
 ];
 
 export const GET_MARCOM_ENTRY_TABLE_COLUMNS: () => TableColumn[] = () => [
-	{ label: i18n.t('collection/collection___datum'), id: 'publish_date' },
+	{
+		label: i18n.t('collection/collection___datum'),
+		id: 'publish_date',
+		dateTime: 'dateTime',
+	},
 	{
 		label: i18n.t('collection/collection___kanaal-type'),
 		id: 'channel_type',
+		dataType: 'string',
 	},
 	{
 		label: i18n.t('collection/collection___kanaal-naam'),
 		id: 'channel_name',
+		dataType: 'string',
 	},
 	{
 		label: i18n.t('collection/collection___link'),

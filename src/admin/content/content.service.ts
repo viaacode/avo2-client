@@ -279,6 +279,7 @@ export class ContentService {
 		page: number,
 		sortColumn: ContentOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any
 	): Promise<[ContentPageInfo[], number]> {
 		let variables: any;
@@ -290,6 +291,7 @@ export class ContentService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};

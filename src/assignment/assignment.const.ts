@@ -24,6 +24,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		id: 'title',
 		label: i18n.t('assignment/views/assignment-overview___titel'),
 		sortable: true,
+		dataType: 'string',
 	},
 	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
 	...(isMobileWidth()
@@ -42,6 +43,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 					id: 'author' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___leerkracht'),
 					sortable: true,
+					dataType: 'string',
 				},
 		  ]), // Only show teacher for pupils
 	...(isMobileWidth()
@@ -51,12 +53,14 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 					id: 'class_room' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___klas'),
 					sortable: true,
+					dataType: 'string',
 				},
 		  ]),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
 		label: i18n.t('assignment/views/assignment-overview___deadline'),
 		sortable: true,
+		dataType: 'dateTime',
 	},
 	...(canEditAssignments
 		? []

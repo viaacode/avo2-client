@@ -80,6 +80,7 @@ export class UserService {
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[Avo.User.Profile[], number]> {
@@ -96,6 +97,7 @@ export class UserService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};

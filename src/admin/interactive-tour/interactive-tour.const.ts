@@ -20,12 +20,14 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		label: i18n.t('admin/interactive-tour/interactive-tour___naam'),
 		sortable: true,
 		visibleByDefault: true,
+		dataType: 'string',
 	},
 	{
 		id: 'page_id',
 		label: i18n.t('admin/interactive-tour/interactive-tour___pagina'),
 		sortable: true,
 		visibleByDefault: true,
+		dataType: 'string',
 	},
 	{
 		id: 'created_at',
@@ -33,6 +35,7 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'updated_at',
@@ -40,6 +43,7 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'actions',

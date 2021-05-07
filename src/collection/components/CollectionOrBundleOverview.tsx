@@ -465,6 +465,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					label: t('collection/views/collection-overview___titel'),
 					col: '6',
 					sortable: true,
+					dataType: 'string',
 				},
 				{
 					id: 'actions',
@@ -484,18 +485,21 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				label: t('collection/views/collection-overview___titel'),
 				col: '6',
 				sortable: true,
+				dataType: 'string',
 			},
 			{
 				id: 'updated_at',
 				label: t('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
 				sortable: true,
+				dataType: 'dateTime',
 			},
 			{
 				id: 'is_public',
 				label: t('collection/components/collection-or-bundle-overview___is-publiek'),
 				col: '2',
 				sortable: true,
+				dataType: 'boolean',
 			},
 			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
 			// ...(isCollection

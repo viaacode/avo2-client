@@ -1,6 +1,13 @@
 import classnames from 'classnames';
 import { capitalize, compact, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -97,6 +104,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		'created_at'
 	);
 
+	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments), [
+		canEditAssignments,
+	]);
+
 	const checkPermissions = useCallback(async () => {
 		try {
 			if (user) {
@@ -122,6 +133,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			if (isNil(canEditAssignments)) {
 				return;
 			}
+
+			const column = tableColumns.find(
+				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
+			);
+			const columnDataType: string = get(column, 'dataType', '');
+
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
 				user,
@@ -129,6 +146,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				canEditAssignments ? null : activeView === 'archived_assignments', // pupils can see assignments past deadline
 				sortColumn,
 				sortOrder,
+				columnDataType,
 				page,
 				filterString,
 				selectedAssignmentLabelsIds
@@ -144,6 +162,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			});
 		}
 	}, [
+		tableColumns,
 		t,
 		activeView,
 		canEditAssignments,
@@ -801,7 +820,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<>
 				{renderHeader()}
 				<Table
-					columns={GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments)}
+					columns={tableColumns}
 					data={assignments}
 					emptyStateMessage={
 						filterString

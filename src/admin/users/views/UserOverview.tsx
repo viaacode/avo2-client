@@ -6,6 +6,7 @@ import React, {
 	ReactText,
 	useCallback,
 	useEffect,
+	useMemo,
 	useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -61,7 +62,10 @@ import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -124,30 +128,47 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
-	const columns = GET_USER_OVERVIEW_TABLE_COLS(
-		setSelectedCheckboxes(
-			userGroupOptions,
-			get(tableState, 'author.user_groups', []) as string[]
-		),
-		companies.map(
-			(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
-				id: option.or_id as string,
-				label: option.name as string,
-				checked: get(tableState, 'organisation', [] as string[]).includes(
-					String(option.or_id)
+	const columns = useMemo(
+		() =>
+			GET_USER_OVERVIEW_TABLE_COLS(
+				setSelectedCheckboxes(
+					userGroupOptions,
+					get(tableState, 'author.user_groups', []) as string[]
 				),
-			})
-		),
-		businessCategories.map(
-			(option: string): CheckboxOption => ({
-				id: option,
-				label: option,
-				checked: get(tableState, 'business_category', [] as string[]).includes(option),
-			})
-		),
-		setSelectedCheckboxes(educationLevels, get(tableState, 'education_levels', []) as string[]),
-		setSelectedCheckboxes(subjects, get(tableState, 'subjects', []) as string[]),
-		setSelectedCheckboxes(idps, get(tableState, 'idps', []) as string[])
+				companies.map(
+					(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+						id: option.or_id as string,
+						label: option.name as string,
+						checked: get(tableState, 'organisation', [] as string[]).includes(
+							String(option.or_id)
+						),
+					})
+				),
+				businessCategories.map(
+					(option: string): CheckboxOption => ({
+						id: option,
+						label: option,
+						checked: get(tableState, 'business_category', [] as string[]).includes(
+							option
+						),
+					})
+				),
+				setSelectedCheckboxes(
+					educationLevels,
+					get(tableState, 'education_levels', []) as string[]
+				),
+				setSelectedCheckboxes(subjects, get(tableState, 'subjects', []) as string[]),
+				setSelectedCheckboxes(idps, get(tableState, 'idps', []) as string[])
+			),
+		[
+			businessCategories,
+			companies,
+			educationLevels,
+			idps,
+			subjects,
+			tableState,
+			userGroupOptions,
+		]
 	);
 
 	const generateWhereObject = useCallback(
@@ -191,7 +212,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					filters,
 					['education_levels', 'subjects', 'idps'],
 					['contexts', 'classifications', 'idps'],
-					['key', 'key', 'idp']
+					['key', 'key', 'idp'],
+					true
 				)
 			);
 
@@ -250,12 +272,19 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const fetchProfiles = useCallback(async () => {
 		try {
 			setIsLoading(true);
+
+			const column = columns.find((tableColumn: FilterableColumn) => {
+				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
+			});
+			const columnDataType: string = get(column, 'dataType', '');
 			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState), false)
 			);
+
 			setProfiles(profilesTemp);
 			setProfileCount(profileCountTemp);
 		} catch (err) {
@@ -270,7 +299,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, generateWhereObject, t]);
+	}, [columns, tableState, generateWhereObject, t]);
 
 	useEffect(() => {
 		fetchProfiles();
@@ -394,10 +423,15 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const bulkExport = async () => {
 		try {
 			setIsLoading(true);
+			const column = columns.find(
+				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+			);
+			const columnDataType: string = get(column, 'dataType', '');
 			const [profilesTemp] = await UserService.getProfiles(
 				0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState), true),
 				100000
 			);
@@ -798,9 +832,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						'admin/users/views/user-overview___er-zijn-geen-gebruikers-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
-					onTableStateChanged={(newTableState) => {
-						setTableState(newTableState);
-					}}
+					onTableStateChanged={(newTableState) => setTableState(newTableState)}
 					renderNoResults={renderNoResults}
 					isLoading={isLoading}
 					showCheckboxes

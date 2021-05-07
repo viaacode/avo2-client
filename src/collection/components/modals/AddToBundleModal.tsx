@@ -94,7 +94,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			setSelectedBundleId(id);
 			const collection = await CollectionService.fetchCollectionOrBundleById(
 				id,
-				'collection',
+				'bundle',
 				undefined,
 				false
 			);

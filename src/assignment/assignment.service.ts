@@ -76,6 +76,7 @@ export class AssignmentService {
 		pastDeadline: boolean | null,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		page: number,
 		filterString: string | undefined,
 		labelIds: string[] | undefined
@@ -123,7 +124,12 @@ export class AssignmentService {
 				}
 			}
 			variables = {
-				order: getOrderObject(sortColumn, sortOrder, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT),
+				order: getOrderObject(
+					sortColumn,
+					sortOrder,
+					tableColumnDataType,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
 				owner_profile_id: getProfileId(user),
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,

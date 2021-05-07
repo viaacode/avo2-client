@@ -176,6 +176,7 @@ const getCollectionTitleColumn = (): FilterableColumn => ({
 	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'string',
 });
 
 const getCollectionAuthorColumn = (): FilterableColumn => ({
@@ -184,6 +185,7 @@ const getCollectionAuthorColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'MultiUserSelectDropdown',
+	dataType: 'string',
 });
 
 const getCollectionAuthorUserGroupColumn = (
@@ -198,6 +200,7 @@ const getCollectionAuthorUserGroupColumn = (
 	filterProps: {
 		options: userGroupOptions,
 	} as CheckboxDropdownModalProps,
+	dataType: 'string',
 });
 
 const getCollectionLastUpdatedByColumn = (): FilterableColumn => ({
@@ -207,6 +210,7 @@ const getCollectionLastUpdatedByColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'string',
 });
 
 const getCollectionCreatedAtColumn = (): FilterableColumn => ({
@@ -216,6 +220,7 @@ const getCollectionCreatedAtColumn = (): FilterableColumn => ({
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
 	filterProps: {},
+	dataType: 'dateTime',
 });
 
 const getCollectionUpdatedAtColumn = (): FilterableColumn => ({
@@ -225,6 +230,7 @@ const getCollectionUpdatedAtColumn = (): FilterableColumn => ({
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
 	filterProps: {},
+	dataType: 'dateTime',
 });
 
 const getCollectionIsPublicColumn = (): FilterableColumn => ({
@@ -233,6 +239,7 @@ const getCollectionIsPublicColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
+	dataType: 'booolean',
 });
 
 const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): FilterableColumn => ({
@@ -260,6 +267,7 @@ const getCollectionManagedColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: false,
 	filterType: 'BooleanCheckboxDropdown',
+	dataType: 'boolean',
 });
 
 const getCollectionViewsColumn = (): FilterableColumn => ({
@@ -268,6 +276,7 @@ const getCollectionViewsColumn = (): FilterableColumn => ({
 	icon: 'eye',
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'number',
 });
 
 const getCollectionBookmarksColumn = (): FilterableColumn => ({
@@ -278,6 +287,7 @@ const getCollectionBookmarksColumn = (): FilterableColumn => ({
 	icon: 'bookmark',
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'number',
 });
 
 const getCollectionCopiesColumn = (): FilterableColumn => ({
@@ -288,6 +298,7 @@ const getCollectionCopiesColumn = (): FilterableColumn => ({
 	icon: 'copy',
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'number',
 });
 
 const getCollectionInBundleColumn = (isCollection: boolean): FilterableColumn[] => {
@@ -301,6 +312,7 @@ const getCollectionInBundleColumn = (isCollection: boolean): FilterableColumn[] 
 				icon: 'folder' as IconName,
 				sortable: true,
 				visibleByDefault: true,
+				dataType: 'number',
 			},
 		];
 	}
@@ -318,6 +330,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 				icon: 'clipboard' as IconName,
 				sortable: true,
 				visibleByDefault: true,
+				dataType: 'number',
 			},
 		];
 	}
@@ -355,6 +368,7 @@ const getActualisationStatusColumn = (): FilterableColumn => ({
 	filterProps: {
 		options: getCollectionManagementStatuses(),
 	} as CheckboxDropdownModalProps,
+	dataType: 'string',
 });
 
 const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
@@ -365,6 +379,7 @@ const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
+	dataType: 'dateTime',
 });
 
 const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
@@ -377,6 +392,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 		showPastFutureOptions: true,
 		defaultControls: 'past',
 	} as Partial<DateRangeDropdownProps>,
+	dataType: 'dateTime',
 });
 
 const getActualisationApprovedAtColumn = (): FilterableColumn => ({
@@ -385,6 +401,7 @@ const getActualisationApprovedAtColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
+	dataType: 'dateTime',
 });
 
 const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
@@ -395,6 +412,7 @@ const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: false,
 	filterType: 'MultiUserSelectDropdown',
+	dataType: 'string',
 });
 
 const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
@@ -408,6 +426,7 @@ const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
 		falseLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___nok'),
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
+	dataType: 'boolean',
 });
 
 const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
@@ -421,6 +440,7 @@ const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
 		falseLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___nok'),
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
+	dataType: 'boolean',
 });
 
 const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
@@ -428,6 +448,7 @@ const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'dateTime',
 });
 
 const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
@@ -437,6 +458,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'boolean',
 });
 
 const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
@@ -446,6 +468,7 @@ const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'string',
 });
 
 const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
@@ -455,6 +478,7 @@ const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
+	dataType: 'dateTime',
 });
 
 const getMarcomKlascementColumn = (): FilterableColumn => ({
@@ -463,6 +487,7 @@ const getMarcomKlascementColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
+	dataType: 'boolean',
 });
 
 const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
@@ -472,6 +497,7 @@ const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: false,
+	dataType: 'dateTime',
 });
 
 export const GET_COLLECTIONS_COLUMNS = (
@@ -512,7 +538,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	collectionLabelOptions: CheckboxOption[],
 	subjects: string[],
 	educationLevels: string[]
-) => [
+): FilterableColumn[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),

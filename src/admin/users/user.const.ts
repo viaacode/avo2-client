@@ -44,18 +44,21 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/users/user___voornaam'),
 		sortable: true,
 		visibleByDefault: true,
+		dataType: 'string',
 	},
 	{
 		id: 'last_name',
 		label: i18n.t('admin/users/user___achternaam'),
 		sortable: true,
 		visibleByDefault: true,
+		dataType: 'string',
 	},
 	{
 		id: 'mail',
 		label: i18n.t('admin/users/user___email'),
 		sortable: true,
 		visibleByDefault: true,
+		dataType: 'string',
 	},
 	{
 		id: 'user_group',
@@ -69,6 +72,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
+		dataType: 'string',
 	},
 	{
 		id: 'business_category',
@@ -82,6 +86,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
+		dataType: 'string',
 	},
 	{
 		id: 'is_exception',
@@ -89,6 +94,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
+		dataType: 'boolean',
 	},
 	{
 		id: 'is_blocked',
@@ -96,6 +102,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
+		dataType: 'boolean',
 	},
 	{
 		id: 'blocked_at',
@@ -103,6 +110,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'unblocked_at',
@@ -110,6 +118,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'stamboek',
@@ -117,6 +126,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
+		dataType: 'boolean',
 	},
 	{
 		id: 'organisation',
@@ -130,6 +140,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
+		dataType: 'string',
 	},
 	{
 		id: 'created_at',
@@ -137,6 +148,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'last_access_at',
@@ -144,6 +156,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'education_levels',

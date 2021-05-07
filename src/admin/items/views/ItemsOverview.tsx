@@ -1,5 +1,5 @@
 import { get, isNil, truncate } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -24,7 +24,10 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -48,6 +51,25 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 	const [companies] = useCompanies(true);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const companyOptions = useMemo(
+		() =>
+			companies.map(
+				(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+					id: option.or_id as string,
+					label: option.name as string,
+					checked: get(tableState, 'organisation', [] as string[]).includes(
+						String(option.or_id)
+					),
+				})
+			),
+		[companies, tableState]
+	);
+
+	const tableColumns = useMemo(
+		() => GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], companyOptions || []),
+		[companyOptions, seriesOptions]
+	);
 
 	// methods
 	const fetchItems = useCallback(async () => {
@@ -121,10 +143,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		};
 
 		try {
+			const column = tableColumns.find(
+				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+			);
+			const columnDataType: string = get(column, 'dataType', '');
 			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState))
 			);
 			setItems(itemsTemp);
@@ -141,7 +168,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setItems, setItemCount, tableState, user, t]);
+	}, [tableColumns, setLoadingInfo, setItems, setItemCount, tableState, user, t]);
 
 	const fetchAllSeries = useCallback(async () => {
 		try {
@@ -279,14 +306,6 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		);
 	};
 
-	const companyOptions = companies.map(
-		(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
-			id: option.or_id as string,
-			label: option.name as string,
-			checked: get(tableState, 'organisation', [] as string[]).includes(String(option.or_id)),
-		})
-	);
-
 	const renderItemsOverview = () => {
 		if (!items) {
 			return null;
@@ -294,10 +313,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		return (
 			<>
 				<FilterTable
-					columns={GET_ITEM_OVERVIEW_TABLE_COLS(
-						seriesOptions || [],
-						companyOptions || []
-					)}
+					columns={tableColumns}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>

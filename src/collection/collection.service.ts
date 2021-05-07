@@ -621,7 +621,7 @@ export class CollectionService {
 			collectionToInsert.is_public = false;
 
 			if (canManageEditorial(user)) {
-				collectionToInsert.redaction = true;
+				collectionToInsert.is_managed = true;
 			}
 
 			// remove id from duplicate
