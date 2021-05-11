@@ -178,6 +178,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		end = null;
 	}
 
+	const title = get(item, 'title');
+
 	return (
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
@@ -185,7 +187,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					src={getBrowserSafeUrl(src)}
 					seekTime={props.seekTime}
 					poster={poster}
-					title={get(item, 'title')}
+					title={title}
 					metadata={
 						item
 							? [
@@ -215,6 +217,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 							'video_complete',
 						] as any
 					}
+					googleAnalyticsTitle={title}
 				/>
 			) : (
 				<div className="c-video-player__overlay" onClick={handlePosterClicked}>
