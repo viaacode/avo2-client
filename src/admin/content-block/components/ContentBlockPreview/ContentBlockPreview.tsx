@@ -98,6 +98,7 @@ const ContentBlockPreview: FunctionComponent<
 				'video_75_percent',
 				'video_complete',
 			],
+			googleAnalyticsTitle: get(componentStateProps, 'mediaItem.label'),
 			onPlay: () => {
 				trackEvents(
 					{

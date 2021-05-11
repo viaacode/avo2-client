@@ -131,6 +131,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 	const handlePosterClicked = () => {
 		setClickedThumbnail(true);
+
 		if (!src) {
 			initFlowPlayer();
 		}
@@ -139,6 +140,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const hasHlsSupport = (): boolean => {
 		try {
 			new MediaSource();
+
 			return true;
 		} catch (err) {
 			return false;
@@ -149,9 +151,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		if (hasHlsSupport()) {
 			return src;
 		}
+
 		if (src.includes('flowplayer')) {
 			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
 		}
+
 		if (src.endsWith('.m3u8')) {
 			ToastService.danger(
 				t(
