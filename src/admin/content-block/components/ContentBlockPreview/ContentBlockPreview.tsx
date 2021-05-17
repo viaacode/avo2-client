@@ -6,10 +6,8 @@ import { compose } from 'redux';
 
 import { Container, Spacer } from '@viaa/avo2-components';
 
-import { getProfileName } from '../../../../authentication/helpers/get-profile-info';
 import { generateSmartLink } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
-import { trackEvents } from '../../../../shared/services/event-logging-service';
 import { ContentPageInfo } from '../../../content/content.types';
 import { Color, ContentBlockConfig } from '../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
@@ -18,7 +16,6 @@ import {
 	COMPONENT_PREVIEW_MAP,
 	CONTENT_PAGE_ACCESS_BLOCKS,
 	IGNORE_BLOCK_LEVEL_PROPS,
-	MEDIA_PLAYER_CONTENT_BLOCKS,
 	NAVIGABLE_CONTENT_BLOCKS,
 	REPEATABLE_CONTENT_BLOCKS,
 } from './ContentBlockPreview.const';
@@ -85,35 +82,6 @@ const ContentBlockPreview: FunctionComponent<
 			clearInterval(timerId);
 		};
 	}, [blockState.headerBackgroundColor, getHeaderHeight, headerBgRef]);
-
-	if (MEDIA_PLAYER_CONTENT_BLOCKS.includes(contentBlockConfig.type)) {
-		componentStateProps.flowPlayerProps = {
-			googleAnalyticsId: window._ENV_.GOOGLE_ANALYTICS_ID,
-			googleAnalyticsEvents: [
-				'video_player_load',
-				'video_start',
-				'video_click_play',
-				'video_25_percent',
-				'video_50_percent',
-				'video_75_percent',
-				'video_complete',
-			],
-			googleAnalyticsTitle: get(componentStateProps, 'mediaItem.label'),
-			onPlay: () => {
-				trackEvents(
-					{
-						object: componentStateProps.mediaItem.value,
-						object_type: 'item',
-						message: `Gebruiker ${
-							user ? `${getProfileName(user)} ` : ''
-						}heeft het item ${componentStateProps.mediaItem.value} afgespeeld`,
-						action: 'view',
-					},
-					user
-				);
-			},
-		};
-	}
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type)) {
 		// Pass a function to the block so it can render links without needing to know anything about the app routes

@@ -95,6 +95,18 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	}, [props.autoplay, item, initFlowPlayer]);
 
 	const handlePlay = () => {
+		trackEvents(
+			{
+				object: props.external_id || '',
+				object_type: 'item',
+				message: `Gebruiker ${
+					props.user ? `${getProfileName(props.user)} ` : ''
+				} heeft het item ${props.external_id} afgespeeld`,
+				action: 'view',
+			},
+			props.user
+		);
+
 		// Only trigger once per video
 		if (item && item.uid && triggeredForUrl !== src) {
 			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
@@ -102,22 +114,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
 				);
 			});
-
-			trackEvents(
-				{
-					object: item.external_id,
-					object_type: 'item',
-					message: `Gebruiker ${
-						props.user ? `${getProfileName(props.user)} ` : ''
-					} heeft het item ${item.external_id} afgespeeld`,
-					action: 'view',
-				},
-				props.user
-			);
-
-			if (props.onPlay) {
-				props.onPlay();
-			}
 
 			setTriggeredForUrl(src || null);
 		}
@@ -178,8 +174,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		end = null;
 	}
 
-	const title = get(item, 'title');
-
 	return (
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
@@ -187,7 +181,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					src={getBrowserSafeUrl(src)}
 					seekTime={props.seekTime}
 					poster={poster}
-					title={title}
+					title={props.title}
 					metadata={
 						item
 							? [
@@ -217,7 +211,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 							'video_complete',
 						] as any
 					}
-					googleAnalyticsTitle={title}
+					googleAnalyticsTitle={props.title}
 				/>
 			) : (
 				<div className="c-video-player__overlay" onClick={handlePosterClicked}>
