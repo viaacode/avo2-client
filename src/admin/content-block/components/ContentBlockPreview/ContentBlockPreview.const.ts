@@ -92,14 +92,6 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 ];
 
 /**
- * Blocks that must receive google analytics data
- */
-export const MEDIA_PLAYER_CONTENT_BLOCKS = [
-	ContentBlockType.MediaPlayer,
-	ContentBlockType.MediaPlayerTitleTextButton,
-];
-
-/**
  * Blocks that need access to the top level content page
  * The contentPageInfo property will be added to these blocks automatically
  */
