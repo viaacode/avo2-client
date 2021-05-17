@@ -115,6 +115,10 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				);
 			});
 
+			if (props.onPlay) {
+				props.onPlay();
+			}
+
 			setTriggeredForUrl(src || null);
 		}
 
