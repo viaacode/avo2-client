@@ -2,70 +2,94 @@ import { gql } from 'apollo-boost';
 
 export const GET_USER_BY_ID = gql`
 	query getUserById($id: uuid!) {
-		users_profiles(
+		users_summary_view(
 			offset: 0
 			limit: 1
-			where: { id: { _eq: $id }, is_deleted: { _eq: false } }
+			where: { profile_id: { _eq: $id }, is_deleted: { _eq: false } }
 		) {
-			id
-			user: usersByuserId {
-				uid
-				id
-				first_name
-				last_name
-				last_access_at
-				mail
-				is_blocked
-				idpmaps {
-					id
-					idp
-					idp_user_id
-				}
-			}
-			avatar
-			alias
-			title
+			profile_id
+			user_id
+			first_name
+			last_name
 			business_category
-			stamboek
-			updated_at
-			created_at
-			bio
-			alternative_email
-			company_id
-			organisation {
-				logo_url
-				name
-				or_id
-			}
+			last_access_at
+			mail
+			is_blocked
+			is_deleted
 			is_exception
-			title
-			profile_classifications {
-				key
+			stamboek
+			acc_updated_at
+			acc_created_at
+			idps {
+				id
+				idp
+				idp_user_id
 			}
-			profile_contexts {
-				key
-			}
-			profile_organizations {
-				unit_id
-				organization_id
-			}
-			profile_user_group {
-				group {
-					id
-					label
-					group_user_permission_groups {
-						permission_group {
-							permission_group_user_permissions {
-								permission {
-									label
-									id
-								}
+			profile {
+				avatar
+				alias
+				title
+				business_category
+				updated_at
+				created_at
+				bio
+				alternative_email
+				usersByuserId {
+					full_name
+					first_name
+					last_name
+					mail
+				}
+				profile_organizations {
+					unit_id
+					organization_id
+				}
+				organisation {
+					logo_url
+					name
+				}
+				profile_user_group {
+					group {
+						created_at
+						description
+						id
+						label
+						ldap_role
+						updated_at
+						group_user_permission_groups {
+							group {
+								label
+								id
 							}
-							id
-							label
+							permission_group {
+								permission_group_user_permissions {
+									permission {
+										label
+										id
+									}
+								}
+								label
+								id
+							}
 						}
 					}
 				}
+				user_id
+			}
+			contexts {
+				id
+				key
+			}
+			group_id
+			group_name
+			company_name
+			company_id
+			blocked_at {
+				max
+			}
+			classifications {
+				id
+				key
 			}
 		}
 	}

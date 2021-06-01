@@ -65,15 +65,15 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 		try {
 			const profile = await UserService.getProfileById(match.params.id);
 
-			setFirstName(get(profile, 'user.first_name') || undefined);
-			setLastName(get(profile, 'user.last_name') || undefined);
-			setAvatar(get(profile, 'avatar') || undefined);
-			setTitle(get(profile, 'title') || undefined);
-			setBio(get(profile, 'bio') || undefined);
-			setAlias(get(profile, 'alias') || undefined);
+			setFirstName(get(profile, 'first_name') || undefined);
+			setLastName(get(profile, 'last_name') || undefined);
+			setAvatar(get(profile, 'profile.avatar') || undefined);
+			setTitle(get(profile, 'profile.title') || undefined);
+			setBio(get(profile, 'profile.bio') || undefined);
+			setAlias(get(profile, 'profiile.alias') || undefined);
 			setCompanyId(get(profile, 'company_id') || undefined);
 			setSelectedSubjects(
-				(get(profile, 'profile_classifications') || [])
+				(get(profile, 'classifications') || [])
 					.map((classification: { key: string }) => classification.key)
 					.map(stringToTagInfo)
 			);
@@ -126,7 +126,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				alias,
 				title,
 				bio,
-				userId: get(storedProfile, 'user.uid'),
+				userId: get(storedProfile, 'user_id'),
 				avatar: avatar || null,
 				subjects: (selectedSubjects || []).map((option) => ({
 					profile_id: profileId,
@@ -135,7 +135,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				company_id: companyId || null,
 			};
 			try {
-				await SettingsService.updateProfileInfo(storedProfile, newProfileInfo);
+				await SettingsService.updateProfileInfo(storedProfile, newProfileInfo as any);
 			} catch (err) {
 				setIsSaving(false);
 				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
@@ -249,6 +249,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 												if (!org.name || !org.or_id) {
 													return null;
 												}
+
 												return {
 													label: org.name,
 													value: org.or_id,
@@ -256,9 +257,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 											})
 										)}
 										value={companyId}
-										onChange={(newCompany) => {
-											setCompanyId(newCompany);
-										}}
+										onChange={setCompanyId}
 										clearable
 									/>
 								</FlexItem>
@@ -314,10 +313,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						`${get(storedProfile, 'user.first_name')} ${get(
-							storedProfile,
-							'user.last_name'
-						)}`,
+						`${firstName} ${lastName}`,
 						t('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>

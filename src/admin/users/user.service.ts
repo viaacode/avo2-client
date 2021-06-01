@@ -1,6 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, flatten, get, isNil, set } from 'lodash-es';
-import queryString from 'query-string';
+import { compact, flatten, get, isNil } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
@@ -39,33 +38,18 @@ export class UserService {
 				},
 				fetchPolicy: 'no-cache',
 			});
+
 			if (userResponse.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
 					userResponse,
 				});
 			}
-			const profile = get(userResponse, 'data.users_profiles[0]');
+
+			const profile = get(userResponse, 'data.users_summary_view[0]');
+
 			if (!profile) {
 				throw new CustomError('Failed to find profile by id', null, { userResponse });
 			}
-
-			// Also fetch the block and unblock times from the event database
-			const reply = await fetchWithLogout(
-				`${getEnv('PROXY_URL')}/user/info?${queryString.stringify({
-					profileId: profile.id,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
-			);
-
-			const blockEventsResponse = await reply.json();
-			set(profile, 'user.blockedAt', blockEventsResponse.blockedAt);
-			set(profile, 'user.unblockedAt', blockEventsResponse.unblockedAt);
 
 			return profile;
 		} catch (err) {
@@ -159,6 +143,7 @@ export class UserService {
 						},
 					} as any)
 			);
+
 			const profileCount = get(response, 'data.users_summary_view_aggregate.aggregate.count');
 
 			if (!profiles) {
@@ -214,10 +199,12 @@ export class UserService {
 		let url: string | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
+
 			const body: Avo.User.BulkBlockUsersBody = {
 				profileIds,
 				isBlocked,
 			};
+
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
