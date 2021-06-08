@@ -178,6 +178,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		end = null;
 	}
 
+	const trackingId =
+		window.ga && typeof window.ga.getAll === 'function'
+			? window.ga.getAll()[0].get('trackingId')
+			: undefined;
+
 	return (
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
@@ -203,7 +208,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
-					googleAnalyticsId={window.ga.getAll()[0].get('trackingId')}
+					googleAnalyticsId={trackingId}
 					googleAnalyticsEvents={
 						[
 							'video_player_load',
