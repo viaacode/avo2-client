@@ -102,7 +102,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				message: `Gebruiker ${
 					props.user ? `${getProfileName(props.user)} ` : ''
 				} heeft het item ${props.external_id} afgespeeld`,
-				action: 'view',
+				action: 'play',
 			},
 			props.user
 		);
