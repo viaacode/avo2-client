@@ -10,7 +10,7 @@ export const getSortOrder = (
 		case 'number':
 			return order.replace('desc', 'desc_nulls_first').replace('asc', 'asc_nulls_last');
 		case 'boolean':
-			return order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_last');
+			return order.replace('desc', 'asc_nulls_last').replace('asc', 'desc_nulls_last');
 		default:
 			return order;
 	}
