@@ -239,7 +239,7 @@ const getCollectionIsPublicColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
-	dataType: 'booolean',
+	dataType: 'boolean',
 });
 
 const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): FilterableColumn => ({
