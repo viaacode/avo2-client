@@ -20,6 +20,7 @@ import i18n from '../shared/translations/i18n';
 import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
+	DELETE_MARCOM_ENTRY,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
@@ -1290,6 +1291,27 @@ export class CollectionService {
 			throw new CustomError('Failed to insert marcom entry into the database', err, {
 				variables,
 				query: 'INSERT_MARCOM_ENTRY',
+			});
+		}
+	}
+
+	static async deleteMarcomEntry(id: string): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				variables: {
+					id,
+				},
+				mutation: DELETE_MARCOM_ENTRY,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			// handle error
+			throw new CustomError('Failed to delete marcom entry from the database', err, {
+				id,
+				query: 'DELETE_MARCOM_ENTRY',
 			});
 		}
 	}
