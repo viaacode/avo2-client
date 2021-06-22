@@ -95,6 +95,18 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	}, [props.autoplay, item, initFlowPlayer]);
 
 	const handlePlay = () => {
+		trackEvents(
+			{
+				object: props.external_id || '',
+				object_type: 'item',
+				message: `Gebruiker ${
+					props.user ? `${getProfileName(props.user)} ` : ''
+				} heeft het item ${props.external_id} afgespeeld`,
+				action: 'play',
+			},
+			props.user
+		);
+
 		// Only trigger once per video
 		if (item && item.uid && triggeredForUrl !== src) {
 			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
@@ -102,18 +114,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
 				);
 			});
-
-			trackEvents(
-				{
-					object: item.external_id,
-					object_type: 'item',
-					message: `Gebruiker ${
-						props.user ? `${getProfileName(props.user)} ` : ''
-					} heeft het item ${item.external_id} afgespeeld`,
-					action: 'view',
-				},
-				props.user
-			);
 
 			if (props.onPlay) {
 				props.onPlay();
@@ -131,6 +131,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 	const handlePosterClicked = () => {
 		setClickedThumbnail(true);
+
 		if (!src) {
 			initFlowPlayer();
 		}
@@ -139,6 +140,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const hasHlsSupport = (): boolean => {
 		try {
 			new MediaSource();
+
 			return true;
 		} catch (err) {
 			return false;
@@ -149,9 +151,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		if (hasHlsSupport()) {
 			return src;
 		}
+
 		if (src.includes('flowplayer')) {
 			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
 		}
+
 		if (src.endsWith('.m3u8')) {
 			ToastService.danger(
 				t(
@@ -174,6 +178,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		end = null;
 	}
 
+	const trackingId =
+		window.ga && typeof window.ga.getAll === 'function'
+			? window.ga.getAll()[0].get('trackingId')
+			: undefined;
+
 	return (
 		<div className="c-video-player t-player-skin--dark">
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
@@ -181,7 +190,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					src={getBrowserSafeUrl(src)}
 					seekTime={props.seekTime}
 					poster={poster}
-					title={get(item, 'title')}
+					title={props.title}
 					metadata={
 						item
 							? [
@@ -199,7 +208,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
-					googleAnalyticsId={window.ga.getAll()[0].get('trackingId')}
+					googleAnalyticsId={trackingId}
 					googleAnalyticsEvents={
 						[
 							'video_player_load',
@@ -211,6 +220,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 							'video_complete',
 						] as any
 					}
+					googleAnalyticsTitle={props.title}
 				/>
 			) : (
 				<div className="c-video-player__overlay" onClick={handlePosterClicked}>

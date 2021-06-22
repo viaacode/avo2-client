@@ -81,6 +81,7 @@ export const renderAvatar = (
 	} = {}
 ): ReactNode | null => {
 	const profile = getProfile(userOrProfile);
+
 	if (!profile) {
 		return null;
 	}

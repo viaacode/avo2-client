@@ -57,6 +57,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				unit_id: string;
 				organization_id: string;
 			}[] = get(profile, 'profile_organizations') || [];
+
 			setEduOrgNames(
 				compact(
 					await Promise.all(
@@ -80,6 +81,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					},
 				})
 			);
+
 			setLoadingInfo({
 				state: 'error',
 				message: t(
@@ -102,12 +104,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	}, [storedProfile, setLoadingInfo]);
 
 	const getLdapDashboardUrl = () => {
-		const ipdMapEntry = (get(storedProfile, 'user.idpmaps') || []).find(
+		const ipdMapEntry = (get(storedProfile, 'idps') || []).find(
 			(idpMap: { idp: string; idp_user_id: string }) => idpMap.idp === 'HETARCHIEF'
 		);
+
 		if (ipdMapEntry) {
 			return `${getEnv('LDAP_DASHBOARD_PEOPLE_URL')}/${ipdMapEntry.idp_user_id}`;
 		}
+
 		return null;
 	};
 
@@ -117,11 +121,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 	const toggleBlockedStatus = async () => {
 		try {
-			const profileId = get(storedProfile, 'id');
-			const isBlocked = get(storedProfile, 'user.is_blocked') || false;
+			const profileId = get(storedProfile, 'profile_id');
+			const isBlocked = get(storedProfile, 'is_blocked') || false;
+
 			if (profileId) {
 				await UserService.updateBlockStatusByProfileIds([profileId], !isBlocked);
 				await fetchProfileById();
+
 				ToastService.success(
 					isBlocked
 						? t('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
@@ -140,6 +146,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					profile: storedProfile,
 				})
 			);
+
 			ToastService.danger(
 				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt')
 			);
@@ -178,22 +185,29 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const permissionGroups: { id: number; label: string }[] = [];
 		const permissions: { id: number; label: string }[] = [];
 
-		const profileUserGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group', []);
+		const profileUserGroup: RawUserGroup = get(
+			storedProfile,
+			'profile.profile_user_group.group',
+			[]
+		);
 
 		const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
 			profileUserGroup,
 			'group_user_permission_groups',
 			[]
 		);
+
 		rawPermissionGroups.forEach((permissionGroup) => {
 			permissionGroups.push({
-				id: permissionGroup.permission_group.id,
-				label: permissionGroup.permission_group.label,
+				id: get(permissionGroup, 'group.id'),
+				label: get(permissionGroup, 'group.label'),
 			});
+
 			const rawPermissions: RawPermissionLink[] = get(
 				permissionGroup.permission_group,
 				'permission_group_user_permissions'
 			);
+
 			rawPermissions.map((permission) =>
 				permissions.push({
 					id: permission.permission.id,
@@ -235,7 +249,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile_user_group.group');
+		const userGroup: RawUserGroup = get(storedProfile, 'profile.profile_user_group.group');
 
 		return (
 			<Container mode="vertical" size="small">
@@ -243,22 +257,22 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							{renderDetailRow(
-								renderAvatar(storedProfile, { small: false }),
+								renderAvatar(get(storedProfile, 'profile'), { small: false }),
 								t('admin/users/views/user-detail___avatar')
 							)}
 							{renderSimpleDetailRows(storedProfile, [
-								['user.first_name', t('admin/users/views/user-detail___voornaam')],
-								['user.last_name', t('admin/users/views/user-detail___achternaam')],
-								['alias', t('admin/users/views/user-detail___gebruikersnaam')],
-								['title', t('admin/users/views/user-detail___functie')],
-								['bio', t('admin/users/views/user-detail___bio')],
-								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
+								['first_name', t('admin/users/views/user-detail___voornaam')],
+								['last_name', t('admin/users/views/user-detail___achternaam')],
 								[
-									'user.mail',
-									t('admin/users/views/user-detail___primair-email-adres'),
+									'profile.alias',
+									t('admin/users/views/user-detail___gebruikersnaam'),
 								],
+								['profile.title', t('admin/users/views/user-detail___functie')],
+								['profile.bio', t('admin/users/views/user-detail___bio')],
+								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
+								['mail', t('admin/users/views/user-detail___primair-email-adres')],
 								[
-									'alternative_email',
+									'profile.alternative_email',
 									t('admin/users/views/user-detail___secundair-email-adres'),
 								],
 							])}
@@ -277,10 +291,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
-								['created_at', t('admin/users/views/user-detail___aangemaakt-op')],
-								['updated_at', t('admin/users/views/user-detail___aangepast-op')],
 								[
-									'user.last_access_at',
+									'acc_created_at',
+									t('admin/users/views/user-detail___aangemaakt-op'),
+								],
+								[
+									'acc_updated_at',
+									t('admin/users/views/user-detail___aangepast-op'),
+								],
+								[
+									'last_access_at',
 									t('admin/users/views/user-detail___laatste-toegang'),
 								],
 							])}
@@ -290,45 +310,36 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									'is_exception',
 									t('admin/users/views/user-detail___uitzonderingsaccount'),
 								],
-								[
-									'user.is_blocked',
-									t('admin/users/views/user-detail___geblokkeerd'),
-								],
+								['is_blocked', t('admin/users/views/user-detail___geblokkeerd')],
 							])}
 							{renderDateDetailRows(storedProfile, [
 								[
-									'user.blockedAt',
+									'blocked_at.max',
 									t('admin/users/views/user-detail___laatst-geblokeerd-op'),
 								],
 								[
-									'user.unblockedAt',
+									'unblocked_at.max',
 									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
 								],
 							])}
 							{renderDetailRow(
 								idpMapsToTagList(
-									get(storedProfile, 'user.idpmaps', []).map(
-										(idpMap: any) => idpMap.idp
-									),
+									get(storedProfile, 'idps', []).map((idpMap: any) => idpMap.idp),
 									'idps'
 								) || '-',
 								t('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
 								stringsToTagList(
-									get(storedProfile, 'profile_classifications', [] as any[]),
+									get(storedProfile, 'classifications', []),
 									'key'
 								) || '-',
 								t('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(
-								get(storedProfile, 'profile_contexts', [] as any[]).length ? (
+								get(storedProfile, 'contexts', [] as any[]).length ? (
 									<TagList
-										tags={get(
-											storedProfile,
-											'profile_contexts',
-											[] as any[]
-										).map(
+										tags={get(storedProfile, 'contexts', []).map(
 											(educationLevel: { key: string }): TagOption => ({
 												id: educationLevel.key,
 												label: educationLevel.key,
@@ -353,12 +364,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 										}))}
 									/>
 								) : (
-									''
+									'-'
 								),
 								t('admin/users/views/user-detail___educatieve-organisaties')
 							)}
 							{renderDetailRow(
-								get(storedProfile, 'organisation.name', '-'),
+								get(storedProfile, 'company_name') || '-',
 								t('admin/users/views/user-detail___bedrijf')
 							)}
 						</tbody>
@@ -370,7 +381,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	};
 
 	const renderUserDetailPage = () => {
-		const isBlocked = get(storedProfile, 'user.is_blocked');
+		const isBlocked = get(storedProfile, 'is_blocked');
 		const blockButtonTooltip = isBlocked
 			? t(
 					'admin/users/views/user-detail___laat-deze-gebruiker-terug-toe-op-het-av-o-platform'
@@ -443,10 +454,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						`${get(storedProfile, 'user.first_name')} ${get(
-							storedProfile,
-							'user.last_name'
-						)}`,
+						`${get(storedProfile, 'first_name')} ${get(storedProfile, 'last_name')}`,
 						t('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>
