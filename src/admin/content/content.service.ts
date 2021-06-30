@@ -390,35 +390,33 @@ export class ContentService {
 		}
 	}
 
+	public static async updateContentPageMetadata(contentPage: Partial<ContentPageInfo>) {
+		const dbContentPage = this.cleanupBeforeInsert(convertToDatabaseContentPage(contentPage));
+		const response = await dataService.mutate({
+			mutation: UPDATE_CONTENT_BY_ID,
+			variables: {
+				contentPage: dbContentPage,
+				id: contentPage.id,
+			},
+			update: ApolloCacheManager.clearContentCache,
+		});
+
+		if (response.errors) {
+			throw new CustomError('Response contains errors', null, { response });
+		}
+
+		const updatedContent = get(response, 'data.update_app_content.affected_rows', null);
+		if (!updatedContent) {
+			throw new CustomError('Content page update returned empty response', null, response);
+		}
+	}
+
 	public static async updateContentPage(
 		contentPage: Partial<ContentPageInfo>,
 		initialContentPage?: Partial<ContentPageInfo>
 	): Promise<Partial<ContentPageInfo> | null> {
 		try {
-			const dbContentPage = this.cleanupBeforeInsert(
-				convertToDatabaseContentPage(contentPage)
-			);
-			const response = await dataService.mutate({
-				mutation: UPDATE_CONTENT_BY_ID,
-				variables: {
-					contentPage: dbContentPage,
-					id: contentPage.id,
-				},
-				update: ApolloCacheManager.clearContentCache,
-			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			const updatedContent = get(response, 'data.update_app_content.affected_rows', null);
-			if (!updatedContent) {
-				throw new CustomError(
-					'Content page update returned empty response',
-					null,
-					response
-				);
-			}
+			await ContentService.updateContentPageMetadata(contentPage);
 
 			if (contentPage.contentBlockConfigs && initialContentPage) {
 				await ContentBlockService.updateContentBlocks(

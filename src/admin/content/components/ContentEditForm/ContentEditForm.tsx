@@ -1,4 +1,4 @@
-import { compact, get } from 'lodash-es';
+import { cloneDeep, compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -49,6 +49,7 @@ interface ContentEditFormProps {
 	contentTypes: SelectOption<Avo.ContentPage.Type>[];
 	formErrors: ContentEditFormErrors;
 	contentPageInfo: Partial<ContentPageInfo>;
+	initialContentPageInfo: Partial<ContentPageInfo>;
 	changeContentPageState: (action: ContentEditAction) => void;
 	user: Avo.User.User;
 }
@@ -57,6 +58,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypes = [],
 	formErrors,
 	contentPageInfo,
+	initialContentPageInfo,
 	changeContentPageState,
 	user,
 }) => {
@@ -141,6 +143,23 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		}));
 	};
 
+	const onCoverImageChange = async (urls: string[]) => {
+		// user uploaded an image; set it in the reducer state, but don't save page yet
+		if (urls[0]) {
+			changeContentPageProp('thumbnail_path', urls[0]);
+		} else if (contentPageInfo.id && !urls[0]) {
+			// User is editing an existing page and deleted the image
+			// Delete the image from S3 and asset table and immediatly clear the thumbnail from the page
+			const newState = cloneDeep(initialContentPageInfo) as ContentPageInfo;
+			newState.thumbnail_path = null;
+			await ContentService.updateContentPageMetadata(newState);
+			changeContentPageState({
+				type: ContentEditActionType.SET_CONTENT_PAGE,
+				payload: { contentPageInfo: newState, replaceInitial: true },
+			});
+		}
+	};
+
 	// Render
 	const ownerId = get(contentPageInfo, 'user_profile_id');
 	const owner: PickerItem | undefined =
@@ -176,9 +195,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										label={t(
 											'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
 										)}
-										onChange={(urls) =>
-											changeContentPageProp('thumbnail_path', urls[0])
-										}
+										onChange={onCoverImageChange}
 									/>
 								</FormGroup>
 							</Column>

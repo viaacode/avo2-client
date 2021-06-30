@@ -518,6 +518,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						contentTypes={contentTypes}
 						formErrors={formErrors}
 						contentPageInfo={contentPageState.currentContentPageInfo}
+						initialContentPageInfo={contentPageState.initialContentPageInfo}
 						changeContentPageState={changeContentPageState}
 						user={user}
 					/>
