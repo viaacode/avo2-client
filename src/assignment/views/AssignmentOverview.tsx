@@ -112,13 +112,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		try {
 			if (user) {
 				setCanEditAssignments(
-					await PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
+					await PermissionService.hasPermissions(
+						[PermissionName.EDIT_OWN_ASSIGNMENTS, PermissionName.EDIT_ASSIGNMENTS],
+						user
+					)
 				);
 			}
 		} catch (err) {
 			console.error('Failed to check permissions', err, {
 				user,
-				permissions: PermissionName.EDIT_ASSIGNMENTS,
+				permissions: [PermissionName.EDIT_OWN_ASSIGNMENTS, PermissionName.EDIT_ASSIGNMENTS],
 			});
 			ToastService.danger(
 				t(
