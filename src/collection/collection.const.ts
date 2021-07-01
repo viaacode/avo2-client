@@ -65,7 +65,7 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: () => TableColumn[] = () => [
 		id: 'external_link',
 	},
 	{
-		label: i18n.t('Acties'),
+		label: '',
 		id: 'actions',
 	},
 ];

@@ -546,7 +546,6 @@ export class ContentService {
 					contentToInsert.title
 				);
 			} catch (err) {
-				// handle error
 				const customError = new CustomError(
 					'Failed to retrieve title for duplicate content page',
 					err,
