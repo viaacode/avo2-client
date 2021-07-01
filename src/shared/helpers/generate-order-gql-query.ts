@@ -1,18 +1,14 @@
 import { Avo } from '@viaa/avo2-types';
 
-const DATETIME_ORDER: Record<Avo.Search.OrderDirection, string> = {
-	asc: 'desc_nulls_last',
-	desc: 'asc_nulls_first',
-};
-
-const NUMBER_STRING_ORDER: Record<Avo.Search.OrderDirection, string> = {
+const DEFAULT_NULL_ORDER: Record<Avo.Search.OrderDirection, string> = {
 	asc: 'asc_nulls_last',
 	desc: 'desc_nulls_first',
 };
 
+// Reverse order so asc sorts [true false null], and desc sorts [null false true]
 const BOOLEAN_ORDER: Record<Avo.Search.OrderDirection, string> = {
 	asc: 'desc_nulls_last',
-	desc: 'asc_nulls_last',
+	desc: 'asc_nulls_first',
 };
 
 export const getSortOrder = (
@@ -22,9 +18,8 @@ export const getSortOrder = (
 	switch (tableColumnDataType) {
 		case 'string':
 		case 'number':
-			return NUMBER_STRING_ORDER[order];
 		case 'dateTime':
-			return DATETIME_ORDER[order];
+			return DEFAULT_NULL_ORDER[order];
 		case 'boolean':
 			return BOOLEAN_ORDER[order];
 		default:

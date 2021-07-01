@@ -458,7 +458,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
-	dataType: 'boolean',
+	dataType: 'string',
 });
 
 const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
