@@ -53,10 +53,18 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 
 	const onSave = async () => {
 		try {
+			const now = new Date();
 			const newContent: Partial<ContentPageInfo> = {
-				is_public: selectedOption === 'public',
+				is_public:
+					selectedOption === 'public' ||
+					(selectedOption === 'timebound' &&
+						((publishAt &&
+							new Date(publishAt) < now &&
+							((depublishAt && new Date(depublishAt) > now) || !depublishAt)) ||
+							(!publishAt &&
+								(!depublishAt || (depublishAt && new Date(depublishAt) > now))))),
 				published_at:
-					publishedAt || (selectedOption === 'public' ? new Date().toISOString() : null),
+					publishedAt || (selectedOption === 'public' ? now.toISOString() : null),
 				publish_at: selectedOption === 'timebound' ? publishAt : null,
 				depublish_at: selectedOption === 'timebound' ? depublishAt : null,
 			} as Partial<ContentPageInfo>;
