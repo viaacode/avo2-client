@@ -197,6 +197,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 		newTableState = cleanupObject({
 			...newTableState,
+			page: 0,
 			sort_column: columnId,
 			sort_order: tableState.sort_order === 'asc' ? 'desc' : 'asc',
 		});
