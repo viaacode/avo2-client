@@ -126,7 +126,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			> | null = await AssignmentService.fetchAssignmentByUuid(assignmentId);
 
 			if (!tempAssignment) {
-				// TODO BART ???
 				// Something went wrong during init/fetch
 				return;
 			}
