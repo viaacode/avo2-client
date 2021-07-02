@@ -17,7 +17,6 @@ export const fetchTranslations = async (): Promise<any> => {
 
 		return get(response, `data.${TRANSLATIONS_RESULT_PATH}`, null);
 	} catch (err) {
-		// handle error
 		const error = new CustomError('Failed to fetch translations', err, {
 			query: 'GET_TRANSLATIONS',
 		});
@@ -40,7 +39,6 @@ export const updateTranslations = async (name: string, translations: any) => {
 			update: ApolloCacheManager.clearTranslations,
 		});
 	} catch (err) {
-		// handle error
 		const error = new CustomError('Failed to update translations', err, {
 			query: 'UPDATE_TRANSLATIONS',
 			variables: {

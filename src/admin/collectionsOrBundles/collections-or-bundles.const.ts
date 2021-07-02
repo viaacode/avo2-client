@@ -239,7 +239,7 @@ const getCollectionIsPublicColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
-	dataType: 'booolean',
+	dataType: 'boolean',
 });
 
 const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): FilterableColumn => ({
@@ -458,7 +458,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
-	dataType: 'boolean',
+	dataType: 'string',
 });
 
 const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
