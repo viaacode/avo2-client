@@ -22,9 +22,10 @@
 		&:focus {
 			color: #000;
 			transition: 0.18s color ease-in;
+
 			img {
-			transition: 0.18s opacity ease-in;
-			opacity: 0.8;
+				transition: 0.18s opacity ease-in;
+				opacity: 0.8;
 			}
 		}
 	}
@@ -35,7 +36,7 @@
 	padding-bottom: 40%;
 
 	img {
-	width: 100%;
+		width: 100%;
 	}
 }
 
@@ -47,7 +48,7 @@
 	right: 0;
 	padding: 1.2rem 2.4rem;
 	color: #fff;
-	background: rgba($color-gray-700,0.7);
+	background: rgba($color-gray-700, 0.7);
 }
 
 .c-projects-grid-item__title {
