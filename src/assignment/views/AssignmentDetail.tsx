@@ -60,6 +60,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	const [assignmentContent, setAssignmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
 	>();
+	const [permissions, setPermissions] = useState<
+		Partial<{
+			canEditAssignment: boolean;
+		}>
+	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	const [t] = useTranslation();
@@ -152,6 +157,15 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				return;
 			}
 
+			const canEditAssignment = await PermissionService.hasPermissions(
+				[
+					PermissionName.EDIT_ALL_ASSIGNMENTS,
+					{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response.assignment },
+					{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response.assignment },
+				],
+				user
+			);
+
 			if (PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE)) {
 				// Create an assignmentResponse object to track the student viewing and finishing the assignment
 				// Currently we wait for this to complete
@@ -177,6 +191,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				user
 			);
 
+			setPermissions({ canEditAssignment });
 			setAssignment(response.assignment);
 			setAssignmentContent(response.assignmentContent);
 		} catch (err) {
@@ -454,10 +469,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 									</Toolbar>
 								</FlexItem>
 								<FlexItem shrink className="c-more-options-dropdown">
-									{PermissionService.hasPerm(
-										user,
-										PermissionName.EDIT_ASSIGNMENTS
-									) && (
+									{permissions.canEditAssignment && (
 										<MoreOptionsDropdown
 											isOpen={isActionsDropdownOpen}
 											onOpen={() => setActionsDropdownOpen(true)}

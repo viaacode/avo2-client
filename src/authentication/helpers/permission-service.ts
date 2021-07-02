@@ -3,6 +3,7 @@ import { get, isString, some } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
+import { AssignmentService } from '../../assignment/assignment.service';
 import { CollectionService } from '../../collection/collection.service';
 import { ContentPageService } from '../../shared/services/content-page-service';
 
@@ -125,6 +126,14 @@ export class PermissionService {
 					: obj;
 				const bundleOwnerId = get(bundle, 'owner_profile_id');
 				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;
+
+			case PermissionName.EDIT_ASSIGNMENTS:
+			case PermissionName.EDIT_OWN_ASSIGNMENTS:
+				const assignment = isString(obj)
+					? await AssignmentService.fetchAssignmentByUuid(obj)
+					: obj;
+				const assignmentOwnerId = get(assignment, 'owner_profile_id');
+				return !!profileId && !!assignmentOwnerId && profileId === assignmentOwnerId;
 
 			case PermissionName.EDIT_OWN_CONTENT_PAGES:
 				const contentPage: ContentPageInfo = isString(obj)
