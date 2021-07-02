@@ -140,13 +140,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					user
 				))
 			) {
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-					),
-					icon: 'alert-triangle',
-				});
+				history.push(`/${ROUTE_PARTS.assignments}/${assignmentId}`);
+				ToastService.danger(
+					t(
+						'Je hebt geen rechten om deze opdracht te bewerken, maar je kan ze wel bekijken.'
+					)
+				);
 				return;
 			}
 
