@@ -141,7 +141,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				))
 			) {
 				history.push(`/${ROUTE_PARTS.assignments}/${assignmentId}`);
-				ToastService.danger(
+				ToastService.info(
 					t(
 						'Je hebt geen rechten om deze opdracht te bewerken, maar je kan ze wel bekijken.'
 					)
