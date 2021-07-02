@@ -20,6 +20,7 @@ import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
+import { DeleteObjectModal } from '../index';
 
 import './FileUpload.scss';
 
@@ -33,7 +34,7 @@ export interface FileUploadProps {
 	urls: string[] | null;
 	showDeleteButton?: boolean;
 	disabled?: boolean;
-	onChange: (urls: string[]) => void;
+	onChange: (urls: string[], fileWasDeleted: boolean) => void; // TODO use fileWasDeleted boolean to save the current page state on all pages where this component is used
 }
 
 const FileUpload: FunctionComponent<FileUploadProps> = ({
@@ -50,6 +51,8 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 }) => {
 	const [t] = useTranslation();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
+	const [urlToBeDeleted, setUrlToBeDeleted] = useState<string | null>(null);
+	const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState<boolean>(false);
 
 	const uploadSelectedFile = async (files: File[] | null) => {
 		try {
@@ -75,7 +78,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 						await FileUploadService.uploadFile(files[i], assetType, ownerId)
 					);
 				}
-				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls);
+				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls, false);
 			}
 		} catch (err) {
 			console.error(
@@ -98,34 +101,31 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 		setIsProcessing(false);
 	};
 
-	const deleteUploadedFile = async (url: string) => {
+	const deleteUploadedFile = async () => {
 		try {
-			if (assetType === 'ZENDESK_ATTACHMENT') {
-				// We don't manage zendesk attachments
-				onChange([]);
-				return;
-			}
+			setIsConfirmDeleteModalOpen(false);
 			setIsProcessing(true);
 			if (urls) {
 				const newUrls = [...urls];
 				for (let i = newUrls.length - 1; i >= 0; i -= 1) {
-					if (newUrls[i] === url) {
-						await FileUploadService.deleteFile(url);
+					if (newUrls[i] === urlToBeDeleted) {
+						await FileUploadService.deleteFile(urlToBeDeleted);
 						newUrls.splice(i, 1);
 					}
 				}
-				onChange(newUrls);
+				onChange(newUrls, true);
 			} else {
-				onChange([]);
+				onChange([], true);
 			}
 		} catch (err) {
-			console.error(new CustomError('Failed to delete asset', err, { urls }));
+			console.error(new CustomError('Failed to delete asset', err, { urls, urlToBeDeleted }));
 			ToastService.danger(
 				t(
 					'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt'
 				)
 			);
 		}
+		setUrlToBeDeleted(null);
 		setIsProcessing(false);
 	};
 
@@ -142,7 +142,15 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				title={t('shared/components/file-upload/file-upload___verwijder-bestand')}
 				autoHeight
 				disabled={isProcessing}
-				onClick={() => deleteUploadedFile(url)}
+				onClick={() => {
+					if (assetType === 'ZENDESK_ATTACHMENT') {
+						// We don't manage zendesk attachments
+						onChange([], false);
+						return;
+					}
+					setUrlToBeDeleted(url);
+					setIsConfirmDeleteModalOpen(true);
+				}}
 			/>
 		);
 	};
@@ -248,6 +256,14 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				) : (
 					<Spinner size="large" />
 				))}
+			<DeleteObjectModal
+				deleteObjectCallback={deleteUploadedFile}
+				isOpen={isConfirmDeleteModalOpen}
+				onClose={() => setIsConfirmDeleteModalOpen(false)}
+				body={t(
+					'Deze actie kan niet ongedaan gemaakt worden en je huidige wijzigingen op deze pagina zullen worden opgeslaan.'
+				)}
+			/>
 		</div>
 	);
 };
