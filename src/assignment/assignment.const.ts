@@ -17,17 +17,10 @@ export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
-export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
-	canEditAssignments: boolean | null
-): AssignmentColumn[] => [
-	{
-		id: 'title',
-		label: i18n.t('assignment/views/assignment-overview___titel'),
-		sortable: true,
-		dataType: 'string',
-	},
-	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
-	...(isMobileWidth()
+type ColumnDataType = 'string' | 'number' | 'boolean' | 'dateTime' | undefined;
+
+const getLabelsColumn = (): AssignmentColumn[] => {
+	return isMobileWidth()
 		? []
 		: [
 				{
@@ -35,18 +28,24 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 					label: i18n.t('assignment/views/assignment-overview___vak-of-project'),
 					sortable: false,
 				},
-		  ]),
-	...(canEditAssignments
+		  ];
+};
+
+const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
 		? []
 		: [
 				{
 					id: 'author' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___leerkracht'),
 					sortable: true,
-					dataType: 'string',
+					dataType: 'string' as ColumnDataType,
 				},
-		  ]), // Only show teacher for pupils
-	...(isMobileWidth()
+		  ];
+}; // Only show teacher for pupils
+
+const getClassColumn = (): AssignmentColumn[] => {
+	return isMobileWidth()
 		? []
 		: [
 				{
@@ -55,14 +54,11 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 					sortable: true,
 					dataType: 'string',
 				},
-		  ]),
-	{
-		id: 'deadline_at' as AssignmentOverviewTableColumns,
-		label: i18n.t('assignment/views/assignment-overview___deadline'),
-		sortable: true,
-		dataType: 'dateTime',
-	},
-	...(canEditAssignments
+		  ];
+};
+
+const getStatusColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
 		? []
 		: [
 				{
@@ -73,7 +69,29 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 					),
 					sortable: false,
 				},
-		  ]), // Only show teacher for pupils
+		  ];
+};
+
+export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
+	canEditAssignments: boolean | null
+): AssignmentColumn[] => [
+	{
+		id: 'title',
+		label: i18n.t('assignment/views/assignment-overview___titel'),
+		sortable: true,
+		dataType: 'string',
+	},
+	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
+	...getLabelsColumn(),
+	...getTeacherColumn(canEditAssignments),
+	...getClassColumn(),
+	{
+		id: 'deadline_at' as AssignmentOverviewTableColumns,
+		label: i18n.t('assignment/views/assignment-overview___deadline'),
+		sortable: true,
+		dataType: 'dateTime',
+	},
+	...getStatusColumn(canEditAssignments),
 	// { id: 'responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
 	{ id: 'actions' as AssignmentOverviewTableColumns, label: '' },
 ];
