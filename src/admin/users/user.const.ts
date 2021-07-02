@@ -126,7 +126,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
-		dataType: 'boolean',
+		dataType: 'number',
 	},
 	{
 		id: 'organisation',

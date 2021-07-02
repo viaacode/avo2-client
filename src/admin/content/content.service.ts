@@ -456,9 +456,6 @@ export class ContentService {
 					let htmlFromRichTextEditor = undefined;
 					if (value && value.toHTML && isFunction(value.toHTML)) {
 						htmlFromRichTextEditor = value.toHTML();
-						if (htmlFromRichTextEditor === '<p></p>') {
-							htmlFromRichTextEditor = '';
-						}
 					}
 					obj[htmlKey] = sanitizeHtml(
 						htmlFromRichTextEditor || obj[htmlKey] || '',
@@ -544,7 +541,6 @@ export class ContentService {
 					contentToInsert.title
 				);
 			} catch (err) {
-				// handle error
 				const customError = new CustomError(
 					'Failed to retrieve title for duplicate content page',
 					err,

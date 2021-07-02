@@ -151,7 +151,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 		try {
 			const column = tableColumns.find(
-				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+				(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
 			);
 			const columnDataType: string = get(column, 'dataType', '');
 			const [

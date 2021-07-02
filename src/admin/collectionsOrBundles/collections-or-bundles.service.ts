@@ -139,7 +139,6 @@ export class CollectionsOrBundlesService {
 			variables = {
 				where: {
 					...where,
-					// TODO: is_deleted: { _eq: false },
 				},
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,

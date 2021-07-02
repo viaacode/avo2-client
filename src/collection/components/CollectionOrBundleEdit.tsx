@@ -368,6 +368,18 @@ const CollectionOrBundleEdit: FunctionComponent<
 				canCreate: rawPermissions[2],
 				canViewItems: rawPermissions[3],
 			};
+
+			if (!permissionObj.canEdit) {
+				setLoadingInfo({
+					state: 'error',
+					message: isCollection
+						? t('Je hebt geen rechten om deze collectie te bewerken')
+						: t('Je hebt geen rechten om deze bundel te bewerken'),
+					icon: 'alert-triangle',
+				});
+				return;
+			}
+
 			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				collectionId,
 				type,

@@ -63,7 +63,7 @@ const JsonLd: FunctionComponent<JsonLdProps> = ({
 		keywords: (keywords || []).join(','),
 	};
 
-	if (window.ga && typeof window.ga.getAll === 'function') {
+	if (window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]) {
 		const tracker = window.ga.getAll()[0].get('name');
 		window.ga(`${tracker}.set`, 'title', title);
 		window.ga(`${tracker}.send`, 'pageview');

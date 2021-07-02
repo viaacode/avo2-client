@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
 	BlockHeading,
 	Button,
+	ButtonToolbar,
 	Container,
 	DatePicker,
 	Flex,
@@ -77,7 +78,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 
 	const renderMarcomTableCell = (
 		rowData: Partial<MarcomEntry>,
-		columnId: keyof MarcomEntry
+		columnId: keyof MarcomEntry | 'actions'
 	): ReactNode => {
 		const value = get(rowData, columnId);
 		switch (columnId) {
@@ -110,6 +111,24 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 						'label',
 						'-'
 					)
+				);
+
+			case 'actions':
+				return (
+					<ButtonToolbar>
+						<Button
+							icon="delete"
+							onClick={() => {
+								if (rowData.id) {
+									deleteMarcomEntry(rowData.id);
+								}
+							}}
+							size="small"
+							title={t('Verwijder de marcom entry')}
+							ariaLabel={t('Verwijder de marcom entry')}
+							type="danger-hover"
+						/>
+					</ButtonToolbar>
 				);
 
 			default:
@@ -149,6 +168,21 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-mislukt'
 				)
 			);
+		}
+	};
+
+	const deleteMarcomEntry = async (id: string) => {
+		try {
+			await CollectionService.deleteMarcomEntry(id);
+			await fetchMarcomEntries();
+			ToastService.success(t('Het verwijderen van de marcom entry is gelukt.'));
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to remove marcom entry from the database', err, {
+					id,
+				})
+			);
+			ToastService.danger(t('Het verwijderen van de marcom entry is mislukt.'));
 		}
 	};
 

@@ -423,6 +423,14 @@ export const INSERT_MARCOM_ENTRY = gql`
 	}
 `;
 
+export const DELETE_MARCOM_ENTRY = gql`
+	mutation deleteMarcomEntry($id: Int) {
+		delete_app_collection_marcom_log(where: { id: { _eq: $id } }) {
+			affected_rows
+		}
+	}
+`;
+
 export const INSERT_MARCOM_NOTE = gql`
 	mutation insertMarcomNote($collectionId: uuid, $note: String) {
 		insert_app_collection_marcom_notes(objects: { note: $note, collection_id: $collectionId }) {

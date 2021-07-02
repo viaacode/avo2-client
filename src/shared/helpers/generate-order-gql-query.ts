@@ -1,16 +1,27 @@
 import { Avo } from '@viaa/avo2-types';
 
+const DEFAULT_NULL_ORDER: Record<Avo.Search.OrderDirection, string> = {
+	asc: 'asc_nulls_last',
+	desc: 'desc_nulls_first',
+};
+
+// Reverse order so asc sorts [true false null], and desc sorts [null false true]
+const BOOLEAN_ORDER: Record<Avo.Search.OrderDirection, string> = {
+	asc: 'desc_nulls_last',
+	desc: 'asc_nulls_first',
+};
+
 export const getSortOrder = (
 	order: Avo.Search.OrderDirection,
 	tableColumnDataType: string
 ): string => {
 	switch (tableColumnDataType) {
 		case 'string':
-		case 'dateTime':
 		case 'number':
-			return order.replace('desc', 'desc_nulls_first').replace('asc', 'asc_nulls_last');
+		case 'dateTime':
+			return DEFAULT_NULL_ORDER[order];
 		case 'boolean':
-			return order.replace('desc', 'desc_nulls_last').replace('asc', 'asc_nulls_last');
+			return BOOLEAN_ORDER[order];
 		default:
 			return order;
 	}
