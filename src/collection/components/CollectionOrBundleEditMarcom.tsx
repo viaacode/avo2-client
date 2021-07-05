@@ -124,8 +124,12 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								}
 							}}
 							size="small"
-							title={t('Verwijder de marcom entry')}
-							ariaLabel={t('Verwijder de marcom entry')}
+							title={t(
+								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
+							)}
+							ariaLabel={t(
+								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
+							)}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>
@@ -175,14 +179,22 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 		try {
 			await CollectionService.deleteMarcomEntry(id);
 			await fetchMarcomEntries();
-			ToastService.success(t('Het verwijderen van de marcom entry is gelukt.'));
+			ToastService.success(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-gelukt'
+				)
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to remove marcom entry from the database', err, {
 					id,
 				})
 			);
-			ToastService.danger(t('Het verwijderen van de marcom entry is mislukt.'));
+			ToastService.danger(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-mislukt'
+				)
+			);
 		}
 	};
 

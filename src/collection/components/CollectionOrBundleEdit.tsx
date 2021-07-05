@@ -373,8 +373,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 				setLoadingInfo({
 					state: 'error',
 					message: isCollection
-						? t('Je hebt geen rechten om deze collectie te bewerken')
-						: t('Je hebt geen rechten om deze bundel te bewerken'),
+						? t(
+								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
+						  ),
 					icon: 'alert-triangle',
 				});
 				return;
