@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
 	BlockHeading,
 	Button,
+	ButtonToolbar,
 	Container,
 	DatePicker,
 	Flex,
@@ -49,12 +50,8 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
 
 	const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
-	const [marcomChannelType, setMarcomChannelType] = useState<string>(
-		GET_MARCOM_CHANNEL_TYPE_OPTIONS()[0].value
-	);
-	const [marcomChannelName, setMarcomChannelName] = useState<string>(
-		GET_MARCOM_CHANNEL_NAME_OPTIONS()[0].value
-	);
+	const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
+	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
 
@@ -81,7 +78,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 
 	const renderMarcomTableCell = (
 		rowData: Partial<MarcomEntry>,
-		columnId: keyof MarcomEntry
+		columnId: keyof MarcomEntry | 'actions'
 	): ReactNode => {
 		const value = get(rowData, columnId);
 		switch (columnId) {
@@ -89,12 +86,53 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				return formatDate(value) || '-';
 
 			case 'external_link':
+				const valueLink: string = (value || '').includes('//') ? value || '' : `//${value}`;
 				return value ? (
-					<a href={value} target="_blank" rel="noopener noreferrer">
+					<a href={valueLink} target="_blank" rel="noopener noreferrer">
 						{truncateTableValue(value)}
 					</a>
 				) : (
 					'-'
+				);
+
+			case 'channel_type':
+				return truncateTableValue(
+					get(
+						GET_MARCOM_CHANNEL_TYPE_OPTIONS().find((option) => option.value === value),
+						'label',
+						'-'
+					)
+				);
+
+			case 'channel_name':
+				return truncateTableValue(
+					get(
+						GET_MARCOM_CHANNEL_NAME_OPTIONS().find((option) => option.value === value),
+						'label',
+						'-'
+					)
+				);
+
+			case 'actions':
+				return (
+					<ButtonToolbar>
+						<Button
+							icon="delete"
+							onClick={() => {
+								if (rowData.id) {
+									deleteMarcomEntry(rowData.id);
+								}
+							}}
+							size="small"
+							title={t(
+								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
+							)}
+							ariaLabel={t(
+								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
+							)}
+							type="danger-hover"
+						/>
+					</ButtonToolbar>
 				);
 
 			default:
@@ -119,6 +157,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt'
 				)
 			);
+
+			setMarcomChannelType(null);
+			setMarcomChannelName(null);
+			setMarcomLink('');
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to insert a new marcom entry into the database', err, {
@@ -128,6 +170,29 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			ToastService.danger(
 				t(
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-mislukt'
+				)
+			);
+		}
+	};
+
+	const deleteMarcomEntry = async (id: string) => {
+		try {
+			await CollectionService.deleteMarcomEntry(id);
+			await fetchMarcomEntries();
+			ToastService.success(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-gelukt'
+				)
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to remove marcom entry from the database', err, {
+					id,
+				})
+			);
+			ToastService.danger(
+				t(
+					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-mislukt'
 				)
 			);
 		}
@@ -161,8 +226,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								>
 									<Select
 										options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
+										placeholder={'-'}
 										onChange={setMarcomChannelType}
 										value={marcomChannelType}
+										clearable
 									/>
 								</FormGroup>
 							</FlexItem>
@@ -174,8 +241,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								>
 									<Select
 										options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
+										placeholder={'-'}
 										onChange={setMarcomChannelName}
 										value={marcomChannelName}
+										clearable
 									/>
 								</FormGroup>
 							</FlexItem>

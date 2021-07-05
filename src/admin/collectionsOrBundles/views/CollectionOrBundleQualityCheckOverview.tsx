@@ -1,5 +1,12 @@
 import { get, truncate } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -20,7 +27,10 @@ import { useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { useUserGroups } from '../../user-groups/hooks';
@@ -60,6 +70,53 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
+	const userGroupOptions = useMemo(
+		() =>
+			userGroups.map(
+				(option): CheckboxOption => ({
+					id: String(option.id),
+					label: option.label as string,
+					checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+						String(option.id)
+					),
+				})
+			),
+		[tableState, userGroups]
+	);
+
+	const collectionLabelOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
+				),
+				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
+			},
+			...collectionLabels.map(
+				(option): CheckboxOption => ({
+					id: String(option.value),
+					label: option.description,
+					checked: get(tableState, 'collection_labels', [] as string[]).includes(
+						String(option.value)
+					),
+				})
+			),
+		],
+		[collectionLabels, t, tableState]
+	);
+
+	const tableColumns = useMemo(
+		() =>
+			GET_COLLECTION_QUALITY_CHECK_COLUMNS(
+				userGroupOptions,
+				collectionLabelOptions,
+				subjects,
+				educationLevels
+			),
+		[collectionLabelOptions, educationLevels, subjects, userGroupOptions]
+	);
+
 	const isCollection =
 		location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW;
 
@@ -84,6 +141,10 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 		setIsLoading(true);
 
 		try {
+			const column = tableColumns.find(
+				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+			);
+			const columnDataType: string = get(column, 'dataType', '');
 			const [
 				collectionsTemp,
 				collectionsCountTemp,
@@ -92,9 +153,11 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 				(tableState.sort_column ||
 					'updated_at') as CollectionOrBundleQualityCheckOverviewTableCols,
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState)),
 				'quality_check'
 			);
+
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
@@ -103,6 +166,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 					tableState,
 				})
 			);
+
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
@@ -114,16 +178,9 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 					  ),
 			});
 		}
+
 		setIsLoading(false);
-	}, [
-		generateWhereObject,
-		setLoadingInfo,
-		setCollections,
-		setCollectionCount,
-		tableState,
-		isCollection,
-		t,
-	]);
+	}, [tableColumns, tableState, generateWhereObject, isCollection, t]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
@@ -173,35 +230,6 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 		}
 		setIsLoading(false);
 	};
-
-	const userGroupOptions = userGroups.map(
-		(option): CheckboxOption => ({
-			id: String(option.id),
-			label: option.label as string,
-			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-				String(option.id)
-			),
-		})
-	);
-
-	const collectionLabelOptions = [
-		{
-			id: NULL_FILTER,
-			label: t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
-			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
-		},
-		...collectionLabels.map(
-			(option): CheckboxOption => ({
-				id: String(option.value),
-				label: option.description,
-				checked: get(tableState, 'collection_labels', [] as string[]).includes(
-					String(option.value)
-				),
-			})
-		),
-	];
 
 	const renderTableCell = (
 		rowData: Partial<Avo.Collection.Collection>,
@@ -292,12 +320,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<CollectionOrBund
 		return (
 			<>
 				<FilterTable
-					columns={GET_COLLECTION_QUALITY_CHECK_COLUMNS(
-						userGroupOptions,
-						collectionLabelOptions,
-						subjects,
-						educationLevels
-					)}
+					columns={tableColumns}
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}

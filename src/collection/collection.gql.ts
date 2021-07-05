@@ -210,7 +210,7 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 `;
 
 export const GET_BUNDLE_TITLES_BY_OWNER = gql`
-	query getCollectionNamesByOwner($owner_profile_id: uuid) {
+	query getBundleNamesByOwner($owner_profile_id: uuid) {
 		app_collections(
 			where: {
 				type_id: { _eq: 4 }
@@ -334,6 +334,7 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$manager_profile_id: uuid
 		$status_valid_until: timestamptz
 		$note: String
+		$updated_at: timestamptz
 	) {
 		insert_app_collection_management(
 			objects: [
@@ -343,6 +344,7 @@ export const INSERT_COLLECTION_MANAGEMENT_ENTRY = gql`
 					manager_profile_id: $manager_profile_id
 					status_valid_until: $status_valid_until
 					note: $note
+					updated_at: $updated_at
 				}
 			]
 		) {
@@ -358,6 +360,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 		$manager_profile_id: uuid
 		$status_valid_until: timestamptz
 		$note: String
+		$updated_at: timestamptz
 	) {
 		update_app_collection_management(
 			where: { collection_id: { _eq: $collection_id } }
@@ -366,6 +369,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 				manager_profile_id: $manager_profile_id
 				status_valid_until: $status_valid_until
 				note: $note
+				updated_at: $updated_at
 			}
 		) {
 			affected_rows
@@ -374,7 +378,7 @@ export const UPDATE_COLLECTION_MANAGEMENT_ENTRY = gql`
 `;
 
 export const INSERT_COLLECTION_MANAGEMENT_QC_ENTRY = gql`
-	mutation insertCollectionManagementEntry(
+	mutation insertCollectionManagementQualityCheckEntry(
 		$collection_id: uuid!
 		$comment: String
 		$assignee_profile_id: uuid
@@ -414,6 +418,14 @@ export const GET_MARCOM_ENTRIES = gql`
 export const INSERT_MARCOM_ENTRY = gql`
 	mutation insertMarcomEntry($objects: [app_collection_marcom_log_insert_input!]!) {
 		insert_app_collection_marcom_log(objects: $objects) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_MARCOM_ENTRY = gql`
+	mutation deleteMarcomEntry($id: Int) {
+		delete_app_collection_marcom_log(where: { id: { _eq: $id } }) {
 			affected_rows
 		}
 	}

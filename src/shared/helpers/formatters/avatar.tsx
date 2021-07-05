@@ -81,11 +81,13 @@ export const renderAvatar = (
 	} = {}
 ): ReactNode | null => {
 	const profile = getProfile(userOrProfile);
+
 	if (!profile) {
 		return null;
 	}
 
 	const props: AvatarProps = getAvatarProps(profile, options);
+
 	return <Avatar dark={options.dark} {...props} />;
 };
 

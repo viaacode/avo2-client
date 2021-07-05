@@ -1,4 +1,4 @@
-import { get, isNil, without } from 'lodash-es';
+import { first, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -36,6 +36,7 @@ export function generateCollectionWhereObject(
 ) {
 	const isCollectionTable: boolean = isCollectionTableOrView === 'collectionTable';
 	const andFilters: any[] = [];
+
 	andFilters.push(
 		...getQueryFilter(filters.query, (queryWildcard: string) => [
 			{ title: { _ilike: queryWildcard } },
@@ -63,7 +64,7 @@ export function generateCollectionWhereObject(
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 
 	// TODO remove isCollectionTable after https://meemoo.atlassian.net/browse/DEV-1438
-	if (filters.collection_labels && filters.collection_labels.length && isCollectionTable) {
+	if (filters.collection_labels && filters.collection_labels.length) {
 		andFilters.push({
 			_or: [
 				...getMultiOptionFilters(
@@ -129,20 +130,21 @@ export function generateCollectionWhereObject(
 		}
 	}
 
-	const isCopy = get(filters, 'is_copy');
+	const isCopy = first(get(filters, 'is_copy'));
+
 	if (!isNil(isCopy)) {
-		if (isCopy) {
+		if (isCopy === 'true') {
 			andFilters.push({
 				relations: { predicate: { _eq: 'IS_COPY_OF' } },
 			});
-		} else {
+		} else if (isCopy === 'false') {
 			andFilters.push({
 				_not: { relations: { predicate: { _eq: 'IS_COPY_OF' } } },
 			});
 		}
 	}
 
-	andFilters.push(...getBooleanFilters(filters, ['is_public']));
+	andFilters.push(...getBooleanFilters(filters, ['is_public', 'is_managed']));
 
 	if (!includeDeleted) {
 		andFilters.push({ is_deleted: { _eq: false } });

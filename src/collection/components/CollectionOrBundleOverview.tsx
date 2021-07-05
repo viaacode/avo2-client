@@ -101,6 +101,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
 			let perms: boolean[][];
+
 			if (isCollection) {
 				perms = await Promise.all(
 					(collections || []).map((collection: Avo.Collection.Collection) => {
@@ -464,6 +465,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					label: t('collection/views/collection-overview___titel'),
 					col: '6',
 					sortable: true,
+					dataType: 'string',
 				},
 				{
 					id: 'actions',
@@ -483,18 +485,21 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				label: t('collection/views/collection-overview___titel'),
 				col: '6',
 				sortable: true,
+				dataType: 'string',
 			},
 			{
 				id: 'updated_at',
 				label: t('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
 				sortable: true,
+				dataType: 'dateTime',
 			},
 			{
 				id: 'is_public',
 				label: t('collection/components/collection-or-bundle-overview___is-publiek'),
 				col: '2',
 				sortable: true,
+				dataType: 'boolean',
 			},
 			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
 			// ...(isCollection

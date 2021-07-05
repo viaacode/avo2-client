@@ -28,9 +28,9 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-names';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
 	InteractiveTour,
@@ -58,7 +58,6 @@ import './AssignmentEdit.scss';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
-	location,
 	match,
 	user,
 }) => {
@@ -89,131 +88,111 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	/**
 	 *  Get query string variables and store them into the assignment state object
 	 */
-	useEffect(() => {
-		const initAssignmentData = async () => {
-			try {
-				// Redirect if id is a legacy numeric assignment id instead of a guid
-				const assignmentId = match.params.id;
+	const checkPermissionsAndGetAssignment = useCallback(async () => {
+		try {
+			// Redirect if id is a legacy numeric assignment id instead of a guid
+			const assignmentId = match.params.id;
 
-				if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
-					const assignmentUuid:
-						| string
-						| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
-						assignmentId
-					);
-					if (!assignmentUuid) {
-						console.error(
-							new CustomError(
-								'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
-								null,
-								{ legacyId: assignmentId }
-							)
-						);
-						setLoadingInfo({
-							state: 'error',
-							message: t(
-								'assignment/views/assignment-edit___de-opdracht-kon-niet-worden-gevonden'
-							),
-							icon: 'search',
-						});
-						return;
-					}
-					history.replace(
-						buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentUuid })
-					);
-					return;
-				}
-
-				// Determine if this is an edit or create page and initialize or fetch the assignment
-				const tempAssignment: Partial<
-					Avo.Assignment.Assignment
-				> | null = await fetchAssignment(assignmentId);
-
-				if (!tempAssignment) {
-					// Something went wrong during init/fetch
-					return;
-				}
-
-				// Fetch the content if the assignment has content
-				let tempAssignmentContent: AssignmentContent | null = null;
-				try {
-					tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
-						tempAssignment
-					);
-
-					setAssignmentContent(tempAssignmentContent);
-				} catch (err) {
-					if (err.message !== 'NOT_FOUND') {
-						console.error(
-							new CustomError('Failed to fetch assignment content', err, {
-								assignment: tempAssignment,
-							})
-						);
-						ToastService.danger(
-							t(
-								'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
-							)
-						);
-					}
-
-					setAssignmentContent(null);
-				}
-
-				setBothAssignments({
-					...tempAssignment,
-					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
-				});
-				setAssignmentLabels(
-					AssignmentLabelsService.getLabelsFromAssignment(tempAssignment)
+			if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
+				const assignmentUuid:
+					| string
+					| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
+					assignmentId
 				);
-			} catch (err) {
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
-					),
-					icon: 'alert-triangle',
-				});
+				if (!assignmentUuid) {
+					console.error(
+						new CustomError(
+							'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
+							null,
+							{ legacyId: assignmentId }
+						)
+					);
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'assignment/views/assignment-edit___de-opdracht-kon-niet-worden-gevonden'
+						),
+						icon: 'search',
+					});
+					return;
+				}
+				history.replace(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentUuid }));
+				return;
 			}
-		};
 
-		const fetchAssignment = async (
-			assignmentUuid: string
-		): Promise<Avo.Assignment.Assignment | null> => {
+			// Determine if this is an edit or create page and initialize or fetch the assignment
+			const tempAssignment: Partial<
+				Avo.Assignment.Assignment
+			> | null = await AssignmentService.fetchAssignmentByUuid(assignmentId);
+
+			if (!tempAssignment) {
+				// Something went wrong during init/fetch
+				return;
+			}
+
+			if (
+				!(await PermissionService.hasPermissions(
+					[
+						PermissionName.EDIT_ALL_ASSIGNMENTS,
+						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: tempAssignment },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
+					],
+					user
+				))
+			) {
+				history.push(`/${ROUTE_PARTS.assignments}/${assignmentId}`);
+				ToastService.info(
+					t(
+						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken-maar-je-kan-ze-wel-bekijken'
+					)
+				);
+				return;
+			}
+
+			// Fetch the content if the assignment has content
+			let tempAssignmentContent: AssignmentContent | null = null;
 			try {
-				return await AssignmentService.fetchAssignmentByUuid(assignmentUuid);
-			} catch (err) {
-				console.error(err);
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
-					),
-					icon: 'alert-triangle',
-				});
-				return null;
-			}
-		};
+				tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
+					tempAssignment
+				);
 
-		checkPermissions(
-			PermissionName.EDIT_ASSIGNMENTS,
-			user,
-			initAssignmentData,
-			setLoadingInfo,
-			t(
-				'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-			)
-		);
-	}, [
-		location,
-		match.params,
-		setLoadingInfo,
-		setAssignmentContent,
-		t,
-		user,
-		setBothAssignments,
-		history,
-	]);
+				setAssignmentContent(tempAssignmentContent);
+			} catch (err) {
+				if (err.message !== 'NOT_FOUND') {
+					console.error(
+						new CustomError('Failed to fetch assignment content', err, {
+							assignment: tempAssignment,
+						})
+					);
+					ToastService.danger(
+						t(
+							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
+						)
+					);
+				}
+
+				setAssignmentContent(null);
+			}
+
+			setBothAssignments({
+				...tempAssignment,
+				title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
+			});
+			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(tempAssignment));
+		} catch (err) {
+			setLoadingInfo({
+				state: 'error',
+				message: t(
+					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
+				),
+				icon: 'alert-triangle',
+			});
+		}
+	}, [user, match.params, setLoadingInfo, t, setBothAssignments, history]);
+
+	useEffect(() => {
+		checkPermissionsAndGetAssignment();
+	}, [checkPermissionsAndGetAssignment]);
 
 	useEffect(() => {
 		if (!isEmpty(initialAssignment) && !isEmpty(currentAssignment)) {

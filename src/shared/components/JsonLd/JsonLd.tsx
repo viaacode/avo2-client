@@ -2,6 +2,13 @@ import { FunctionComponent } from 'react';
 
 import { toIsoDate } from '../../helpers/formatters';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare global {
+	interface Window {
+		ga: any;
+	}
+}
+
 export interface JsonLdProps {
 	url: string;
 	title?: string;
@@ -55,6 +62,12 @@ const JsonLd: FunctionComponent<JsonLdProps> = ({
 		dateModified: toIsoDate(updatedAt || ''),
 		keywords: (keywords || []).join(','),
 	};
+
+	if (window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]) {
+		const tracker = window.ga.getAll()[0].get('name');
+		window.ga(`${tracker}.set`, 'title', title);
+		window.ga(`${tracker}.send`, 'pageview');
+	}
 
 	const scriptElem = document.createElement('script');
 	scriptElem.setAttribute('type', 'application/ld+json');

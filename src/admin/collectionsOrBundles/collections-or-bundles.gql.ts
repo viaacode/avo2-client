@@ -15,26 +15,19 @@ export const GET_COLLECTIONS = gql`
 			description
 			is_public
 			created_at
-			owner_profile_id
-			profile {
-				id
-				profile_user_group {
-					group {
-						label
-						id
-					}
-				}
-				user: usersByuserId {
-					id
-					full_name
-				}
+			subjects: lom_classification
+			education_levels: lom_context
+			owner {
+				full_name
+				group_id
+				group_name
+				profile_id
+				user_id
 			}
-			updated_by {
-				id
-				user: usersByuserId {
-					id
-					full_name
-				}
+			last_editor {
+				full_name
+				profile_id
+				user_id
 			}
 			collection_labels {
 				id
@@ -47,6 +40,7 @@ export const GET_COLLECTIONS = gql`
 				views
 				copies
 			}
+			is_managed
 		}
 		app_collections_aggregate(where: $where) {
 			aggregate {
@@ -95,6 +89,10 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 			type_id
 			updated_at
 			updated_by_profile_id
+			collection_labels: labels {
+				id
+				label
+			}
 			owner {
 				profile {
 					id

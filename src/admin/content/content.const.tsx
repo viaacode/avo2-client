@@ -21,6 +21,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		label: i18n.t('admin/content/content___titel'),
 		sortable: true,
 		visibleByDefault: true,
+		dataType: 'string',
 	},
 	{
 		id: 'content_type',
@@ -31,6 +32,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		filterProps: {
 			options: contentTypeOptions,
 		} as CheckboxDropdownModalProps,
+		dataType: 'string',
 	},
 	{
 		id: 'user_profile_id',
@@ -38,6 +40,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'MultiUserSelectDropdown',
+		dataType: 'string',
 	},
 	{
 		id: 'author_user_group',
@@ -51,6 +54,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 				{ label: i18n.t('admin/content/content___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
+		dataType: 'string',
 	},
 	{
 		id: 'created_at',
@@ -58,6 +62,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'updated_at',
@@ -65,6 +70,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'is_public',
@@ -72,6 +78,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: false,
 		filterType: 'BooleanCheckboxDropdown',
+		dataType: 'boolean',
 	},
 	{
 		id: 'published_at',
@@ -79,6 +86,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'publish_at',
@@ -86,6 +94,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'depublish_at',
@@ -93,6 +102,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
+		dataType: 'dateTime',
 	},
 	{
 		id: 'labels',

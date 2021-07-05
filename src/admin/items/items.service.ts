@@ -40,6 +40,7 @@ export class ItemsService {
 		page: number,
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any
 	): Promise<[Avo.Item.Item[], number]> {
 		let variables: any;
@@ -51,6 +52,7 @@ export class ItemsService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};

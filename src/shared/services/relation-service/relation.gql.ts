@@ -97,7 +97,7 @@ export const INSERT_ITEM_RELATION = gql`
 `;
 
 export const DELETE_COLLECTION_RELATIONS_BY_OBJECT = gql`
-	mutation deleteItemRelationsByObject(
+	mutation deleteCollectionRelationsByObject(
 		$objectId: uuid!
 		$relationType: lookup_enum_relation_types_enum!
 	) {
@@ -123,7 +123,7 @@ export const DELETE_ITEM_RELATIONS_BY_OBJECT = gql`
 `;
 
 export const DELETE_COLLECTION_RELATIONS_BY_SUBJECT = gql`
-	mutation deleteItemRelationsBySubject(
+	mutation deleteCollectionRelationsBySubject(
 		$subjectId: uuid!
 		$relationType: lookup_enum_relation_types_enum!
 	) {

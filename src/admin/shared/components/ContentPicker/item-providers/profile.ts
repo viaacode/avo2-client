@@ -15,6 +15,7 @@ export const retrieveProfiles = async (
 			0,
 			'last_access_at',
 			'desc',
+			'dateTime',
 			!!name
 				? {
 						_or: [

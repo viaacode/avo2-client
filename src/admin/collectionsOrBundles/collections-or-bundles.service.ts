@@ -37,9 +37,11 @@ export class CollectionsOrBundlesService {
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
+
 		try {
 			variables = {
 				where,
@@ -48,17 +50,22 @@ export class CollectionsOrBundlesService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_COLLECTIONS,
+				fetchPolicy: 'no-cache',
 			});
+
 			const collections: Avo.Collection.Collection[] | null = get(
 				response,
 				'data.app_collections'
 			);
+
 			const collectionsCount = get(
 				response,
 				'data.app_collections_aggregate.aggregate.count'
@@ -76,6 +83,7 @@ export class CollectionsOrBundlesService {
 				collections.map((coll: Avo.Collection.Collection) => coll.id),
 				'IS_COPY_OF'
 			)) as RelationEntry<Avo.Collection.Collection>[];
+
 			relations.forEach((relation) => {
 				const collection = collections.find((coll) => coll.id === relation.subject);
 				if (collection) {
@@ -100,6 +108,7 @@ export class CollectionsOrBundlesService {
 				},
 				query: GET_COLLECTION_IDS,
 			});
+
 			return get(response, 'data.app_collections', []).map(
 				(coll: Partial<Avo.Collection.Collection>) => coll.id
 			);
@@ -120,30 +129,38 @@ export class CollectionsOrBundlesService {
 			| CollectionOrBundleQualityCheckOverviewTableCols
 			| CollectionOrBundleMarcomOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any,
 		editorialType: EditorialType
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
+
 		try {
 			variables = {
-				where,
+				where: {
+					...where,
+				},
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: EDITORIAL_QUERIES[editorialType],
 				fetchPolicy: 'no-cache',
 			});
+
 			const collections: Avo.Collection.Collection[] | null = get(
 				response,
 				'data.app_collections'
 			);
+
 			const collectionsCount = get(
 				response,
 				'data.app_collections_aggregate.aggregate.count'
@@ -186,6 +203,7 @@ export class CollectionsOrBundlesService {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
@@ -220,6 +238,7 @@ export class CollectionsOrBundlesService {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
@@ -248,6 +267,7 @@ export class CollectionsOrBundlesService {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
@@ -289,9 +309,11 @@ export class CollectionsOrBundlesService {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
+
 			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
 
 			return get(response, 'data.insert_app_collection_labels.affected_rows');
@@ -319,9 +341,11 @@ export class CollectionsOrBundlesService {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
+
 			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
 
 			return get(response, 'data.delete_app_collection_labels.affected_rows');
@@ -347,6 +371,7 @@ export class CollectionsOrBundlesService {
 			},
 			update: ApolloCacheManager.clearCollectionCache,
 		});
+
 		if (updateResponse.errors) {
 			throw new CustomError('GraphQL query has errors', null, { updateResponse });
 		}

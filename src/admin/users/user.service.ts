@@ -1,6 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, flatten, get, isNil, set } from 'lodash-es';
-import queryString from 'query-string';
+import { compact, flatten, get, isNil } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
@@ -39,33 +38,18 @@ export class UserService {
 				},
 				fetchPolicy: 'no-cache',
 			});
+
 			if (userResponse.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
 					userResponse,
 				});
 			}
-			const profile = get(userResponse, 'data.users_profiles[0]');
+
+			const profile = get(userResponse, 'data.users_summary_view[0]');
+
 			if (!profile) {
 				throw new CustomError('Failed to find profile by id', null, { userResponse });
 			}
-
-			// Also fetch the block and unblock times from the event database
-			const reply = await fetchWithLogout(
-				`${getEnv('PROXY_URL')}/user/info?${queryString.stringify({
-					profileId: profile.id,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
-			);
-
-			const blockEventsResponse = await reply.json();
-			set(profile, 'user.blockedAt', blockEventsResponse.blockedAt);
-			set(profile, 'user.unblockedAt', blockEventsResponse.unblockedAt);
 
 			return profile;
 		} catch (err) {
@@ -80,6 +64,7 @@ export class UserService {
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[Avo.User.Profile[], number]> {
@@ -96,6 +81,7 @@ export class UserService {
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
+					tableColumnDataType,
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
@@ -152,11 +138,12 @@ export class UserService {
 							blocked_at: get(user, 'blocked_at.date'),
 							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
-							last_access_at: user.last_access_at as string, // TODO remove cast after update to typings 2.26.0
+							last_access_at: user.last_access_at,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)
 			);
+
 			const profileCount = get(response, 'data.users_summary_view_aggregate.aggregate.count');
 
 			if (!profiles) {
@@ -212,10 +199,12 @@ export class UserService {
 		let url: string | undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
+
 			const body: Avo.User.BulkBlockUsersBody = {
 				profileIds,
 				isBlocked,
 			};
+
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
 				headers: {
@@ -412,7 +401,7 @@ export class UserService {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
 			return get(response, 'data.users_profiles', []).map(
-				(profile: Partial<Avo.User.Profile>) => (profile as any).business_category // TODO Remove cast after update to typings v2.25.0
+				(profile: Partial<Avo.User.Profile>) => profile.business_category
 			);
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {

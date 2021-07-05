@@ -129,6 +129,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___label'),
 			sortable: true,
 			visibleByDefault: true,
+			dataType: 'string',
 		},
 		{
 			id: 'content_type',
@@ -139,6 +140,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			filterProps: {
 				options: contentTypeOptions,
 			} as CheckboxDropdownModalProps,
+			dataType: 'string',
 		},
 		{
 			id: 'link_to',
@@ -154,6 +156,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
+			dataType: 'dateTime',
 		},
 		{
 			id: 'updated_at',
@@ -163,6 +166,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
+			dataType: 'dateTime',
 		},
 		{
 			id: 'actions',

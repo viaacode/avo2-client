@@ -27,37 +27,45 @@ export const NEW_FRAGMENT = {
 };
 
 export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] = () => [
-	{ label: i18n.t('collection/collection___leeg'), value: '' },
 	{ label: i18n.t('collection/collection___nieuwsbericht'), value: 'NIEUWSBERICHT' },
 	{ label: i18n.t('collection/collection___nieuwsbrief'), value: 'NIEUWSBRIEF' },
 	{ label: i18n.t('collection/collection___social'), value: 'SOCIAL' },
-	{ label: i18n.t('collection/collection___campagne'), value: 'CAMPAGNE' },
+	{ label: i18n.t('collection/collection___webpagina'), value: 'WEBPAGINA' },
 	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
 ];
 
 export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] = () => [
-	{ label: i18n.t('collection/collection___leeg'), value: '' },
 	{ label: i18n.t('collection/collection___facebook'), value: 'FACEBOOK' },
 	{ label: i18n.t('collection/collection___twitter'), value: 'TWITTER' },
-	{ label: i18n.t('collection/collection___nieuwsbrief-meemoo'), value: 'NIEUWSBRIEF_MEEMOO' },
+	{ label: i18n.t('collection/collection___nieuwsbericht-av-o'), value: 'NIEUWSBERICHT_AVO' },
 	{ label: i18n.t('collection/collection___nieuwsbrief-avo'), value: 'NIEUWSBRIEF_AVO' },
-	{ label: i18n.t('collection/collection___klas-cement'), value: 'KLAS_CEMENT' },
+	{ label: i18n.t('collection/collection___klas-cement'), value: 'KLASCEMENT' },
 	{ label: i18n.t('collection/collection___zill'), value: 'ZILL' },
 	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
 ];
 
 export const GET_MARCOM_ENTRY_TABLE_COLUMNS: () => TableColumn[] = () => [
-	{ label: i18n.t('collection/collection___datum'), id: 'publish_date' },
+	{
+		label: i18n.t('collection/collection___datum'),
+		id: 'publish_date',
+		dateTime: 'dateTime',
+	},
 	{
 		label: i18n.t('collection/collection___kanaal-type'),
 		id: 'channel_type',
+		dataType: 'string',
 	},
 	{
 		label: i18n.t('collection/collection___kanaal-naam'),
 		id: 'channel_name',
+		dataType: 'string',
 	},
 	{
 		label: i18n.t('collection/collection___link'),
 		id: 'external_link',
+	},
+	{
+		label: '',
+		id: 'actions',
 	},
 ];

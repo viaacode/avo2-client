@@ -36,6 +36,6 @@ const mockUser: Avo.User.User = {
 		organisation: null,
 		is_exception: false,
 	},
-} as any; // TODO remove cast after update to typings v2.24.0
+} as any; // TODO: Fix type
 
 export default mockUser;

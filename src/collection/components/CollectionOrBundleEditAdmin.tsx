@@ -501,6 +501,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 													),
 													id: 'title',
 													sortable: true,
+													dataType: 'string',
 												},
 												{
 													label: t(
@@ -508,6 +509,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 													),
 													id: 'author',
 													sortable: true,
+													dataType: 'string',
 												},
 												{
 													label: 'Organisatie',
@@ -518,6 +520,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 													label: t('admin/items/items___publiek'),
 													id: 'is_public',
 													sortable: true,
+													dataType: 'boolean',
 												},
 												{
 													tooltip: t(
@@ -564,6 +567,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 													),
 													id: 'title',
 													sortable: true,
+													dataType: 'string',
 												},
 												{
 													label: t(
@@ -571,6 +575,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 													),
 													id: 'author',
 													sortable: true,
+													dataType: 'string',
 												},
 												{
 													label: t(
@@ -578,6 +583,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 													),
 													id: 'is_archived',
 													sortable: true,
+													dataType: 'boolean',
 												},
 												{
 													tooltip: t(

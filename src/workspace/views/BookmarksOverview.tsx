@@ -71,6 +71,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			col: '6',
 			sortable: true,
 			visibleByDefault: true,
+			dataType: 'string',
 		},
 		...(isMobileWidth()
 			? []
@@ -81,6 +82,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 						col: '3',
 						sortable: true,
 						visibleByDefault: true,
+						dataType: 'dateTime',
 					},
 			  ]),
 		{ id: 'actions', tooltip: t('workspace/views/bookmarks-overview___acties'), col: '1' },

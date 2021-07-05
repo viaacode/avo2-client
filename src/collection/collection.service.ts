@@ -20,6 +20,7 @@ import i18n from '../shared/translations/i18n';
 import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
+	DELETE_MARCOM_ENTRY,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_COLLECTIONS_BY_FRAGMENT_ID,
@@ -115,7 +116,6 @@ export class CollectionService {
 
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
-			// handle error
 			throw new CustomError('Failed to insert collection', err, {
 				newCollection,
 			});
@@ -348,7 +348,8 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
-				} as any); // TODO remove cast to any after update to typings v2.28.1
+					updated_at: get(updatedCollection, 'management.updated_at', null),
+				} as any); // TODO: type
 			} else if (
 				!!get(initialCollection, 'management') &&
 				!!get(updatedCollection, 'management')
@@ -367,10 +368,14 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
-				} as any); // TODO remove cast to any after update to typings v2.28.1
+					updated_at: get(updatedCollection, 'management.updated_at', null),
+				} as any); // TODO: type
 			}
 
-			if (!!get(updatedCollection, 'management')) {
+			if (
+				!!get(updatedCollection, 'management_language_check') &&
+				!!get(updatedCollection, 'management_quality_check')
+			) {
 				// Insert QC entries
 				const initialLanguageCheckStatus = get(
 					initialCollection,
@@ -615,6 +620,10 @@ export class CollectionService {
 			collectionToInsert.owner_profile_id = getProfileId(user);
 			collectionToInsert.is_public = false;
 
+			if (canManageEditorial(user)) {
+				collectionToInsert.is_managed = true;
+			}
+
 			// remove id from duplicate
 			delete (collectionToInsert as any).id;
 
@@ -646,7 +655,7 @@ export class CollectionService {
 			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
 			// Otherwise should be false
 			if (!canManageEditorial(user)) {
-				(collectionToInsert as any).is_managed = false; // TODO remove cast to any once update to typings v2.28.0
+				collectionToInsert.is_managed = false;
 			}
 
 			// insert duplicated collection
@@ -1158,7 +1167,6 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			// handle error
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
 				variables: { fragmentId },
@@ -1193,7 +1201,6 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			// handle error
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
 				query: 'GET_COLLECTIONS_BY_OWNER',
@@ -1250,7 +1257,6 @@ export class CollectionService {
 
 			return get(response, 'data.app_collection_marcom_log', []);
 		} catch (err) {
-			// handle error
 			throw new CustomError(
 				'Fetch collections marcom entries from the database failed',
 				err,
@@ -1277,10 +1283,29 @@ export class CollectionService {
 				throw new CustomError('graphql response contains errors', null, { response });
 			}
 		} catch (err) {
-			// handle error
 			throw new CustomError('Failed to insert marcom entry into the database', err, {
 				variables,
 				query: 'INSERT_MARCOM_ENTRY',
+			});
+		}
+	}
+
+	static async deleteMarcomEntry(id: string): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				variables: {
+					id,
+				},
+				mutation: DELETE_MARCOM_ENTRY,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to delete marcom entry from the database', err, {
+				id,
+				query: 'DELETE_MARCOM_ENTRY',
 			});
 		}
 	}

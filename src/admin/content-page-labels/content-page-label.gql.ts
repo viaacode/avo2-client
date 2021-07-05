@@ -55,7 +55,7 @@ export const INSERT_CONTENT_PAGE_LABEL = gql`
 `;
 
 export const UPDATE_CONTENT_PAGE_LABEL = gql`
-	mutation insertContentPageLabel(
+	mutation updateContentPageLabel(
 		$contentPageLabel: app_content_labels_set_input!
 		$contentPageLabelId: Int!
 	) {

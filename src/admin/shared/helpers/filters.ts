@@ -86,7 +86,8 @@ export function getMultiOptionsFilters(
 	filters: any,
 	props: string[],
 	nestedReferenceTables: string[],
-	labelPaths?: string[]
+	labelPaths?: string[],
+	keyIn?: boolean
 ): any[] {
 	return compact(
 		props.map((prop: string, index: number) => {
@@ -143,14 +144,28 @@ export function getMultiOptionsFilters(
 			} else {
 				// only selected values without an empty filter
 				filterObject = {};
-				filterValues.forEach((value: string) => {
-					if (labelPath) {
-						filterObject[referenceTable] = {
-							[labelPath]: { _has_key: value },
-						};
-					}
-					filterObject[referenceTable] = { _has_key: value };
-				});
+
+				if (keyIn) {
+					filterValues.forEach((value: string) => {
+						if (labelPath) {
+							filterObject[referenceTable] = {
+								[labelPath]: { _in: value },
+							};
+						} else {
+							filterObject[referenceTable] = { _in: value };
+						}
+					});
+				} else {
+					filterValues.forEach((value: string) => {
+						if (labelPath) {
+							filterObject[referenceTable] = {
+								[labelPath]: { _has_key: value },
+							};
+						}
+
+						filterObject[referenceTable] = { _has_key: value };
+					});
+				}
 			}
 
 			// Set filter query on main query object
@@ -159,6 +174,7 @@ export function getMultiOptionsFilters(
 				set(response, nestedPath, filterObject);
 				return response;
 			}
+
 			return filterObject;
 		})
 	);

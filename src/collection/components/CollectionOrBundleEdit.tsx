@@ -368,6 +368,22 @@ const CollectionOrBundleEdit: FunctionComponent<
 				canCreate: rawPermissions[2],
 				canViewItems: rawPermissions[3],
 			};
+
+			if (!permissionObj.canEdit) {
+				setLoadingInfo({
+					state: 'error',
+					message: isCollection
+						? t(
+								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
+						  ),
+					icon: 'alert-triangle',
+				});
+				return;
+			}
+
 			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				collectionId,
 				type,
@@ -465,7 +481,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
 		const tabName = String(selectedTab) as EditCollectionTab;
-		navigate(history, APP_PATH.COLLECTION_EDIT_TAB.route, { id: collectionId, tabId: tabName });
+		navigate(
+			history,
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id: collectionId, tabId: tabName }
+		);
 		setCurrentTab(tabName);
 	};
 

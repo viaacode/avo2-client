@@ -18,6 +18,7 @@ export class SettingsService {
 			if (!profile) {
 				return;
 			}
+
 			const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/profile`, {
 				method: 'POST',
 				headers: {
@@ -26,10 +27,13 @@ export class SettingsService {
 				credentials: 'include',
 				body: JSON.stringify(variables),
 			});
+
 			let body;
+
 			try {
 				body = await response.json();
 			} catch (err) {}
+
 			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError(
 					"Failed to update profile because response status wasn't in the valid range",

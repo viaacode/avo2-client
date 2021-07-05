@@ -1,5 +1,12 @@
 import { compact, get, truncate } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -26,7 +33,10 @@ import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, {
+	FilterableColumn,
+	getFilters,
+} from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -72,7 +82,52 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionLabels] = useCollectionQualityLabels();
 
 	// computed
+	const userGroupOptions = useMemo(
+		() =>
+			userGroups.map(
+				(option): CheckboxOption => ({
+					id: String(option.id),
+					label: option.label as string,
+					checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+						String(option.id)
+					),
+				})
+			),
+		[tableState, userGroups]
+	);
+	const collectionLabelOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
+				),
+				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
+			},
+			...collectionLabels.map(
+				(option): CheckboxOption => ({
+					id: String(option.value),
+					label: option.description,
+					checked: get(tableState, 'collection_labels', [] as string[]).includes(
+						String(option.value)
+					),
+				})
+			),
+		],
+		[collectionLabels, t, tableState]
+	);
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
+	const tableColumns = useMemo(
+		() =>
+			GET_COLLECTIONS_COLUMNS(
+				isCollection,
+				userGroupOptions,
+				collectionLabelOptions,
+				subjects,
+				educationLevels
+			),
+		[collectionLabelOptions, educationLevels, isCollection, subjects, userGroupOptions]
+	);
 
 	// methods
 	const generateWhereObject = useCallback(
@@ -95,6 +150,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		setIsLoading(true);
 
 		try {
+			const column = tableColumns.find(
+				(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
+			);
+			const columnDataType: string = get(column, 'dataType', '');
 			const [
 				collectionsTemp,
 				collectionsCountTemp,
@@ -102,14 +161,17 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as CollectionsOrBundlesOverviewTableCols,
 				tableState.sort_order || 'desc',
+				columnDataType,
 				generateWhereObject(getFilters(tableState))
 			);
+
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get collections from the database', err, { tableState })
 			);
+
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
@@ -121,16 +183,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  ),
 			});
 		}
+
 		setIsLoading(false);
-	}, [
-		setLoadingInfo,
-		setCollections,
-		setCollectionCount,
-		tableState,
-		isCollection,
-		t,
-		generateWhereObject,
-	]);
+	}, [tableColumns, tableState, generateWhereObject, isCollection, t]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
@@ -146,6 +201,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		// Update selected rows to always be a subset of the collections array
 		// In other words, you cannot have something selected that isn't part of the current filtered/paginated results
 		const collectionIds: string[] = (collections || []).map((coll) => coll.id);
+
 		setSelectedCollectionIds((currentSelectedCollectionIds) => {
 			return (currentSelectedCollectionIds || []).filter(
 				(collId) => collId && collectionIds.includes(collId)
@@ -155,6 +211,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const setAllCollectionsAsSelected = async () => {
 		setIsLoading(true);
+
 		try {
 			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
 				generateWhereObject(getFilters(tableState))
@@ -167,6 +224,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					}
 				)
 			);
+
 			setSelectedCollectionIds(collectionIds);
 		} catch (err) {
 			console.error(
@@ -176,39 +234,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					{ tableState }
 				)
 			);
+
 			ToastService.danger('Het ophalen van de collectie ids is mislukt');
 		}
+
 		setIsLoading(false);
 	};
-
-	const userGroupOptions = userGroups.map(
-		(option): CheckboxOption => ({
-			id: String(option.id),
-			label: option.label as string,
-			checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-				String(option.id)
-			),
-		})
-	);
-
-	const collectionLabelOptions = [
-		{
-			id: NULL_FILTER,
-			label: t(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
-			),
-			checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
-		},
-		...collectionLabels.map(
-			(option): CheckboxOption => ({
-				id: String(option.value),
-				label: option.description,
-				checked: get(tableState, 'collection_labels', [] as string[]).includes(
-					String(option.value)
-				),
-			})
-		),
-	];
 
 	const navigateToCollectionDetail = (id: string | undefined) => {
 		if (!id) {
@@ -223,6 +254,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			);
 			return;
 		}
+
 		const detailRoute = isCollection
 			? APP_PATH.COLLECTION_DETAIL.route
 			: APP_PATH.BUNDLE_DETAIL.route;
@@ -233,6 +265,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		if (!selectedCollectionIds || !selectedCollectionIds.length) {
 			return;
 		}
+
 		switch (action) {
 			case 'publish':
 				await bulkChangePublishStateForSelectedCollections(true);
@@ -261,11 +294,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
 				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
+
 			ToastService.success(
 				isPublic
 					? t(
@@ -275,6 +310,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
 					  )
 			);
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -283,6 +319,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					selectedRows: selectedCollectionIds,
 				})
 			);
+
 			ToastService.danger(
 				isPublic
 					? t(
@@ -300,15 +337,18 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			await CollectionsOrBundlesService.bulkDeleteCollections(
 				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
+
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
 				)
 			);
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -316,6 +356,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					selectedRows: selectedCollectionIds,
 				})
 			);
+
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt'
@@ -329,16 +370,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
 				compact(selectedCollectionIds),
 				getProfileId(user)
 			);
+
 			ToastService.success(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
 				)
 			);
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -346,6 +390,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					authorProfileId,
 				})
 			);
+
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt'
@@ -359,12 +404,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			if (!selectedCollectionIds || !selectedCollectionIds.length) {
 				return;
 			}
+
 			if (addOrRemove === 'add') {
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
 					compact(selectedCollectionIds),
 					getProfileId(user)
 				);
+
 				ToastService.success(
 					t(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
@@ -383,6 +430,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					)
 				);
 			}
+
 			fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
@@ -391,6 +439,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					labels,
 				})
 			);
+
 			ToastService.danger(
 				t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt'
@@ -410,12 +459,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
 					  )
 			);
+
 			return;
 		}
+
 		const detailRoute = isCollection
 			? APP_PATH.COLLECTION_EDIT.route
 			: APP_PATH.BUNDLE_EDIT.route;
 		const link = buildLink(detailRoute, { id });
+
 		redirectToClientPage(link, history);
 	};
 
@@ -426,6 +478,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		switch (columnId) {
 			case 'title':
 				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
+
 				return (
 					<Link
 						to={buildLink(
@@ -530,16 +583,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		if (!collections) {
 			return null;
 		}
+
 		return (
 			<>
 				<FilterTable
-					columns={GET_COLLECTIONS_COLUMNS(
-						isCollection,
-						userGroupOptions,
-						collectionLabelOptions,
-						subjects,
-						educationLevels
-					)}
+					columns={tableColumns}
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
