@@ -114,7 +114,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				setCanEditAssignments(
 					await PermissionService.hasPermissions(
 						[
-							PermissionName.EDIT_ALL_ASSIGNMENTS,
+							PermissionName.EDIT_ANY_ASSIGNMENTS,
 							PermissionName.EDIT_OWN_ASSIGNMENTS,
 							PermissionName.EDIT_ASSIGNMENTS,
 						],
@@ -126,7 +126,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			console.error('Failed to check permissions', err, {
 				user,
 				permissions: [
-					PermissionName.EDIT_ALL_ASSIGNMENTS,
+					PermissionName.EDIT_ANY_ASSIGNMENTS,
 					PermissionName.EDIT_OWN_ASSIGNMENTS,
 					PermissionName.EDIT_ASSIGNMENTS,
 				],

@@ -161,7 +161,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 			const [canEditAssignment, canCreateAssignmentResponse] = await Promise.all([
 				PermissionService.hasPermissions(
 					[
-						PermissionName.EDIT_ALL_ASSIGNMENTS,
+						PermissionName.EDIT_ANY_ASSIGNMENTS,
 						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response.assignment },
 						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response.assignment },
 					],
