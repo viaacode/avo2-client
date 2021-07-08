@@ -133,7 +133,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			if (
 				!(await PermissionService.hasPermissions(
 					[
-						PermissionName.EDIT_ALL_ASSIGNMENTS,
+						PermissionName.EDIT_ANY_ASSIGNMENTS,
 						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: tempAssignment },
 						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
 					],

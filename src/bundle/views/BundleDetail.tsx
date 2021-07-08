@@ -137,7 +137,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				PermissionService.hasPermissions(
 					[
 						{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
-						{ name: PermissionName.PUBLISH_ALL_BUNDLES },
+						{ name: PermissionName.PUBLISH_ANY_BUNDLES },
 					],
 					user
 				),
