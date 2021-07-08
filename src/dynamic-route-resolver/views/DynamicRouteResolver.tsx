@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
+import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
@@ -31,6 +32,7 @@ import {
 	buildLink,
 	CustomError,
 	generateSearchLinkString,
+	getEnv,
 	getFullName,
 	stripHtml,
 } from '../../shared/helpers';
@@ -282,12 +284,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				path: location.pathname,
 			})
 		);
+
+		window.open(
+			`${getEnv('PROXY_URL')}/not-found?message=${getPageNotFoundError(
+				loginState?.message === 'LOGGED_IN'
+			)}`,
+			'_self'
+		);
 		return (
-			<ErrorView
-				message={getPageNotFoundError(loginState?.message === 'LOGGED_IN')}
-				icon="search"
-				actionButtons={['home', 'helpdesk']}
-			/>
+			<Flex orientation="horizontal" center>
+				<Spinner size="large" />
+			</Flex>
 		);
 	};
 
