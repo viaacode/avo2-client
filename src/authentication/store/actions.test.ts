@@ -39,6 +39,6 @@ describe('login > store > actions', () => {
 			loading: true,
 		};
 
-		expect(setLoginLoading(true)).toMatchObject(expectedAction);
+		expect(setLoginLoading()).toMatchObject(expectedAction);
 	});
 });
