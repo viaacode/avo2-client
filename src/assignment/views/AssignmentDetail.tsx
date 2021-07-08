@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { get, isNil, isString } from 'lodash-es';
+import { get, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -62,6 +62,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	>();
 	const [permissions, setPermissions] = useState<
 		Partial<{
+			canCreateAssignmentResponse: boolean;
 			canEditAssignment: boolean;
 		}>
 	>({});
@@ -157,16 +158,19 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				return;
 			}
 
-			const canEditAssignment = await PermissionService.hasPermissions(
-				[
-					PermissionName.EDIT_ALL_ASSIGNMENTS,
-					{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response.assignment },
-					{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response.assignment },
-				],
-				user
-			);
+			const [canEditAssignment, canCreateAssignmentResponse] = await Promise.all([
+				PermissionService.hasPermissions(
+					[
+						PermissionName.EDIT_ANY_ASSIGNMENTS,
+						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response.assignment },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response.assignment },
+					],
+					user
+				),
+				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE),
+			]);
 
-			if (PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE)) {
+			if (canCreateAssignmentResponse) {
 				// Create an assignmentResponse object to track the student viewing and finishing the assignment
 				// Currently we wait for this to complete
 				// so we can set the created assignment response on the tempAssignment object,
@@ -191,7 +195,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				user
 			);
 
-			setPermissions({ canEditAssignment });
+			setPermissions({ canEditAssignment, canCreateAssignmentResponse });
 			setAssignment(response.assignment);
 			setAssignmentContent(response.assignmentContent);
 		} catch (err) {
@@ -384,11 +388,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 		) : null;
 	};
 
-	const isOwner = () =>
-		!isNil(get(assignment, 'owner_profile_id')) &&
-		!isNil(get(user, 'profile.id')) &&
-		get(assignment, 'owner_profile_id') === get(user, 'profile.id');
-
 	const renderAssignment = (): ReactElement | null => {
 		if (!assignment) {
 			return null;
@@ -430,7 +429,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 											</ToolbarItem>
 										</ToolbarLeft>
 										<ToolbarRight>
-											{!isOwner() && (
+											{permissions.canCreateAssignmentResponse && (
 												<ToolbarItem>
 													<Checkbox
 														label={t(

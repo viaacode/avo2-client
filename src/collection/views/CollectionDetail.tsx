@@ -196,7 +196,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				PermissionService.hasPermissions(
 					[
 						{ name: PermissionName.PUBLISH_OWN_COLLECTIONS, obj: collectionId },
-						{ name: PermissionName.PUBLISH_ALL_COLLECTIONS },
+						{ name: PermissionName.PUBLISH_ANY_COLLECTIONS },
 					],
 					user
 				),
