@@ -331,7 +331,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				buttonLabel={buttonLabel}
 				focusedPage={focusedPage}
 				onLabelClicked={(label: string) =>
-					navigate(history, `/${ROUTE_PARTS.news}`, {}, `label=${label}`)
+					navigate(
+						history,
+						`/${ROUTE_PARTS.news}`,
+						{},
+						`label=${encodeURIComponent(label)}`
+					)
 				}
 				renderLink={renderLink}
 			/>
