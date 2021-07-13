@@ -95,15 +95,27 @@ export function generateCollectionWhereObject(
 	}
 	if (filters.education_levels && filters.education_levels.length) {
 		andFilters.push({
-			_or: [
-				...getMultiOptionsFilters(
-					{
-						education_levels: without(filters.education_levels, NULL_FILTER),
-					},
-					['education_levels'],
-					['lom_context']
-				),
-			],
+			...getMultiOptionsFilters(
+				{
+					education_levels: without(filters.education_levels, NULL_FILTER),
+				},
+				['education_levels'],
+				['lom_context']
+			)[0],
+		});
+	}
+
+	if (filters.organisation && filters.organisation.length) {
+		andFilters.push({
+			...getMultiOptionsFilters(
+				{
+					organisation: filters.organisation,
+				},
+				['organisation'],
+				['owner.profile.organisation'],
+				['or_id'],
+				true
+			)[0],
 		});
 	}
 

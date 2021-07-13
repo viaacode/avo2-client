@@ -359,6 +359,19 @@ const getCollectionEducationLevelsColumn = (educationLevels: string[]): Filterab
 	} as CheckboxDropdownModalProps,
 });
 
+const getCollectionOrganisationColumn = (
+	organisationOptions: CheckboxOption[]
+): FilterableColumn => ({
+	id: 'organisation',
+	label: i18n.t('Organisatie'),
+	sortable: false,
+	visibleByDefault: true,
+	filterType: 'CheckboxDropdownModal',
+	filterProps: {
+		options: organisationOptions,
+	} as CheckboxDropdownModalProps,
+});
+
 const getActualisationStatusColumn = (): FilterableColumn => ({
 	id: 'actualisation_status',
 	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___status'),
@@ -505,7 +518,8 @@ export const GET_COLLECTIONS_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: string[],
-	educationLevels: string[]
+	educationLevels: string[],
+	organisations: CheckboxOption[]
 ): FilterableColumn[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
@@ -524,6 +538,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	...getCollectionInAssignmentColumn(isCollection),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
 		tooltip: i18n.t(
@@ -537,7 +552,8 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: string[],
-	educationLevels: string[]
+	educationLevels: string[],
+	organisations: CheckboxOption[]
 ): FilterableColumn[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
@@ -554,6 +570,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
 		tooltip: i18n.t(
@@ -567,7 +584,8 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: string[],
-	educationLevels: string[]
+	educationLevels: string[],
+	organisations: CheckboxOption[]
 ) => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
@@ -582,6 +600,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
 		tooltip: i18n.t(
@@ -595,7 +614,8 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: string[],
-	educationLevels: string[]
+	educationLevels: string[],
+	organisations: CheckboxOption[]
 ) => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
@@ -611,6 +631,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
 		tooltip: i18n.t(

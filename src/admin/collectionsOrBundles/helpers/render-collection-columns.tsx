@@ -179,6 +179,9 @@ export const renderCollectionOverviewColumns = (
 		case 'marcom_klascement':
 			return get(rowData, 'klascement') ? 'Ja' : 'Nee';
 
+		case 'organisation':
+			return get(rowData, 'owner.profile.organisation.name');
+
 		default:
 			return truncateTableValue((rowData as any)[columnId]);
 	}

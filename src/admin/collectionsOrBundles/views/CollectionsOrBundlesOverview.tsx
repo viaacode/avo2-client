@@ -25,7 +25,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
-import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
@@ -80,6 +80,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
 	const [collectionLabels] = useCollectionQualityLabels();
+	const [organisations] = useCompaniesWithUsers();
 
 	// computed
 	const userGroupOptions = useMemo(
@@ -116,6 +117,27 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		],
 		[collectionLabels, t, tableState]
 	);
+
+	const organisationOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t('Geen organisatie'),
+				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
+			},
+			...organisations.map(
+				(option): CheckboxOption => ({
+					id: String(option.or_id),
+					label: option.name,
+					checked: get(tableState, 'organisation', [] as string[]).includes(
+						String(option.or_id)
+					),
+				})
+			),
+		],
+		[organisations, t, tableState]
+	);
+
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
 	const tableColumns = useMemo(
 		() =>
@@ -124,9 +146,17 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevels
+				educationLevels,
+				organisationOptions
 			),
-		[collectionLabelOptions, educationLevels, isCollection, subjects, userGroupOptions]
+		[
+			collectionLabelOptions,
+			educationLevels,
+			isCollection,
+			subjects,
+			userGroupOptions,
+			organisationOptions,
+		]
 	);
 
 	// methods

@@ -24,6 +24,15 @@ export const GET_DISTINCT_ORGANISATIONS = gql`
 	}
 `;
 
+export const GET_ORGANISATIONS_WITH_USERS = gql`
+	query getOrganisationsWithUsers {
+		shared_organisations_with_users {
+			or_id: company_id
+			name
+		}
+	}
+`;
+
 export const GET_USERS_IN_COMPANY = gql`
 	query getUsersByCompanyId($companyId: String!) {
 		users_profiles(

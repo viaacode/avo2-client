@@ -22,6 +22,12 @@ export const GET_COLLECTIONS = gql`
 				group_id
 				group_name
 				profile_id
+				profile {
+					organisation {
+						or_id
+						name
+					}
+				}
 				user_id
 			}
 			last_editor {
@@ -96,6 +102,10 @@ export const GET_COLLECTION_ACTUALISATION = gql`
 			owner {
 				profile {
 					id
+					organisation {
+						or_id
+						name
+					}
 					profile_user_group {
 						group {
 							label
@@ -139,6 +149,10 @@ export const GET_COLLECTION_QUALITY_CHECK = gql`
 			owner {
 				profile {
 					id
+					organisation {
+						or_id
+						name
+					}
 					profile_user_group {
 						group {
 							label
@@ -203,6 +217,10 @@ export const GET_COLLECTION_MARCOM = gql`
 			owner {
 				profile {
 					id
+					organisation {
+						or_id
+						name
+					}
 					profile_user_group {
 						group {
 							label
