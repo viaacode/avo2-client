@@ -110,6 +110,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		PermissionName.VIEW_NOTIFICATIONS_PAGE
 	);
 	if (
+		!Object.keys(tabContents).includes(activeTab) ||
 		(activeTab === EMAIL_ID && !viewNewsletterPage) ||
 		(activeTab === NOTIFICATIONS_ID && !viewNotificationsPage)
 	) {
