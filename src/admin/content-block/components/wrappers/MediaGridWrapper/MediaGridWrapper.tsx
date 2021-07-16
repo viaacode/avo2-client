@@ -186,7 +186,7 @@ const MediaGridWrapper: FunctionComponent<
 				: toEnglishContentType(ContentTypeString.bundle),
 			metadata: [
 				{ icon: 'eye', label: String(viewCount || 0) },
-				{ label: formatDate(itemOrCollection.created_at) },
+				{ label: formatDate(itemOrCollection?.created_at) },
 			],
 			buttonLabel: element.buttonLabel,
 			buttonType: element.buttonType,
@@ -195,22 +195,22 @@ const MediaGridWrapper: FunctionComponent<
 				element.mediaItem ||
 				({
 					type: isItem ? 'ITEM' : isCollection ? 'COLLECTION' : 'BUNDLE',
-					value: itemOrCollection.external_id || itemOrCollection.id,
+					value: itemOrCollection?.external_id || itemOrCollection?.id,
 					target: get(searchQuery, 'target') || '_self',
 				} as ButtonAction),
 			buttonAction: element.buttonAction,
-			title: itemOrCollection.title || '',
-			description: itemOrCollection.description || '',
+			title: itemOrCollection?.title || '',
+			description: itemOrCollection?.description || '',
 			issued: get(itemOrCollection, 'issued') || '',
-			organisation: itemOrCollection.organisation || '',
+			organisation: itemOrCollection?.organisation || '',
 			thumbnail: {
 				label: itemLabel,
 				meta: isItem
 					? itemDuration
 					: `${collectionItems} ${isCollection ? 'items' : 'collecties'}`,
-				src: itemOrCollection.thumbnail_path || '',
+				src: itemOrCollection?.thumbnail_path || '',
 			},
-			src: itemOrCollection.src,
+			src: itemOrCollection?.src,
 			item_collaterals: get(itemOrCollection, 'item_collaterals', null),
 		} as any;
 	};
