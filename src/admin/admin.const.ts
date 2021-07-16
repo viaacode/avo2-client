@@ -1,7 +1,4 @@
-import { every, get, isArray, some } from 'lodash-es';
-import queryString from 'query-string';
-
-import { Avo } from '@viaa/avo2-types';
+import { every, isArray, some } from 'lodash-es';
 
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { buildLink, CustomError } from '../shared/helpers';
@@ -138,18 +135,7 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 	}
 }
 
-export const GET_NAV_ITEMS = async (
-	userPermissions: string[],
-	user: Avo.User.User
-): Promise<NavigationItemInfo[]> => {
-	let ownContentPageQueryParamsWithQuestionMark = '';
-	let ownContentPageQueryParamsWithAmpersand = '';
-	const profileId = get(user, 'profile.id');
-	if (profileId) {
-		const profileQueryParams = queryString.stringify({ user_profile_id: profileId });
-		ownContentPageQueryParamsWithQuestionMark = `?${profileQueryParams}`;
-		ownContentPageQueryParamsWithAmpersand = `&${profileQueryParams}`;
-	}
+export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<NavigationItemInfo[]> => {
 	return [
 		...getUserNavItems(userPermissions),
 		...hasPermissions(['EDIT_NAVIGATION_BARS'], 'OR', userPermissions, {
@@ -164,44 +150,43 @@ export const GET_NAV_ITEMS = async (
 			userPermissions,
 			{
 				label: i18n.t('admin/admin___content-paginas'),
-				location:
-					ADMIN_PATH.CONTENT_PAGE_OVERVIEW + ownContentPageQueryParamsWithQuestionMark,
+				location: ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 				key: 'content',
 				exact: false,
 				subLinks: [
 					{
 						label: i18n.t('admin/admin___paginas'),
-						location: ADMIN_PATH.PAGES + ownContentPageQueryParamsWithAmpersand,
+						location: ADMIN_PATH.PAGES,
 						key: 'pages',
 						exact: true,
 					},
 					{
 						label: i18n.t('admin/admin___projecten'),
-						location: ADMIN_PATH.PROJECTS + ownContentPageQueryParamsWithAmpersand,
+						location: ADMIN_PATH.PROJECTS,
 						key: 'projects',
 						exact: true,
 					},
 					{
 						label: i18n.t('admin/admin___nieuws'),
-						location: ADMIN_PATH.NEWS + ownContentPageQueryParamsWithAmpersand,
+						location: ADMIN_PATH.NEWS,
 						key: 'news',
 						exact: true,
 					},
 					{
 						label: i18n.t('admin/admin___screencasts'),
-						location: ADMIN_PATH.SCREENCASTS + ownContentPageQueryParamsWithAmpersand,
+						location: ADMIN_PATH.SCREENCASTS,
 						key: 'screencasts',
 						exact: true,
 					},
 					{
 						label: i18n.t('admin/admin___fa-qs'),
-						location: ADMIN_PATH.FAQS + ownContentPageQueryParamsWithAmpersand,
+						location: ADMIN_PATH.FAQS,
 						key: 'faqs',
 						exact: true,
 					},
 					{
 						label: i18n.t('admin/admin___overzichtspaginas'),
-						location: ADMIN_PATH.OVERVIEWS + ownContentPageQueryParamsWithAmpersand,
+						location: ADMIN_PATH.OVERVIEWS,
 						key: 'faqs',
 						exact: true,
 					},
