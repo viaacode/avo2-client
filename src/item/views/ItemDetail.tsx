@@ -4,6 +4,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 import {
 	BlockHeading,
@@ -76,6 +77,8 @@ interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
+
+	const [cuePoint] = useQueryParam('t', StringParam);
 
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -391,6 +394,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							}
 							onPlay={trackOnPlay}
 							verticalLayout={isMobileWidth()}
+							cuePoints={{
+								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
+								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
+							}}
 						/>
 						<Grid>
 							<Column size="2-7">
