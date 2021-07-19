@@ -60,7 +60,7 @@ export default class ResizablePanels extends Component<ResizablePanelsProps, Res
 				style={{
 					width: this.props.width,
 					height: this.props.height,
-					background: bkcolor,
+					backgroundColor: bkcolor,
 					display: 'flex',
 					flexDirection: this.props.displayDirection || 'row',
 				}}

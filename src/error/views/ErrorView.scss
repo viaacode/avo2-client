@@ -1,5 +1,27 @@
 .m-error-view {
 	min-height: 400px;
+
+	.c-blankslate {
+		background-color: transparent;
+	}
+
+	.c-toolbar {
+		align-items: center;
+		justify-content: center;
+
+		.c-toolbar__center {
+			position: relative;
+			margin-left: 0;
+			left: initial;
+
+			.c-toolbar__center-inner {
+				margin-left: 0;
+				display: block;
+				flex: none;
+				align-items: initial;
+			}
+		}
+	}
 }
 
 .c-error-buttons__mobile {

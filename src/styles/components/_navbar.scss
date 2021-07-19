@@ -14,11 +14,11 @@
 }
 
 .c-navbar--white {
-	background: #FFF;
+	background-color: #FFF;
 }
 
 .c-navbar--bg-alt {
-	background: $color-gray-50;
+	background-color: $color-gray-50;
 }
 
 .c-navbar--large {
@@ -30,7 +30,7 @@
 }
 
 .c-navbar--inverse {
-	background: darken($color-night-blue, 5%);
+	background-color: darken($color-night-blue, 5%);
 }
 
 .c-navbar--fixed {
