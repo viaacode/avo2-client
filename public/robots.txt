@@ -1,0 +1,14 @@
+User-agent: *
+Crawl-delay: 10
+# Directories
+Disallow: /beheer/
+Disallow: /instellingen/
+Disallow: /uitloggen
+Disallow: /error
+Disallow: /werkruimte
+Disallow: /vervolledig-profiel
+# Files
+Disallow: /unsupported-browser.html
+Disallow: /env-config.js
+
+Sitemap: https://onderwijs.hetarchief.be/sitemap.xml
