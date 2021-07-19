@@ -18,10 +18,12 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
+import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Account, Email, Notifications, Profile } from '../components';
 import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from '../settings.const';
 
@@ -98,6 +100,28 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		}
 		return tab.component;
 	};
+
+	const viewNewsletterPage = PermissionService.hasPerm(
+		props.user,
+		PermissionName.VIEW_NEWSLETTERS_PAGE
+	);
+	const viewNotificationsPage = PermissionService.hasPerm(
+		props.user,
+		PermissionName.VIEW_NOTIFICATIONS_PAGE
+	);
+	if (
+		!Object.keys(tabContents).includes(activeTab) ||
+		(activeTab === EMAIL_ID && !viewNewsletterPage) ||
+		(activeTab === NOTIFICATIONS_ID && !viewNotificationsPage)
+	) {
+		return (
+			<ErrorView
+				message={getPageNotFoundError(!!props.user)}
+				icon="search"
+				actionButtons={['home', 'helpdesk']}
+			/>
+		);
+	}
 
 	return (
 		<>
