@@ -55,22 +55,6 @@ export const INCREMENT_COLLECTION_VIEWS = gql`
 	}
 `;
 
-export const INIT_ITEM_VIEWS = gql`
-	mutation insertInitialItemViewCount($itemUuid: uuid!) {
-		insert_app_item_views(objects: [{ count: 1, item_id: $itemUuid }]) {
-			affected_rows
-		}
-	}
-`;
-
-export const INIT_COLLECTION_VIEWS = gql`
-	mutation insertInitialCollectionViewCount($collectionUuid: uuid!) {
-		insert_app_collection_views(objects: [{ count: 1, collection_uuid: $collectionUuid }]) {
-			affected_rows
-		}
-	}
-`;
-
 export const INCREMENT_ITEM_PLAYS = gql`
 	mutation increaseItemPlays($itemUuid: uuid!) {
 		update_app_item_plays(where: { item_id: { _eq: $itemUuid } }, _inc: { count: 1 }) {
@@ -130,22 +114,6 @@ export const GET_COLLECTION_PLAYS = gql`
 			play_counts {
 				count
 			}
-		}
-	}
-`;
-
-export const INIT_ITEM_PLAYS = gql`
-	mutation insertInitialItemPlayCount($itemUuid: uuid!) {
-		insert_app_item_plays(objects: [{ count: 1, item_id: $itemUuid }]) {
-			affected_rows
-		}
-	}
-`;
-
-export const INIT_COLLECTION_PLAYS = gql`
-	mutation insertInitialCollectionPlayCount($collectionUuid: uuid!) {
-		insert_app_collection_plays(objects: [{ count: 1, collection_uuid: $collectionUuid }]) {
-			affected_rows
 		}
 	}
 `;
