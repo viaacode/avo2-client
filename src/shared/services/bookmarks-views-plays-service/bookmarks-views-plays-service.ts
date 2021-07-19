@@ -1,4 +1,4 @@
-import { compact, fromPairs, get, groupBy, isNil } from 'lodash-es';
+import { compact, fromPairs, get, groupBy } from 'lodash-es';
 
 import { EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -45,14 +45,7 @@ export class BookmarksViewsPlaysService {
 	): Promise<void> {
 		try {
 			if (action === 'play' || action === 'view') {
-				const count = await this.getCount(action, contentType, contentUuid, user, silent);
-
-				if (isNil(count)) {
-					// No row exists yet that can be increased, we should add a row with count = 1
-					await this.insertInitialCount(action, contentType, contentUuid, user, silent);
-				} else {
-					await this.incrementCount(action, contentType, contentUuid, user, silent);
-				}
+				await this.incrementCount(action, contentType, contentUuid, user, silent);
 			} else {
 				// Bookmark or unbookmark action
 				const { query, variables } = this.getQueryAndVariables(
@@ -309,91 +302,6 @@ export class BookmarksViewsPlaysService {
 		return Object.fromEntries(
 			items.map((item: { id: string; count: number }) => [item.id, item.count])
 		);
-	}
-
-	private static async getCount(
-		action: EventAction,
-		contentType: EventContentType,
-		contentUuid: string,
-		user?: Avo.User.User,
-		silent: boolean = true
-	) {
-		try {
-			const { query, variables, responsePath } = this.getQueryAndVariables(
-				action,
-				'get',
-				contentType,
-				contentUuid,
-				user
-			);
-
-			const response = await dataService.query({
-				query,
-				variables,
-			});
-
-			if (response.errors) {
-				throw new CustomError('Graphql errors', null, { errors: response.errors });
-			}
-
-			return get(response, responsePath, null);
-		} catch (err) {
-			const error = new CustomError('Failed to get view/play count from the database', err, {
-				action,
-				contentType,
-				contentUuid,
-				user,
-			});
-			if (silent) {
-				console.error(error);
-			} else {
-				throw error;
-			}
-		}
-	}
-
-	private static async insertInitialCount(
-		action: EventAction,
-		contentType: EventContentType,
-		contentUuid: string,
-		user?: Avo.User.User,
-		silent: boolean = true
-	) {
-		try {
-			const { query, variables } = this.getQueryAndVariables(
-				action,
-				'init',
-				contentType,
-				contentUuid,
-				user
-			);
-
-			const response = await dataService.mutate({
-				variables,
-				mutation: query,
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
-			});
-
-			if (response.errors) {
-				throw new CustomError('Graphql errors', null, { errors: response.errors });
-			}
-		} catch (err) {
-			const error = new CustomError(
-				'Failed to initialize view/play count in the database',
-				err,
-				{
-					action,
-					contentType,
-					contentUuid,
-					user,
-				}
-			);
-			if (silent) {
-				console.error(error);
-			} else {
-				throw error;
-			}
-		}
 	}
 
 	private static async incrementCount(

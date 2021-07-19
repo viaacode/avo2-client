@@ -70,6 +70,6 @@ export interface AppCollectionBookmark {
 }
 
 export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
-export type QueryType = 'query' | 'get' | 'init' | 'increment';
+export type QueryType = 'query' | 'get' | 'increment';
 export type EventContentTypeSimplified = 'item' | 'collection';
 export type EventContentType = EventContentTypeSimplified | 'bundle';

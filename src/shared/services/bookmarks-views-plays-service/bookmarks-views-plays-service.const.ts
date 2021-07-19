@@ -12,10 +12,6 @@ import {
 	INCREMENT_COLLECTION_VIEWS,
 	INCREMENT_ITEM_PLAYS,
 	INCREMENT_ITEM_VIEWS,
-	INIT_COLLECTION_PLAYS,
-	INIT_COLLECTION_VIEWS,
-	INIT_ITEM_PLAYS,
-	INIT_ITEM_VIEWS,
 	INSERT_COLLECTION_BOOKMARK,
 	INSERT_ITEM_BOOKMARK,
 	REMOVE_COLLECTION_BOOKMARK,
@@ -38,7 +34,6 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 export interface QueryDefinition {
 	query?: DocumentNode;
 	get?: DocumentNode;
-	init?: DocumentNode;
 	increment?: DocumentNode;
 	variables: (uuid: string, user?: Avo.User.User) => any;
 	responsePath?: string;
@@ -90,7 +85,6 @@ export const EVENT_QUERIES: {
 	view: {
 		item: {
 			get: GET_ITEM_VIEWS,
-			init: INIT_ITEM_VIEWS,
 			increment: INCREMENT_ITEM_VIEWS,
 			variables: (itemUuid: string) => ({
 				itemUuid,
@@ -99,7 +93,6 @@ export const EVENT_QUERIES: {
 		},
 		collection: {
 			get: GET_COLLECTION_VIEWS,
-			init: INIT_COLLECTION_VIEWS,
 			increment: INCREMENT_COLLECTION_VIEWS,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
@@ -110,7 +103,6 @@ export const EVENT_QUERIES: {
 	play: {
 		item: {
 			get: GET_ITEM_PLAYS,
-			init: INIT_ITEM_PLAYS,
 			increment: INCREMENT_ITEM_PLAYS,
 			variables: (itemUuid: string) => ({
 				itemUuid,
@@ -119,7 +111,6 @@ export const EVENT_QUERIES: {
 		},
 		collection: {
 			get: GET_COLLECTION_PLAYS,
-			init: INIT_COLLECTION_PLAYS,
 			increment: INCREMENT_COLLECTION_PLAYS,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
