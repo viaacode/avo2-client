@@ -81,30 +81,40 @@ export function generateCollectionWhereObject(
 		});
 	}
 	if (filters.subjects && filters.subjects.length) {
-		andFilters.push({
-			_or: [
-				...getMultiOptionsFilters(
-					{
-						subjects: without(filters.subjects, NULL_FILTER),
-					},
-					['subjects'],
-					['lom_classification']
-				),
-			],
-		});
+		andFilters.push(
+			...getMultiOptionsFilters(
+				{
+					subjects: without(filters.subjects, NULL_FILTER),
+				},
+				['subjects'],
+				['lom_classification']
+			)
+		);
 	}
 	if (filters.education_levels && filters.education_levels.length) {
-		andFilters.push({
-			_or: [
-				...getMultiOptionsFilters(
-					{
-						education_levels: without(filters.education_levels, NULL_FILTER),
-					},
-					['education_levels'],
-					['lom_context']
-				),
-			],
-		});
+		andFilters.push(
+			...getMultiOptionsFilters(
+				{
+					education_levels: without(filters.education_levels, NULL_FILTER),
+				},
+				['education_levels'],
+				['lom_context']
+			)
+		);
+	}
+
+	if (filters.organisation && filters.organisation.length) {
+		andFilters.push(
+			...getMultiOptionsFilters(
+				{
+					organisation: filters.organisation,
+				},
+				['organisation'],
+				['owner.profile.organisation'],
+				['or_id'],
+				true
+			)
+		);
 	}
 
 	if (checkPermissions) {

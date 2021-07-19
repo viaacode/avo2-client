@@ -128,15 +128,27 @@ export function getMultiOptionsFilters(
 
 						// selected values => referenceTable.props in selected values array
 						...without(filterValues, NULL_FILTER).map((value: string) => {
+							if (keyIn) {
+								if (labelPath) {
+									return {
+										[referenceTable]: {
+											[labelPath]: { _in: value },
+										},
+									};
+								}
+								return {
+									[referenceTable]: { _in: value },
+								};
+							}
 							if (labelPath) {
 								return {
 									[referenceTable]: {
-										[labelPath]: { _has_key: value },
+										[labelPath]: { _has_keys_any: value },
 									},
 								};
 							}
 							return {
-								[referenceTable]: { _has_key: value },
+								[referenceTable]: { _has_keys_any: value },
 							};
 						}),
 					],
@@ -146,25 +158,21 @@ export function getMultiOptionsFilters(
 				filterObject = {};
 
 				if (keyIn) {
-					filterValues.forEach((value: string) => {
-						if (labelPath) {
-							filterObject[referenceTable] = {
-								[labelPath]: { _in: value },
-							};
-						} else {
-							filterObject[referenceTable] = { _in: value };
-						}
-					});
+					if (labelPath) {
+						filterObject[referenceTable] = {
+							[labelPath]: { _in: filterValues },
+						};
+					} else {
+						filterObject[referenceTable] = { _in: filterValues };
+					}
 				} else {
-					filterValues.forEach((value: string) => {
-						if (labelPath) {
-							filterObject[referenceTable] = {
-								[labelPath]: { _has_key: value },
-							};
-						}
+					if (labelPath) {
+						filterObject[referenceTable] = {
+							[labelPath]: { _has_keys_any: filterValues },
+						};
+					}
 
-						filterObject[referenceTable] = { _has_key: value };
-					});
+					filterObject[referenceTable] = { _has_keys_any: filterValues };
 				}
 			}
 

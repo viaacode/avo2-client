@@ -21,7 +21,8 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'copies'
 	| 'in_bundle'
 	| 'in_assignment'
-	| 'is_copy';
+	| 'is_copy'
+	| 'organisation';
 
 export type CollectionOrBundleActualisationOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
@@ -63,6 +64,7 @@ export interface CollectionOrBundleTableStateBase extends FilterableTableState {
 	collection_labels: string[];
 	subjects: string[];
 	education_levels: string[];
+	organisation: string[];
 }
 
 export interface CollectionsOrBundlesTableState extends CollectionOrBundleTableStateBase {

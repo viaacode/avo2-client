@@ -8,6 +8,7 @@ import { dataService } from './data-service';
 import {
 	GET_ALL_ORGANISATIONS,
 	GET_DISTINCT_ORGANISATIONS,
+	GET_ORGANISATIONS_WITH_USERS,
 	GET_USERS_IN_COMPANY,
 } from './organizations-service.gql';
 
@@ -43,6 +44,35 @@ export class OrganisationService {
 		} catch (err) {
 			throw new CustomError('Failed to get organisations from the database', err, {
 				query: 'GET_ALL_ORGANISATIONS',
+			});
+		}
+	}
+
+	public static async fetchOrganisationsWithUsers(): Promise<
+		Partial<Avo.Organization.Organization>[]
+	> {
+		try {
+			const response = await dataService.query({ query: GET_ORGANISATIONS_WITH_USERS });
+
+			if (response.errors) {
+				throw new CustomError('GraphQL response contains errors', null, { response });
+			}
+
+			const organisations: Partial<Avo.Organization.Organization>[] | null = get(
+				response,
+				'data.shared_organisations_with_users'
+			);
+
+			if (!organisations) {
+				throw new CustomError('Response does not contain any organisations', null, {
+					response,
+				});
+			}
+
+			return sortBy(organisations, 'name');
+		} catch (err) {
+			throw new CustomError('Failed to get organisations from the database', err, {
+				query: 'GET_ORGANISATIONS_WITH_USERS',
 			});
 		}
 	}

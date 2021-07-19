@@ -51,7 +51,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import {
 	useBusinessCategories,
-	useCompanies,
+	useCompaniesWithUsers,
 	useEducationLevels,
 	useSubjects,
 } from '../../../shared/hooks';
@@ -106,7 +106,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const [tableState, setTableState] = useState<Partial<UserTableState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
-	const [companies] = useCompanies(false);
+	const [companies] = useCompaniesWithUsers();
 	const [businessCategories] = useBusinessCategories();
 	const [educationLevels] = useEducationLevels();
 	const [subjects] = useSubjects();

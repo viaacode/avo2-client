@@ -23,7 +23,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
-import { useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
@@ -68,6 +68,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
 	const [collectionLabels] = useCollectionQualityLabels();
+	const [organisations] = useCompaniesWithUsers();
 
 	// computed
 
@@ -107,15 +108,36 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 		[collectionLabels, t, tableState]
 	);
 
+	const organisationOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t('Geen organisatie'),
+				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
+			},
+			...organisations.map(
+				(option): CheckboxOption => ({
+					id: String(option.or_id),
+					label: option.name,
+					checked: get(tableState, 'organisation', [] as string[]).includes(
+						String(option.or_id)
+					),
+				})
+			),
+		],
+		[organisations, t, tableState]
+	);
+
 	const tableColumns = useMemo(
 		() =>
 			GET_COLLECTION_ACTUALISATION_COLUMNS(
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevels
+				educationLevels,
+				organisationOptions
 			),
-		[collectionLabelOptions, educationLevels, subjects, userGroupOptions]
+		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
 	);
 
 	const isCollection =
