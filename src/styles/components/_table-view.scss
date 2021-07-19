@@ -11,7 +11,7 @@
 	display: flex;
 	align-items: center;
 	padding: 1.6rem 1.6rem;
-	background: #FFF;
+	background-color: #FFF;
 
 	&:focus {
 		box-shadow: inset 0 0 0 0.2rem $c-button-hover-border-color;
@@ -24,7 +24,7 @@
 }
 
 .c-table-view__item--informational {
-	background: $color-gray-100;
+	background-color: $color-gray-100;
 }
 
 .c-table-view__item--type-link {
@@ -68,6 +68,6 @@
 	}
 
 	.draggable--over {
-		background: $color-gray-50;
+		background-color: $color-gray-50;
 	}
 }
