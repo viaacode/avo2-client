@@ -1,7 +1,6 @@
 import { cloneDeep, get, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
 import {
@@ -17,7 +16,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
-import { CustomError, getEnv, navigate } from '../../../../../shared/helpers';
+import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
 import { ToastService } from '../../../../../shared/services';
@@ -64,7 +63,7 @@ interface PageOverviewWrapperProps {
 	renderLink: RenderLinkFunction;
 }
 
-const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteComponentProps> = ({
+const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	contentTypeAndTabs = {
 		selectedContentType: 'PROJECT',
 		selectedLabels: null,
@@ -83,7 +82,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	sortOrder = 'published_at__desc',
 	headerBackgroundColor,
 	renderLink,
-	history,
 }) => {
 	const [t] = useTranslation();
 
@@ -330,14 +328,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 				)}
 				buttonLabel={buttonLabel}
 				focusedPage={focusedPage}
-				onLabelClicked={(label: string) =>
-					navigate(
-						history,
-						`/${ROUTE_PARTS.news}`,
-						{},
-						`label=${encodeURIComponent(label)}`
-					)
-				}
+				getLabelLink={(label: string) => {
+					return `/${ROUTE_PARTS.news}?label=${encodeURIComponent(label)}`;
+				}}
 				renderLink={renderLink}
 			/>
 		);
@@ -352,4 +345,4 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps & RouteCom
 	);
 };
 
-export default withRouter(PageOverviewWrapper);
+export default PageOverviewWrapper;
