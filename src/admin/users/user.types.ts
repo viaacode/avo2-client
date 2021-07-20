@@ -154,3 +154,8 @@ export interface UserSummaryView {
 		unit_id?: string;
 	}[];
 }
+
+export interface TempAccess {
+	from: string | null;
+	until: string | null;
+}
