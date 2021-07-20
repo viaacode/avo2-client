@@ -72,6 +72,7 @@ import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 
 import './ItemDetail.scss';
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -120,13 +121,23 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		const checkPermissionsAndGetItem = async () => {
 			try {
 				if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
-						),
-						icon: 'lock',
-					});
+					if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
+						setLoadingInfo({
+							state: 'error',
+							message: t(
+								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
+							),
+							icon: 'lock',
+						});
+					} else {
+						setLoadingInfo({
+							state: 'error',
+							message: t(
+								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
+							),
+							icon: 'lock',
+						});
+					}
 					return;
 				}
 
