@@ -43,11 +43,13 @@ import {
 	BUNDLES_ID,
 	COLLECTIONS_ID,
 	GET_TABS,
+	ORGANISATION_CONTENT_ID,
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
+import OrganisationContentOverview from './OrganisationContentOverview';
 import './Workspace.scss';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
@@ -75,13 +77,22 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		Promise.all([
 			dataService.query({
 				query: GET_WORKSPACE_TAB_COUNTS,
-				variables: { owner_profile_id: getProfileId(user) },
+				variables: {
+					owner_profile_id: getProfileId(user),
+					company_id: get(user, 'profile.company_id') || 'OR-154dn75',
+				},
 			}),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, user),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_BUNDLES, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
 			PermissionService.hasPermission(PermissionName.VIEW_ASSIGNMENTS, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
+			true ||
+				PermissionService.hasPermission(
+					PermissionName.VIEW_CONTENT_IN_SAME_COMPANY,
+					null,
+					user
+				), // TODO: fix permission
 		])
 			.then((response) => {
 				setTabCounts({
@@ -91,12 +102,18 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					[BOOKMARKS_ID]:
 						get(response[0], 'data.item_bookmark_counts.aggregate.count', 0) +
 						get(response[0], 'data.collection_bookmark_counts.aggregate.count', 0),
+					[ORGANISATION_CONTENT_ID]: get(
+						response[0],
+						'data.organisation_content_counts.aggregate.count',
+						0
+					),
 				});
 				setPermissions({
 					[COLLECTIONS_ID]: response[1],
 					[BUNDLES_ID]: response[2],
 					[ASSIGNMENTS_ID]: response[3] || response[4],
 					[BOOKMARKS_ID]: response[5],
+					[ORGANISATION_CONTENT_ID]: response[6],
 				});
 			})
 			.catch((err) => {
@@ -184,6 +201,18 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						match={match}
 						user={user}
 						numberOfItems={tabCounts[BOOKMARKS_ID]}
+					/>
+				),
+			}),
+			...addTabIfUserHasPerm(ORGANISATION_CONTENT_ID, {
+				component: () => (
+					<OrganisationContentOverview
+						onUpdate={updatePermissionsAndCounts}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
 					/>
 				),
 			}),
