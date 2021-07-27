@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
@@ -13,6 +13,7 @@ import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import i18n from '../../shared/translations/i18n';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -52,11 +53,13 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 	const fetchOrganisationContent = useCallback(async () => {
 		try {
+			const organisationId = get(user, 'profile.organisation.or_id') || 'NONE';
+
 			const rawOrganisationContent = await CollectionService.fetchOrganisationContent(
 				page * ITEMS_PER_PAGE,
 				ITEMS_PER_PAGE,
 				{ [sortColumn]: sortOrder },
-				user.profile?.organisation?.or_id || 'OR-154dn75'
+				organisationId
 			);
 
 			setOrganisationContent(rawOrganisationContent);
@@ -80,7 +83,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		if (organisationContent) {
 			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [setLoadingInfo, organisationContent]);
+	}, [setLoadingInfo, organisationContent, user]);
 
 	// Render functions
 	const getLinkProps = (collection: Avo.Collection.Collection): { to: string; title: string } => {
@@ -140,12 +143,18 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 				{
 					id: 'title',
 					label: t('Titel'),
-					col: '9',
+					col: '6',
 					dataType: 'string',
 				},
 				{
 					id: 'type',
 					label: t('Type'),
+					col: '3',
+					dataType: 'string',
+				},
+				{
+					id: 'author',
+					label: t('Auteur'),
 					col: '3',
 					dataType: 'string',
 				},
@@ -212,7 +221,6 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 				rowKey="id"
 				variant="styled"
 				onColumnClick={onClickColumn as any}
-				// sortColumn={sortColumn} // TODO:
 				sortOrder={sortOrder}
 			/>
 			<Spacer margin="top-large">{renderPagination()}</Spacer>
@@ -223,13 +231,28 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		<ErrorView icon="folder" message={t('Geen content binnen uw organsatie.')} />
 	);
 
-	const renderOrganisationContent = () => (
-		<>
-			{organisationContent && organisationContent.length
-				? renderTable(organisationContent)
-				: renderEmptyFallback()}
-		</>
+	const renderNoOrganisationFallback = () => (
+		<ErrorView message={i18n.t('U hebt geen organisatie.')}>
+			<p>
+				<Trans>U hebt geen organisatie.</Trans>
+			</p>
+		</ErrorView>
 	);
+
+	const renderOrganisationContent = () => {
+		const hasOrganisation = get(user, 'profile.organisation.or_id');
+		const hasOrganisationContent = organisationContent && organisationContent.length;
+
+		return (
+			<>
+				{hasOrganisation
+					? hasOrganisationContent
+						? renderTable(organisationContent || [])
+						: renderEmptyFallback()
+					: renderNoOrganisationFallback()}
+			</>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent

@@ -79,7 +79,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				query: GET_WORKSPACE_TAB_COUNTS,
 				variables: {
 					owner_profile_id: getProfileId(user),
-					company_id: get(user, 'profile.company_id') || 'OR-154dn75',
+					company_id: get(user, 'profile.company_id') || 'EMPTY',
 				},
 			}),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, user),
@@ -87,12 +87,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
 			PermissionService.hasPermission(PermissionName.VIEW_ASSIGNMENTS, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
-			true ||
-				PermissionService.hasPermission(
-					PermissionName.VIEW_CONTENT_IN_SAME_COMPANY,
-					null,
-					user
-				), // TODO: fix permission
+			PermissionService.hasPermission(
+				PermissionName.VIEW_CONTENT_IN_SAME_COMPANY,
+				null,
+				user
+			),
 		])
 			.then((response) => {
 				setTabCounts({
