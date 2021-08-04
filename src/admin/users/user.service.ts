@@ -20,12 +20,15 @@ import {
 	GET_PROFILE_NAMES,
 	GET_USERS,
 	GET_USER_BY_ID,
+	GET_USER_TEMP_ACCESS_BY_ID,
+	UPDATE_USER_TEMP_ACCESS_BY_ID,
 } from './user.gql';
 import {
 	DeleteContentCounts,
 	DeleteContentCountsRaw,
 	UserOverviewTableCol,
 	UserSummaryView,
+	UserTempAccess,
 } from './user.types';
 
 export class UserService {
@@ -59,6 +62,51 @@ export class UserService {
 			});
 		}
 	}
+
+	/**
+	 * Get the tempAccess data for a user by profileId
+	 */
+	static async getTempAccessById(profileId: string): Promise<UserTempAccess | null> {
+		try {
+			const tempAccessResponse = await dataService.query({
+				query: GET_USER_TEMP_ACCESS_BY_ID,
+				variables: {
+					id: profileId,
+				},
+				fetchPolicy: 'no-cache',
+			});
+
+			return get(tempAccessResponse, 'data.shared_users[0].temp_access');
+		} catch (err) {
+			throw new CustomError('Failed to get profile by id from the database', err, {
+				profileId,
+				query: 'GET_USER_BY_ID',
+			});
+		}
+	}
+
+	/**
+	 * Update/Set temp access for a user.
+	 */
+	static updateTempAccessByUserId = async (userId: string, tempAccess: UserTempAccess) => {
+		try {
+			// Update a users's temp access
+			await dataService.mutate({
+				mutation: UPDATE_USER_TEMP_ACCESS_BY_ID,
+				variables: {
+					user_id: userId,
+					from: tempAccess.from,
+					until: tempAccess.until,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+		} catch (err) {
+			throw new CustomError(`Failed to update temp access for user`, err, {
+				userId,
+				tempAccess,
+			});
+		}
+	};
 
 	static async getProfiles(
 		page: number,

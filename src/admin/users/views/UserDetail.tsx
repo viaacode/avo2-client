@@ -1,5 +1,13 @@
 import { compact, get, sortBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import moment from 'moment';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -9,6 +17,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	MenuItemInfo,
 	Spacer,
 	Table,
 	TagList,
@@ -24,7 +33,17 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, getEnv, navigate, renderAvatar } from '../../../shared/helpers';
+import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	formatDate,
+	getEnv,
+	navigate,
+	normalizeTimestamp,
+	renderAvatar,
+} from '../../../shared/helpers';
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../../shared/services';
@@ -36,8 +55,14 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import TempAccessModal from '../components/TempAccessModal';
 import { UserService } from '../user.service';
-import { RawPermissionLink, RawUserGroup, RawUserGroupPermissionGroupLink } from '../user.types';
+import {
+	RawPermissionLink,
+	RawUserGroup,
+	RawUserGroupPermissionGroupLink,
+	UserTempAccess,
+} from '../user.types';
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -46,12 +71,18 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [eduOrgNames, setEduOrgNames] = useState<string[]>([]);
+	const [tempAccess, setTempAccess] = useState<UserTempAccess | null>(null);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+	const [isTempAccessModalOpen, setIsTempAccessModalOpen] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
 	const fetchProfileById = useCallback(async () => {
 		try {
-			const profile = await UserService.getProfileById(match.params.id);
+			const [profile, tempAccess] = await Promise.all([
+				UserService.getProfileById(match.params.id),
+				UserService.getTempAccessById(match.params.id),
+			]);
 
 			const eduOrgs: {
 				unit_id: string;
@@ -70,7 +101,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					)
 				)
 			);
-
+			setTempAccess(tempAccess);
 			setStoredProfile(profile);
 		} catch (err) {
 			console.error(
@@ -151,6 +182,71 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt')
 			);
 		}
+	};
+
+	const CONTENT_DROPDOWN_ITEMS: MenuItemInfo[] = [
+		createDropdownMenuItem('tempAccess', t('Tijdelijke toegang'), 'clock'),
+		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
+	];
+
+	const executeAction = async (item: ReactText) => {
+		setIsOptionsMenuOpen(false);
+		switch (item) {
+			case 'tempAccess':
+				setIsTempAccessModalOpen(true);
+				break;
+
+			case 'edit':
+				redirectToClientPage(
+					buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),
+					history
+				);
+				break;
+
+			default:
+				return null;
+		}
+	};
+
+	const onSetTempAccess = async (tempAccess: UserTempAccess) => {
+		try {
+			const userId = get(storedProfile, 'user_id');
+			if (!userId) {
+				throw new CustomError('Invalid userId');
+			}
+
+			await UserService.updateTempAccessByUserId(userId, tempAccess);
+			setTempAccess(tempAccess);
+			ToastService.success(t('Tijdelijke toegang werd successvol geupdated'));
+		} catch (err) {
+			ToastService.danger(t('Het updaten van de tijdelijke toegang is mislukt'));
+		}
+	};
+
+	const renderTempAccess = (tempAccess: UserTempAccess | null): String => {
+		if (!tempAccess) {
+			return '-';
+		}
+		const from = get(tempAccess, 'from');
+		const until = get(tempAccess, 'until');
+		return from
+			? `${t('van')} ${formatDate(from)} ${t('tot')} ${formatDate(until)}`
+			: `${t('tot')} ${formatDate(until)}`;
+	};
+
+	const renderTempAccessDuration = (tempAccess: UserTempAccess | null): String => {
+		if (!tempAccess) {
+			return '-';
+		}
+		const from = get(tempAccess, 'from');
+		if (!from) {
+			return '-';
+		}
+		const until = get(tempAccess, 'until') || '';
+		const months = moment
+			.duration(normalizeTimestamp(until).diff(normalizeTimestamp(from)))
+			.humanize();
+		return months;
 	};
 
 	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
@@ -322,6 +418,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
 								],
 							])}
+							{renderDetailRow(renderTempAccess(tempAccess), t('Tijdelijk account'))}
+							{renderDetailRow(
+								renderTempAccessDuration(tempAccess),
+								t('Totale toegang')
+							)}
 							{renderDetailRow(
 								idpMapsToTagList(
 									get(storedProfile, 'idps', []).map((idpMap: any) => idpMap.idp),
@@ -388,64 +489,69 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			  )
 			: t('admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform');
 		return (
-			<AdminLayout
-				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
-				pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
-				size="large"
-			>
-				<AdminLayoutTopBarRight>
-					<ButtonToolbar>
-						{canBanUser() && (
-							<Button
-								type={isBlocked ? 'primary' : 'danger'}
-								label={
-									isBlocked
-										? t('admin/users/views/user-detail___deblokkeren')
-										: t('admin/users/views/user-detail___blokkeren')
-								}
-								title={blockButtonTooltip}
-								ariaLabel={blockButtonTooltip}
-								onClick={() => toggleBlockedStatus()}
+			<>
+				<AdminLayout
+					onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
+					pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+					size="large"
+				>
+					<AdminLayoutTopBarRight>
+						<ButtonToolbar>
+							{canBanUser() && (
+								<Button
+									type={isBlocked ? 'primary' : 'danger'}
+									label={
+										isBlocked
+											? t('admin/users/views/user-detail___deblokkeren')
+											: t('admin/users/views/user-detail___blokkeren')
+									}
+									title={blockButtonTooltip}
+									ariaLabel={blockButtonTooltip}
+									onClick={() => toggleBlockedStatus()}
+								/>
+							)}
+							<a
+								href={getLdapDashboardUrl() || ''}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<Button
+									label={t(
+										'admin/users/views/user-detail___beheer-in-account-manager'
+									)}
+									ariaLabel={t(
+										'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+									)}
+									disabled={!getLdapDashboardUrl()}
+									title={
+										getLdapDashboardUrl()
+											? t(
+													'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
+											  )
+											: t(
+													'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
+											  )
+									}
+								/>
+							</a>
+							<MoreOptionsDropdown
+								isOpen={isOptionsMenuOpen}
+								onOpen={() => setIsOptionsMenuOpen(true)}
+								onClose={() => setIsOptionsMenuOpen(false)}
+								menuItems={CONTENT_DROPDOWN_ITEMS}
+								onOptionClicked={executeAction}
 							/>
-						)}
-						<Button
-							label={t('admin/users/views/user-detail___bewerken')}
-							ariaLabel={t('admin/users/views/user-detail___bewerk-deze-gebruiker')}
-							onClick={() =>
-								redirectToClientPage(
-									buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),
-									history
-								)
-							}
-						/>
-						<a
-							href={getLdapDashboardUrl() || ''}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							<Button
-								label={t(
-									'admin/users/views/user-detail___beheer-in-account-manager'
-								)}
-								ariaLabel={t(
-									'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
-								)}
-								disabled={!getLdapDashboardUrl()}
-								title={
-									getLdapDashboardUrl()
-										? t(
-												'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
-										  )
-										: t(
-												'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
-										  )
-								}
-							/>
-						</a>
-					</ButtonToolbar>
-				</AdminLayoutTopBarRight>
-				<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
-			</AdminLayout>
+						</ButtonToolbar>
+					</AdminLayoutTopBarRight>
+					<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
+				</AdminLayout>
+				<TempAccessModal
+					tempAccess={tempAccess}
+					isOpen={isTempAccessModalOpen}
+					onClose={() => setIsTempAccessModalOpen(false)}
+					setTempAccessCallback={onSetTempAccess}
+				/>
+			</>
 		);
 	};
 

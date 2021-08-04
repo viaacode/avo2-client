@@ -14,6 +14,8 @@ const mockUser: Avo.User.User = {
 	mail: 'bert.verhelst@studiohyperdrive.be',
 	is_blocked: null,
 	idpmaps: [],
+	last_access_at: null,
+	idpmapObjects: [],
 	profile: {
 		id: '69ccef3b-751a-4be4-95bc-5ef365fbd504',
 		alias: 'bert',
@@ -33,9 +35,10 @@ const mockUser: Avo.User.User = {
 		userGroupIds: [],
 		permissions: [],
 		company_id: null,
+		business_category: null,
 		organisation: null,
 		is_exception: false,
 	},
-} as any; // TODO: Fix type
+};
 
 export default mockUser;

@@ -349,7 +349,7 @@ export class CollectionService {
 					),
 					note: get(updatedCollection, 'management.note', null),
 					updated_at: get(updatedCollection, 'management.updated_at', null),
-				} as any); // TODO: type
+				});
 			} else if (
 				!!get(initialCollection, 'management') &&
 				!!get(updatedCollection, 'management')
@@ -369,7 +369,7 @@ export class CollectionService {
 					),
 					note: get(updatedCollection, 'management.note', null),
 					updated_at: get(updatedCollection, 'management.updated_at', null),
-				} as any); // TODO: type
+				});
 			}
 
 			if (

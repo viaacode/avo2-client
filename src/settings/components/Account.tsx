@@ -30,7 +30,7 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import Html from '../../shared/components/Html/Html';
-import { getEnv } from '../../shared/helpers';
+import { formatDate, getEnv } from '../../shared/helpers';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
@@ -43,6 +43,8 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
 
 	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+
+	const hasTempAccess = !!get(user, 'temp_access.until');
 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
@@ -182,6 +184,19 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 													type="span"
 												/>
 											</Alert>
+										</Spacer>
+									)}
+									{hasTempAccess && (
+										<Spacer margin="top-large">
+											<BlockHeading type="h3">
+												{t('Tijdelijke toegang')}
+											</BlockHeading>
+											<span>
+												{`${t(
+													'Dit is een tijdelijk account. De toegang van je account verloopt op '
+												)} ${formatDate(get(user, 'temp_access.until'))}`}
+												.
+											</span>
 										</Spacer>
 									)}
 								</Form>

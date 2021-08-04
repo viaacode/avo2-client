@@ -30,4 +30,5 @@ export type UsersInSameCompanyColumn =
 	| 'mail'
 	| 'is_blocked'
 	| 'last_access_at'
-	| 'user_group';
+	| 'user_group'
+	| 'temp_access';

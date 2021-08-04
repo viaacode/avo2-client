@@ -154,3 +154,9 @@ export interface UserSummaryView {
 		unit_id?: string;
 	}[];
 }
+
+// TODO: use typings version
+export interface UserTempAccess {
+	from: string | null;
+	until: string | null;
+}
