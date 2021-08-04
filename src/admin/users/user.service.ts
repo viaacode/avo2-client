@@ -122,6 +122,7 @@ export class UserService {
 				...where,
 				is_deleted: { _eq: false },
 			};
+
 			variables = {
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
@@ -133,16 +134,19 @@ export class UserService {
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_USERS,
 				fetchPolicy: 'no-cache',
 			});
+
 			if (response.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
 					response,
 				});
 			}
+
 			const users: UserSummaryView[] = get(response, 'data.users_summary_view');
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
@@ -187,6 +191,7 @@ export class UserService {
 							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
 							last_access_at: user.last_access_at,
+							temp_access: user.user.temp_access,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)

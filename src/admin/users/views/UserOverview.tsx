@@ -318,6 +318,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			if (!selectedProfileIds || !selectedProfileIds.length) {
 				return;
 			}
+
 			if (addOrRemove === 'add') {
 				await UserService.bulkAddSubjectsToProfiles(subjects, compact(selectedProfileIds));
 				ToastService.success(
@@ -641,6 +642,12 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			case 'last_access_at':
 				const lastAccessDate = get(rowData, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+
+			case 'temp_access_from':
+				return get(rowData, 'user.temp_access.from') || '-';
+
+			case 'temp_access_until':
+				return get(rowData, 'user.temp_access.until') || '-';
 
 			case 'idps':
 				return (

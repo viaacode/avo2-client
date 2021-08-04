@@ -143,6 +143,12 @@ export const GET_USERS = gql`
 				organization_id
 				unit_id
 			}
+			user {
+				temp_access {
+					until
+					from
+				}
+			}
 		}
 		users_summary_view_aggregate(where: $where) {
 			aggregate {
