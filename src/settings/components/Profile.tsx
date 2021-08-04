@@ -652,6 +652,10 @@ const Profile: FunctionComponent<
 			case 'last_access_at':
 				const lastAccessDate = get(profile, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+
+			case 'temp_access':
+				// const tempAccess = get(profile, 'user.temp_access');
+				return '-';
 		}
 	};
 
