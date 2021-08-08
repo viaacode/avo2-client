@@ -77,6 +77,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 	const [t] = useTranslation();
 
+	const hasPerm = useCallback(
+		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
+		[user]
+	);
+
 	const fetchProfileById = useCallback(async () => {
 		try {
 			const [profile, tempAccess] = await Promise.all([
@@ -147,7 +152,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	};
 
 	const canBanUser = (): boolean => {
-		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
+		return hasPerm(PermissionName.EDIT_BAN_USER_STATUS);
 	};
 
 	const toggleBlockedStatus = async () => {
@@ -185,7 +190,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	};
 
 	const CONTENT_DROPDOWN_ITEMS: MenuItemInfo[] = [
-		createDropdownMenuItem('tempAccess', t('Tijdelijke toegang'), 'clock'),
+		...(hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS)
+			? [createDropdownMenuItem('tempAccess', t('Tijdelijke toegang'), 'clock')]
+			: []),
 		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
 	];
 
@@ -418,11 +425,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
 								],
 							])}
-							{renderDetailRow(renderTempAccess(tempAccess), t('Tijdelijk account'))}
-							{renderDetailRow(
-								renderTempAccessDuration(tempAccess),
-								t('Totale toegang')
-							)}
+							{hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS) &&
+								renderDetailRow(
+									renderTempAccess(tempAccess),
+									t('Tijdelijk account')
+								)}
+							{hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS) &&
+								renderDetailRow(
+									renderTempAccessDuration(tempAccess),
+									t('Totale toegang')
+								)}
 							{renderDetailRow(
 								idpMapsToTagList(
 									get(storedProfile, 'idps', []).map((idpMap: any) => idpMap.idp),

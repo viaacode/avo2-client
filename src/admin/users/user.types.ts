@@ -19,6 +19,7 @@ export type UserOverviewTableCol =
 	| 'idps'
 	| 'educational_organisations'
 	| 'last_access_at'
+	| 'temp_access'
 	| 'temp_access_from'
 	| 'temp_access_until';
 
