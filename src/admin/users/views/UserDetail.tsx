@@ -218,14 +218,36 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const onSetTempAccess = async (tempAccess: UserTempAccess) => {
 		try {
 			const userId = get(storedProfile, 'user_id');
+
 			if (!userId) {
 				throw new CustomError('Invalid userId');
 			}
 
-			await UserService.updateTempAccessByUserId(userId, tempAccess);
+			const profileId = get(storedProfile, 'profile_id');
+
+			if (!profileId) {
+				throw new CustomError('Invalid profileId');
+			}
+
+			await UserService.updateTempAccessByUserId(
+				userId,
+				tempAccess,
+				profileId,
+				get(storedProfile, 'is_blocked')
+			);
+
 			setTempAccess(tempAccess);
+
+			await fetchProfileById();
+
 			ToastService.success(t('Tijdelijke toegang werd successvol geupdated'));
 		} catch (err) {
+			console.error(
+				new CustomError('Failed to update temp access for user', err, {
+					profile: storedProfile,
+				})
+			);
+
 			ToastService.danger(t('Het updaten van de tijdelijke toegang is mislukt'));
 		}
 	};

@@ -1,10 +1,11 @@
 import { ApolloQueryResult } from 'apollo-boost';
 import { compact, flatten, get, isNil } from 'lodash-es';
+import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
-import { CustomError, getEnv } from '../../shared/helpers';
+import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
@@ -88,7 +89,12 @@ export class UserService {
 	/**
 	 * Update/Set temp access for a user.
 	 */
-	static updateTempAccessByUserId = async (userId: string, tempAccess: UserTempAccess) => {
+	static updateTempAccessByUserId = async (
+		userId: string,
+		tempAccess: UserTempAccess,
+		profileId: string,
+		currentIsBlocked: boolean
+	) => {
 		try {
 			// Update a users's temp access
 			await dataService.mutate({
@@ -100,6 +106,20 @@ export class UserService {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
+			const tomorrow = moment().add(1, 'days');
+			const hasAccessNow =
+				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(tomorrow);
+
+			if (hasAccessNow && currentIsBlocked && tempAccess.until) {
+				const isBlocked = !hasAccessNow;
+
+				await UserService.updateTempAccessBlockStatusByProfileIds(
+					[profileId],
+					isBlocked,
+					moment(tempAccess.until).format('DD[/]MM[/]YYYY').toString()
+				);
+			}
 		} catch (err) {
 			throw new CustomError(`Failed to update temp access for user`, err, {
 				userId,
@@ -107,6 +127,49 @@ export class UserService {
 			});
 		}
 	};
+
+	static async updateTempAccessBlockStatusByProfileIds(
+		profileIds: string[],
+		isBlocked: boolean,
+		tempAccessUntil: string
+	): Promise<void> {
+		let url: string | undefined;
+
+		try {
+			url = `${getEnv('PROXY_URL')}/user/bulk-temp-access`;
+
+			const body: Avo.User.BulkTempAccessBody = {
+				profileIds,
+				isBlocked,
+				tempAccessUntil,
+			};
+
+			const response = await fetchWithLogout(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(body),
+			});
+
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Status code was unexpected', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to update temp access is_blocked field for users in the database',
+				err,
+				{
+					url,
+					profileIds,
+					isBlocked,
+				}
+			);
+		}
+	}
 
 	static async getProfiles(
 		page: number,

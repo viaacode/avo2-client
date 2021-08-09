@@ -40,7 +40,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [from, setFrom] = useState<Date | null>(fromDate);
+	const [from, setFrom] = useState<Date | null>(fromDate || new Date(Date.now()));
 	const [until, setUntil] = useState<Date | null>(untilDate);
 
 	useEffect(() => {
@@ -58,13 +58,16 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 		};
 
 		const validationErrors: string[] = getTempAccessValidationErrors(newTempAccess);
+
 		if (validationErrors && validationErrors.length) {
 			setValidationError(validationErrors.map((rule) => get(rule[1], 'error')));
 			ToastService.danger(validationErrors);
 			return;
 		}
+
 		setValidationError(undefined);
 		setTempAccessCallback(newTempAccess);
+
 		(onClose || noop)();
 	};
 
