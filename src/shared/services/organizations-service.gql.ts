@@ -34,10 +34,10 @@ export const GET_ORGANISATIONS_WITH_USERS = gql`
 `;
 
 export const GET_USERS_IN_COMPANY = gql`
-	query getUsersByCompanyId($companyId: String!) {
+	query getUsersByCompanyId($company_id: String!) {
 		users_profiles(
 			order_by: { usersByuserId: { first_name: asc } }
-			where: { company_id: { _eq: $companyId }, is_deleted: { _eq: false } }
+			where: { company_id: { _eq: $company_id }, is_deleted: { _eq: false } }
 		) {
 			id
 			user: usersByuserId {

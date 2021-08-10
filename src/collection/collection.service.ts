@@ -28,6 +28,7 @@ import {
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_MARCOM_ENTRIES,
+	GET_ORGANISATION_CONTENT,
 	GET_PUBLIC_COLLECTIONS,
 	GET_PUBLIC_COLLECTIONS_BY_ID,
 	GET_PUBLIC_COLLECTIONS_BY_TITLE,
@@ -697,6 +698,33 @@ export class CollectionService {
 			const response = await dataService.query({
 				query: GET_PUBLIC_COLLECTIONS,
 				variables: { limit, typeId },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
+				query: 'GET_PUBLIC_COLLECTIONS',
+				variables: { limit },
+			});
+		}
+	}
+
+	static async fetchOrganisationContent(
+		offset: number,
+		limit: number,
+		order: any,
+		companyId: string
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			// retrieve collections
+			const response = await dataService.query({
+				query: GET_ORGANISATION_CONTENT,
+				variables: {
+					offset,
+					limit,
+					order,
+					company_id: companyId,
+				},
 			});
 
 			return get(response, 'data.app_collections', []);
