@@ -107,9 +107,8 @@ export class UserService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			const tomorrow = moment().add(1, 'days');
 			const hasAccessNow =
-				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(tomorrow);
+				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(moment());
 
 			if (hasAccessNow && currentIsBlocked && tempAccess.until) {
 				const isBlocked = !hasAccessNow;
