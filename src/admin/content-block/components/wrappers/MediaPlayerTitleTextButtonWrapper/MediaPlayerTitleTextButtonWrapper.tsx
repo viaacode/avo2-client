@@ -1,6 +1,4 @@
 import React, { FC, FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 
 import {
 	BlockHeading,
@@ -17,7 +15,7 @@ import {
 	PermissionName,
 	PermissionService,
 } from '../../../../../authentication/helpers/permission-service';
-import { navigateToContentType } from '../../../../../shared/helpers';
+import { generateSmartLink } from '../../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
 import MediaPlayerWrapper from '../MediaPlayerWrapper/MediaPlayerWrapper';
@@ -44,7 +42,7 @@ interface MediaPlayerTitleTextButtonWrapperProps {
 }
 
 export const MediaPlayerTitleTextButtonWrapper: FC<
-	MediaPlayerTitleTextButtonWrapperProps & RouteComponentProps & UserProps
+	MediaPlayerTitleTextButtonWrapperProps & UserProps
 > = ({
 	mediaItem,
 	mediaSrc,
@@ -61,7 +59,6 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 	buttonLabel,
 	buttonType,
 	buttonAction,
-	history,
 	align,
 	mediaAutoplay,
 	user,
@@ -85,34 +82,26 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 				/>
 			</Column>
 			<Column size="2-5" className={`u-text-${align}`}>
-				<BlockHeading
-					type={headingType}
-					onClick={
-						shouldTitleLink
-							? () => navigateToContentType(mediaItem, history)
-							: undefined
-					}
-					className={shouldTitleLink ? 'u-clickable' : ''}
-				>
-					{headingTitle}
-				</BlockHeading>
-				<RichTextWrapper elements={{ content }} />
-				{buttonAction && (
-					<Button
-						icon={buttonIcon}
-						label={buttonLabel}
-						type={buttonType}
-						onClick={() => {
-							navigateToContentType(buttonAction, history);
-						}}
-					/>
+				{generateSmartLink(
+					mediaItem,
+					<BlockHeading
+						type={headingType}
+						className={shouldTitleLink ? 'u-clickable' : ''}
+					>
+						{headingTitle}
+					</BlockHeading>
 				)}
+				<RichTextWrapper elements={{ content }} />
+				{buttonAction &&
+					generateSmartLink(
+						buttonAction,
+						<Button icon={buttonIcon} label={buttonLabel} type={buttonType} />
+					)}
 			</Column>
 		</Grid>
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(MediaPlayerTitleTextButtonWrapper) as FunctionComponent<MediaPlayerTitleTextButtonWrapperProps>;
+export default withUser(MediaPlayerTitleTextButtonWrapper) as FunctionComponent<
+	MediaPlayerTitleTextButtonWrapperProps
+>;
