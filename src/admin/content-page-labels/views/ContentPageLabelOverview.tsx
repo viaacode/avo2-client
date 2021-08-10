@@ -287,7 +287,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				)}
 			>
 				<p>
-					<Trans i18nKey="Beschrijving wanneer er nog geen content pagina labels zijn aangemaakt">
+					<Trans i18nKey="admin/content-page-labels/views/content-page-label-overview___er-zijn-nog-geen-content-pagina-labels-aangemaakt">
 						Beschrijving wanneer er nog geen permissie groepen zijn aangemaakt
 					</Trans>
 				</p>
