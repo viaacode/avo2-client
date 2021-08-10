@@ -63,7 +63,6 @@ export function generateCollectionWhereObject(
 	andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 
-	// TODO remove isCollectionTable after https://meemoo.atlassian.net/browse/DEV-1438
 	if (filters.collection_labels && filters.collection_labels.length) {
 		andFilters.push({
 			_or: [
@@ -71,8 +70,7 @@ export function generateCollectionWhereObject(
 					{
 						collection_labels: without(filters.collection_labels, NULL_FILTER),
 					},
-					['collection_labels'],
-					[isCollectionTable ? 'collection_labels.label' : 'labels.label']
+					['collection_labels']
 				),
 				...(filters.collection_labels.includes(NULL_FILTER)
 					? [{ _not: { collection_labels: {} } }]
