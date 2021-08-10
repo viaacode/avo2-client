@@ -39,6 +39,7 @@ const mockUser: Avo.User.User = {
 		organisation: null,
 		is_exception: false,
 	},
+	temp_access: null,
 };
 
 export default mockUser;

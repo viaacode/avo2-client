@@ -322,10 +322,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		if (hideTargetSwitch) {
 			return null;
 		}
-		// TODO remove after updating components to v1.59.0
-		if (selectedType.value === ('FILE' as any)) {
-			return null;
-		}
+
 		return (
 			<FlexItem shrink>
 				<Button

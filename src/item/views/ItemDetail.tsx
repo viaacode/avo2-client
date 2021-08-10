@@ -34,6 +34,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../../admin/items/items.service';
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -120,13 +121,23 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		const checkPermissionsAndGetItem = async () => {
 			try {
 				if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
-						),
-						icon: 'lock',
-					});
+					if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
+						setLoadingInfo({
+							state: 'error',
+							message: t(
+								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
+							),
+							icon: 'lock',
+						});
+					} else {
+						setLoadingInfo({
+							state: 'error',
+							message: t(
+								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
+							),
+							icon: 'lock',
+						});
+					}
 					return;
 				}
 
