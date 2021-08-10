@@ -7,11 +7,11 @@
 .c-progress-bar {
 	display: flex;
 	height: 0.8rem;
-	background: $color-gray-100;
+	background-color: $color-gray-100;
 }
 
 .c-progress-bar:before {
 	content: "";
 	width: calc(var(--value) * 100%);
-	background: hsl(calc(var(--value) * 90), 50%, 50%);
+	background-color: hsl(calc(var(--value) * 90), 50%, 50%);
 }

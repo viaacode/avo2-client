@@ -21,7 +21,7 @@
 
 	&:hover,
 	&:focus {
-		background: $color-gray-50;
+		background-color: $color-gray-50;
 		color: $color-gray-700;
 	}
 
@@ -35,28 +35,28 @@
 
 	&:hover,
 	&:focus {
-		background: lighten($color-night-blue, 5%);
+		background-color: lighten($color-night-blue, 5%);
 		color: #fff;
 	}
 }
 
 .c-nav__item--active {
-	background: $color-gray-50;
+	background-color: $color-gray-50;
 	color: $color-gray-700;
 
 	&:hover,
 	&:focus {
-		background: $color-gray-100;
+		background-color: $color-gray-100;
 	}
 }
 
 .c-nav__item--i.c-nav__item--active {
-	background: darken($color-night-blue, 10%);
+	background-color: darken($color-night-blue, 10%);
 	color: #fff;
 
 	&:hover,
 	&:focus {
-		background: darken($color-night-blue, 30%);
+		background-color: darken($color-night-blue, 30%);
 	}
 }
 
@@ -95,7 +95,7 @@
 
 		&:hover,
 		&:focus {
-			background: $color-gray-100;
+			background-color: $color-gray-100;
 		}
 	}
 }

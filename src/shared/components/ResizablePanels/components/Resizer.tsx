@@ -6,7 +6,7 @@ export default class Resizer extends Component<any> {
 			return {
 				width: '100%',
 				height: this.props.size,
-				background: this.props.color,
+				backgroundColor: this.props.color,
 				cursor: 'row-resize',
 			};
 		}
@@ -14,7 +14,7 @@ export default class Resizer extends Component<any> {
 		return {
 			width: this.props.size,
 			height: '100%',
-			background: this.props.color,
+			backgroundColor: this.props.color,
 			cursor: 'col-resize',
 		};
 	}
