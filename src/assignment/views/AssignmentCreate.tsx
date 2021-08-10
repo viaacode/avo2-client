@@ -171,7 +171,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			trackEvents(
 				{
 					object: String(currentAssignment.uuid),
-					object_type: 'avo_assignment' as any, // TODO add this object type to the database
+					object_type: 'avo_assignment',
 					message: `Gebruiker ${getProfileName(user)} heeft de permalink voor opdracht ${
 						currentAssignment.uuid
 					} gekopieert`,

@@ -35,7 +35,11 @@ const mockUser: Avo.User.User = {
 		company_id: null,
 		organisation: null,
 		is_exception: false,
+		business_category: null,
 	},
-} as any; // TODO: Fix type
+	last_access_at: '2019-10-23T16:21:17.984884+00:00',
+	idpmapObjects: [],
+	temp_access: null,
+};
 
 export default mockUser;

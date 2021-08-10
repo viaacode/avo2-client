@@ -28,7 +28,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 }) => {
 	const [t] = useTranslation();
 
-	type OrganisationContentInfo = any; // TODO:
+	type OrganisationContentInfo = any; // TODO: Type
 
 	// State
 	const [organisationContent, setOrganisationContent] = useState<

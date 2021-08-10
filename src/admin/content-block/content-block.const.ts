@@ -350,7 +350,6 @@ export const GET_HERO_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = ()
 	yellowOption(),
 ];
 
-// TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
 export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___zwart'),
