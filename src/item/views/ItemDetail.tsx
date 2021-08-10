@@ -34,6 +34,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../../admin/items/items.service';
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -72,7 +73,6 @@ import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 
 import './ItemDetail.scss';
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 

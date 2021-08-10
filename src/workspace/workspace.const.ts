@@ -31,7 +31,7 @@ export const GET_TABS: () => TabProps[] = () => [
 		id: BOOKMARKS_ID,
 	},
 	{
-		label: i18n.t('Organisatie Content'),
+		label: i18n.t('workspace/workspace___organisatie-content'),
 		id: ORGANISATION_CONTENT_ID,
 	},
 ];

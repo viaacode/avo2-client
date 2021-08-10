@@ -1,10 +1,11 @@
 import { ApolloQueryResult } from 'apollo-boost';
 import { compact, flatten, get, isNil } from 'lodash-es';
+import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
-import { CustomError, getEnv } from '../../shared/helpers';
+import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
@@ -20,12 +21,15 @@ import {
 	GET_PROFILE_NAMES,
 	GET_USERS,
 	GET_USER_BY_ID,
+	GET_USER_TEMP_ACCESS_BY_ID,
+	UPDATE_USER_TEMP_ACCESS_BY_ID,
 } from './user.gql';
 import {
 	DeleteContentCounts,
 	DeleteContentCountsRaw,
 	UserOverviewTableCol,
 	UserSummaryView,
+	UserTempAccess,
 } from './user.types';
 
 export class UserService {
@@ -60,6 +64,113 @@ export class UserService {
 		}
 	}
 
+	/**
+	 * Get the tempAccess data for a user by profileId
+	 */
+	static async getTempAccessById(profileId: string): Promise<UserTempAccess | null> {
+		try {
+			const tempAccessResponse = await dataService.query({
+				query: GET_USER_TEMP_ACCESS_BY_ID,
+				variables: {
+					id: profileId,
+				},
+				fetchPolicy: 'no-cache',
+			});
+
+			return get(tempAccessResponse, 'data.shared_users[0].temp_access');
+		} catch (err) {
+			throw new CustomError('Failed to get profile by id from the database', err, {
+				profileId,
+				query: 'GET_USER_BY_ID',
+			});
+		}
+	}
+
+	/**
+	 * Update/Set temp access for a user.
+	 */
+	static updateTempAccessByUserId = async (
+		userId: string,
+		tempAccess: UserTempAccess,
+		profileId: string,
+		currentIsBlocked: boolean
+	) => {
+		try {
+			// Update a users's temp access
+			await dataService.mutate({
+				mutation: UPDATE_USER_TEMP_ACCESS_BY_ID,
+				variables: {
+					user_id: userId,
+					from: tempAccess.from,
+					until: tempAccess.until,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+
+			const tomorrow = moment().add(1, 'days');
+			const hasAccessNow =
+				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(tomorrow);
+
+			if (hasAccessNow && currentIsBlocked && tempAccess.until) {
+				const isBlocked = !hasAccessNow;
+
+				await UserService.updateTempAccessBlockStatusByProfileIds(
+					[profileId],
+					isBlocked,
+					moment(tempAccess.until).format('DD[/]MM[/]YYYY').toString()
+				);
+			}
+		} catch (err) {
+			throw new CustomError(`Failed to update temp access for user`, err, {
+				userId,
+				tempAccess,
+			});
+		}
+	};
+
+	static async updateTempAccessBlockStatusByProfileIds(
+		profileIds: string[],
+		isBlocked: boolean,
+		tempAccessUntil: string
+	): Promise<void> {
+		let url: string | undefined;
+
+		try {
+			url = `${getEnv('PROXY_URL')}/user/bulk-temp-access`;
+
+			const body: Avo.User.BulkTempAccessBody = {
+				profileIds,
+				isBlocked,
+				tempAccessUntil,
+			};
+
+			const response = await fetchWithLogout(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(body),
+			});
+
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Status code was unexpected', null, {
+					response,
+				});
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to update temp access is_blocked field for users in the database',
+				err,
+				{
+					url,
+					profileIds,
+					isBlocked,
+				}
+			);
+		}
+	}
+
 	static async getProfiles(
 		page: number,
 		sortColumn: UserOverviewTableCol,
@@ -74,6 +185,7 @@ export class UserService {
 				...where,
 				is_deleted: { _eq: false },
 			};
+
 			variables = {
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
@@ -85,16 +197,19 @@ export class UserService {
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_USERS,
 				fetchPolicy: 'no-cache',
 			});
+
 			if (response.errors) {
 				throw new CustomError('Response from gragpql contains errors', null, {
 					response,
 				});
 			}
+
 			const users: UserSummaryView[] = get(response, 'data.users_summary_view');
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
@@ -139,6 +254,7 @@ export class UserService {
 							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
 							last_access_at: user.last_access_at,
+							temp_access: user.user.temp_access,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)

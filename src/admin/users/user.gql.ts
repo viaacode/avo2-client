@@ -91,6 +91,12 @@ export const GET_USER_BY_ID = gql`
 				id
 				key
 			}
+			user {
+				temp_access {
+					from
+					until
+				}
+			}
 		}
 	}
 `;
@@ -137,11 +143,50 @@ export const GET_USERS = gql`
 				organization_id
 				unit_id
 			}
+			user {
+				temp_access {
+					until
+					from
+				}
+			}
 		}
 		users_summary_view_aggregate(where: $where) {
 			aggregate {
 				count
 			}
+		}
+	}
+`;
+
+export const GET_USER_TEMP_ACCESS_BY_ID = gql`
+	query getUserTempAccess($id: uuid!) {
+		shared_users(where: { profile: { id: { _eq: $id }, is_deleted: { _eq: false } } }) {
+			id
+			uid
+			full_name
+			mail
+			is_blocked
+			temp_access {
+				from
+				until
+			}
+		}
+	}
+`;
+
+export const UPDATE_USER_TEMP_ACCESS_BY_ID = gql`
+	mutation addTempAccess($user_id: uuid!, $from: date, $until: date!) {
+		insert_shared_user_temp_access_one(
+			object: { user_id: $user_id, from: $from, until: $until }
+			on_conflict: { constraint: user_temp_access_pkey, update_columns: [from, until] }
+		) {
+			user_id
+			user {
+				full_name
+				mail
+			}
+			from
+			until
 		}
 	}
 `;
@@ -157,7 +202,10 @@ export const GET_PROFILE_IDS = gql`
 // TODO add is_deleted = false when this becomes available in the database view
 export const GET_PROFILE_NAMES = gql`
 	query getProfileNames($profileIds: [uuid!]!) {
-		users_summary_view(where: { profile_id: { _in: $profileIds } }) {
+		users_summary_view(
+			where: { profile_id: { _in: $profileIds } }
+			is_deleted: { _eq: false }
+		) {
 			profile_id
 			full_name
 			mail

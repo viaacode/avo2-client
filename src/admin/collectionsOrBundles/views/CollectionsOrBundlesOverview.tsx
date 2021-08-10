@@ -122,7 +122,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t('Geen organisatie'),
+				label: t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-organisatie'
+				),
 				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
 			},
 			...organisations.map(

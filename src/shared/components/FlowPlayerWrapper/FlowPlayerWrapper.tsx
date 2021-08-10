@@ -204,7 +204,15 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					logo={props.organisationLogo || get(item, 'organisation.logo_url')}
 					speed={{
 						options: [0.5, 0.75, 1, 1.25, 1.5],
-						labels: [t('0.5'), t('0.75'), t('normaal'), t('1.25'), t('1.5')],
+						labels: [
+							t('shared/components/flow-player-wrapper/flow-player-wrapper___0-5'),
+							t('shared/components/flow-player-wrapper/flow-player-wrapper___0-75'),
+							t(
+								'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
+							),
+							t('shared/components/flow-player-wrapper/flow-player-wrapper___1-25'),
+							t('shared/components/flow-player-wrapper/flow-player-wrapper___1-5'),
+						],
 					}}
 					start={item ? start : null}
 					end={item ? end : null}

@@ -19,6 +19,7 @@ export const USER_PATH = {
 export const ITEMS_PER_PAGE = 50;
 
 export const GET_USER_OVERVIEW_TABLE_COLS: (
+	user: Avo.User.User | undefined,
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
 	businessCategoryOptions: CheckboxOption[],
@@ -26,6 +27,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	subjects: CheckboxOption[],
 	idps: CheckboxOption[]
 ) => FilterableColumn[] = (
+	user: Avo.User.User | undefined,
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
 	businessCategoryOptions: CheckboxOption[],
@@ -120,6 +122,30 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterType: 'DateRangeDropdown',
 		dataType: 'dateTime',
 	},
+	...((PermissionService.hasPerm(user, PermissionName.EDIT_USER_TEMP_ACCESS)
+		? [
+				{
+					id: 'temp_access',
+					label: i18n.t('admin/users/user___tijdelijke-toegang'),
+					visibleByDefault: false,
+					dataType: 'boolean',
+				},
+				{
+					id: 'temp_access_from',
+					label: i18n.t('admin/users/user___te-deblokkeren-op'),
+					sortable: true,
+					visibleByDefault: false,
+					dataType: 'dateTime',
+				},
+				{
+					id: 'temp_access_until',
+					label: i18n.t('admin/users/user___te-blokkeren-op'),
+					sortable: true,
+					visibleByDefault: false,
+					dataType: 'dateTime',
+				},
+		  ]
+		: []) as FilterableColumn[]),
 	{
 		id: 'stamboek',
 		label: i18n.t('admin/users/user___stamboek'),
@@ -244,6 +270,12 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 	last_access_at: (order: Avo.Search.OrderDirection) => ({
 		last_access_at: order,
+	}),
+	temp_access_from: (order: Avo.Search.OrderDirection) => ({
+		user: { temp_access: { from: order } },
+	}),
+	temp_access_until: (order: Avo.Search.OrderDirection) => ({
+		user: { temp_access: { until: order } },
 	}),
 };
 

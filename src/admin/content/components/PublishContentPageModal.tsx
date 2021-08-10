@@ -32,7 +32,7 @@ type publishOption = 'private' | 'public' | 'timebound';
 
 interface PublishContentPageModalProps {
 	isOpen: boolean;
-	onClose: (contentPage?: Partial<ContentPageInfo>) => any;
+	onClose: (contentPage?: Partial<ContentPageInfo>) => void;
 	contentPage: ContentPageInfo;
 }
 

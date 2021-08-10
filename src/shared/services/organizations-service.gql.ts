@@ -46,6 +46,10 @@ export const GET_USERS_IN_COMPANY = gql`
 				mail
 				is_blocked
 				last_access_at
+				temp_access {
+					from
+					until
+				}
 			}
 			profile_user_group {
 				group {

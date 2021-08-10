@@ -39,4 +39,8 @@ export const USERS_IN_SAME_COMPANY_COLUMNS = () => [
 		label: i18n.t('settings/settings___laatste-login'),
 		id: 'last_access_at',
 	},
+	{
+		label: i18n.t('settings/settings___tijdelijke-toegang'),
+		id: 'temp_access',
+	},
 ];

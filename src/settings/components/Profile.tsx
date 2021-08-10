@@ -197,6 +197,7 @@ const Profile: FunctionComponent<
 		if (!permissions) {
 			return;
 		}
+
 		if (permissions.SUBJECTS.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchSubjects()
 				.then((subjects: string[]) => {
@@ -209,6 +210,7 @@ const Profile: FunctionComponent<
 					);
 				});
 		}
+
 		if (permissions.EDUCATION_LEVEL.EDIT || isCompleteProfileStep) {
 			SettingsService.fetchEducationLevels()
 				.then((educationLevels: string[]) => {
@@ -652,6 +654,18 @@ const Profile: FunctionComponent<
 			case 'last_access_at':
 				const lastAccessDate = get(profile, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+
+			case 'temp_access':
+				const tempAccess = get(profile, 'user.temp_access');
+				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
+
+				return hasTempAccess
+					? `${t('settings/components/profile___van')} ${formatDate(
+							get(tempAccess, 'from')
+					  )} ${t('settings/components/profile___tot')} ${formatDate(
+							get(tempAccess, 'until')
+					  )}`
+					: '-';
 		}
 	};
 

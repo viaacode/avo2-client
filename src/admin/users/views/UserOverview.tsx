@@ -131,6 +131,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const columns = useMemo(
 		() =>
 			GET_USER_OVERVIEW_TABLE_COLS(
+				user,
 				setSelectedCheckboxes(
 					userGroupOptions,
 					get(tableState, 'author.user_groups', []) as string[]
@@ -167,6 +168,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			idps,
 			subjects,
 			tableState,
+			user,
 			userGroupOptions,
 		]
 	);
@@ -177,6 +179,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 
 			if (filters.query) {
 				const query = `%${filters.query}%`;
+
 				andFilters.push({
 					_or: [
 						{ stamboek: { _ilike: query } },
@@ -318,6 +321,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			if (!selectedProfileIds || !selectedProfileIds.length) {
 				return;
 			}
+
 			if (addOrRemove === 'add') {
 				await UserService.bulkAddSubjectsToProfiles(subjects, compact(selectedProfileIds));
 				ToastService.success(
@@ -606,6 +610,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	) => {
 		const { id, user, created_at, organisation } = rowData;
 
+		const isBlocked = get(rowData, 'user.is_blocked');
+
 		switch (columnId) {
 			case 'first_name':
 				return (
@@ -622,7 +628,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				return get(rowData, 'profile_user_group.group.label') || '-';
 
 			case 'is_blocked':
-				const isBlocked = get(rowData, 'user.is_blocked');
 				return isBlocked ? 'Ja' : 'Nee';
 
 			case 'blocked_at':
@@ -641,6 +646,18 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			case 'last_access_at':
 				const lastAccessDate = get(rowData, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+
+			case 'temp_access':
+				const tempAccess = get(rowData, 'user.temp_access');
+				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
+
+				return hasTempAccess && !isBlocked ? 'Ja' : 'Nee';
+
+			case 'temp_access_from':
+				return get(rowData, 'user.temp_access.from') || '-';
+
+			case 'temp_access_until':
+				return get(rowData, 'user.temp_access.until') || '-';
 
 			case 'idps':
 				return (

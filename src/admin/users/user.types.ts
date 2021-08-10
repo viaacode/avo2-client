@@ -18,7 +18,10 @@ export type UserOverviewTableCol =
 	| 'subjects'
 	| 'idps'
 	| 'educational_organisations'
-	| 'last_access_at';
+	| 'last_access_at'
+	| 'temp_access'
+	| 'temp_access_from'
+	| 'temp_access_until';
 
 export interface UserTableState extends FilterableTableState {
 	first_name: string;
@@ -123,6 +126,9 @@ export interface UserSummaryView {
 	last_name: string;
 	mail: string;
 	last_access_at: string | null;
+	user: {
+		temp_access: UserTempAccess | null;
+	};
 	is_blocked: boolean;
 	blocked_at: {
 		date: string;
@@ -153,4 +159,10 @@ export interface UserSummaryView {
 		organization_id: string;
 		unit_id?: string;
 	}[];
+}
+
+// TODO: use typings version
+export interface UserTempAccess {
+	from: string | null;
+	until: string | null;
 }
