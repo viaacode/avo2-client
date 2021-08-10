@@ -191,7 +191,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 	const CONTENT_DROPDOWN_ITEMS: MenuItemInfo[] = [
 		...(hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS)
-			? [createDropdownMenuItem('tempAccess', t('Tijdelijke toegang'), 'clock')]
+			? [
+					createDropdownMenuItem(
+						'tempAccess',
+						t('admin/users/views/user-detail___tijdelijke-toegang'),
+						'clock'
+					),
+			  ]
 			: []),
 		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
 	];
@@ -240,7 +246,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 			await fetchProfileById();
 
-			ToastService.success(t('Tijdelijke toegang werd successvol geupdated'));
+			ToastService.success(
+				t('admin/users/views/user-detail___tijdelijke-toegang-werd-successvol-geupdated')
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to update temp access for user', err, {
@@ -248,7 +256,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				})
 			);
 
-			ToastService.danger(t('Het updaten van de tijdelijke toegang is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/users/views/user-detail___het-updaten-van-de-tijdelijke-toegang-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -259,8 +271,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const from = get(tempAccess, 'from');
 		const until = get(tempAccess, 'until');
 		return from
-			? `${t('van')} ${formatDate(from)} ${t('tot')} ${formatDate(until)}`
-			: `${t('tot')} ${formatDate(until)}`;
+			? `${t('admin/users/views/user-detail___van')} ${formatDate(from)} ${t(
+					'admin/users/views/user-detail___tot'
+			  )} ${formatDate(until)}`
+			: `${t('admin/users/views/user-detail___tot')} ${formatDate(until)}`;
 	};
 
 	const renderTempAccessDuration = (tempAccess: UserTempAccess | null): String => {
@@ -450,12 +464,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS) &&
 								renderDetailRow(
 									renderTempAccess(tempAccess),
-									t('Tijdelijk account')
+									t('admin/users/views/user-detail___tijdelijk-account')
 								)}
 							{hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS) &&
 								renderDetailRow(
 									renderTempAccessDuration(tempAccess),
-									t('Totale toegang')
+									t('admin/users/views/user-detail___totale-toegang')
 								)}
 							{renderDetailRow(
 								idpMapsToTagList(

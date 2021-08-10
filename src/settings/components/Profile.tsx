@@ -660,7 +660,9 @@ const Profile: FunctionComponent<
 				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
 
 				return hasTempAccess
-					? `${t('Van')} ${formatDate(get(tempAccess, 'from'))} ${t('tot')} ${formatDate(
+					? `${t('settings/components/profile___van')} ${formatDate(
+							get(tempAccess, 'from')
+					  )} ${t('settings/components/profile___tot')} ${formatDate(
 							get(tempAccess, 'until')
 					  )}`
 					: '-';

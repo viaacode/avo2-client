@@ -126,20 +126,20 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		? [
 				{
 					id: 'temp_access',
-					label: i18n.t('Tijdelijke toegang'),
+					label: i18n.t('admin/users/user___tijdelijke-toegang'),
 					visibleByDefault: false,
 					dataType: 'boolean',
 				},
 				{
 					id: 'temp_access_from',
-					label: i18n.t('Te deblokkeren op'),
+					label: i18n.t('admin/users/user___te-deblokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
 					dataType: 'dateTime',
 				},
 				{
 					id: 'temp_access_until',
-					label: i18n.t('Te blokkeren op'),
+					label: i18n.t('admin/users/user___te-blokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
 					dataType: 'dateTime',

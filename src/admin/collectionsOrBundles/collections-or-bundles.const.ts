@@ -363,7 +363,7 @@ const getCollectionOrganisationColumn = (
 	organisationOptions: CheckboxOption[]
 ): FilterableColumn => ({
 	id: 'organisation',
-	label: i18n.t('Organisatie'),
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___organisatie'),
 	sortable: false,
 	visibleByDefault: true,
 	filterType: 'CheckboxDropdownModal',

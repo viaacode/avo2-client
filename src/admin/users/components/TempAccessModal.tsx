@@ -74,8 +74,16 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 	const renderConfirmButtons = () => {
 		return (
 			<ButtonToolbar>
-				<Button type="secondary" label={t('Annuleren')} onClick={onClose} />
-				<Button type="primary" label={t('Opslaan')} onClick={onSave} />
+				<Button
+					type="secondary"
+					label={t('admin/users/components/temp-access-modal___annuleren')}
+					onClick={onClose}
+				/>
+				<Button
+					type="primary"
+					label={t('admin/users/components/temp-access-modal___opslaan')}
+					onClick={onSave}
+				/>
 			</ButtonToolbar>
 		);
 	};
@@ -84,7 +92,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 		return (
 			<FormGroup error={validationError}>
 				<BlockHeading className="u-m-0" type="h4">
-					{t('Begindatum')}
+					{t('admin/users/components/temp-access-modal___begindatum')}
 				</BlockHeading>
 				<DatePicker
 					value={toDateObject(from)}
@@ -94,7 +102,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 				/>
 				<Spacer margin="top-large">
 					<BlockHeading className="u-m-0" type="h4">
-						{t('Einddatum')}
+						{t('admin/users/components/temp-access-modal___einddatum')}
 					</BlockHeading>
 				</Spacer>
 				<DatePicker
@@ -110,7 +118,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('Tijdelijke toegang instellen')}
+			title={t('admin/users/components/temp-access-modal___tijdelijke-toegang-instellen')}
 			size="small"
 			onClose={onClose}
 		>

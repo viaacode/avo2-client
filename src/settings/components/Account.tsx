@@ -189,11 +189,13 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 									{hasTempAccess && (
 										<Spacer margin="top-large">
 											<BlockHeading type="h3">
-												{t('Tijdelijke toegang')}
+												{t(
+													'settings/components/account___tijdelijke-toegang'
+												)}
 											</BlockHeading>
 											<span>
 												{`${t(
-													'Dit is een tijdelijk account. De toegang van je account verloopt op '
+													'settings/components/account___dit-is-een-tijdelijk-account-de-toegang-van-je-account-verloopt-op'
 												)} ${formatDate(get(user, 'temp_access.until'))}`}
 												.
 											</span>

@@ -142,19 +142,19 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 			return [
 				{
 					id: 'title',
-					label: t('Titel'),
+					label: t('workspace/views/organisation-content-overview___titel'),
 					col: '6',
 					dataType: 'string',
 				},
 				{
 					id: 'type',
-					label: t('Type'),
+					label: t('workspace/views/organisation-content-overview___type'),
 					col: '3',
 					dataType: 'string',
 				},
 				{
 					id: 'author',
-					label: t('Auteur'),
+					label: t('workspace/views/organisation-content-overview___auteur'),
 					col: '3',
 					dataType: 'string',
 				},
@@ -164,37 +164,37 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		return [
 			{
 				id: 'title',
-				label: t('Titel'),
+				label: t('workspace/views/organisation-content-overview___titel'),
 				col: '4',
 				dataType: 'string',
 			},
 			{
 				id: 'type',
-				label: t('Type'),
+				label: t('workspace/views/organisation-content-overview___type'),
 				col: '2',
 				dataType: 'string',
 			},
 			{
 				id: 'author',
-				label: t('Auteur'),
+				label: t('workspace/views/organisation-content-overview___auteur'),
 				col: '2',
 				dataType: 'string',
 			},
 			{
 				id: 'created_at',
-				label: t('Aangemaakt'),
+				label: t('workspace/views/organisation-content-overview___aangemaakt'),
 				col: '1',
 				dataType: 'dateTime',
 			},
 			{
 				id: 'updated_at',
-				label: t('Laatst bewerkt'),
+				label: t('workspace/views/organisation-content-overview___laatst-bewerkt'),
 				col: '1',
 				dataType: 'dateTime',
 			},
 			{
 				id: 'last_edited',
-				label: t('Laatste bewerkt door'),
+				label: t('workspace/views/organisation-content-overview___laatste-bewerkt-door'),
 				col: '2',
 				dataType: 'string',
 			},
@@ -228,13 +228,24 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	);
 
 	const renderEmptyFallback = () => (
-		<ErrorView icon="folder" message={t('Geen content binnen uw organsatie.')} />
+		<ErrorView
+			icon="folder"
+			message={t(
+				'workspace/views/organisation-content-overview___geen-content-binnen-uw-organsatie'
+			)}
+		/>
 	);
 
 	const renderNoOrganisationFallback = () => (
-		<ErrorView message={i18n.t('U hebt geen organisatie.')}>
+		<ErrorView
+			message={i18n.t(
+				'workspace/views/organisation-content-overview___u-hebt-geen-organisatie'
+			)}
+		>
 			<p>
-				<Trans>U hebt geen organisatie.</Trans>
+				<Trans i18nKey="workspace/views/organisation-content-overview___u-hebt-geen-organisatie">
+					U hebt geen organisatie.
+				</Trans>
 			</p>
 		</ErrorView>
 	);
