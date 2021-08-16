@@ -50,7 +50,11 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 			}
 		}
 		organisation_content_counts: app_collections_aggregate(
-			where: { owner: { company_id: { _eq: $company_id } }, is_deleted: { _eq: false } }
+			where: {
+				owner: { company_id: { _eq: $company_id } }
+				is_deleted: { _eq: false }
+				is_public: { _eq: true }
+			}
 		) {
 			aggregate {
 				count
