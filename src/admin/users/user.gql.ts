@@ -199,12 +199,10 @@ export const GET_PROFILE_IDS = gql`
 	}
 `;
 
-// TODO add is_deleted = false when this becomes available in the database view
 export const GET_PROFILE_NAMES = gql`
 	query getProfileNames($profileIds: [uuid!]!) {
 		users_summary_view(
-			where: { profile_id: { _in: $profileIds } }
-			is_deleted: { _eq: false }
+			where: { profile_id: { _in: $profileIds }, is_deleted: { _eq: false } }
 		) {
 			profile_id
 			full_name
