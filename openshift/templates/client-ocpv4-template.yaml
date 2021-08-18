@@ -1,0 +1,208 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: avo2-client-tmpl
+objects:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      git-branch: master
+      alpha.image.policy.openshift.io/resolve-names: '*'
+      image.openshift.io/triggers: >-
+        [{"from":{"kind":"ImageStreamTag","name":"${IS}:${env}","namespace":"${OC_PROJECT}"},"fieldPath":"spec.template.spec.containers[?(@.name==\"${IS}\")].image","pause":"false"}]
+
+    creationTimestamp: null
+    labels:
+      env: ${env}
+      app: avo2-client
+      component: frontend
+      deployment: avo2-client-${env}
+      app.kubernetes.io/component: avo2-client-${env}
+      app.kubernetes.io/instance: avo2-client-${env}
+      app.kubernetes.io/part-of: avo-${env}
+    name: avo2-client-${env}
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      matchLabels:
+        env: ${env}
+        app: avo2-client
+        component: frontend
+    strategy:
+      activeDeadlineSeconds: 21600
+      rollingParams:
+        intervalSeconds: 4
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          git-branch: master
+        creationTimestamp: null
+
+        labels:
+          env: ${env}
+          app: avo2-client
+          component: frontend
+          deployment: avo2-client-${env}
+          app.kubernetes.io/component: avo2-client-${env}
+          app.kubernetes.io/instance: avo2-client-${env}
+          app.kubernetes.io/part-of: avo-${env}
+          env: ${env}
+          app: avo2-client
+          component: frontend
+          deploymentconfig: avo2-client-${env}
+      spec:
+        containers:
+
+        - env:
+          - name: NODE_ENV
+            value: production
+
+          image: docker-registry.default.svc:5000/avo/avo2-client:${env}
+          envFrom:
+            - configMapRef:
+                name: avo2-client-${env}-app-cfg
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 8
+          name: avo2-client-${env}
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: ${CPU}
+              memory: ${MEMORY}
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          securityContext:
+            privileged: false
+            runAsUser: 101
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d/00_default.conf
+            name: config
+            subPath: 00_default.conf
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 509
+            name: client-ngnix-${env}-config
+          name: config
+    test: false
+  status:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"env":"dev","app":"avo2-client","component":"frontend"},"name":"avo2-client-${env}","namespace":"avo"},"spec":{"ports":[{"name":"http","port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"env":"dev","app":"avo2-client","component":"frontend"},"sessionAffinity":"None","type":"ClusterIP"},"status":{"loadBalancer":{}}}
+    creationTimestamp: null
+    labels:
+      app: avo2-client
+      component: frontend
+      deployment: avo2-client-${env}
+      app.kubernetes.io/component: avo2-client-${env}
+      app.kubernetes.io/instance: avo2-client-${env}
+      app.kubernetes.io/part-of: avo-${env}
+      env: ${env}
+      app: avo2-client
+      component: frontend
+      deploymentconfig: avo2-client-${env}
+      env: ${env}
+      app: avo2-client
+      component: frontend
+    name: avo2-client-${env}
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      env: ${env}
+      app: avo2-client
+      component: frontend
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+
+- apiVersion: v1
+  data:
+    00_default.conf: "server { \n    listen *:8080 default_server;\n    root /usr/share/nginx/html;\n    index index.html;\n    location / {\n        try_files $uri /index.html;\n    }\n    location /sitemap.xml {\n       proxy_set_header host avo2-proxy-${env}.hetarchief.be;\n       proxy_pass https://avo2-proxy-${env}.hetarchief.be;\n    }\n}\n"
+  kind: ConfigMap
+  metadata:
+    labels:
+      app: avo2-client
+      component: frontend
+      deployment: avo2-client-${env}
+      app.kubernetes.io/component: avo2-client-${env}
+      app.kubernetes.io/instance: avo2-client-${env}
+      app.kubernetes.io/part-of: avo-${env}
+      env: ${env}
+      app: avo2-client
+      component: frontend
+      deploymentconfig: avo2-client-${env}
+      env: ${env}
+    name: client-ngnix-${env}-config
+    namespace: avo
+- apiVersion: v1
+  data:
+    LDAP_DASHBOARD_PEOPLE_URL: https://account-manager-${env}-iam.ibmcloud.do.viaa.be/people
+  kind: ConfigMap
+  metadata:
+    name: avo2-client-${env}-app-cfg
+    namespace: avo
+    labels:
+      app: avo2-client
+      component: frontend
+      deployment: avo2-client-${env}
+      app.kubernetes.io/component: avo2-client-${env}
+      app.kubernetes.io/instance: avo2-client-${env}
+      app.kubernetes.io/part-of: avo-${env}
+      env: ${env}
+      app: avo2-client
+      component: frontend
+      deploymentconfig: avo2-client-${env}
+      env: ${env}
+parameters:
+- name: env
+  value: int
+- name: CPU
+  value: 666m
+- name: MEMORY
+  value: 768Mi
+- name: proxy_set_header
+  value: 'host avo2-proxy-qas.hetarchief.be;'
+- name: proxy_pass
+  value: 'https://avo2-proxy-qas.hetarchief.be;'
