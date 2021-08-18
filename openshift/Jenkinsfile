@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'default'
+            defaultContainer 'oc'
             yaml """\
         apiVersion: v1
         kind: Pod
