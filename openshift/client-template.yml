@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: client-tmpl
+  name: client
 objects:
 - apiVersion: apps/v1
   kind: Deployment
