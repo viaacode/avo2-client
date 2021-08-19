@@ -65,7 +65,7 @@ objects:
           - name: NODE_ENV
             value: production
 
-          image: docker-registry.default.svc:5000/avo/client:${env}
+          image: image-registry.openshift-image-registry.svc:5000/avo/client:${env}
           envFrom:
             - configMapRef:
                 name: client-${env}-app-cfg
