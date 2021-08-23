@@ -92,8 +92,7 @@ export class UserService {
 	static updateTempAccessByUserId = async (
 		userId: string,
 		tempAccess: UserTempAccess,
-		profileId: string,
-		currentIsBlocked: boolean
+		profileId: string
 	) => {
 		try {
 			// Update a users's temp access
@@ -110,7 +109,7 @@ export class UserService {
 			const hasAccessNow =
 				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(moment());
 
-			if (hasAccessNow && currentIsBlocked && tempAccess.until) {
+			if (hasAccessNow && tempAccess.until) {
 				const isBlocked = !hasAccessNow;
 
 				await UserService.updateTempAccessBlockStatusByProfileIds(
