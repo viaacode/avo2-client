@@ -120,10 +120,11 @@ export function navigateToAbsoluteOrRelativeUrl(
 export const generateSmartLink = (
 	action: ButtonAction | null | undefined,
 	children: ReactNode,
-	label?: string
+	label?: string,
+	title?: string
 ): ReactElement<any, any> | null => {
 	return (
-		<SmartLink action={action} label={label}>
+		<SmartLink action={action} label={label} title={title}>
 			{children}
 		</SmartLink>
 	);

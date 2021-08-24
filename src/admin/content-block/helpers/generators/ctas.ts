@@ -87,6 +87,10 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
+			buttonAltTitle: TEXT_FIELD('', {
+				label: i18n.t('Alt. button text'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
 			buttonIcon: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,

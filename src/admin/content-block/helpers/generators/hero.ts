@@ -90,6 +90,10 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 							editorType: ContentBlockEditor.TextInput,
 						}
 					),
+					altTitle: TEXT_FIELD('', {
+						label: i18n.t('Alt. title text'),
+						editorType: ContentBlockEditor.TextInput,
+					}),
 					icon: {
 						label: i18n.t('admin/content-block/helpers/generators/buttons___icoon'),
 						editorType: ContentBlockEditor.IconPicker,

@@ -113,6 +113,10 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 			},
+			buttonAltTitle: TEXT_FIELD('', {
+				label: i18n.t('Alt. title text'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
 			buttonIcon: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,

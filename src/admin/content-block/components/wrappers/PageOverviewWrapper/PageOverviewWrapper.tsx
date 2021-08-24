@@ -57,6 +57,7 @@ interface PageOverviewWrapperProps {
 	showDescription?: boolean;
 	showDate?: boolean;
 	buttonLabel?: string;
+	buttonAltTitle?: string;
 	itemsPerPage?: number;
 	sortOrder?: PageOverviewOrderOptions;
 	headerBackgroundColor: Color;
@@ -78,6 +79,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	buttonLabel = i18n.t(
 		'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___lees-meer'
 	),
+	buttonAltTitle = '',
 	itemsPerPage = 20,
 	sortOrder = 'published_at__desc',
 	headerBackgroundColor,
@@ -327,6 +329,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
 				)}
 				buttonLabel={buttonLabel}
+				buttonAltTitle={buttonAltTitle}
 				focusedPage={focusedPage}
 				getLabelLink={(label: string) => {
 					return `/${ROUTE_PARTS.news}?label=${encodeURIComponent(label)}`;
