@@ -654,10 +654,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				return hasTempAccess && !isBlocked ? 'Ja' : 'Nee';
 
 			case 'temp_access_from':
-				return get(rowData, 'user.temp_access.from') || '-';
+				return formatDate(get(rowData, 'user.temp_access.from')) || '-';
 
 			case 'temp_access_until':
-				return get(rowData, 'user.temp_access.until') || '-';
+				return formatDate(get(rowData, 'user.temp_access.until')) || '-';
 
 			case 'idps':
 				return (
