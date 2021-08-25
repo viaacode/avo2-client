@@ -365,7 +365,7 @@ const getCollectionOrganisationColumn = (
 	id: 'organisation',
 	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___organisatie'),
 	sortable: false,
-	visibleByDefault: true,
+	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
 	filterProps: {
 		options: organisationOptions,
