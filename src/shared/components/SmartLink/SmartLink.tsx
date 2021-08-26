@@ -17,6 +17,7 @@ export interface SmartLinkProps {
 	action?: ButtonAction | null;
 	removeStyles?: boolean;
 	label?: string;
+	title?: string;
 	children: ReactNode;
 }
 
@@ -24,6 +25,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 	action,
 	removeStyles = true,
 	label,
+	title,
 	children,
 }) => {
 	const handleAdditionalTriggers = (url: string) => {
@@ -49,6 +51,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							href={fullUrl}
 							target="_self"
 							className={classnames({ 'a-link__no-styles': removeStyles })}
+							title={title}
 							onClick={() => handleAdditionalTriggers(fullUrl)}
 						>
 							{children}
@@ -61,6 +64,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						to={fullUrl}
 						className={classnames({ 'a-link__no-styles': removeStyles })}
 						onClick={() => handleAdditionalTriggers(fullUrl)}
+						title={title}
 					>
 						{children}
 					</Link>
@@ -78,6 +82,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							rel="noopener noreferrer"
 							className={classnames({ 'a-link__no-styles': removeStyles })}
 							onClick={() => handleAdditionalTriggers(fullUrl)}
+							title={title}
 						>
 							{children}
 						</a>
@@ -91,6 +96,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						rel="noopener noreferrer"
 						className={classnames({ 'a-link__no-styles': removeStyles })}
 						onClick={() => handleAdditionalTriggers(fullUrl)}
+						title={title}
 					>
 						{children}
 					</a>

@@ -291,6 +291,7 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 export interface MediaGridBlockComponentState {
 	mediaItem?: ButtonAction;
 	buttonLabel?: string;
+	buttonAltTitle?: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
