@@ -52,7 +52,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				}
 			),
 			altTitle: TEXT_FIELD('', {
-				label: i18n.t('Alt. title text'),
+				label: i18n.t('admin/content-block/helpers/generators/buttons___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			icon: {

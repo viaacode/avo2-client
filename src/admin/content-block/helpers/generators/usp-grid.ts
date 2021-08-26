@@ -88,7 +88,7 @@ export const USP_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 				},
 			},
 			buttonAltTitle: TEXT_FIELD('', {
-				label: i18n.t('Alt. title text'),
+				label: i18n.t('admin/content-block/helpers/generators/usp-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			action: {

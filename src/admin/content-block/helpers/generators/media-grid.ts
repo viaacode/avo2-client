@@ -64,7 +64,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				validator: undefined,
 			}),
 			buttonAltTitle: TEXT_FIELD('', {
-				label: i18n.t('Alt. title text'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			buttonIcon: {
@@ -103,7 +103,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				validator: undefined,
 			}),
 			buttonAltTitle: TEXT_FIELD('', {
-				label: i18n.t('Alt. title text'),
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			buttonAction: {
@@ -175,7 +175,9 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				validator: undefined,
 			}),
 			ctaButtonAltTitle: TEXT_FIELD('', {
-				label: i18n.t('Alt. button title text'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___alt-button-title-text'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),

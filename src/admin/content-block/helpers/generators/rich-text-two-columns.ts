@@ -82,7 +82,9 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 						}
 					),
 					altTitle: TEXT_FIELD('', {
-						label: i18n.t('Alt. title text'),
+						label: i18n.t(
+							'admin/content-block/helpers/generators/rich-text-two-columns___alt-title-text'
+						),
 						editorType: ContentBlockEditor.TextInput,
 					}),
 					icon: {
