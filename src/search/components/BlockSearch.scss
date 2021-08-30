@@ -5,13 +5,13 @@
 		position: relative;
 
 		> div {
-			max-width: 100%;
+			width: 100%;
 		}
 	}
 
 	.c-menu {
 		margin-top: 5px;
-		max-width: 100%;
+		width: 100%;
 
 		.c-dropdown-results {
 			max-width: 100%;
@@ -26,4 +26,3 @@
 		}
 	}
 }
-
