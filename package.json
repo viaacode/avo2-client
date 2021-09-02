@@ -43,7 +43,7 @@
 		"graphql": "^14.5.8",
 		"i18next": "^19.5.5",
 		"i18next-xhr-backend": "^3.2.2",
-		"immer": "^8.0.1",
+		"immer": "^9.0.6",
 		"immutable": "3.8.2",
 		"lodash-es": "^4.17.11",
 		"marked": "^0.7.0",
