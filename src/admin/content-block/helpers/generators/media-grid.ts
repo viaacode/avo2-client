@@ -66,6 +66,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			buttonAltTitle: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
 			}),
 			buttonIcon: {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-icoon'),
@@ -105,6 +106,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			buttonAltTitle: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
 			}),
 			buttonAction: {
 				label: i18n.t(
