@@ -286,6 +286,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			aria-label={placeholder}
 			loadOptions={fetchPickerOptions}
 			onChange={onSelectItem}
+			onFocus={() => fetchPickerOptions(null)}
 			value={selectedItem}
 			defaultOptions={itemOptions as any} // TODO: type
 			isClearable
