@@ -4,6 +4,7 @@ import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import {
+	BlockHeading,
 	Button,
 	Column,
 	Container,
@@ -100,6 +101,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 					<Grid>
 						<Column size="3-7">
 							<Form type="standard">
+								<BlockHeading type="h3">{t('Koppel je account')}</BlockHeading>
 								<FormGroup
 									label={t(
 										'settings/components/account___koppel-je-account-met-andere-platformen'
