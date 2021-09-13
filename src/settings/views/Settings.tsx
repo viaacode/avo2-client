@@ -25,7 +25,15 @@ import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Account, Email, Notifications, Profile } from '../components';
-import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from '../settings.const';
+import LinkedAccounts from '../components/LinkedAccounts';
+import {
+	ACCOUNT_ID,
+	EMAIL_ID,
+	LINKED_ACCOUNTS,
+	NOTIFICATIONS_ID,
+	PROFILE_ID,
+	SettingsTab,
+} from '../settings.const';
 
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
@@ -54,6 +62,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 			)
 		) {
 			tabHeaders.push(generateTabHeader(ACCOUNT_ID, t('settings/views/settings___account')));
+			tabHeaders.push(generateTabHeader(LINKED_ACCOUNTS, t('koppelingen')));
 		}
 
 		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
@@ -80,6 +89,9 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		},
 		[NOTIFICATIONS_ID]: {
 			component: <Notifications {...props} />,
+		},
+		[LINKED_ACCOUNTS]: {
+			component: <LinkedAccounts {...props} />,
 		},
 	};
 

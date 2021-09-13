@@ -14,19 +14,13 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	IconName,
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
-import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
-import {
-	redirectToExternalPage,
-	redirectToServerLinkAccount,
-	redirectToServerUnlinkAccount,
-} from '../../authentication/helpers/redirects';
+import { redirectToExternalPage } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import Html from '../../shared/components/Html/Html';
@@ -39,61 +33,12 @@ export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
 }
 
-const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
+const Account: FunctionComponent<AccountProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 	const hasTempAccess = !!get(user, 'temp_access.until');
-
-	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
-		if (hasIdpLinked(user, idpType)) {
-			return (
-				<>
-					<span>
-						{idpType === 'SMARTSCHOOL'
-							? t(
-									'settings/components/account___uw-smartschool-account-is-reeds-gelinkt'
-							  )
-							: t(
-									'settings/components/account___je-klascement-account-is-reeds-gelinkt'
-							  )}
-					</span>
-					<Button
-						type="link"
-						label={t('settings/components/account___unlink')}
-						title={t(
-							'settings/components/account___koppel-je-smartschool-account-los-van-je-archief-account'
-						)}
-						onClick={() => redirectToServerUnlinkAccount(location, idpType)}
-					/>
-				</>
-			);
-		}
-		return (
-			<Spacer margin="bottom-small">
-				<Button
-					className={`c-button-${idpType.toLocaleLowerCase()}`}
-					icon={idpType.toLocaleLowerCase() as IconName}
-					label={
-						idpType === 'SMARTSCHOOL'
-							? t('settings/components/account___link-je-smartschool-account')
-							: t('settings/components/account___link-je-klascement-account')
-					}
-					title={
-						idpType === 'SMARTSCHOOL'
-							? t(
-									'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
-							  )
-							: t(
-									'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
-							  )
-					}
-					onClick={() => redirectToServerLinkAccount(location, idpType)}
-				/>
-			</Spacer>
-		);
-	};
 
 	if (!user) {
 		return (
@@ -202,21 +147,6 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 										</Spacer>
 									)}
 								</Form>
-
-								{!isPupil && (
-									<>
-										<div className="c-hr" />
-
-										<FormGroup
-											label={t(
-												'settings/components/account___koppel-je-account-met-andere-platformen'
-											)}
-										>
-											<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
-											<div>{renderIdpLinkControls('KLASCEMENT')}</div>
-										</FormGroup>
-									</>
-								)}
 							</Form>
 						</Column>
 						<Column size="3-5">
