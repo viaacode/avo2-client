@@ -5,6 +5,8 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Spacer } from '@viaa/avo2-components';
 
 import {
+	redirectToServerACMIDMLogin,
+	redirectToServerItsmeLogin,
 	redirectToServerKlascementLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
@@ -45,6 +47,32 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					Of kies voor ...
 				</Trans>
 			</p>
+			<Spacer margin={['top-small', 'bottom-small']}>
+				<Button
+					block
+					type="secondary"
+					className="c-button-itsme"
+					icon="smartschool"
+					label={t('itsme')}
+					onClick={() => {
+						onOptionClicked();
+						redirectToServerItsmeLogin(location);
+					}}
+				/>
+			</Spacer>
+			<Spacer margin={['top-small', 'bottom-small']}>
+				<Button
+					block
+					type="secondary"
+					className="c-button-acmidm"
+					icon="smartschool"
+					label={t('eID of een digitale sleutel')}
+					onClick={() => {
+						onOptionClicked();
+						redirectToServerACMIDMLogin(location);
+					}}
+				/>
+			</Spacer>
 			<Spacer margin={['top-small', 'bottom-small']}>
 				<Button
 					block

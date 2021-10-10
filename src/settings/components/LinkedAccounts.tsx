@@ -33,49 +33,55 @@ export interface AccountProps extends RouteComponentProps {
 const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
 
+	const idpToCopy: Record<any, any> = {
+		VLAAMSEOVERHEID: {
+			isLinked: t('Uw Vlaamse Overheid account is reeds gelinkt.'),
+			buttonLabel: t('Link je Vlaamse Overheid account.'),
+			buttonTitle: t('Koppel je Vlaamse Overheid account aan je Het Archief account.'),
+		},
+		SMARTSCHOOL: {
+			isLinked: t('settings/components/account___uw-smartschool-account-is-reeds-gelinkt'),
+			buttonLabel: t('settings/components/account___link-je-smartschool-account'),
+			buttonTitle: t(
+				'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
+			),
+		},
+		KLASCEMENT: {
+			isLinked: t('settings/components/account___je-klascement-account-is-reeds-gelinkt'),
+			buttonLabel: t('settings/components/account___link-je-klascement-account'),
+			buttonTitle: t(
+				'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
+			),
+		},
+	};
+
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		if (hasIdpLinked(user, idpType)) {
 			return (
-				<>
-					<span>
-						{idpType === 'SMARTSCHOOL'
-							? t(
-									'settings/components/account___uw-smartschool-account-is-reeds-gelinkt'
-							  )
-							: t(
-									'settings/components/account___je-klascement-account-is-reeds-gelinkt'
-							  )}
-					</span>
-					<Button
-						type="link"
-						label={t('settings/components/account___unlink')}
-						title={t(
-							'settings/components/account___koppel-je-smartschool-account-los-van-je-archief-account'
-						)}
-						onClick={() => redirectToServerUnlinkAccount(location, idpType)}
-					/>
-				</>
+				<Spacer margin="medium">
+					<Grid>
+						<div>Test</div>
+						<span>{idpToCopy[idpType].isLinked}</span>
+						<Button
+							type="link"
+							label={t('settings/components/account___unlink')}
+							title={t(
+								'settings/components/account___koppel-je-smartschool-account-los-van-je-archief-account'
+							)}
+							onClick={() => redirectToServerUnlinkAccount(location, idpType)}
+						/>
+					</Grid>
+				</Spacer>
 			);
 		}
+
 		return (
 			<Spacer margin="bottom-small">
 				<Button
 					className={`c-button-${idpType.toLocaleLowerCase()}`}
 					icon={idpType.toLocaleLowerCase() as IconName}
-					label={
-						idpType === 'SMARTSCHOOL'
-							? t('settings/components/account___link-je-smartschool-account')
-							: t('settings/components/account___link-je-klascement-account')
-					}
-					title={
-						idpType === 'SMARTSCHOOL'
-							? t(
-									'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
-							  )
-							: t(
-									'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
-							  )
-					}
+					label={idpToCopy[idpType].buttonLabel}
+					title={idpToCopy[idpType].buttonTitle}
 					onClick={() => redirectToServerLinkAccount(location, idpType)}
 				/>
 			</Spacer>
@@ -107,6 +113,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										'settings/components/account___koppel-je-account-met-andere-platformen'
 									)}
 								>
+									<div>{renderIdpLinkControls('VLAAMSEOVERHEID')}</div>
 									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
 									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
 								</FormGroup>
