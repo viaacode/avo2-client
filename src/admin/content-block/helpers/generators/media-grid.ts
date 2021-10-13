@@ -63,6 +63,11 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
+			buttonAltTitle: TEXT_FIELD('', {
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			}),
 			buttonIcon: {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
@@ -95,6 +100,11 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-grid___algemene-knop-tekst'
 				),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			}),
+			buttonAltTitle: TEXT_FIELD('', {
+				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
@@ -163,6 +173,13 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			),
 			ctaButtonLabel: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-tekst'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			}),
+			ctaButtonAltTitle: TEXT_FIELD('', {
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___alt-button-title-text'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),

@@ -235,12 +235,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				throw new CustomError('Invalid profileId');
 			}
 
-			await UserService.updateTempAccessByUserId(
-				userId,
-				tempAccess,
-				profileId,
-				get(storedProfile, 'is_blocked')
-			);
+			await UserService.updateTempAccessByUserId(userId, tempAccess, profileId);
 
 			setTempAccess(tempAccess);
 
@@ -555,7 +550,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									}
 									title={blockButtonTooltip}
 									ariaLabel={blockButtonTooltip}
-									onClick={() => toggleBlockedStatus()}
+									onClick={toggleBlockedStatus}
 								/>
 							)}
 							<a

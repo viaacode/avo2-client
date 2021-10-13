@@ -32,6 +32,8 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	elements: { mediaItem: ButtonAction }[];
 	results: ResolvedItemOrCollection[];
 	renderLink?: RenderLinkFunction;
+	buttonAltTitle?: string;
+	ctaButtonAltTitle?: string;
 }
 
 const MediaGridWrapper: FunctionComponent<
@@ -39,6 +41,7 @@ const MediaGridWrapper: FunctionComponent<
 > = ({
 	title,
 	buttonLabel,
+	buttonAltTitle,
 	buttonAction,
 	ctaTitle,
 	ctaTitleColor,
@@ -46,6 +49,7 @@ const MediaGridWrapper: FunctionComponent<
 	ctaContent,
 	ctaContentColor,
 	ctaButtonLabel,
+	ctaButtonAltTitle,
 	ctaButtonType,
 	ctaButtonIcon,
 	ctaBackgroundColor,
@@ -189,6 +193,7 @@ const MediaGridWrapper: FunctionComponent<
 				{ label: formatDate(itemOrCollection?.created_at) },
 			],
 			buttonLabel: element.buttonLabel,
+			buttonAltTitle: element.buttonAltTitle,
 			buttonType: element.buttonType,
 			buttonIcon: element.buttonIcon,
 			itemAction:
@@ -238,6 +243,7 @@ const MediaGridWrapper: FunctionComponent<
 			<BlockMediaGrid
 				title={title}
 				buttonLabel={buttonLabel}
+				buttonAltTitle={buttonAltTitle}
 				buttonAction={buttonAction || searchQuery}
 				ctaTitle={ctaTitle}
 				ctaTitleColor={ctaTitleColor}
@@ -245,6 +251,7 @@ const MediaGridWrapper: FunctionComponent<
 				ctaContent={ctaContent}
 				ctaContentColor={ctaContentColor}
 				ctaButtonLabel={ctaButtonLabel}
+				ctaButtonAltTitle={ctaButtonAltTitle}
 				ctaButtonType={ctaButtonType}
 				ctaButtonIcon={ctaButtonIcon}
 				ctaBackgroundColor={ctaBackgroundColor}

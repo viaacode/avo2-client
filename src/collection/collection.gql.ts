@@ -165,7 +165,11 @@ export const GET_ORGANISATION_CONTENT = gql`
 		$company_id: String!
 	) {
 		app_collections(
-			where: { owner: { company_id: { _eq: $company_id } }, is_deleted: { _eq: false } }
+			where: {
+				owner: { company_id: { _eq: $company_id } }
+				is_deleted: { _eq: false }
+				is_public: { _eq: true }
+			}
 			offset: $offset
 			limit: $limit
 			order_by: $order

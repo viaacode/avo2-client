@@ -83,6 +83,11 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
+			buttonAltTitle: TEXT_FIELD('', {
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___alt-title-text'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
+			}),
 			buttonTitle: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tooltip'),
 				editorType: ContentBlockEditor.TextInput,

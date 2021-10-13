@@ -35,6 +35,7 @@ interface MediaPlayerTitleTextButtonWrapperProps {
 	headingTitle: string;
 	content: string;
 	buttonLabel: string;
+	buttonAltTitle?: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
@@ -58,6 +59,7 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 	buttonIcon,
 	buttonLabel,
 	buttonType,
+	buttonAltTitle,
 	buttonAction,
 	align,
 	mediaAutoplay,
@@ -95,7 +97,9 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 				{buttonAction &&
 					generateSmartLink(
 						buttonAction,
-						<Button icon={buttonIcon} label={buttonLabel} type={buttonType} />
+						<Button icon={buttonIcon} label={buttonLabel} type={buttonType} />,
+						buttonLabel,
+						buttonAltTitle || buttonLabel
 					)}
 			</Column>
 		</Grid>

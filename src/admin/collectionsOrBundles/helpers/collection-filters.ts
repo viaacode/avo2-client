@@ -64,20 +64,24 @@ export function generateCollectionWhereObject(
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 
 	if (filters.collection_labels && filters.collection_labels.length) {
+		const filterKey = isCollectionTable ? 'collection_labels' : 'labels';
+
 		andFilters.push({
 			_or: [
-				...getMultiOptionFilters(
-					{
-						collection_labels: without(filters.collection_labels, NULL_FILTER),
+				{
+					[filterKey]: {
+						label: {
+							_in: filters.collection_labels,
+						},
 					},
-					['collection_labels']
-				),
+				},
 				...(filters.collection_labels.includes(NULL_FILTER)
-					? [{ _not: { collection_labels: {} } }]
+					? [{ _not: { [filterKey]: {} } }]
 					: []),
 			],
 		});
 	}
+
 	if (filters.subjects && filters.subjects.length) {
 		andFilters.push(
 			...getMultiOptionsFilters(

@@ -125,6 +125,12 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					),
 					editorType: ContentBlockEditor.TextInput,
 				},
+				buttonAltTitle: {
+					label: i18n.t(
+						'admin/content-block/helpers/generators/page-overview___alt-title-text'
+					),
+					editorType: ContentBlockEditor.TextInput,
+				},
 				itemsPerPage: {
 					label: i18n.t(
 						'admin/content-block/helpers/generators/page-overview___items-per-pagina'

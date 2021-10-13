@@ -14,11 +14,13 @@ import {
 	Checkbox,
 	Column,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Grid,
 	Select,
 	Spacer,
+	Spinner,
 	Table,
 	TagInfo,
 	TagList,
@@ -859,7 +861,11 @@ const Profile: FunctionComponent<
 		return renderProfilePage();
 	};
 
-	return (
+	return isSaving ? (
+		<Flex orientation="horizontal" center>
+			<Spinner size="large" />
+		</Flex>
+	) : (
 		<>
 			<MetaTags>
 				<title>
