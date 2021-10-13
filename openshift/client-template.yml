@@ -69,6 +69,17 @@ objects:
           envFrom:
             - configMapRef:
                 name: client-${env}-app-cfg
+            - secretRef:
+                name: zendesk-api
+            - secretRef:
+                name: flowplayer-api
+            - configMapRef:
+                name: client-ngnix-${env}-config
+            - secretRef:
+                name: ldap-api-${env}
+
+
+
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 6
