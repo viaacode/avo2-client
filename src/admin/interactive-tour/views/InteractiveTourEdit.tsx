@@ -365,6 +365,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		if (!interactiveTourState.currentInteractiveTour) {
 			return;
 		}
+
 		return (
 			<>
 				<Container size="medium">

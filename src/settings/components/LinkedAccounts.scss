@@ -1,0 +1,51 @@
+@import '../../styles/settings/colors';
+
+.c-account-link {
+	height: 100px;
+
+	border: 2px solid #e4f1f3;
+
+	&__column {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+
+		&--smartschool,
+		&--burgerprofiel,
+		&--klascement {
+			flex-direction: row;
+			align-items: center;
+
+			margin: 0;
+		}
+
+		&--burgerprofiel {
+			// color: $color-;
+
+			border-right: 2px solid #e4f1f3;
+		}
+
+		&--smartschool {
+			color: #fff;
+			background-color: $color-smartschool;
+		}
+
+		&--klascement {
+			color: #fff;
+			background-color: $color-klascement;
+		}
+	}
+
+	&__label {
+		font-weight: bold;
+	}
+
+	&__icon {
+		margin-right: 7px;
+		color: #5cc2a2;
+	}
+
+	.c-button {
+		width: 100%;
+	}
+}

@@ -12,6 +12,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	Icon,
 	IconName,
 	Spacer,
 	Spinner,
@@ -25,65 +26,87 @@ import {
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 
+import './LinkedAccounts.scss';
+
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
 }
+
+interface IdpProps {
+	label: string;
+	description?: string;
+	iconNames: IconName[];
+}
+
+const idpProps: Record<string, IdpProps> = {
+	VLAAMSEOVERHEID: {
+		label: 'Burgerprofiel',
+		description: 'itsme, eID of een digitale sleutel',
+		iconNames: ['itsme' as IconName, 'eid' as IconName], // TODO: Remove `as IconName`.
+	},
+	SMARTSCHOOL: {
+		label: 'Smartschool',
+		iconNames: ['smartschool'],
+	},
+	KLASCEMENT: {
+		label: 'KlasCement',
+		iconNames: ['klascement'],
+	},
+};
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
 const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
 
-	const idpToCopy: Record<any, any> = {
-		VLAAMSEOVERHEID: {
-			isLinked: t('Uw Vlaamse Overheid account is reeds gelinkt.'),
-			buttonLabel: t('Link je Vlaamse Overheid account.'),
-			buttonTitle: t('Koppel je Vlaamse Overheid account aan je Het Archief account.'),
-		},
-		SMARTSCHOOL: {
-			isLinked: t('settings/components/account___uw-smartschool-account-is-reeds-gelinkt'),
-			buttonLabel: t('settings/components/account___link-je-smartschool-account'),
-			buttonTitle: t(
-				'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
-			),
-		},
-		KLASCEMENT: {
-			isLinked: t('settings/components/account___je-klascement-account-is-reeds-gelinkt'),
-			buttonLabel: t('settings/components/account___link-je-klascement-account'),
-			buttonTitle: t(
-				'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
-			),
-		},
-	};
-
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
-		if (hasIdpLinked(user, idpType)) {
-			return (
-				<Spacer margin="medium">
-					<Grid>
-						<div>Test</div>
-						<span>{idpToCopy[idpType].isLinked}</span>
-						<Button
-							type="link"
-							label={t('settings/components/account___unlink')}
-							title={t(
-								'settings/components/account___koppel-je-smartschool-account-los-van-je-archief-account'
-							)}
-							onClick={() => redirectToServerUnlinkAccount(location, idpType)}
-						/>
-					</Grid>
-				</Spacer>
-			);
-		}
+		const linked = hasIdpLinked(user, idpType);
+		const currentIdp = idpProps[idpType];
 
 		return (
-			<Spacer margin="bottom-small">
-				<Button
-					className={`c-button-${idpType.toLocaleLowerCase()}`}
-					icon={idpType.toLocaleLowerCase() as IconName}
-					label={idpToCopy[idpType].buttonLabel}
-					title={idpToCopy[idpType].buttonTitle}
-					onClick={() => redirectToServerLinkAccount(location, idpType)}
-				/>
+			<Spacer margin="top">
+				<Grid className="c-account-link">
+					<Column
+						className={`c-account-link__column c-account-link__column--${currentIdp.label.toLowerCase()}`}
+						size="3-2"
+					>
+						{currentIdp.iconNames.map((iconName: string) => (
+							<Icon name={iconName as IconName} size="huge"></Icon>
+						))}
+					</Column>
+					<Column className="c-account-link__column" size="3-5">
+						<span className="c-account-link__label">{currentIdp.label}</span>
+						<span>{currentIdp.description}</span>
+					</Column>
+					<Column className="c-account-link__column" size="3-2">
+						{linked ? (
+							<span>
+								<Icon className="c-account-link__icon" name="check-circle"></Icon>
+								Gekoppeld
+							</span>
+						) : (
+							<></>
+						)}
+					</Column>
+					<Column className="c-account-link__column" size="3-3">
+						<Spacer margin="right">
+							{linked ? (
+								<Button
+									type="secondary"
+									label={t('Verbreek koppeling')}
+									title={t('Verbreek koppeling')}
+									onClick={() => redirectToServerUnlinkAccount(location, idpType)}
+								/>
+							) : (
+								<Button
+									type="primary"
+									label={t('Koppel')}
+									title={t('Koppel')}
+									onClick={() => redirectToServerLinkAccount(location, idpType)}
+								/>
+							)}
+						</Spacer>
+					</Column>
+				</Grid>
 			</Spacer>
 		);
 	};
@@ -105,7 +128,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 			<Container mode="vertical">
 				<Spacer margin="bottom">
 					<Grid>
-						<Column size="3-7">
+						<Column size="3-8">
 							<Form type="standard">
 								<BlockHeading type="h3">{t('Koppel je account')}</BlockHeading>
 								<FormGroup
@@ -119,7 +142,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 								</FormGroup>
 							</Form>
 						</Column>
-						<Column size="3-5">
+						<Column size="3-4">
 							<></>
 						</Column>
 					</Grid>
