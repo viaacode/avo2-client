@@ -47,17 +47,19 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
-			label: t('Burgerprofiel'),
-			description: t('itsme, eID of een digitale sleutel'),
+			label: t('settings/components/linked-accounts___burgerprofiel'),
+			description: t(
+				'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
+			),
 			iconNames: ['itsme' as IconName, 'eid' as IconName], // TODO: Remove `as IconName`.
 			hideForPupil: true,
 		},
 		SMARTSCHOOL: {
-			label: t('Smartschool'),
+			label: t('settings/components/linked-accounts___smartschool'),
 			iconNames: ['smartschool'],
 		},
 		KLASCEMENT: {
-			label: t('KlasCement'),
+			label: t('settings/components/linked-accounts___klas-cement'),
 			iconNames: ['klascement'],
 		},
 	};
@@ -95,7 +97,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										type="multicolor"
 										name="circle-check"
 									></Icon>
-									{t('Gekoppeld')}
+									{t('settings/components/linked-accounts___gekoppeld')}
 								</span>
 							) : (
 								<></>

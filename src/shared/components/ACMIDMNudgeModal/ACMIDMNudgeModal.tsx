@@ -80,9 +80,13 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 				<div className="c-nudge-modal">
 					<Spacer margin="bottom">
 						<p className="c-nudge-modal__title">
-							{t('Snel en makkelijk inloggen met')}
+							{t(
+								'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-en-makkelijk-inloggen-met'
+							)}
 							<span className="u-text-bold">
-								{t('itsme, eId of een digitale sleutel')}
+								{t(
+									'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme-e-id-of-een-digitale-sleutel'
+								)}
 							</span>
 							?
 						</p>
@@ -128,7 +132,11 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 								className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
 								size="3-10"
 							>
-								<Spacer>{t('eID of een digitale sleutel')}</Spacer>
+								<Spacer>
+									{t(
+										'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
+									)}
+								</Spacer>
 							</Column>
 						</Grid>
 					</div>
