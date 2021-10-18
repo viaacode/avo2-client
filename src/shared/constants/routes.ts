@@ -30,6 +30,7 @@ export const ROUTE_PARTS = Object.freeze({
 	pupilOrTeacher: 'leerling-of-leerkracht',
 	register: 'registreren',
 	registerOrLogin: 'registreer-of-login',
+	linkYourAccount: 'link-uw-account',
 	responses: 'indieningen',
 	search: 'zoeken',
 	searchQuery: 'zoekopdracht',

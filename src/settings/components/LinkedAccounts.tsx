@@ -61,6 +61,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		const linked = hasIdpLinked(user, idpType);
 		const currentIdp = idpProps[idpType];
+		// const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 		return (
 			<Spacer margin="top">
@@ -70,7 +71,11 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 						size="3-2"
 					>
 						{currentIdp.iconNames.map((iconName: string) => (
-							<Icon name={iconName as IconName} size="huge"></Icon>
+							<Icon
+								name={iconName as IconName}
+								size="huge"
+								type={iconName === 'itsme' ? 'multicolor' : 'custom'}
+							></Icon>
 						))}
 					</Column>
 					<Column className="c-account-link__column" size="3-5">
@@ -80,7 +85,11 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 					<Column className="c-account-link__column" size="3-2">
 						{linked ? (
 							<span>
-								<Icon className="c-account-link__icon" name="check-circle"></Icon>
+								<Icon
+									className="c-account-link__icon"
+									type="multicolor"
+									name="circle-check"
+								></Icon>
 								Gekoppeld
 							</span>
 						) : (
@@ -92,15 +101,19 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 							{linked ? (
 								<Button
 									type="secondary"
-									label={t('Verbreek koppeling')}
-									title={t('Verbreek koppeling')}
+									label={t(
+										'settings/components/linked-accounts___verbreek-koppeling'
+									)}
+									title={t(
+										'settings/components/linked-accounts___verbreek-koppeling'
+									)}
 									onClick={() => redirectToServerUnlinkAccount(location, idpType)}
 								/>
 							) : (
 								<Button
 									type="primary"
-									label={t('Koppel')}
-									title={t('Koppel')}
+									label={t('settings/components/linked-accounts___koppel')}
+									title={t('settings/components/linked-accounts___koppel')}
 									onClick={() => redirectToServerLinkAccount(location, idpType)}
 								/>
 							)}
@@ -122,15 +135,26 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('koppelingen-pagina-titel'))}</title>
-				<meta name="description" content={t('koppelingen-pagina-beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						t('settings/components/linked-accounts___koppelingen-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={t(
+						'settings/components/linked-accounts___koppelingen-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
 			<Container mode="vertical">
 				<Spacer margin="bottom">
 					<Grid>
 						<Column size="3-8">
 							<Form type="standard">
-								<BlockHeading type="h3">{t('Koppel je account')}</BlockHeading>
+								<BlockHeading type="h3">
+									{t('settings/components/linked-accounts___koppel-je-account')}
+								</BlockHeading>
 								<FormGroup
 									label={t(
 										'settings/components/account___koppel-je-account-met-andere-platformen'

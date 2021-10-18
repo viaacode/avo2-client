@@ -1,10 +1,20 @@
 .m-login-options {
-	.c-button .o-svg-icon {
-		bottom: 0;
-		margin-right: 0;
+	.c-button-smartschool,
+	.c-button-klascement,
+	.c-button-acmidm,
+	.c-button-itsme {
+		.o-svg-icon {
+			bottom: 0;
+			margin-right: 0;
+		}
+	}
 
-		* {
-			fill: white !important;
+	.c-button-smartschool,
+	.c-button-klascement {
+		.o-svg-icon {
+			* {
+				fill: white !important;
+			}
 		}
 	}
 }

@@ -62,7 +62,9 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 			)
 		) {
 			tabHeaders.push(generateTabHeader(ACCOUNT_ID, t('settings/views/settings___account')));
-			tabHeaders.push(generateTabHeader(LINKED_ACCOUNTS, t('koppelingen')));
+			tabHeaders.push(
+				generateTabHeader(LINKED_ACCOUNTS, t('settings/views/settings___koppelingen'))
+			);
 		}
 
 		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)) {

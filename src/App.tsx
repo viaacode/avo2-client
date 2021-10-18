@@ -1,9 +1,10 @@
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+// import { Modal } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { createBrowserHistory, Location } from 'history';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider, compose } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -15,10 +16,12 @@ import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
+import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
 import { insideIframe } from './shared/helpers/inside-iframe';
+import withUser from './shared/hocs/withUser';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
@@ -81,6 +84,7 @@ const App: FunctionComponent<AppProps> = (props) => {
 						{renderRoutes()}
 						{!isLoginRoute && !isInsideIframe && <Footer {...props} />}
 						{!isInsideIframe && <ZendeskWrapper />}
+						<ACMIDMNudgeModal />
 					</>
 				)}
 			</div>
@@ -98,7 +102,7 @@ const App: FunctionComponent<AppProps> = (props) => {
 	);
 };
 
-const AppWithRouter = withRouter(App);
+const AppWithRouter = compose(withRouter, withUser)(App);
 
 const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>

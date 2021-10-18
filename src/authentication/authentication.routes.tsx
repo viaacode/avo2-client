@@ -4,7 +4,7 @@ import { Route } from 'react-router';
 import { APP_PATH } from '../constants';
 import Profile from '../settings/components/Profile';
 
-import { Login, Logout, RegisterOrLogin, RegisterStamboek } from './views';
+import { LinkYourAccount, Login, Logout, RegisterOrLogin, RegisterStamboek } from './views';
 import AcceptConditions from './views/registration-flow/l8-accept-conditions';
 import StudentTeacher from './views/registration-flow/r10-student-teacher';
 import ManualRegistration from './views/registration-flow/r4-manual-registration';
@@ -35,6 +35,12 @@ export const renderAuthenticationRoutes = (): ReactNode[] => [
 		exact
 		path={APP_PATH.REGISTER_OR_LOGIN.route}
 		key={APP_PATH.REGISTER_OR_LOGIN.route}
+	/>,
+	<Route
+		component={LinkYourAccount}
+		exact
+		path={APP_PATH.LINK_YOUR_ACCOUNT.route}
+		key={APP_PATH.LINK_YOUR_ACCOUNT.route}
 	/>,
 	<Route
 		component={AcceptConditions}

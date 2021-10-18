@@ -40,12 +40,14 @@ export type RouteId =
 	| 'ASSIGNMENT_DETAIL'
 	| 'ASSIGNMENT_EDIT'
 	| 'ASSIGNMENT_RESPONSES'
+	| 'LINK_YOUR_ACCOUNT'
 	| 'SETTINGS'
 	| 'SETTINGS_TAB'
 	| 'SETTINGS_PROFILE'
 	| 'SETTINGS_ACCOUNT'
 	| 'SETTINGS_EMAIL'
 	| 'SETTINGS_NOTIFICATIONS'
+	| 'SETTINGS_LINKS'
 	| 'COMPLETE_PROFILE'
 	| 'ACCEPT_CONDITIONS'
 	| 'COOKIE_POLICY'
@@ -68,6 +70,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	REGISTER_OR_LOGIN: {
 		route: `/${ROUTE_PARTS.registerOrLogin}`,
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
+	LINK_YOUR_ACCOUNT: {
+		route: `/${ROUTE_PARTS.linkYourAccount}`,
 		showInContentPicker: true,
 		showForInteractiveTour: false,
 	},
@@ -223,6 +230,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	SETTINGS_NOTIFICATIONS: {
 		route: `/${ROUTE_PARTS.settings}/${ROUTE_PARTS.notifications}`,
+		showInContentPicker: true,
+		showForInteractiveTour: true,
+	},
+	SETTINGS_LINKS: {
+		route: `/${ROUTE_PARTS.settings}/${ROUTE_PARTS.linkedAccounts}`,
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},

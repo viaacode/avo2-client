@@ -35,7 +35,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import RegisterOrRegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
@@ -921,7 +921,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						/>
 					</>
 				)}
-				{showLoginPopup && <RegisterOrRegisterOrLogin />}
+				{showLoginPopup && <RegisterOrLogin />}
 			</>
 		);
 	};

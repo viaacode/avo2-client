@@ -25,7 +25,7 @@ import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps {}
 
-const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
+const RegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
 	history,
 	location,
 	match,
@@ -129,4 +129,4 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteC
 	);
 };
 
-export default withRouter(RegisterOrRegisterOrLogin);
+export default withRouter(RegisterOrLogin);

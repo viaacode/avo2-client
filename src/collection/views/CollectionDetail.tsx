@@ -31,7 +31,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import RegisterOrRegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	InteractiveTour,
@@ -1013,7 +1013,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</>
 				)}
-				{showLoginPopup && <RegisterOrRegisterOrLogin />}
+				{showLoginPopup && <RegisterOrLogin />}
 			</>
 		);
 	};

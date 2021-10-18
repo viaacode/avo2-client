@@ -55,6 +55,7 @@ export function redirectToServerItsmeLogin(location: Location) {
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
+		itsme: true,
 	})}`;
 }
 
@@ -188,6 +189,7 @@ export function getRedirectAfterLogin(
 ) {
 	// From query string
 	const queryStrings = queryString.parse(location.search);
+
 	if (queryStrings.returnToUrl && isString(queryStrings.returnToUrl)) {
 		const returnToUrl = queryStrings.returnToUrl;
 		if (!returnToUrl.startsWith('http') && !returnToUrl.startsWith('//')) {

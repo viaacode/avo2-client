@@ -52,8 +52,9 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					block
 					type="secondary"
 					className="c-button-itsme"
-					icon="smartschool"
-					label={t('itsme')}
+					icon="itsme"
+					iconType="multicolor"
+					label={t('authentication/components/login-options___itsme')}
 					onClick={() => {
 						onOptionClicked();
 						redirectToServerItsmeLogin(location);
@@ -65,8 +66,10 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					block
 					type="secondary"
 					className="c-button-acmidm"
-					icon="smartschool"
-					label={t('eID of een digitale sleutel')}
+					icon="eid"
+					label={t(
+						'authentication/components/login-options___e-id-of-een-digitale-sleutel'
+					)}
 					onClick={() => {
 						onOptionClicked();
 						redirectToServerACMIDMLogin(location);
