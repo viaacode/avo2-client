@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -19,6 +20,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToServerLinkAccount,
@@ -36,90 +38,98 @@ interface IdpProps {
 	label: string;
 	description?: string;
 	iconNames: IconName[];
+	hideForPupil?: boolean;
 }
-
-const idpProps: Record<string, IdpProps> = {
-	VLAAMSEOVERHEID: {
-		label: 'Burgerprofiel',
-		description: 'itsme, eID of een digitale sleutel',
-		iconNames: ['itsme' as IconName, 'eid' as IconName], // TODO: Remove `as IconName`.
-	},
-	SMARTSCHOOL: {
-		label: 'Smartschool',
-		iconNames: ['smartschool'],
-	},
-	KLASCEMENT: {
-		label: 'KlasCement',
-		iconNames: ['klascement'],
-	},
-};
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
 const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
 
+	const idpProps: Record<string, IdpProps> = {
+		VLAAMSEOVERHEID: {
+			label: t('Burgerprofiel'),
+			description: t('itsme, eID of een digitale sleutel'),
+			iconNames: ['itsme' as IconName, 'eid' as IconName], // TODO: Remove `as IconName`.
+			hideForPupil: true,
+		},
+		SMARTSCHOOL: {
+			label: t('Smartschool'),
+			iconNames: ['smartschool'],
+		},
+		KLASCEMENT: {
+			label: t('KlasCement'),
+			iconNames: ['klascement'],
+		},
+	};
+
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		const linked = hasIdpLinked(user, idpType);
 		const currentIdp = idpProps[idpType];
-		// const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+		const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 		return (
 			<Spacer margin="top">
-				<Grid className="c-account-link">
-					<Column
-						className={`c-account-link__column c-account-link__column--${currentIdp.label.toLowerCase()}`}
-						size="3-2"
-					>
-						{currentIdp.iconNames.map((iconName: string) => (
-							<Icon
-								name={iconName as IconName}
-								size="huge"
-								type={iconName === 'itsme' ? 'multicolor' : 'custom'}
-							></Icon>
-						))}
-					</Column>
-					<Column className="c-account-link__column" size="3-5">
-						<span className="c-account-link__label">{currentIdp.label}</span>
-						<span>{currentIdp.description}</span>
-					</Column>
-					<Column className="c-account-link__column" size="3-2">
-						{linked ? (
-							<span>
+				{!(isPupil && currentIdp.hideForPupil) && (
+					<Grid className="c-account-link">
+						<Column
+							className={`c-account-link__column c-account-link__column--${currentIdp.label.toLowerCase()}`}
+							size="3-2"
+						>
+							{currentIdp.iconNames.map((iconName: string) => (
 								<Icon
-									className="c-account-link__icon"
-									type="multicolor"
-									name="circle-check"
+									name={iconName as IconName}
+									size="huge"
+									type={iconName === 'itsme' ? 'multicolor' : 'custom'}
 								></Icon>
-								Gekoppeld
-							</span>
-						) : (
-							<></>
-						)}
-					</Column>
-					<Column className="c-account-link__column" size="3-3">
-						<Spacer margin="right">
+							))}
+						</Column>
+						<Column className="c-account-link__column" size="3-5">
+							<span className="c-account-link__label">{currentIdp.label}</span>
+							<span>{currentIdp.description}</span>
+						</Column>
+						<Column className="c-account-link__column" size="3-2">
 							{linked ? (
-								<Button
-									type="secondary"
-									label={t(
-										'settings/components/linked-accounts___verbreek-koppeling'
-									)}
-									title={t(
-										'settings/components/linked-accounts___verbreek-koppeling'
-									)}
-									onClick={() => redirectToServerUnlinkAccount(location, idpType)}
-								/>
+								<span>
+									<Icon
+										className="c-account-link__icon"
+										type="multicolor"
+										name="circle-check"
+									></Icon>
+									{t('Gekoppeld')}
+								</span>
 							) : (
-								<Button
-									type="primary"
-									label={t('settings/components/linked-accounts___koppel')}
-									title={t('settings/components/linked-accounts___koppel')}
-									onClick={() => redirectToServerLinkAccount(location, idpType)}
-								/>
+								<></>
 							)}
-						</Spacer>
-					</Column>
-				</Grid>
+						</Column>
+						<Column className="c-account-link__column" size="3-3">
+							<Spacer margin="right">
+								{linked ? (
+									<Button
+										type="secondary"
+										label={t(
+											'settings/components/linked-accounts___verbreek-koppeling'
+										)}
+										title={t(
+											'settings/components/linked-accounts___verbreek-koppeling'
+										)}
+										onClick={() =>
+											redirectToServerUnlinkAccount(location, idpType)
+										}
+									/>
+								) : (
+									<Button
+										type="primary"
+										label={t('settings/components/linked-accounts___koppel')}
+										title={t('settings/components/linked-accounts___koppel')}
+										onClick={() =>
+											redirectToServerLinkAccount(location, idpType)
+										}
+									/>
+								)}
+							</Spacer>
+						</Column>
+					</Grid>
+				)}
 			</Spacer>
 		);
 	};
