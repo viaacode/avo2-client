@@ -23,7 +23,8 @@
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
 		"Benjamin Naesen <benjamin.naesen@studiohyperdrive.be>",
 		"Andry Charlier <andry.charlier@studiohyperdrive.be>",
-		"Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>"
+		"Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>",
+		"Ian Emsens <ian.emsens@sudiohypderive.be>"
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
