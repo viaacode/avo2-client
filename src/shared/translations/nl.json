@@ -2099,6 +2099,8 @@
   "shared/components/share-through-email-modal/share-through-email-modal___wij-sturen-voor-jou-een-mailtje-met-deze-link": "Wij sturen voor jou een mail met deze link.",
   "shared/components/share-with-students-modal/share-with-students-modal___er-ging-iets-mis": "Er ging iets mis",
   "shared/components/share-with-students-modal/share-with-students-modal___inhoud": "inhoud",
+  "shared/components/share-with-students-modal/share-with-students-modal___kopieer-deze-link-om-te-delen-met-leerlingen": "Kopieer deze link om te delen met leerlingen",
+  "shared/components/share-with-students-modal/share-with-students-modal___kopieer-link": "kopieer link",
   "shared/components/share-with-students-modal/share-with-students-modal___titel": "titel",
   "shared/components/share-with-students-modal/share-with-students-modal___weergave-voor-leerlingen": "weergave voor leerlingen",
   "shared/components/wysiwyg-wrapper/wysiwyg-wrapper___dit-bestand-is-te-groot-max-10-mb": "Dit bestand is te groot (max 10MB).",

@@ -1,9 +1,21 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BlockHeading, FormGroup, Modal, ModalBody } from '@viaa/avo2-components';
+import {
+	Avatar,
+	Box,
+	Button,
+	Flex,
+	FlexItem,
+	FormGroup,
+	Modal,
+	ModalBody,
+	Spacer,
+	TextInput,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
 import { renderContentLayoutOptionsButtons } from '../../helpers/render-content-layout-options-buttons';
@@ -15,6 +27,8 @@ import './ShareWithStudentsModal.scss';
 // Typings
 
 interface SharedUrl {
+	id?: string;
+	title?: string;
 	content_layout?: AssignmentLayout;
 }
 
@@ -29,10 +43,21 @@ interface ShareWithStudentsModalProps {
 // State
 
 const defaultSharedUrlState: SharedUrl = {
+	id: '19c707d5-01e0-4e4c-bcfd-fc79b60d8e5a',
+	title: undefined,
 	content_layout: AssignmentLayout.PlayerAndText,
 };
 
 // Helpers
+
+const buildSharedUrlHref = (id: string): string => {
+	return `https://example.com/url/structure/${id}`;
+};
+
+// Unused, waiting on non-happy flow elaboration (aka. merge with publication flow)
+// const isShareable = (content: Avo.Assignment.Content): boolean => {
+// 	return (content as ItemSchema).is_published || (content as CollectionSchema).is_public;
+// }
 
 // Component
 
@@ -47,6 +72,13 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 	const [t] = useTranslation();
 	const [sharedUrl, setSharedUrl] = useState<SharedUrl>(defaultSharedUrlState);
 
+	if (!sharedUrl.title && content?.title) {
+		setSharedUrl({
+			...sharedUrl,
+			title: content.title,
+		});
+	}
+
 	return (
 		<Modal
 			className="m-share-with-students-modal"
@@ -58,49 +90,105 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 		>
 			{user && content ? (
 				<ModalBody>
-					<pre>{JSON.stringify(sharedUrl)}</pre>
-					<hr />
+					{/* <pre>{JSON.stringify(sharedUrl)}</pre>
+					<hr /> */}
 
-					<FormGroup
-						label={t(
-							'shared/components/share-with-students-modal/share-with-students-modal___inhoud'
-						)}
-					>
-						{content_label &&
-							renderContentLink(
-								{
-									content_label,
-									content_id: content.id.toString(),
-								},
-								content,
-								user
+					{content_label === 'ITEM' && (
+						<Spacer margin={['bottom']}>
+							<Avatar
+								dark={true}
+								name={(content as ItemSchema).organisation.name}
+								image={(content as ItemSchema).organisation.logo_url}
+							/>
+						</Spacer>
+					)}
+
+					<Spacer margin={content_label === 'ITEM' ? ['top', 'bottom'] : ['bottom']}>
+						<FormGroup
+							required
+							label={t(
+								'shared/components/share-with-students-modal/share-with-students-modal___titel'
 							)}
-					</FormGroup>
+						>
+							<TextInput
+								id="title"
+								value={sharedUrl.title}
+								onChange={(title: string) =>
+									setSharedUrl({
+										...sharedUrl,
+										title,
+									})
+								}
+							/>
+						</FormGroup>
+					</Spacer>
 
-					<FormGroup
-						label={t(
-							'shared/components/share-with-students-modal/share-with-students-modal___weergave-voor-leerlingen'
-						)}
-					>
-						{renderContentLayoutOptionsButtons(sharedUrl, (value: string) => {
-							setSharedUrl({
-								...sharedUrl,
-								content_layout: (value as unknown) as AssignmentLayout, // TS2353
-							});
-						})}
-					</FormGroup>
+					<Spacer margin={['top', 'bottom']}>
+						<FormGroup
+							label={t(
+								'shared/components/share-with-students-modal/share-with-students-modal___inhoud'
+							)}
+						>
+							{content_label &&
+								renderContentLink(
+									{
+										content_label,
+										content_id: content.id.toString(),
+									},
+									content,
+									user
+								)}
+						</FormGroup>
+					</Spacer>
 
-					<BlockHeading type="h4">
-						{t(
-							'shared/components/share-with-students-modal/share-with-students-modal___titel'
-						)}
-					</BlockHeading>
+					<Spacer margin={['top', 'bottom']}>
+						<FormGroup
+							label={t(
+								'shared/components/share-with-students-modal/share-with-students-modal___weergave-voor-leerlingen'
+							)}
+						>
+							{renderContentLayoutOptionsButtons(sharedUrl, (value: string) => {
+								setSharedUrl({
+									...sharedUrl,
+									content_layout: (value as unknown) as AssignmentLayout, // TS2353
+								});
+							})}
+						</FormGroup>
+					</Spacer>
+
+					<Spacer margin={['top', 'bottom-small']}>
+						<Box backgroundColor="gray" condensed>
+							<Flex wrap justify="between" align="baseline">
+								<FlexItem className="u-truncate c-share-through-email-modal__link">
+									{sharedUrl.id && (
+										<a href={buildSharedUrlHref(sharedUrl.id)}>
+											{buildSharedUrlHref(sharedUrl.id)}
+										</a>
+									)}
+								</FlexItem>
+								<FlexItem shrink>
+									<Spacer margin="left-small">
+										<Button
+											label={t(
+												'shared/components/share-with-students-modal/share-with-students-modal___kopieer-link'
+											)}
+											onClick={() => {
+												//
+											}}
+										/>
+									</Spacer>
+								</FlexItem>
+							</Flex>
+						</Box>
+					</Spacer>
 				</ModalBody>
 			) : (
 				<ModalBody>
-					{t(
-						'shared/components/share-with-students-modal/share-with-students-modal___er-ging-iets-mis'
-					)}
+					<Spacer margin={['bottom-small']}>
+						{t(
+							'shared/components/share-with-students-modal/share-with-students-modal___er-ging-iets-mis'
+						)}
+					</Spacer>
 				</ModalBody>
 			)}
 		</Modal>
