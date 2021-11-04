@@ -83,7 +83,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
+	const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
@@ -399,7 +399,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						<ItemVideoDescription
 							itemMetaData={item}
 							canPlay={
-								!isOpenAddToCollectionModal &&
+								!isAddToCollectionModalOpen &&
 								!isShareThroughEmailModalOpen &&
 								!isReportItemModalOpen
 							}
@@ -429,10 +429,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 														ariaLabel={t(
 															'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 														)}
-														onClick={() =>
-															setIsOpenAddToCollectionModal(true)
-														}
+														onClick={() => {
+															setIsAddToCollectionModalOpen(true);
+														}}
 													/>
+
 													{PermissionService.hasPerm(
 														user,
 														PermissionName.CREATE_ASSIGNMENTS
@@ -449,15 +450,38 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															title={t(
 																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
 															)}
-															onClick={() =>
+															onClick={() => {
 																history.push(
 																	generateAssignmentCreateLink(
 																		'KIJK',
 																		item.external_id,
 																		'ITEM'
 																	)
-																)
-															}
+																);
+															}}
+														/>
+													)}
+
+													{(true ||
+														PermissionService.hasPerm(
+															user,
+															PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS
+														)) && (
+														<Button
+															type="tertiary"
+															icon="share-2"
+															label={t(
+																'item/views/item___delen-met-leerlingen'
+															)}
+															ariaLabel={t(
+																'item/views/item-detail___deel-dit-met-alle-leerlingen'
+															)}
+															title={t(
+																'item/views/item-detail___deel-dit-met-alle-leerlingen'
+															)}
+															onClick={() => {
+																/**setIsShareWithStudentsModalOpen(true);*/
+															}}
 														/>
 													)}
 												</Flex>
@@ -477,16 +501,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
 												title={t('item/views/item___share-item')}
-												onClick={() =>
-													setIsShareThroughEmailModalOpen(true)
-												}
+												onClick={() => {
+													setIsShareThroughEmailModalOpen(true);
+												}}
 											/>
 											<Button
 												type="tertiary"
 												icon="flag"
 												ariaLabel={t('item/views/item___rapporteer-item')}
 												title={t('item/views/item___rapporteer-item')}
-												onClick={() => setIsReportItemModalOpen(true)}
+												onClick={() => {
+													setIsReportItemModalOpen(true);
+												}}
 											/>
 										</ButtonToolbar>
 									</Flex>
@@ -687,7 +713,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						</Grid>
 					</Container>
 				</Container>
-				{!isNil(match.params.id) && isOpenAddToCollectionModal && (
+				{!isNil(match.params.id) && isAddToCollectionModalOpen && (
 					<AddToCollectionModal
 						history={history}
 						location={location}
@@ -695,8 +721,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						user={user}
 						itemMetaData={item}
 						externalId={match.params.id as string}
-						isOpen={isOpenAddToCollectionModal}
-						onClose={() => setIsOpenAddToCollectionModal(false)}
+						isOpen={isAddToCollectionModalOpen}
+						onClose={() => {
+							setIsAddToCollectionModalOpen(false);
+						}}
 					/>
 				)}
 				<ShareThroughEmailModal
@@ -705,12 +733,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					emailLinkHref={window.location.href}
 					emailLinkTitle={item.title}
 					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => setIsShareThroughEmailModalOpen(false)}
+					onClose={() => {
+						setIsShareThroughEmailModalOpen(false);
+					}}
 				/>
 				<ReportItemModal
 					externalId={match.params.id}
 					isOpen={isReportItemModalOpen}
-					onClose={() => setIsReportItemModalOpen(false)}
+					onClose={() => {
+						setIsReportItemModalOpen(false);
+					}}
 					user={user}
 				/>
 			</>
