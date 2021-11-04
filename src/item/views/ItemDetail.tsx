@@ -462,11 +462,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 														/>
 													)}
 
-													{(true ||
-														PermissionService.hasPerm(
-															user,
-															PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS
-														)) && (
+													{PermissionService.hasPerm(
+														user,
+														PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS
+													) && (
 														<Button
 															type="tertiary"
 															icon="share-2"
