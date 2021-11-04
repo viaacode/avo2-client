@@ -72,6 +72,18 @@ import './CollectionDetail.scss';
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
+export const COLLECTION_ACTIONS = {
+	duplicate: 'duplicate',
+	addToBundle: 'addToBundle',
+	delete: 'delete',
+	openShareThroughEmail: 'openShareThroughEmail',
+	openPublishCollectionModal: 'openPublishCollectionModal',
+	toggleBookmark: 'toggleBookmark',
+	createAssignment: 'createAssignment',
+	editCollection: 'editCollection',
+	openShareWithStudents: 'openShareWithStudents',
+};
+
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
@@ -357,7 +369,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
-			case 'duplicate':
+			case COLLECTION_ACTIONS.duplicate:
 				try {
 					if (!collection) {
 						ToastService.danger(
@@ -406,35 +418,40 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				}
 				break;
 
-			case 'addToBundle':
+			case COLLECTION_ACTIONS.addToBundle:
 				setIsAddToBundleModalOpen(true);
 				break;
 
-			case 'delete':
+			case COLLECTION_ACTIONS.addToBundle:
 				setIsDeleteModalOpen(true);
 				break;
 
-			case 'openShareThroughEmail':
+			case COLLECTION_ACTIONS.openShareThroughEmail:
 				setIsShareThroughEmailModalOpen(true);
 				break;
 
-			case 'openPublishCollectionModal':
+			case COLLECTION_ACTIONS.openPublishCollectionModal:
 				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
 
-			case 'toggleBookmark':
+			case COLLECTION_ACTIONS.toggleBookmark:
 				await toggleBookmark();
 				break;
 
-			case 'createAssignment':
+			case COLLECTION_ACTIONS.createAssignment:
 				createAssignment();
 				break;
 
-			case 'editCollection':
+			case COLLECTION_ACTIONS.editCollection:
 				onEditCollection();
 				break;
 
+			case COLLECTION_ACTIONS.openShareWithStudents:
+				// setIsShareWithStudentsModalOpen(true);
+				break;
+
 			default:
+				console.warn(`An unhandled action "${item}" was executed without a binding.`);
 				return null;
 		}
 	};
@@ -546,16 +563,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
-							'addToBundle',
+							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
+						),
+				  ]
+				: []),
+			...(permissions.canPublishCollection
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openShareWithStudents,
+							t('collection/views/collection-detail___delen-met-leerlingen'),
+							'share-2'
 						),
 				  ]
 				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
-							'duplicate',
+							COLLECTION_ACTIONS.duplicate,
 							t('collection/views/collection-detail___dupliceer'),
 							'copy'
 						),
@@ -564,7 +590,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
-							'delete',
+							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___verwijder')
 						),
 				  ]
@@ -582,7 +608,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						title={t(
 							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
 						)}
-						onClick={() => executeAction('createAssignment')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
 					/>
 				)}
 				{permissions.canPublishCollection && (
@@ -607,7 +633,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								  )
 						}
 						icon={isPublic ? 'unlock-3' : 'lock'}
-						onClick={() => executeAction('openPublishCollectionModal')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openPublishCollectionModal)}
 					/>
 				)}
 				<ToggleButton
@@ -616,7 +642,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-					onClick={() => executeAction('toggleBookmark')}
+					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
 				/>
 				{isPublic && (
 					<Button
@@ -624,7 +650,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						type="secondary"
 						icon="share-2"
 						ariaLabel={t('collection/views/collection-detail___deel')}
-						onClick={() => executeAction('openShareThroughEmail')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openShareThroughEmail)}
 					/>
 				)}
 				<MoreOptionsDropdown
@@ -641,7 +667,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
 							title={t('collection/views/collection-detail___pas-deze-collectie-aan')}
-							onClick={() => executeAction('editCollection')}
+							onClick={() => executeAction(COLLECTION_ACTIONS.editCollection)}
 						/>
 					</Spacer>
 				)}
@@ -656,7 +682,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canEditCollection
 				? [
 						createDropdownMenuItem(
-							'editCollection',
+							COLLECTION_ACTIONS.editCollection,
 							t('collection/views/collection-detail___bewerken'),
 							'edit'
 						),
@@ -665,7 +691,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
 				? [
 						createDropdownMenuItem(
-							'createAssignment',
+							COLLECTION_ACTIONS.createAssignment,
 							t('collection/views/collection-detail___maak-opdracht'),
 							'clipboard'
 						),
@@ -674,14 +700,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canPublishCollection
 				? [
 						createDropdownMenuItem(
-							'openPublishCollectionModal',
+							COLLECTION_ACTIONS.openPublishCollectionModal,
 							t('collection/views/collection-detail___delen'),
 							'plus'
 						),
 				  ]
 				: []),
 			createDropdownMenuItem(
-				'toggleBookmark',
+				COLLECTION_ACTIONS.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
 					? t('collection/views/collection-detail___verwijder-bladwijzer')
 					: t('collection/views/collection-detail___maak-bladwijzer'),
@@ -690,7 +716,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(!!collection && collection.is_public
 				? [
 						createDropdownMenuItem(
-							'openShareThroughEmail',
+							COLLECTION_ACTIONS.openShareThroughEmail,
 							t('collection/views/collection-detail___deel'),
 							'share-2'
 						),
@@ -699,16 +725,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
-							'addToBundle',
+							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
+						),
+				  ]
+				: []),
+			...(permissions.canPublishCollection
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openShareWithStudents,
+							t('collection/views/collection-detail___delen-met-leerlingen'),
+							'share-2'
 						),
 				  ]
 				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
-							'duplicate',
+							COLLECTION_ACTIONS.duplicate,
 							t('collection/views/collection-detail___dupliceer'),
 							'copy'
 						),
@@ -717,7 +752,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
-							'delete',
+							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___verwijder')
 						),
 				  ]
