@@ -110,11 +110,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
+			canViewPublishedCollections: boolean;
+			canViewUnpublishedCollections: boolean;
 			canEditCollection: boolean;
 			canPublishCollection: boolean;
 			canDeleteCollection: boolean;
 			canCreateCollections: boolean;
 			canViewItems: boolean;
+			canShareWithStudents: boolean;
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -227,6 +230,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
 					user
 				),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS }],
+					user
+				),
 			]);
 
 			const permissionObj = {
@@ -238,6 +245,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canDeleteCollection: rawPermissions[5],
 				canCreateCollections: rawPermissions[6],
 				canViewItems: rawPermissions[7],
+				canShareWithStudents: rawPermissions[8],
 			};
 
 			let showPopup = false;
@@ -569,7 +577,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canPublishCollection
+			...(permissions.canShareWithStudents
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openShareWithStudents,
@@ -731,7 +739,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canPublishCollection
+			...(permissions.canShareWithStudents
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openShareWithStudents,
