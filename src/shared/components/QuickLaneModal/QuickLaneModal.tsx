@@ -96,6 +96,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 					{content_label === 'ITEM' && (
 						<Spacer margin={['bottom']}>
 							<Avatar
+								className="m-quick-lane-modal__avatar"
 								dark={true}
 								name={(content as ItemSchema).organisation.name}
 								image={(content as ItemSchema).organisation.logo_url}
@@ -157,7 +158,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 					<Spacer margin={['top', 'bottom-small']}>
 						<Box backgroundColor="gray" condensed>
 							<Flex wrap justify="between" align="baseline">
-								<FlexItem className="u-truncate c-quick-lane-modal__link">
+								<FlexItem className="u-truncate m-quick-lane-modal__link">
 									{sharedUrl.id && (
 										<a href={buildSharedUrlHref(sharedUrl.id)}>
 											{buildSharedUrlHref(sharedUrl.id)}

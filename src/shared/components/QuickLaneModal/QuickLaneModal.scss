@@ -3,3 +3,17 @@
 .m-content-thumbnail {
     width: $m-content-thumbnail-width;
 }
+
+.m-quick-lane-modal {
+    &__avatar {
+        .c-avatar--img {
+            border: 1px solid $color-night-blue;
+        }
+
+        .c-avatar-and-text__text {
+            p {
+                font-weight: 500;
+            }
+        }
+    }
+}
