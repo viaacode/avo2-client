@@ -22,7 +22,7 @@ import { renderContentLayoutOptionsButtons } from '../../helpers/render-content-
 import renderContentLink from '../../helpers/render-content-link';
 import withUser, { UserProps } from '../../hocs/withUser';
 
-import './ShareWithStudentsModal.scss';
+import './QuickLaneModal.scss';
 
 // Typings
 
@@ -32,7 +32,7 @@ interface SharedUrl {
 	content_layout?: AssignmentLayout;
 }
 
-interface ShareWithStudentsModalProps {
+interface QuickLaneModalProps {
 	modalTitle: string;
 	isOpen: boolean;
 	content?: Avo.Assignment.Content;
@@ -61,7 +61,7 @@ const buildSharedUrlHref = (id: string): string => {
 
 // Component
 
-const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & UserProps> = ({
+const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	modalTitle,
 	isOpen,
 	content,
@@ -81,7 +81,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 
 	return (
 		<Modal
-			className="m-share-with-students-modal"
+			className="m-quick-lane-modal"
 			title={modalTitle}
 			size="medium"
 			isOpen={isOpen}
@@ -106,9 +106,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 					<Spacer margin={content_label === 'ITEM' ? ['top', 'bottom'] : ['bottom']}>
 						<FormGroup
 							required
-							label={t(
-								'shared/components/share-with-students-modal/share-with-students-modal___titel'
-							)}
+							label={t('shared/components/quick-lane-modal/quick-lane-modal___titel')}
 						>
 							<TextInput
 								id="title"
@@ -126,7 +124,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 					<Spacer margin={['top', 'bottom']}>
 						<FormGroup
 							label={t(
-								'shared/components/share-with-students-modal/share-with-students-modal___inhoud'
+								'shared/components/quick-lane-modal/quick-lane-modal___inhoud'
 							)}
 						>
 							{content_label &&
@@ -144,7 +142,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 					<Spacer margin={['top', 'bottom']}>
 						<FormGroup
 							label={t(
-								'shared/components/share-with-students-modal/share-with-students-modal___weergave-voor-leerlingen'
+								'shared/components/quick-lane-modal/quick-lane-modal___weergave-voor-leerlingen'
 							)}
 						>
 							{renderContentLayoutOptionsButtons(sharedUrl, (value: string) => {
@@ -159,7 +157,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 					<Spacer margin={['top', 'bottom-small']}>
 						<Box backgroundColor="gray" condensed>
 							<Flex wrap justify="between" align="baseline">
-								<FlexItem className="u-truncate c-share-through-email-modal__link">
+								<FlexItem className="u-truncate c-quick-lane-modal__link">
 									{sharedUrl.id && (
 										<a href={buildSharedUrlHref(sharedUrl.id)}>
 											{buildSharedUrlHref(sharedUrl.id)}
@@ -170,7 +168,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 									<Spacer margin="left-small">
 										<Button
 											label={t(
-												'shared/components/share-with-students-modal/share-with-students-modal___kopieer-link'
+												'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 											)}
 											onClick={() => {
 												//
@@ -186,7 +184,7 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 				<ModalBody>
 					<Spacer margin={['bottom-small']}>
 						{t(
-							'shared/components/share-with-students-modal/share-with-students-modal___er-ging-iets-mis'
+							'shared/components/quick-lane-modal/quick-lane-modal___er-ging-iets-mis'
 						)}
 					</Spacer>
 				</ModalBody>
@@ -195,4 +193,4 @@ const ShareWithStudentsModal: FunctionComponent<ShareWithStudentsModalProps & Us
 	);
 };
 
-export default withUser(ShareWithStudentsModal) as FunctionComponent<ShareWithStudentsModalProps>;
+export default withUser(QuickLaneModal) as FunctionComponent<QuickLaneModalProps>;
