@@ -432,7 +432,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				setIsAddToBundleModalOpen(true);
 				break;
 
-			case COLLECTION_ACTIONS.addToBundle:
+			case COLLECTION_ACTIONS.delete:
 				setIsDeleteModalOpen(true);
 				break;
 
@@ -600,7 +600,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
-							COLLECTION_ACTIONS.addToBundle,
+							COLLECTION_ACTIONS.delete,
 							t('collection/views/collection-detail___verwijder')
 						),
 				  ]
@@ -762,7 +762,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
-							COLLECTION_ACTIONS.addToBundle,
+							COLLECTION_ACTIONS.delete,
 							t('collection/views/collection-detail___verwijder')
 						),
 				  ]
