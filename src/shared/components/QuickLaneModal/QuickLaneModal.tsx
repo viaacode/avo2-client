@@ -90,9 +90,6 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 		>
 			{user && content ? (
 				<ModalBody>
-					{/* <pre>{JSON.stringify(sharedUrl)}</pre>
-					<hr /> */}
-
 					{content_label === 'ITEM' && (
 						<Spacer margin={['bottom']}>
 							<Avatar
