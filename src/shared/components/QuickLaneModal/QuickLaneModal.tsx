@@ -26,7 +26,7 @@ import './QuickLaneModal.scss';
 
 // Typings
 
-interface SharedUrl {
+interface QuickLane {
 	id?: string;
 	title?: string;
 	content_layout?: AssignmentLayout;
@@ -42,7 +42,7 @@ interface QuickLaneModalProps {
 
 // State
 
-const defaultSharedUrlState: SharedUrl = {
+const defaultQuickLaneState: QuickLane = {
 	id: '19c707d5-01e0-4e4c-bcfd-fc79b60d8e5a',
 	title: undefined,
 	content_layout: AssignmentLayout.PlayerAndText,
@@ -50,7 +50,7 @@ const defaultSharedUrlState: SharedUrl = {
 
 // Helpers
 
-const buildSharedUrlHref = (id: string): string => {
+const buildQuickLaneHref = (id: string): string => {
 	return `https://example.com/url/structure/${id}`;
 };
 
@@ -70,11 +70,11 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	user,
 }) => {
 	const [t] = useTranslation();
-	const [sharedUrl, setSharedUrl] = useState<SharedUrl>(defaultSharedUrlState);
+	const [quickLane, setQuickLane] = useState<QuickLane>(defaultQuickLaneState);
 
-	if (!sharedUrl.title && content?.title) {
-		setSharedUrl({
-			...sharedUrl,
+	if (!quickLane.title && content?.title) {
+		setQuickLane({
+			...quickLane,
 			title: content.title,
 		});
 	}
@@ -108,10 +108,10 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						>
 							<TextInput
 								id="title"
-								value={sharedUrl.title}
+								value={quickLane.title}
 								onChange={(title: string) =>
-									setSharedUrl({
-										...sharedUrl,
+									setQuickLane({
+										...quickLane,
 										title,
 									})
 								}
@@ -143,9 +143,9 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								'shared/components/quick-lane-modal/quick-lane-modal___weergave-voor-leerlingen'
 							)}
 						>
-							{renderContentLayoutOptionsButtons(sharedUrl, (value: string) => {
-								setSharedUrl({
-									...sharedUrl,
+							{renderContentLayoutOptionsButtons(quickLane, (value: string) => {
+								setQuickLane({
+									...quickLane,
 									content_layout: (value as unknown) as AssignmentLayout, // TS2353
 								});
 							})}
@@ -156,9 +156,9 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						<Box backgroundColor="gray" condensed>
 							<Flex wrap justify="between" align="baseline">
 								<FlexItem className="u-truncate m-quick-lane-modal__link">
-									{sharedUrl.id && (
-										<a href={buildSharedUrlHref(sharedUrl.id)}>
-											{buildSharedUrlHref(sharedUrl.id)}
+									{quickLane.id && (
+										<a href={buildQuickLaneHref(quickLane.id)}>
+											{buildQuickLaneHref(quickLane.id)}
 										</a>
 									)}
 								</FlexItem>
