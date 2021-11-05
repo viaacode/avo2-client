@@ -41,6 +41,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -103,6 +104,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -455,7 +457,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				break;
 
 			case COLLECTION_ACTIONS.openQuickLane:
-				// setIsQuickLaneModalOpen(true);
+				setIsQuickLaneModalOpen(true);
 				break;
 
 			default:
@@ -1054,6 +1056,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							isOpen={isShareThroughEmailModalOpen}
 							onClose={() => setIsShareThroughEmailModalOpen(false)}
 						/>
+						{collection && (
+							<QuickLaneModal
+								modalTitle={t(
+									'collection/views/collection-detail___delen-met-leerlingen'
+								)}
+								isOpen={isQuickLaneModalOpen}
+								content={collection}
+								content_label="COLLECTIE"
+								onClose={() => {
+									setIsQuickLaneModalOpen(false);
+								}}
+							/>
+						)}
 					</>
 				)}
 				{showLoginPopup && <RegisterOrLogin />}
