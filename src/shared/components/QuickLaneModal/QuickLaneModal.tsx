@@ -152,14 +152,6 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 		})();
 	}, [debounced]);
 
-	// Set initial title before fetching to avoid FoUC
-	if (!quickLane.title && content?.title) {
-		setQuickLane({
-			...quickLane,
-			title: content.title,
-		});
-	}
-
 	return (
 		<Modal
 			className="m-quick-lane-modal"
@@ -189,6 +181,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						>
 							<TextInput
 								id="title"
+								disabled={!quickLane.id}
 								value={quickLane.title}
 								onChange={(title: string) =>
 									setQuickLane({
@@ -227,6 +220,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						>
 							<LayoutOptions
 								item={{ content_layout: quickLane.view_mode }}
+								disabled={!quickLane.id}
 								onChange={(value: string) => {
 									setQuickLane({
 										...quickLane,
@@ -237,31 +231,32 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						</FormGroup>
 					</Spacer>
 
-					{quickLane.id && (
-						<Spacer margin={['top', 'bottom-small']}>
-							<Box backgroundColor="gray" condensed>
-								<Flex wrap justify="between" align="baseline">
-									<FlexItem className="u-truncate m-quick-lane-modal__link">
+					<Spacer margin={['top', 'bottom-small']}>
+						<Box backgroundColor="gray" condensed>
+							<Flex wrap justify="between" align="baseline">
+								<FlexItem className="u-truncate m-quick-lane-modal__link">
+									{quickLane.id && (
 										<a href={buildQuickLaneHref(quickLane.id)}>
 											{buildQuickLaneHref(quickLane.id)}
 										</a>
-									</FlexItem>
-									<FlexItem shrink>
-										<Spacer margin="left-small">
-											<Button
-												label={t(
-													'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
-												)}
-												onClick={() => {
-													//
-												}}
-											/>
-										</Spacer>
-									</FlexItem>
-								</Flex>
-							</Box>
-						</Spacer>
-					)}
+									)}
+								</FlexItem>
+								<FlexItem shrink>
+									<Spacer margin="left-small">
+										<Button
+											disabled={!quickLane.id}
+											label={t(
+												'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
+											)}
+											onClick={() => {
+												//
+											}}
+										/>
+									</Spacer>
+								</FlexItem>
+							</Flex>
+						</Box>
+					</Spacer>
 				</ModalBody>
 			) : (
 				<ModalBody>
