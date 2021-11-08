@@ -66,7 +66,7 @@ const quickLaneUrlRecordToObject = (record: QuickLaneUrlRecord) => {
 const quickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
 	const mapped = ({ ...object } as unknown) as QuickLaneUrlRecord;
 
-	switch (object.view_mode) {
+	switch (Number(object.view_mode)) {
 		case AssignmentLayout.PlayerAndText:
 			mapped.view_mode = 'full';
 			break;
