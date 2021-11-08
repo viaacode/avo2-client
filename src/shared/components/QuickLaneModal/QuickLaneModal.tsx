@@ -18,8 +18,8 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
-import renderContentLink from '../../helpers/render-content-link';
 import withUser, { UserProps } from '../../hocs/withUser';
+import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 
 import './QuickLaneModal.scss';
@@ -125,15 +125,16 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								'shared/components/quick-lane-modal/quick-lane-modal___inhoud'
 							)}
 						>
-							{content_label &&
-								renderContentLink(
-									{
+							{content_label && (
+								<ContentLink
+									parent={{
 										content_label,
 										content_id: content.id.toString(),
-									},
-									content,
-									user
-								)}
+									}}
+									content={content}
+									user={user}
+								/>
+							)}
 						</FormGroup>
 					</Spacer>
 

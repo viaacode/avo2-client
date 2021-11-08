@@ -19,12 +19,12 @@ import { Avo } from '@viaa/avo2-types';
 import { getProfileName } from '../authentication/helpers/get-profile-info';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
+import { ContentLink } from '../shared/components/ContentLink/ContentLink';
 import Html from '../shared/components/Html/Html';
 import { LayoutOptions } from '../shared/components/LayoutOptions/LayoutOptions';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
 import { navigate } from '../shared/helpers';
-import renderContentLink from '../shared/helpers/render-content-link';
 import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
@@ -153,7 +153,11 @@ export class AssignmentHelper {
 							/>
 						</FormGroup>
 						<FormGroup label={i18n.t('assignment/views/assignment-edit___inhoud')}>
-							{renderContentLink(assignment, assignmentContent, user)}
+							<ContentLink
+								parent={assignment}
+								content={assignmentContent}
+								user={user}
+							/>
 						</FormGroup>
 						<FormGroup label={i18n.t('assignment/views/assignment-edit___weergave')}>
 							<LayoutOptions

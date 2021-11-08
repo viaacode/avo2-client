@@ -1,23 +1,27 @@
 import { get } from 'lodash-es';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { DutchContentType, Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../assignment/assignment.const';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { toEnglishContentType } from '../../collection/collection.types';
-import I18n from '../translations/i18n';
+import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
+import { getProfileId } from '../../../authentication/helpers/get-profile-id';
+import { toEnglishContentType } from '../../../collection/collection.types';
 
 type ParentType = Pick<Avo.Assignment.Assignment, 'content_label' | 'content_id'>;
 type ContentType = Avo.Assignment.Content | null;
 
-export const renderContentLink = (
-	parent: ParentType,
-	content: ContentType,
-	user: Avo.User.User
-) => {
+export interface ContentLinkProps {
+	parent: ParentType;
+	content: ContentType;
+	user: Avo.User.User;
+}
+
+export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, content, user }) => {
+	const [t] = useTranslation();
+
 	const dutchLabel = get(
 		content,
 		'type.label',
@@ -40,7 +44,7 @@ export const renderContentLink = (
 						<p>
 							{get(content, 'title') ||
 								get(content, 'description') ||
-								I18n.t('assignment/assignment___de-opdracht-inhoud-is-verwijderd')}
+								t('assignment/assignment___de-opdracht-inhoud-is-verwijderd')}
 						</p>
 					</div>
 				</FlexItem>
@@ -57,7 +61,7 @@ export const renderContentLink = (
 		// since we still need to make a copy when the user clicks on "save assignment" button
 		return (
 			<div
-				title={I18n.t(
+				title={t(
 					'assignment/views/assignment-edit___u-kan-pas-doorklikken-naar-de-collectie-nadat-u-de-opdracht-hebt-aangemaakt'
 				)}
 			>
@@ -81,5 +85,3 @@ export const renderContentLink = (
 	}
 	return linkContent;
 };
-
-export default renderContentLink;
