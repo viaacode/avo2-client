@@ -18,9 +18,9 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
-import { renderContentLayoutOptionsButtons } from '../../helpers/render-content-layout-options-buttons';
 import renderContentLink from '../../helpers/render-content-link';
 import withUser, { UserProps } from '../../hocs/withUser';
+import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 
 import './QuickLaneModal.scss';
 
@@ -143,12 +143,15 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								'shared/components/quick-lane-modal/quick-lane-modal___weergave-voor-leerlingen'
 							)}
 						>
-							{renderContentLayoutOptionsButtons(quickLane, (value: string) => {
-								setQuickLane({
-									...quickLane,
-									content_layout: (value as unknown) as AssignmentLayout, // TS2353
-								});
-							})}
+							<LayoutOptions
+								item={quickLane}
+								onChange={(value: string) => {
+									setQuickLane({
+										...quickLane,
+										content_layout: (value as unknown) as AssignmentLayout, // TS2353
+									});
+								}}
+							/>
 						</FormGroup>
 					</Spacer>
 

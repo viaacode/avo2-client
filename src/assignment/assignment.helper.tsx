@@ -20,10 +20,10 @@ import { getProfileName } from '../authentication/helpers/get-profile-info';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
 import Html from '../shared/components/Html/Html';
+import { LayoutOptions } from '../shared/components/LayoutOptions/LayoutOptions';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
 import { navigate } from '../shared/helpers';
-import { renderContentLayoutOptionsButtons } from '../shared/helpers/render-content-layout-options-buttons';
 import renderContentLink from '../shared/helpers/render-content-link';
 import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
@@ -156,12 +156,15 @@ export class AssignmentHelper {
 							{renderContentLink(assignment, assignmentContent, user)}
 						</FormGroup>
 						<FormGroup label={i18n.t('assignment/views/assignment-edit___weergave')}>
-							{renderContentLayoutOptionsButtons(assignment, (value: string) => {
-								setAssignmentProp(
-									'content_layout',
-									value ? parseInt(value, 10) : null
-								);
-							})}
+							<LayoutOptions
+								item={assignment}
+								onChange={(value: string) => {
+									setAssignmentProp(
+										'content_layout',
+										value ? parseInt(value, 10) : null
+									);
+								}}
+							/>
 						</FormGroup>
 						<FormGroup
 							label={i18n.t('assignment/views/assignment-edit___klas-of-groep')}
