@@ -7,7 +7,11 @@ import { AssignmentLayout } from '../assignment/assignment.types';
 import { CustomError } from '../shared/helpers';
 import { dataService } from '../shared/services';
 
-import { GET_QUICK_LANE_BY_CONTENT_AND_OWNER, INSERT_QUICK_LANE } from './quick-lane.gql';
+import {
+	GET_QUICK_LANE_BY_CONTENT_AND_OWNER,
+	INSERT_QUICK_LANE,
+	UPDATE_QUICK_LANE,
+} from './quick-lane.gql';
 
 // Typing
 
@@ -100,9 +104,10 @@ export class QuickLaneService {
 
 			if (!success) {
 				throw new CustomError(
-					"Saving the quick lanes failed, some id's were missing",
+					'Saving the quick lane urls failed, some ids were missing',
 					null,
 					{
+						objects,
 						response,
 					}
 				);
@@ -114,7 +119,7 @@ export class QuickLaneService {
 				}
 			).insert_app_quick_lanes.returning.map(QuickLaneUrlRecordToObject);
 		} catch (err) {
-			throw new CustomError('Failed to insert quick lanes', err, {
+			throw new CustomError('Failed to insert quick lane urls', err, {
 				objects,
 				query: 'INSERT_QUICK_LANE',
 			});
@@ -161,6 +166,44 @@ export class QuickLaneService {
 					query: 'GET_QUICK_LANE_BY_CONTENT_AND_OWNER',
 				}
 			);
+		}
+	}
+
+	// UPDATE
+
+	static async updateQuickLaneById(
+		id: string,
+		object: QuickLaneUrlObject
+	): Promise<QuickLaneUrlObject[]> {
+		try {
+			const response = await dataService.mutate<QuickLaneMutateResponse>({
+				mutation: UPDATE_QUICK_LANE,
+				variables: { id, object: QuickLaneUrlObjectToRecord(object) },
+			});
+
+			const success = response.data?.insert_app_quick_lanes.returning.every(
+				(record) => record.id
+			);
+
+			if (!success) {
+				throw new CustomError('Updating the quick lane failed, its id was missing', null, {
+					id,
+					object,
+					response,
+				});
+			}
+
+			return (
+				response.data || {
+					insert_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
+				}
+			).insert_app_quick_lanes.returning.map(QuickLaneUrlRecordToObject);
+		} catch (err) {
+			throw new CustomError('Failed to update quick lane url', err, {
+				id,
+				object,
+				query: 'INSERT_QUICK_LANE',
+			});
 		}
 	}
 }

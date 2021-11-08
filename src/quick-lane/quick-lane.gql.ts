@@ -21,8 +21,21 @@ export const GET_QUICK_LANE_BY_CONTENT_AND_OWNER = gql`
 `;
 
 export const INSERT_QUICK_LANE = gql`
-	mutation insterQuickLane($objects: [app_quick_lanes_insert_input!]!) {
+	mutation insertQuickLanes($objects: [app_quick_lanes_insert_input!]!) {
 		insert_app_quick_lanes(objects: $objects) {
+			affected_rows
+			returning {
+				id
+				title
+				view_mode
+			}
+		}
+	}
+`;
+
+export const UPDATE_QUICK_LANE = gql`
+	mutation updateQuickLaneById($id: uuid!, $object: app_quick_lanes_set_input!) {
+		update_app_quick_lanes(where: { id: { _eq: $id } }, _set: $object) {
 			affected_rows
 			returning {
 				id

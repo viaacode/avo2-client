@@ -21,6 +21,7 @@ import { UserProfile } from '@viaa/avo2-types/types/user';
 import { AssignmentLayout } from '../../../assignment/assignment.types';
 import { QuickLaneService, QuickLaneUrlObject } from '../../../quick-lane/quick-lane.service';
 import withUser, { UserProps } from '../../hocs/withUser';
+import { useDebounce } from '../../hooks';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 
@@ -76,6 +77,8 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	const [t] = useTranslation();
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
+	const [synced, setSynced] = useState<boolean>(false);
+	const debounced = useDebounce(quickLane, 300);
 
 	// If the modal is open and we haven't checked if anything exists, fetch or create the record
 	useEffect(() => {
@@ -103,19 +106,48 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 
 						if (items.length === 1) {
 							setExists(true);
+							setSynced(true);
 							setQuickLane({
 								...quickLane,
 								...items[0],
 							});
 						}
-					} else {
-						console.warn('Insufficient information about current user.');
 					}
-				} else {
-					console.warn('Insufficient information about quick lane content.');
 				}
 			})();
-	}, [isOpen, exists, setExists, quickLane, setQuickLane]);
+	}, [isOpen]);
+
+	// When debounced changes occur, synchronise the changes with the database
+	useEffect(() => {
+		const object = debounced as QuickLaneUrlObject;
+
+		isOpen &&
+			exists &&
+			object.id.length > 0 &&
+			(async () => {
+				// Ignore the first change after sync
+				if (synced) {
+					setSynced(false);
+				} else if (content && content_label) {
+					if (user && user.profile !== null) {
+						const updated = await QuickLaneService.updateQuickLaneById(object.id, {
+							...object,
+							content_label,
+							content_id: getContentId(content, content_label),
+							owner_profile_id: (user.profile as UserProfile).id,
+						});
+
+						if (updated.length === 1) {
+							setSynced(true);
+							setQuickLane({
+								...object,
+								...updated[0],
+							});
+						}
+					}
+				}
+			})();
+	}, [debounced]);
 
 	// Set initial title before fetching to avoid FoUC
 	if (!quickLane.title && content?.title) {
