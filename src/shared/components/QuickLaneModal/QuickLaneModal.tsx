@@ -117,7 +117,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 				}
 			}
 		})();
-	}, [isOpen]);
+	}, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
@@ -150,7 +150,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 				}
 			}
 		})();
-	}, [debounced]);
+	}, [debounced]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Modal
