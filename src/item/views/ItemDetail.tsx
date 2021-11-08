@@ -50,6 +50,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -86,6 +87,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
@@ -479,7 +481,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 																'item/views/item-detail___deel-dit-met-alle-leerlingen'
 															)}
 															onClick={() => {
-																/**setIsShareWithStudentsModalOpen(true);*/
+																setIsQuickLaneModalOpen(true);
 															}}
 														/>
 													)}
@@ -743,6 +745,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						setIsReportItemModalOpen(false);
 					}}
 					user={user}
+				/>
+				<QuickLaneModal
+					modalTitle={t('item/views/item___snel-delen-met-leerlingen')}
+					isOpen={isQuickLaneModalOpen}
+					content={item}
+					content_label="ITEM"
+					onClose={() => {
+						setIsQuickLaneModalOpen(false);
+					}}
 				/>
 			</>
 		);

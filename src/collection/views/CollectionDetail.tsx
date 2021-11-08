@@ -41,6 +41,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -81,7 +82,7 @@ export const COLLECTION_ACTIONS = {
 	toggleBookmark: 'toggleBookmark',
 	createAssignment: 'createAssignment',
 	editCollection: 'editCollection',
-	openShareWithStudents: 'openShareWithStudents',
+	openQuickLane: 'openQuickLane',
 };
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -103,6 +104,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -117,7 +119,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			canDeleteCollection: boolean;
 			canCreateCollections: boolean;
 			canViewItems: boolean;
-			canShareWithStudents: boolean;
+			canQuickLane: boolean;
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -245,7 +247,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canDeleteCollection: rawPermissions[5],
 				canCreateCollections: rawPermissions[6],
 				canViewItems: rawPermissions[7],
-				canShareWithStudents: rawPermissions[8],
+				canQuickLane: rawPermissions[8],
 			};
 
 			let showPopup = false;
@@ -454,8 +456,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				onEditCollection();
 				break;
 
-			case COLLECTION_ACTIONS.openShareWithStudents:
-				// setIsShareWithStudentsModalOpen(true);
+			case COLLECTION_ACTIONS.openQuickLane:
+				setIsQuickLaneModalOpen(true);
 				break;
 
 			default:
@@ -577,10 +579,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canShareWithStudents
+			...(permissions.canQuickLane
 				? [
 						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openShareWithStudents,
+							COLLECTION_ACTIONS.openQuickLane,
 							t('collection/views/collection-detail___delen-met-leerlingen'),
 							'share-2'
 						),
@@ -739,10 +741,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canShareWithStudents
+			...(permissions.canQuickLane
 				? [
 						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openShareWithStudents,
+							COLLECTION_ACTIONS.openQuickLane,
 							t('collection/views/collection-detail___delen-met-leerlingen'),
 							'share-2'
 						),
@@ -1054,6 +1056,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							isOpen={isShareThroughEmailModalOpen}
 							onClose={() => setIsShareThroughEmailModalOpen(false)}
 						/>
+						{collection && (
+							<QuickLaneModal
+								modalTitle={t(
+									'collection/views/collection-detail___delen-met-leerlingen'
+								)}
+								isOpen={isQuickLaneModalOpen}
+								content={collection}
+								content_label="COLLECTIE"
+								onClose={() => {
+									setIsQuickLaneModalOpen(false);
+								}}
+							/>
+						)}
 					</>
 				)}
 				{showLoginPopup && <RegisterOrLogin />}
