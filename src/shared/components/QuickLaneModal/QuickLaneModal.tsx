@@ -82,71 +82,74 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 
 	// If the modal is open and we haven't checked if anything exists, fetch or create the record
 	useEffect(() => {
-		isOpen &&
-			!exists &&
-			(async () => {
-				if (content && content_label) {
-					if (user && user.profile !== null) {
-						let items = await QuickLaneService.fetchQuickLaneByContentAndOwnerId(
-							getContentId(content, content_label),
-							content_label,
-							(user.profile as UserProfile).id
-						);
+		if (!isOpen || exists) {
+			return;
+		}
 
-						if (items.length === 0 && isShareable(content)) {
-							items = await QuickLaneService.insertQuickLanes([
-								{
-									...quickLane,
-									content_label,
-									content_id: getContentId(content, content_label),
-									owner_profile_id: (user.profile as UserProfile).id,
-								},
-							]);
-						}
+		(async () => {
+			if (content && content_label) {
+				if (user && user.profile !== null) {
+					let items = await QuickLaneService.fetchQuickLaneByContentAndOwnerId(
+						getContentId(content, content_label),
+						content_label,
+						(user.profile as UserProfile).id
+					);
 
-						if (items.length === 1) {
-							setExists(true);
-							setSynced(true);
-							setQuickLane({
+					if (items.length === 0 && isShareable(content)) {
+						items = await QuickLaneService.insertQuickLanes([
+							{
 								...quickLane,
-								...items[0],
-							});
-						}
+								content_label,
+								content_id: getContentId(content, content_label),
+								owner_profile_id: (user.profile as UserProfile).id,
+							},
+						]);
+					}
+
+					if (items.length === 1) {
+						setExists(true);
+						setSynced(true);
+						setQuickLane({
+							...quickLane,
+							...items[0],
+						});
 					}
 				}
-			})();
+			}
+		})();
 	}, [isOpen]);
 
 	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
 		const object = debounced as QuickLaneUrlObject;
 
-		isOpen &&
-			exists &&
-			object.id.length > 0 &&
-			(async () => {
-				// Ignore the first change after sync
-				if (synced) {
-					setSynced(false);
-				} else if (content && content_label) {
-					if (user && user.profile !== null) {
-						const updated = await QuickLaneService.updateQuickLaneById(object.id, {
-							...object,
-							content_label,
-							content_id: getContentId(content, content_label),
-							owner_profile_id: (user.profile as UserProfile).id,
-						});
+		if (!isOpen || !exists || object.id.length <= 0) {
+			return;
+		}
 
-						if (updated.length === 1) {
-							setSynced(true);
-							setQuickLane({
-								...object,
-								...updated[0],
-							});
-						}
+		(async () => {
+			// Ignore the first change after sync
+			if (synced) {
+				setSynced(false);
+			} else if (content && content_label) {
+				if (user && user.profile !== null) {
+					const updated = await QuickLaneService.updateQuickLaneById(object.id, {
+						...object,
+						content_label,
+						content_id: getContentId(content, content_label),
+						owner_profile_id: (user.profile as UserProfile).id,
+					});
+
+					if (updated.length === 1) {
+						setSynced(true);
+						setQuickLane({
+							...object,
+							...updated[0],
+						});
 					}
 				}
-			})();
+			}
+		})();
 	}, [debounced]);
 
 	// Set initial title before fetching to avoid FoUC

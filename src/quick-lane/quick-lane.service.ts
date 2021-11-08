@@ -44,7 +44,7 @@ export interface QuickLaneMutateResponse {
 
 // Mappers
 
-const QuickLaneUrlRecordToObject = (record: QuickLaneUrlRecord) => {
+const quickLaneUrlRecordToObject = (record: QuickLaneUrlRecord) => {
 	const mapped = ({ ...record } as unknown) as QuickLaneUrlObject;
 
 	switch (record.view_mode) {
@@ -63,7 +63,7 @@ const QuickLaneUrlRecordToObject = (record: QuickLaneUrlRecord) => {
 	return mapped;
 };
 
-const QuickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
+const quickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
 	const mapped = ({ ...object } as unknown) as QuickLaneUrlRecord;
 
 	switch (object.view_mode) {
@@ -95,7 +95,7 @@ export class QuickLaneService {
 		try {
 			const response = await dataService.mutate<QuickLaneMutateResponse>({
 				mutation: INSERT_QUICK_LANE,
-				variables: { objects: objects.map(QuickLaneUrlObjectToRecord) },
+				variables: { objects: objects.map(quickLaneUrlObjectToRecord) },
 			});
 
 			const success = response.data?.insert_app_quick_lanes.returning.every(
@@ -117,7 +117,7 @@ export class QuickLaneService {
 				response.data || {
 					insert_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
 				}
-			).insert_app_quick_lanes.returning.map(QuickLaneUrlRecordToObject);
+			).insert_app_quick_lanes.returning.map(quickLaneUrlRecordToObject);
 		} catch (err) {
 			throw new CustomError('Failed to insert quick lane urls', err, {
 				objects,
@@ -146,7 +146,7 @@ export class QuickLaneService {
 			const assignments: QuickLaneUrlObject[] | undefined = get(
 				response,
 				'data.app_quick_lanes'
-			).map(QuickLaneUrlRecordToObject);
+			).map(quickLaneUrlRecordToObject);
 
 			if (!assignments) {
 				throw new CustomError('Quick lane url does not exist', null, {
@@ -178,7 +178,7 @@ export class QuickLaneService {
 		try {
 			const response = await dataService.mutate<QuickLaneMutateResponse>({
 				mutation: UPDATE_QUICK_LANE,
-				variables: { id, object: QuickLaneUrlObjectToRecord(object) },
+				variables: { id, object: quickLaneUrlObjectToRecord(object) },
 			});
 
 			const success = response.data?.insert_app_quick_lanes.returning.every(
@@ -197,7 +197,7 @@ export class QuickLaneService {
 				response.data || {
 					insert_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
 				}
-			).insert_app_quick_lanes.returning.map(QuickLaneUrlRecordToObject);
+			).insert_app_quick_lanes.returning.map(quickLaneUrlRecordToObject);
 		} catch (err) {
 			throw new CustomError('Failed to update quick lane url', err, {
 				id,
