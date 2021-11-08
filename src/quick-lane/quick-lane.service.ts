@@ -114,7 +114,10 @@ export class QuickLaneService {
 				}
 			).insert_app_quick_lanes.returning.map(QuickLaneUrlRecordToObject);
 		} catch (err) {
-			throw new CustomError('Failed to insert quick lanes', err, { objects });
+			throw new CustomError('Failed to insert quick lanes', err, {
+				objects,
+				query: 'INSERT_QUICK_LANE',
+			});
 		}
 	}
 
