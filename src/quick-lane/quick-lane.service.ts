@@ -21,6 +21,8 @@ export interface QuickLaneUrl {
 	content_id?: string;
 	content_label?: AssignmentContentLabel;
 	owner_profile_id?: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface QuickLaneUrlObject extends QuickLaneUrl {
@@ -92,10 +94,20 @@ export class QuickLaneService {
 	// CREATE
 
 	static async insertQuickLanes(objects: QuickLaneUrlObject[]): Promise<QuickLaneUrlObject[]> {
+		const now: string = new Date().toISOString();
+
 		try {
 			const response = await dataService.mutate<QuickLaneMutateResponse>({
 				mutation: INSERT_QUICK_LANE,
-				variables: { objects: objects.map(quickLaneUrlObjectToRecord) },
+				variables: {
+					objects: objects.map((object) => {
+						return {
+							...quickLaneUrlObjectToRecord(object),
+							created_at: now,
+							updated_at: now,
+						};
+					}),
+				},
 			});
 
 			const success = response.data?.insert_app_quick_lanes.returning.every(
@@ -175,10 +187,18 @@ export class QuickLaneService {
 		id: string,
 		object: QuickLaneUrlObject
 	): Promise<QuickLaneUrlObject[]> {
+		const now: string = new Date().toISOString();
+
 		try {
 			const response = await dataService.mutate<QuickLaneMutateResponse>({
 				mutation: UPDATE_QUICK_LANE,
-				variables: { id, object: quickLaneUrlObjectToRecord(object) },
+				variables: {
+					id,
+					object: {
+						...quickLaneUrlObjectToRecord(object),
+						updated_at: now,
+					},
+				},
 			});
 
 			const success = response.data?.insert_app_quick_lanes.returning.every(
