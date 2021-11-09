@@ -88,7 +88,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 						await FileUploadService.uploadFile(files[i], assetType, ownerId)
 					);
 				}
-				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls);
+				onChange(allowMulti ? [...(urls || []), ...uploadedUrls] : uploadedUrls);
 			}
 		} catch (err) {
 			console.error(
