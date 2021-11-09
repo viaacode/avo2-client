@@ -1,150 +1,194 @@
-/* import shared library */
-@Library('jenkins-shared-libs') _
-
-def TEMPLATEPATH = 'https://raw.githubusercontent.com/viaacode/avo2-client/master/openshift/avo2-client-tmpl-dc.yaml'
-def TEMPLATENAME = 'avo2-client'
-def TARGET_NS = 'sc-avo2'
-def templateSelector = openshift.selector("template", "avo2-client")
-
-// def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-//def tag= sh( returnStdout: true, script: "git describe --tags").tril()
-
-
-// NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
-// and "openshift" directive/closure from the OpenShift Client Plugin for Jenkins.  Otherwise, the declarative pipeline engine
-// will not be fully engaged.
 pipeline {
-	agent {
-		node {
-			// spin up a pod to run this build on
-			label 'docker'
-		}
-	}
-	options {
-		// set a timeout of 480m for this pipeline
-		timeout(time: 480, unit: 'MINUTES')
-	}
+    agent {
+        kubernetes {
+            defaultContainer 'oc'
+            yaml """\
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            component: builder
+            lang: python
+            app: client
+        spec:
+          containers:
+          - name: default
+            image: ${getImageFromDockerfile()}
+            command:
+            - cat
+            tty: true
+          - name: oc
+            image: image-registry.openshift-image-registry.svc:5000/ci-cd/py:3.7
+            command:
+            - cat
+            tty: true
+            imagePullPolicy: Always
+        """.stripIndent()
+        }
+    }
+    options {
+        timeout(time: 45, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+    environment {
+        OC_PROJECT = 'avo'
+        BASE_IMG = 'nginxinc/nginx-unprivileged'
+        OC_URL = 'https://c113-e.private.eu-de.containers.cloud.ibm.com:30227'
+        JIRA_URL = 'meemoo.atlassian.net'
+        APP_NAME = 'client'
+    }
 
-	environment {
-		ENDPOINT = sh(returnStdout: true, script: 'echo https://c100-e.eu-de.containers.cloud.ibm.com:31240').trim()
-		VERSION = sh(returnStdout: true, script: "git describe --tags|| echo noTagFound").trim()
-		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-		BRANCH = sh(returnStdout: true, script: "git branch | grep '*' | cut -d ' ' -f2").trim()
-		REGISTRY = sh(returnStdout: true, script: 'echo docker-registry-default.meemoo-596946-2bc857e5f10eb63ab790a3a1d19a696c-0001.eu-de.containers.appdomain.cloud').trim()
-		OKD_REGISTRY = sh(returnStdout: true, script: 'echo docker-registry-default.apps.do-prd-okp-m0.do.viaa.be').trim()
-		OKD_ENDPOINT = sh(returnStdout: true, script: 'echo https://do-prd-okp-m0.do.viaa.be:8443').trim()
-	}
-	stages {
-		stage('preamble') {
-			steps {
+    stages {
+        stage('Calculate extra ENV vars') {
+            steps {
+                script {
+                    env.GIT_SHORT_COMMIT = sh(script: "printf \$(git rev-parse --short ${GIT_COMMIT})", returnStdout: true)
+                    env.IMAGE_TAG = sh(script: 'git describe --tags || echo latest', returnStdout: true)
+                    // The name used for the build config based on the image tag
+                    // Replace '.' with '_' as '.' is not allowed.
+                    env.BUILD_CONFIG_NAME = sh(script: 'echo "${IMAGE_TAG}" | sed -r "s/\\./\\-/g"', returnStdout: true)
+                }
+            }
+        }
+        stage('Test code') {
+            steps {
+                sh 'make -f ./openshift/Makefile test'
+            }
+        }
+        stage('Build code') {
+            when {
+                not {
+                    buildingTag()
+                }
+            }
+            steps {
+                container('oc') {
+                    script {
+                        sh '''#!/bin/bash
+                        oc project $OC_PROJECT
+                        oc import-image $BASE_IMG --confirm
+                        oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME-$GIT_SHORT_COMMIT --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
+                        sleep 3
+                        oc annotate --overwrite buildconfig/$APP_NAME-$GIT_SHORT_COMMIT ref=$BRANCH_NAME shortcommit=$GIT_SHORT_COMMIT
+                        oc start-build $APP_NAME-$GIT_SHORT_COMMIT --from-dir=. --follow=true
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy INT') {
+            when {
+                anyOf {
+                    changeRequest target: 'master'
+                    changeRequest target: 'main'
+                }
+            }
+            steps {
+                container('oc') {
+                    tagNewImage('int')
+                }
+            }
+            post {
+                always {
+                    script {
+                        env.BRANCH_NAME = env.CHANGE_BRANCH
+                    }
+                    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
+                }
+            }
+        }
+        stage('Deploy QAS') {
+            when {
+                anyOf { branch 'master'; branch 'main' }
+            }
+            steps {
+                container('oc') {
+                    tagNewImage('qas')
+                }
+            }
+            post {
+                always {
+                    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'qas', environmentName: 'qas', environmentType: 'staging'
+                }
+            }
+        }
+        stage('Deploy PRD') {
+            when {
+                buildingTag()
+            }
+            steps {
+                container('oc') {
+                    tagNewImage('prd')
+                }
+            }
+            post {
+                always {
+                    script {
+                        previous_tag = sh(script: 'git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`', returnStdout: true).trim()
+                        echo getAllCommitsBetweenTags(previous_tag, env.TAG_NAME)
+                    }
+                    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'prd', environmentName: 'prd', environmentType: 'production'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                if (env.BRANCH_NAME.startsWith('PR')) {
+                    setGitHubBuildStatus('Build', 'SUCCESS')
+                }
+            }
+        }
+        failure {
+            script {
+                if (env.BRANCH_NAME.startsWith('PR')) {
+                    setGitHubBuildStatus('Build', 'FAILURE')
+                }
+            }
+        }
+        always {
+            jiraSendBuildInfo site: "${JIRA_URL}"
+            container('default') {
+                // Archive tets results
+                script {
+                    if (fileExists('./tests/test_results.xml')) {
+                        junit 'tests/test_results.xml'
+                    } else {
+                        echo 'No test results found'
+                    }
+                }
+            }
+        }
+    }
+}
 
-				script {
-					openshift.withCluster() {
-						openshift.withProject("sc-avo2") {
-							echo "Using project: ${openshift.project()}"
-							echo "Testing login script for the external docker agent"
-							sh '''#!/bin/bash
-                            set +x
-                            login_oc.sh $ENDPOINT > /dev/null 2>&1  && oc project sc-avo2 1>/dev/null
-                            '''
-						}
-					}
-				}//end script
-			}
-		}
+void getImageFromDockerfile() {
+    return 'nginxinc/nginx-unprivileged'
+}
 
-		stage('Docker build') {
-			steps {
-				script {
-					sh '''#!/bin/bash
-					echo starting a build
-					make -f ./openshift/Makefile build
-					'''
-				} // script
-			} // steps
-		} // stage
+void setGitHubBuildStatus(String message, String state) {
+    step([
+        $class: 'GitHubCommitStatusSetter',
+        reposSource: [$class: 'ManuallyEnteredRepositorySource', url: "${GIT_URL}"],
+        commitShaSource: [$class: 'ManuallyEnteredShaSource', sha: "${GIT_COMMIT}"],
+        errorHandlers: [[$class: 'ChangingBuildStatusErrorHandler', result: 'UNSTABLE']],
+        statusResultSource: [ $class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: message, state: state]] ]
+    ])
+}
 
-		stage('Run UNIT Tests') {
-			steps {
-				script {
-					sh '''#!/bin/bash
-						echo "Running make unit_test ###DISABLED for build test####"
-						#make -f ./openshift/Makefile unit_test
-						'''
-				}// end script
-			}
-		}//end stage
+void getAllCommitsBetweenTags(String from, String to) {
+    commit_messages = sh(script: "git log ${from}...${to} --merges --format=%b", returnStdout: true)
 
-		stage('Push Image') {
-			options {
-				timeout(time: 10, unit: "MINUTES")
-			}
-			steps {
-				script {
-					waitUntil {
-						try {
-							sh '''#!/bin/bash
-							echo "pushing image to oc version $VERSION"
-							make -f ./openshift/Makefile push_oc && make -f ./openshift/Makefile push_okd
-							'''
-							return true
-						} catch (error) {
-								echo 'Failed to push to registry'
-								return false;
-							}
-						
-					}
-				}// end script
-			}
-		}//end stage
+    return commit_messages
+}
 
-		stage('Tag DEV Image AND rollout DEV') {
-			steps {
-				script {
-					sh '''#!/bin/bash
-					echo "tagging dev"
-					make -f ./openshift/Makefile tag_dev
-					'''
-				}// end script
-				script {
-					sh '''#!/bin/bash
-					login_oc.sh $OKD_ENDPOINT
-					echo "Waiting deploymentconfig to rollout"
-					make -f ./openshift/Makefile rollout_dev
-					'''
-				}// end script
-			}
-		}//end stage
-
-		stage('Tag QAS Image AND rollout QAS') {
-			steps {
-				script {
-					sh '''#!/bin/bash
-					echo "Depoying QAS on IBM"
-					make -f ./openshift/Makefile staging
-					'''
-				}// end script
-			}
-		}//end stage
-
-	} // stages
-	post {
-		always {
-			// following disabled , we dont record test data for now
-			//junit 'ci-results/*.xml'
-
-			//archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
-			//archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
-			//archiveArtifacts artifacts: 'ci-results/*.xml', fingerprint: true
-
-			script {
-				slackNotifier(currentBuild.currentResult)
-			}
-			sh '''#!/bin/bash
-            set +x
-            echo "cleaning docker images and containers"
-            docker image prune -f && docker container prune -f'''
-			cleanWs()
-		}
-	}
-} // pipeline
+void tagNewImage(String environment) {
+    echo "Deploying to ${environment}"
+    sh """#!/bin/bash
+    oc project $OC_PROJECT
+    oc tag $APP_NAME:$GIT_SHORT_COMMIT $APP_NAME:${environment}
+    # Check the status of the rollout
+    oc rollout status deployment/$APP_NAME-${environment} --watch=true
+    """
+}
