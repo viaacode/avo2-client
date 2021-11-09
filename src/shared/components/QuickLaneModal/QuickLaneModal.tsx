@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -13,12 +13,15 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { AssignmentContent, AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
+import { QuickLaneService, QuickLaneUrlObject } from '../../../quick-lane/quick-lane.service';
 import withUser, { UserProps } from '../../hocs/withUser';
+import { useDebounce } from '../../hooks';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 
@@ -26,26 +29,20 @@ import './QuickLaneModal.scss';
 
 // Typings
 
-interface QuickLane {
-	id?: string;
-	title?: string;
-	content_layout?: AssignmentLayout;
-}
-
 interface QuickLaneModalProps {
 	modalTitle: string;
 	isOpen: boolean;
-	content?: Avo.Assignment.Content;
+	content?: AssignmentContent;
 	content_label?: AssignmentContentLabel;
 	onClose: () => void;
 }
 
 // State
 
-const defaultQuickLaneState: QuickLane = {
-	id: '19c707d5-01e0-4e4c-bcfd-fc79b60d8e5a',
-	title: undefined,
-	content_layout: AssignmentLayout.PlayerAndText,
+const defaultQuickLaneState: QuickLaneUrlObject = {
+	id: '',
+	title: '',
+	view_mode: AssignmentLayout.PlayerAndText,
 };
 
 // Helpers
@@ -54,10 +51,18 @@ const buildQuickLaneHref = (id: string): string => {
 	return `https://example.com/url/structure/${id}`;
 };
 
-// Unused, waiting on non-happy flow elaboration (aka. merge with publication flow)
-// const isShareable = (content: Avo.Assignment.Content): boolean => {
-// 	return (content as ItemSchema).is_published || (content as CollectionSchema).is_public;
-// }
+const getContentId = (content: AssignmentContent, contentLabel: AssignmentContentLabel): string => {
+	switch (contentLabel) {
+		case 'ITEM':
+			return (content as ItemSchema).uid;
+		default:
+			return content.id.toString();
+	}
+};
+
+const isShareable = (content: AssignmentContent): boolean => {
+	return (content as ItemSchema).is_published || (content as CollectionSchema).is_public;
+};
 
 // Component
 
@@ -70,14 +75,82 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	user,
 }) => {
 	const [t] = useTranslation();
-	const [quickLane, setQuickLane] = useState<QuickLane>(defaultQuickLaneState);
+	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
+	const [exists, setExists] = useState<boolean>(false);
+	const [synced, setSynced] = useState<boolean>(false);
+	const debounced = useDebounce(quickLane, 300);
 
-	if (!quickLane.title && content?.title) {
-		setQuickLane({
-			...quickLane,
-			title: content.title,
-		});
-	}
+	// If the modal is open and we haven't checked if anything exists, fetch or create the record
+	useEffect(() => {
+		if (!isOpen || exists) {
+			return;
+		}
+
+		(async () => {
+			if (content && content_label) {
+				if (user && user.profile !== null) {
+					let items = await QuickLaneService.fetchQuickLaneByContentAndOwnerId(
+						getContentId(content, content_label),
+						content_label,
+						(user.profile as UserProfile).id
+					);
+
+					if (items.length === 0 && isShareable(content)) {
+						items = await QuickLaneService.insertQuickLanes([
+							{
+								...quickLane,
+								content_label,
+								content_id: getContentId(content, content_label),
+								owner_profile_id: (user.profile as UserProfile).id,
+							},
+						]);
+					}
+
+					if (items.length === 1) {
+						setExists(true);
+						setSynced(true);
+						setQuickLane({
+							...quickLane,
+							...items[0],
+						});
+					}
+				}
+			}
+		})();
+	}, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	// When debounced changes occur, synchronise the changes with the database
+	useEffect(() => {
+		const object = debounced as QuickLaneUrlObject;
+
+		if (!isOpen || !exists || object.id.length <= 0) {
+			return;
+		}
+
+		(async () => {
+			// Ignore the first change after sync
+			if (synced) {
+				setSynced(false);
+			} else if (content && content_label) {
+				if (user && user.profile !== null) {
+					const updated = await QuickLaneService.updateQuickLaneById(object.id, {
+						...object,
+						content_label,
+						content_id: getContentId(content, content_label),
+						owner_profile_id: (user.profile as UserProfile).id,
+					});
+
+					if (updated.length === 1) {
+						setSynced(true);
+						setQuickLane({
+							...object,
+							...updated[0],
+						});
+					}
+				}
+			}
+		})();
+	}, [debounced]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Modal
@@ -108,6 +181,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						>
 							<TextInput
 								id="title"
+								disabled={!quickLane.id}
 								value={quickLane.title}
 								onChange={(title: string) =>
 									setQuickLane({
@@ -129,7 +203,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								<ContentLink
 									parent={{
 										content_label,
-										content_id: content.id.toString(),
+										content_id: getContentId(content, content_label),
 									}}
 									content={content}
 									user={user}
@@ -145,11 +219,12 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 							)}
 						>
 							<LayoutOptions
-								item={quickLane}
+								item={{ content_layout: quickLane.view_mode }}
+								disabled={!quickLane.id}
 								onChange={(value: string) => {
 									setQuickLane({
 										...quickLane,
-										content_layout: (value as unknown) as AssignmentLayout, // TS2353
+										view_mode: (value as unknown) as AssignmentLayout, // TS2353
 									});
 								}}
 							/>
@@ -169,6 +244,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								<FlexItem shrink>
 									<Spacer margin="left-small">
 										<Button
+											disabled={!quickLane.id}
 											label={t(
 												'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 											)}
