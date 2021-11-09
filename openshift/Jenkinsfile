@@ -65,6 +65,7 @@ pipeline {
                 container('oc') {
                     script {
                         sh '''#!/bin/bash
+						set -e
                         oc project $OC_PROJECT
                         oc import-image $BASE_IMG --confirm
                         oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME-$GIT_SHORT_COMMIT --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
