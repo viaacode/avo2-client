@@ -122,7 +122,11 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 					if (items.length === 0 && isShareable(content)) {
 						items = await QuickLaneService.insertQuickLanes([
 							{
-								...quickLane,
+								// Initialise with content title
+								...{
+									...quickLane,
+									title: content.title,
+								},
 								content_label,
 								content_id: getContentId(content, content_label),
 								owner_profile_id: (user.profile as UserProfile).id,
