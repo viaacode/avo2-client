@@ -51,7 +51,8 @@ export type RouteId =
 	| 'COMPLETE_PROFILE'
 	| 'ACCEPT_CONDITIONS'
 	| 'COOKIE_POLICY'
-	| 'ERROR';
+	| 'ERROR'
+	| 'QUICK_LANE';
 
 // Routes should be ordered from least specific, to most specific
 // So we can use this order to search for interactive tours in the correct order
@@ -255,6 +256,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	ERROR: {
 		route: `/${ROUTE_PARTS.error}`,
+		showInContentPicker: false,
+		showForInteractiveTour: false,
+	},
+	QUICK_LANE: {
+		route: `/${ROUTE_PARTS.quickLane}`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
