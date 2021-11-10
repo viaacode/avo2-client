@@ -1,14 +1,19 @@
 import { ApolloQueryResult } from 'apollo-boost';
 import { get } from 'lodash-es';
 
-import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { AssignmentContent, AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { UserProfile, UserSchema } from '@viaa/avo2-types/types/user';
 
+import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
+import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
 import { dataService } from '../shared/services';
 
 import {
 	GET_QUICK_LANE_BY_CONTENT_AND_OWNER,
+	GET_QUICK_LANE_BY_ID,
 	INSERT_QUICK_LANE,
 	UPDATE_QUICK_LANE,
 } from './quick-lane.gql';
@@ -18,11 +23,17 @@ import {
 export interface QuickLaneUrl {
 	id: string;
 	title: string;
+	content?: AssignmentContent;
 	content_id?: string;
 	content_label?: AssignmentContentLabel;
+	owner?: QuickLaneUrlOwner;
 	owner_profile_id?: string;
 	created_at?: string;
 	updated_at?: string;
+}
+
+export interface QuickLaneUrlOwner extends Pick<UserProfile, 'id' | 'avatar'> {
+	usersByuserId: Pick<UserSchema, 'full_name'>;
 }
 
 export interface QuickLaneUrlObject extends QuickLaneUrl {
@@ -140,6 +151,57 @@ export class QuickLaneService {
 
 	// READ
 
+	static async fetchQuickLaneById(id: string): Promise<QuickLaneUrlObject> {
+		try {
+			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
+				query: GET_QUICK_LANE_BY_ID,
+				variables: { id },
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const urls: QuickLaneUrlObject[] | undefined = get(
+				response,
+				'data.app_quick_lanes'
+			).map(quickLaneUrlRecordToObject);
+
+			if (!urls || urls.length !== 1) {
+				throw new CustomError('Quick lane url does not exist', null, {
+					response,
+				});
+			}
+
+			const url = urls[0];
+
+			// Enrich
+			switch (url.content_label) {
+				case 'ITEM':
+					url.content = await ItemsService.fetchItemByUuid(url.content_id || '');
+					break;
+
+				case 'COLLECTIE':
+					url.content = (await CollectionService.fetchCollectionOrBundleById(
+						url.content_id || '',
+						'collection',
+						undefined
+					)) as CollectionSchema;
+					break;
+
+				default:
+					break;
+			}
+
+			return url;
+		} catch (err) {
+			throw new CustomError('Failed to get quick lane url by id from database', err, {
+				id,
+				query: 'GET_QUICK_LANE_BY_ID',
+			});
+		}
+	}
+
 	static async fetchQuickLaneByContentAndOwnerId(
 		contentId: string,
 		contentLabel: AssignmentContentLabel,
@@ -155,18 +217,18 @@ export class QuickLaneService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			const assignments: QuickLaneUrlObject[] | undefined = get(
+			const urls: QuickLaneUrlObject[] | undefined = get(
 				response,
 				'data.app_quick_lanes'
 			).map(quickLaneUrlRecordToObject);
 
-			if (!assignments) {
+			if (!urls) {
 				throw new CustomError('Quick lane url does not exist', null, {
 					response,
 				});
 			}
 
-			return assignments;
+			return urls;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get quick lane url by content and profile id from database',

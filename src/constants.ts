@@ -260,7 +260,7 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showForInteractiveTour: false,
 	},
 	QUICK_LANE: {
-		route: `/${ROUTE_PARTS.quickLane}`,
+		route: `/${ROUTE_PARTS.quickLane}/:id`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
