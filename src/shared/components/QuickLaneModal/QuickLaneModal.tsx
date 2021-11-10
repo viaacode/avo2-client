@@ -1,7 +1,10 @@
+import { TFunction } from 'i18next';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 
 import {
+	Alert,
 	Avatar,
 	Box,
 	Button,
@@ -60,6 +63,26 @@ const getContentId = (content: AssignmentContent, contentLabel: AssignmentConten
 	}
 };
 
+const getContentNotShareableWarning = (
+	contentLabel: AssignmentContentLabel,
+	t: TFunction
+): string => {
+	switch (contentLabel) {
+		case 'ITEM':
+			return t(
+				'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
+			);
+
+		case 'COLLECTIE':
+			return t(
+				'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
+			);
+
+		default:
+			return '';
+	}
+};
+
 const isShareable = (content: AssignmentContent): boolean => {
 	return (content as ItemSchema).is_published || (content as CollectionSchema).is_public;
 };
@@ -75,6 +98,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	user,
 }) => {
 	const [t] = useTranslation();
+	const history = useHistory();
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
 	const [synced, setSynced] = useState<boolean>(false);
@@ -161,8 +185,37 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 			onClose={onClose}
 			scrollable
 		>
-			{user && content ? (
+			{user && content && content_label ? (
 				<ModalBody>
+					{!isShareable(content) && (
+						<Spacer margin={['bottom']}>
+							<Alert type="danger">
+								<p>{getContentNotShareableWarning(content_label, t)}</p>
+
+								{content_label === 'COLLECTIE' && (
+									<Spacer margin={['top-small']}>
+										<Button
+											type="danger"
+											icon="file-text"
+											label={t(
+												'shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails'
+											)}
+											onClick={() => {
+												onClose();
+												history.push(
+													`/collecties/${getContentId(
+														content,
+														content_label
+													)}/bewerk/metadata`
+												);
+											}}
+										/>
+									</Spacer>
+								)}
+							</Alert>
+						</Spacer>
+					)}
+
 					{content_label === 'ITEM' && (
 						<Spacer margin={['bottom']}>
 							<Avatar
@@ -174,7 +227,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						</Spacer>
 					)}
 
-					<Spacer margin={content_label === 'ITEM' ? ['top', 'bottom'] : ['bottom']}>
+					<Spacer margin={['bottom']}>
 						<FormGroup
 							required
 							label={t('shared/components/quick-lane-modal/quick-lane-modal___titel')}
@@ -193,7 +246,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						</FormGroup>
 					</Spacer>
 
-					<Spacer margin={['top', 'bottom']}>
+					<Spacer margin={['bottom']}>
 						<FormGroup
 							label={t(
 								'shared/components/quick-lane-modal/quick-lane-modal___inhoud'
@@ -212,7 +265,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						</FormGroup>
 					</Spacer>
 
-					<Spacer margin={['top', 'bottom']}>
+					<Spacer margin={['bottom']}>
 						<FormGroup
 							label={t(
 								'shared/components/quick-lane-modal/quick-lane-modal___weergave-voor-leerlingen'
@@ -231,7 +284,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						</FormGroup>
 					</Spacer>
 
-					<Spacer margin={['top', 'bottom-small']}>
+					<Spacer margin={['bottom']}>
 						<Box backgroundColor="gray" condensed>
 							<Flex wrap justify="between" align="baseline">
 								<FlexItem className="u-truncate m-quick-lane-modal__link">
