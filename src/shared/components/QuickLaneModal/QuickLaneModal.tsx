@@ -22,6 +22,7 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
+import { APP_PATH } from '../../../constants';
 import { QuickLaneService, QuickLaneUrlObject } from '../../../quick-lane/quick-lane.service';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks';
@@ -51,7 +52,7 @@ const defaultQuickLaneState: QuickLaneUrlObject = {
 // Helpers
 
 const buildQuickLaneHref = (id: string): string => {
-	return `https://example.com/url/structure/${id}`;
+	return `${APP_PATH.QUICK_LANE.route.replace(':id', id)}`;
 };
 
 const getContentId = (content: AssignmentContent, contentLabel: AssignmentContentLabel): string => {
@@ -294,6 +295,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								<FlexItem className="u-truncate m-quick-lane-modal__link">
 									{quickLane.id && (
 										<a href={buildQuickLaneHref(quickLane.id)}>
+											{window.location.origin}
 											{buildQuickLaneHref(quickLane.id)}
 										</a>
 									)}
@@ -306,7 +308,11 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 												'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 											)}
 											onClick={() => {
-												//
+												navigator.clipboard.writeText(
+													`${window.location.origin}${buildQuickLaneHref(
+														quickLane.id
+													)}`
+												);
 											}}
 										/>
 									</Spacer>
