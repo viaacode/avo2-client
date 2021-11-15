@@ -1,1 +1,1 @@
-export { default as Detail } from './QuickLaneDetail';
+export { default as QuickLaneDetail } from './QuickLaneDetail';
