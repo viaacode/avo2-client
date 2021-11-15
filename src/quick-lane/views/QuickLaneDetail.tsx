@@ -56,20 +56,13 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			const response = await QuickLaneService.fetchQuickLaneById(quickLaneId);
 
-			trackEvents(
-				{
-					object: String(response.id),
-					object_type: 'quick_lane',
-					message: `Gebruiker ${getProfileName(
-						user
-					)} heeft een quick lane pagina bekeken`,
-					action: 'view',
-				},
-				user
-			);
+			// Handle edge cases
 
 			if (response.content_label === 'ITEM') {
-				if ((response.content as ItemSchema).depublish_reason) {
+				const content = response.content as ItemSchema;
+
+				// Check for a depublishing reason first
+				if (content.depublish_reason) {
 					setLoadingInfo({
 						state: 'error',
 						message:
@@ -81,9 +74,37 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 					return;
 				}
+
+				// If there's no reason, check if it's published
+				// Note: this is not handled in GQL because the response is a quick_lane object enriched in the QuickLaneService using the ItemService's fetch
+				if (!content.is_published) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('item/views/item___dit-item-werd-niet-gevonden'),
+						icon: 'search',
+					});
+
+					return;
+				}
 			}
 
+			// Update state
+
 			setQuickLane(response);
+
+			// Analytics
+
+			trackEvents(
+				{
+					object: String(response.id),
+					object_type: 'quick_lane',
+					message: `Gebruiker ${getProfileName(
+						user
+					)} heeft een quick lane pagina bekeken`,
+					action: 'view',
+				},
+				user
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {
@@ -91,23 +112,24 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 					id: match.params.id,
 				})
 			);
+
 			setLoadingInfo({
 				state: 'error',
 				message: t(
-					'assignment/views/assignment-detail___het-laden-van-de-opdracht-is-mislukt'
+					'quick-lane/views/quick-lane-detail___het-laden-van-de-gedeelde-link-is-mislukt'
 				),
 			});
 		}
 	}, [setQuickLane, setLoadingInfo, match.params.id, t, user, history]);
 
 	useEffect(() => {
-		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
+		if (PermissionService.hasPerm(user, PermissionName.QUICK_LANE__VIEW_URLS)) {
 			fetchQuickLaneAndContent();
 		} else {
 			setLoadingInfo({
 				state: 'error',
 				message: t(
-					'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+					'quick-lane/views/quick-lane-detail___je-hebt-geen-rechten-om-deze-gedeelde-link-te-bekijken'
 				),
 				icon: 'lock',
 			});
@@ -160,12 +182,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				return (
 					<ErrorView
 						icon="alert-triangle"
-						message={t(
-							'assignment/views/assignment-detail___onverwacht-opdracht-inhoud-type-0',
-							{
-								type: contentLabel || undefined,
-							}
-						)}
+						message={t('quick-lane/views/quick-lane-detail___onverwacht-inhoudstype', {
+							type: contentLabel || undefined,
+						})}
 					/>
 				);
 		}
@@ -242,7 +261,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 							quickLane,
 							'title',
 							t(
-								'assignment/views/assignment-detail___opdracht-detail-pagina-titel-fallback'
+								'quick-lane/views/quick-lane-detail___gedeelde-link-detail-pagina-titel-fallback'
 							)
 						)
 					)}
@@ -252,7 +271,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				notFoundError={t(
-					'assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'
+					'quick-lane/views/quick-lane-detail___de-gedeelde-link-werd-niet-gevonden'
 				)}
 				dataObject={quickLane}
 				render={renderQuickLaneDetail}
