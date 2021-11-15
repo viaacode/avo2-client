@@ -17,6 +17,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -66,6 +67,21 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				},
 				user
 			);
+
+			if (response.content_label === 'ITEM') {
+				if ((response.content as ItemSchema).depublish_reason) {
+					setLoadingInfo({
+						state: 'error',
+						message:
+							t(
+								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
+							) + (response.content as ItemSchema).depublish_reason,
+						icon: 'camera-off',
+					});
+
+					return;
+				}
+			}
 
 			setQuickLane(response);
 		} catch (err) {
