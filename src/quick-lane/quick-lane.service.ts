@@ -49,11 +49,17 @@ export interface QuickLaneQueryResponse {
 	app_quick_lanes: QuickLaneUrlRecord[];
 }
 
+export interface QuickLaneInsertResponse {
+	insert_app_quick_lanes: QuickLaneMutateResponse;
+}
+
+export interface QuickLaneUpdateResponse {
+	update_app_quick_lanes: QuickLaneMutateResponse;
+}
+
 export interface QuickLaneMutateResponse {
-	insert_app_quick_lanes: {
-		affected_rows: number;
-		returning: QuickLaneUrlRecord[];
-	};
+	affected_rows: number;
+	returning: QuickLaneUrlRecord[];
 }
 
 // Mappers
@@ -125,7 +131,7 @@ export class QuickLaneService {
 		const now: string = new Date().toISOString();
 
 		try {
-			const response = await dataService.mutate<QuickLaneMutateResponse>({
+			const response = await dataService.mutate<QuickLaneInsertResponse>({
 				mutation: INSERT_QUICK_LANE,
 				variables: {
 					objects: objects.map((object) => {
@@ -271,7 +277,7 @@ export class QuickLaneService {
 		const now: string = new Date().toISOString();
 
 		try {
-			const response = await dataService.mutate<QuickLaneMutateResponse>({
+			const response = await dataService.mutate<QuickLaneUpdateResponse>({
 				mutation: UPDATE_QUICK_LANE,
 				variables: {
 					id,
@@ -282,7 +288,7 @@ export class QuickLaneService {
 				},
 			});
 
-			const success = response.data?.insert_app_quick_lanes.returning.every(
+			const success = response.data?.update_app_quick_lanes.returning.every(
 				(record) => record.id
 			);
 
@@ -296,9 +302,9 @@ export class QuickLaneService {
 
 			return (
 				response.data || {
-					insert_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
+					update_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
 				}
-			).insert_app_quick_lanes.returning.map(quickLaneUrlRecordToObject);
+			).update_app_quick_lanes.returning.map(quickLaneUrlRecordToObject);
 		} catch (err) {
 			throw new CustomError('Failed to update quick lane url', err, {
 				id,
