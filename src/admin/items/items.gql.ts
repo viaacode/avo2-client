@@ -41,7 +41,6 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			updated_at
 			note
 			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
-				id
 				object
 				subject
 				predicate
