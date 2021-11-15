@@ -1,0 +1,13 @@
+  apiVersion: v1
+  data:
+    00_default.conf: "server { \n    listen *:8080 default_server;\n    root /usr/share/nginx/html;\n
+      \   index index.html;\n    location / {\n        try_files $uri /index.html;\n
+      \   }\n    location /sitemap.xml {\n       proxy_set_header host avo2-proxy-dev.apps.do.viaa.be;\n
+      \      proxy_pass https://avo2-proxy-dev.apps.do.viaa.be;\n    }\n}\n"
+  kind: ConfigMap
+  metadata:
+    creationTimestamp: null
+    labels:
+      env: dev
+      app: avo2-client
+    name: client-ngnix-dev-config
