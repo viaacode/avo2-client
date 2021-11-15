@@ -26,6 +26,7 @@ import { APP_PATH } from '../../../constants';
 import { QuickLaneService, QuickLaneUrlObject } from '../../../quick-lane/quick-lane.service';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks';
+import { ToastService } from '../../services';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 
@@ -133,6 +134,12 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 								owner_profile_id: (user.profile as UserProfile).id,
 							},
 						]);
+
+						ToastService.success(
+							t(
+								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangemaakt'
+							)
+						);
 					}
 
 					if (items.length === 1) {
@@ -175,6 +182,12 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 							...object,
 							...updated[0],
 						});
+
+						ToastService.success(
+							t(
+								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangepast'
+							)
+						);
 					}
 				}
 			}
