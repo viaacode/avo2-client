@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 
 import { AssignmentContent, AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { UserProfile, UserSchema } from '@viaa/avo2-types/types/user';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -99,6 +100,22 @@ const quickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
 	return mapped;
 };
 
+// Helpers
+
+const checkForItemReplacements = async (item: ItemSchema): Promise<ItemSchema> => {
+	// Note: because of the GET_ITEM_BY_UUID gql, the item coming in here only has IS_REPLACED_BY-type relations
+	// hence why we don't filter and just grab the most recently updated one
+	const replacement = item.relations?.sort((a, b) => {
+		return new Date(b.updated_at).valueOf() - new Date(a.updated_at).valueOf();
+	})[0];
+
+	if (replacement) {
+		return ItemsService.fetchItemByUuid(replacement.object);
+	}
+
+	return Promise.resolve(item);
+};
+
 // Service
 
 export class QuickLaneService {
@@ -178,7 +195,9 @@ export class QuickLaneService {
 			// Enrich
 			switch (url.content_label) {
 				case 'ITEM':
-					url.content = await ItemsService.fetchItemByUuid(url.content_id || '');
+					url.content = await checkForItemReplacements(
+						await ItemsService.fetchItemByUuid(url.content_id || '')
+					);
 					break;
 
 				case 'COLLECTIE':

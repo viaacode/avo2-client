@@ -41,7 +41,12 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			updated_at
 			note
 			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
+				id
 				object
+				subject
+				predicate
+				created_at
+				updated_at
 			}
 			item_counts {
 				bookmarks
@@ -126,6 +131,10 @@ export const GET_ITEM_BY_UUID = gql`
 			note
 			relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
 				object
+				subject
+				predicate
+				created_at
+				updated_at
 			}
 			item_collaterals(where: { description: { _eq: "subtitle" } }) {
 				path
