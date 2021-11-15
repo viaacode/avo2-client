@@ -7,6 +7,7 @@ import MetaTags from 'react-meta-tags';
 import {
 	Avatar,
 	BlockHeading,
+	Button,
 	Container,
 	Flex,
 	FlexItem,
@@ -17,6 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
@@ -24,12 +26,13 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
-import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { isCollection, isItem } from '../quick-lane.helpers';
 import { QuickLaneService, QuickLaneUrlObject } from '../quick-lane.service';
 
 import './QuickLaneDetail.scss';
@@ -43,11 +46,12 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	user,
 	...rest
 }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>();
+	const [canReadOriginal, setCanReadOriginal] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-
-	const [t] = useTranslation();
 
 	// Retrieve data from GraphQL
 	const fetchQuickLaneAndContent = useCallback(async () => {
@@ -58,7 +62,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			// Handle edge cases
 
-			if (response.content_label === 'ITEM') {
+			if (isItem(response)) {
 				const content = response.content as ItemSchema;
 
 				// Check for a depublishing reason first
@@ -86,6 +90,36 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 					return;
 				}
+			}
+
+			if (isCollection(response)) {
+				const content = response.content as CollectionSchema;
+
+				if (!content.is_public) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
+						icon: 'search',
+					});
+
+					return;
+				}
+			}
+
+			// Fetch permissions
+
+			let permissionName: PermissionName | undefined = undefined;
+
+			if (isItem(response)) {
+				permissionName = PermissionName.VIEW_ANY_PUBLISHED_ITEMS;
+			} else if (isCollection(response)) {
+				permissionName = PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS;
+			}
+
+			if (permissionName !== undefined) {
+				setCanReadOriginal(await PermissionService.hasPerm(user, permissionName));
 			}
 
 			// Update state
@@ -235,9 +269,43 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 													/>
 												</ToolbarItem>
 											)}
-											<ToolbarItem>
-												<InteractiveTour showButton />
-											</ToolbarItem>
+											{canReadOriginal && (
+												<ToolbarItem>
+													<Button
+														type="primary"
+														label={t(
+															'quick-lane/views/quick-lane-detail___bekijk-als-leerkracht'
+														)}
+														title={t(
+															'quick-lane/views/quick-lane-detail___bekijk-als-leerkracht'
+														)}
+														icon="eye"
+														onClick={() => {
+															if (!quickLane.content_id) {
+																return;
+															}
+
+															let path: string | undefined;
+
+															if (isItem(quickLane)) {
+																path = APP_PATH.ITEM_DETAIL.route.replace(
+																	':id',
+																	(quickLane.content as ItemSchema).external_id.toString()
+																);
+															} else if (isCollection(quickLane)) {
+																path = APP_PATH.COLLECTION_DETAIL.route.replace(
+																	':id',
+																	quickLane.content_id
+																);
+															}
+
+															if (path) {
+																history.push(path);
+															}
+														}}
+													/>
+												</ToolbarItem>
+											)}
 										</ToolbarRight>
 									</Toolbar>
 								</FlexItem>
