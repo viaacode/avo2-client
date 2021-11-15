@@ -1,3 +1,6 @@
+FROM nginxinc/nginx-unprivileged
+USER nginx
+
 FROM node:12-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
@@ -8,16 +11,13 @@ ENV CI $CI
 ENV TZ=Europe/Brussels
 WORKDIR /app
 RUN mkdir ./build/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
-#COPY package.json package-lock.json .npmrc ./
-# set +s so group is alwys user node to avoid chod -R later
 COPY  . .
 RUN chown -R node:node /app && chmod -R  g+sw /app
-RUN apk add --no-cache --virtual .gyp python make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk add --no-cache --virtual .gyp python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #USER node
 RUN npm ci --production=false
 FROM node:12-alpine AS build
 USER node
-
 COPY --from=compile /app /app
 # set our node environment, defaults to production
 ARG NODE_ENV=production
@@ -28,16 +28,12 @@ ENV CI $CI
 ENV TZ=Europe/Brussels
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 WORKDIR /app
-#COPY package.json package-lock.json .npmrc ./
-#RUN chown -R node:node /app && chmod -R  g+sw /app
 USER node
-#COPY  . .
-#RUN npm ci --production=false
 RUN CI=false npm run build
 # set permissions for openshift
 #USER root
 #RUN chmod -R g+rwx /app && chown 101:101 /app
-FROM nginxinc/nginx-unprivileged AS run
+FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV
 ENV CI false
 USER root
