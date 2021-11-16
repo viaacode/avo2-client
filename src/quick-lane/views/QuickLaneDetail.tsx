@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { generatePath } from 'react-router';
 
 import {
 	Avatar,
@@ -288,14 +289,19 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 															let path: string | undefined;
 
 															if (isItem(quickLane)) {
-																path = APP_PATH.ITEM_DETAIL.route.replace(
-																	':id',
-																	(quickLane.content as ItemSchema).external_id.toString()
+																path = generatePath(
+																	APP_PATH.ITEM_DETAIL.route,
+																	{
+																		id: (quickLane.content as ItemSchema).external_id.toString(),
+																	}
 																);
 															} else if (isCollection(quickLane)) {
-																path = APP_PATH.COLLECTION_DETAIL.route.replace(
-																	':id',
-																	quickLane.content_id
+																path = generatePath(
+																	APP_PATH.COLLECTION_DETAIL
+																		.route,
+																	{
+																		id: quickLane.content_id,
+																	}
 																);
 															}
 

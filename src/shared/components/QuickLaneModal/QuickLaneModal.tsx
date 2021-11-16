@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { generatePath, useHistory } from 'react-router';
 
 import {
 	Alert,
@@ -53,7 +53,7 @@ const defaultQuickLaneState: QuickLaneUrlObject = {
 // Helpers
 
 const buildQuickLaneHref = (id: string): string => {
-	return `${APP_PATH.QUICK_LANE.route.replace(':id', id)}`;
+	return generatePath(APP_PATH.QUICK_LANE.route, { id });
 };
 
 const getContentId = (content: AssignmentContent, contentLabel: AssignmentContentLabel): string => {
