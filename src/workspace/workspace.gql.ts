@@ -60,5 +60,12 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 				count
 			}
 		}
+		app_quick_lane_counts: app_quick_lanes_overview_aggregate(
+			where: { owner_profile_id: { _eq: $owner_profile_id } }
+		) {
+			aggregate {
+				count
+			}
+		}
 	}
 `;

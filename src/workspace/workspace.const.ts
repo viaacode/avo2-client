@@ -8,6 +8,7 @@ export const BUNDLES_ID = ROUTE_PARTS.bundles;
 export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
+export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
 
 export const GET_TABS: () => TabProps[] = () => [
 	{
@@ -24,6 +25,11 @@ export const GET_TABS: () => TabProps[] = () => [
 		label: i18n.t('workspace/workspace___opdrachten'),
 		icon: 'clipboard',
 		id: ASSIGNMENTS_ID,
+	},
+	{
+		label: i18n.t('workspace/workspace___gedeelde-links'),
+		icon: 'share-2',
+		id: QUICK_LANE_ID,
 	},
 	{
 		label: i18n.t('workspace/workspace___bladwijzers'),

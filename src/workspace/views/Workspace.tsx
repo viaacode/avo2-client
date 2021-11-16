@@ -44,6 +44,7 @@ import {
 	COLLECTIONS_ID,
 	GET_TABS,
 	ORGANISATION_CONTENT_ID,
+	QUICK_LANE_ID,
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
@@ -92,6 +93,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				null,
 				user
 			),
+			PermissionService.hasPermission(
+				PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS,
+				null,
+				user
+			),
 		])
 			.then((response) => {
 				setTabCounts({
@@ -106,6 +112,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						'data.organisation_content_counts.aggregate.count',
 						0
 					),
+					[QUICK_LANE_ID]: get(
+						response[0],
+						'data.app_quick_lane_counts.aggregate.count',
+						0
+					),
 				});
 				setPermissions({
 					[COLLECTIONS_ID]: response[1],
@@ -113,6 +124,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					[ASSIGNMENTS_ID]: response[3] || response[4],
 					[BOOKMARKS_ID]: response[5],
 					[ORGANISATION_CONTENT_ID]: response[6],
+					[QUICK_LANE_ID]: response[7],
 				});
 			})
 			.catch((err) => {
