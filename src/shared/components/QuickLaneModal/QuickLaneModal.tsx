@@ -221,10 +221,16 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 											onClick={() => {
 												onClose();
 												history.push(
-													`/collecties/${getContentId(
-														content,
-														content_label
-													)}/bewerk/metadata`
+													generatePath(
+														APP_PATH.COLLECTION_EDIT_TAB.route,
+														{
+															id: getContentId(
+																content,
+																content_label
+															),
+															tabId: 'metadata',
+														}
+													)
 												);
 											}}
 										/>
