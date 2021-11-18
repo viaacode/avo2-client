@@ -103,7 +103,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
 	const [synced, setSynced] = useState<boolean>(false);
-	const debounced = useDebounce(quickLane, 300);
+	const debounced = useDebounce(quickLane, 500);
 
 	// If the modal is open and we haven't checked if anything exists, fetch or create the record
 	useEffect(() => {
