@@ -159,7 +159,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	}, [setQuickLane, setLoadingInfo, match.params.id, t, user, history]);
 
 	useEffect(() => {
-		if (PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)) {
+		if (PermissionService.hasPerm(user, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
 			fetchQuickLaneAndContent();
 		} else {
 			setLoadingInfo({
