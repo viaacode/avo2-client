@@ -233,7 +233,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				),
 				PermissionService.hasPermissions(
-					[{ name: PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS }],
+					[{ name: PermissionName.CREATE_QUICK_LANE }],
 					user
 				),
 			]);

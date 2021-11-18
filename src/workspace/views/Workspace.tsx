@@ -51,6 +51,7 @@ import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
 import OrganisationContentOverview from './OrganisationContentOverview';
+import QuickLaneOverview from './QuickLaneOverview';
 import './Workspace.scss';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
@@ -94,7 +95,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				user
 			),
 			PermissionService.hasPermission(
-				PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS,
+				PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 				null,
 				user
 			),
@@ -224,6 +225,17 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						match={match}
 						user={user}
 						numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
+					/>
+				),
+			}),
+			...addTabIfUserHasPerm(QUICK_LANE_ID, {
+				component: () => (
+					<QuickLaneOverview
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						numberOfItems={tabCounts[QUICK_LANE_ID]}
 					/>
 				),
 			}),

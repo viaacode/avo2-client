@@ -1,0 +1,211 @@
+import { orderBy } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { Button, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
+
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import QuickLaneLink from '../../shared/components/QuickLaneLink/QuickLaneLink';
+import { CustomError, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import { QuickLaneUrlObject } from '../../shared/types';
+import { ITEMS_PER_PAGE } from '../workspace.const';
+import { WorkspaceService } from '../workspace.service';
+
+import './QuickLaneOverview.scss';
+
+const QUICKLANE_COLUMNS = {
+	TITLE: 'title',
+	URL: 'url',
+	CREATED_AT: 'created_at',
+	UPDATED_AT: 'updated_at',
+};
+
+interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
+	numberOfItems: number;
+}
+
+const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
+	history,
+	user,
+	numberOfItems,
+}) => {
+	const [t] = useTranslation();
+
+	// State
+	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [sortColumn, setSortColumn] = useState<keyof QuickLaneUrlObject>('created_at');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+	const [page, setPage] = useState<number>(0);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [paginated, setPaginated] = useState<QuickLaneUrlObject[]>([]);
+
+	const columns: TableColumn[] = [
+		{
+			id: QUICKLANE_COLUMNS.TITLE,
+			label: t('workspace/views/quick-lane-overview___titel'),
+			sortable: true,
+			dataType: 'string',
+		},
+		{
+			id: QUICKLANE_COLUMNS.URL,
+			label: t('workspace/views/quick-lane-overview___url'),
+		},
+		...(isMobileWidth()
+			? []
+			: [
+					{
+						id: QUICKLANE_COLUMNS.CREATED_AT,
+						label: t('workspace/views/quick-lane-overview___aangemaakt-op'),
+						sortable: true,
+						dataType: 'dateTime',
+					},
+					{
+						id: QUICKLANE_COLUMNS.UPDATED_AT,
+						label: t('workspace/views/quick-lane-overview___aangepast-op'),
+						sortable: true,
+						dataType: 'dateTime',
+					},
+			  ]),
+	] as TableColumn[];
+
+	const fetchQuickLanes = useCallback(async () => {
+		try {
+			if (!user.profile || user.profile.id === undefined) {
+				return;
+			}
+
+			const response = await WorkspaceService.fetchQuickLanesByOwnerId(user.profile?.id);
+
+			setQuickLanes(response);
+			setLoadingInfo({ state: 'loaded' });
+		} catch (err) {
+			console.error(new CustomError('Failed to get all quick_lanes for user', err, { user }));
+
+			setLoadingInfo({
+				state: 'error',
+				message: t(
+					'workspace/views/quick-lane-overview___het-ophalen-van-je-gedeelde-links-is-mislukt'
+				),
+			});
+		}
+	}, [user, setQuickLanes, setLoadingInfo, t]);
+
+	useEffect(() => {
+		fetchQuickLanes();
+	}, [fetchQuickLanes]);
+
+	const updatePaginatedBookmarks = useCallback(() => {
+		setPaginated(
+			orderBy(quickLanes, [sortColumn], [sortOrder]).slice(
+				ITEMS_PER_PAGE * page,
+				ITEMS_PER_PAGE * (page + 1)
+			)
+		);
+	}, [setPaginated, sortColumn, sortOrder, page, quickLanes]);
+
+	useEffect(updatePaginatedBookmarks, [updatePaginatedBookmarks]);
+
+	// TODO: Make shared function because also used in assignments / bookmarks / ...
+	const onClickColumn = (columnId: keyof QuickLaneUrlObject) => {
+		if (sortColumn === columnId) {
+			// Change column sort order
+			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+			// Initial column sort order
+			setSortColumn(columnId);
+			setSortOrder('asc');
+		}
+		setPage(0);
+	};
+
+	// Render functions
+	const renderCell = (data: QuickLaneUrlObject, id: string) => {
+		switch (id) {
+			case QUICKLANE_COLUMNS.TITLE:
+				return data.title.length <= 0 ? (
+					<span className="u-text-muted">
+						{t('workspace/views/quick-lane-overview___geen')}
+					</span>
+				) : (
+					data.title
+				);
+
+			case QUICKLANE_COLUMNS.URL:
+				return <QuickLaneLink id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
+
+			case QUICKLANE_COLUMNS.CREATED_AT:
+			case QUICKLANE_COLUMNS.UPDATED_AT:
+				const date = data[id as 'created_at' | 'updated_at'];
+				return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
+
+			default:
+				return null;
+		}
+	};
+
+	const renderTable = () => (
+		<>
+			<Table
+				columns={columns}
+				data={paginated}
+				emptyStateMessage={t(
+					'workspace/views/quick-lane-overview___je-hebt-nog-geen-gedeelde-links-aangemaakt'
+				)}
+				renderCell={renderCell}
+				rowKey="contentId"
+				variant="styled"
+				onColumnClick={onClickColumn as any}
+				sortColumn={sortColumn}
+				sortOrder={sortOrder}
+			/>
+			<Spacer margin="top-large">
+				<Pagination
+					pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
+					currentPage={page}
+					onPageChange={setPage}
+				/>
+			</Spacer>
+		</>
+	);
+
+	const renderEmptyFallback = () => (
+		<ErrorView
+			icon="link-2"
+			message={t(
+				'workspace/views/quick-lane-overview___je-hebt-nog-geen-gedeelde-links-aangemaakt'
+			)}
+		>
+			<p>
+				{t(
+					'workspace/views/quick-lane-overview___een-gedeelde-link-kan-je-gebruiken-om-makkelijk-en-snel-fragmenten-of-collecties-te-delen-zonder-tijdslimiet'
+				)}
+			</p>
+			<Spacer margin="top">
+				<Button
+					type="primary"
+					icon="search"
+					label={t('workspace/views/quick-lane-overview___zoek-een-item')}
+					title={t(
+						'workspace/views/quick-lane-overview___zoek-een-item-en-maak-een-gedeelde-link-er-naartoe'
+					)}
+					onClick={() => history.push(APP_PATH.SEARCH.route)}
+				/>
+			</Spacer>
+		</ErrorView>
+	);
+
+	const renderQuickLanes = () => (quickLanes.length > 0 ? renderTable() : renderEmptyFallback());
+
+	return (
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			dataObject={quickLanes}
+			render={renderQuickLanes}
+		/>
+	);
+};
+
+export default QuickLaneOverview;

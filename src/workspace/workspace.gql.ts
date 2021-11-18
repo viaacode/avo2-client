@@ -69,3 +69,15 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 		}
 	}
 `;
+
+export const GET_QUICK_LANES_BY_OWNER = gql`
+	query getQuickLaneByOwner($profileId: uuid) {
+		app_quick_lanes(where: { owner_profile_id: { _eq: $profileId } }) {
+			id
+			title
+			view_mode
+			created_at
+			updated_at
+		}
+	}
+`;
