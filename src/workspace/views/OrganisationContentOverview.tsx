@@ -58,14 +58,14 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		try {
 			const organisationId = get(user, 'profile.organisation.or_id') || 'NONE';
 
-			const collections: OrganisationContentItem[] = await CollectionService.fetchOrganisationContent(
+			const items: OrganisationContentItem[] = await CollectionService.fetchOrganisationContent(
 				page * ITEMS_PER_PAGE,
 				ITEMS_PER_PAGE,
 				{ [sortColumn]: sortOrder },
 				organisationId
 			);
 
-			setOrganisationContent(collections);
+			setOrganisationContent(items);
 		} catch (err) {
 			console.error('Failed to fetch organsiation content', err, {
 				organisation: user.profile?.organisation,
