@@ -147,6 +147,9 @@ export const GET_USERS = gql`
 				temp_access {
 					until
 					from
+					current {
+						status
+					}
 				}
 			}
 		}
