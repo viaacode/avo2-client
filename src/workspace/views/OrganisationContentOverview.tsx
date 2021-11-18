@@ -4,10 +4,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { CollectionService } from '../../collection/collection.service';
+import { CollectionService, OrganisationContentItem } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
@@ -15,12 +14,18 @@ import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../sha
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import i18n from '../../shared/translations/i18n';
 
+// Constants
+
 const ITEMS_PER_PAGE = 10;
+
+// Typing
 
 interface OrganisationContentOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
 	onUpdate: () => void | Promise<void>;
 }
+
+// Component
 
 const OrganisationContentOverview: FunctionComponent<OrganisationContentOverviewProps> = ({
 	numberOfItems,
@@ -28,19 +33,17 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 }) => {
 	const [t] = useTranslation();
 
-	type OrganisationContentInfo = any; // TODO: Type
-
 	// State
 	const [organisationContent, setOrganisationContent] = useState<
-		OrganisationContentInfo[] | null
+		OrganisationContentItem[] | null
 	>(null);
-	const [sortColumn, setSortColumn] = useState<keyof OrganisationContentInfo>('title');
+	const [sortColumn, setSortColumn] = useState<keyof OrganisationContentItem>('title');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// TODO: Make shared function because also used in assignments
-	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
+	const onClickColumn = (columnId: keyof OrganisationContentItem) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
 			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -55,20 +58,23 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		try {
 			const organisationId = get(user, 'profile.organisation.or_id') || 'NONE';
 
-			const rawOrganisationContent = await CollectionService.fetchOrganisationContent(
+			const collections: OrganisationContentItem[] = await CollectionService.fetchOrganisationContent(
 				page * ITEMS_PER_PAGE,
 				ITEMS_PER_PAGE,
 				{ [sortColumn]: sortOrder },
 				organisationId
 			);
 
-			setOrganisationContent(rawOrganisationContent);
+			setOrganisationContent(collections);
 		} catch (err) {
-			console.error('Failed to fetch collections', err, {});
+			console.error('Failed to fetch organsiation content', err, {
+				organisation: user.profile?.organisation,
+			});
+
 			setLoadingInfo({
 				state: 'error',
 				message: t(
-					'collection/components/collection-or-bundle-overview___het-ophalen-van-de-bundels-is-mislukt'
+					'workspace/views/organisation-content-overview___het-ophalen-van-de-organisatieinhoud-is-mislukt'
 				),
 				actionButtons: ['home'],
 			});
@@ -86,51 +92,69 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	}, [setLoadingInfo, organisationContent, user]);
 
 	// Render functions
-	const getLinkProps = (collection: Avo.Collection.Collection): { to: string; title: string } => {
-		const type = get(collection, 'type.label');
+	const getLinkProps = (item: OrganisationContentItem): { to: string; title: string } => {
+		const type = item.type.label;
 
 		return {
-			title: collection.title,
+			title: item.title,
 			to: buildLink(
 				type === 'collectie'
 					? APP_PATH.COLLECTION_DETAIL.route
 					: APP_PATH.BUNDLE_DETAIL.route,
 				{
-					id: collection.id,
+					id: item.id,
 				}
 			),
 		};
 	};
 
-	const renderTitle = (collection: Avo.Collection.Collection) => (
+	const renderTitle = (item: OrganisationContentItem) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link {...getLinkProps(collection)}>{truncateTableValue(collection.title)}</Link>
+				<Link {...getLinkProps(item)}>{truncateTableValue(item.title)}</Link>
 			</h3>
 		</div>
 	);
 
-	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
+	const renderType = (item: OrganisationContentItem): string => {
+		if (!item.type.label) {
+			return '-';
+		}
+
+		// Account for `npm run extract-translations`
+		switch (item.type.label) {
+			case 'audio':
+				return t('workspace/views/organisation-content-overview___audio');
+			case 'bundel':
+				return t('workspace/views/organisation-content-overview___bundel');
+			case 'collectie':
+				return t('workspace/views/organisation-content-overview___collectie');
+			case 'video':
+				return t('workspace/views/organisation-content-overview___video');
+			default:
+				return '-';
+		}
+	};
+
+	const renderCell = (item: OrganisationContentItem, colKey: string) => {
 		switch (colKey) {
 			case 'title':
-				return renderTitle(collection);
+				return renderTitle(item);
 
 			case 'type':
-				const label = get(collection, 'type.label');
-
-				return label.charAt(0).toUpperCase() + label.slice(1) || '-';
+				return renderType(item);
 
 			case 'author':
-				return get(collection, 'owner.full_name', '-');
+				return item.owner.full_name;
 
 			case 'last_edited':
-				return get(collection, 'last_editor.full_name', '-');
+				return item.last_editor ? item.last_editor.full_name : '-';
 
 			case 'created_at':
 			case 'updated_at':
-				const cellData = collection[colKey as 'created_at' | 'updated_at'];
+				const date = item[colKey as 'created_at' | 'updated_at'];
 
-				return <span title={formatTimestamp(cellData)}>{formatDate(cellData)}</span>;
+				return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 
 			default:
 				return null;
@@ -209,11 +233,11 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		/>
 	);
 
-	const renderTable = (collections: Avo.Collection.Collection[]) => (
+	const renderTable = (items: OrganisationContentItem[]) => (
 		<>
 			<Table
 				columns={getColumns()}
-				data={collections}
+				data={items}
 				emptyStateMessage={t(
 					'collection/views/collection-overview___geen-resultaten-gevonden'
 				)}
@@ -251,14 +275,11 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	);
 
 	const renderOrganisationContent = () => {
-		const hasOrganisation = get(user, 'profile.organisation.or_id');
-		const hasOrganisationContent = organisationContent && organisationContent.length;
-
 		return (
 			<>
-				{hasOrganisation
-					? hasOrganisationContent
-						? renderTable(organisationContent || [])
+				{user.profile?.organisation?.or_id // hasOrganisation
+					? organisationContent && organisationContent.length // hasOrganisationContent
+						? renderTable(organisationContent)
 						: renderEmptyFallback()
 					: renderNoOrganisationFallback()}
 			</>
