@@ -23,12 +23,15 @@ import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
 import { APP_PATH } from '../../../constants';
-import { QuickLaneService, QuickLaneUrlObject } from '../../../quick-lane/quick-lane.service';
+import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
+import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks';
 import { ToastService } from '../../services';
+import { QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
+import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
 import './QuickLaneModal.scss';
 
@@ -51,10 +54,6 @@ const defaultQuickLaneState: QuickLaneUrlObject = {
 };
 
 // Helpers
-
-const buildQuickLaneHref = (id: string): string => {
-	return generatePath(APP_PATH.QUICK_LANE.route, { id });
-};
 
 const getContentId = (content: AssignmentContent, contentLabel: AssignmentContentLabel): string => {
 	switch (contentLabel) {
@@ -115,7 +114,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 		(async () => {
 			if (content && content_label) {
 				if (user && user.profile !== null) {
-					let items = await QuickLaneService.fetchQuickLaneByContentAndOwnerId(
+					let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
 						getContentId(content, content_label),
 						content_label,
 						(user.profile as UserProfile).id
@@ -312,12 +311,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						<Box backgroundColor="gray" condensed>
 							<Flex wrap justify="between" align="baseline">
 								<FlexItem className="u-truncate m-quick-lane-modal__link">
-									{quickLane.id && (
-										<a href={buildQuickLaneHref(quickLane.id)}>
-											{window.location.origin}
-											{buildQuickLaneHref(quickLane.id)}
-										</a>
-									)}
+									{quickLane.id && <QuickLaneLink id={quickLane.id} />}
 								</FlexItem>
 								<FlexItem shrink>
 									<Spacer margin="left-small">
@@ -328,9 +322,9 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 											)}
 											onClick={() => {
 												navigator.clipboard.writeText(
-													`${window.location.origin}${buildQuickLaneHref(
-														quickLane.id
-													)}`
+													`${
+														window.location.origin
+													}${generateQuickLaneHref(quickLane.id)}`
 												);
 											}}
 										/>

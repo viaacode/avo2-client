@@ -33,8 +33,9 @@ import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { QuickLaneUrlObject } from '../../shared/types';
 import { isCollection, isItem } from '../quick-lane.helpers';
-import { QuickLaneService, QuickLaneUrlObject } from '../quick-lane.service';
+import { QuickLaneService } from '../quick-lane.service';
 
 import './QuickLaneDetail.scss';
 
