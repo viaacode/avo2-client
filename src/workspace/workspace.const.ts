@@ -28,7 +28,7 @@ export const GET_TABS: () => TabProps[] = () => [
 	},
 	{
 		label: i18n.t('workspace/workspace___gedeelde-links'),
-		icon: 'share-2',
+		icon: 'link-2',
 		id: QUICK_LANE_ID,
 	},
 	{

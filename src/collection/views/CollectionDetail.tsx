@@ -584,7 +584,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
 							t('collection/views/collection-detail___delen-met-leerlingen'),
-							'share-2'
+							'link-2'
 						),
 				  ]
 				: []),
@@ -746,7 +746,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
 							t('collection/views/collection-detail___delen-met-leerlingen'),
-							'share-2'
+							'link-2'
 						),
 				  ]
 				: []),

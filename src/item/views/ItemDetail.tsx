@@ -470,7 +470,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													) && (
 														<Button
 															type="tertiary"
-															icon="share-2"
+															icon="link-2"
 															label={t(
 																'item/views/item___delen-met-leerlingen'
 															)}
