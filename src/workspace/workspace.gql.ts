@@ -99,6 +99,11 @@ export const GET_QUICK_LANES_BY_COMPANY = gql`
 			content_label
 			created_at
 			updated_at
+			owner {
+				usersByuserId {
+					full_name
+				}
+			}
 		}
 	}
 `;

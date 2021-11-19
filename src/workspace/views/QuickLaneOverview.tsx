@@ -3,8 +3,10 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 
 import { Button, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { isCollection, isItem } from '../../quick-lane/quick-lane.helpers';
@@ -17,17 +19,38 @@ import { WorkspaceService } from '../workspace.service';
 
 import './QuickLaneOverview.scss';
 
+// Typings
+
+interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
+	numberOfItems: number;
+}
+
+// Constants
+
 const QUICKLANE_COLUMNS = {
 	TITLE: 'title',
 	URL: 'url',
 	CREATED_AT: 'created_at',
 	UPDATED_AT: 'updated_at',
 	CONTENT_LABEL: 'content_label',
+	AUTHOR: 'author',
 };
 
-interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
-	numberOfItems: number;
-}
+// Helpers
+
+const isOrganisational = (user: UserSchema): boolean => {
+	return PermissionService.hasAtLeastOnePerm(user, [
+		PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
+	]);
+};
+
+const isPersonal = (user: UserSchema): boolean => {
+	return PermissionService.hasAtLeastOnePerm(user, [
+		PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
+	]);
+};
+
+// Component
 
 const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 	history,
@@ -66,22 +89,34 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 			id: QUICKLANE_COLUMNS.URL,
 			label: t('workspace/views/quick-lane-overview___url'),
 		},
-		// Hide timestamps on mobile
+		// Hide timestamps & author on mobile
 		...(isMobileWidth()
 			? []
 			: [
-					{
-						id: QUICKLANE_COLUMNS.CREATED_AT,
-						label: t('workspace/views/quick-lane-overview___aangemaakt-op'),
-						sortable: true,
-						dataType: 'dateTime',
-					},
-					{
-						id: QUICKLANE_COLUMNS.UPDATED_AT,
-						label: t('workspace/views/quick-lane-overview___aangepast-op'),
-						sortable: true,
-						dataType: 'dateTime',
-					},
+					...(isOrganisational(user)
+						? [
+								{
+									id: QUICKLANE_COLUMNS.AUTHOR,
+									label: t('Aangemaakt door'),
+									sortable: true,
+									dataType: 'string',
+								},
+						  ]
+						: []),
+					...[
+						{
+							id: QUICKLANE_COLUMNS.CREATED_AT,
+							label: t('workspace/views/quick-lane-overview___aangemaakt-op'),
+							sortable: true,
+							dataType: 'dateTime',
+						},
+						{
+							id: QUICKLANE_COLUMNS.UPDATED_AT,
+							label: t('workspace/views/quick-lane-overview___aangepast-op'),
+							sortable: true,
+							dataType: 'dateTime',
+						},
+					],
 			  ]),
 	] as TableColumn[];
 
@@ -91,10 +126,26 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 				return;
 			}
 
-			const response = await WorkspaceService.fetchQuickLanesByOwnerId(user.profile?.id);
+			// Define the original promise
+			let promise: Promise<QuickLaneUrlObject[]> | undefined;
 
-			setQuickLanes(response);
-			setLoadingInfo({ state: 'loaded' });
+			if (isOrganisational(user)) {
+				if (!user.profile.company_id) {
+					return;
+				}
+
+				// If the user has access to their entire organisation's quick_lane urls load them all, including their own
+				promise = WorkspaceService.fetchQuickLanesByCompanyId(user.profile.company_id);
+			} else if (isPersonal(user)) {
+				// If they do not have access to their organisation's but do have access to their own, change the promise
+				promise = WorkspaceService.fetchQuickLanesByOwnerId(user.profile.id);
+			}
+
+			// Finally, resolve the promise
+			if (promise) {
+				setQuickLanes(await promise);
+				setLoadingInfo({ state: 'loaded' });
+			}
 		} catch (err) {
 			console.error(new CustomError('Failed to get all quick_lanes for user', err, { user }));
 
@@ -160,6 +211,9 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 
 			case QUICKLANE_COLUMNS.URL:
 				return <QuickLaneLink id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
+
+			case QUICKLANE_COLUMNS.AUTHOR:
+				return data.owner?.usersByuserId.full_name || '-';
 
 			case QUICKLANE_COLUMNS.CREATED_AT:
 			case QUICKLANE_COLUMNS.UPDATED_AT:
