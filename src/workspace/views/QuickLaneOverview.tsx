@@ -7,6 +7,7 @@ import { Button, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-compo
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { isCollection, isItem } from '../../quick-lane/quick-lane.helpers';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import QuickLaneLink from '../../shared/components/QuickLaneLink/QuickLaneLink';
 import { CustomError, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
@@ -21,6 +22,7 @@ const QUICKLANE_COLUMNS = {
 	URL: 'url',
 	CREATED_AT: 'created_at',
 	UPDATED_AT: 'updated_at',
+	CONTENT_LABEL: 'content_label',
 };
 
 interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
@@ -49,10 +51,22 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 			sortable: true,
 			dataType: 'string',
 		},
+		// Hide type on mobile
+		...(isMobileWidth()
+			? []
+			: [
+					{
+						id: QUICKLANE_COLUMNS.CONTENT_LABEL,
+						label: t('workspace/views/quick-lane-overview___type'),
+						sortable: true,
+						dataType: 'string',
+					},
+			  ]),
 		{
 			id: QUICKLANE_COLUMNS.URL,
 			label: t('workspace/views/quick-lane-overview___url'),
 		},
+		// Hide timestamps on mobile
 		...(isMobileWidth()
 			? []
 			: [
@@ -132,6 +146,17 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 				) : (
 					data.title
 				);
+
+			case QUICKLANE_COLUMNS.CONTENT_LABEL:
+				if (isCollection(data)) {
+					return t('workspace/views/quick-lane-overview___collectie');
+				}
+
+				if (isItem(data)) {
+					return t('workspace/views/quick-lane-overview___item');
+				}
+
+				return t('workspace/views/quick-lane-overview___unknown-type');
 
 			case QUICKLANE_COLUMNS.URL:
 				return <QuickLaneLink id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
