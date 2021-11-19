@@ -67,6 +67,13 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 				count
 			}
 		}
+		app_quick_lane_organisation_counts: app_quick_lanes_overview_aggregate(
+			where: { company_id: { _eq: $company_id } }
+		) {
+			aggregate {
+				count
+			}
+		}
 	}
 `;
 

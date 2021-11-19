@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from 'apollo-client';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -22,6 +23,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -57,6 +59,28 @@ import './Workspace.scss';
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
 }
+
+// Using `hasAtLeastOnePerm` to avoid async
+const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown>): number => {
+	// Show count of personal quick lane
+	if (
+		PermissionService.hasAtLeastOnePerm(user, [
+			PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
+		])
+	) {
+		return get(response, 'data.app_quick_lane_counts.aggregate.count', 0);
+	}
+
+	if (
+		PermissionService.hasAtLeastOnePerm(user, [
+			PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
+		])
+	) {
+		return get(response, 'data.app_quick_lane_organisation_counts.aggregate.count', 0);
+	}
+
+	return 0;
+};
 
 const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
@@ -94,11 +118,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				null,
 				user
 			),
-			PermissionService.hasPermission(
+			PermissionService.hasAtLeastOnePerm(user, [
 				PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
-				null,
-				user
-			),
+				PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
+			]),
 		])
 			.then((response) => {
 				setTabCounts({
@@ -113,11 +136,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						'data.organisation_content_counts.aggregate.count',
 						0
 					),
-					[QUICK_LANE_ID]: get(
-						response[0],
-						'data.app_quick_lane_counts.aggregate.count',
-						0
-					),
+					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
 				});
 				setPermissions({
 					[COLLECTIONS_ID]: response[1],
