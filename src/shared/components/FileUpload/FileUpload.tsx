@@ -269,6 +269,12 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					<Spinner size="large" />
 				))}
 			<ConfirmModal
+				title={t(
+					'shared/components/file-upload/file-upload___ben-je-zeker-dat-je-dit-bestand-wil-verwijderen'
+				)}
+				body={t(
+					'shared/components/file-upload/file-upload___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
 				isOpen={isDeleteModalOpen}
 				onClose={closeDeleteModal}
 				deleteObjectCallback={() => {
