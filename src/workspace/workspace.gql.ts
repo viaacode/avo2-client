@@ -83,6 +83,20 @@ export const GET_QUICK_LANES_BY_OWNER = gql`
 			id
 			title
 			view_mode
+			content_label
+			created_at
+			updated_at
+		}
+	}
+`;
+
+export const GET_QUICK_LANES_BY_COMPANY = gql`
+	query getQuickLaneByCompany($companyId: String) {
+		app_quick_lanes(where: { owner: { company_id: { _eq: $companyId } } }) {
+			id
+			title
+			view_mode
+			content_label
 			created_at
 			updated_at
 		}
