@@ -113,6 +113,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 
 	const deleteUploadedFile = async (url: string) => {
 		if (!url) {
+			closeDeleteModal();
 			return;
 		}
 
@@ -144,9 +145,8 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			);
 		}
 
-		setUrlToDelete(null);
-		setIsDeleteModalOpen(false);
 		setIsProcessing(false);
+		closeDeleteModal();
 	};
 
 	const renderDeleteButton = (url: string) => {
