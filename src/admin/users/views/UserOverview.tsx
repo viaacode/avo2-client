@@ -648,10 +648,15 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			case 'temp_access':
-				const tempAccess = get(rowData, 'user.temp_access');
-				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
-
-				return hasTempAccess && !isBlocked ? 'Ja' : 'Nee';
+				const tempAccess = get(rowData, 'user.temp_access.current.status');
+				switch (tempAccess) {
+					case 0:
+						return t('admin/users/views/user-overview___tijdelijke-toegang-nee');
+					case 1:
+						return t('admin/users/views/user-overview___tijdelijke-toegang-ja');
+					default:
+						return '';
+				}
 
 			case 'temp_access_from':
 				return formatDate(get(rowData, 'user.temp_access.from')) || '-';

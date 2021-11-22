@@ -127,8 +127,9 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{
 					id: 'temp_access',
 					label: i18n.t('admin/users/user___tijdelijke-toegang'),
+					sortable: true,
 					visibleByDefault: false,
-					dataType: 'boolean',
+					dataType: 'booleanNullsLast', // Users without a value are always last when sorting
 				},
 				{
 					id: 'temp_access_from',
@@ -270,6 +271,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 	last_access_at: (order: Avo.Search.OrderDirection) => ({
 		last_access_at: order,
+	}),
+	temp_access: (order: Avo.Search.OrderDirection) => ({
+		user: { temp_access: { current: { status: order } } },
 	}),
 	temp_access_from: (order: Avo.Search.OrderDirection) => ({
 		user: { temp_access: { from: order } },
