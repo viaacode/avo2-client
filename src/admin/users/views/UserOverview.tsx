@@ -221,6 +221,14 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			);
 
 			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['temp_access'],
+					['user.temp_access.current.status']
+				)
+			);
+
+			andFilters.push(
 				...getDateRangeFilters(
 					filters,
 					['created_at', 'last_access_at'],
