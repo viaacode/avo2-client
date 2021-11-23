@@ -663,7 +663,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					case 1:
 						return t('admin/users/views/user-overview___tijdelijke-toegang-ja');
 					default:
-						return '';
+						return '-';
 				}
 
 			case 'temp_access_from':
