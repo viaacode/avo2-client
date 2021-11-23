@@ -78,8 +78,27 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 `;
 
 export const GET_QUICK_LANES_BY_OWNER = gql`
-	query getQuickLaneByOwner($profileId: uuid) {
-		app_quick_lanes(where: { owner_profile_id: { _eq: $profileId } }) {
+	query getQuickLaneByOwner($profileId: uuid, $filterString: String) {
+		app_quick_lanes(
+			where: {
+				_and: [
+					{ owner_profile_id: { _eq: $profileId } }
+					{
+						_or: [
+							{ title: { _ilike: $filterString } }
+							{
+								owner: {
+									_or: [
+										{ usersByuserId: { first_name: { _ilike: $filterString } } }
+										{ usersByuserId: { last_name: { _ilike: $filterString } } }
+									]
+								}
+							}
+						]
+					}
+				]
+			}
+		) {
 			id
 			title
 			view_mode
@@ -91,8 +110,27 @@ export const GET_QUICK_LANES_BY_OWNER = gql`
 `;
 
 export const GET_QUICK_LANES_BY_COMPANY = gql`
-	query getQuickLaneByCompany($companyId: String) {
-		app_quick_lanes(where: { owner: { company_id: { _eq: $companyId } } }) {
+	query getQuickLaneByCompany($companyId: String, $filterString: String) {
+		app_quick_lanes(
+			where: {
+				_and: [
+					{ owner: { company_id: { _eq: $companyId } } }
+					{
+						_or: [
+							{ title: { _ilike: $filterString } }
+							{
+								owner: {
+									_or: [
+										{ usersByuserId: { first_name: { _ilike: $filterString } } }
+										{ usersByuserId: { last_name: { _ilike: $filterString } } }
+									]
+								}
+							}
+						]
+					}
+				]
+			}
+		) {
 			id
 			title
 			view_mode

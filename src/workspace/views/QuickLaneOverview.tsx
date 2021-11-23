@@ -2,7 +2,20 @@ import { orderBy } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
+import {
+	Button,
+	Form,
+	FormGroup,
+	Pagination,
+	Spacer,
+	Table,
+	TableColumn,
+	TextInput,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
+	ToolbarRight,
+} from '@viaa/avo2-components';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -13,6 +26,7 @@ import { isCollection, isItem } from '../../quick-lane/quick-lane.helpers';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import QuickLaneLink from '../../shared/components/QuickLaneLink/QuickLaneLink';
 import { CustomError, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import { useDebounce } from '../../shared/hooks';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 import { WorkspaceService } from '../workspace.service';
@@ -60,12 +74,16 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 	const [t] = useTranslation();
 
 	// State
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [paginated, setPaginated] = useState<QuickLaneUrlObject[]>([]);
+
 	const [sortColumn, setSortColumn] = useState<keyof QuickLaneUrlObject>('created_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [paginated, setPaginated] = useState<QuickLaneUrlObject[]>([]);
+
+	const [filterString, setFilterString] = useState<string | undefined>(undefined);
+	const debouncedFilterString = useDebounce(filterString, 500);
 
 	const columns: TableColumn[] = [
 		{
@@ -97,7 +115,9 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 						? [
 								{
 									id: QUICKLANE_COLUMNS.AUTHOR,
-									label: t('Aangemaakt door'),
+									label: t(
+										'workspace/views/quick-lane-overview___aangemaakt-door'
+									),
 									sortable: true,
 									dataType: 'string',
 								},
@@ -135,10 +155,16 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 				}
 
 				// If the user has access to their entire organisation's quick_lane urls load them all, including their own
-				promise = WorkspaceService.fetchQuickLanesByCompanyId(user.profile.company_id);
+				promise = WorkspaceService.fetchQuickLanesByCompanyId(
+					user.profile.company_id,
+					filterString || ''
+				);
 			} else if (isPersonal(user)) {
 				// If they do not have access to their organisation's but do have access to their own, change the promise
-				promise = WorkspaceService.fetchQuickLanesByOwnerId(user.profile.id);
+				promise = WorkspaceService.fetchQuickLanesByOwnerId(
+					user.profile.id,
+					filterString || ''
+				);
 			}
 
 			// Finally, resolve the promise
@@ -156,11 +182,15 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 				),
 			});
 		}
-	}, [user, setQuickLanes, setLoadingInfo, t]);
+	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilterString]);
 
 	useEffect(() => {
 		fetchQuickLanes();
 	}, [fetchQuickLanes]);
+
+	useEffect(() => {
+		fetchQuickLanes();
+	}, [debouncedFilterString]);
 
 	const updatePaginatedBookmarks = useCallback(() => {
 		setPaginated(
@@ -225,8 +255,30 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 		}
 	};
 
+	const renderHeader = () => (
+		<Toolbar>
+			<ToolbarLeft></ToolbarLeft>
+			<ToolbarRight>
+				<ToolbarItem>
+					<Form type="inline">
+						<FormGroup>
+							<TextInput
+								className="c-assignment-overview__search-input"
+								icon="filter"
+								value={filterString}
+								onChange={setFilterString}
+								disabled={quickLanes.length <= 0}
+							/>
+						</FormGroup>
+					</Form>
+				</ToolbarItem>
+			</ToolbarRight>
+		</Toolbar>
+	);
+
 	const renderTable = () => (
 		<>
+			{renderHeader()}
 			<Table
 				columns={columns}
 				data={paginated}
@@ -234,7 +286,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({
 					'workspace/views/quick-lane-overview___je-hebt-nog-geen-gedeelde-links-aangemaakt'
 				)}
 				renderCell={renderCell}
-				rowKey="contentId"
+				rowKey="id"
 				variant="styled"
 				onColumnClick={onClickColumn as any}
 				sortColumn={sortColumn}

@@ -9,11 +9,11 @@ import { GET_QUICK_LANES_BY_COMPANY, GET_QUICK_LANES_BY_OWNER } from './workspac
 
 // Q: I'm assuming lazy loading here but should this method be in QuickLaneService instead?
 export class WorkspaceService {
-	static async fetchQuickLanesByOwnerId(profileId: string) {
+	static async fetchQuickLanesByOwnerId(profileId: string, filterString: string) {
 		try {
 			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
 				query: GET_QUICK_LANES_BY_OWNER,
-				variables: { profileId },
+				variables: { profileId, filterString: `%${filterString}%` },
 			});
 
 			if (response.errors) {
@@ -37,11 +37,11 @@ export class WorkspaceService {
 		}
 	}
 
-	static async fetchQuickLanesByCompanyId(companyId: string) {
+	static async fetchQuickLanesByCompanyId(companyId: string, filterString: string) {
 		try {
 			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
 				query: GET_QUICK_LANES_BY_COMPANY,
-				variables: { companyId },
+				variables: { companyId, filterString: `%${filterString}%` },
 			});
 
 			if (response.errors) {
