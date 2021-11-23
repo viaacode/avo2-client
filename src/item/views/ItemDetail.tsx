@@ -466,11 +466,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 													{PermissionService.hasPerm(
 														user,
-														PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS
+														PermissionName.CREATE_QUICK_LANE
 													) && (
 														<Button
 															type="tertiary"
-															icon="share-2"
+															icon="link-2"
 															label={t(
 																'item/views/item___delen-met-leerlingen'
 															)}

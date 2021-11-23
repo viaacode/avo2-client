@@ -1,5 +1,24 @@
 import { gql } from 'apollo-boost';
 
+export const GET_QUICK_LANE_BY_ID = gql`
+	query getQuickLaneById($id: uuid = "") {
+		app_quick_lanes(where: { id: { _eq: $id } }) {
+			id
+			content_id
+			content_label
+			title
+			view_mode
+			owner {
+				id
+				avatar
+				usersByuserId {
+					full_name
+				}
+			}
+		}
+	}
+`;
+
 export const GET_QUICK_LANE_BY_CONTENT_AND_OWNER = gql`
 	query getQuickLaneByContentAndOwner(
 		$contentId: uuid = ""

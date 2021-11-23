@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { generatePath, useHistory } from 'react-router';
 
 import {
 	Alert,
@@ -22,11 +22,16 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
-import { QuickLaneService, QuickLaneUrlObject } from '../../../quick-lane/quick-lane.service';
+import { APP_PATH } from '../../../constants';
+import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
+import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks';
+import { ToastService } from '../../services';
+import { QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
+import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
 import './QuickLaneModal.scss';
 
@@ -49,10 +54,6 @@ const defaultQuickLaneState: QuickLaneUrlObject = {
 };
 
 // Helpers
-
-const buildQuickLaneHref = (id: string): string => {
-	return `https://example.com/url/structure/${id}`;
-};
 
 const getContentId = (content: AssignmentContent, contentLabel: AssignmentContentLabel): string => {
 	switch (contentLabel) {
@@ -102,7 +103,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
 	const [synced, setSynced] = useState<boolean>(false);
-	const debounced = useDebounce(quickLane, 300);
+	const debounced = useDebounce(quickLane, 500);
 
 	// If the modal is open and we haven't checked if anything exists, fetch or create the record
 	useEffect(() => {
@@ -113,7 +114,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 		(async () => {
 			if (content && content_label) {
 				if (user && user.profile !== null) {
-					let items = await QuickLaneService.fetchQuickLaneByContentAndOwnerId(
+					let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
 						getContentId(content, content_label),
 						content_label,
 						(user.profile as UserProfile).id
@@ -122,12 +123,22 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 					if (items.length === 0 && isShareable(content)) {
 						items = await QuickLaneService.insertQuickLanes([
 							{
-								...quickLane,
+								// Initialise with content title
+								...{
+									...quickLane,
+									title: content.title,
+								},
 								content_label,
 								content_id: getContentId(content, content_label),
 								owner_profile_id: (user.profile as UserProfile).id,
 							},
 						]);
+
+						ToastService.success(
+							t(
+								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangemaakt'
+							)
+						);
 					}
 
 					if (items.length === 1) {
@@ -170,6 +181,12 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 							...object,
 							...updated[0],
 						});
+
+						ToastService.success(
+							t(
+								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangepast'
+							)
+						);
 					}
 				}
 			}
@@ -203,10 +220,16 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 											onClick={() => {
 												onClose();
 												history.push(
-													`/collecties/${getContentId(
-														content,
-														content_label
-													)}/bewerk/metadata`
+													generatePath(
+														APP_PATH.COLLECTION_EDIT_TAB.route,
+														{
+															id: getContentId(
+																content,
+																content_label
+															),
+															tabId: 'metadata',
+														}
+													)
 												);
 											}}
 										/>
@@ -288,11 +311,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 						<Box backgroundColor="gray" condensed>
 							<Flex wrap justify="between" align="baseline">
 								<FlexItem className="u-truncate m-quick-lane-modal__link">
-									{quickLane.id && (
-										<a href={buildQuickLaneHref(quickLane.id)}>
-											{buildQuickLaneHref(quickLane.id)}
-										</a>
-									)}
+									{quickLane.id && <QuickLaneLink id={quickLane.id} />}
 								</FlexItem>
 								<FlexItem shrink>
 									<Spacer margin="left-small">
@@ -302,7 +321,11 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 												'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 											)}
 											onClick={() => {
-												//
+												navigator.clipboard.writeText(
+													`${
+														window.location.origin
+													}${generateQuickLaneHref(quickLane.id)}`
+												);
 											}}
 										/>
 									</Spacer>

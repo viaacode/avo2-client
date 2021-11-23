@@ -233,7 +233,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					user
 				),
 				PermissionService.hasPermissions(
-					[{ name: PermissionName.QUICK_LANE__SHARE_WITH_STUDENTS }],
+					[{ name: PermissionName.CREATE_QUICK_LANE }],
 					user
 				),
 			]);
@@ -584,7 +584,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
 							t('collection/views/collection-detail___delen-met-leerlingen'),
-							'share-2'
+							'link-2'
 						),
 				  ]
 				: []),
@@ -746,7 +746,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
 							t('collection/views/collection-detail___delen-met-leerlingen'),
-							'share-2'
+							'link-2'
 						),
 				  ]
 				: []),
