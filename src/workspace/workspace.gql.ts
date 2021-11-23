@@ -60,5 +60,50 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 				count
 			}
 		}
+		app_quick_lane_counts: app_quick_lanes_overview_aggregate(
+			where: { owner_profile_id: { _eq: $owner_profile_id } }
+		) {
+			aggregate {
+				count
+			}
+		}
+		app_quick_lane_organisation_counts: app_quick_lanes_overview_aggregate(
+			where: { company_id: { _eq: $company_id } }
+		) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_QUICK_LANES_BY_OWNER = gql`
+	query getQuickLaneByOwner($profileId: uuid) {
+		app_quick_lanes(where: { owner_profile_id: { _eq: $profileId } }) {
+			id
+			title
+			view_mode
+			content_label
+			created_at
+			updated_at
+		}
+	}
+`;
+
+export const GET_QUICK_LANES_BY_COMPANY = gql`
+	query getQuickLaneByCompany($companyId: String) {
+		app_quick_lanes(where: { owner: { company_id: { _eq: $companyId } } }) {
+			id
+			title
+			view_mode
+			content_label
+			created_at
+			updated_at
+			owner {
+				usersByuserId {
+					full_name
+				}
+			}
+		}
 	}
 `;

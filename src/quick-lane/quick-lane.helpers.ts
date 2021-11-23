@@ -1,6 +1,6 @@
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
-import { QuickLaneUrlObject } from './quick-lane.service';
+import { QuickLaneUrlObject } from '../shared/types';
 
 type ContentLabelObject = Pick<QuickLaneUrlObject, 'content_label'>;
 
