@@ -87,6 +87,9 @@ export const GET_USER_BY_ID = gql`
 			blocked_at {
 				max
 			}
+			unblocked_at {
+				max
+			}
 			classifications {
 				id
 				key

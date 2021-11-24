@@ -862,9 +862,11 @@ const Profile: FunctionComponent<
 	};
 
 	return isSaving ? (
-		<Flex orientation="horizontal" center>
-			<Spinner size="large" />
-		</Flex>
+		<Spacer margin="top-extra-large">
+			<Flex orientation="horizontal" center>
+				<Spinner size="large" />
+			</Flex>
+		</Spacer>
 	) : (
 		<>
 			<MetaTags>
