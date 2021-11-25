@@ -1,23 +1,17 @@
-import { TFunction } from 'i18next';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import FilterTable, {
 	FilterableColumn,
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { isCollection, isItem } from '../../quick-lane/quick-lane.helpers';
-import { CheckboxOption, LoadingInfo } from '../../shared/components';
-import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import QuickLaneLink from '../../shared/components/QuickLaneLink/QuickLaneLink';
-import { CustomError, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import { LoadingInfo } from '../../shared/components';
+import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
+import { CustomError, isMobileWidth } from '../../shared/helpers';
+import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks';
-import { QuickLaneUrlObject } from '../../shared/types';
+import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../shared/types';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 import { QuickLaneFilters, WorkspaceService } from '../workspace.service';
 
@@ -28,62 +22,6 @@ import './QuickLaneOverview.scss';
 interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
 }
-
-interface QuickLaneOverviewFilterState {
-	author: string[];
-	columns: any[];
-	content_label: AssignmentContentLabel[];
-	created_at?: DateRange;
-	page: number;
-	query?: string;
-	sort_column?: string;
-	sort_order?: SearchOrderDirection;
-	updated_at?: DateRange;
-}
-
-// Constants
-
-const QUICKLANE_COLUMNS = {
-	TITLE: 'title',
-	URL: 'url',
-	CREATED_AT: 'created_at',
-	UPDATED_AT: 'updated_at',
-	CONTENT_LABEL: 'content_label',
-	AUTHOR: 'author',
-};
-
-// Helpers
-
-const isOrganisational = (user: UserSchema): boolean => {
-	return PermissionService.hasAtLeastOnePerm(user, [
-		PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
-	]);
-};
-
-const isPersonal = (user: UserSchema): boolean => {
-	return PermissionService.hasAtLeastOnePerm(user, [
-		PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
-	]);
-};
-
-const getTypeOptions = (t: TFunction): CheckboxOption[] => {
-	const translations: {
-		[x in AssignmentContentLabel]?: string;
-	} = {
-		ITEM: t('workspace/views/quick-lane-overview___item'),
-		COLLECTIE: t('workspace/views/quick-lane-overview___collectie'),
-	};
-
-	const options: AssignmentContentLabel[] = ['ITEM', 'COLLECTIE'];
-
-	return options.map((label) => {
-		return {
-			checked: false,
-			id: label,
-			label: translations[label] || '',
-		};
-	});
-};
 
 // Component
 
@@ -101,7 +39,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 	const columns: FilterableColumn[] = [
 		{
-			id: QUICKLANE_COLUMNS.TITLE,
+			id: QUICK_LANE_COLUMNS.TITLE,
 			label: t('workspace/views/quick-lane-overview___titel'),
 			sortable: true,
 			dataType: 'string',
@@ -112,7 +50,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			? []
 			: [
 					{
-						id: QUICKLANE_COLUMNS.CONTENT_LABEL,
+						id: QUICK_LANE_COLUMNS.CONTENT_LABEL,
 						label: t('workspace/views/quick-lane-overview___type'),
 						sortable: true,
 						dataType: 'string',
@@ -122,7 +60,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 					},
 			  ]),
 		{
-			id: QUICKLANE_COLUMNS.URL,
+			id: QUICK_LANE_COLUMNS.URL,
 			label: t('workspace/views/quick-lane-overview___url'),
 			visibleByDefault: true,
 		},
@@ -133,7 +71,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 					...(isOrganisational(user)
 						? [
 								{
-									id: QUICKLANE_COLUMNS.AUTHOR,
+									id: QUICK_LANE_COLUMNS.AUTHOR,
 									label: t(
 										'workspace/views/quick-lane-overview___aangemaakt-door'
 									),
@@ -146,7 +84,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						: []),
 					...[
 						{
-							id: QUICKLANE_COLUMNS.CREATED_AT,
+							id: QUICK_LANE_COLUMNS.CREATED_AT,
 							label: t('workspace/views/quick-lane-overview___aangemaakt-op'),
 							sortable: true,
 							dataType: 'dateTime',
@@ -154,7 +92,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 							filterType: 'DateRangeDropdown',
 						},
 						{
-							id: QUICKLANE_COLUMNS.UPDATED_AT,
+							id: QUICK_LANE_COLUMNS.UPDATED_AT,
 							label: t('workspace/views/quick-lane-overview___aangepast-op'),
 							sortable: true,
 							dataType: 'dateTime',
@@ -245,43 +183,9 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 	// Rendering
 
-	const renderCell = (data: QuickLaneUrlObject, id: string) => {
-		switch (id) {
-			case QUICKLANE_COLUMNS.TITLE:
-				return data.title.length <= 0 ? (
-					<span className="u-text-muted">
-						{t('workspace/views/quick-lane-overview___geen')}
-					</span>
-				) : (
-					data.title
-				);
-
-			case QUICKLANE_COLUMNS.CONTENT_LABEL:
-				if (isCollection(data)) {
-					return t('workspace/views/quick-lane-overview___collectie');
-				}
-
-				if (isItem(data)) {
-					return t('workspace/views/quick-lane-overview___item');
-				}
-
-				return t('workspace/views/quick-lane-overview___unknown-type');
-
-			case QUICKLANE_COLUMNS.URL:
-				return <QuickLaneLink id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
-
-			case QUICKLANE_COLUMNS.AUTHOR:
-				return data.owner?.usersByuserId.full_name || '-';
-
-			case QUICKLANE_COLUMNS.CREATED_AT:
-			case QUICKLANE_COLUMNS.UPDATED_AT:
-				const date = data[id as 'created_at' | 'updated_at'];
-				return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
-
-			default:
-				return null;
-		}
-	};
+	const renderCell = (data: QuickLaneUrlObject, id: string) => (
+		<QuickLaneFilterTableCell id={id} data={data} />
+	);
 
 	return (
 		<FilterTable
