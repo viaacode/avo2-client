@@ -16,6 +16,7 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
@@ -27,13 +28,22 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
+import { QUICK_LANE_COLUMNS } from '../../../shared/constants/quick-lane';
+import {
+	buildLink,
+	CustomError,
+	isMobileWidth,
+	navigate,
+	sanitizeHtml,
+} from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { QuickLaneUrlObject } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -41,6 +51,7 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
@@ -63,15 +74,24 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	// Hooks
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
 	const [isConfirmPublishModalOpen, setIsConfirmPublishModalOpen] = useState<boolean>(false);
 	const [isDepublishItemModalOpen, setDepublishItemModalOpen] = useState<boolean>(false);
+
 	const [collectionsContainingItem, setCollectionsContainingItem] = useState<
-		Avo.Collection.Collection[] | undefined
-	>(undefined);
+		Avo.Collection.Collection[]
+	>([]);
 	const [collectionSortColumn, setCollectionSortColumn] = useState<string>('title');
 	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
 		'asc'
 	);
+
+	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
+		QUICK_LANE_COLUMNS.TITLE
+	);
+	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const [t] = useTranslation();
@@ -120,6 +140,30 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 	}, [setCollectionsContainingItem, t, item]);
 
+	const fetchAssociatedQuickLanes = useCallback(async () => {
+		try {
+			if (!item) {
+				return;
+			}
+
+			const quickLanes = await QuickLaneContainingService.fetchQuickLanesByContentId(
+				item.uid
+			);
+			setAssociatedQuickLanes(quickLanes);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get quick lane urls containing item', err, {
+					item,
+				})
+			);
+			ToastService.danger(
+				t(
+					'admin/items/views/item-detail___het-ophalen-van-de-gedeelde-links-die-naar-dit-fragment-wijzen-is-mislukt'
+				)
+			);
+		}
+	}, [setAssociatedQuickLanes, t, item]);
+
 	useEffect(() => {
 		fetchItemById();
 	}, [fetchItemById]);
@@ -127,6 +171,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	useEffect(() => {
 		if (item) {
 			fetchCollectionsByItemExternalId();
+			fetchAssociatedQuickLanes();
+
 			setLoadingInfo({
 				state: 'loaded',
 			});
@@ -176,14 +222,27 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const handleCollectionColumnClick = (columnId: CollectionColumnId) => {
 		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+
 		setCollectionSortColumn(columnId);
 		setCollectionSortOrder(sortOrder);
+
 		setCollectionsContainingItem(
 			orderBy(
 				collectionsContainingItem,
 				[(coll) => get(coll, columnIdToCollectionPath[columnId])],
 				[sortOrder]
 			)
+		);
+	};
+
+	const handleQuickLaneColumnClick = (id: string) => {
+		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+
+		setQuickLaneSortColumn(id);
+		setQuickLaneSortOrder(sortOrder);
+
+		setAssociatedQuickLanes(
+			orderBy(associatedQuickLanes, [(col) => get(col, id)], [sortOrder])
 		);
 	};
 
@@ -260,6 +319,147 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return rowData[columnId];
 		}
 	};
+
+	const renderContainingCollectionTable = () => (
+		<>
+			<Spacer margin="top-extra-large">
+				<BlockHeading type="h2">
+					{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
+				</BlockHeading>
+			</Spacer>
+			{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
+				<Table
+					columns={[
+						{
+							label: t('admin/items/views/item-detail___titel'),
+							id: 'title',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: t('admin/items/views/item-detail___auteur'),
+							id: 'author',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: 'Organisatie',
+							id: 'organization',
+							sortable: false,
+						},
+						{
+							label: t('admin/items/items___publiek'),
+							id: 'is_public',
+							sortable: true,
+							dataType: 'boolean',
+						},
+						{
+							tooltip: t('admin/items/views/item-detail___acties'),
+							id: 'actions',
+							sortable: false,
+						},
+					]}
+					data={collectionsContainingItem}
+					emptyStateMessage={t(
+						'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+					)}
+					onColumnClick={handleCollectionColumnClick as any}
+					onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
+					renderCell={renderCollectionCell as any}
+					sortColumn={collectionSortColumn}
+					sortOrder={collectionSortOrder}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				t('admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen')
+			)}
+		</>
+	);
+
+	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
+		<QuickLaneFilterTableCell id={id} data={data} />
+	);
+
+	const renderAssociatedQuickLaneTable = () => (
+		<>
+			<Spacer margin="top-extra-large">
+				<BlockHeading type="h2">
+					{t('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
+				</BlockHeading>
+			</Spacer>
+			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
+				<Table
+					columns={
+						[
+							{
+								id: QUICK_LANE_COLUMNS.TITLE,
+								label: t('workspace/views/quick-lane-overview___titel'),
+								sortable: true,
+								dataType: 'string',
+							},
+							// Hide type on mobile
+							...(isMobileWidth()
+								? []
+								: [
+										{
+											id: QUICK_LANE_COLUMNS.CONTENT_LABEL,
+											label: t('workspace/views/quick-lane-overview___type'),
+											sortable: true,
+											dataType: 'string',
+										},
+								  ]),
+							{
+								id: QUICK_LANE_COLUMNS.URL,
+								label: t('workspace/views/quick-lane-overview___url'),
+							},
+							// Hide timestamps & author on mobile
+							...(isMobileWidth()
+								? []
+								: [
+										{
+											id: QUICK_LANE_COLUMNS.AUTHOR,
+											label: t(
+												'workspace/views/quick-lane-overview___aangemaakt-door'
+											),
+											sortable: true,
+											dataType: 'string',
+										},
+										{
+											id: QUICK_LANE_COLUMNS.CREATED_AT,
+											label: t(
+												'workspace/views/quick-lane-overview___aangemaakt-op'
+											),
+											sortable: true,
+											dataType: 'dateTime',
+										},
+										{
+											id: QUICK_LANE_COLUMNS.UPDATED_AT,
+											label: t(
+												'workspace/views/quick-lane-overview___aangepast-op'
+											),
+											sortable: true,
+											dataType: 'dateTime',
+										},
+								  ]),
+						] as TableColumnSchema[]
+					}
+					data={associatedQuickLanes}
+					emptyStateMessage={t(
+						'admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld'
+					)}
+					onColumnClick={handleQuickLaneColumnClick}
+					renderCell={renderAssociatedQuickLaneTableCell}
+					sortColumn={quickLaneSortColumn}
+					sortOrder={quickLaneSortOrder}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				t('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')
+			)}
+		</>
+	);
 
 	const renderItemDetail = () => {
 		if (!item) {
@@ -370,60 +570,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							)}
 						</tbody>
 					</Table>
-					<Spacer margin="top-extra-large">
-						<BlockHeading type="h2">
-							{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
-						</BlockHeading>
-					</Spacer>
-					{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
-						<Table
-							columns={[
-								{
-									label: t('admin/items/views/item-detail___titel'),
-									id: 'title',
-									sortable: true,
-									dataType: 'string',
-								},
-								{
-									label: t('admin/items/views/item-detail___auteur'),
-									id: 'author',
-									sortable: true,
-									dataType: 'string',
-								},
-								{
-									label: 'Organisatie',
-									id: 'organization',
-									sortable: false,
-								},
-								{
-									label: t('admin/items/items___publiek'),
-									id: 'is_public',
-									sortable: true,
-									dataType: 'boolean',
-								},
-								{
-									tooltip: t('admin/items/views/item-detail___acties'),
-									id: 'actions',
-									sortable: false,
-								},
-							]}
-							data={collectionsContainingItem}
-							emptyStateMessage={t(
-								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
-							)}
-							onColumnClick={handleCollectionColumnClick as any}
-							onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
-							renderCell={renderCollectionCell as any}
-							sortColumn={collectionSortColumn}
-							sortOrder={collectionSortOrder}
-							variant="bordered"
-							rowKey="id"
-						/>
-					) : (
-						t(
-							'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
-						)
-					)}
+					{renderContainingCollectionTable()}
+					{renderAssociatedQuickLaneTable()}
 					<DeleteObjectModal
 						title={
 							item.is_published
