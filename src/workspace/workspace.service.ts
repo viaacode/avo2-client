@@ -1,19 +1,60 @@
 import { ApolloQueryResult } from 'apollo-client';
 
+import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+
+import { DateRange } from '../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
 import { dataService } from '../shared/services';
 import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../shared/types';
 
-import { GET_QUICK_LANES_BY_COMPANY, GET_QUICK_LANES_BY_OWNER } from './workspace.gql';
+import { GET_QUICK_LANES_WITH_FILTERS } from './workspace.gql';
+
+export interface QuickLaneFilters {
+	filterString?: string;
+	companyIds?: string[];
+	profileIds?: string[];
+	contentLabels?: AssignmentContentLabel[];
+	createdAt?: DateRange;
+	updatedAt?: DateRange;
+}
+
+const asISO = (str?: string) => {
+	return str && str.length > 0 ? new Date(str).toISOString() : undefined;
+};
 
 // Q: I'm assuming lazy loading here but should this method be in QuickLaneService instead?
 export class WorkspaceService {
-	static async fetchQuickLanesByOwnerId(profileId: string, filterString: string) {
+	static async fetchFilteredQuickLanes(params?: QuickLaneFilters) {
 		try {
+			const variables = {
+				filterString: `%${params?.filterString ?? ''}%`,
+				createdAtGte: asISO(params?.createdAt?.gte),
+				createdAtLte: asISO(params?.createdAt?.lte),
+				updatedAtGte: asISO(params?.updatedAt?.gte),
+				updatedAtLte: asISO(params?.updatedAt?.lte),
+				filters: [
+					{
+						_or: params?.profileIds?.map((id) => {
+							return { owner_profile_id: { _eq: id } };
+						}),
+					},
+					{
+						_or: params?.companyIds?.map((id) => {
+							return { owner: { company_id: { _eq: id } } };
+						}),
+					},
+					{
+						_or: params?.contentLabels?.map((id) => {
+							return { content_label: { _eq: id } };
+						}),
+					},
+				].filter((condition) => condition._or && condition._or.length > 0),
+			};
+
 			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
-				query: GET_QUICK_LANES_BY_OWNER,
-				variables: { profileId, filterString: `%${filterString}%` },
+				variables,
+				query: GET_QUICK_LANES_WITH_FILTERS,
 			});
 
 			if (response.errors) {
@@ -26,42 +67,10 @@ export class WorkspaceService {
 
 			return urls;
 		} catch (err) {
-			throw new CustomError(
-				'Failed to get quick lane urls by profile id from database',
-				err,
-				{
-					profileId,
-					query: 'GET_QUICK_LANES_BY_OWNER',
-				}
-			);
-		}
-	}
-
-	static async fetchQuickLanesByCompanyId(companyId: string, filterString: string) {
-		try {
-			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
-				query: GET_QUICK_LANES_BY_COMPANY,
-				variables: { companyId, filterString: `%${filterString}%` },
+			throw new CustomError('Failed to get filtered quick lane urls from database', err, {
+				params,
+				query: 'GET_FILTERED_QUICK_LANES',
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
-
-			const urls: QuickLaneUrlObject[] = response.data.app_quick_lanes.map(
-				quickLaneUrlRecordToObject
-			);
-
-			return urls;
-		} catch (err) {
-			throw new CustomError(
-				'Failed to get quick lane urls by company id from database',
-				err,
-				{
-					companyId,
-					query: 'GET_QUICK_LANES_BY_COMPANY',
-				}
-			);
 		}
 	}
 }

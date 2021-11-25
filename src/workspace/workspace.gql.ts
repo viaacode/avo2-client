@@ -77,12 +77,18 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 	}
 `;
 
-export const GET_QUICK_LANES_BY_OWNER = gql`
-	query getQuickLaneByOwner($profileId: uuid, $filterString: String) {
+export const GET_QUICK_LANES_WITH_FILTERS = gql`
+	query getQuickLanesWithFilters(
+		$filterString: String
+		$createdAtGte: timestamptz
+		$createdAtLte: timestamptz
+		$updatedAtGte: timestamptz
+		$updatedAtLte: timestamptz
+		$filters: [app_quick_lanes_bool_exp]
+	) {
 		app_quick_lanes(
 			where: {
 				_and: [
-					{ owner_profile_id: { _eq: $profileId } }
 					{
 						_or: [
 							{ title: { _ilike: $filterString } }
@@ -96,38 +102,9 @@ export const GET_QUICK_LANES_BY_OWNER = gql`
 							}
 						]
 					}
-				]
-			}
-		) {
-			id
-			title
-			view_mode
-			content_label
-			created_at
-			updated_at
-		}
-	}
-`;
-
-export const GET_QUICK_LANES_BY_COMPANY = gql`
-	query getQuickLaneByCompany($companyId: String, $filterString: String) {
-		app_quick_lanes(
-			where: {
-				_and: [
-					{ owner: { company_id: { _eq: $companyId } } }
-					{
-						_or: [
-							{ title: { _ilike: $filterString } }
-							{
-								owner: {
-									_or: [
-										{ usersByuserId: { first_name: { _ilike: $filterString } } }
-										{ usersByuserId: { last_name: { _ilike: $filterString } } }
-									]
-								}
-							}
-						]
-					}
+					{ created_at: { _gte: $createdAtGte, _lte: $createdAtLte } }
+					{ updated_at: { _gte: $updatedAtGte, _lte: $updatedAtLte } }
+					{ _and: $filters }
 				]
 			}
 		) {
@@ -138,6 +115,7 @@ export const GET_QUICK_LANES_BY_COMPANY = gql`
 			created_at
 			updated_at
 			owner {
+				id
 				usersByuserId {
 					full_name
 				}
