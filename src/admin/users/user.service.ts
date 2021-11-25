@@ -115,7 +115,7 @@ export class UserService {
 				await UserService.updateTempAccessBlockStatusByProfileIds(
 					[profileId],
 					isBlocked,
-					moment(tempAccess.until).format('DD[/]MM[/]YYYY').toString()
+					moment(tempAccess.until).format('DD-MM-YYYY')
 				);
 			}
 		} catch (err) {

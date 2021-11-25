@@ -1180,6 +1180,8 @@
   "admin/users/views/user-overview___prive-content-paginas": "Privé contentpagina's",
   "admin/users/views/user-overview___publieke-collecties": "Publieke collecties",
   "admin/users/views/user-overview___publieke-content-paginas": "Publieke contentpagina's",
+  "admin/users/views/user-overview___tijdelijke-toegang-ja": "ja",
+  "admin/users/views/user-overview___tijdelijke-toegang-nee": "nee",
   "admin/users/views/user-overview___vakken": "Vakken",
   "admin/users/views/user-overview___vakken-aanpassen": "Vakken aanpassen",
   "admin/users/views/user-overview___vakken-toevoegen-of-verwijderen": "Vakken toevoegen of verwijderen",
