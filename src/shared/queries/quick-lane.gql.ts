@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 
-export const GET_QUICK_LANES_WITH_FILTERS = gql`
+export const GET_QUICK_LANE_WITH_FILTERS = gql`
 	query getQuickLanesWithFilters(
 		$filterString: String
 		$createdAtGte: timestamptz
