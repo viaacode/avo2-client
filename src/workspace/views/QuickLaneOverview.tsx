@@ -11,9 +11,12 @@ import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks';
+import {
+	QuickLaneFilters,
+	QuickLaneFilterService,
+} from '../../shared/services/quick-lane-filter-service';
 import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../shared/types';
 import { ITEMS_PER_PAGE } from '../workspace.const';
-import { QuickLaneFilters, WorkspaceService } from '../workspace.service';
 
 import './QuickLaneOverview.scss';
 
@@ -161,7 +164,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				};
 			}
 
-			setQuickLanes(await WorkspaceService.fetchFilteredQuickLanes(params));
+			setQuickLanes(await QuickLaneFilterService.fetchFilteredQuickLanes(params));
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
 			console.error(new CustomError('Failed to get all quick_lanes for user', err, { user }));

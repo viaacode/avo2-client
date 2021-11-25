@@ -1,14 +1,14 @@
-import { ApolloQueryResult } from 'apollo-client';
+import { ApolloQueryResult } from 'apollo-boost';
 
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 
-import { DateRange } from '../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { CustomError } from '../shared/helpers';
-import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
-import { dataService } from '../shared/services';
-import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../shared/types';
+import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
+import { CustomError } from '../helpers';
+import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
+import { GET_QUICK_LANES_WITH_FILTERS } from '../queries/quick-lane.gql';
+import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
 
-import { GET_QUICK_LANES_WITH_FILTERS } from './workspace.gql';
+import { dataService } from '.';
 
 export interface QuickLaneFilters {
 	filterString?: string;
@@ -23,8 +23,7 @@ const asISO = (str?: string) => {
 	return str && str.length > 0 ? new Date(str).toISOString() : undefined;
 };
 
-// Q: I'm assuming lazy loading here but should this method be in QuickLaneService instead?
-export class WorkspaceService {
+export class QuickLaneFilterService {
 	static async fetchFilteredQuickLanes(params?: QuickLaneFilters) {
 		try {
 			const variables = {
