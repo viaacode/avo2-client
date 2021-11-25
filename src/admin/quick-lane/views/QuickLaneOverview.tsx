@@ -4,12 +4,16 @@ import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { LoadingInfo } from '../../../shared/components';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { ITEMS_PER_PAGE, QUICK_LANE_COLUMNS } from '../../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../../shared/helpers';
 import { getTypeOptions } from '../../../shared/helpers/quick-lane';
 import { useDebounce } from '../../../shared/hooks';
+import {
+	QuickLaneFilters,
+	QuickLaneFilterService,
+} from '../../../shared/services/quick-lane-filter-service';
 import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../../shared/types';
 import FilterTable, { FilterableColumn } from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
@@ -92,7 +96,20 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 		setLoadingInfo({ state: 'loading' });
 
 		try {
-			setQuickLanes([]);
+			if (debouncedFilters === undefined) {
+				// Stop silently, wait for filters to synchronise
+				return;
+			}
+
+			const params: QuickLaneFilters = {
+				filterString: debouncedFilters?.query,
+				createdAt: debouncedFilters?.created_at,
+				updatedAt: debouncedFilters?.updated_at,
+				contentLabels: debouncedFilters?.content_label,
+				profileIds: debouncedFilters?.author,
+			};
+
+			setQuickLanes(await QuickLaneFilterService.fetchFilteredQuickLanes(params));
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
 			console.error(
@@ -171,11 +188,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						)}
 					/>
 				</MetaTags>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={[]}
-					render={renderTable}
-				/>
+				{renderTable()}
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
