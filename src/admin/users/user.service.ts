@@ -225,7 +225,7 @@ export class UserService {
 							(org): ClientEducationOrganization => ({
 								organizationId: org.organization_id,
 								unitId: org.unit_id || null,
-								label: '', // TODO find name somehow
+								label: org.organization?.ldap_description || '',
 							})
 						),
 						subjects: user.classifications.map((classification) => classification.key),
