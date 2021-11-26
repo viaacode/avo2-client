@@ -42,6 +42,7 @@ import {
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { QuickLaneUrlObject } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
@@ -51,7 +52,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
