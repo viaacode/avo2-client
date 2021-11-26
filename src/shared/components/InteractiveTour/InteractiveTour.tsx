@@ -48,29 +48,29 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 		} catch (err) {
 			console.error(
 				new CustomError(
-					'Failed to parse tour dates in local storage. Overriding with {}',
-					err,
-					{
-						key: TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
-						value:
-							localStorage &&
-							localStorage.getItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY),
-					}
+					'Failed to parse tour dates in local storage. Possibly local storage is not available (iframe/incognito browser)',
+					err
 				)
 			);
-			if (localStorage) {
-				localStorage.setItem(TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY, '{}');
-			}
 		}
 	}, [setTourDisplayDates]);
 
 	const updateTourDisplayDate = useCallback(
 		(tourId: string) => {
 			const newTourDisplayDates = { ...tourDisplayDates, [tourId]: new Date().toISOString() };
-			if (localStorage) {
-				localStorage.setItem(
-					TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
-					JSON.stringify(newTourDisplayDates)
+			try {
+				if (localStorage) {
+					localStorage.setItem(
+						TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY,
+						JSON.stringify(newTourDisplayDates)
+					);
+				}
+			} catch (err) {
+				console.error(
+					new CustomError(
+						'Failed to parse tour dates in local storage. Possibly local storage is not available (iframe/incognito browser)',
+						err
+					)
 				);
 			}
 		},
