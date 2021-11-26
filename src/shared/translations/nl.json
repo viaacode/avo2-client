@@ -1086,6 +1086,8 @@
   "admin/users/user___te-blokkeren-op": "Tijdelijke toegang tot en met",
   "admin/users/user___te-deblokkeren-op": "Tijdelijke toegang van",
   "admin/users/user___tijdelijke-toegang": "Tijdelijke toegang",
+  "admin/users/user___tijdelijke-toegang-ja": "",
+  "admin/users/user___tijdelijke-toegang-nee": "",
   "admin/users/user___toegang-via": "Toegang via",
   "admin/users/user___uitzonderingsaccount": "Uitzonderingsaccount",
   "admin/users/user___vakken": "Vakken",
