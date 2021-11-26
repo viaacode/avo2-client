@@ -145,6 +145,9 @@ export const GET_USERS = gql`
 			organisations {
 				organization_id
 				unit_id
+				organization {
+					ldap_description
+				}
 			}
 			user {
 				temp_access {

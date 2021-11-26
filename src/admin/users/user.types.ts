@@ -158,6 +158,9 @@ export interface UserSummaryView {
 	organisations: {
 		organization_id: string;
 		unit_id?: string;
+		organization?: {
+			ldap_description: string;
+		};
 	}[];
 }
 
