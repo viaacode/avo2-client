@@ -20,6 +20,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
+import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -28,10 +29,20 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
+import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
+import {
+	buildLink,
+	CustomError,
+	formatTimestamp,
+	getFullName,
+	isMobileWidth,
+} from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
+import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
+import { QuickLaneUrlObject } from '../../shared/types';
 import { CollectionService } from '../collection.service';
 import { QualityLabel } from '../collection.types';
 
@@ -86,6 +97,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	const [assignmentSortOrder, setAssignmentSortOrder] = useState<Avo.Search.OrderDirection>(
 		'asc'
 	);
+
+	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
+		QUICK_LANE_COLUMNS.TITLE
+	);
+	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
 
 	// Computed
 	const isCollection: boolean = collection.type_id === 3;
@@ -156,11 +173,42 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		}
 	}, [setQualityLabels, t]);
 
+	const fetchAssociatedQuickLanes = useCallback(async () => {
+		try {
+			if (!collection) {
+				return;
+			}
+
+			const quickLanes = await QuickLaneContainingService.fetchQuickLanesByContentId(
+				collection.id
+			);
+
+			setAssociatedQuickLanes(quickLanes);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get quick lane urls containing item', err, {
+					collection,
+				})
+			);
+			ToastService.danger(
+				t(
+					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-gedeelde-links-die-naar-deze-collectie-leiden-is-mislukt'
+				)
+			);
+		}
+	}, [setAssociatedQuickLanes, t, collection]);
+
 	useEffect(() => {
 		fetchBundlesByCollectionUuid();
 		fetchAssignmentsByCollectionUuid();
 		fetchQualityLabels();
-	}, [fetchBundlesByCollectionUuid, fetchAssignmentsByCollectionUuid, fetchQualityLabels]);
+		fetchAssociatedQuickLanes();
+	}, [
+		fetchBundlesByCollectionUuid,
+		fetchAssignmentsByCollectionUuid,
+		fetchQualityLabels,
+		fetchAssociatedQuickLanes,
+	]);
 
 	const updateCollectionMultiProperty = (
 		selectedTagOptions: TagInfo[],
@@ -218,6 +266,17 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				[(coll) => get(coll, columnIdToAssignmentPath[columnId])],
 				[sortOrder]
 			)
+		);
+	};
+
+	const handleQuickLaneColumnClick = (id: string) => {
+		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+
+		setQuickLaneSortColumn(id);
+		setQuickLaneSortOrder(sortOrder);
+
+		setAssociatedQuickLanes(
+			orderBy(associatedQuickLanes, [(col) => get(col, id)], [sortOrder])
 		);
 	};
 
@@ -316,6 +375,208 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				return rowData[columnId];
 		}
 	};
+
+	const renderBundlesContainingCollection = () => (
+		<>
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
+				<BlockHeading type="h2">
+					{t(
+						'collection/components/collection-or-bundle-edit-admin___bundels-die-deze-collectie-bevatten'
+					)}
+				</BlockHeading>
+			</Spacer>
+			{!!bundlesContainingCollection && !!bundlesContainingCollection.length ? (
+				<Table
+					columns={[
+						{
+							label: t(
+								'collection/components/collection-or-bundle-edit-admin___titel'
+							),
+							id: 'title',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: t(
+								'collection/components/collection-or-bundle-edit-admin___auteur'
+							),
+							id: 'author',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: 'Organisatie',
+							id: 'organization',
+							sortable: false,
+						},
+						{
+							label: t('admin/items/items___publiek'),
+							id: 'is_public',
+							sortable: true,
+							dataType: 'boolean',
+						},
+						{
+							tooltip: t(
+								'collection/components/collection-or-bundle-edit-admin___acties'
+							),
+							id: 'actions',
+							sortable: false,
+						},
+					]}
+					data={bundlesContainingCollection}
+					onColumnClick={handleBundleColumnClick as any}
+					onRowClick={(coll) => navigateToBundleDetail(coll.id)}
+					renderCell={renderBundleCell as any}
+					sortColumn={bundleSortColumn}
+					sortOrder={bundleSortOrder}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				t(
+					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
+				)
+			)}
+		</>
+	);
+
+	const renderAssignmentsContainingCollection = () => (
+		<>
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
+				<BlockHeading type="h2">
+					{t(
+						'collection/components/collection-or-bundle-edit-admin___opdrachten-die-deze-collectie-bevatten'
+					)}
+				</BlockHeading>
+			</Spacer>
+			{!!assignmentsContainingCollection && !!assignmentsContainingCollection.length ? (
+				<Table
+					columns={[
+						{
+							label: t(
+								'collection/components/collection-or-bundle-edit-admin___titel'
+							),
+							id: 'title',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: t(
+								'collection/components/collection-or-bundle-edit-admin___auteur'
+							),
+							id: 'author',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: t(
+								'collection/components/collection-or-bundle-edit-admin___status'
+							),
+							id: 'is_archived',
+							sortable: true,
+							dataType: 'boolean',
+						},
+						{
+							tooltip: t(
+								'collection/components/collection-or-bundle-edit-admin___acties'
+							),
+							id: 'actions',
+							sortable: false,
+						},
+					]}
+					data={assignmentsContainingCollection}
+					onColumnClick={handleAssignmentColumnClick as any}
+					onRowClick={(coll) => navigateToAssignmentDetail(coll.id)}
+					renderCell={renderAssignmentCell as any}
+					sortColumn={assignmentSortColumn}
+					sortOrder={assignmentSortOrder}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				t(
+					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-opdracht-opgenomen'
+				)
+			)}
+		</>
+	);
+
+	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
+		<QuickLaneFilterTableCell id={id} data={data} />
+	);
+
+	const renderAssociatedQuickLaneTable = () => (
+		<>
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
+				<BlockHeading type="h2">
+					{t(
+						'collection/components/collection-or-bundle-edit-admin___gedeelde-links-naar-deze-collectie'
+					)}
+				</BlockHeading>
+			</Spacer>
+			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
+				<Table
+					columns={
+						[
+							{
+								id: QUICK_LANE_COLUMNS.TITLE,
+								label: t('workspace/views/quick-lane-overview___titel'),
+								sortable: true,
+								dataType: 'string',
+							},
+							{
+								id: QUICK_LANE_COLUMNS.URL,
+								label: t('workspace/views/quick-lane-overview___url'),
+							},
+							// Hide timestamps & author on mobile
+							...(isMobileWidth()
+								? []
+								: [
+										{
+											id: QUICK_LANE_COLUMNS.AUTHOR,
+											label: t(
+												'workspace/views/quick-lane-overview___aangemaakt-door'
+											),
+											sortable: true,
+											dataType: 'string',
+										},
+										{
+											id: QUICK_LANE_COLUMNS.CREATED_AT,
+											label: t(
+												'workspace/views/quick-lane-overview___aangemaakt-op'
+											),
+											sortable: true,
+											dataType: 'dateTime',
+										},
+										{
+											id: QUICK_LANE_COLUMNS.UPDATED_AT,
+											label: t(
+												'workspace/views/quick-lane-overview___aangepast-op'
+											),
+											sortable: true,
+											dataType: 'dateTime',
+										},
+								  ]),
+						] as TableColumnSchema[]
+					}
+					data={associatedQuickLanes}
+					emptyStateMessage={t(
+						'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
+					)}
+					onColumnClick={handleQuickLaneColumnClick}
+					renderCell={renderAssociatedQuickLaneTableCell}
+					sortColumn={quickLaneSortColumn}
+					sortOrder={quickLaneSortOrder}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				t(
+					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
+				)
+			)}
+		</>
+	);
 
 	const owner: PickerItem | undefined = collection.profile
 		? {
@@ -481,134 +742,16 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 								</Column>
 							</Grid>
 
-							{/* Show bundles that contain this collection */}
 							{isCollection && (
 								<>
-									<Spacer margin={['top-extra-large', 'bottom-small']}>
-										<BlockHeading type="h2">
-											{t(
-												'collection/components/collection-or-bundle-edit-admin___bundels-die-deze-collectie-bevatten'
-											)}
-										</BlockHeading>
-									</Spacer>
-									{!!bundlesContainingCollection &&
-									!!bundlesContainingCollection.length ? (
-										<Table
-											columns={[
-												{
-													label: t(
-														'collection/components/collection-or-bundle-edit-admin___titel'
-													),
-													id: 'title',
-													sortable: true,
-													dataType: 'string',
-												},
-												{
-													label: t(
-														'collection/components/collection-or-bundle-edit-admin___auteur'
-													),
-													id: 'author',
-													sortable: true,
-													dataType: 'string',
-												},
-												{
-													label: 'Organisatie',
-													id: 'organization',
-													sortable: false,
-												},
-												{
-													label: t('admin/items/items___publiek'),
-													id: 'is_public',
-													sortable: true,
-													dataType: 'boolean',
-												},
-												{
-													tooltip: t(
-														'collection/components/collection-or-bundle-edit-admin___acties'
-													),
-													id: 'actions',
-													sortable: false,
-												},
-											]}
-											data={bundlesContainingCollection}
-											onColumnClick={handleBundleColumnClick as any}
-											onRowClick={(coll) => navigateToBundleDetail(coll.id)}
-											renderCell={renderBundleCell as any}
-											sortColumn={bundleSortColumn}
-											sortOrder={bundleSortOrder}
-											variant="bordered"
-											rowKey="id"
-										/>
-									) : (
-										t(
-											'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
-										)
-									)}
-								</>
-							)}
+									{/* Show bundles that contain this collection */}
+									{renderBundlesContainingCollection()}
 
-							{/* Show assignments that contain this collection */}
-							{isCollection && (
-								<>
-									<Spacer margin={['top-extra-large', 'bottom-small']}>
-										<BlockHeading type="h2">
-											{t(
-												'collection/components/collection-or-bundle-edit-admin___opdrachten-die-deze-collectie-bevatten'
-											)}
-										</BlockHeading>
-									</Spacer>
-									{!!assignmentsContainingCollection &&
-									!!assignmentsContainingCollection.length ? (
-										<Table
-											columns={[
-												{
-													label: t(
-														'collection/components/collection-or-bundle-edit-admin___titel'
-													),
-													id: 'title',
-													sortable: true,
-													dataType: 'string',
-												},
-												{
-													label: t(
-														'collection/components/collection-or-bundle-edit-admin___auteur'
-													),
-													id: 'author',
-													sortable: true,
-													dataType: 'string',
-												},
-												{
-													label: t(
-														'collection/components/collection-or-bundle-edit-admin___status'
-													),
-													id: 'is_archived',
-													sortable: true,
-													dataType: 'boolean',
-												},
-												{
-													tooltip: t(
-														'collection/components/collection-or-bundle-edit-admin___acties'
-													),
-													id: 'actions',
-													sortable: false,
-												},
-											]}
-											data={assignmentsContainingCollection}
-											onColumnClick={handleAssignmentColumnClick as any}
-											onRowClick={(coll) =>
-												navigateToAssignmentDetail(coll.id)
-											}
-											renderCell={renderAssignmentCell as any}
-											sortColumn={assignmentSortColumn}
-											sortOrder={assignmentSortOrder}
-											variant="bordered"
-											rowKey="id"
-										/>
-									) : (
-										t(
-											'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-opdracht-opgenomen'
-										)
-									)}
+									{/* Show assignments that contain this collection */}
+									{renderAssignmentsContainingCollection()}
+
+									{/* Show quick lane urls leading to this collection */}
+									{renderAssociatedQuickLaneTable()}
 								</>
 							)}
 						</Spacer>
