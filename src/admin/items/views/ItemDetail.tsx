@@ -236,7 +236,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	const handleQuickLaneColumnClick = (id: string) => {
-		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 
 		setQuickLaneSortColumn(id);
 		setQuickLaneSortOrder(sortOrder);
@@ -322,7 +322,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const renderContainingCollectionTable = () => (
 		<>
-			<Spacer margin="top-extra-large">
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
 					{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
 				</BlockHeading>
@@ -383,7 +383,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const renderAssociatedQuickLaneTable = () => (
 		<>
-			<Spacer margin="top-extra-large">
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
 					{t('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
 				</BlockHeading>
@@ -398,17 +398,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								sortable: true,
 								dataType: 'string',
 							},
-							// Hide type on mobile
-							...(isMobileWidth()
-								? []
-								: [
-										{
-											id: QUICK_LANE_COLUMNS.CONTENT_LABEL,
-											label: t('workspace/views/quick-lane-overview___type'),
-											sortable: true,
-											dataType: 'string',
-										},
-								  ]),
 							{
 								id: QUICK_LANE_COLUMNS.URL,
 								label: t('workspace/views/quick-lane-overview___url'),
