@@ -5,7 +5,7 @@ import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-
 import { GET_QUICK_LANE_BY_CONTENT_ID } from '../queries/quick-lane-containing.gql';
 import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
 
-import { dataService } from '.';
+import { dataService } from './data-service';
 
 export class QuickLaneContainingService {
 	static async fetchQuickLanesByContentId(contentId: string) {
