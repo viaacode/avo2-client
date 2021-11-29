@@ -177,7 +177,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				state: 'loaded',
 			});
 		}
-	}, [item, setLoadingInfo, fetchCollectionsByItemExternalId]);
+	}, [item, setLoadingInfo, fetchCollectionsByItemExternalId, fetchAssociatedQuickLanes]);
 
 	const toggleItemPublishedState = async () => {
 		try {
