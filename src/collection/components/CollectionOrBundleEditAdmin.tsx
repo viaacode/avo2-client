@@ -20,7 +20,6 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -29,15 +28,9 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import AssociatedQuickLaneTable from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
-import {
-	buildLink,
-	CustomError,
-	formatTimestamp,
-	getFullName,
-	isMobileWidth,
-} from '../../shared/helpers';
+import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
@@ -501,10 +494,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		</>
 	);
 
-	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
-		<QuickLaneFilterTableCell id={id} data={data} />
-	);
-
 	const renderAssociatedQuickLaneTable = () => (
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
@@ -515,60 +504,14 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				</BlockHeading>
 			</Spacer>
 			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
-				<Table
-					columns={
-						[
-							{
-								id: QUICK_LANE_COLUMNS.TITLE,
-								label: t('workspace/views/quick-lane-overview___titel'),
-								sortable: true,
-								dataType: 'string',
-							},
-							{
-								id: QUICK_LANE_COLUMNS.URL,
-								label: t('workspace/views/quick-lane-overview___url'),
-							},
-							// Hide timestamps & author on mobile
-							...(isMobileWidth()
-								? []
-								: [
-										{
-											id: QUICK_LANE_COLUMNS.AUTHOR,
-											label: t(
-												'workspace/views/quick-lane-overview___aangemaakt-door'
-											),
-											sortable: true,
-											dataType: 'string',
-										},
-										{
-											id: QUICK_LANE_COLUMNS.CREATED_AT,
-											label: t(
-												'workspace/views/quick-lane-overview___aangemaakt-op'
-											),
-											sortable: true,
-											dataType: 'dateTime',
-										},
-										{
-											id: QUICK_LANE_COLUMNS.UPDATED_AT,
-											label: t(
-												'workspace/views/quick-lane-overview___aangepast-op'
-											),
-											sortable: true,
-											dataType: 'dateTime',
-										},
-								  ]),
-						] as TableColumnSchema[]
-					}
+				<AssociatedQuickLaneTable
 					data={associatedQuickLanes}
 					emptyStateMessage={t(
 						'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
 					)}
 					onColumnClick={handleQuickLaneColumnClick}
-					renderCell={renderAssociatedQuickLaneTableCell}
 					sortColumn={quickLaneSortColumn}
 					sortOrder={quickLaneSortOrder}
-					variant="bordered"
-					rowKey="id"
 				/>
 			) : (
 				t(
