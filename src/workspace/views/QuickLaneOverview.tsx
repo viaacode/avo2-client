@@ -1,4 +1,5 @@
 import { TFunction } from 'i18next';
+import { isEqual } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -298,7 +299,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			}
 			onTableStateChanged={(state) => {
 				// NOTE: prevents recursion loop but hits theoretical performance
-				if (JSON.stringify(filters) !== JSON.stringify(state)) {
+				if (!isEqual(filters, state)) {
 					setFilters(state as QuickLaneOverviewFilterState);
 				}
 			}}
