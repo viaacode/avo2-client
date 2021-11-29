@@ -8,7 +8,7 @@ import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-
 import { GET_QUICK_LANES_WITH_FILTERS } from '../queries/quick-lane.gql';
 import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
 
-import { dataService } from '.';
+import { dataService } from './data-service';
 
 export interface QuickLaneFilters {
 	filterString?: string;
