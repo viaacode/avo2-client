@@ -1,4 +1,4 @@
-import { compact, get, sortBy } from 'lodash-es';
+import { get, sortBy } from 'lodash-es';
 import moment from 'moment';
 import React, {
 	FunctionComponent,
@@ -47,7 +47,6 @@ import {
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../../shared/services';
-import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -70,7 +69,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [eduOrgNames, setEduOrgNames] = useState<string[]>([]);
 	const [tempAccess, setTempAccess] = useState<UserTempAccess | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isTempAccessModalOpen, setIsTempAccessModalOpen] = useState<boolean>(false);
@@ -89,23 +87,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				UserService.getTempAccessById(match.params.id),
 			]);
 
-			const eduOrgs: {
-				unit_id: string;
-				organization_id: string;
-			}[] = get(profile, 'profile_organizations') || [];
-
-			setEduOrgNames(
-				compact(
-					await Promise.all(
-						eduOrgs.map((eduOrg) =>
-							EducationOrganisationService.fetchEducationOrganisationName(
-								eduOrg.organization_id,
-								eduOrg.unit_id
-							)
-						)
-					)
-				)
-			);
 			setTempAccess(tempAccess);
 			setStoredProfile(profile);
 		} catch (err) {
@@ -385,6 +366,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 		const userGroup: RawUserGroup = get(storedProfile, 'profile.profile_user_group.group');
 
+		const eduOrgs: {
+			unit_id: string;
+			organization_id: string;
+			organization: {
+				ldap_description: string;
+			};
+		}[] = get(storedProfile, 'organisations') || [];
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -498,13 +487,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___opleidingsniveaus')
 							)}
 							{renderDetailRow(
-								!!eduOrgNames.length ? (
+								!!eduOrgs.length ? (
 									<TagList
 										closable={false}
 										swatches={false}
-										tags={eduOrgNames.map((eduOrgName) => ({
-											label: eduOrgName,
-											id: eduOrgName,
+										tags={eduOrgs.map((eduOrg) => ({
+											label: eduOrg.organization?.ldap_description || '',
+											id: eduOrg.organization?.ldap_description || '',
 										}))}
 									/>
 								) : (

@@ -94,6 +94,13 @@ export const GET_USER_BY_ID = gql`
 				id
 				key
 			}
+			organisations {
+				organization_id
+				unit_id
+				organization {
+					ldap_description
+				}
+			}
 			user {
 				temp_access {
 					from
