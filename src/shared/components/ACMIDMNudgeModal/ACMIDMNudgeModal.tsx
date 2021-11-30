@@ -17,6 +17,7 @@ import {
 
 import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
+import { hasIdpLinked } from '../../../authentication/helpers/get-profile-info';
 import { APP_PATH } from '../../../constants';
 import { CustomError, navigate } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -41,8 +42,9 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 				getProfileId(user),
 				ProfilePreference.DoNotShow
 			);
+			const hasVlaamseOverheidLinked = user && hasIdpLinked(user, 'VLAAMSEOVERHEID');
 
-			setShowModal(!(profilePreference || []).length);
+			setShowModal(!(profilePreference || []).length && !hasVlaamseOverheidLinked);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
 		}
@@ -100,7 +102,7 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 						className="c-nudge-modal__options"
 						onClick={() => {
 							navigate(history, APP_PATH.SETTINGS_LINKS.route);
-							setProfilePreference();
+							onClose();
 						}}
 					>
 						<Grid className="c-nudge-modal__options__item">
