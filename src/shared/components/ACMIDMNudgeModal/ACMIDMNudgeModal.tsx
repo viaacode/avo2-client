@@ -17,7 +17,7 @@ import {
 
 import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import { hasIdpLinked } from '../../../authentication/helpers/get-profile-info';
+import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -42,9 +42,13 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ location, user 
 				getProfileId(user),
 				ProfilePreference.DoNotShow
 			);
-			const hasVlaamseOverheidLinked = user && hasIdpLinked(user, 'VLAAMSEOVERHEID');
 
-			setShowModal(!(profilePreference || []).length && !hasVlaamseOverheidLinked);
+			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
+			const profileIsComplete = !!(user && isProfileComplete(user));
+
+			setShowModal(
+				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
 		}
