@@ -49,6 +49,11 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	const [t] = useTranslation();
 
 	const fetchProfilePreference = useCallback(async () => {
+		if (showNudgingModal !== null) {
+			// was already initialized
+			return;
+		}
+
 		try {
 			const profilePreference = await ProfilePreferencesService.fetchProfilePreference(
 				getProfileId(user),
@@ -58,13 +63,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
 			const profileIsComplete = !!(user && isProfileComplete(user));
 
-			if (showNudgingModal === null) {
-				setShowNudgingModal(
-					!(profilePreference || []).length &&
-						!hasVlaamseOverheidLinked &&
-						profileIsComplete
-				);
-			}
+			setShowNudgingModal(
+				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
 		}
