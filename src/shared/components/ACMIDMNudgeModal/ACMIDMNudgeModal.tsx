@@ -1,8 +1,10 @@
 import { get } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { compose } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
 import {
 	Button,
@@ -19,6 +21,9 @@ import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
+import { AppState } from '../../../store';
+import { setShowNudgingModalAction } from '../../../uistate/store/actions';
+import { selectShowNudgingModal } from '../../../uistate/store/selectors';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
@@ -30,11 +35,18 @@ import './ACMIDMNudgeModal.scss';
 
 export interface ACMIDMNudgeModalProps {}
 
-const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ location, user }) => {
-	const [t] = useTranslation();
+interface UiStateProps {
+	showNudgingModal: boolean;
+	setShowNudgingModal: (showModal: boolean) => Dispatch;
+}
 
-	const [showModal, setShowModal] = useState<boolean>(false);
-	// const [t] = useTranslation();
+const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
+	location,
+	user,
+	showNudgingModal,
+	setShowNudgingModal,
+}) => {
+	const [t] = useTranslation();
 
 	const fetchProfilePreference = useCallback(async () => {
 		try {
@@ -46,13 +58,17 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ location, user 
 			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
 			const profileIsComplete = !!(user && isProfileComplete(user));
 
-			setShowModal(
-				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
-			);
+			if (showNudgingModal === null) {
+				setShowNudgingModal(
+					!(profilePreference || []).length &&
+						!hasVlaamseOverheidLinked &&
+						profileIsComplete
+				);
+			}
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
 		}
-	}, [user]);
+	}, [user, showNudgingModal, setShowNudgingModal]);
 
 	const setProfilePreference = async () => {
 		try {
@@ -61,7 +77,7 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ location, user 
 				ProfilePreference.DoNotShow
 			);
 
-			setShowModal(false);
+			setShowNudgingModal(false);
 		} catch (err) {
 			console.error(new CustomError('Failed to insert profile preference', err));
 		}
@@ -75,13 +91,14 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ location, user 
 		}
 	}, [fetchProfilePreference, user]);
 
-	const onClose = () => setShowModal(false);
+	const onClose = () => setShowNudgingModal(false);
+
 	const onClickDoNotShow = () => {
 		setProfilePreference();
 	};
 
 	return (
-		<Modal isOpen={showModal} size="medium" onClose={onClose}>
+		<Modal isOpen={showNudgingModal} size="medium" onClose={onClose}>
 			<ModalBody>
 				<div className="c-nudge-modal">
 					<Spacer margin="bottom">
@@ -184,4 +201,17 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ location, user 
 	);
 };
 
-export default compose(withRouter, withUser)(ACMIDMNudgeModal) as FC;
+const mapStateToProps = (state: AppState) => ({
+	showNudgingModal: selectShowNudgingModal(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	setShowNudgingModal: (showModal: boolean) =>
+		dispatch(setShowNudgingModalAction(showModal) as any),
+});
+
+export default compose(
+	connect(mapStateToProps, mapDispatchToProps),
+	withRouter,
+	withUser
+)(ACMIDMNudgeModal) as FC;
