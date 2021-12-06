@@ -15,6 +15,7 @@ import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const
 import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
 import { PERMISSION_GROUP_PATH } from './permission-groups/permission-group.const';
+import { QUICK_LANE_PATH } from './quick-lane/quick-lane.const';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
@@ -31,6 +32,7 @@ export const ADMIN_PATH = Object.freeze({
 	...COLLECTIONS_OR_BUNDLES_PATH,
 	...ITEMS_PATH,
 	...INTERACTIVE_TOUR_PATH,
+	...QUICK_LANE_PATH,
 });
 
 function getNavWithSubLinks(
@@ -300,6 +302,12 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			label: i18n.t('admin/admin___vertaling'),
 			location: ADMIN_PATH.TRANSLATIONS,
 			key: 'translations',
+			exact: false,
+		}),
+		...hasPermissions([PermissionName.VIEW_ANY_QUICK_LANE_OVERVIEW], 'OR', userPermissions, {
+			label: i18n.t('admin/admin___gedeelde-links'),
+			location: ADMIN_PATH.QUICK_LANE_OVERVIEW,
+			key: 'quickLanes',
 			exact: false,
 		}),
 	];
