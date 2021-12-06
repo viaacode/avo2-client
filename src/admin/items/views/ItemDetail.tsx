@@ -16,32 +16,26 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import AssociatedQuickLaneTable from '../../../quick-lane/components/AssociatedQuickLaneTable';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { QUICK_LANE_COLUMNS } from '../../../shared/constants/quick-lane';
-import {
-	buildLink,
-	CustomError,
-	isMobileWidth,
-	navigate,
-	sanitizeHtml,
-} from '../../../shared/helpers';
+import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { QuickLaneUrlObject } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
@@ -51,7 +45,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
@@ -236,7 +229,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	const handleQuickLaneColumnClick = (id: string) => {
-		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 
 		setQuickLaneSortColumn(id);
 		setQuickLaneSortOrder(sortOrder);
@@ -322,7 +315,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const renderContainingCollectionTable = () => (
 		<>
-			<Spacer margin="top-extra-large">
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
 					{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
 				</BlockHeading>
@@ -377,83 +370,22 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		</>
 	);
 
-	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
-		<QuickLaneFilterTableCell id={id} data={data} />
-	);
-
 	const renderAssociatedQuickLaneTable = () => (
 		<>
-			<Spacer margin="top-extra-large">
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
 					{t('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
 				</BlockHeading>
 			</Spacer>
 			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
-				<Table
-					columns={
-						[
-							{
-								id: QUICK_LANE_COLUMNS.TITLE,
-								label: t('workspace/views/quick-lane-overview___titel'),
-								sortable: true,
-								dataType: 'string',
-							},
-							// Hide type on mobile
-							...(isMobileWidth()
-								? []
-								: [
-										{
-											id: QUICK_LANE_COLUMNS.CONTENT_LABEL,
-											label: t('workspace/views/quick-lane-overview___type'),
-											sortable: true,
-											dataType: 'string',
-										},
-								  ]),
-							{
-								id: QUICK_LANE_COLUMNS.URL,
-								label: t('workspace/views/quick-lane-overview___url'),
-							},
-							// Hide timestamps & author on mobile
-							...(isMobileWidth()
-								? []
-								: [
-										{
-											id: QUICK_LANE_COLUMNS.AUTHOR,
-											label: t(
-												'workspace/views/quick-lane-overview___aangemaakt-door'
-											),
-											sortable: true,
-											dataType: 'string',
-										},
-										{
-											id: QUICK_LANE_COLUMNS.CREATED_AT,
-											label: t(
-												'workspace/views/quick-lane-overview___aangemaakt-op'
-											),
-											sortable: true,
-											dataType: 'dateTime',
-										},
-										{
-											id: QUICK_LANE_COLUMNS.UPDATED_AT,
-											label: t(
-												'workspace/views/quick-lane-overview___aangepast-op'
-											),
-											sortable: true,
-											dataType: 'dateTime',
-										},
-								  ]),
-						] as TableColumnSchema[]
-					}
+				<AssociatedQuickLaneTable
 					data={associatedQuickLanes}
 					emptyStateMessage={t(
 						'admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld'
 					)}
 					onColumnClick={handleQuickLaneColumnClick}
-					renderCell={renderAssociatedQuickLaneTableCell}
 					sortColumn={quickLaneSortColumn}
 					sortOrder={quickLaneSortOrder}
-					variant="bordered"
-					rowKey="id"
 				/>
 			) : (
 				t('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')

@@ -5,7 +5,7 @@ import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import { CustomError } from '../helpers';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
-import { GET_QUICK_LANE_WITH_FILTERS } from '../queries/quick-lane.gql';
+import { GET_QUICK_LANE_WITH_FILTERS } from '../queries/quick-lane-filter.gql';
 import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
 
 import { dataService } from '.';

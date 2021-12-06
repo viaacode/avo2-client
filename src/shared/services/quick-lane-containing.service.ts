@@ -1,10 +1,11 @@
 import { ApolloQueryResult } from 'apollo-boost';
 
-import { CustomError } from '../../../shared/helpers';
-import { quickLaneUrlRecordToObject } from '../../../shared/helpers/quick-lane-url-record-to-object';
-import { dataService } from '../../../shared/services';
-import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../../../shared/types';
+import { CustomError } from '../helpers';
+import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
 import { GET_QUICK_LANE_BY_CONTENT_ID } from '../queries/quick-lane-containing.gql';
+import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
+
+import { dataService } from './data-service';
 
 export class QuickLaneContainingService {
 	static async fetchQuickLanesByContentId(contentId: string) {
