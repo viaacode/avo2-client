@@ -22,6 +22,7 @@ import { Avo } from '@viaa/avo2-types';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import AssociatedQuickLaneTable from '../../../quick-lane/components/AssociatedQuickLaneTable';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -29,11 +30,14 @@ import {
 } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
+import { QUICK_LANE_COLUMNS } from '../../../shared/constants/quick-lane';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { QuickLaneUrlObject } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -63,15 +67,24 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	// Hooks
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
 	const [isConfirmPublishModalOpen, setIsConfirmPublishModalOpen] = useState<boolean>(false);
 	const [isDepublishItemModalOpen, setDepublishItemModalOpen] = useState<boolean>(false);
+
 	const [collectionsContainingItem, setCollectionsContainingItem] = useState<
-		Avo.Collection.Collection[] | undefined
-	>(undefined);
+		Avo.Collection.Collection[]
+	>([]);
 	const [collectionSortColumn, setCollectionSortColumn] = useState<string>('title');
 	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
 		'asc'
 	);
+
+	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
+		QUICK_LANE_COLUMNS.TITLE
+	);
+	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const [t] = useTranslation();
@@ -120,6 +133,30 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 	}, [setCollectionsContainingItem, t, item]);
 
+	const fetchAssociatedQuickLanes = useCallback(async () => {
+		try {
+			if (!item) {
+				return;
+			}
+
+			const quickLanes = await QuickLaneContainingService.fetchQuickLanesByContentId(
+				item.uid
+			);
+			setAssociatedQuickLanes(quickLanes);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get quick lane urls containing item', err, {
+					item,
+				})
+			);
+			ToastService.danger(
+				t(
+					'admin/items/views/item-detail___het-ophalen-van-de-gedeelde-links-die-naar-dit-fragment-wijzen-is-mislukt'
+				)
+			);
+		}
+	}, [setAssociatedQuickLanes, t, item]);
+
 	useEffect(() => {
 		fetchItemById();
 	}, [fetchItemById]);
@@ -127,11 +164,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	useEffect(() => {
 		if (item) {
 			fetchCollectionsByItemExternalId();
+			fetchAssociatedQuickLanes();
+
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [item, setLoadingInfo, fetchCollectionsByItemExternalId]);
+	}, [item, setLoadingInfo, fetchCollectionsByItemExternalId, fetchAssociatedQuickLanes]);
 
 	const toggleItemPublishedState = async () => {
 		try {
@@ -176,14 +215,27 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const handleCollectionColumnClick = (columnId: CollectionColumnId) => {
 		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+
 		setCollectionSortColumn(columnId);
 		setCollectionSortOrder(sortOrder);
+
 		setCollectionsContainingItem(
 			orderBy(
 				collectionsContainingItem,
 				[(coll) => get(coll, columnIdToCollectionPath[columnId])],
 				[sortOrder]
 			)
+		);
+	};
+
+	const handleQuickLaneColumnClick = (id: string) => {
+		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+
+		setQuickLaneSortColumn(id);
+		setQuickLaneSortOrder(sortOrder);
+
+		setAssociatedQuickLanes(
+			orderBy(associatedQuickLanes, [(col) => get(col, id)], [sortOrder])
 		);
 	};
 
@@ -260,6 +312,86 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return rowData[columnId];
 		}
 	};
+
+	const renderContainingCollectionTable = () => (
+		<>
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
+				<BlockHeading type="h2">
+					{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
+				</BlockHeading>
+			</Spacer>
+			{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
+				<Table
+					columns={[
+						{
+							label: t('admin/items/views/item-detail___titel'),
+							id: 'title',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: t('admin/items/views/item-detail___auteur'),
+							id: 'author',
+							sortable: true,
+							dataType: 'string',
+						},
+						{
+							label: 'Organisatie',
+							id: 'organization',
+							sortable: false,
+						},
+						{
+							label: t('admin/items/items___publiek'),
+							id: 'is_public',
+							sortable: true,
+							dataType: 'boolean',
+						},
+						{
+							tooltip: t('admin/items/views/item-detail___acties'),
+							id: 'actions',
+							sortable: false,
+						},
+					]}
+					data={collectionsContainingItem}
+					emptyStateMessage={t(
+						'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+					)}
+					onColumnClick={handleCollectionColumnClick as any}
+					onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
+					renderCell={renderCollectionCell as any}
+					sortColumn={collectionSortColumn}
+					sortOrder={collectionSortOrder}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				t('admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen')
+			)}
+		</>
+	);
+
+	const renderAssociatedQuickLaneTable = () => (
+		<>
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
+				<BlockHeading type="h2">
+					{t('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
+				</BlockHeading>
+			</Spacer>
+			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
+				<AssociatedQuickLaneTable
+					data={associatedQuickLanes}
+					emptyStateMessage={t(
+						'admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld'
+					)}
+					onColumnClick={handleQuickLaneColumnClick}
+					sortColumn={quickLaneSortColumn}
+					sortOrder={quickLaneSortOrder}
+				/>
+			) : (
+				t('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')
+			)}
+		</>
+	);
 
 	const renderItemDetail = () => {
 		if (!item) {
@@ -370,60 +502,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							)}
 						</tbody>
 					</Table>
-					<Spacer margin="top-extra-large">
-						<BlockHeading type="h2">
-							{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
-						</BlockHeading>
-					</Spacer>
-					{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
-						<Table
-							columns={[
-								{
-									label: t('admin/items/views/item-detail___titel'),
-									id: 'title',
-									sortable: true,
-									dataType: 'string',
-								},
-								{
-									label: t('admin/items/views/item-detail___auteur'),
-									id: 'author',
-									sortable: true,
-									dataType: 'string',
-								},
-								{
-									label: 'Organisatie',
-									id: 'organization',
-									sortable: false,
-								},
-								{
-									label: t('admin/items/items___publiek'),
-									id: 'is_public',
-									sortable: true,
-									dataType: 'boolean',
-								},
-								{
-									tooltip: t('admin/items/views/item-detail___acties'),
-									id: 'actions',
-									sortable: false,
-								},
-							]}
-							data={collectionsContainingItem}
-							emptyStateMessage={t(
-								'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
-							)}
-							onColumnClick={handleCollectionColumnClick as any}
-							onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
-							renderCell={renderCollectionCell as any}
-							sortColumn={collectionSortColumn}
-							sortOrder={collectionSortOrder}
-							variant="bordered"
-							rowKey="id"
-						/>
-					) : (
-						t(
-							'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
-						)
-					)}
+					{renderContainingCollectionTable()}
+					{renderAssociatedQuickLaneTable()}
 					<DeleteObjectModal
 						title={
 							item.is_published
