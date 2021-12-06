@@ -3,7 +3,10 @@ import {
 	AssignmentContentLabel,
 	AssignmentLayout,
 } from '@viaa/avo2-types/types/assignment';
+import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { UserProfile, UserSchema } from '@viaa/avo2-types/types/user';
+
+import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 
 export interface QuickLaneUrl {
 	id: string;
@@ -44,4 +47,16 @@ export interface QuickLaneUpdateResponse {
 export interface QuickLaneMutateResponse {
 	affected_rows: number;
 	returning: QuickLaneUrlRecord[];
+}
+
+export interface QuickLaneOverviewFilterState {
+	author: string[];
+	columns: any[];
+	content_label: AssignmentContentLabel[];
+	created_at?: DateRange;
+	page: number;
+	query?: string;
+	sort_column?: string;
+	sort_order?: SearchOrderDirection;
+	updated_at?: DateRange;
 }
