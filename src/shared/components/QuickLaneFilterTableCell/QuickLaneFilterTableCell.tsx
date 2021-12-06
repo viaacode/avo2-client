@@ -40,7 +40,7 @@ const QuickLaneFilterTableCell: FunctionComponent<QuickLaneFilterTableCellProps>
 			return <span>{label}</span>;
 
 		case QUICK_LANE_COLUMNS.URL:
-			return <QuickLaneLink id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
+			return <QuickLaneLink short id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
 
 		case QUICK_LANE_COLUMNS.AUTHOR:
 			return <span>{data.owner?.usersByuserId.full_name || '-'}</span>;
