@@ -215,6 +215,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				object: String(currentAssignment.uuid),
 				object_type: 'assignment',
 				action: 'share',
+				resource: {
+					object_type: 'link',
+				},
 			},
 			user
 		);

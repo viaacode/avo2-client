@@ -52,6 +52,9 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 				object: (emailLinkHref.split('/').pop() || '').split('?')[0] || '',
 				object_type: type,
 				action: 'share',
+				resource: {
+					object_type: 'link',
+				},
 			},
 			user
 		);
@@ -78,6 +81,9 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 					object: (emailLinkHref.split('/').pop() || '').split('?')[0] || '',
 					object_type: type,
 					action: 'share',
+					resource: {
+						object_type: 'mail',
+					},
 				},
 				user
 			);

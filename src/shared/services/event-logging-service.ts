@@ -10,6 +10,7 @@ interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
 	object: string; // entity being modified
 	object_type: Avo.EventLogging.ObjectType;
+	resource?: Record<string, string | boolean | number>;
 }
 
 export function trackEvents(
