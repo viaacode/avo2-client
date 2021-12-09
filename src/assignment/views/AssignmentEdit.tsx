@@ -230,7 +230,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			trackEvents(
 				{
 					object: String(currentAssignment.uuid),
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'view',
 				},
 				user
