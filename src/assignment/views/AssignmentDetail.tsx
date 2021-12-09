@@ -27,7 +27,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -189,7 +188,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				{
 					object: String(response.assignment.uuid),
 					object_type: 'assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft een opdracht bekeken`,
 					action: 'view',
 				},
 				user

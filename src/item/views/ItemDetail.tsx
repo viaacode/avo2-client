@@ -36,7 +36,6 @@ import { Avo } from '@viaa/avo2-types';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import {
 	ContentTypeNumber,
@@ -178,9 +177,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					{
 						object: match.params.id,
 						object_type: 'item',
-						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
-							match.params.id
-						} bezocht`,
 						action: 'view',
 					},
 					user
@@ -270,7 +266,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			{
 				object: get(item, 'external_id', ''),
 				object_type: 'item',
-				message: `${getProfileName(user)} heeft een item afgespeeld`,
 				action: 'play',
 			},
 			user

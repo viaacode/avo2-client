@@ -1,4 +1,4 @@
-import { clamp, get } from 'lodash-es';
+import { clamp } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +27,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
@@ -177,7 +176,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		try {
 			const fragment = await getFragment(collection);
 			delete fragment.item_meta;
-			const fragments = await CollectionService.insertFragments(collection.id as string, [
+			await CollectionService.insertFragments(collection.id as string, [
 				fragment as Avo.Collection.Fragment,
 			]);
 			ToastService.success(
@@ -190,10 +189,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				{
 					object: String(collection.id),
 					object_type: 'collection',
-					message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
-						fragments,
-						'[0].id'
-					)} toegevoegd aan een collectie`,
 					action: 'add_to',
 				},
 				user
@@ -254,7 +249,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				{
 					object: insertedCollection.id || '',
 					object_type: 'collection',
-					message: `${getProfileName(user)} heeft een collectie aangemaakt`,
 					action: 'create',
 				},
 				user

@@ -13,8 +13,6 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { toDutchContentType } from '../../../collection/collection.types';
 import { copyToClipboard } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { ToastService } from '../../services';
@@ -53,9 +51,6 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 			{
 				object: (emailLinkHref.split('/').pop() || '').split('?')[0] || '',
 				object_type: type,
-				message: `${getProfileName(user)} heeft een ${toDutchContentType(
-					type
-				)} url gekopieerd`,
 				action: 'share',
 			},
 			user
@@ -82,9 +77,6 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 				{
 					object: (emailLinkHref.split('/').pop() || '').split('?')[0] || '',
 					object_type: type,
-					message: `${getProfileName(user)} heeft een ${toDutchContentType(
-						type
-					)} gedeeld via email`,
 					action: 'share',
 				},
 				user

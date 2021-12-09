@@ -3,8 +3,7 @@ import { compact, fromPairs, get, groupBy } from 'lodash-es';
 import { EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { ContentTypeNumber, toDutchContentType } from '../../../collection/collection.types';
+import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import i18n from '../../translations/i18n';
@@ -175,9 +174,6 @@ export class BookmarksViewsPlaysService {
 					{
 						object: contentId,
 						object_type: type,
-						message: `${getProfileName(user)} heeft een ${toDutchContentType(
-							type
-						)} gebookmarked`,
 						action: 'bookmark',
 					},
 					user

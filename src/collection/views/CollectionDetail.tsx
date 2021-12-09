@@ -28,7 +28,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
@@ -272,9 +271,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					{
 						object: collectionId,
 						object_type: 'collection',
-						message: `Gebruiker ${getProfileName(
-							user
-						)} heeft de pagina voor collectie ${collectionId} bekeken`,
 						action: 'view',
 					},
 					user
@@ -378,7 +374,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						{
 							object: collection.id,
 							object_type: 'collection',
-							message: `${getProfileName(user)} heeft een collectie gedupliceerd`,
 							action: 'copy',
 						},
 						user
@@ -492,7 +487,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				{
 					object: collectionId,
 					object_type: 'collection',
-					message: `${getProfileName(user)} heeft een collectie verwijderd`,
 					action: 'delete',
 				},
 				user

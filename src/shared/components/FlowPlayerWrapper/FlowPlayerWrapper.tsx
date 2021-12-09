@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { AspectRatioWrapper, FlowPlayer, Icon } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -99,9 +98,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			{
 				object: props.external_id || '',
 				object_type: 'item',
-				message: `Gebruiker ${
-					props.user ? `${getProfileName(props.user)} ` : ''
-				} heeft het item ${props.external_id} afgespeeld`,
 				action: 'play',
 			},
 			props.user
