@@ -49,17 +49,33 @@ export function generateCollectionWhereObject(
 		])
 	);
 
-	andFilters.push(
-		...getMultiOptionFilters(
-			filters,
-			['author_user_group'],
-			[
-				isCollectionTable
-					? 'profile.profile_user_group.group.id'
-					: 'owner.profile.profile_user_group.group.id',
-			]
-		)
-	);
+	if (filters.author_user_group && filters.author_user_group.length) {
+		const defaultGroupFilter = {
+			profile: {
+				profile_user_group: {
+					group: {
+						id: {
+							_in: without(filters.author_user_group, NULL_FILTER),
+						},
+					},
+				},
+			},
+		};
+		const defaultNullFilter = { profile: { _not: { profile_user_groups: {} } } };
+
+		const groupFilter = isCollectionTable
+			? [defaultGroupFilter]
+			: [{ owner: defaultGroupFilter }];
+		const nullFilter = isCollectionTable ? defaultNullFilter : { owner: defaultNullFilter };
+
+		andFilters.push({
+			_or: [
+				...groupFilter,
+				...(filters.author_user_group.includes(NULL_FILTER) ? [nullFilter] : []),
+			],
+		});
+	}
+
 	andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 	andFilters.push(...getMultiOptionFilters(filters, ['owner_profile_id']));
 
