@@ -659,9 +659,8 @@ const Profile: FunctionComponent<
 
 			case 'temp_access':
 				const tempAccess = get(profile, 'user.temp_access');
-				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
 
-				return hasTempAccess
+				return tempAccess === 1
 					? `${t('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
 					  )} ${t('settings/components/profile___tot')} ${formatDate(

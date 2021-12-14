@@ -657,6 +657,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 
 			case 'temp_access':
 				const tempAccess = get(rowData, 'user.temp_access.current.status');
+
 				switch (tempAccess) {
 					case 0:
 						return t('admin/users/views/user-overview___tijdelijke-toegang-nee');
