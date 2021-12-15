@@ -1,0 +1,18 @@
+@import '../../../styles/utilities/spacer';
+
+.c-modal__autoplay-grid {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	overflow-y: scroll;
+	max-height: 350px;
+
+	.c-modal__autoplay-queue {
+		list-style: none;
+	}
+
+	.c-modal__autoplay-video {
+		position: sticky;
+		top: 0;
+		max-height: 100px;
+	}
+}

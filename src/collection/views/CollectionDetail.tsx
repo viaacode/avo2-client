@@ -581,6 +581,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			<ButtonToolbar>
 				<Button
 					type="secondary"
+					label="Speel de collectie af"
 					title="Speel de collectie af"
 					ariaLabel="Speelt de collectie af"
 					icon="play"

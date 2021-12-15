@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Modal, ModalBody } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { FragmentDetail } from '../../components';
+import { FlowPlayerWrapper } from '../../../shared/components';
+
+import './AutoplayCollectionModal.scss';
 
 interface AutoplayCollectionModalProps {
 	isOpen: boolean;
@@ -21,10 +23,10 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	isOpen,
 	onClose,
 	collectionFragments,
-	history,
-	location,
-	match,
-	user,
+	// history,
+	// location,
+	// match,
+	// user,
 }) => {
 	const [t] = useTranslation();
 
@@ -38,28 +40,43 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 			)}
 			size="large"
 			onClose={onClose}
-			scrollable
 			className="c-content"
 		>
 			<ModalBody>
-				<ul>
-					{collectionFragments.map((fragment) => {
-						return (
-							<li onClick={() => setCurrentFragment(fragment.position)}>
-								{fragment.id}
-							</li>
-						);
-					})}
-				</ul>
-				<FragmentDetail
-					collectionFragment={collectionFragments[currentFragment]}
-					showDescription={false}
-					linkToItems={false}
-					user={user}
-					history={history}
-					location={location}
-					match={match}
-				/>
+				<div className="c-modal__autoplay-grid">
+					<ul className="c-modal__autoplay-queue u-spacer-right-l">
+						{collectionFragments.map((fragment) => {
+							return (
+								<li onClick={() => setCurrentFragment(fragment.position)}>
+									{fragment.item_meta?.title}
+									<img
+										src={
+											fragment.item_meta?.thumbnail_path
+												? fragment.item_meta.thumbnail_path
+												: ''
+										}
+										alt=""
+									/>
+								</li>
+							);
+						})}
+					</ul>
+					<div className="c-modal__autoplay-video">
+						<FlowPlayerWrapper
+							item={collectionFragments[currentFragment].item_meta as Avo.Item.Item}
+							canPlay={true}
+							cuePoints={{
+								start: collectionFragments[0].start_oc,
+								end: collectionFragments[0].end_oc,
+							}}
+							external_id={
+								(collectionFragments[0].item_meta as Avo.Item.Item).external_id
+							}
+							duration={(collectionFragments[0].item_meta as Avo.Item.Item).duration}
+							title={collectionFragments[0].item_meta?.title}
+						/>
+					</div>
+				</div>
 			</ModalBody>
 		</Modal>
 	);
