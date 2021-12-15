@@ -66,4 +66,5 @@ export interface MarcomEntry {
 	external_link: string | null;
 	publish_date: string;
 	collection_id: string;
+	parent_collection: { title: string } | null;
 }

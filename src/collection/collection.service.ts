@@ -1318,6 +1318,20 @@ export class CollectionService {
 		}
 	}
 
+	static async insertMarcomEntriesForBundleCollections(
+		parentCollectionId: string,
+		collectionIds: string[],
+		marcomEntry: Partial<MarcomEntry>
+	): Promise<void> {
+		const allEntries = collectionIds.map((collectionId) => ({
+			...marcomEntry,
+			collection_id: collectionId,
+			parent_collection_id: parentCollectionId,
+		}));
+
+		await this.insertMarcomEntry(allEntries);
+	}
+
 	static async deleteMarcomEntry(id: string): Promise<void> {
 		try {
 			const response = await dataService.mutate({
