@@ -124,12 +124,18 @@ export function logoutAndRedirectToLogin(location?: Location) {
  * Redirect to server link accounts route
  * @param location
  * @param idpType
+ * @param idpParameters optional query parameters that are sent to the IDP login url
  */
-export function redirectToServerLinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
+export function redirectToServerLinkAccount(
+	location: Location,
+	idpType: Avo.Auth.IdpType,
+	idpParameters?: string
+) {
 	const returnToUrl = getBaseUrl(location) + location.pathname;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
+		idpParameters,
 	})}`;
 }
 
