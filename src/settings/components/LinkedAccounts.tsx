@@ -82,6 +82,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 		KLASCEMENT: {
 			label: t('settings/components/linked-accounts___klas-cement'),
 			iconNames: ['klascement'],
+			hideForPupil: true,
 		},
 	};
 
