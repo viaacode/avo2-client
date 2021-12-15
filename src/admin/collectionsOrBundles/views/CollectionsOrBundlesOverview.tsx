@@ -84,8 +84,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	// computed
 	const userGroupOptions = useMemo(
-		() =>
-			userGroups.map(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t('Geen rol'),
+				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+					NULL_FILTER
+				),
+			},
+			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
 					label: option.label as string,
@@ -94,7 +101,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					),
 				})
 			),
-		[tableState, userGroups]
+		],
+		[tableState, userGroups, t]
 	);
 	const collectionLabelOptions = useMemo(
 		() => [
