@@ -520,6 +520,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		);
 	};
 
+	// Executed when the user was deleted
+	const deleteCallback = () => navigate(history, ADMIN_PATH.USER_OVERVIEW);
+
 	const renderUserDetailPage = () => {
 		const isBlocked = get(storedProfile, 'is_blocked');
 		const blockButtonTooltip = isBlocked
@@ -594,6 +597,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					selectedProfileIds={[get(storedProfile, 'profile_id')]}
 					isOpen={userDeleteModalOpen}
 					onClose={() => setUserDeleteModalOpen(false)}
+					deleteCallback={deleteCallback}
 				/>
 			</>
 		);

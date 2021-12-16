@@ -28,11 +28,10 @@ import { UserService } from '../user.service';
 import { DeleteContentCounts } from '../user.types';
 
 interface UserDeleteModalProps {
-	// tempAccess: UserTempAccess | null;
 	selectedProfileIds: string[];
 	isOpen: boolean;
 	onClose: () => void;
-	// setTempAccessCallback: (tempAccess: UserTempAccess) => void;
+	deleteCallback: () => void;
 }
 /**
  * Adds two modals:
@@ -43,6 +42,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 	selectedProfileIds,
 	isOpen,
 	onClose,
+	deleteCallback,
 }) => {
 	const [t] = useTranslation();
 
@@ -238,21 +238,15 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 
 	const handleDeleteUsers = async () => {
 		try {
-			// setDeleteConfirmModalOpen(false);
-			// await UserService.bulkDeleteUsers(
-			// 	selectedProfileIds,
-			// 	selectedDeleteOption,
-			// 	transferToUser?.value
-			// );
-			// await fetchProfiles();
-			// ToastService.success(
-			// 	t('admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-verwijderd')
-			// );
-			// console.log('EFFECTIVLY DELETING USERS !!!', {
-			// 	selectedProfileIds,
-			// 	selectedDeleteOption,
-			// 	transferToUser: transferToUser?.value,
-			// });
+			setDeleteConfirmModalOpen(false);
+			await UserService.bulkDeleteUsers(
+				selectedProfileIds,
+				selectedDeleteOption,
+				transferToUser?.value
+			);
+
+			ToastService.success(t('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
+			deleteCallback();
 		} catch (err) {
 			console.error(new CustomError('Failed to remove users', err));
 			ToastService.danger(
