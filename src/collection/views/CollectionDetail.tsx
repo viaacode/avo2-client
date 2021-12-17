@@ -1069,13 +1069,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									setIsQuickLaneModalOpen(false);
 
 									const loadingIndicator = ToastService.info(
-										t('Collectie wordt opgehaald...')
+										t(
+											'collection/views/collection-detail___collectie-wordt-opgehaald'
+										)
 									);
 
 									checkPermissionsAndGetCollection().then(() => {
 										ToastService.close(loadingIndicator);
 										ToastService.success(
-											t('Het ophalen van de collectie is voltooid!')
+											t(
+												'collection/views/collection-detail___het-ophalen-van-de-collectie-is-voltooid'
+											)
 										);
 									});
 								}}

@@ -752,11 +752,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					onClose={() => {
 						setIsQuickLaneModalOpen(false);
 
-						const loadingIndicator = ToastService.info(t('Item wordt opgehaald...'));
+						const loadingIndicator = ToastService.info(
+							t('item/views/item-detail___item-wordt-opgehaald')
+						);
 
 						checkPermissionsAndGetItem().then(() => {
 							ToastService.close(loadingIndicator);
-							ToastService.success(t('Het ophalen van dit item is voltooid!'));
+							ToastService.success(
+								t('item/views/item-detail___het-ophalen-van-dit-item-is-voltooid')
+							);
 						});
 					}}
 				/>
