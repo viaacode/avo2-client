@@ -87,6 +87,9 @@ export const GET_USER_BY_ID = gql`
 			blocked_at {
 				max
 			}
+			unblocked_at {
+				max
+			}
 			classifications {
 				id
 				key
@@ -142,11 +145,17 @@ export const GET_USERS = gql`
 			organisations {
 				organization_id
 				unit_id
+				organization {
+					ldap_description
+				}
 			}
 			user {
 				temp_access {
 					until
 					from
+					current {
+						status
+					}
 				}
 			}
 		}
