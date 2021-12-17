@@ -751,17 +751,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					content_label="ITEM"
 					onClose={() => {
 						setIsQuickLaneModalOpen(false);
-
-						const loadingIndicator = ToastService.info(
-							t('item/views/item-detail___item-wordt-opgehaald')
-						);
-
-						checkPermissionsAndGetItem().then(() => {
-							ToastService.close(loadingIndicator);
-							ToastService.success(
-								t('item/views/item-detail___het-ophalen-van-dit-item-is-voltooid')
-							);
-						});
 					}}
 				/>
 			</>

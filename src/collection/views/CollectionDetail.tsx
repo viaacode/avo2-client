@@ -26,6 +26,7 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -1065,23 +1066,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								content={collection}
 								content_label="COLLECTIE"
 								onClose={() => {
-									// Close modal & reload data without blocking user
 									setIsQuickLaneModalOpen(false);
-
-									const loadingIndicator = ToastService.info(
-										t(
-											'collection/views/collection-detail___collectie-wordt-opgehaald'
-										)
-									);
-
-									checkPermissionsAndGetCollection().then(() => {
-										ToastService.close(loadingIndicator);
-										ToastService.success(
-											t(
-												'collection/views/collection-detail___het-ophalen-van-de-collectie-is-voltooid'
-											)
-										);
-									});
+								}}
+								onUpdate={(collection) => {
+									if ((collection as CollectionSchema).collection_fragments) {
+										setCollection(collection as CollectionSchema);
+									}
 								}}
 							/>
 						)}
