@@ -4,7 +4,7 @@ export { default as DataQueryComponent } from './DataQueryComponent/DataQueryCom
 export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropdown';
 export { default as DeleteObjectModal } from './ConfirmModal/ConfirmModal';
 export { default as DraggableListModal } from './DraggableList/DraggableListModal';
-export { default as EducationLevelsField } from './EducationLevelField/EducationLevelField';
+export { default as EducationLevelsField } from './EducationLevelsField/EducationLevelsField';
 export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';
 export { default as Footer } from './Footer/Footer';
