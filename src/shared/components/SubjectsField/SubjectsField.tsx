@@ -18,13 +18,19 @@ const SubjectsField: FunctionComponent<SubjectsFieldProps> = ({ onChange, value 
 	const [subjects, setSubjects] = useState<TagInfo[]>([]);
 
 	useEffect(() => {
+		let fetch = true;
+
 		SettingsService.fetchSubjects()
 			.then((levels: string[]) => {
-				setSubjects(levels.map(stringToTagInfo));
+				fetch && setSubjects(levels.map(stringToTagInfo));
 			})
 			.catch((err) => {
 				console.error(new CustomError('Failed to get subjects from the database', err));
 			});
+
+		return () => {
+			fetch = false;
+		};
 	}, [setSubjects]);
 
 	return (

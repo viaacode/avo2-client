@@ -21,15 +21,21 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
 
 	useEffect(() => {
+		let fetch = true;
+
 		SettingsService.fetchEducationLevels()
 			.then((levels: string[]) => {
-				setEducationLevels(levels.map(stringToTagInfo));
+				fetch && setEducationLevels(levels.map(stringToTagInfo));
 			})
 			.catch((err) => {
 				console.error(
 					new CustomError('Failed to get education levels from the database', err)
 				);
 			});
+
+		return () => {
+			fetch = false;
+		};
 	}, [setEducationLevels]);
 
 	return (
