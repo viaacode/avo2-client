@@ -93,6 +93,124 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 
+	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
+		getRelatedItems(currentItemId, 'items', limit)
+			.then(setRelatedItems)
+			.catch((err) => {
+				console.error('Failed to get related items', err, {
+					currentItemId,
+					limit,
+					index: 'items',
+				});
+				ToastService.danger(
+					t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+				);
+			});
+	};
+
+	const checkPermissionsAndGetItem = async () => {
+		try {
+			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
+				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
+						),
+						icon: 'lock',
+					});
+				} else {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
+						),
+						icon: 'lock',
+					});
+				}
+				return;
+			}
+
+			const itemObj:
+				| (Avo.Item.Item & { replacement_for?: string })
+				| null = await ItemsService.fetchItemByExternalId(match.params.id);
+			if (!itemObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('item/views/item___dit-item-werd-niet-gevonden'),
+					icon: 'search',
+				});
+				return;
+			}
+
+			if (itemObj.depublish_reason) {
+				setLoadingInfo({
+					state: 'error',
+					message:
+						t(
+							'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
+						) + itemObj.depublish_reason,
+					icon: 'camera-off',
+				});
+				return;
+			}
+
+			if (itemObj.replacement_for) {
+				// Item was replaced by another item
+				// We should reload the page, to update the url
+				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id }));
+				return;
+			}
+
+			trackEvents(
+				{
+					object: match.params.id,
+					object_type: 'item',
+					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+						match.params.id
+					} bezocht`,
+					action: 'view',
+				},
+				user
+			);
+
+			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
+
+			retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+			try {
+				const counts = await BookmarksViewsPlaysService.getItemCounts(
+					(itemObj as any).uid,
+					user
+				);
+				setBookmarkViewPlayCounts(counts);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getItemCounts', err, {
+						uuid: (itemObj as any).uid,
+					})
+				);
+				ToastService.danger(
+					t(
+						'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
+			}
+
+			setItem(itemObj);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to check permissions or get item from graphql', err, {
+					user,
+					itemId: match.params.id,
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
+			});
+		}
+	};
+
 	useEffect(() => {
 		if (item) {
 			setLoadingInfo({
@@ -105,128 +223,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	 * Load item from database
 	 */
 	useEffect(() => {
-		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-			getRelatedItems(currentItemId, 'items', limit)
-				.then(setRelatedItems)
-				.catch((err) => {
-					console.error('Failed to get related items', err, {
-						currentItemId,
-						limit,
-						index: 'items',
-					});
-					ToastService.danger(
-						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
-					);
-				});
-		};
-
-		const checkPermissionsAndGetItem = async () => {
-			try {
-				if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
-					if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
-						setLoadingInfo({
-							state: 'error',
-							message: t(
-								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
-							),
-							icon: 'lock',
-						});
-					} else {
-						setLoadingInfo({
-							state: 'error',
-							message: t(
-								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
-							),
-							icon: 'lock',
-						});
-					}
-					return;
-				}
-
-				const itemObj:
-					| (Avo.Item.Item & { replacement_for?: string })
-					| null = await ItemsService.fetchItemByExternalId(match.params.id);
-				if (!itemObj) {
-					setLoadingInfo({
-						state: 'error',
-						message: t('item/views/item___dit-item-werd-niet-gevonden'),
-						icon: 'search',
-					});
-					return;
-				}
-
-				if (itemObj.depublish_reason) {
-					setLoadingInfo({
-						state: 'error',
-						message:
-							t(
-								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-							) + itemObj.depublish_reason,
-						icon: 'camera-off',
-					});
-					return;
-				}
-
-				if (itemObj.replacement_for) {
-					// Item was replaced by another item
-					// We should reload the page, to update the url
-					history.replace(
-						buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id })
-					);
-					return;
-				}
-
-				trackEvents(
-					{
-						object: match.params.id,
-						object_type: 'item',
-						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
-							match.params.id
-						} bezocht`,
-						action: 'view',
-					},
-					user
-				);
-
-				BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
-
-				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
-				try {
-					const counts = await BookmarksViewsPlaysService.getItemCounts(
-						(itemObj as any).uid,
-						user
-					);
-					setBookmarkViewPlayCounts(counts);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getItemCounts', err, {
-							uuid: (itemObj as any).uid,
-						})
-					);
-					ToastService.danger(
-						t(
-							'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-						)
-					);
-				}
-
-				setItem(itemObj);
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to check permissions or get item from graphql', err, {
-						user,
-						itemId: match.params.id,
-					})
-				);
-				setLoadingInfo({
-					state: 'error',
-					message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
-				});
-			}
-		};
-
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, history, user]); // ensure only triggers once for user object
+	}, [match.params.id, setItem, t, history, user]); // eslint-disable-line
 
 	const toggleBookmark = async () => {
 		try {
@@ -753,6 +751,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					content_label="ITEM"
 					onClose={() => {
 						setIsQuickLaneModalOpen(false);
+
+						const loadingIndicator = ToastService.info(t('Item wordt opgehaald...'));
+
+						checkPermissionsAndGetItem().then(() => {
+							ToastService.close(loadingIndicator);
+							ToastService.success(t('Het ophalen van dit item is voltooid!'));
+						});
 					}}
 				/>
 			</>

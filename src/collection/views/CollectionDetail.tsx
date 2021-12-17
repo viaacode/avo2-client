@@ -104,7 +104,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
-	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(true);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -1065,7 +1065,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								content={collection}
 								content_label="COLLECTIE"
 								onClose={() => {
+									// Close modal & reload data without blocking user
 									setIsQuickLaneModalOpen(false);
+
+									const loadingIndicator = ToastService.info(
+										t('Collectie wordt opgehaald...')
+									);
+
+									checkPermissionsAndGetCollection().then(() => {
+										ToastService.close(loadingIndicator);
+										ToastService.success(
+											t('Het ophalen van de collectie is voltooid!')
+										);
+									});
 								}}
 							/>
 						)}
