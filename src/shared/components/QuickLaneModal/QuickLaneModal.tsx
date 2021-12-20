@@ -1,8 +1,13 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks';
@@ -21,12 +26,22 @@ const QuickLaneModalTabs = {
 	sharing: 'sharing',
 };
 
+// Helpers
+
+const needsToPublish = async (user: UserSchema) => {
+	return await PermissionService.hasPermissions(
+		[PermissionName.REQUIRED_PUBLICATION_DETAILS_ON_QUICK_LANE],
+		user
+	);
+};
+
 // Component
 
 const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
 	const { modalTitle, isOpen, content, content_label, onClose, user } = props;
 
 	const [t] = useTranslation();
+	const [publishRequired, setPublishRequired] = useState(false);
 
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -42,13 +57,24 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		QuickLaneModalTabs.publication
 	);
 
+	// Check permissions
 	useEffect(() => {
-		isOpen &&
-			content &&
-			setActiveTab(
-				isShareable(content) ? QuickLaneModalTabs.sharing : QuickLaneModalTabs.publication
-			);
-	}, [isOpen, content, setActiveTab]);
+		async function checkPermissions() {
+			user && setPublishRequired(await needsToPublish(user));
+		}
+
+		checkPermissions();
+	}, [user]);
+
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const shouldBePublishedFirst = isCollection({ content_label }) && publishRequired;
+
+		setActiveTab(
+			shouldBePublishedFirst ? QuickLaneModalTabs.publication : QuickLaneModalTabs.sharing
+		);
+	}, [isOpen, setActiveTab, publishRequired, content_label]);
 
 	const getTabs = () => {
 		return tabs.filter((tab) => {
@@ -118,7 +144,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 											break;
 
 										case 'sharing':
-											if (isShareable(content)) {
+											if (!publishRequired || isShareable(content)) {
 												setActiveTab(tab);
 											} else {
 												ToastService.danger(
