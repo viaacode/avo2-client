@@ -1,5 +1,5 @@
 import { StringMap } from 'i18next';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -11,23 +11,24 @@ import {
 	Grid,
 	Spacer,
 	TagInfo,
-	TagsInput,
 	TextArea,
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
-import { SettingsService } from '../../settings/settings.service';
-import { FileUpload } from '../../shared/components';
+import {
+	EducationLevelsField,
+	FileUpload,
+	ShortDescriptionField,
+	SubjectsField,
+} from '../../shared/components';
 import WYSIWYGWrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import {
 	WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION,
 	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/constants/wysiwyg';
-import { CustomError, sanitizeHtml, stripHtml } from '../../shared/helpers';
-import { stringToTagInfo } from '../../shared/helpers/string-to-select-options';
-import i18n from '../../shared/translations/i18n';
-import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from '../collection.const';
+import { sanitizeHtml, stripHtml } from '../../shared/helpers';
+import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
 
@@ -48,29 +49,11 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 
 	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
-	const [subjects, setSubjects] = useState<TagInfo[]>([]);
-	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
 	const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
 
 	const isCollection = type === 'collection';
-
-	useEffect(() => {
-		Promise.all([SettingsService.fetchSubjects(), SettingsService.fetchEducationLevels()])
-			.then((response: [string[], string[]]) => {
-				setSubjects(response[0].map(stringToTagInfo));
-				setEducationLevels(response[1].map(stringToTagInfo));
-			})
-			.catch((err) => {
-				console.error(
-					new CustomError(
-						'Failed to get education levels and subjects from the database',
-						err
-					)
-				);
-			});
-	}, [setEducationLevels, setSubjects]);
 
 	const updateCollectionMultiProperty = (
 		selectedTagOptions: TagInfo[],
@@ -91,85 +74,31 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<FormGroup
-										label={t(
-											'collection/views/collection-edit-meta-data___onderwijsniveau'
-										)}
-										labelFor="classificationId"
-									>
-										<TagsInput
-											options={educationLevels}
-											value={(collection.lom_context || []).map(
-												stringToTagInfo
-											)}
-											onChange={(values: TagInfo[]) =>
-												updateCollectionMultiProperty(values, 'lom_context')
-											}
-										/>
-									</FormGroup>
-									<FormGroup
-										label={t(
-											'collection/views/collection-edit-meta-data___vakken'
-										)}
-										labelFor="subjectsId"
-									>
-										<TagsInput
-											options={subjects}
-											value={(collection.lom_classification || []).map(
-												stringToTagInfo
-											)}
-											onChange={(values: TagInfo[]) =>
-												updateCollectionMultiProperty(
-													values,
-													'lom_classification'
-												)
-											}
-										/>
-									</FormGroup>
-									<FormGroup
-										label={t(
-											'collection/views/collection-edit-meta-data___korte-omschrijving'
-										)}
-										labelFor="shortDescriptionId"
-										error={getValidationFeedbackForDescription(
-											collection.description,
-											MAX_SEARCH_DESCRIPTION_LENGTH,
-											(count) =>
-												i18n.t(
-													'collection/collection___de-korte-omschrijving-is-te-lang-count',
-													{ count } as StringMap
-												),
-											true
-										)}
-									>
-										<TextArea
-											name="shortDescriptionId"
-											value={collection.description || ''}
-											id="shortDescriptionId"
-											height="medium"
-											placeholder={t(
-												'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
-											)}
-											onChange={(value: string) =>
-												changeCollectionState({
-													type: 'UPDATE_COLLECTION_PROP',
-													collectionProp: 'description',
-													collectionPropValue: value,
-												})
-											}
-										/>
-										<label>
-											{getValidationFeedbackForDescription(
-												collection.description,
-												MAX_SEARCH_DESCRIPTION_LENGTH,
-												(count) =>
-													t(
-														'collection/collection___de-korte-omschrijving-is-te-lang-count',
-														{ count } as StringMap
-													)
-											)}
-										</label>
-									</FormGroup>
+									<EducationLevelsField
+										value={collection.lom_context}
+										onChange={(values: TagInfo[]) =>
+											updateCollectionMultiProperty(values, 'lom_context')
+										}
+									/>
+									<SubjectsField
+										value={collection.lom_classification}
+										onChange={(values: TagInfo[]) =>
+											updateCollectionMultiProperty(
+												values,
+												'lom_classification'
+											)
+										}
+									/>
+									<ShortDescriptionField
+										value={collection.description}
+										onChange={(value: string) =>
+											changeCollectionState({
+												type: 'UPDATE_COLLECTION_PROP',
+												collectionProp: 'description',
+												collectionPropValue: value,
+											})
+										}
+									/>
 									{!isCollection && (
 										<FormGroup
 											label={t(

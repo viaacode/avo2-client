@@ -57,4 +57,5 @@ export const ROUTE_PARTS = Object.freeze({
 	interactiveTours: 'interactieve-tours',
 	cookiePolicy: 'cookiebeleid',
 	linkedAccounts: 'koppelingen',
+	quickLane: 'bekijk',
 });

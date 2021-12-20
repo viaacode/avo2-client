@@ -50,6 +50,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -83,13 +84,132 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
+	const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+
+	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
+		getRelatedItems(currentItemId, 'items', limit)
+			.then(setRelatedItems)
+			.catch((err) => {
+				console.error('Failed to get related items', err, {
+					currentItemId,
+					limit,
+					index: 'items',
+				});
+				ToastService.danger(
+					t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+				);
+			});
+	};
+
+	const checkPermissionsAndGetItem = async () => {
+		try {
+			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
+				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
+						),
+						icon: 'lock',
+					});
+				} else {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
+						),
+						icon: 'lock',
+					});
+				}
+				return;
+			}
+
+			const itemObj:
+				| (Avo.Item.Item & { replacement_for?: string })
+				| null = await ItemsService.fetchItemByExternalId(match.params.id);
+			if (!itemObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('item/views/item___dit-item-werd-niet-gevonden'),
+					icon: 'search',
+				});
+				return;
+			}
+
+			if (itemObj.depublish_reason) {
+				setLoadingInfo({
+					state: 'error',
+					message:
+						t(
+							'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
+						) + itemObj.depublish_reason,
+					icon: 'camera-off',
+				});
+				return;
+			}
+
+			if (itemObj.replacement_for) {
+				// Item was replaced by another item
+				// We should reload the page, to update the url
+				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id }));
+				return;
+			}
+
+			trackEvents(
+				{
+					object: match.params.id,
+					object_type: 'item',
+					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+						match.params.id
+					} bezocht`,
+					action: 'view',
+				},
+				user
+			);
+
+			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
+
+			retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+			try {
+				const counts = await BookmarksViewsPlaysService.getItemCounts(
+					(itemObj as any).uid,
+					user
+				);
+				setBookmarkViewPlayCounts(counts);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getItemCounts', err, {
+						uuid: (itemObj as any).uid,
+					})
+				);
+				ToastService.danger(
+					t(
+						'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
+			}
+
+			setItem(itemObj);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to check permissions or get item from graphql', err, {
+					user,
+					itemId: match.params.id,
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
+			});
+		}
+	};
 
 	useEffect(() => {
 		if (item) {
@@ -103,128 +223,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	 * Load item from database
 	 */
 	useEffect(() => {
-		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-			getRelatedItems(currentItemId, 'items', limit)
-				.then(setRelatedItems)
-				.catch((err) => {
-					console.error('Failed to get related items', err, {
-						currentItemId,
-						limit,
-						index: 'items',
-					});
-					ToastService.danger(
-						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
-					);
-				});
-		};
-
-		const checkPermissionsAndGetItem = async () => {
-			try {
-				if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
-					if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
-						setLoadingInfo({
-							state: 'error',
-							message: t(
-								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
-							),
-							icon: 'lock',
-						});
-					} else {
-						setLoadingInfo({
-							state: 'error',
-							message: t(
-								'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
-							),
-							icon: 'lock',
-						});
-					}
-					return;
-				}
-
-				const itemObj:
-					| (Avo.Item.Item & { replacement_for?: string })
-					| null = await ItemsService.fetchItemByExternalId(match.params.id);
-				if (!itemObj) {
-					setLoadingInfo({
-						state: 'error',
-						message: t('item/views/item___dit-item-werd-niet-gevonden'),
-						icon: 'search',
-					});
-					return;
-				}
-
-				if (itemObj.depublish_reason) {
-					setLoadingInfo({
-						state: 'error',
-						message:
-							t(
-								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-							) + itemObj.depublish_reason,
-						icon: 'camera-off',
-					});
-					return;
-				}
-
-				if (itemObj.replacement_for) {
-					// Item was replaced by another item
-					// We should reload the page, to update the url
-					history.replace(
-						buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id })
-					);
-					return;
-				}
-
-				trackEvents(
-					{
-						object: match.params.id,
-						object_type: 'item',
-						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
-							match.params.id
-						} bezocht`,
-						action: 'view',
-					},
-					user
-				);
-
-				BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
-
-				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
-				try {
-					const counts = await BookmarksViewsPlaysService.getItemCounts(
-						(itemObj as any).uid,
-						user
-					);
-					setBookmarkViewPlayCounts(counts);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getItemCounts', err, {
-							uuid: (itemObj as any).uid,
-						})
-					);
-					ToastService.danger(
-						t(
-							'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-						)
-					);
-				}
-
-				setItem(itemObj);
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to check permissions or get item from graphql', err, {
-						user,
-						itemId: match.params.id,
-					})
-				);
-				setLoadingInfo({
-					state: 'error',
-					message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
-				});
-			}
-		};
-
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, history, user]); // ensure only triggers once for user object
+	}, [match.params.id, setItem, t, history, user]); // eslint-disable-line
 
 	const toggleBookmark = async () => {
 		try {
@@ -399,7 +399,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						<ItemVideoDescription
 							itemMetaData={item}
 							canPlay={
-								!isOpenAddToCollectionModal &&
+								!isAddToCollectionModalOpen &&
 								!isShareThroughEmailModalOpen &&
 								!isReportItemModalOpen
 							}
@@ -429,10 +429,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 														ariaLabel={t(
 															'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 														)}
-														onClick={() =>
-															setIsOpenAddToCollectionModal(true)
-														}
+														onClick={() => {
+															setIsAddToCollectionModalOpen(true);
+														}}
 													/>
+
 													{PermissionService.hasPerm(
 														user,
 														PermissionName.CREATE_ASSIGNMENTS
@@ -449,15 +450,37 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															title={t(
 																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
 															)}
-															onClick={() =>
+															onClick={() => {
 																history.push(
 																	generateAssignmentCreateLink(
 																		'KIJK',
 																		item.external_id,
 																		'ITEM'
 																	)
-																)
-															}
+																);
+															}}
+														/>
+													)}
+
+													{PermissionService.hasPerm(
+														user,
+														PermissionName.CREATE_QUICK_LANE
+													) && (
+														<Button
+															type="tertiary"
+															icon="link-2"
+															label={t(
+																'item/views/item___delen-met-leerlingen'
+															)}
+															ariaLabel={t(
+																'item/views/item-detail___deel-dit-met-alle-leerlingen'
+															)}
+															title={t(
+																'item/views/item-detail___deel-dit-met-alle-leerlingen'
+															)}
+															onClick={() => {
+																setIsQuickLaneModalOpen(true);
+															}}
 														/>
 													)}
 												</Flex>
@@ -477,16 +500,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
 												title={t('item/views/item___share-item')}
-												onClick={() =>
-													setIsShareThroughEmailModalOpen(true)
-												}
+												onClick={() => {
+													setIsShareThroughEmailModalOpen(true);
+												}}
 											/>
 											<Button
 												type="tertiary"
 												icon="flag"
 												ariaLabel={t('item/views/item___rapporteer-item')}
 												title={t('item/views/item___rapporteer-item')}
-												onClick={() => setIsReportItemModalOpen(true)}
+												onClick={() => {
+													setIsReportItemModalOpen(true);
+												}}
 											/>
 										</ButtonToolbar>
 									</Flex>
@@ -687,7 +712,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						</Grid>
 					</Container>
 				</Container>
-				{!isNil(match.params.id) && isOpenAddToCollectionModal && (
+				{!isNil(match.params.id) && isAddToCollectionModalOpen && (
 					<AddToCollectionModal
 						history={history}
 						location={location}
@@ -695,8 +720,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						user={user}
 						itemMetaData={item}
 						externalId={match.params.id as string}
-						isOpen={isOpenAddToCollectionModal}
-						onClose={() => setIsOpenAddToCollectionModal(false)}
+						isOpen={isAddToCollectionModalOpen}
+						onClose={() => {
+							setIsAddToCollectionModalOpen(false);
+						}}
 					/>
 				)}
 				<ShareThroughEmailModal
@@ -705,13 +732,26 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					emailLinkHref={window.location.href}
 					emailLinkTitle={item.title}
 					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => setIsShareThroughEmailModalOpen(false)}
+					onClose={() => {
+						setIsShareThroughEmailModalOpen(false);
+					}}
 				/>
 				<ReportItemModal
 					externalId={match.params.id}
 					isOpen={isReportItemModalOpen}
-					onClose={() => setIsReportItemModalOpen(false)}
+					onClose={() => {
+						setIsReportItemModalOpen(false);
+					}}
 					user={user}
+				/>
+				<QuickLaneModal
+					modalTitle={t('item/views/item___snel-delen-met-leerlingen')}
+					isOpen={isQuickLaneModalOpen}
+					content={item}
+					content_label="ITEM"
+					onClose={() => {
+						setIsQuickLaneModalOpen(false);
+					}}
 				/>
 			</>
 		);
