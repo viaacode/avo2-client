@@ -50,6 +50,18 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 			);
 	}, [isOpen, content, setActiveTab]);
 
+	const getTabs = () => {
+		return tabs.filter((tab) => {
+			switch (tab.id) {
+				case QuickLaneModalTabs.publication:
+					return isCollection({ content_label });
+
+				default:
+					return true;
+			}
+		});
+	};
+
 	const renderContentNotShareableWarning = (): string => {
 		switch (content_label) {
 			case 'ITEM':
@@ -95,10 +107,10 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		>
 			{user && content && content_label ? (
 				<ModalBody>
-					{tabs.length > 1 && (
+					{getTabs().length > 1 && (
 						<Spacer className="m-quick-lane-modal__tabs-wrapper" margin={'bottom'}>
 							<Tabs
-								tabs={tabs}
+								tabs={getTabs()}
 								onClick={(tab) => {
 									switch (tab.toString() as keyof typeof QuickLaneModalTabs) {
 										case 'publication':
