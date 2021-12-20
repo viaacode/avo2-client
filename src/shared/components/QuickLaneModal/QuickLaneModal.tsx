@@ -1,197 +1,126 @@
-import { TFunction } from 'i18next';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { generatePath, useHistory } from 'react-router';
+
+import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import {
-	Alert,
-	Avatar,
-	Box,
-	Button,
-	Flex,
-	FlexItem,
-	FormGroup,
-	Modal,
-	ModalBody,
-	Spacer,
-	TextInput,
-} from '@viaa/avo2-components';
-import { AssignmentContent, AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
-import { UserProfile } from '@viaa/avo2-types/types/user';
-
-import { AssignmentLayout } from '../../../assignment/assignment.types';
-import { APP_PATH } from '../../../constants';
-import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
-import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
+import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
-import { useDebounce } from '../../hooks';
+import { useTabs } from '../../hooks';
 import { ToastService } from '../../services';
-import { QuickLaneUrlObject } from '../../types';
-import { ContentLink } from '../ContentLink/ContentLink';
-import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
-import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
+import { isShareable } from './QuickLaneModal.helpers';
 import './QuickLaneModal.scss';
-
-// Typings
-
-interface QuickLaneModalProps {
-	modalTitle: string;
-	isOpen: boolean;
-	content?: AssignmentContent;
-	content_label?: AssignmentContentLabel;
-	onClose: () => void;
-}
+import { QuickLaneModalProps } from './QuickLaneModal.types';
+import QuickLaneModalPublicationTab from './QuickLaneModalPublicationTab';
+import QuickLaneModalSharingTab from './QuickLaneModalSharingTab';
 
 // State
 
-const defaultQuickLaneState: QuickLaneUrlObject = {
-	id: '',
-	title: '',
-	view_mode: AssignmentLayout.PlayerAndText,
+const QuickLaneModalTabs = {
+	publication: 'publication',
+	sharing: 'sharing',
 };
 
 // Helpers
 
-const getContentId = (content: AssignmentContent, contentLabel: AssignmentContentLabel): string => {
-	switch (contentLabel) {
-		case 'ITEM':
-			return (content as ItemSchema).uid;
-		default:
-			return content.id.toString();
-	}
-};
-
-const getContentNotShareableWarning = (
-	contentLabel: AssignmentContentLabel,
-	t: TFunction
-): string => {
-	switch (contentLabel) {
-		case 'ITEM':
-			return t(
-				'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
-			);
-
-		case 'COLLECTIE':
-			return t(
-				'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
-			);
-
-		default:
-			return '';
-	}
-};
-
-const isShareable = (content: AssignmentContent): boolean => {
-	return (content as ItemSchema).is_published || (content as CollectionSchema).is_public;
+const needsToPublish = async (user: UserSchema) => {
+	return await PermissionService.hasPermissions(
+		[PermissionName.REQUIRED_PUBLICATION_DETAILS_ON_QUICK_LANE],
+		user
+	);
 };
 
 // Component
 
-const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
-	modalTitle,
-	isOpen,
-	content,
-	content_label,
-	onClose,
-	user,
-}) => {
+const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
+	const { modalTitle, isOpen, content, content_label, onClose, user } = props;
+
 	const [t] = useTranslation();
-	const history = useHistory();
-	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
-	const [exists, setExists] = useState<boolean>(false);
-	const [synced, setSynced] = useState<boolean>(false);
-	const debounced = useDebounce(quickLane, 500);
+	const [publishRequired, setPublishRequired] = useState(false);
 
-	// If the modal is open and we haven't checked if anything exists, fetch or create the record
+	const [tab, setActiveTab, tabs] = useTabs(
+		[
+			{
+				id: QuickLaneModalTabs.publication,
+				label: t('shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails'),
+			},
+			{
+				id: QuickLaneModalTabs.sharing,
+				label: t('shared/components/quick-lane-modal/quick-lane-modal___snel-delen'),
+			},
+		],
+		QuickLaneModalTabs.publication
+	);
+
+	// Check permissions
 	useEffect(() => {
-		if (!isOpen || exists) {
-			return;
+		async function checkPermissions() {
+			user && setPublishRequired(await needsToPublish(user));
 		}
 
-		(async () => {
-			if (content && content_label) {
-				if (user && user.profile !== null) {
-					let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
-						getContentId(content, content_label),
-						content_label,
-						(user.profile as UserProfile).id
-					);
+		checkPermissions();
+	}, [user]);
 
-					if (items.length === 0 && isShareable(content)) {
-						items = await QuickLaneService.insertQuickLanes([
-							{
-								// Initialise with content title
-								...{
-									...quickLane,
-									title: content.title,
-								},
-								content_label,
-								content_id: getContentId(content, content_label),
-								owner_profile_id: (user.profile as UserProfile).id,
-							},
-						]);
-
-						ToastService.success(
-							t(
-								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangemaakt'
-							)
-						);
-					}
-
-					if (items.length === 1) {
-						setExists(true);
-						setSynced(true);
-						setQuickLane({
-							...quickLane,
-							...items[0],
-						});
-					}
-				}
-			}
-		})();
-	}, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
-		const object = debounced as QuickLaneUrlObject;
+		if (!isOpen) return;
 
-		if (!isOpen || !exists || object.id.length <= 0) {
-			return;
-		}
+		const shouldBePublishedFirst = isCollection({ content_label }) && publishRequired;
 
-		(async () => {
-			// Ignore the first change after sync
-			if (synced) {
-				setSynced(false);
-			} else if (content && content_label) {
-				if (user && user.profile !== null) {
-					const updated = await QuickLaneService.updateQuickLaneById(object.id, {
-						...object,
-						content_label,
-						content_id: getContentId(content, content_label),
-						owner_profile_id: (user.profile as UserProfile).id,
-					});
+		setActiveTab(
+			shouldBePublishedFirst ? QuickLaneModalTabs.publication : QuickLaneModalTabs.sharing
+		);
+	}, [isOpen, setActiveTab, publishRequired, content_label]);
 
-					if (updated.length === 1) {
-						setSynced(true);
-						setQuickLane({
-							...object,
-							...updated[0],
-						});
+	const getTabs = () => {
+		return tabs.filter((tab) => {
+			switch (tab.id) {
+				case QuickLaneModalTabs.publication:
+					return isCollection({ content_label });
 
-						ToastService.success(
-							t(
-								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangepast'
-							)
-						);
-					}
-				}
+				default:
+					return true;
 			}
-		})();
-	}, [debounced]); // eslint-disable-line react-hooks/exhaustive-deps
+		});
+	};
+
+	const renderContentNotShareableWarning = (): string => {
+		switch (content_label) {
+			case 'ITEM':
+				return t(
+					'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
+				);
+
+			case 'COLLECTIE':
+				return t(
+					'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
+				);
+
+			default:
+				return '';
+		}
+	};
+
+	const renderTab = () => {
+		switch (tab) {
+			case 'publication':
+				return (
+					<QuickLaneModalPublicationTab
+						{...props}
+						onComplete={() => setActiveTab(QuickLaneModalTabs.sharing)}
+					/>
+				);
+			case 'sharing':
+				return <QuickLaneModalSharingTab {...props} />;
+
+			default:
+				return undefined;
+		}
+	};
 
 	return (
 		<Modal
@@ -204,135 +133,47 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 		>
 			{user && content && content_label ? (
 				<ModalBody>
-					{!isShareable(content) && (
-						<Spacer margin={['bottom']}>
-							<Alert type="danger">
-								<p>{getContentNotShareableWarning(content_label, t)}</p>
+					{getTabs().length > 1 && (
+						<Spacer className="m-quick-lane-modal__tabs-wrapper" margin={'bottom'}>
+							<Tabs
+								tabs={getTabs()}
+								onClick={(tab) => {
+									switch (tab.toString() as keyof typeof QuickLaneModalTabs) {
+										case 'publication':
+											setActiveTab(tab);
+											break;
 
-								{content_label === 'COLLECTIE' && (
-									<Spacer margin={['top-small']}>
-										<Button
-											type="danger"
-											icon="file-text"
-											label={t(
-												'shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails'
-											)}
-											onClick={() => {
-												onClose();
-												history.push(
-													generatePath(
-														APP_PATH.COLLECTION_EDIT_TAB.route,
-														{
-															id: getContentId(
-																content,
-																content_label
-															),
-															tabId: 'metadata',
-														}
+										case 'sharing':
+											if (!publishRequired || isShareable(content)) {
+												setActiveTab(tab);
+											} else {
+												ToastService.danger(
+													t(
+														'shared/components/quick-lane-modal/quick-lane-modal___dit-item-kan-nog-niet-gedeeld-worden'
 													)
 												);
-											}}
-										/>
-									</Spacer>
-								)}
-							</Alert>
-						</Spacer>
-					)}
+											}
+											break;
 
-					{content_label === 'ITEM' && (
-						<Spacer margin={['bottom']}>
-							<Avatar
-								className="m-quick-lane-modal__avatar"
-								dark={true}
-								name={(content as ItemSchema).organisation.name}
-								image={(content as ItemSchema).organisation.logo_url}
-							/>
-						</Spacer>
-					)}
-
-					<Spacer margin={['bottom']}>
-						<FormGroup
-							required
-							label={t('shared/components/quick-lane-modal/quick-lane-modal___titel')}
-						>
-							<TextInput
-								id="title"
-								disabled={!quickLane.id}
-								value={quickLane.title}
-								onChange={(title: string) =>
-									setQuickLane({
-										...quickLane,
-										title,
-									})
-								}
-							/>
-						</FormGroup>
-					</Spacer>
-
-					<Spacer margin={['bottom']}>
-						<FormGroup
-							label={t(
-								'shared/components/quick-lane-modal/quick-lane-modal___inhoud'
-							)}
-						>
-							{content_label && (
-								<ContentLink
-									parent={{
-										content_label,
-										content_id: getContentId(content, content_label),
-									}}
-									content={content}
-									user={user}
-								/>
-							)}
-						</FormGroup>
-					</Spacer>
-
-					<Spacer margin={['bottom']}>
-						<FormGroup
-							label={t(
-								'shared/components/quick-lane-modal/quick-lane-modal___weergave-voor-leerlingen'
-							)}
-						>
-							<LayoutOptions
-								item={{ content_layout: quickLane.view_mode }}
-								disabled={!quickLane.id}
-								onChange={(value: string) => {
-									setQuickLane({
-										...quickLane,
-										view_mode: (value as unknown) as AssignmentLayout, // TS2353
-									});
+										default:
+											break;
+									}
 								}}
-							/>
-						</FormGroup>
-					</Spacer>
+							></Tabs>
+						</Spacer>
+					)}
 
-					<Spacer margin={['bottom']}>
-						<Box backgroundColor="gray" condensed>
-							<Flex wrap justify="between" align="baseline">
-								<FlexItem className="u-truncate m-quick-lane-modal__link">
-									{quickLane.id && <QuickLaneLink id={quickLane.id} />}
-								</FlexItem>
-								<FlexItem shrink>
-									<Spacer margin="left-small">
-										<Button
-											disabled={!quickLane.id}
-											label={t(
-												'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
-											)}
-											onClick={() => {
-												navigator.clipboard.writeText(
-													`${
-														window.location.origin
-													}${generateQuickLaneHref(quickLane.id)}`
-												);
-											}}
-										/>
-									</Spacer>
-								</FlexItem>
-							</Flex>
-						</Box>
-					</Spacer>
+					{!isShareable(content) &&
+						isCollection({ content_label }) &&
+						tab === QuickLaneModalTabs.publication && (
+							<Spacer margin={['bottom']}>
+								<Alert type={isCollection({ content_label }) ? 'info' : 'danger'}>
+									<p>{renderContentNotShareableWarning()}</p>
+								</Alert>
+							</Spacer>
+						)}
+
+					{renderTab()}
 				</ModalBody>
 			) : (
 				<ModalBody>

@@ -26,6 +26,7 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -1066,6 +1067,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								content_label="COLLECTIE"
 								onClose={() => {
 									setIsQuickLaneModalOpen(false);
+								}}
+								onUpdate={(collection) => {
+									if ((collection as CollectionSchema).collection_fragments) {
+										setCollection(collection as CollectionSchema);
+									}
 								}}
 							/>
 						)}
