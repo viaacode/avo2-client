@@ -87,7 +87,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t('Geen rol'),
+				label: t('admin/collections-or-bundles/views/collections-or-bundles___geen-rol'),
 				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
 					NULL_FILTER
 				),

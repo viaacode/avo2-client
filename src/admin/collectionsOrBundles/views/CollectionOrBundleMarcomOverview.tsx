@@ -74,7 +74,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t('Geen rol'),
+				label: t('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
 				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
 					NULL_FILTER
 				),

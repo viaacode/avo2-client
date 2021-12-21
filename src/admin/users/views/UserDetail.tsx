@@ -183,7 +183,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			  ]
 			: []),
 		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
-		createDropdownMenuItem('delete', t('verwijderen')),
+		createDropdownMenuItem('delete', t('admin/users/views/user-detail___verwijderen')),
 	];
 
 	const executeAction = async (item: ReactText) => {
