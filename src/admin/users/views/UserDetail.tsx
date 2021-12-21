@@ -55,6 +55,7 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import TempAccessModal from '../components/TempAccessModal';
+import UserDeleteModal from '../components/UserDeleteModal';
 import { UserService } from '../user.service';
 import {
 	RawPermissionLink,
@@ -72,6 +73,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const [tempAccess, setTempAccess] = useState<UserTempAccess | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isTempAccessModalOpen, setIsTempAccessModalOpen] = useState<boolean>(false);
+	const [userDeleteModalOpen, setUserDeleteModalOpen] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
@@ -181,6 +183,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			  ]
 			: []),
 		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
+		createDropdownMenuItem('delete', t('verwijderen')),
 	];
 
 	const executeAction = async (item: ReactText) => {
@@ -195,6 +198,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),
 					history
 				);
+				break;
+
+			case 'delete':
+				setUserDeleteModalOpen(true);
 				break;
 
 			default:
@@ -513,6 +520,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		);
 	};
 
+	// Executed when the user was deleted
+	const deleteCallback = () => navigate(history, ADMIN_PATH.USER_OVERVIEW);
+
 	const renderUserDetailPage = () => {
 		const isBlocked = get(storedProfile, 'is_blocked');
 		const blockButtonTooltip = isBlocked
@@ -582,6 +592,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					isOpen={isTempAccessModalOpen}
 					onClose={() => setIsTempAccessModalOpen(false)}
 					setTempAccessCallback={onSetTempAccess}
+				/>
+				<UserDeleteModal
+					selectedProfileIds={[get(storedProfile, 'profile_id')]}
+					isOpen={userDeleteModalOpen}
+					onClose={() => setUserDeleteModalOpen(false)}
+					deleteCallback={deleteCallback}
 				/>
 			</>
 		);
