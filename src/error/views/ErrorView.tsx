@@ -55,7 +55,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 
 	const queryParams = queryString.parse((location.search || '').substring(1));
 
-	if (queryParams.logout) {
+	if (queryParams.logout === 'true') {
 		// redirect to logout route and afterwards redirect back to the error page
 		redirectToServerLogoutPage(
 			location,
