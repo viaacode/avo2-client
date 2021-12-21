@@ -1,8 +1,10 @@
 import { get } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { compose } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
 import {
 	Button,
@@ -17,8 +19,12 @@ import {
 
 import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import { APP_PATH } from '../../../constants';
-import { CustomError, navigate } from '../../helpers';
+import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers/get-profile-info';
+import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
+import { AppState } from '../../../store';
+import { setShowNudgingModalAction } from '../../../uistate/store/actions';
+import { selectShowNudgingModal } from '../../../uistate/store/selectors';
+import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
 	ProfilePreference,
@@ -29,24 +35,41 @@ import './ACMIDMNudgeModal.scss';
 
 export interface ACMIDMNudgeModalProps {}
 
-const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }) => {
+interface UiStateProps {
+	showNudgingModal: boolean;
+	setShowNudgingModal: (showModal: boolean) => Dispatch;
+}
+
+const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
+	location,
+	user,
+	showNudgingModal,
+	setShowNudgingModal,
+}) => {
 	const [t] = useTranslation();
 
-	const [showModal, setShowModal] = useState<boolean>(false);
-	// const [t] = useTranslation();
-
 	const fetchProfilePreference = useCallback(async () => {
+		if (showNudgingModal !== null) {
+			// was already initialized
+			return;
+		}
+
 		try {
 			const profilePreference = await ProfilePreferencesService.fetchProfilePreference(
 				getProfileId(user),
 				ProfilePreference.DoNotShow
 			);
 
-			setShowModal(!(profilePreference || []).length);
+			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
+			const profileIsComplete = !!(user && isProfileComplete(user));
+
+			setShowNudgingModal(
+				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
 		}
-	}, [user]);
+	}, [user, showNudgingModal, setShowNudgingModal]);
 
 	const setProfilePreference = async () => {
 		try {
@@ -55,7 +78,7 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 				ProfilePreference.DoNotShow
 			);
 
-			setShowModal(false);
+			setShowNudgingModal(false);
 		} catch (err) {
 			console.error(new CustomError('Failed to insert profile preference', err));
 		}
@@ -69,13 +92,14 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 		}
 	}, [fetchProfilePreference, user]);
 
-	const onClose = () => setShowModal(false);
+	const onClose = () => setShowNudgingModal(false);
+
 	const onClickDoNotShow = () => {
 		setProfilePreference();
 	};
 
 	return (
-		<Modal isOpen={showModal} size="medium" onClose={onClose}>
+		<Modal isOpen={showNudgingModal} size="medium" onClose={onClose}>
 			<ModalBody>
 				<div className="c-nudge-modal">
 					<Spacer margin="bottom">
@@ -96,49 +120,65 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-direct-je-burgerprofiel-aan-je-bestaande-account'
 						)}
 					</p>
-					<div
-						className="c-nudge-modal__options"
-						onClick={() => {
-							navigate(history, APP_PATH.SETTINGS_LINKS.route);
-							setProfilePreference();
-						}}
-					>
-						<Grid className="c-nudge-modal__options__item">
-							<Column
-								className="c-nudge-modal__options__column c-nudge-modal__options__column--left"
-								size="3-2"
-							>
-								<Icon name={'itsme' as IconName} size="huge" type="multicolor" />
-							</Column>
-							<Column
-								className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
-								size="3-10"
-							>
-								<Spacer>
-									{t(
-										'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme'
-									)}
-								</Spacer>
-							</Column>
-						</Grid>
-						<Grid className="c-nudge-modal__options__item">
-							<Column
-								className="c-nudge-modal__options__column c-nudge-modal__options__column--left"
-								size="3-2"
-							>
-								<Icon name={'eid' as IconName} size="large" />
-							</Column>
-							<Column
-								className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
-								size="3-10"
-							>
-								<Spacer>
-									{t(
-										'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
-									)}
-								</Spacer>
-							</Column>
-						</Grid>
+					<div className="c-nudge-modal__options">
+						<div
+							onClick={() => {
+								redirectToServerLinkAccount(
+									location,
+									'VLAAMSEOVERHEID',
+									'itsme=true'
+								);
+								onClose();
+							}}
+						>
+							<Grid className="c-nudge-modal__options__item">
+								<Column
+									className="c-nudge-modal__options__column c-nudge-modal__options__column--left"
+									size="3-2"
+								>
+									<Icon
+										name={'itsme' as IconName}
+										size="huge"
+										type="multicolor"
+									/>
+								</Column>
+								<Column
+									className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
+									size="3-10"
+								>
+									<Spacer>
+										{t(
+											'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme'
+										)}
+									</Spacer>
+								</Column>
+							</Grid>
+						</div>
+						<div
+							onClick={() => {
+								redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID');
+								onClose();
+							}}
+						>
+							<Grid className="c-nudge-modal__options__item">
+								<Column
+									className="c-nudge-modal__options__column c-nudge-modal__options__column--left"
+									size="3-2"
+								>
+									<Icon name={'eid' as IconName} size="large" />
+								</Column>
+								<Column
+									className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
+									size="3-10"
+								>
+									<Spacer>
+										{t(
+											'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
+										)}
+									</Spacer>
+								</Column>
+							</Grid>
+						</div>
 					</div>
 					<Spacer margin="bottom-small">
 						<Button
@@ -162,4 +202,17 @@ const ACMIDMNudgeModal: FC<UserProps & RouteComponentProps> = ({ history, user }
 	);
 };
 
-export default compose(withRouter, withUser)(ACMIDMNudgeModal) as FC;
+const mapStateToProps = (state: AppState) => ({
+	showNudgingModal: selectShowNudgingModal(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	setShowNudgingModal: (showModal: boolean) =>
+		dispatch(setShowNudgingModalAction(showModal) as any),
+});
+
+export default compose(
+	connect(mapStateToProps, mapDispatchToProps),
+	withRouter,
+	withUser
+)(ACMIDMNudgeModal) as FC;

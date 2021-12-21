@@ -2,6 +2,7 @@ import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Joyride, { CallBackProps } from 'react-joyride';
+import { connect } from 'react-redux';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -11,6 +12,8 @@ import { Avo } from '@viaa/avo2-types';
 import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
+import { AppState } from '../../../store';
+import { selectShowNudgingModal } from '../../../uistate/store/selectors';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
@@ -24,11 +27,13 @@ export interface InteractiveTourProps {
 	showButton: boolean;
 }
 
-const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProps> = ({
-	showButton,
-	user,
-	location,
-}) => {
+interface UiStateProps {
+	showNudgingModal: boolean;
+}
+
+const InteractiveTour: FunctionComponent<
+	InteractiveTourProps & SecuredRouteProps & UiStateProps
+> = ({ showButton, user, location, showNudgingModal }) => {
 	const [t] = useTranslation();
 
 	const [tour, setTour] = useState<TourInfo | null>(null);
@@ -234,7 +239,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 					spotlightPadding={8}
 					scrollOffset={220}
 					continuous
-					run={!tour.seen}
+					run={!tour.seen && !showNudgingModal}
 					showSkipButton
 					floaterProps={{ disableAnimation: true }}
 					styles={{
@@ -265,6 +270,12 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	return null;
 };
 
-export default compose(withRouter, withUser)(InteractiveTour) as FunctionComponent<
-	InteractiveTourProps
->;
+const mapStateToProps = (state: AppState) => ({
+	showNudgingModal: selectShowNudgingModal(state),
+});
+
+export default compose(
+	connect(mapStateToProps),
+	withRouter,
+	withUser
+)(InteractiveTour) as FunctionComponent<InteractiveTourProps>;
