@@ -31,7 +31,7 @@
 		"@popperjs/core": "^2.5.4",
 		"@storybook/addon-actions": "^6.3.12",
 		"@viaa/avo2-components": "^1.78.0",
-		"@viaa/avo2-types": "git+ssh://git@github.com:viaacode/avo2-typings.git#8a6e6f4c1719f4fab8ac0b1f85109baf1e6a0eee",
+		"@viaa/avo2-types": "^2.35.0",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",
 		"braft-extensions": "^0.1.0",
