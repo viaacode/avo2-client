@@ -658,7 +658,7 @@ const Profile: FunctionComponent<
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			case 'temp_access':
-				const tempAccess = get(profile, 'user.temp_access');
+				const tempAccess = get(user, 'temp_access.current.status');
 
 				return tempAccess === 1
 					? `${t('settings/components/profile___van')} ${formatDate(
