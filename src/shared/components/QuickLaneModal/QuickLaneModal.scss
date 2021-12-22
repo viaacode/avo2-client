@@ -1,6 +1,6 @@
 @import '../../../styles/settings/variables';
 
-.m-content-thumbnail {
+.c-thumbnail.m-content-thumbnail {
     width: $m-content-thumbnail-width;
 }
 
@@ -24,7 +24,7 @@
             padding: 0 ($g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
             background-color: $color-gray-50;
 
-            .c-tab-item__active {
+            .c-tab-item.c-tab-item__active {
                 background-color: $g-base-background;
                 box-shadow: none;
             }
