@@ -4,15 +4,83 @@
 	display: grid;
 	grid-template-columns: 1fr 2fr;
 	overflow-y: scroll;
-	max-height: 350px;
 
 	.c-modal__autoplay-queue {
 		list-style: none;
+		max-height: 500px;
+		overflow-y: scroll;
 	}
 
 	.c-modal__autoplay-video {
 		position: sticky;
-		top: 0;
-		max-height: 100px;
+		align-self: start;
+		overflow-y: hidden;
+
+		.c-modal__autoplay-video-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			color: white;
+			font-size: 2.2rem;
+			background-color: rgba(0, 0, 0, 0.6);
+			text-align:center;
+			> {
+				:first-child {
+					margin-top: 5rem;
+				}
+				* {
+					margin-top: 3rem;
+				}
+			}
+
+			$autoPlay-animation-circle-radius: 38px;
+			$autoPlay-animation-circle-radius-stroke-width: 2px;
+
+			#countdown {
+				position: relative;
+				margin: auto;
+				margin-top: 35px;
+				height: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+				width: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+				text-align: center;
+			  }
+
+			  #countdown-inner {
+				color: white;
+				display: inline-block;
+				line-height: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+			  }
+
+			  svg.animation {
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+				height: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+				transform: rotateY(-180deg) rotateZ(-90deg);
+			  }
+
+			  svg circle {
+				stroke-dasharray: calc(2 * 3.14 * #{$autoPlay-animation-circle-radius});
+				stroke-dashoffset: 0px;
+				stroke-linecap: round;
+				stroke-width: 2px;
+				stroke: white;
+				fill: none;
+				animation: countdown 7s linear infinite forwards;
+			  }
+
+			  @keyframes countdown {
+				from {
+				  stroke-dashoffset: 0px;
+				}
+				to {
+				  stroke-dashoffset: calc(2 * 3.14 * #{$autoPlay-animation-circle-radius});
+				}
+			  }
+
+		}
 	}
 }

@@ -1031,10 +1031,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								isOpen={isAutoplayCollectionModalOpen}
 								onClose={() => setIsAutoplayCollectionModalOpen(false)}
 								collectionFragments={collection_fragments}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
 							/>
 						)}
 					</>

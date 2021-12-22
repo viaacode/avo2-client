@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Modal, ModalBody } from '@viaa/avo2-components';
+import { Button, Icon, Modal, ModalBody } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
@@ -12,25 +12,48 @@ interface AutoplayCollectionModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	collectionFragments: Avo.Collection.Fragment[];
-	// TODO Bavo types
-	history: any;
-	location: any;
-	match: any;
-	user: Avo.User.User;
 }
 
 const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> = ({
 	isOpen,
 	onClose,
 	collectionFragments,
-	// history,
-	// location,
-	// match,
-	// user,
 }) => {
 	const [t] = useTranslation();
 
 	const [currentFragment, setCurrentFragment] = useState<number>(0);
+	const [showPlayNext, setShowPlayNext] = useState<boolean>(false);
+	const [autoPlay, setAutoPlay] = useState<boolean>(true);
+	const timeout = useRef<NodeJS.Timeout | null>(null);
+
+	const playVideo = (index: number) => {
+		cancelTimer();
+		setShowPlayNext(false);
+		setCurrentFragment(index);
+		setAutoPlay(true);
+	};
+
+	const handleVideoEnded = () => {
+		setAutoPlay(false);
+
+		if (currentFragment + 1 < collectionFragments.length) {
+			setShowPlayNext(true);
+			timeout.current = setTimeout(() => {
+				playVideo(currentFragment + 1);
+			}, 7000);
+		}
+	};
+
+	const cancelTimer = () => {
+		if (timeout.current) {
+			clearTimeout(timeout.current);
+		}
+	};
+
+	const cancelAutoPlay = () => {
+		cancelTimer();
+		setShowPlayNext(false);
+	};
 
 	return (
 		<Modal
@@ -38,16 +61,15 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 			title={t(
 				'collection/components/modals/autoplay-collection-modal___speel-de-collectie-af'
 			)}
-			size="large"
+			size="extra-large"
 			onClose={onClose}
-			className="c-content"
 		>
 			<ModalBody>
 				<div className="c-modal__autoplay-grid">
 					<ul className="c-modal__autoplay-queue u-spacer-right-l">
 						{collectionFragments.map((fragment) => {
 							return (
-								<li onClick={() => setCurrentFragment(fragment.position)}>
+								<li onClick={() => playVideo(fragment.position)}>
 									{fragment.item_meta?.title}
 									<img
 										src={
@@ -65,16 +87,44 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 						<FlowPlayerWrapper
 							item={collectionFragments[currentFragment].item_meta as Avo.Item.Item}
 							canPlay={true}
+							autoplay={isOpen && autoPlay}
 							cuePoints={{
-								start: collectionFragments[0].start_oc,
-								end: collectionFragments[0].end_oc,
+								start: collectionFragments[currentFragment].start_oc,
+								end: collectionFragments[currentFragment].end_oc,
 							}}
 							external_id={
-								(collectionFragments[0].item_meta as Avo.Item.Item).external_id
+								(collectionFragments[currentFragment].item_meta as Avo.Item.Item)
+									.external_id
 							}
-							duration={(collectionFragments[0].item_meta as Avo.Item.Item).duration}
-							title={collectionFragments[0].item_meta?.title}
+							duration={
+								(collectionFragments[currentFragment].item_meta as Avo.Item.Item)
+									.duration
+							}
+							title={collectionFragments[currentFragment].item_meta?.title}
+							onEnded={handleVideoEnded}
 						/>
+						{showPlayNext && (
+							<div className="c-modal__autoplay-video-overlay">
+								<p>{t('Volgende in de afspeellijst ...')}</p>
+								<div id="countdown" onClick={() => playVideo(currentFragment + 1)}>
+									<div id="countdown-inner">
+										<Icon name="skip-forward" size="huge" />
+									</div>
+									<svg className="animation">
+										<circle r="38" cx="40" cy="40"></circle>
+									</svg>
+								</div>
+								<p>{collectionFragments[currentFragment + 1]?.item_meta?.title}</p>
+								<Button
+									onClick={cancelAutoPlay}
+									size="large"
+									title={t('Annuleren')}
+									label={t('Annuleren')}
+									ariaLabel={t('Annuleren')}
+									type="underlined-link"
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 			</ModalBody>
