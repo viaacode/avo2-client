@@ -1,5 +1,6 @@
 @import '../../../styles/utilities/spacer';
 @import '../../../styles/settings/colors';
+@import '../../../styles/settings/_variables';
 
 .c-modal__autoplay-grid {
 	display: grid;
@@ -86,6 +87,22 @@
 				}
 			  }
 
+		}
+	}
+
+	@media screen and (max-width: $g-bp3) {
+		grid-template-columns: auto;
+		gap: 2rem;
+
+		.c-modal__autoplay-video {
+			grid-row-start: 1;
+		}
+
+		.c-modal__autoplay-queue {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			align-items: end;
+			gap: 2rem;
 		}
 	}
 }
