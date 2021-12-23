@@ -69,7 +69,12 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 					<ul className="c-modal__autoplay-queue u-spacer-right-l">
 						{collectionFragments.map((fragment) => {
 							return (
-								<li onClick={() => playVideo(fragment.position)}>
+								<li
+									className={
+										fragment.position === currentFragment ? 'selected' : ''
+									}
+									onClick={() => playVideo(fragment.position)}
+								>
 									{fragment.item_meta?.title}
 									<img
 										src={
