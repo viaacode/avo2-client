@@ -20,6 +20,7 @@ import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 import './FileUpload.scss';
 
@@ -49,7 +50,19 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	onChange,
 }) => {
 	const [t] = useTranslation();
+	const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+	const openDeleteModal = (url: string) => {
+		setUrlToDelete(url);
+		setIsDeleteModalOpen(true);
+	};
+
+	const closeDeleteModal = () => {
+		setUrlToDelete(null);
+		setIsDeleteModalOpen(false);
+	};
 
 	const uploadSelectedFile = async (files: File[] | null) => {
 		try {
@@ -75,7 +88,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 						await FileUploadService.uploadFile(files[i], assetType, ownerId)
 					);
 				}
-				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls);
+				onChange(allowMulti ? [...(urls || []), ...uploadedUrls] : uploadedUrls);
 			}
 		} catch (err) {
 			console.error(
@@ -99,6 +112,11 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	};
 
 	const deleteUploadedFile = async (url: string) => {
+		if (!url) {
+			closeDeleteModal();
+			return;
+		}
+
 		try {
 			if (assetType === 'ZENDESK_ATTACHMENT') {
 				// We don't manage zendesk attachments
@@ -126,7 +144,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				)
 			);
 		}
+
 		setIsProcessing(false);
+		closeDeleteModal();
 	};
 
 	const renderDeleteButton = (url: string) => {
@@ -142,7 +162,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				title={t('shared/components/file-upload/file-upload___verwijder-bestand')}
 				autoHeight
 				disabled={isProcessing}
-				onClick={() => deleteUploadedFile(url)}
+				onClick={() => openDeleteModal(url)}
 			/>
 		);
 	};
@@ -248,6 +268,19 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				) : (
 					<Spinner size="large" />
 				))}
+			<ConfirmModal
+				title={t(
+					'shared/components/file-upload/file-upload___ben-je-zeker-dat-je-dit-bestand-wil-verwijderen'
+				)}
+				body={t(
+					'shared/components/file-upload/file-upload___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
+				isOpen={isDeleteModalOpen}
+				onClose={closeDeleteModal}
+				deleteObjectCallback={() => {
+					deleteUploadedFile(urlToDelete || '');
+				}}
+			/>
 		</div>
 	);
 };

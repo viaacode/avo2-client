@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
@@ -27,6 +27,7 @@ import {
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { DeleteObjectModal } from '../../shared/components';
 
 import './LinkedAccounts.scss';
 
@@ -41,9 +42,29 @@ interface IdpProps {
 	hideForPupil?: boolean;
 }
 
+interface DeleteModalToggle {
+	open: boolean;
+	setter: Dispatch<SetStateAction<boolean>>;
+}
+
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
 const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
+
+	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] = useState<
+		boolean
+	>(false);
+	const [isDeleteSmartschoolModalOpen, setIsDeleteSmartschoolModalOpe] = useState<boolean>(false);
+	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
+
+	const deleteIdpModals: Record<string, DeleteModalToggle> = {
+		VLAAMSEOVERHEID: {
+			open: isDeleteVlaamseOverheidModalOpen,
+			setter: setIsDeleteVlaamseOverheidModalOpen,
+		},
+		SMARTSCHOOL: { open: isDeleteSmartschoolModalOpen, setter: setIsDeleteSmartschoolModalOpe },
+		KLASCEMENT: { open: isDeleteKlascementModalOpen, setter: setIsDeleteKlascementModalOpen },
+	};
 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
@@ -61,6 +82,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 		KLASCEMENT: {
 			label: t('settings/components/linked-accounts___klas-cement'),
 			iconNames: ['klascement'],
+			hideForPupil: true,
 		},
 	};
 
@@ -68,6 +90,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 		const linked = hasIdpLinked(user, idpType);
 		const currentIdp = idpProps[idpType];
 		const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+		const { open: confirmModalOpen, setter: setConfirmModalOpen } = deleteIdpModals[idpType];
 
 		return (
 			<Spacer margin="top">
@@ -114,9 +137,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										title={t(
 											'settings/components/linked-accounts___verbreek-koppeling'
 										)}
-										onClick={() =>
-											redirectToServerUnlinkAccount(location, idpType)
-										}
+										onClick={() => setConfirmModalOpen(true)}
 									/>
 								) : (
 									<Button
@@ -132,6 +153,11 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 						</Column>
 					</Grid>
 				)}
+				<DeleteObjectModal
+					deleteObjectCallback={() => redirectToServerUnlinkAccount(location, idpType)}
+					isOpen={confirmModalOpen}
+					onClose={() => setConfirmModalOpen(false)}
+				/>
 			</Spacer>
 		);
 	};

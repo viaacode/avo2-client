@@ -180,7 +180,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	}
 
 	const trackingId =
-		window.ga && typeof window.ga.getAll === 'function'
+		window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]
 			? window.ga.getAll()[0].get('trackingId')
 			: undefined;
 

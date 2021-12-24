@@ -11,6 +11,12 @@ const BOOLEAN_ORDER: Record<Avo.Search.OrderDirection, string> = {
 	desc: 'asc_nulls_first',
 };
 
+// temp_access edge case
+const BOOLEAN_NULLS_LAST_ORDER: Record<Avo.Search.OrderDirection, string> = {
+	asc: 'desc_nulls_last',
+	desc: 'asc_nulls_last',
+};
+
 export const getSortOrder = (
 	order: Avo.Search.OrderDirection,
 	tableColumnDataType: string
@@ -22,6 +28,8 @@ export const getSortOrder = (
 			return DEFAULT_NULL_ORDER[order];
 		case 'boolean':
 			return BOOLEAN_ORDER[order];
+		case 'booleanNullsLast':
+			return BOOLEAN_NULLS_LAST_ORDER[order];
 		default:
 			return order;
 	}

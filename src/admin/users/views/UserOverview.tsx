@@ -2,7 +2,6 @@ import FileSaver from 'file-saver';
 import { compact, first, get, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
-	ReactNode,
 	ReactText,
 	useCallback,
 	useEffect,
@@ -15,22 +14,7 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import reactToString from 'react-to-string';
 import { compose } from 'redux';
 
-import {
-	Alert,
-	Button,
-	ButtonToolbar,
-	Modal,
-	ModalBody,
-	ModalFooterRight,
-	RadioButtonGroup,
-	Spacer,
-	TagInfo,
-	TagList,
-	TagOption,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
-} from '@viaa/avo2-components';
+import { TagInfo, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
@@ -61,7 +45,6 @@ import { ADMIN_PATH } from '../../admin.const';
 import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
-import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -74,21 +57,11 @@ import {
 	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { PickerItem } from '../../shared/types';
 import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
-import {
-	GET_DELETE_RADIO_OPTIONS,
-	GET_USER_BULK_ACTIONS,
-	GET_USER_OVERVIEW_TABLE_COLS,
-	ITEMS_PER_PAGE,
-} from '../user.const';
+import UserDeleteModal from '../components/UserDeleteModal';
+import { GET_USER_BULK_ACTIONS, GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
 import { UserService } from '../user.service';
-import {
-	DeleteContentCounts,
-	UserBulkAction,
-	UserOverviewTableCol,
-	UserTableState,
-} from '../user.types';
+import { UserBulkAction, UserOverviewTableCol, UserTableState } from '../user.types';
 
 import './UserOverview.scss';
 
@@ -115,16 +88,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 		CheckboxOption[],
 		boolean
 	];
-	const [deleteOptionsModalOpen, setDeleteOptionsModalOpen] = useState<boolean>(false);
-	const [selectedDeleteOption, setSelectedDeleteOption] = useState<Avo.User.UserDeleteOption>(
-		'DELETE_ALL'
-	);
-	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
-	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
-	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
-	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
-		null
-	);
+	const [usersDeleteModalOpen, setUsersDeleteModalOpen] = useState<boolean>(false);
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
@@ -217,6 +181,14 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					['contexts', 'classifications', 'idps'],
 					['key', 'key', 'idp'],
 					true
+				)
+			);
+
+			andFilters.push(
+				...getMultiOptionFilters(
+					filters,
+					['temp_access'],
+					['user.temp_access.current.status']
 				)
 			);
 
@@ -498,7 +470,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				return;
 
 			case 'delete':
-				setDeleteOptionsModalOpen(true);
+				setUsersDeleteModalOpen(true);
 				return;
 
 			case 'change_subjects':
@@ -516,91 +488,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						);
 					});
 				return;
-		}
-	};
-
-	const handleOptionsModalClose = () => {
-		setDeleteOptionsModalOpen(false);
-	};
-
-	const handleConfirmModalClose = () => {
-		setDeleteConfirmModalOpen(false);
-		setDeleteContentCounts(null);
-		setSelectedDeleteOption('DELETE_ALL');
-		setTransferToUser(null);
-	};
-
-	const handleDeleteUsers = async () => {
-		try {
-			setDeleteConfirmModalOpen(false);
-			await UserService.bulkDeleteUsers(
-				selectedProfileIds,
-				selectedDeleteOption,
-				transferToUser?.value
-			);
-			await fetchProfiles();
-			ToastService.success(
-				t('admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-verwijderd')
-			);
-		} catch (err) {
-			console.error(new CustomError('Failed to remove users', err));
-			ToastService.danger(
-				t(
-					'admin/users/views/user-overview___het-verwijderen-van-de-geselecteerde-gebruikers-is-mislukt'
-				)
-			);
-		}
-	};
-
-	const validateOptionModalAndOpenConfirm = async () => {
-		try {
-			if (
-				(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
-					selectedDeleteOption === 'TRANSFER_ALL') &&
-				!transferToUser
-			) {
-				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
-				setTransferToUserError(
-					t(
-						'admin/users/views/user-overview___kies-een-gebruiker-om-de-content-naar-over-te-dragen'
-					)
-				);
-				return;
-			}
-			if (
-				(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
-					selectedDeleteOption === 'TRANSFER_ALL') &&
-				transferToUser &&
-				selectedProfileIds.includes(transferToUser.value)
-			) {
-				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
-				setTransferToUserError(
-					t(
-						'admin/users/views/user-overview___je-kan-geen-content-overdragen-naar-een-gebruiker-die-verwijdert-zal-worden'
-					)
-				);
-				return;
-			}
-
-			// Fetch counts to inform the user of what objects they are about to delete
-			setDeleteContentCounts(
-				await UserService.fetchPublicAndPrivateCounts(selectedProfileIds)
-			);
-			handleOptionsModalClose();
-			setDeleteConfirmModalOpen(true);
-		} catch (err) {
-			console.error(
-				new CustomError('Error during validateOptionModalAndOpenConfirm', err, {
-					transferToUser,
-					selectedDeleteOption,
-					selectedUsers: selectedProfileIds,
-				})
-			);
-			ToastService.danger(
-				t(
-					'admin/users/views/user-overview___het-ophalen-van-de-content-items-voor-de-geselecteerde-gebruikers-is-mislukt'
-				)
-			);
 		}
 	};
 
@@ -648,10 +535,16 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			case 'temp_access':
-				const tempAccess = get(rowData, 'user.temp_access');
-				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
+				const tempAccess = get(rowData, 'user.temp_access.current.status');
 
-				return hasTempAccess && !isBlocked ? 'Ja' : 'Nee';
+				switch (tempAccess) {
+					case 0:
+						return t('admin/users/views/user-overview___tijdelijke-toegang-nee');
+					case 1:
+						return t('admin/users/views/user-overview___tijdelijke-toegang-ja');
+					default:
+						return '-';
+				}
 
 			case 'temp_access_from':
 				return formatDate(get(rowData, 'user.temp_access.from')) || '-';
@@ -708,127 +601,6 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 		);
 	};
 
-	const renderConfirmDeleteMessage = () => {
-		const publicCollections: number = get(deleteContentCounts, 'publicCollections') || 0;
-		const privateCollections: number = get(deleteContentCounts, 'privateCollections') || 0;
-		const assignments: number = get(deleteContentCounts, 'assignments') || 0;
-		const bookmarks: number = get(deleteContentCounts, 'bookmarks') || 0;
-		const publicContentPages: number = get(deleteContentCounts, 'publicContentPages') || 0;
-		const privateContentPages: number = get(deleteContentCounts, 'privateContentPages') || 0;
-
-		const isDeleteAll = selectedDeleteOption === 'DELETE_ALL';
-		const isTransferAll = selectedDeleteOption === 'TRANSFER_ALL';
-
-		const countOutputs: ReactNode[] = [];
-		if (isDeleteAll && publicCollections) {
-			countOutputs.push(
-				<Link
-					to={buildLink(
-						ADMIN_PATH.COLLECTIONS_OVERVIEW,
-						{},
-						{
-							is_public: '1',
-							owner_profile_id: selectedProfileIds.join('~'),
-						}
-					)}
-				>
-					{`${publicCollections} ${t(
-						'admin/users/views/user-overview___publieke-collecties'
-					)}`}
-				</Link>
-			);
-		}
-		if (!isTransferAll && privateCollections) {
-			countOutputs.push(
-				<Link
-					to={buildLink(
-						ADMIN_PATH.COLLECTIONS_OVERVIEW,
-						{},
-						{
-							is_public: '0',
-							owner_profile_id: selectedProfileIds.join('~'),
-						}
-					)}
-				>
-					{`${privateCollections} ${t(
-						'admin/users/views/user-overview___prive-collecties'
-					)}`}
-				</Link>
-			);
-		}
-		if (isDeleteAll && publicContentPages) {
-			countOutputs.push(
-				<Link
-					to={buildLink(
-						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
-						{},
-						{
-							is_public: '1',
-							user_profile_id: selectedProfileIds.join('~'),
-						}
-					)}
-				>
-					{`${publicContentPages} ${t(
-						'admin/users/views/user-overview___publieke-content-paginas'
-					)}`}
-				</Link>
-			);
-		}
-		if (!isTransferAll && privateContentPages) {
-			countOutputs.push(
-				<Link
-					to={buildLink(
-						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
-						{},
-						{
-							is_public: '0',
-							user_profile_id: selectedProfileIds.join('~'),
-						}
-					)}
-				>
-					{`${privateContentPages} ${t(
-						'admin/users/views/user-overview___prive-content-paginas'
-					)}`}
-				</Link>
-			);
-		}
-		if (!isTransferAll && assignments) {
-			countOutputs.push(
-				`${assignments} ${t('admin/users/views/user-overview___opdrachten')}`
-			);
-		}
-		if (!isTransferAll && bookmarks) {
-			countOutputs.push(`${bookmarks} ${t('admin/users/views/user-overview___bladwijzers')}`);
-		}
-		return (
-			<>
-				{t(
-					'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruikers-wil-verwijderen'
-				)}
-
-				{!!countOutputs.length && (
-					<Spacer margin="top" className="c-content">
-						<strong>Deze inhoud zal verwijderd worden:</strong>
-						<ul>
-							{countOutputs.map((count, index) => (
-								<li key={`content-count-${index}`}>{count}</li>
-							))}
-						</ul>
-					</Spacer>
-				)}
-
-				<Spacer margin="top">
-					<Alert
-						message={t(
-							'admin/users/views/user-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-						)}
-						type="danger"
-					/>
-				</Spacer>
-			</>
-		);
-	};
-
 	const renderUserOverview = () => {
 		if (!profiles) {
 			return null;
@@ -860,89 +632,12 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
 					rowKey={(row: Avo.User.Profile) => row.id || get(row, 'user.mail')}
 				/>
-				<Modal
-					title={t('admin/users/views/user-overview___verwijder-opties')}
-					isOpen={deleteOptionsModalOpen}
-					onClose={() => setDeleteOptionsModalOpen(false)}
-					size="medium"
-				>
-					<ModalBody>
-						<RadioButtonGroup
-							options={GET_DELETE_RADIO_OPTIONS()}
-							value={selectedDeleteOption}
-							onChange={setSelectedDeleteOption as any}
-						/>
-						{(selectedDeleteOption === 'TRANSFER_PUBLIC' ||
-							selectedDeleteOption === 'TRANSFER_ALL') && (
-							<ContentPicker
-								allowedTypes={['PROFILE']}
-								onSelect={setTransferToUser}
-								initialValue={transferToUser}
-								placeholder={t(
-									'admin/users/views/user-overview___overdragen-naar-gebruiker'
-								)}
-								hideTargetSwitch
-								hideTypeDropdown
-								errors={transferToUserError ? [transferToUserError] : []}
-							/>
-						)}
-					</ModalBody>
-					<ModalFooterRight>
-						<Toolbar>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ButtonToolbar>
-										<Button
-											type="secondary"
-											label={t(
-												'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
-											)}
-											onClick={handleOptionsModalClose}
-										/>
-										<Button
-											type="danger"
-											label={t(
-												'admin/users/views/user-overview___verwijder-gebruikers'
-											)}
-											onClick={validateOptionModalAndOpenConfirm}
-										/>
-									</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</ModalFooterRight>
-				</Modal>
-				<Modal
-					isOpen={deleteConfirmModalOpen}
-					title={t('admin/users/views/user-overview___bevestiging')}
-					size="medium"
-					onClose={handleConfirmModalClose}
-					scrollable
-				>
-					<ModalBody>
-						{renderConfirmDeleteMessage()}
-						<Toolbar>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ButtonToolbar>
-										<Button
-											type="secondary"
-											label={t('admin/users/views/user-overview___annuleren')}
-											onClick={handleConfirmModalClose}
-										/>
-										<Button
-											type="danger"
-											label={t(
-												'admin/users/views/user-overview___verwijder-gebruikers'
-											)}
-											onClick={handleDeleteUsers}
-										/>
-									</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</ModalBody>
-				</Modal>
+				<UserDeleteModal
+					selectedProfileIds={selectedProfileIds}
+					isOpen={usersDeleteModalOpen}
+					onClose={() => setUsersDeleteModalOpen(false)}
+					deleteCallback={fetchProfiles}
+				/>
 				<AddOrRemoveLinkedElementsModal
 					title={t('admin/users/views/user-overview___vakken-aanpassen')}
 					addOrRemoveLabel={t(

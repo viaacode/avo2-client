@@ -4,18 +4,9 @@ import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import {
-	Alert,
-	BlockHeading,
-	Button,
-	Checkbox,
-	Container,
-	FormGroup,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ToastService } from '../../../shared/services';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
@@ -36,18 +27,9 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 	const [t] = useTranslation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
-	const [acceptedPrivacyConditions, setAcceptedPrivacyConditions] = useState<boolean>(false);
 
 	const handleCreateAccountButtonClicked = () => {
-		if (acceptedPrivacyConditions) {
-			redirectToServerArchiefRegistrationIdp(location, validStamboekNumber);
-		} else {
-			ToastService.danger(
-				t(
-					'authentication/views/registration-flow/r-3-stamboek___je-moet-de-privacy-voorwaarden-accepteren-om-een-account-te-kunnen-aanmaken'
-				)
-			);
-		}
+		redirectToServerArchiefRegistrationIdp(location, validStamboekNumber);
 	};
 
 	return (
@@ -102,28 +84,6 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 						required
 					>
 						<StamboekInput onChange={setValidStamboekNumber} />
-					</FormGroup>
-					<FormGroup>
-						<Checkbox
-							label={
-								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring">
-									Ik aanvaard de&nbsp;
-									<a
-										href="//meemoo.be/nl/privacybeleid"
-										target="_blank"
-										title={t(
-											'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
-										)}
-										rel="noopener noreferrer"
-									>
-										privacyverklaring
-									</a>
-									.
-								</Trans>
-							}
-							checked={acceptedPrivacyConditions}
-							onChange={setAcceptedPrivacyConditions}
-						/>
 					</FormGroup>
 				</Spacer>
 				<FormGroup>

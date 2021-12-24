@@ -658,10 +658,9 @@ const Profile: FunctionComponent<
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 
 			case 'temp_access':
-				const tempAccess = get(profile, 'user.temp_access');
-				const hasTempAccess = get(tempAccess, 'from') && get(tempAccess, 'until');
+				const tempAccess = get(user, 'temp_access.current.status');
 
-				return hasTempAccess
+				return tempAccess === 1
 					? `${t('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
 					  )} ${t('settings/components/profile___tot')} ${formatDate(
@@ -862,9 +861,11 @@ const Profile: FunctionComponent<
 	};
 
 	return isSaving ? (
-		<Flex orientation="horizontal" center>
-			<Spinner size="large" />
-		</Flex>
+		<Spacer margin="top-extra-large">
+			<Flex orientation="horizontal" center>
+				<Spinner size="large" />
+			</Flex>
+		</Spacer>
 	) : (
 		<>
 			<MetaTags>

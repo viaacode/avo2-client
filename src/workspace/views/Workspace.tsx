@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from 'apollo-client';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -22,6 +23,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -44,17 +46,41 @@ import {
 	COLLECTIONS_ID,
 	GET_TABS,
 	ORGANISATION_CONTENT_ID,
+	QUICK_LANE_ID,
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
 import OrganisationContentOverview from './OrganisationContentOverview';
+import QuickLaneOverview from './QuickLaneOverview';
 import './Workspace.scss';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
 }
+
+// Using `hasAtLeastOnePerm` to avoid async
+const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown>): number => {
+	// Show count of personal quick lane
+	if (
+		PermissionService.hasAtLeastOnePerm(user, [
+			PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
+		])
+	) {
+		return get(response, 'data.app_quick_lane_counts.aggregate.count', 0);
+	}
+
+	if (
+		PermissionService.hasAtLeastOnePerm(user, [
+			PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
+		])
+	) {
+		return get(response, 'data.app_quick_lane_organisation_counts.aggregate.count', 0);
+	}
+
+	return 0;
+};
 
 const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
@@ -92,6 +118,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				null,
 				user
 			),
+			PermissionService.hasAtLeastOnePerm(user, [
+				PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
+				PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
+			]),
 		])
 			.then((response) => {
 				setTabCounts({
@@ -106,6 +136,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						'data.organisation_content_counts.aggregate.count',
 						0
 					),
+					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
 				});
 				setPermissions({
 					[COLLECTIONS_ID]: response[1],
@@ -113,6 +144,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					[ASSIGNMENTS_ID]: response[3] || response[4],
 					[BOOKMARKS_ID]: response[5],
 					[ORGANISATION_CONTENT_ID]: response[6],
+					[QUICK_LANE_ID]: response[7],
 				});
 			})
 			.catch((err) => {
@@ -212,6 +244,17 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						match={match}
 						user={user}
 						numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
+					/>
+				),
+			}),
+			...addTabIfUserHasPerm(QUICK_LANE_ID, {
+				component: () => (
+					<QuickLaneOverview
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						numberOfItems={tabCounts[QUICK_LANE_ID]}
 					/>
 				),
 			}),

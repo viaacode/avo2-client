@@ -38,7 +38,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 
 	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
-	const hasTempAccess = !!get(user, 'temp_access.until');
+	const hasTempAccess = get(user, 'temp_access.current.status') === 1;
 
 	if (!user) {
 		return (

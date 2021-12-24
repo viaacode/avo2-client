@@ -1,4 +1,4 @@
-import { compact, get, sortBy } from 'lodash-es';
+import { get, sortBy } from 'lodash-es';
 import moment from 'moment';
 import React, {
 	FunctionComponent,
@@ -47,7 +47,6 @@ import {
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../../shared/services';
-import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -56,6 +55,7 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import TempAccessModal from '../components/TempAccessModal';
+import UserDeleteModal from '../components/UserDeleteModal';
 import { UserService } from '../user.service';
 import {
 	RawPermissionLink,
@@ -70,10 +70,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [eduOrgNames, setEduOrgNames] = useState<string[]>([]);
 	const [tempAccess, setTempAccess] = useState<UserTempAccess | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isTempAccessModalOpen, setIsTempAccessModalOpen] = useState<boolean>(false);
+	const [userDeleteModalOpen, setUserDeleteModalOpen] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
@@ -89,23 +89,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				UserService.getTempAccessById(match.params.id),
 			]);
 
-			const eduOrgs: {
-				unit_id: string;
-				organization_id: string;
-			}[] = get(profile, 'profile_organizations') || [];
-
-			setEduOrgNames(
-				compact(
-					await Promise.all(
-						eduOrgs.map((eduOrg) =>
-							EducationOrganisationService.fetchEducationOrganisationName(
-								eduOrg.organization_id,
-								eduOrg.unit_id
-							)
-						)
-					)
-				)
-			);
 			setTempAccess(tempAccess);
 			setStoredProfile(profile);
 		} catch (err) {
@@ -200,6 +183,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			  ]
 			: []),
 		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
+		createDropdownMenuItem('delete', t('admin/users/views/user-detail___verwijderen')),
 	];
 
 	const executeAction = async (item: ReactText) => {
@@ -214,6 +198,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					buildLink(ADMIN_PATH.USER_EDIT, { id: match.params.id }),
 					history
 				);
+				break;
+
+			case 'delete':
+				setUserDeleteModalOpen(true);
 				break;
 
 			default:
@@ -385,6 +373,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 		const userGroup: RawUserGroup = get(storedProfile, 'profile.profile_user_group.group');
 
+		const eduOrgs: {
+			unit_id: string;
+			organization_id: string;
+			organization: {
+				ldap_description: string;
+			};
+		}[] = get(storedProfile, 'organisations') || [];
+
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
@@ -498,13 +494,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___opleidingsniveaus')
 							)}
 							{renderDetailRow(
-								!!eduOrgNames.length ? (
+								!!eduOrgs.length ? (
 									<TagList
 										closable={false}
 										swatches={false}
-										tags={eduOrgNames.map((eduOrgName) => ({
-											label: eduOrgName,
-											id: eduOrgName,
+										tags={eduOrgs.map((eduOrg) => ({
+											label: eduOrg.organization?.ldap_description || '',
+											id: eduOrg.organization?.ldap_description || '',
 										}))}
 									/>
 								) : (
@@ -523,6 +519,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			</Container>
 		);
 	};
+
+	// Executed when the user was deleted
+	const deleteCallback = () => navigate(history, ADMIN_PATH.USER_OVERVIEW);
 
 	const renderUserDetailPage = () => {
 		const isBlocked = get(storedProfile, 'is_blocked');
@@ -593,6 +592,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					isOpen={isTempAccessModalOpen}
 					onClose={() => setIsTempAccessModalOpen(false)}
 					setTempAccessCallback={onSetTempAccess}
+				/>
+				<UserDeleteModal
+					selectedProfileIds={[get(storedProfile, 'profile_id')]}
+					isOpen={userDeleteModalOpen}
+					onClose={() => setUserDeleteModalOpen(false)}
+					deleteCallback={deleteCallback}
 				/>
 			</>
 		);

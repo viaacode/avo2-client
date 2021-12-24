@@ -71,8 +71,15 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 
 	// computed
 	const userGroupOptions = useMemo(
-		() =>
-			userGroups.map(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: t('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+					NULL_FILTER
+				),
+			},
+			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
 					label: option.label as string,
@@ -81,7 +88,8 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 					),
 				})
 			),
-		[tableState, userGroups]
+		],
+		[tableState, userGroups, t]
 	);
 
 	const collectionLabelOptions = useMemo(

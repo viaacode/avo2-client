@@ -26,6 +26,7 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -41,6 +42,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -72,6 +74,18 @@ import './CollectionDetail.scss';
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
+export const COLLECTION_ACTIONS = {
+	duplicate: 'duplicate',
+	addToBundle: 'addToBundle',
+	delete: 'delete',
+	openShareThroughEmail: 'openShareThroughEmail',
+	openPublishCollectionModal: 'openPublishCollectionModal',
+	toggleBookmark: 'toggleBookmark',
+	createAssignment: 'createAssignment',
+	editCollection: 'editCollection',
+	openQuickLane: 'openQuickLane',
+};
+
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
@@ -94,6 +108,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] = useState<boolean>(
 		false
 	);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -101,11 +116,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
+			canViewPublishedCollections: boolean;
+			canViewUnpublishedCollections: boolean;
 			canEditCollection: boolean;
 			canPublishCollection: boolean;
 			canDeleteCollection: boolean;
 			canCreateCollections: boolean;
 			canViewItems: boolean;
+			canQuickLane: boolean;
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -218,6 +236,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
 					user
 				),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.CREATE_QUICK_LANE }],
+					user
+				),
 			]);
 
 			const permissionObj = {
@@ -229,6 +251,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canDeleteCollection: rawPermissions[5],
 				canCreateCollections: rawPermissions[6],
 				canViewItems: rawPermissions[7],
+				canQuickLane: rawPermissions[8],
 			};
 
 			let showPopup = false;
@@ -360,7 +383,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
-			case 'duplicate':
+			case COLLECTION_ACTIONS.duplicate:
 				try {
 					if (!collection) {
 						ToastService.danger(
@@ -409,38 +432,43 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				}
 				break;
 
-			case 'addToBundle':
+			case COLLECTION_ACTIONS.addToBundle:
 				setIsAddToBundleModalOpen(true);
 				break;
 
-			case 'delete':
+			case COLLECTION_ACTIONS.delete:
 				setIsDeleteModalOpen(true);
 				break;
 
-			case 'openShareThroughEmail':
+			case COLLECTION_ACTIONS.openShareThroughEmail:
 				setIsShareThroughEmailModalOpen(true);
 				break;
 
-			case 'openPublishCollectionModal':
+			case COLLECTION_ACTIONS.openPublishCollectionModal:
 				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
 
-			case 'toggleBookmark':
+			case COLLECTION_ACTIONS.toggleBookmark:
 				await toggleBookmark();
 				break;
 
-			case 'createAssignment':
+			case COLLECTION_ACTIONS.createAssignment:
 				createAssignment();
 				break;
 
-			case 'editCollection':
+			case COLLECTION_ACTIONS.editCollection:
 				onEditCollection();
 				break;
 			case 'openAutoplayCollectionModal':
 				setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
 				break;
 
+			case COLLECTION_ACTIONS.openQuickLane:
+				setIsQuickLaneModalOpen(true);
+				break;
+
 			default:
+				console.warn(`An unhandled action "${item}" was executed without a binding.`);
 				return null;
 		}
 	};
@@ -552,16 +580,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
-							'addToBundle',
+							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
+						),
+				  ]
+				: []),
+			...(permissions.canQuickLane
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openQuickLane,
+							t('collection/views/collection-detail___delen-met-leerlingen'),
+							'link-2'
 						),
 				  ]
 				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
-							'duplicate',
+							COLLECTION_ACTIONS.duplicate,
 							t('collection/views/collection-detail___dupliceer'),
 							'copy'
 						),
@@ -570,7 +607,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
-							'delete',
+							COLLECTION_ACTIONS.delete,
 							t('collection/views/collection-detail___verwijder')
 						),
 				  ]
@@ -596,7 +633,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						title={t(
 							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
 						)}
-						onClick={() => executeAction('createAssignment')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
 					/>
 				)}
 				{permissions.canPublishCollection && (
@@ -621,7 +658,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								  )
 						}
 						icon={isPublic ? 'unlock-3' : 'lock'}
-						onClick={() => executeAction('openPublishCollectionModal')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openPublishCollectionModal)}
 					/>
 				)}
 				<ToggleButton
@@ -630,7 +667,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-					onClick={() => executeAction('toggleBookmark')}
+					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
 				/>
 				{isPublic && (
 					<Button
@@ -638,7 +675,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						type="secondary"
 						icon="share-2"
 						ariaLabel={t('collection/views/collection-detail___deel')}
-						onClick={() => executeAction('openShareThroughEmail')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openShareThroughEmail)}
 					/>
 				)}
 				<MoreOptionsDropdown
@@ -655,7 +692,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
 							title={t('collection/views/collection-detail___pas-deze-collectie-aan')}
-							onClick={() => executeAction('editCollection')}
+							onClick={() => executeAction(COLLECTION_ACTIONS.editCollection)}
 						/>
 					</Spacer>
 				)}
@@ -670,7 +707,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canEditCollection
 				? [
 						createDropdownMenuItem(
-							'editCollection',
+							COLLECTION_ACTIONS.editCollection,
 							t('collection/views/collection-detail___bewerken'),
 							'edit'
 						),
@@ -679,7 +716,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
 				? [
 						createDropdownMenuItem(
-							'createAssignment',
+							COLLECTION_ACTIONS.createAssignment,
 							t('collection/views/collection-detail___maak-opdracht'),
 							'clipboard'
 						),
@@ -688,14 +725,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canPublishCollection
 				? [
 						createDropdownMenuItem(
-							'openPublishCollectionModal',
+							COLLECTION_ACTIONS.openPublishCollectionModal,
 							t('collection/views/collection-detail___delen'),
 							'plus'
 						),
 				  ]
 				: []),
 			createDropdownMenuItem(
-				'toggleBookmark',
+				COLLECTION_ACTIONS.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
 					? t('collection/views/collection-detail___verwijder-bladwijzer')
 					: t('collection/views/collection-detail___maak-bladwijzer'),
@@ -704,7 +741,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(!!collection && collection.is_public
 				? [
 						createDropdownMenuItem(
-							'openShareThroughEmail',
+							COLLECTION_ACTIONS.openShareThroughEmail,
 							t('collection/views/collection-detail___deel'),
 							'share-2'
 						),
@@ -713,16 +750,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
 				? [
 						createDropdownMenuItem(
-							'addToBundle',
+							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
+						),
+				  ]
+				: []),
+			...(permissions.canQuickLane
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openQuickLane,
+							t('collection/views/collection-detail___delen-met-leerlingen'),
+							'link-2'
 						),
 				  ]
 				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
-							'duplicate',
+							COLLECTION_ACTIONS.duplicate,
 							t('collection/views/collection-detail___dupliceer'),
 							'copy'
 						),
@@ -731,7 +777,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			...(permissions.canDeleteCollection
 				? [
 						createDropdownMenuItem(
-							'delete',
+							COLLECTION_ACTIONS.delete,
 							t('collection/views/collection-detail___verwijder')
 						),
 				  ]
@@ -1031,6 +1077,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								isOpen={isAutoplayCollectionModalOpen}
 								onClose={() => setIsAutoplayCollectionModalOpen(false)}
 								collectionFragments={collection_fragments}
+							/>
+						)}
+						{collection && (
+							<QuickLaneModal
+								modalTitle={t(
+									'collection/views/collection-detail___delen-met-leerlingen'
+								)}
+								isOpen={isQuickLaneModalOpen}
+								content={collection}
+								content_label="COLLECTIE"
+								onClose={() => {
+									setIsQuickLaneModalOpen(false);
+								}}
+								onUpdate={(collection) => {
+									if ((collection as CollectionSchema).collection_fragments) {
+										setCollection(collection as CollectionSchema);
+									}
+								}}
 							/>
 						)}
 					</>
