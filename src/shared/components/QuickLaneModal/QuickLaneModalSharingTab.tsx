@@ -212,11 +212,19 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 										'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 									)}
 									onClick={() => {
-										navigator.clipboard.writeText(
-											`${window.location.origin}${generateQuickLaneHref(
-												quickLane.id
-											)}`
-										);
+										navigator.clipboard
+											.writeText(
+												`${window.location.origin}${generateQuickLaneHref(
+													quickLane.id
+												)}`
+											)
+											.then(() => {
+												ToastService.success(
+													t(
+														'shared/components/quick-lane-modal/quick-lane-modal-sharing-tab___de-link-is-succesvol-gekopieerd'
+													)
+												);
+											});
 									}}
 								/>
 							</Spacer>
