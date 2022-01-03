@@ -12,7 +12,6 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { AssignmentLayout } from '@viaa/avo2-types/types/assignment';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
@@ -132,16 +131,14 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 
 	return user && content && content_label ? (
 		<>
-			{content_label === 'ITEM' && (
-				<Spacer margin={['bottom']}>
-					<Avatar
-						className="m-quick-lane-modal__avatar"
-						dark={true}
-						name={(content as ItemSchema).organisation.name}
-						image={(content as ItemSchema).organisation.logo_url}
-					/>
-				</Spacer>
-			)}
+			<Spacer margin={['bottom']}>
+				<Avatar
+					className="m-quick-lane-modal__avatar"
+					dark={true}
+					name={user.profile?.organisation?.name}
+					image={user.profile?.organisation?.logo_url}
+				/>
+			</Spacer>
 
 			<Spacer margin={['bottom']}>
 				<FormGroup
