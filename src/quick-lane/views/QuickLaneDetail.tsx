@@ -95,9 +95,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			}
 
 			if (isCollection(response)) {
-				const content = response.content as CollectionSchema | undefined;
+				const content = response.content as CollectionSchema;
 
-				if (!content || !content.is_public) {
+				if (!content.is_public) {
 					setLoadingInfo({
 						state: 'error',
 						message: t(
