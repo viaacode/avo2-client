@@ -32,15 +32,23 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 			}
 		) {
 			id
+			content_id
+			content_label
 			title
 			view_mode
-			content_label
 			created_at
 			updated_at
 			owner {
 				id
-				usersByuserId {
+				avatar
+				user: usersByuserId {
 					full_name
+					first_name
+					last_name
+				}
+				organisation {
+					name
+					logo_url
 				}
 			}
 		}
