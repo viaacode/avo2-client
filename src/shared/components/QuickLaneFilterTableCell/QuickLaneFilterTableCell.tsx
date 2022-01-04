@@ -43,7 +43,7 @@ const QuickLaneFilterTableCell: FunctionComponent<QuickLaneFilterTableCellProps>
 			return <QuickLaneLink short id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
 
 		case QUICK_LANE_COLUMNS.AUTHOR:
-			return <span>{data.owner?.usersByuserId.full_name || '-'}</span>;
+			return <span>{data.owner?.user.full_name || '-'}</span>;
 
 		case QUICK_LANE_COLUMNS.CREATED_AT:
 		case QUICK_LANE_COLUMNS.UPDATED_AT:
