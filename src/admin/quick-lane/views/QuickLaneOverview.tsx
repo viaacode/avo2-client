@@ -107,6 +107,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				updatedAt: debouncedFilters?.updated_at,
 				contentLabels: debouncedFilters?.content_label,
 				profileIds: debouncedFilters?.author,
+				sortOrder: debouncedFilters?.sort_order,
+				sortColumn: debouncedFilters?.sort_column,
+				sortType: columns.find((column) => {
+					return column.id === debouncedFilters?.sort_column;
+				})?.dataType,
 			};
 
 			setQuickLanes(await QuickLaneFilterService.fetchFilteredQuickLanes(params));
@@ -123,7 +128,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
-	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]);
+	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters, columns]);
 
 	// Lifecycle
 

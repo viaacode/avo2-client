@@ -12,7 +12,6 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { AssignmentLayout } from '@viaa/avo2-types/types/assignment';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
@@ -132,16 +131,14 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 
 	return user && content && content_label ? (
 		<>
-			{content_label === 'ITEM' && (
-				<Spacer margin={['bottom']}>
-					<Avatar
-						className="m-quick-lane-modal__avatar"
-						dark={true}
-						name={(content as ItemSchema).organisation.name}
-						image={(content as ItemSchema).organisation.logo_url}
-					/>
-				</Spacer>
-			)}
+			<Spacer margin={['bottom']}>
+				<Avatar
+					className="m-quick-lane-modal__avatar"
+					dark={true}
+					name={content.organisation?.name}
+					image={content.organisation?.logo_url}
+				/>
+			</Spacer>
 
 			<Spacer margin={['bottom']}>
 				<FormGroup
@@ -212,11 +209,19 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 										'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 									)}
 									onClick={() => {
-										navigator.clipboard.writeText(
-											`${window.location.origin}${generateQuickLaneHref(
-												quickLane.id
-											)}`
-										);
+										navigator.clipboard
+											.writeText(
+												`${window.location.origin}${generateQuickLaneHref(
+													quickLane.id
+												)}`
+											)
+											.then(() => {
+												ToastService.success(
+													t(
+														'shared/components/quick-lane-modal/quick-lane-modal-sharing-tab___de-link-is-succesvol-gekopieerd'
+													)
+												);
+											});
 									}}
 								/>
 							</Spacer>
