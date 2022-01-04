@@ -128,6 +128,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				createdAt: debouncedFilters?.created_at,
 				updatedAt: debouncedFilters?.updated_at,
 				contentLabels: debouncedFilters?.content_label,
+				sortOrder: debouncedFilters?.sort_order,
+				sortColumn: debouncedFilters?.sort_column,
+				sortType: columns.find((column) => {
+					return column.id === debouncedFilters?.sort_column;
+				})?.dataType,
 			};
 
 			if (isOrganisational(user)) {
@@ -177,7 +182,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
-	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]);
+	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters, columns]);
 
 	// Lifecycle
 
