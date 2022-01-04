@@ -83,6 +83,7 @@ export const COLLECTION_ACTIONS = {
 	toggleBookmark: 'toggleBookmark',
 	createAssignment: 'createAssignment',
 	editCollection: 'editCollection',
+	openQuickLane: 'openQuickLane',
 };
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -456,6 +457,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				onEditCollection();
 				break;
 
+			case COLLECTION_ACTIONS.openQuickLane:
+				setIsQuickLaneModalOpen(true);
+				break;
+
 			default:
 				console.warn(`An unhandled action "${item}" was executed without a binding.`);
 				return null;
@@ -615,9 +620,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						label={t('item/views/item___delen-met-leerlingen')}
 						ariaLabel={t('collection/views/collection-detail___delen-met-leerlingen')}
 						title={t('collection/views/collection-detail___delen-met-leerlingen')}
-						onClick={() => {
-							setIsQuickLaneModalOpen(true);
-						}}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
 					/>
 				)}
 				{permissions.canPublishCollection && (
