@@ -6,12 +6,12 @@ import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 
 import {
-	Avatar,
 	BlockHeading,
 	Button,
 	Container,
 	Flex,
 	FlexItem,
+	HeaderAvatar,
 	Navbar,
 	Toolbar,
 	ToolbarItem,
@@ -31,7 +31,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
+import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { isCollection, isItem } from '../quick-lane.helpers';
@@ -95,9 +95,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			}
 
 			if (isCollection(response)) {
-				const content = response.content as CollectionSchema;
+				const content = response.content as CollectionSchema | undefined;
 
-				if (!content.is_public) {
+				if (!content || !content.is_public) {
 					setLoadingInfo({
 						state: 'error',
 						message: t(
@@ -260,16 +260,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 										</ToolbarLeft>
 										<ToolbarRight>
 											{!!profile && (
-												<ToolbarItem>
-													<Avatar
-														dark={true}
-														image={profile.avatar || undefined}
-														name={
-															profile.usersByuserId.full_name ||
-															undefined
-														}
-													/>
-												</ToolbarItem>
+												<HeaderAvatar>
+													{renderAvatar(profile, { dark: true })}
+												</HeaderAvatar>
 											)}
 											{canReadOriginal && (
 												<ToolbarItem>

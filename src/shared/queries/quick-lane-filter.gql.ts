@@ -8,6 +8,7 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 		$updatedAtGte: timestamptz
 		$updatedAtLte: timestamptz
 		$filters: [app_quick_lanes_bool_exp]
+		$orderBy: [app_quick_lanes_order_by!]
 	) {
 		app_quick_lanes(
 			where: {
@@ -30,17 +31,26 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 					{ _and: $filters }
 				]
 			}
+			order_by: $orderBy
 		) {
 			id
+			content_id
+			content_label
 			title
 			view_mode
-			content_label
 			created_at
 			updated_at
 			owner {
 				id
-				usersByuserId {
+				avatar
+				user: usersByuserId {
 					full_name
+					first_name
+					last_name
+				}
+				organisation {
+					name
+					logo_url
 				}
 			}
 		}
