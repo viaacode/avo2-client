@@ -135,8 +135,8 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 				<Avatar
 					className="m-quick-lane-modal__avatar"
 					dark={true}
-					name={user.profile?.organisation?.name}
-					image={user.profile?.organisation?.logo_url}
+					name={content.organisation?.name}
+					image={content.organisation?.logo_url}
 				/>
 			</Spacer>
 
