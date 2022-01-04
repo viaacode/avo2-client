@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -128,7 +129,8 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
-	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters, columns]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]);
 
 	// Lifecycle
 
@@ -157,7 +159,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			}
 			onTableStateChanged={(state) => {
 				// NOTE: prevents recursion loop but hits theoretical performance
-				if (JSON.stringify(filters) !== JSON.stringify(state)) {
+				if (!isEqual(filters, state)) {
 					setFilters(state as QuickLaneOverviewFilterState);
 				}
 			}}

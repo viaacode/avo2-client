@@ -95,14 +95,15 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 							visibleByDefault: true,
 							filterType: 'DateRangeDropdown',
 						},
-						{
-							id: QUICK_LANE_COLUMNS.UPDATED_AT,
-							label: t('workspace/views/quick-lane-overview___aangepast-op'),
-							sortable: true,
-							dataType: 'dateTime',
-							visibleByDefault: true,
-							filterType: 'DateRangeDropdown',
-						},
+						// Disabled due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
+						// {
+						// 	id: QUICK_LANE_COLUMNS.UPDATED_AT,
+						// 	label: t('workspace/views/quick-lane-overview___aangepast-op'),
+						// 	sortable: true,
+						// 	dataType: 'dateTime',
+						// 	visibleByDefault: true,
+						// 	filterType: 'DateRangeDropdown',
+						// },
 					],
 			  ]),
 	] as FilterableColumn[];
@@ -182,7 +183,8 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
-	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters, columns]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]);
 
 	// Lifecycle
 
@@ -223,6 +225,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			rowKey="id"
 			variant="styled"
 			isLoading={loadingInfo.state === 'loading'}
+			hideTableColumnsButton // Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
 		/>
 	);
 };
