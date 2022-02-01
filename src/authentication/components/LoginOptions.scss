@@ -1,4 +1,16 @@
+@import '../../styles/settings/variables';
+
 .m-login-options {
+	&__wrapper {
+		padding: $g-spacer-unit * 4;
+	}
+
+	hr {
+		border-color: $color-gray-100;
+		border-style: solid;
+		margin: $g-spacer-unit * 3 0;
+	}
+
 	.c-button-smartschool,
 	.c-button-klascement,
 	.c-button-acmidm,
@@ -16,5 +28,30 @@
 				fill: white !important;
 			}
 		}
+	}
+
+	.c-tabs {
+		border-bottom: 1px solid $c-register-login-view-modal-border-color;
+	}
+
+	.c-tab-item {
+		background-color: $c-register-login-view-modal-background-color;
+		flex-grow: 1;
+		justify-content: center;
+
+		&__active {
+			background-color: white;
+			box-shadow: inset 0 -0.2rem 0 white;
+		}
+
+		&:not(:first-of-type) {
+			border-left: 1px solid $c-register-login-view-modal-border-color;
+		}
+	}
+}
+
+.m-login-options__title {
+	.o-svg-icon {
+		margin-right: 1.2rem;
 	}
 }
