@@ -39,12 +39,12 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{
-				label: t('Lesgever'),
+				label: t('authentication/components/login-options___lesgever'),
 				id: LoginOptionsTabs.TEACHER,
 				icon: 'user-teacher',
 			},
 			{
-				label: t('Leerling'),
+				label: t('authentication/components/login-options___leerling'),
 				id: LoginOptionsTabs.STUDENT,
 				icon: 'user-student',
 			},
@@ -58,7 +58,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				return (
 					<>
 						<Icon name="user-teacher"></Icon>
-						{t('Log in als lesgever')}
+						{t('authentication/components/login-options___log-in-als-lesgever')}
 					</>
 				);
 
@@ -66,7 +66,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				return (
 					<>
 						<Icon name="user-student"></Icon>
-						{t('Log in als leerling')}
+						{t('authentication/components/login-options___log-in-als-leerling')}
 					</>
 				);
 
@@ -245,7 +245,9 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 
 				<hr />
 
-				<h3 className="c-h4 u-m-0">{t('Nog geen account?')}</h3>
+				<h3 className="c-h4 u-m-0">
+					{t('authentication/components/login-options___nog-geen-account')}
+				</h3>
 
 				<Spacer margin={['top-small']}>{renderFallbackButton()}</Spacer>
 			</div>
