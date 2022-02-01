@@ -22,6 +22,8 @@ export interface LoginOptionsProps extends RouteComponentProps {
 	onOptionClicked?: () => void;
 }
 
+const LoginOptionsPreferredTabStorageKey = 'LoginOptions.preference';
+
 const LoginOptionsTabs = {
 	TEACHER: 'lesgever',
 	STUDENT: 'leerling',
@@ -47,7 +49,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				icon: 'user-student',
 			},
 		],
-		LoginOptionsTabs.TEACHER
+		localStorage?.getItem(LoginOptionsPreferredTabStorageKey) || LoginOptionsTabs.TEACHER
 	);
 
 	const renderTitle = () => {
@@ -219,7 +221,13 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 
 	return (
 		<div className="m-login-options">
-			<Tabs tabs={tabs} onClick={setActiveTab} />
+			<Tabs
+				tabs={tabs}
+				onClick={(id) => {
+					setActiveTab(id);
+					localStorage.setItem(LoginOptionsPreferredTabStorageKey, id.toString());
+				}}
+			/>
 
 			<div className="m-login-options__wrapper">
 				<Spacer margin={['bottom-large']}>
