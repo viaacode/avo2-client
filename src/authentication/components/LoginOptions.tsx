@@ -168,7 +168,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						type="secondary"
 						className="c-button-acmidm"
 						icon="leerid"
-						label={t('Leerling ID')}
+						label={t('authentication/components/login-options___leerling-id')}
 						onClick={() => {
 							onOptionClicked();
 							redirectToServerACMIDMLogin(location);

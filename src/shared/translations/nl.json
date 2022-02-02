@@ -1374,6 +1374,7 @@
   "authentication/components/login-options___inloggen-met-smartschool": "Inloggen met Smartschool",
   "authentication/components/login-options___itsme": "itsme",
   "authentication/components/login-options___leerling": "Leerling",
+  "authentication/components/login-options___leerling-id": "Leerling ID",
   "authentication/components/login-options___lesgever": "Lesgever",
   "authentication/components/login-options___log-in-als-leerling": "Log in als leerling",
   "authentication/components/login-options___log-in-als-lesgever": "Log in als lesgever",
