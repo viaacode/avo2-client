@@ -53,4 +53,16 @@
 			transform: translate(0, 3px) scale(1.25); // connect the wire to the bottom of the button
 		}
 	}
+
+	&.c-button-mail {
+		.c-button__icon {
+			transform: scale(0.75);
+		}
+	}
+
+	&.c-button-acmidm {
+		.c-button__icon.o-svg-icon--leerid {
+			transform: scale(0.85);
+		}
+	}
 }
