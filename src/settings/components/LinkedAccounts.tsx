@@ -76,16 +76,10 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 				'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
 			),
 			iconNames: ['itsme', 'eid'],
-			hideForPupil: true,
 		},
 		SMARTSCHOOL: {
 			label: t('settings/components/linked-accounts___smartschool'),
 			iconNames: ['smartschool'],
-		},
-		LEERID: {
-			label: t('LeerID'),
-			iconNames: ['leerid'],
-			onlyForPupil: true,
 		},
 		KLASCEMENT: {
 			label: t('settings/components/linked-accounts___klas-cement'),
@@ -208,7 +202,6 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 								>
 									<div>{renderIdpLinkControls('VLAAMSEOVERHEID')}</div>
 									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
-									<div>{renderIdpLinkControls('LEERID')}</div>
 									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
 								</FormGroup>
 							</Form>
