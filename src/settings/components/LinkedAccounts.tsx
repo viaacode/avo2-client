@@ -73,12 +73,12 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
-			label: t(isPupil ? 'LeerID' : 'settings/components/linked-accounts___burgerprofiel'),
-			description: t(
-				isPupil
-					? 'Aanmelden met je LeerID'
-					: 'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
-			),
+			label: isPupil
+				? t('settings/components/linked-accounts___leer-id')
+				: t('settings/components/linked-accounts___burgerprofiel'),
+			description: isPupil
+				? t('settings/components/linked-accounts___aanmelden-met-je-leer-id')
+				: t('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
 			iconNames: isPupil ? ['leerid'] : ['itsme', 'eid'],
 		},
 		SMARTSCHOOL: {
