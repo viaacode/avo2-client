@@ -40,6 +40,7 @@ interface IdpProps {
 	description?: string;
 	iconNames: IconName[];
 	hideForPupil?: boolean;
+	onlyForPupil?: boolean;
 }
 
 interface DeleteModalToggle {
@@ -56,6 +57,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	>(false);
 	const [isDeleteSmartschoolModalOpen, setIsDeleteSmartschoolModalOpe] = useState<boolean>(false);
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
+	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
 
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {
@@ -63,6 +65,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 			setter: setIsDeleteVlaamseOverheidModalOpen,
 		},
 		SMARTSCHOOL: { open: isDeleteSmartschoolModalOpen, setter: setIsDeleteSmartschoolModalOpe },
+		LEERID: { open: isDeleteLeerIDModalOpen, setter: setIsDeleteLeerIDModalOpen },
 		KLASCEMENT: { open: isDeleteKlascementModalOpen, setter: setIsDeleteKlascementModalOpen },
 	};
 
@@ -72,12 +75,17 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 			description: t(
 				'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
 			),
-			iconNames: ['itsme' as IconName, 'eid' as IconName], // TODO: Remove `as IconName`.
+			iconNames: ['itsme', 'eid'],
 			hideForPupil: true,
 		},
 		SMARTSCHOOL: {
 			label: t('settings/components/linked-accounts___smartschool'),
 			iconNames: ['smartschool'],
+		},
+		LEERID: {
+			label: t('LeerID'),
+			iconNames: ['leerid'],
+			onlyForPupil: true,
 		},
 		KLASCEMENT: {
 			label: t('settings/components/linked-accounts___klas-cement'),
@@ -94,7 +102,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 
 		return (
 			<Spacer margin="top">
-				{!(isPupil && currentIdp.hideForPupil) && (
+				{!(isPupil && currentIdp.hideForPupil) && !(!isPupil && currentIdp.onlyForPupil) && (
 					<Grid className="c-account-link">
 						<Column
 							className={`c-account-link__column c-account-link__column--${currentIdp.label.toLowerCase()}`}
@@ -200,6 +208,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 								>
 									<div>{renderIdpLinkControls('VLAAMSEOVERHEID')}</div>
 									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
+									<div>{renderIdpLinkControls('LEERID')}</div>
 									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
 								</FormGroup>
 							</Form>
