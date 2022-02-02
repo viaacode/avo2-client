@@ -59,6 +59,8 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
 	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
 
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {
 			open: isDeleteVlaamseOverheidModalOpen,
@@ -71,11 +73,13 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
-			label: t('settings/components/linked-accounts___burgerprofiel'),
+			label: t(isPupil ? 'LeerID' : 'settings/components/linked-accounts___burgerprofiel'),
 			description: t(
-				'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
+				isPupil
+					? 'Aanmelden met je LeerID'
+					: 'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
 			),
-			iconNames: ['itsme', 'eid'],
+			iconNames: isPupil ? ['leerid'] : ['itsme', 'eid'],
 		},
 		SMARTSCHOOL: {
 			label: t('settings/components/linked-accounts___smartschool'),
@@ -91,7 +95,6 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		const linked = hasIdpLinked(user, idpType);
 		const currentIdp = idpProps[idpType];
-		const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 		const { open: confirmModalOpen, setter: setConfirmModalOpen } = deleteIdpModals[idpType];
 
 		return (
