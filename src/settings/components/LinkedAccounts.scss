@@ -12,7 +12,7 @@
 		flex-direction: column;
 
 		&--smartschool,
-		&--burgerprofiel,
+		&--itsme-eid,
 		&--klascement,
 		&--leerid {
 			flex-direction: row;
@@ -21,7 +21,7 @@
 			margin: 0 !important;
 		}
 
-		&--burgerprofiel {
+		&--itsme-eid {
 			// color: $color-;
 
 			border-right: 2px solid #e4f1f3;

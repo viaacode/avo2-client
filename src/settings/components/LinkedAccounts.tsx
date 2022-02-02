@@ -96,15 +96,13 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 		const linked = hasIdpLinked(user, idpType);
 		const currentIdp = idpProps[idpType];
 		const { open: confirmModalOpen, setter: setConfirmModalOpen } = deleteIdpModals[idpType];
+		const className = `c-account-link__column--${currentIdp.iconNames.join('-')}`;
 
 		return (
 			<Spacer margin="top">
 				{!(isPupil && currentIdp.hideForPupil) && !(!isPupil && currentIdp.onlyForPupil) && (
 					<Grid className="c-account-link">
-						<Column
-							className={`c-account-link__column c-account-link__column--${currentIdp.label.toLowerCase()}`}
-							size="3-2"
-						>
+						<Column className={`c-account-link__column ${className}`} size="3-2">
 							{currentIdp.iconNames.map((iconName: string) => (
 								<Icon
 									name={iconName as IconName}
