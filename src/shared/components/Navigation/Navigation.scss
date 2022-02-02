@@ -25,8 +25,13 @@
 		color: $color-gray-700;
 	}
 
-	.o-svg-icon + .c-nav__item-label {
-		margin-left: 5px;
+	.o-svg-icon {
+		width: 1.8rem;
+		height: 1.8rem;
+
+		+ .c-nav__item-label {
+			margin-left: 5px;
+		}
 	}
 }
 
@@ -57,22 +62,6 @@
 	&:hover,
 	&:focus {
 		background-color: darken($color-night-blue, 30%);
-	}
-}
-
-.c-nav.c-nav .o-svg-icon {
-	width: 1.8rem;
-	height: 1.8rem;
-}
-
-.c-nav.c-nav .o-svg-icon + span {
-	width: 1.8rem;
-	height: 1.8rem;
-	position: relative;
-	margin-left: 0.75rem;
-
-	* {
-		fill: $color-gray-400;
 	}
 }
 

@@ -1,8 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { Container, Flex, FlexItem } from '@viaa/avo2-components';
-
 import LoginOptions from './LoginOptions';
 import './LoginOptionsDropdown.scss';
 
@@ -17,20 +15,14 @@ const LoginOptionsDropdown: FunctionComponent<LoginOptionsDropdownProps & RouteC
 	closeDropdown = () => {},
 }) => {
 	return (
-		<Container className="m-login-options-dropdown" mode="horizontal">
-			<Container mode="vertical">
-				<Flex center>
-					<FlexItem>
-						<LoginOptions
-							history={history}
-							location={location}
-							match={match}
-							onOptionClicked={closeDropdown}
-						/>
-					</FlexItem>
-				</Flex>
-			</Container>
-		</Container>
+		<div className="m-login-options-dropdown">
+			<LoginOptions
+				history={history}
+				location={location}
+				match={match}
+				onOptionClicked={closeDropdown}
+			/>
+		</div>
 	);
 };
 
