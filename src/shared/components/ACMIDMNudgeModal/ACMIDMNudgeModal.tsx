@@ -126,7 +126,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 								redirectToServerLinkAccount(
 									location,
 									'VLAAMSEOVERHEID',
-									'itsme=true'
+									'authMech=itsme'
 								);
 								onClose();
 							}}
