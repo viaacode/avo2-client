@@ -130,7 +130,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		return isPupil ? (
 			<div
 				onClick={() => {
-					redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID', 'leerid=true');
+					redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID', 'authMech=leerid');
 					onClose();
 				}}
 			>
@@ -157,7 +157,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 			<>
 				<div
 					onClick={() => {
-						redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID', 'itsme=true');
+						redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID', 'authMech=itsme');
 						onClose();
 					}}
 				>

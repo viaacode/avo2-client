@@ -55,7 +55,7 @@ export function redirectToServerItsmeLogin(location: Location) {
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
-		itsme: true,
+		authMech: 'itsme',
 	})}`;
 }
 
