@@ -12,6 +12,7 @@ import {
 	redirectToServerACMIDMLogin,
 	redirectToServerItsmeLogin,
 	redirectToServerKlascementLogin,
+	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
 } from '../helpers/redirects';
@@ -171,7 +172,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						label={t('authentication/components/login-options___leerling-id')}
 						onClick={() => {
 							onOptionClicked();
-							redirectToServerACMIDMLogin(location);
+							redirectToServerLeerIDLogin(location);
 						}}
 					/>,
 
