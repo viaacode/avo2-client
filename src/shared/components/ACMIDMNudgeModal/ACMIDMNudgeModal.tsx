@@ -98,7 +98,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	const renderTitle = () => {
 		return isPupil ? (
-			t('Snel, veilig en makkelijk inloggen?')
+			t(
+				'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-veilig-en-makkelijk-inloggen'
+			)
 		) : (
 			<>
 				{t(
@@ -116,7 +118,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	const renderDescription = () => {
 		return isPupil
-			? t('Koppel dan snel je Leerling ID aan je bestaande account.')
+			? t(
+					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-snel-je-leerling-id-aan-je-bestaande-account'
+			  )
 			: t(
 					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-direct-je-burgerprofiel-aan-je-bestaande-account'
 			  );
@@ -141,7 +145,11 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
 						size="3-10"
 					>
-						<Spacer>{t('Leerling ID')}</Spacer>
+						<Spacer>
+							{t(
+								'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___leerling-id'
+							)}
+						</Spacer>
 					</Column>
 				</Grid>
 			</div>
