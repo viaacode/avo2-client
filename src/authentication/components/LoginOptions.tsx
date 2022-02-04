@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import { ROUTE_PARTS } from '../../shared/constants';
 import { useTabs } from '../../shared/hooks';
 import {
 	redirectToClientPage,
@@ -195,6 +195,20 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 		}
 	};
 
+	const renderFallbackTitle = () => {
+		switch (tab) {
+			case LoginOptionsTabs.TEACHER:
+				return (
+					<h3 className="c-h4 u-m-0">
+						{t('authentication/components/login-options___nog-geen-account')}
+					</h3>
+				);
+
+			default:
+				return null;
+		}
+	};
+
 	const renderFallbackButton = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
@@ -214,17 +228,12 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 
 			case LoginOptionsTabs.STUDENT:
 				return (
-					<Button
-						block
-						label={t(
-							'authentication/views/register-or-login___krijg-toegang-als-leerling'
-						)}
-						type="primary"
-						onClick={() => {
-							onOptionClicked();
-							redirectToClientPage(`/${ROUTE_PARTS.pupils}`, history);
-						}}
-					/>
+					<Link
+						to="/faq-leerling?label=Toegang%20als%20leerling"
+						onClick={onOptionClicked}
+					>
+						{t('authentication/views/register-or-login___krijg-toegang-als-leerling')}
+					</Link>
 				);
 
 			default:
@@ -258,9 +267,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 
 				<hr />
 
-				<h3 className="c-h4 u-m-0">
-					{t('authentication/components/login-options___nog-geen-account')}
-				</h3>
+				{renderFallbackTitle()}
 
 				<Spacer margin={['top-small']}>{renderFallbackButton()}</Spacer>
 			</div>
