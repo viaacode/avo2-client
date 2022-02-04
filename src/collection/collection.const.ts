@@ -69,7 +69,7 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 	...(isCollection
 		? [
 				{
-					label: i18n.t('bundle'),
+					label: i18n.t('collection/collection___bundle'),
 					id: 'parent_collection',
 				},
 		  ]
