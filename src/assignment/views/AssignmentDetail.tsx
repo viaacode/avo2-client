@@ -120,7 +120,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 							message: t(
 								'assignment/views/assignment-detail___de-opdracht-werd-verwijderd'
 							),
-							icon: 'delete' as IconName,
+							icon: 'delete',
 						};
 						break;
 
@@ -129,7 +129,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 							message: t(
 								'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
 							),
-							icon: 'clock' as IconName,
+							icon: 'clock',
 						};
 						break;
 
@@ -138,7 +138,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 							message: t(
 								'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
 							),
-							icon: 'clock' as IconName,
+							icon: 'clock',
 						};
 						break;
 
@@ -147,7 +147,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 							message: t(
 								'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
 							),
-							icon: 'alert-triangle' as IconName,
+							icon: 'alert-triangle',
 						};
 						break;
 				}
