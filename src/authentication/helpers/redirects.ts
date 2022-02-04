@@ -50,18 +50,22 @@ export function redirectToServerLoginPage(location: Location) {
 }
 
 export function redirectToServerItsmeLogin(location: Location) {
-	// // Redirect to smartschool login form
-	// // Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
-		itsme: true,
+		authMech: 'itsme',
+	})}`;
+}
+
+export function redirectToServerLeerIDLogin(location: Location) {
+	const returnToUrl = getRedirectAfterLogin(location);
+	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+		returnToUrl,
+		authMech: 'leerid',
 	})}`;
 }
 
 export function redirectToServerACMIDMLogin(location: Location) {
-	// Redirect to smartschool login form
-	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,

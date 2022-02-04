@@ -438,12 +438,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						onClose={() => setDropdownOpenForAssignmentUuid(null)}
 						menuItems={[
 							{
-								icon: 'edit2' as IconName,
+								icon: 'edit-2',
 								id: 'edit',
 								label: t('assignment/views/assignment-overview___bewerk'),
 							},
 							{
-								icon: 'archive' as IconName,
+								icon: 'archive',
 								id: 'archive',
 								label:
 									activeView === 'archived_assignments'
@@ -451,12 +451,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										: t('assignment/views/assignment-overview___archiveer'),
 							},
 							{
-								icon: 'copy' as IconName,
+								icon: 'copy',
 								id: 'duplicate',
 								label: t('assignment/views/assignment-overview___dupliceer'),
 							},
 							{
-								icon: 'delete' as IconName,
+								icon: 'delete',
 								id: 'delete',
 								label: t('assignment/views/assignment-overview___verwijder'),
 							},
