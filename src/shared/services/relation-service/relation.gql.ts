@@ -12,6 +12,8 @@ export const FETCH_COLLECTION_RELATIONS_BY_OBJECTS = gql`
 			object
 			subject
 			predicate
+			created_at
+			updated_at
 		}
 	}
 `;
@@ -28,6 +30,8 @@ export const FETCH_ITEM_RELATIONS_BY_OBJECTS = gql`
 			object
 			subject
 			predicate
+			created_at
+			updated_at
 		}
 	}
 `;
@@ -44,6 +48,8 @@ export const FETCH_COLLECTION_RELATIONS_BY_SUBJECTS = gql`
 			object
 			subject
 			predicate
+			created_at
+			updated_at
 		}
 	}
 `;
@@ -60,6 +66,8 @@ export const FETCH_ITEM_RELATIONS_BY_SUBJECTS = gql`
 			object
 			subject
 			predicate
+			created_at
+			updated_at
 		}
 	}
 `;

@@ -57,6 +57,22 @@ import {
 import { ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 
+export interface OrganisationContentItem {
+	id: string;
+	title: string;
+	type: {
+		label: string;
+	};
+	owner: {
+		full_name: string;
+	};
+	last_editor?: {
+		full_name: string;
+	};
+	created_at: string;
+	updated_at: string;
+}
+
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
 
@@ -714,7 +730,7 @@ export class CollectionService {
 		limit: number,
 		order: any,
 		companyId: string
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<OrganisationContentItem[]> {
 		try {
 			// retrieve collections
 			const response = await dataService.query({
@@ -1316,6 +1332,20 @@ export class CollectionService {
 				query: 'INSERT_MARCOM_ENTRY',
 			});
 		}
+	}
+
+	static async insertMarcomEntriesForBundleCollections(
+		parentCollectionId: string,
+		collectionIds: string[],
+		marcomEntry: Partial<MarcomEntry>
+	): Promise<void> {
+		const allEntries = collectionIds.map((collectionId) => ({
+			...marcomEntry,
+			collection_id: collectionId,
+			parent_collection_id: parentCollectionId,
+		}));
+
+		await this.insertMarcomEntry(allEntries);
 	}
 
 	static async deleteMarcomEntry(id: string): Promise<void> {

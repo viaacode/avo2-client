@@ -3,6 +3,8 @@ import { ReactElement } from 'react';
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+export * from './quick-lane';
+
 export enum KeyCode {
 	Enter = 13,
 }

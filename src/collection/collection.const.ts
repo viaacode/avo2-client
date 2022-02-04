@@ -44,7 +44,9 @@ export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] = () 
 	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
 ];
 
-export const GET_MARCOM_ENTRY_TABLE_COLUMNS: () => TableColumn[] = () => [
+export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableColumn[] = (
+	isCollection: boolean
+) => [
 	{
 		label: i18n.t('collection/collection___datum'),
 		id: 'publish_date',
@@ -64,6 +66,14 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: () => TableColumn[] = () => [
 		label: i18n.t('collection/collection___link'),
 		id: 'external_link',
 	},
+	...(isCollection
+		? [
+				{
+					label: i18n.t('collection/collection___bundle'),
+					id: 'parent_collection',
+				},
+		  ]
+		: []),
 	{
 		label: '',
 		id: 'actions',

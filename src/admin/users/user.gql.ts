@@ -105,6 +105,9 @@ export const GET_USER_BY_ID = gql`
 				temp_access {
 					from
 					until
+					current {
+						status
+					}
 				}
 			}
 		}
@@ -185,6 +188,9 @@ export const GET_USER_TEMP_ACCESS_BY_ID = gql`
 			temp_access {
 				from
 				until
+				current {
+					status
+				}
 			}
 		}
 	}

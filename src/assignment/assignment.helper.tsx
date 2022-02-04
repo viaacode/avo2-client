@@ -1,31 +1,26 @@
 import { History } from 'history';
-import { get, isNil } from 'lodash-es';
+import { isNil } from 'lodash-es';
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import {
 	Alert,
 	Container,
 	DatePicker,
-	DutchContentType,
 	Flex,
-	FlexItem,
 	Form,
 	FormGroup,
-	RadioButtonGroup,
 	Spacer,
 	TextInput,
-	Thumbnail,
 	Toggle,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileId } from '../authentication/helpers/get-profile-id';
-import { toEnglishContentType } from '../collection/collection.types';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
+import { ContentLink } from '../shared/components/ContentLink/ContentLink';
 import Html from '../shared/components/Html/Html';
+import { LayoutOptions } from '../shared/components/LayoutOptions/LayoutOptions';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
 import { navigate } from '../shared/helpers';
@@ -33,7 +28,6 @@ import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
 
-import { CONTENT_LABEL_TO_ROUTE_PARTS } from './assignment.const';
 import { AssignmentService } from './assignment.service';
 import { AssignmentLayout } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
@@ -96,89 +90,19 @@ export class AssignmentHelper {
 		}
 	}
 
-	private static renderContentLink(
-		assignment: Partial<Avo.Assignment.Assignment>,
-		content: Avo.Assignment.Content | null,
-		user: Avo.User.User
-	) {
-		const dutchLabel = get(
-			content,
-			'type.label',
-			(assignment.content_label || '').toLowerCase()
-		) as DutchContentType;
-		const linkContent = (
-			<div className="c-box c-box--padding-small">
-				<Flex orientation="vertical" center>
-					<Spacer margin="right">
-						<Thumbnail
-							className="m-content-thumbnail"
-							category={toEnglishContentType(dutchLabel)}
-							src={get(content, 'thumbnail_path') || undefined}
-						/>
-					</Spacer>
-					<FlexItem>
-						<div className="c-overline-plus-p">
-							{!!content && <p className="c-overline">{dutchLabel}</p>}
-							<p>
-								{get(content, 'title') ||
-									get(content, 'description') ||
-									i18n.t(
-										'assignment/assignment___de-opdracht-inhoud-is-verwijderd'
-									)}
-							</p>
-						</div>
-					</FlexItem>
-				</Flex>
-			</div>
-		);
-
-		if (
-			assignment.content_label === 'COLLECTIE' &&
-			content &&
-			getProfileId(user) !== (content as Avo.Collection.Collection).owner_profile_id
-		) {
-			// During create we do not allow linking to the collection if you do not own the collection,
-			// since we still need to make a copy when the user clicks on "save assignment" button
-			return (
-				<div
-					title={i18n.t(
-						'assignment/views/assignment-edit___u-kan-pas-doorklikken-naar-de-collectie-nadat-u-de-opdracht-hebt-aangemaakt'
-					)}
-				>
-					{linkContent}
-				</div>
-			);
-		}
-
-		if (content) {
-			return (
-				<Link
-					to={`/${
-						CONTENT_LABEL_TO_ROUTE_PARTS[
-							assignment.content_label as Avo.Assignment.ContentLabel
-						]
-					}/${assignment.content_id}`}
-				>
-					{linkContent}
-				</Link>
-			);
-		}
-		return linkContent;
-	}
-
 	private static isDeadlineInThePast(assignment: Partial<Avo.Assignment.Assignment>): boolean {
 		return !!assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now());
 	}
 
-	private static getContentLayoutOptions() {
+	public static getContentLayoutOptions() {
 		const options = [
 			{
 				label: i18n.t('assignment/views/assignment-edit___mediaspeler-met-beschrijving'),
-				value: AssignmentLayout.PlayerAndText,
+				value: AssignmentLayout.PlayerAndText.toString(),
 			},
 			{
 				label: i18n.t('assignment/views/assignment-edit___enkel-mediaspeler'),
-				value: AssignmentLayout.OnlyPlayer,
+				value: AssignmentLayout.OnlyPlayer.toString(),
 			},
 		] as any[];
 		return options;
@@ -227,19 +151,15 @@ export class AssignmentHelper {
 							/>
 						</FormGroup>
 						<FormGroup label={i18n.t('assignment/views/assignment-edit___inhoud')}>
-							{this.renderContentLink(assignment, assignmentContent, user)}
+							<ContentLink
+								parent={assignment}
+								content={assignmentContent}
+								user={user}
+							/>
 						</FormGroup>
-						<FormGroup
-							label={i18n.t('assignment/views/assignment-edit___weergave')}
-							labelFor="only_player"
-						>
-							<RadioButtonGroup
-								options={AssignmentHelper.getContentLayoutOptions()}
-								value={
-									isNil(assignment.content_layout)
-										? AssignmentLayout.PlayerAndText
-										: (assignment.content_layout as any)
-								}
+						<FormGroup label={i18n.t('assignment/views/assignment-edit___weergave')}>
+							<LayoutOptions
+								item={assignment}
 								onChange={(value: string) => {
 									setAssignmentProp(
 										'content_layout',
@@ -347,7 +267,6 @@ export class AssignmentHelper {
 						{assignment.assignment_type === 'BOUW' && (
 							<FormGroup
 								label={i18n.t('assignment/views/assignment-edit___groepswerk')}
-								labelFor="only_player"
 							>
 								<Toggle
 									checked={assignment.is_collaborative}
