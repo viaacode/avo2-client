@@ -12,6 +12,7 @@ import {
 	redirectToServerACMIDMLogin,
 	redirectToServerItsmeLogin,
 	redirectToServerKlascementLogin,
+	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
 } from '../helpers/redirects';
@@ -84,7 +85,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						label={t(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
 						)}
-						icon="mail"
+						icon="at"
 						type="primary"
 						className="c-login-with-archief c-button-mail"
 						onClick={() => {
@@ -154,12 +155,24 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						label={t(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
 						)}
-						icon="mail"
+						icon="at"
 						type="primary"
 						className="c-login-with-archief c-button-mail"
 						onClick={() => {
 							onOptionClicked();
 							redirectToServerLoginPage(location);
+						}}
+					/>,
+
+					<Button
+						block
+						type="secondary"
+						className="c-button-acmidm"
+						icon="leerid"
+						label={t('authentication/components/login-options___leerling-id')}
+						onClick={() => {
+							onOptionClicked();
+							redirectToServerLeerIDLogin(location);
 						}}
 					/>,
 

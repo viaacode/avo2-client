@@ -1,6 +1,6 @@
 import { DocumentNode } from 'graphql';
 
-import { ButtonType, IconName, SelectOption } from '@viaa/avo2-components';
+import { ButtonType, SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
@@ -309,7 +309,7 @@ const getCollectionInBundleColumn = (isCollection: boolean): FilterableColumn[] 
 				tooltip: i18n.t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bundel'
 				),
-				icon: 'folder' as IconName,
+				icon: 'folder',
 				sortable: true,
 				visibleByDefault: true,
 				dataType: 'number',
@@ -327,7 +327,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 				tooltip: i18n.t(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
 				),
-				icon: 'clipboard' as IconName,
+				icon: 'clipboard',
 				sortable: true,
 				visibleByDefault: true,
 				dataType: 'number',
