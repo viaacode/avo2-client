@@ -1,4 +1,3 @@
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +22,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -135,9 +133,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			}
 			const fragment = getFragment(bundle);
 			delete fragment.item_meta;
-			const insertedFragments = await CollectionService.insertFragments(bundle.id, [
-				fragment,
-			]);
+			await CollectionService.insertFragments(bundle.id, [fragment]);
 
 			ToastService.success(
 				t(
@@ -149,10 +145,6 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				{
 					object: String(collection.id),
 					object_type: 'bundle',
-					message: `Gebruiker ${getProfileName(user)} heeft collectie ${get(
-						insertedFragments,
-						'[0].id'
-					)} toegevoegd aan bundel ${collection.id}`,
 					action: 'add_to',
 				},
 				user
@@ -207,7 +199,6 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				{
 					object: String(insertedBundle.id),
 					object_type: 'bundle',
-					message: `Gebruiker ${getProfileName(user)} heeft bundel aangemaakt`,
 					action: 'create',
 				},
 				user

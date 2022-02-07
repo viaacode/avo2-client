@@ -26,7 +26,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-names';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
@@ -171,10 +170,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			trackEvents(
 				{
 					object: String(currentAssignment.uuid),
-					object_type: 'avo_assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft de permalink voor opdracht ${
-						currentAssignment.uuid
-					} gekopieert`,
+					object_type: 'assignment',
 					action: 'view',
 				},
 				user
@@ -240,7 +236,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					{
 						object: String(assignment.uuid),
 						object_type: 'assignment',
-						message: `Gebruiker ${getProfileName(user)} heeft een opdracht aangemaakt`,
 						action: 'create',
 					},
 					user

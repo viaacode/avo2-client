@@ -36,7 +36,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -70,7 +69,7 @@ import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { EditCollectionTab, toDutchContentType } from '../collection.types';
+import { EditCollectionTab } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 import { getFragmentProperty } from '../helpers';
 
@@ -636,9 +635,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 						{
 							object: String(newCollection.id),
 							object_type: type,
-							message: `Gebruiker ${getProfileName(
-								user
-							)} heeft een ${type} aangepast`,
 							action: 'edit',
 						},
 						user
@@ -752,9 +748,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 				{
 					object: String(collectionState.currentCollection.id),
 					object_type: type,
-					message: `Gebruiker ${getProfileName(user)} heeft een ${toDutchContentType(
-						type
-					)} verwijderd`,
 					action: 'delete',
 				},
 				user
