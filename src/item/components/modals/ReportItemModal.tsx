@@ -20,7 +20,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { getFullName } from '../../../shared/helpers/formatters';
 import { ToastService, ZendeskService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -99,9 +98,6 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				{
 					object: externalId,
 					object_type: 'item',
-					message: `${getProfileName(user)} heeft een item gerapporteerd wegens ${
-						GET_RADIO_BUTTON_LABELS()[reason]
-					}`,
 					action: 'report',
 				},
 				user

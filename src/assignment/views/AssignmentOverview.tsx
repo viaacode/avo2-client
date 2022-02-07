@@ -35,7 +35,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -302,7 +301,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				{
 					object: assignmentUuid,
 					object_type: 'assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
 					action: 'delete',
 				},
 				user

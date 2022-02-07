@@ -26,7 +26,6 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName } from '../../authentication/helpers/permission-names';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -215,8 +214,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			{
 				object: String(currentAssignment.uuid),
 				object_type: 'assignment',
-				message: `Gebruiker ${getProfileName(user)} heeft een opdracht url gekopieerd`,
 				action: 'share',
+				resource: {
+					object_type: 'link',
+				},
 			},
 			user
 		);
@@ -229,10 +230,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			trackEvents(
 				{
 					object: String(currentAssignment.uuid),
-					object_type: 'avo_assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft de permalink voor opdracht ${
-						currentAssignment.uuid
-					} gekopieert`,
+					object_type: 'assignment',
 					action: 'view',
 				},
 				user
@@ -337,7 +335,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					object: String(assignment.uuid),
 					object_type: 'assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft een opdracht aangepast`,
 					action: 'edit',
 				},
 				user
@@ -369,7 +366,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					object: String(currentAssignment.uuid),
 					object_type: 'assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
 					action: 'delete',
 				},
 				user
@@ -384,7 +380,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					object: String(currentAssignment.uuid),
 					object_type: 'assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft een opdracht verwijderd`,
 					action: 'delete',
 				},
 				user
