@@ -24,7 +24,6 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -134,9 +133,6 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				{
 					object: String(response.id),
 					object_type: 'quick_lane',
-					message: `Gebruiker ${getProfileName(
-						user
-					)} heeft een quick lane pagina bekeken`,
 					action: 'view',
 				},
 				user

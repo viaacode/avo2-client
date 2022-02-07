@@ -29,7 +29,6 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
@@ -65,7 +64,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
-import { FragmentList, PublishCollectionModal } from '../components';
+import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
@@ -105,6 +104,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
+	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] = useState<boolean>(
+		false
+	);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
@@ -295,9 +297,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					{
 						object: collectionId,
 						object_type: 'collection',
-						message: `Gebruiker ${getProfileName(
-							user
-						)} heeft de pagina voor collectie ${collectionId} bekeken`,
 						action: 'view',
 					},
 					user
@@ -401,7 +400,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						{
 							object: collection.id,
 							object_type: 'collection',
-							message: `${getProfileName(user)} heeft een collectie gedupliceerd`,
 							action: 'copy',
 						},
 						user
@@ -455,6 +453,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 			case COLLECTION_ACTIONS.editCollection:
 				onEditCollection();
+				break;
+			case 'openAutoplayCollectionModal':
+				setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
 				break;
 
 			case COLLECTION_ACTIONS.openQuickLane:
@@ -520,7 +521,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				{
 					object: collectionId,
 					object_type: 'collection',
-					message: `${getProfileName(user)} heeft een collectie verwijderd`,
 					action: 'delete',
 				},
 				user
@@ -610,6 +610,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
+				<Button
+					type="secondary"
+					label={t('collection/views/collection-detail___speel-de-collectie-af')}
+					title={t('collection/views/collection-detail___speel-de-collectie-af')}
+					ariaLabel={t('collection/views/collection-detail___speelt-de-collectie-af')}
+					icon="play"
+					onClick={() => executeAction('openAutoplayCollectionModal')}
+				/>
 				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
 					<Button
 						label={t('collection/views/collection-detail___maak-opdracht')}
@@ -861,7 +869,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										!isAddToBundleModalOpen &&
 										!isDeleteModalOpen &&
 										!isPublishModalOpen &&
-										!isShareThroughEmailModalOpen
+										!isShareThroughEmailModalOpen &&
+										!isAutoplayCollectionModalOpen
 									}
 									history={history}
 									location={location}
@@ -1057,6 +1066,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							isOpen={isShareThroughEmailModalOpen}
 							onClose={() => setIsShareThroughEmailModalOpen(false)}
 						/>
+						{!!collection_fragments && collection && (
+							<AutoplayCollectionModal
+								isOpen={isAutoplayCollectionModalOpen}
+								onClose={() => setIsAutoplayCollectionModalOpen(false)}
+								collectionFragments={collection_fragments}
+							/>
+						)}
 						{collection && (
 							<QuickLaneModal
 								modalTitle={t(

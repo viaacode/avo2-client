@@ -19,7 +19,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
@@ -129,7 +128,6 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				{
 					object: description,
 					object_type: 'item',
-					message: `${getProfileName(user)} heeft een item aangevraagd`,
 					action: 'request',
 				},
 				user

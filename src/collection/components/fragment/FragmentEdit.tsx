@@ -28,7 +28,6 @@ import {
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
 import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
@@ -37,7 +36,6 @@ import { createDropdownMenuItem } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { toDutchContentType } from '../../collection.types';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
@@ -151,9 +149,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			{
 				object: collectionId,
 				object_type: objectType,
-				message: `Gebruiker ${getProfileName(user)} heeft een ${
-					objectType === 'collection' ? 'fragment' : 'collectie'
-				} uit een ${toDutchContentType(objectType)} verwijderd`,
 				action: 'delete',
 			},
 			user

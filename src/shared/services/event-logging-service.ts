@@ -10,7 +10,7 @@ interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
 	object: string; // entity being modified
 	object_type: Avo.EventLogging.ObjectType;
-	message: any; // user played item xxx on avo
+	resource?: Record<string, string | boolean | number>;
 }
 
 export function trackEvents(
@@ -35,6 +35,7 @@ export function trackEvents(
 					subject_type: 'user',
 					source_querystring: insideIframe() ? window.parent.location.href : '',
 					...event,
+					message: '', // AVO-1675: message should be anonymous and is redundant: leave it empty
 				};
 			}
 		);

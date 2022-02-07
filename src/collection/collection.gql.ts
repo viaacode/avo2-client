@@ -445,6 +445,10 @@ export const GET_MARCOM_ENTRIES = gql`
 			channel_type
 			external_link
 			publish_date
+			parent_collection {
+				id
+				title
+			}
 		}
 	}
 `;

@@ -19,7 +19,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
@@ -45,7 +44,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { SOFT_DELETE_COLLECTION } from '../collection.gql';
 import { CollectionService } from '../collection.service';
-import { ContentTypeNumber, toDutchContentType } from '../collection.types';
+import { ContentTypeNumber } from '../collection.types';
 
 import './CollectionOrBundleOverview.scss';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
@@ -207,9 +206,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				{
 					object: String(idToDelete),
 					object_type: type,
-					message: `Gebruiker ${getProfileName(user)} heeft een ${toDutchContentType(
-						type
-					)} verwijderd`,
 					action: 'delete',
 				},
 				user
