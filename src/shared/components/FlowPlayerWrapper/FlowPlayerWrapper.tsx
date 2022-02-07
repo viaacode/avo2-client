@@ -45,6 +45,7 @@ type FlowPlayerWrapperProps = {
 	seekTime?: number;
 	autoplay?: boolean;
 	onPlay?: () => void;
+	onEnded?: () => void;
 };
 
 /**
@@ -220,6 +221,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
+					onEnded={props.onEnded}
 					googleAnalyticsId={trackingId}
 					googleAnalyticsEvents={
 						[
