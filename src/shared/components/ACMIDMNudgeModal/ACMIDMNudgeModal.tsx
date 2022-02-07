@@ -132,9 +132,10 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 				<Spacer margin="bottom-large">
 					<Button
 						block
-						className="c-button-acmidm"
+						className="c-button-leerid"
 						type="tertiary"
 						icon="leerid"
+						iconType="multicolor"
 						label={t(
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___leerling-id'
 						)}
