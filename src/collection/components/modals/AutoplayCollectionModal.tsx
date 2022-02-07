@@ -110,7 +110,11 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 						/>
 						{showPlayNext && (
 							<div className="c-modal__autoplay-video-overlay">
-								<p>{t('Volgende in de afspeellijst ...')}</p>
+								<p>
+									{t(
+										'collection/components/modals/autoplay-collection-modal___volgende-in-de-afspeellijst'
+									)}
+								</p>
 								<div id="countdown" onClick={() => playVideo(currentFragment + 1)}>
 									<div id="countdown-inner">
 										<Icon name="skip-forward" size="huge" />
@@ -123,9 +127,15 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 								<Button
 									onClick={cancelAutoPlay}
 									size="large"
-									title={t('Annuleren')}
-									label={t('Annuleren')}
-									ariaLabel={t('Annuleren')}
+									title={t(
+										'collection/components/modals/autoplay-collection-modal___annuleren'
+									)}
+									label={t(
+										'collection/components/modals/autoplay-collection-modal___annuleren'
+									)}
+									ariaLabel={t(
+										'collection/components/modals/autoplay-collection-modal___annuleren'
+									)}
 									type="underlined-link"
 								/>
 							</div>

@@ -618,9 +618,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					label="Speel de collectie af"
-					title="Speel de collectie af"
-					ariaLabel="Speelt de collectie af"
+					label={t('collection/views/collection-detail___speel-de-collectie-af')}
+					title={t('collection/views/collection-detail___speel-de-collectie-af')}
+					ariaLabel={t('collection/views/collection-detail___speelt-de-collectie-af')}
 					icon="play"
 					onClick={() => executeAction('openAutoplayCollectionModal')}
 				/>
