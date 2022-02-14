@@ -9,6 +9,12 @@
 		&:not(.c-modal--scrollable) .c-modal__body {
 			max-height: 100%;
 			overflow: auto;
+			scrollbar-width: none; // Firefox
+
+			// Chrome & Safari
+			&::-webkit-scrollbar {
+				display: none;
+			}
 		}
 	}
 }
@@ -21,6 +27,12 @@
 		margin-right: $g-spacer-unit * 3;
 		list-style: none;
 		overflow-y: scroll;
+		scrollbar-width: none; // Firefox
+
+		// Chrome & Safari
+		&::-webkit-scrollbar {
+			display: none;
+		}
 
 		&-title {
 			font-weight: $g-headings-font-weight;
