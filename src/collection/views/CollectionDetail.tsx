@@ -83,6 +83,7 @@ export const COLLECTION_ACTIONS = {
 	createAssignment: 'createAssignment',
 	editCollection: 'editCollection',
 	openQuickLane: 'openQuickLane',
+	openAutoplayCollectionModal: 'openAutoplayCollectionModal',
 };
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -610,13 +611,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
+				{/* TODO: Add permission */}
 				<Button
 					type="secondary"
 					label={t('collection/views/collection-detail___speel-de-collectie-af')}
 					title={t('collection/views/collection-detail___speel-de-collectie-af')}
 					ariaLabel={t('collection/views/collection-detail___speelt-de-collectie-af')}
 					icon="play"
-					onClick={() => executeAction('openAutoplayCollectionModal')}
+					onClick={() => executeAction(COLLECTION_ACTIONS.openAutoplayCollectionModal)}
 				/>
 				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
 					<Button
@@ -697,7 +699,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			...(permissions.canEditCollection
 				? [
 						createDropdownMenuItem(
@@ -759,6 +760,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
+			// TODO: Add permission
+			createDropdownMenuItem(
+				COLLECTION_ACTIONS.openAutoplayCollectionModal,
+				t('collection/views/collection-detail___speel-de-collectie-af'),
+				'play'
+			),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
