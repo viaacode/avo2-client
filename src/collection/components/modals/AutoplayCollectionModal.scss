@@ -16,6 +16,10 @@
 				display: none;
 			}
 		}
+
+		@media screen and (max-width: $g-bp3) {
+			height: 100%;
+		}
 	}
 }
 
