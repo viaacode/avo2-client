@@ -1,4 +1,5 @@
 export * from './useDebounce';
+export * from './useElementSize';
 export * from './useSlot';
 export * from './useTableSort';
 export * from './useTabs';
