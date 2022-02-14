@@ -15,7 +15,7 @@ import { redirectToServerLinkAccount } from '../../../authentication/helpers/red
 import { AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../uistate/store/actions';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
-import { NOT_NOW_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
+import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
@@ -82,7 +82,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	// Lifecycle
 
 	useEffect(() => {
-		const hasDismissed = localStorage.getItem(NOT_NOW_KEY) === NOT_NOW_VAL;
+		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
 
 		// Stop early if previously dismissed
 		if (hasDismissed) {
@@ -101,7 +101,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	const onClose = () => {
 		setShowNudgingModal(false);
-		localStorage.setItem(NOT_NOW_KEY, NOT_NOW_VAL);
+		localStorage.setItem(NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL);
 	};
 
 	const onClickDoNotShow = setProfilePreference;
