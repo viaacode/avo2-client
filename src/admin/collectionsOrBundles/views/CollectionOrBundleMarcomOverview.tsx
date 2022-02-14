@@ -175,6 +175,8 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
 			const columnDataType: string = get(column, 'dataType', '');
+			const filters = getFilters(tableState);
+			filters.excludeChannelType = 'OVERIGE';
 			const [
 				collectionsTemp,
 				collectionsCountTemp,
@@ -184,7 +186,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 					'updated_at') as CollectionOrBundleMarcomOverviewTableCols,
 				tableState.sort_order || 'desc',
 				columnDataType,
-				generateWhereObject(getFilters(tableState)),
+				generateWhereObject(filters),
 				'marcom'
 			);
 			setCollections(collectionsTemp);
