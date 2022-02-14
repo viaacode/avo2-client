@@ -72,34 +72,40 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 		>
 			<ModalBody>
 				<div className="c-modal__autoplay-grid">
-					<ul
-						style={{
-							maxHeight: window.innerWidth <= 900 ? '100%' : `${videoSize?.height}px`,
-						}}
-						className="c-modal__autoplay-queue"
-					>
-						{collectionFragments.map((fragment) => {
-							return (
-								<li
-									className={classNames(
-										'c-modal__autoplay-queue-item',
-										fragment.position === currentFragment ? 'selected' : ''
-									)}
-									onClick={() => playVideo(fragment.position)}
-								>
-									{fragment.item_meta?.title}
-									<img
-										src={
-											fragment.item_meta?.thumbnail_path
-												? fragment.item_meta.thumbnail_path
-												: ''
-										}
-										alt=""
-									/>
-								</li>
-							);
-						})}
-					</ul>
+					<div>
+						<p className="c-modal__autoplay-queue-title">Volgende in de afspeellijst</p>
+						<ul
+							style={{
+								maxHeight:
+									window.innerWidth <= 900
+										? '100%'
+										: `${videoSize && videoSize?.height - 44}px`,
+							}}
+							className="c-modal__autoplay-queue"
+						>
+							{collectionFragments.map((fragment) => {
+								return (
+									<li
+										className={classNames(
+											'c-modal__autoplay-queue-item',
+											fragment.position === currentFragment ? 'selected' : ''
+										)}
+										onClick={() => playVideo(fragment.position)}
+									>
+										{fragment.item_meta?.title}
+										<img
+											src={
+												fragment.item_meta?.thumbnail_path
+													? fragment.item_meta.thumbnail_path
+													: ''
+											}
+											alt=""
+										/>
+									</li>
+								);
+							})}
+						</ul>
+					</div>
 					<div className="c-modal__autoplay-video" ref={videoRef}>
 						<FlowPlayerWrapper
 							item={collectionFragments[currentFragment].item_meta as Avo.Item.Item}
