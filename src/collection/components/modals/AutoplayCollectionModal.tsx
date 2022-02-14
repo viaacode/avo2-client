@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -5,6 +6,7 @@ import { Button, Icon, Modal, ModalBody } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
+import { useElementSize } from '../../../shared/hooks';
 
 import './AutoplayCollectionModal.scss';
 
@@ -20,6 +22,9 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	collectionFragments,
 }) => {
 	const [t] = useTranslation();
+
+	const videoRef = useRef(null);
+	const videoSize = useElementSize(videoRef);
 
 	const [currentFragment, setCurrentFragment] = useState<number>(0);
 	const [showPlayNext, setShowPlayNext] = useState<boolean>(false);
@@ -63,16 +68,23 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 			)}
 			size="extra-large"
 			onClose={onClose}
+			className="c-modal__autoplay-modal"
 		>
 			<ModalBody>
 				<div className="c-modal__autoplay-grid">
-					<ul className="c-modal__autoplay-queue u-spacer-right-l">
+					<ul
+						style={{
+							maxHeight: window.innerWidth <= 900 ? '100%' : `${videoSize?.height}px`,
+						}}
+						className="c-modal__autoplay-queue"
+					>
 						{collectionFragments.map((fragment) => {
 							return (
 								<li
-									className={
+									className={classNames(
+										'c-modal__autoplay-queue-item',
 										fragment.position === currentFragment ? 'selected' : ''
-									}
+									)}
 									onClick={() => playVideo(fragment.position)}
 								>
 									{fragment.item_meta?.title}
@@ -88,7 +100,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 							);
 						})}
 					</ul>
-					<div className="c-modal__autoplay-video">
+					<div className="c-modal__autoplay-video" ref={videoRef}>
 						<FlowPlayerWrapper
 							item={collectionFragments[currentFragment].item_meta as Avo.Item.Item}
 							canPlay={true}
