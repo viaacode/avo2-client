@@ -1,8 +1,16 @@
+@import '../../styles/settings/variables';
+
 .m-collection-detail {
 	&.hide-behind-login-popup {
 		opacity: 0;
 		max-height: 0;
 		overflow: hidden;
+	}
+
+	.c-button-toolbar {
+		flex-wrap: wrap;
+		justify-content: end;
+		row-gap: $g-spacer-unit;
 	}
 }
 
