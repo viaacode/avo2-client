@@ -1,5 +1,5 @@
 import H from 'history';
-import { get } from 'lodash-es';
+import { get, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -168,8 +168,8 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			await CollectionService.insertMarcomEntry([marcomEntry]);
 			if (!isCollection) {
 				// It's a bundle: add this entry to all included collections
-				const collectionIds = collection.collection_fragments.map(
-					(fragment) => fragment.external_id
+				const collectionIds = uniq(
+					collection.collection_fragments.map((fragment) => fragment.external_id)
 				);
 				await CollectionService.insertMarcomEntriesForBundleCollections(
 					collection.id,
