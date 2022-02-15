@@ -25,6 +25,8 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	const [showPlayNext, setShowPlayNext] = useState<boolean>(false);
 	const [autoPlay, setAutoPlay] = useState<boolean>(true);
 	const timeout = useRef<NodeJS.Timeout | null>(null);
+	// filter unplayable fragments
+	const playableFragments = collectionFragments.filter((fragment) => !!fragment.item_meta);
 
 	const playVideo = (index: number) => {
 		cancelTimer();
@@ -36,7 +38,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	const handleVideoEnded = () => {
 		setAutoPlay(false);
 
-		if (currentFragment + 1 < collectionFragments.length) {
+		if (currentFragment + 1 < playableFragments.length) {
 			setShowPlayNext(true);
 			timeout.current = setTimeout(() => {
 				playVideo(currentFragment + 1);
@@ -67,7 +69,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 			<ModalBody>
 				<div className="c-modal__autoplay-grid">
 					<ul className="c-modal__autoplay-queue u-spacer-right-l">
-						{collectionFragments.map((fragment) => {
+						{playableFragments.map((fragment) => {
 							return (
 								<li
 									className={
@@ -90,22 +92,22 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 					</ul>
 					<div className="c-modal__autoplay-video">
 						<FlowPlayerWrapper
-							item={collectionFragments[currentFragment].item_meta as Avo.Item.Item}
+							item={playableFragments[currentFragment].item_meta as Avo.Item.Item}
 							canPlay={true}
 							autoplay={isOpen && autoPlay}
 							cuePoints={{
-								start: collectionFragments[currentFragment].start_oc,
-								end: collectionFragments[currentFragment].end_oc,
+								start: playableFragments[currentFragment].start_oc,
+								end: playableFragments[currentFragment].end_oc,
 							}}
 							external_id={
-								(collectionFragments[currentFragment].item_meta as Avo.Item.Item)
+								(playableFragments[currentFragment].item_meta as Avo.Item.Item)
 									.external_id
 							}
 							duration={
-								(collectionFragments[currentFragment].item_meta as Avo.Item.Item)
+								(playableFragments[currentFragment].item_meta as Avo.Item.Item)
 									.duration
 							}
-							title={collectionFragments[currentFragment].item_meta?.title}
+							title={playableFragments[currentFragment].item_meta?.title}
 							onEnded={handleVideoEnded}
 						/>
 						{showPlayNext && (
@@ -123,7 +125,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 										<circle r="38" cx="40" cy="40"></circle>
 									</svg>
 								</div>
-								<p>{collectionFragments[currentFragment + 1]?.item_meta?.title}</p>
+								<p>{playableFragments[currentFragment + 1]?.item_meta?.title}</p>
 								<Button
 									onClick={cancelAutoPlay}
 									size="large"
