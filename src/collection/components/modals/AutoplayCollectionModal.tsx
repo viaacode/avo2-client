@@ -94,11 +94,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 									>
 										{fragment.item_meta?.title}
 										<img
-											src={
-												fragment.item_meta?.thumbnail_path
-													? fragment.item_meta.thumbnail_path
-													: ''
-											}
+											src={ fragment.item_meta?.thumbnail_path || '' }
 											alt=""
 										/>
 									</li>
