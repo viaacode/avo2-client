@@ -1,10 +1,13 @@
+import classNames from 'classnames';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Scrollbar from 'react-scrollbars-custom';
 
 import { Button, Icon, Modal, ModalBody } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
+import { useElementSize } from '../../../shared/hooks';
 
 import './AutoplayCollectionModal.scss';
 
@@ -20,6 +23,9 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	collectionFragments,
 }) => {
 	const [t] = useTranslation();
+
+	const videoRef = useRef(null);
+	const videoSize = useElementSize(videoRef);
 
 	const [currentFragment, setCurrentFragment] = useState<number>(0);
 	const [showPlayNext, setShowPlayNext] = useState<boolean>(false);
@@ -65,32 +71,47 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 			)}
 			size="extra-large"
 			onClose={onClose}
+			className="c-modal__autoplay-modal"
 		>
 			<ModalBody>
 				<div className="c-modal__autoplay-grid">
-					<ul className="c-modal__autoplay-queue u-spacer-right-l">
-						{playableFragments.map((fragment) => {
-							return (
-								<li
-									className={
-										fragment.position === currentFragment ? 'selected' : ''
-									}
-									onClick={() => playVideo(fragment.position)}
-								>
-									{fragment.item_meta?.title}
-									<img
-										src={
-											fragment.item_meta?.thumbnail_path
-												? fragment.item_meta.thumbnail_path
-												: ''
-										}
-										alt=""
-									/>
-								</li>
-							);
-						})}
+					<p className="c-modal__autoplay-queue-title">
+						{t(
+							'collection/components/modals/autoplay-collection-modal___volgende-in-de-afspeellijst'
+						)}
+					</p>
+
+					<ul className="c-modal__autoplay-queue">
+						<Scrollbar
+							style={{
+								maxHeight:
+									window.innerWidth <= 900
+										? '100%'
+										: `${videoSize && videoSize?.height}px`,
+							}}
+						>
+							{collectionFragments.map((fragment) => {
+								return (
+									<li
+										key={fragment.id}
+										className={classNames(
+											'c-modal__autoplay-queue-item',
+											fragment.position === currentFragment ? 'selected' : ''
+										)}
+										onClick={() => playVideo(fragment.position)}
+									>
+										{fragment.item_meta?.title}
+										<img
+											src={fragment.item_meta?.thumbnail_path || ''}
+											alt=""
+										/>
+									</li>
+								);
+							})}
+						</Scrollbar>
 					</ul>
-					<div className="c-modal__autoplay-video">
+
+					<div className="c-modal__autoplay-video" ref={videoRef}>
 						<FlowPlayerWrapper
 							item={playableFragments[currentFragment].item_meta as Avo.Item.Item}
 							canPlay={true}

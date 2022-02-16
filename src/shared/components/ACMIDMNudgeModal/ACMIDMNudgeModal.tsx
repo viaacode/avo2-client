@@ -211,13 +211,13 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		>
 			<ModalBody>
 				<div className="c-nudge-modal">
-					<p className="c-nudge-modal__title">
-						<Spacer margin={['bottom-small']}>{renderTitle()}</Spacer>
-					</p>
+					<Spacer className="c-nudge-modal__title" margin={['bottom-small']}>
+						<p>{renderTitle()}</p>
+					</Spacer>
 
-					<p className="c-nudge-modal__description">
-						<Spacer margin={['bottom-large']}>{renderDescription()}</Spacer>
-					</p>
+					<Spacer className="c-nudge-modal__description" margin={['bottom-large']}>
+						<p>{renderDescription()}</p>
+					</Spacer>
 
 					<div className="c-nudge-modal__options">{renderOptions()}</div>
 
