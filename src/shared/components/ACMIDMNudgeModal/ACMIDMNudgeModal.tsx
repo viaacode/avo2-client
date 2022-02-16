@@ -15,7 +15,7 @@ import { redirectToServerLinkAccount } from '../../../authentication/helpers/red
 import { AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../uistate/store/actions';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
-import { ROUTE_PARTS } from '../../constants';
+import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
@@ -82,16 +82,28 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	// Lifecycle
 
 	useEffect(() => {
+		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
+
+		// Stop early if previously dismissed
+		if (hasDismissed) {
+			setShowNudgingModal(false);
+			return;
+		}
+
 		const isOnAssignmentPage = location.pathname.includes(ROUTE_PARTS.assignments);
 
 		if (user && (!isPupil || (isPupil && !isOnAssignmentPage))) {
 			fetchProfilePreference();
 		}
-	}, [fetchProfilePreference, user, isPupil, location]);
+	}, [fetchProfilePreference, user, isPupil, location, setShowNudgingModal]);
 
 	// Events
 
-	const onClose = () => setShowNudgingModal(false);
+	const onClose = () => {
+		setShowNudgingModal(false);
+		localStorage.setItem(NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL);
+	};
+
 	const onClickDoNotShow = setProfilePreference;
 
 	// Render
@@ -199,13 +211,13 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		>
 			<ModalBody>
 				<div className="c-nudge-modal">
-					<p className="c-nudge-modal__title">
-						<Spacer margin={['bottom-small']}>{renderTitle()}</Spacer>
-					</p>
+					<Spacer className="c-nudge-modal__title" margin={['bottom-small']}>
+						<p>{renderTitle()}</p>
+					</Spacer>
 
-					<p className="c-nudge-modal__description">
-						<Spacer margin={['bottom-large']}>{renderDescription()}</Spacer>
-					</p>
+					<Spacer className="c-nudge-modal__description" margin={['bottom-large']}>
+						<p>{renderDescription()}</p>
+					</Spacer>
 
 					<div className="c-nudge-modal__options">{renderOptions()}</div>
 
