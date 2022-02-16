@@ -17,7 +17,7 @@ $grid-gutter: 2.4rem;
 	background-image: url('/images/login-bg.jpg');
 	background-size: cover;
 
-	.c-modal {
+	.c-modal.c-modal--medium {
 		width: 700px; // rem causes some funky behaviour here
 	}
 
