@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import { NOT_NOW_KEY } from '../../shared/constants';
+import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
 import { useTabs } from '../../shared/hooks';
 import {
 	redirectToClientPage,
@@ -55,7 +55,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 
 	// Whenever a user sees the LoginOptions, reset their nudging
 	useEffect(() => {
-		localStorage.removeItem(NOT_NOW_KEY);
+		localStorage.removeItem(NOT_NOW_LOCAL_STORAGE_KEY);
 	}, []);
 
 	const renderTitle = () => {
