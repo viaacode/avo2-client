@@ -26,11 +26,11 @@
 .c-modal__autoplay-grid {
 	display: grid;
 	grid-template-columns: 1fr 3fr;
+	column-gap: $g-spacer-unit * 2;
 
 	.c-modal__autoplay-queue {
-		margin-right: $g-spacer-unit * 3;
+		padding-right: $g-spacer-unit;
 		list-style: none;
-		overflow-y: scroll;
 		scrollbar-width: none; // Firefox
 
 		// Chrome & Safari

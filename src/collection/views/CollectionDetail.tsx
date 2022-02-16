@@ -14,8 +14,8 @@ import {
 	Container,
 	Grid,
 	Header,
-	HeaderAvatar,
 	HeaderButtons,
+	HeaderRow,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -867,9 +867,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									: renderHeaderButtons()}
 							</HeaderButtons>
 						)}
-						<HeaderAvatar>
-							{profile && renderAvatar(profile, { dark: true })}
-						</HeaderAvatar>
+
+						<HeaderRow>
+							<Spacer margin={'top-small'}>
+								{profile && renderAvatar(profile, { dark: true })}
+							</Spacer>
+						</HeaderRow>
 					</Header>
 					<Container mode="vertical">
 						<Container mode="horizontal">

@@ -31,7 +31,7 @@
 		"@popperjs/core": "^2.5.4",
 		"@react-hook/resize-observer": "^1.2.5",
 		"@storybook/addon-actions": "^6.3.12",
-		"@viaa/avo2-components": "^1.81.2",
+		"@viaa/avo2-components": "^1.83.1",
 		"@viaa/avo2-types": "^2.36.1",
 		"apollo-boost": "^0.4.3",
 		"braft-editor": "^2.3.9",

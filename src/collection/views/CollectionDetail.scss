@@ -17,9 +17,23 @@
 .c-collection-list__item {
 	margin-bottom: 3.2rem;
 	padding-bottom: 3.2rem;
-	border-bottom: 1px solid #D6DEE3;
+	border-bottom: 1px solid #d6dee3;
 
 	&:last-child {
 		border: none;
+	}
+}
+
+.c-header .o-container {
+	&:first-child {
+		.c-toolbar {
+			align-items: end;
+		}
+	}
+
+	&:not(:first-child) {
+		.c-toolbar {
+			min-height: 0;
+		}
 	}
 }
