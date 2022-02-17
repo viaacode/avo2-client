@@ -40,7 +40,6 @@ interface IdpProps {
 	description?: string;
 	iconNames: IconName[];
 	hideForPupil?: boolean;
-	onlyForPupil?: boolean;
 }
 
 interface DeleteModalToggle {
@@ -100,14 +99,18 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 
 		return (
 			<Spacer margin="top">
-				{!(isPupil && currentIdp.hideForPupil) && !(!isPupil && currentIdp.onlyForPupil) && (
+				{!(isPupil && currentIdp.hideForPupil) && (
 					<Grid className="c-account-link">
 						<Column className={`c-account-link__column ${className}`} size="3-2">
 							{currentIdp.iconNames.map((iconName: string) => (
 								<Icon
 									name={iconName as IconName}
 									size="huge"
-									type={iconName === 'itsme' ? 'multicolor' : 'custom'}
+									type={
+										['itsme', 'leerid'].includes(iconName)
+											? 'multicolor'
+											: 'custom'
+									}
 								></Icon>
 							))}
 						</Column>
