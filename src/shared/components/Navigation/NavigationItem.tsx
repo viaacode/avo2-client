@@ -76,7 +76,7 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					<DropdownButton>
 						<div className={`${className} u-clickable`}>
 							{item.icon && <Icon name={item.icon} />}
-							<span className="c-nav__item-label">{item.label}</span>
+							<div className="c-nav__item-label">{item.label}</div>
 						</div>
 					</DropdownButton>
 					<DropdownContent>
