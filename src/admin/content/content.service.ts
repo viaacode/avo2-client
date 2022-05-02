@@ -421,7 +421,7 @@ export class ContentService {
 			}
 
 			if (contentPage.contentBlockConfigs && initialContentPage) {
-				await ContentBlockService.updateContentBlocks(
+				await ContentBlockService.updateChangedContentBlocks(
 					contentPage.id as number,
 					initialContentPage.contentBlockConfigs || [],
 					contentPage.contentBlockConfigs
