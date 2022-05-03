@@ -29,6 +29,7 @@ describe('search > store > selectors', () => {
 			loading: false,
 			error: false,
 		},
+		uiState: {},
 	};
 
 	it('Should get the search tree from the store', () => {

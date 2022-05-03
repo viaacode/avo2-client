@@ -24,6 +24,7 @@ describe('login > store > selectors', () => {
 			loading: false,
 			error: false,
 		},
+		uiState: {},
 	};
 
 	it('Should get the login error-state from the store', () => {

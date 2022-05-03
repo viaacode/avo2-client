@@ -22,7 +22,12 @@ const QuickLaneLink: FunctionComponent<QuickLaneLinkProps> = ({ id, label, short
 	});
 
 	return (
-		<a className={className} target="_blank" href={generateQuickLaneHref(id)}>
+		<a
+			className={className}
+			target="_blank"
+			href={generateQuickLaneHref(id)}
+			rel="noopener noreferrer"
+		>
 			{label ? label : defaultLabel(id)}
 		</a>
 	);
