@@ -16,6 +16,7 @@ import {
 	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
+import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -71,6 +72,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [permissions, setPermissions] = useState<{
 		[collectionId: string]: { canEdit?: boolean; canDelete?: boolean };
 	}>({});
+	const [showPublicState, setShowPublicState] = useState(false);
 
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<string | null>(null);
@@ -187,6 +189,24 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	useEffect(() => {
 		fetchCollections();
 	}, [fetchCollections]);
+
+	useEffect(() => {
+		PermissionService.hasPermissions(
+			[
+				{
+					name: isCollection
+						? PermissionName.PUBLISH_OWN_COLLECTIONS
+						: PermissionName.PUBLISH_OWN_BUNDLES,
+				},
+				{
+					name: isCollection
+						? PermissionName.PUBLISH_ANY_COLLECTIONS
+						: PermissionName.PUBLISH_ANY_BUNDLES,
+				},
+			],
+			user
+		).then((showPublicState) => setShowPublicState(showPublicState));
+	}, [setShowPublicState, isCollection, user]);
 
 	useEffect(() => {
 		if (collections) {
@@ -494,13 +514,19 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				sortable: true,
 				dataType: 'dateTime',
 			},
-			{
-				id: 'is_public',
-				label: t('collection/components/collection-or-bundle-overview___is-publiek'),
-				col: '2',
-				sortable: true,
-				dataType: 'boolean',
-			},
+			...(showPublicState
+				? [
+						{
+							id: 'is_public',
+							label: t(
+								'collection/components/collection-or-bundle-overview___is-publiek'
+							),
+							col: '2',
+							sortable: true,
+							dataType: 'boolean',
+						} as TableColumnSchema,
+				  ]
+				: []),
 			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
 			// ...(isCollection
 			// 	? [

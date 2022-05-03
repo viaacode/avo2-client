@@ -580,15 +580,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canQuickLane
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openQuickLane,
-							t('collection/views/collection-detail___delen-met-leerlingen'),
-							'link-2'
-						),
-				  ]
-				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
@@ -620,6 +611,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
 						)}
 						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
+					/>
+				)}
+				{permissions.canQuickLane && (
+					<Button
+						type="secondary"
+						icon="link-2"
+						label={t('item/views/item___delen-met-leerlingen')}
+						ariaLabel={t('collection/views/collection-detail___delen-met-leerlingen')}
+						title={t('collection/views/collection-detail___delen-met-leerlingen')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
 					/>
 				)}
 				{permissions.canPublishCollection && (
@@ -739,15 +740,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
-						),
-				  ]
-				: []),
-			...(permissions.canQuickLane
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openQuickLane,
-							t('collection/views/collection-detail___delen-met-leerlingen'),
-							'link-2'
 						),
 				  ]
 				: []),

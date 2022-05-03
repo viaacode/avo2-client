@@ -118,6 +118,7 @@ interface FilterTableProps extends RouteComponentProps {
 	selectedItemIds?: (string | number)[] | null;
 	onSelectionChanged?: (selectedItemIds: (string | number)[]) => void;
 	onSelectAll?: () => void;
+	hideTableColumnsButton?: boolean;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -141,6 +142,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	selectedItemIds,
 	onSelectionChanged,
 	onSelectAll,
+	hideTableColumnsButton,
 }) => {
 	const [t] = useTranslation();
 
@@ -425,18 +427,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								)}
 							</Flex>
 						</ToolbarLeft>
-						<ToolbarRight>
-							<CheckboxDropdownModal
-								label={t(
-									'admin/shared/components/filter-table/filter-table___kolommen'
-								)}
-								id="table_columns"
-								options={getColumnOptions()}
-								onChange={updateSelectedColumns}
-								showSelectedValuesOnCollapsed={false}
-								showSearch={false}
-							/>
-						</ToolbarRight>
+						{!hideTableColumnsButton && (
+							<ToolbarRight>
+								<CheckboxDropdownModal
+									label={t(
+										'admin/shared/components/filter-table/filter-table___kolommen'
+									)}
+									id="table_columns"
+									options={getColumnOptions()}
+									onChange={updateSelectedColumns}
+									showSelectedValuesOnCollapsed={false}
+									showSearch={false}
+								/>
+							</ToolbarRight>
+						)}
 					</Toolbar>
 				</Spacer>
 			</>

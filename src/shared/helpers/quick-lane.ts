@@ -20,7 +20,8 @@ export const isPersonal = (user: UserSchema): boolean => {
 
 export const getTypeOptions = (t: TFunction): CheckboxOption[] => {
 	const translations: {
-		[x in AssignmentContentLabel]?: string;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		[key in AssignmentContentLabel]?: any;
 	} = {
 		ITEM: t('workspace/views/quick-lane-overview___item'),
 		COLLECTIE: t('workspace/views/quick-lane-overview___collectie'),
