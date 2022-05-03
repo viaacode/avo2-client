@@ -47,7 +47,7 @@
 		"i18next-xhr-backend": "^3.2.2",
 		"immer": "^8.0.1",
 		"immutable": "3.8.2",
-		"lodash-es": "^4.17.11",
+		"lodash-es": "^4.17.21",
 		"marked": "^4.0.10",
 		"moment": "^2.24.0",
 		"node-fetch": "^2.6.7",
