@@ -32,7 +32,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
@@ -206,9 +205,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					{
 						object: bundleId,
 						object_type: 'bundle',
-						message: `Gebruiker ${getProfileName(
-							user
-						)} heeft de pagina voor collectie ${bundleId} bekeken`,
 						action: 'view',
 					},
 					user
@@ -311,7 +307,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				{
 					object: bundleId,
 					object_type: 'collection',
-					message: `${getProfileName(user)} heeft een bundel verwijderd`,
 					action: 'delete',
 				},
 				user
@@ -350,7 +345,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				{
 					object: String(bundle.id),
 					object_type: 'bundle',
-					message: `Gebruiker ${getProfileName(user)} heeft een bundel geducpliceerd`,
 					action: 'copy',
 				},
 				user

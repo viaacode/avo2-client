@@ -184,6 +184,13 @@ export function generateCollectionWhereObject(
 		},
 	});
 
+	const excludeChannelType = get(filters, 'excludeChannelType');
+	if (excludeChannelType) {
+		andFilters.push({
+			channel_type: { _neq: excludeChannelType },
+		});
+	}
+
 	// Actualisation filters
 	andFilters.push(
 		...getMultiOptionFilters(filters, ['actualisation_status'], ['mgmt_current_status'])

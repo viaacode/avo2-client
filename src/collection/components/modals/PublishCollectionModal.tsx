@@ -18,7 +18,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import i18n from '../../../shared/translations/i18n';
@@ -105,9 +104,6 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 				{
 					object: String(collection.id),
 					object_type: isCollection() ? 'collection' : 'bundle',
-					message: `Gebruiker ${getProfileName(user)} heeft een ${
-						isCollection() ? 'collectie' : 'bundel'
-					} ${isPublished ? 'gepubliceerd' : 'gedepubliceerd'}`,
 					action: isPublished ? 'publish' : 'unpublish',
 				},
 				user

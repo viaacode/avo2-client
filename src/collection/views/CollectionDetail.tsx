@@ -14,8 +14,8 @@ import {
 	Container,
 	Grid,
 	Header,
-	HeaderAvatar,
 	HeaderButtons,
+	HeaderRow,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -29,7 +29,6 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
@@ -65,7 +64,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
-import { FragmentList, PublishCollectionModal } from '../components';
+import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
@@ -84,6 +83,7 @@ export const COLLECTION_ACTIONS = {
 	createAssignment: 'createAssignment',
 	editCollection: 'editCollection',
 	openQuickLane: 'openQuickLane',
+	openAutoplayCollectionModal: 'openAutoplayCollectionModal',
 };
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -105,6 +105,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
+	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] = useState<boolean>(
+		false
+	);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
@@ -121,6 +124,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			canCreateCollections: boolean;
 			canViewItems: boolean;
 			canQuickLane: boolean;
+			canAutoplay: boolean;
+			canCreateAssignment: boolean;
+			canCreateBundles: boolean;
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -237,6 +243,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					[{ name: PermissionName.CREATE_QUICK_LANE }],
 					user
 				),
+				PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION),
+				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS),
+				PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES),
 			]);
 
 			const permissionObj = {
@@ -249,6 +258,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canCreateCollections: rawPermissions[6],
 				canViewItems: rawPermissions[7],
 				canQuickLane: rawPermissions[8],
+				canAutoplay: rawPermissions[9],
+				canCreateAssignments: rawPermissions[10],
+				canCreateBundles: rawPermissions[11],
 			};
 
 			let showPopup = false;
@@ -295,9 +307,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					{
 						object: collectionId,
 						object_type: 'collection',
-						message: `Gebruiker ${getProfileName(
-							user
-						)} heeft de pagina voor collectie ${collectionId} bekeken`,
 						action: 'view',
 					},
 					user
@@ -401,7 +410,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						{
 							object: collection.id,
 							object_type: 'collection',
-							message: `${getProfileName(user)} heeft een collectie gedupliceerd`,
 							action: 'copy',
 						},
 						user
@@ -455,6 +463,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 			case COLLECTION_ACTIONS.editCollection:
 				onEditCollection();
+				break;
+			case COLLECTION_ACTIONS.openAutoplayCollectionModal:
+				setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
 				break;
 
 			case COLLECTION_ACTIONS.openQuickLane:
@@ -520,7 +531,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				{
 					object: collectionId,
 					object_type: 'collection',
-					message: `${getProfileName(user)} heeft een collectie verwijderd`,
 					action: 'delete',
 				},
 				user
@@ -571,7 +581,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
+			...(permissions.canCreateBundles
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
@@ -601,7 +611,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
-				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+				{permissions.canAutoplay && (
+					<Button
+						type="secondary"
+						label={t('collection/views/collection-detail___speel-de-collectie-af')}
+						title={t('collection/views/collection-detail___speel-de-collectie-af')}
+						ariaLabel={t('collection/views/collection-detail___speelt-de-collectie-af')}
+						icon="play"
+						onClick={() =>
+							executeAction(COLLECTION_ACTIONS.openAutoplayCollectionModal)
+						}
+					/>
+				)}
+				{permissions.canCreateAssignment && (
 					<Button
 						label={t('collection/views/collection-detail___maak-opdracht')}
 						type="secondary"
@@ -690,7 +712,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			...(permissions.canEditCollection
 				? [
 						createDropdownMenuItem(
@@ -700,7 +721,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
+			...(permissions.canCreateAssignment
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.createAssignment,
@@ -734,12 +755,30 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
+			...(permissions.canCreateBundles
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
 							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
+						),
+				  ]
+				: []),
+			...(permissions.canQuickLane
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openQuickLane,
+							t('collection/views/collection-detail___delen-met-leerlingen'),
+							'link-2'
+						),
+				  ]
+				: []),
+			...(permissions.canAutoplay
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openAutoplayCollectionModal,
+							t('collection/views/collection-detail___speel-de-collectie-af'),
+							'play'
 						),
 				  ]
 				: []),
@@ -838,9 +877,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									: renderHeaderButtons()}
 							</HeaderButtons>
 						)}
-						<HeaderAvatar>
-							{profile && renderAvatar(profile, { dark: true })}
-						</HeaderAvatar>
+
+						<HeaderRow>
+							<Spacer margin={'top-small'}>
+								{profile && renderAvatar(profile, { dark: true })}
+							</Spacer>
+						</HeaderRow>
 					</Header>
 					<Container mode="vertical">
 						<Container mode="horizontal">
@@ -853,7 +895,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										!isAddToBundleModalOpen &&
 										!isDeleteModalOpen &&
 										!isPublishModalOpen &&
-										!isShareThroughEmailModalOpen
+										!isShareThroughEmailModalOpen &&
+										!isAutoplayCollectionModalOpen
 									}
 									history={history}
 									location={location}
@@ -1049,6 +1092,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							isOpen={isShareThroughEmailModalOpen}
 							onClose={() => setIsShareThroughEmailModalOpen(false)}
 						/>
+						{!!collection_fragments && collection && (
+							<AutoplayCollectionModal
+								isOpen={isAutoplayCollectionModalOpen}
+								onClose={() => setIsAutoplayCollectionModalOpen(false)}
+								collectionFragments={collection_fragments}
+							/>
+						)}
 						{collection && (
 							<QuickLaneModal
 								modalTitle={t(

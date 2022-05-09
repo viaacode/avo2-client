@@ -16,26 +16,13 @@ import {
 import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
-	/**
-	 * Update content block.
-	 *
-	 * @param contentBlockConfig updated state of content block
-	 */
-	public static async updateContentBlock(
-		contentBlockConfig: ContentBlockConfig
-	): Promise<FetchResult<any> | null> {
+	public static async updateContentBlocks(contentBlockConfigs: ContentBlockConfig[]) {
 		try {
-			const contentBlock = convertBlockToDatabaseFormat(contentBlockConfig);
-
-			return await dataService.mutate({
-				mutation: UPDATE_CONTENT_BLOCK,
-				variables: { contentBlock, id: contentBlockConfig.id },
-				update: ApolloCacheManager.clearContentBlocksCache,
-			});
+			return Promise.all(contentBlockConfigs.map(this.updateContentBlock));
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to update content block', err, {
-					contentBlockConfig,
+				new CustomError('Failed to update some content blocks', err, {
+					contentBlockConfigs,
 				})
 			);
 
@@ -47,6 +34,23 @@ export class ContentBlockService {
 
 			return null;
 		}
+	}
+
+	/**
+	 * Update content block.
+	 *
+	 * @param contentBlockConfig updated state of content block
+	 */
+	public static async updateContentBlock(
+		contentBlockConfig: ContentBlockConfig
+	): Promise<FetchResult<any> | null> {
+		const contentBlock = convertBlockToDatabaseFormat(contentBlockConfig);
+
+		return await dataService.mutate({
+			mutation: UPDATE_CONTENT_BLOCK,
+			variables: { contentBlock, id: contentBlockConfig.id },
+			update: ApolloCacheManager.clearContentBlocksCache,
+		});
 	}
 
 	/**
@@ -138,7 +142,7 @@ export class ContentBlockService {
 	 * @param initialContentBlocks initial state of content blocks
 	 * @param contentBlockConfigs configs of content blocks to update
 	 */
-	public static async updateContentBlocks(
+	public static async updateChangedContentBlocks(
 		contentId: number,
 		initialContentBlocks: ContentBlockConfig[],
 		contentBlockConfigs: ContentBlockConfig[]
@@ -174,9 +178,9 @@ export class ContentBlockService {
 					has(config, 'id') && initialContentBlockIds.includes(config.id as number)
 			);
 
-			updatedConfigs.forEach((config) =>
-				updatePromises.push(ContentBlockService.updateContentBlock(config))
-			);
+			if (updatedConfigs.length) {
+				updatePromises.push(ContentBlockService.updateContentBlocks(updatedConfigs));
+			}
 
 			// Deleted content-blocks
 			const deletePromises: Promise<any>[] = [];

@@ -6,16 +6,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import {
-	Button,
-	Column,
-	Grid,
-	Icon,
-	IconName,
-	Modal,
-	ModalBody,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Button, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 
 import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -24,6 +15,7 @@ import { redirectToServerLinkAccount } from '../../../authentication/helpers/red
 import { AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../uistate/store/actions';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
+import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
@@ -47,6 +39,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	setShowNudgingModal,
 }) => {
 	const [t] = useTranslation();
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+
+	// HTTP
 
 	const fetchProfilePreference = useCallback(async () => {
 		if (showNudgingModal !== null) {
@@ -84,118 +79,167 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		}
 	};
 
-	useEffect(() => {
-		const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+	// Lifecycle
 
-		if (user && !isPupil) {
+	useEffect(() => {
+		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
+
+		// Stop early if previously dismissed
+		if (hasDismissed) {
+			setShowNudgingModal(false);
+			return;
+		}
+
+		const isOnAssignmentPage = location.pathname.includes(ROUTE_PARTS.assignments);
+
+		if (user && (!isPupil || (isPupil && !isOnAssignmentPage))) {
 			fetchProfilePreference();
 		}
-	}, [fetchProfilePreference, user]);
+	}, [fetchProfilePreference, user, isPupil, location, setShowNudgingModal]);
 
-	const onClose = () => setShowNudgingModal(false);
+	// Events
 
-	const onClickDoNotShow = () => {
-		setProfilePreference();
+	const onClose = () => {
+		setShowNudgingModal(false);
+		localStorage.setItem(NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL);
+	};
+
+	const onClickDoNotShow = setProfilePreference;
+
+	// Render
+
+	const renderTitle = () => {
+		return isPupil ? (
+			t(
+				'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-veilig-en-makkelijk-inloggen'
+			)
+		) : (
+			<>
+				{t(
+					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-en-makkelijk-inloggen-met'
+				)}
+				<span className="u-text-bold">
+					{t(
+						'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme-e-id-of-een-digitale-sleutel'
+					)}
+				</span>
+				?
+			</>
+		);
+	};
+
+	const renderDescription = () => {
+		return isPupil
+			? t(
+					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-snel-je-leerling-id-aan-je-bestaande-account'
+			  )
+			: t(
+					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-direct-je-burgerprofiel-aan-je-bestaande-account'
+			  );
+	};
+
+	const renderOptions = () => {
+		return isPupil ? (
+			<>
+				<Spacer margin="bottom-large">
+					<Button
+						block
+						className="c-button-leerid"
+						type="tertiary"
+						icon="leerid"
+						iconType="multicolor"
+						label={t(
+							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___leerling-id'
+						)}
+						onClick={() => {
+							redirectToServerLinkAccount(
+								location,
+								'VLAAMSEOVERHEID',
+								'authMech=leerid'
+							);
+							onClose();
+						}}
+					/>
+				</Spacer>
+			</>
+		) : (
+			<>
+				<Spacer margin="bottom-large">
+					<Button
+						block
+						className="c-button-itsme"
+						type="tertiary"
+						icon="itsme"
+						iconType="multicolor"
+						label={t('shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme')}
+						onClick={() => {
+							redirectToServerLinkAccount(
+								location,
+								'VLAAMSEOVERHEID',
+								'authMech=itsme'
+							);
+							onClose();
+						}}
+					/>
+				</Spacer>
+
+				<Spacer margin="bottom-large">
+					<Button
+						block
+						className="c-button-acmidm"
+						type="tertiary"
+						icon="eid"
+						label={t(
+							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
+						)}
+						onClick={() => {
+							redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID', 'authMech');
+							onClose();
+						}}
+					/>
+				</Spacer>
+			</>
+		);
 	};
 
 	return (
-		<Modal isOpen={showNudgingModal} size="medium" onClose={onClose}>
+		<Modal
+			isOpen={showNudgingModal}
+			size="medium"
+			onClose={onClose}
+			className="c-nudge-modal__wrapper"
+		>
 			<ModalBody>
 				<div className="c-nudge-modal">
-					<Spacer margin="bottom">
-						<p className="c-nudge-modal__title">
-							{t(
-								'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-en-makkelijk-inloggen-met'
-							)}
-							<span className="u-text-bold">
-								{t(
-									'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme-e-id-of-een-digitale-sleutel'
-								)}
-							</span>
-							?
-						</p>
+					<Spacer className="c-nudge-modal__title" margin={['bottom-small']}>
+						<p>{renderTitle()}</p>
 					</Spacer>
-					<p className="c-nudge-modal__description">
-						{t(
-							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-direct-je-burgerprofiel-aan-je-bestaande-account'
-						)}
-					</p>
-					<div className="c-nudge-modal__options">
-						<div
-							onClick={() => {
-								redirectToServerLinkAccount(
-									location,
-									'VLAAMSEOVERHEID',
-									'itsme=true'
-								);
-								onClose();
-							}}
-						>
-							<Grid className="c-nudge-modal__options__item">
-								<Column
-									className="c-nudge-modal__options__column c-nudge-modal__options__column--left"
-									size="3-2"
-								>
-									<Icon
-										name={'itsme' as IconName}
-										size="huge"
-										type="multicolor"
-									/>
-								</Column>
-								<Column
-									className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
-									size="3-10"
-								>
-									<Spacer>
-										{t(
-											'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme'
-										)}
-									</Spacer>
-								</Column>
-							</Grid>
+
+					<Spacer className="c-nudge-modal__description" margin={['bottom-large']}>
+						<p>{renderDescription()}</p>
+					</Spacer>
+
+					<div className="c-nudge-modal__options">{renderOptions()}</div>
+
+					<Spacer className="c-nudge-modal__footer" margin="none" padding={['top']}>
+						<div>
+							<Button
+								type="link"
+								label={t(
+									'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___nu-even-niet'
+								)}
+								onClick={onClose}
+							/>
 						</div>
-						<div
-							onClick={() => {
-								redirectToServerLinkAccount(location, 'VLAAMSEOVERHEID');
-								onClose();
-							}}
-						>
-							<Grid className="c-nudge-modal__options__item">
-								<Column
-									className="c-nudge-modal__options__column c-nudge-modal__options__column--left"
-									size="3-2"
-								>
-									<Icon name={'eid' as IconName} size="large" />
-								</Column>
-								<Column
-									className="c-nudge-modal__options__column c-nudge-modal__options__column--right"
-									size="3-10"
-								>
-									<Spacer>
-										{t(
-											'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
-										)}
-									</Spacer>
-								</Column>
-							</Grid>
-						</div>
-					</div>
-					<Spacer margin="bottom-small">
+
 						<Button
-							type="secondary"
+							type="link"
 							label={t(
-								'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___nu-even-niet'
+								'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___niet-meer-weergeven'
 							)}
-							onClick={onClose}
+							onClick={onClickDoNotShow}
 						/>
 					</Spacer>
-					<Button
-						type="secondary"
-						label={t(
-							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___niet-meer-weergeven'
-						)}
-						onClick={onClickDoNotShow}
-					/>
 				</div>
 			</ModalBody>
 		</Modal>

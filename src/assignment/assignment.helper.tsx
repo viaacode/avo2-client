@@ -16,7 +16,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../authentication/helpers/get-profile-info';
 import { APP_PATH } from '../constants';
 import { LoadingInfo } from '../shared/components';
 import { ContentLink } from '../shared/components/ContentLink/ContentLink';
@@ -69,7 +68,6 @@ export class AssignmentHelper {
 				{
 					object: String(assignment.uuid),
 					object_type: 'assignment',
-					message: `Gebruiker ${getProfileName(user)} heeft een opdracht gedupliceerd`,
 					action: 'copy',
 				},
 				user

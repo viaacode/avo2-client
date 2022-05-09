@@ -56,6 +56,9 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	>(false);
 	const [isDeleteSmartschoolModalOpen, setIsDeleteSmartschoolModalOpe] = useState<boolean>(false);
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
+	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
+
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {
@@ -63,17 +66,19 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 			setter: setIsDeleteVlaamseOverheidModalOpen,
 		},
 		SMARTSCHOOL: { open: isDeleteSmartschoolModalOpen, setter: setIsDeleteSmartschoolModalOpe },
+		LEERID: { open: isDeleteLeerIDModalOpen, setter: setIsDeleteLeerIDModalOpen },
 		KLASCEMENT: { open: isDeleteKlascementModalOpen, setter: setIsDeleteKlascementModalOpen },
 	};
 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
-			label: t('settings/components/linked-accounts___burgerprofiel'),
-			description: t(
-				'settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'
-			),
-			iconNames: ['itsme' as IconName, 'eid' as IconName], // TODO: Remove `as IconName`.
-			hideForPupil: true,
+			label: isPupil
+				? t('settings/components/linked-accounts___leer-id')
+				: t('settings/components/linked-accounts___burgerprofiel'),
+			description: isPupil
+				? t('settings/components/linked-accounts___aanmelden-met-je-leer-id')
+				: t('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
+			iconNames: isPupil ? ['leerid'] : ['itsme', 'eid'],
 		},
 		SMARTSCHOOL: {
 			label: t('settings/components/linked-accounts___smartschool'),
@@ -89,22 +94,23 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		const linked = hasIdpLinked(user, idpType);
 		const currentIdp = idpProps[idpType];
-		const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 		const { open: confirmModalOpen, setter: setConfirmModalOpen } = deleteIdpModals[idpType];
+		const className = `c-account-link__column--${currentIdp.iconNames.join('-')}`;
 
 		return (
 			<Spacer margin="top">
 				{!(isPupil && currentIdp.hideForPupil) && (
 					<Grid className="c-account-link">
-						<Column
-							className={`c-account-link__column c-account-link__column--${currentIdp.label.toLowerCase()}`}
-							size="3-2"
-						>
+						<Column className={`c-account-link__column ${className}`} size="3-2">
 							{currentIdp.iconNames.map((iconName: string) => (
 								<Icon
 									name={iconName as IconName}
 									size="huge"
-									type={iconName === 'itsme' ? 'multicolor' : 'custom'}
+									type={
+										['itsme', 'leerid'].includes(iconName)
+											? 'multicolor'
+											: 'custom'
+									}
 								></Icon>
 							))}
 						</Column>

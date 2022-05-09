@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { AspectRatioWrapper, FlowPlayer, Icon } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -45,6 +44,7 @@ type FlowPlayerWrapperProps = {
 	seekTime?: number;
 	autoplay?: boolean;
 	onPlay?: () => void;
+	onEnded?: () => void;
 };
 
 /**
@@ -99,9 +99,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			{
 				object: props.external_id || '',
 				object_type: 'item',
-				message: `Gebruiker ${
-					props.user ? `${getProfileName(props.user)} ` : ''
-				} heeft het item ${props.external_id} afgespeeld`,
 				action: 'play',
 			},
 			props.user
@@ -220,6 +217,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					onPlay={handlePlay}
+					onEnded={props.onEnded}
 					googleAnalyticsId={trackingId}
 					googleAnalyticsEvents={
 						[

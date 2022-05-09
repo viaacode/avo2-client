@@ -1,7 +1,8 @@
 import H from 'history';
-import { get } from 'lodash-es';
+import { get, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -22,7 +23,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError, formatDate } from '../../shared/helpers';
+import { APP_PATH } from '../../constants';
+import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
@@ -112,6 +114,19 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 						'-'
 					)
 				);
+			case 'parent_collection':
+				return value ? (
+					<Link
+						to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
+							id: get(value, 'id'),
+							tabId: 'marcom',
+						})}
+					>
+						<span>{get(value, 'title')}</span>
+					</Link>
+				) : (
+					''
+				);
 
 			case 'actions':
 				return (
@@ -151,6 +166,17 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				publish_date: marcomDate?.toISOString(),
 			};
 			await CollectionService.insertMarcomEntry([marcomEntry]);
+			if (!isCollection) {
+				// It's a bundle: add this entry to all included collections
+				const collectionIds = uniq(
+					collection.collection_fragments.map((fragment) => fragment.external_id)
+				);
+				await CollectionService.insertMarcomEntriesForBundleCollections(
+					collection.id,
+					collectionIds,
+					marcomEntry
+				);
+			}
 			await fetchMarcomEntries();
 			ToastService.success(
 				t(
@@ -281,7 +307,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							{marcomEntries ? (
 								<Table
 									data={marcomEntries}
-									columns={GET_MARCOM_ENTRY_TABLE_COLUMNS()}
+									columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
 									renderCell={renderMarcomTableCell as any}
 									emptyStateMessage={
 										isCollection

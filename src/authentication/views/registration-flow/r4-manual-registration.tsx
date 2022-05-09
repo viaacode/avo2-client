@@ -184,7 +184,6 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				{
 					object: '',
 					object_type: 'account',
-					message: `${firstName} ${lastName} heeft manueel een account aangevraagd via zendesk`,
 					action: 'request',
 				},
 				null
