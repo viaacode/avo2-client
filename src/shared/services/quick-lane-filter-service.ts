@@ -56,7 +56,11 @@ export class QuickLaneFilterService {
 				].filter((condition) => condition._or && condition._or.length > 0),
 				orderBy:
 					params?.sortColumn && params?.sortOrder && params?.sortType
-						? getOrderObject(params.sortColumn, params.sortOrder, params.sortType, {})
+						? getOrderObject(params.sortColumn, params.sortOrder, params.sortType, {
+								author: (order: SearchOrderDirection) => ({
+									owner: { usersByuserId: { first_name: order } },
+								}),
+						  })
 						: undefined,
 			};
 
