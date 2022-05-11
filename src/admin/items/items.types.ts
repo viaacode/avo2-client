@@ -31,6 +31,7 @@ export type ItemsOverviewTableCols =
 	| 'in_collection'
 	| 'bookmarks'
 	| 'in_assignment'
+	| 'quick_lanes'
 	| 'actions';
 
 export type UnpublishedItemsOverviewTableCols =

@@ -73,6 +73,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			in_assignment: order,
 		},
 	}),
+	quick_lanes: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			quick_lanes: order,
+		},
+	}),
 };
 
 export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
@@ -337,6 +342,15 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 	return [];
 };
 
+const getCollectionQuickLanesColumn = (): FilterableColumn => ({
+	id: 'quick_lanes',
+	tooltip: i18n.t('aantal keer gedeeld met leerlingen'),
+	icon: 'link-2',
+	sortable: true,
+	visibleByDefault: true,
+	dataType: 'number',
+});
+
 const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 	id: 'subjects',
 	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'),
@@ -536,6 +550,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	getCollectionCopiesColumn(),
 	...getCollectionInBundleColumn(isCollection),
 	...getCollectionInAssignmentColumn(isCollection),
+	getCollectionQuickLanesColumn(),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionEducationLevelsColumn(educationLevels),
 	getCollectionOrganisationColumn(organisations),

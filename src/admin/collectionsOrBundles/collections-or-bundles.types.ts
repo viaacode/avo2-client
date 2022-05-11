@@ -21,6 +21,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'copies'
 	| 'in_bundle'
 	| 'in_assignment'
+	| 'quick_lanes'
 	| 'is_copy'
 	| 'organisation';
 

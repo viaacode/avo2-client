@@ -34,6 +34,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	in_assignment: (order: Avo.Search.OrderDirection) => ({
 		item_counts: { in_assignment: order },
 	}),
+	quick_lanes: (order: Avo.Search.OrderDirection) => ({
+		item_counts: {
+			quick_lanes: order,
+		},
+	}),
 };
 
 export const GET_ITEM_OVERVIEW_TABLE_COLS: (
@@ -159,6 +164,14 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 		),
 		icon: 'bookmark',
+		sortable: true,
+		visibleByDefault: true,
+		dataType: 'number',
+	},
+	{
+		id: 'quick_lanes',
+		tooltip: i18n.t('aantal keer gedeeld met leerlingen'),
+		icon: 'link-2',
 		sortable: true,
 		visibleByDefault: true,
 		dataType: 'number',
