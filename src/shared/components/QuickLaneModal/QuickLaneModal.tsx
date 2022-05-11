@@ -79,14 +79,22 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		if (!isOpen) return;
 
 		const shouldBePublishedFirst =
-			isCollection({ content_label }) && publishRequired && isCollectionAuthor;
+			isCollection({ content_label }) &&
+			publishRequired &&
+			isCollectionAuthor &&
+			!(content as CollectionSchema).is_public; // AVO-1880
 
 		setActiveTab(
 			shouldBePublishedFirst ? QuickLaneModalTabs.publication : QuickLaneModalTabs.sharing
 		);
-	}, [isOpen, setActiveTab, publishRequired, content_label, isCollectionAuthor]);
+	}, [isOpen, setActiveTab, publishRequired, content_label, isCollectionAuthor, content]);
 
 	const getTabs = () => {
+		// AVO-1880
+		if ((content as CollectionSchema).is_public) {
+			return [];
+		}
+
 		return tabs.filter((tab) => {
 			switch (tab.id) {
 				case QuickLaneModalTabs.publication:
