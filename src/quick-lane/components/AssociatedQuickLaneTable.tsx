@@ -35,10 +35,6 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 							sortable: true,
 							dataType: 'string',
 						},
-						{
-							id: QUICK_LANE_COLUMNS.URL,
-							label: t('workspace/views/quick-lane-overview___url'),
-						},
 						// Hide timestamps & author on mobile
 						...(isMobileWidth()
 							? []

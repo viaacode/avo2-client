@@ -25,7 +25,7 @@ const QuickLaneFilterTableCell: FunctionComponent<QuickLaneFilterTableCellProps>
 					{t('workspace/views/quick-lane-overview___geen')}
 				</span>
 			) : (
-				<span>{data.title}</span>
+				<QuickLaneLink id={data.id} label={data.title} />
 			);
 
 		case QUICK_LANE_COLUMNS.CONTENT_LABEL:
@@ -38,9 +38,6 @@ const QuickLaneFilterTableCell: FunctionComponent<QuickLaneFilterTableCellProps>
 			}
 
 			return <span>{label}</span>;
-
-		case QUICK_LANE_COLUMNS.URL:
-			return <QuickLaneLink short id={data.id} /*label={`${data.id.slice(0, 8)}...`}*/ />;
 
 		case QUICK_LANE_COLUMNS.AUTHOR:
 			return <span>{data.owner?.user.full_name || '-'}</span>;

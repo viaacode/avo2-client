@@ -55,11 +55,6 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						filterProps: { options: getTypeOptions(t) },
 					},
 			  ]),
-		{
-			id: QUICK_LANE_COLUMNS.URL,
-			label: t('workspace/views/quick-lane-overview___url'),
-			visibleByDefault: true,
-		},
 		// Hide timestamps & author on mobile
 		...(isMobileWidth()
 			? []
