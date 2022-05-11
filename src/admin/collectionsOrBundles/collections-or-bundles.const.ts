@@ -344,7 +344,9 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 
 const getCollectionQuickLanesColumn = (): FilterableColumn => ({
 	id: 'quick_lanes',
-	tooltip: i18n.t('aantal keer gedeeld met leerlingen'),
+	tooltip: i18n.t(
+		'admin/collections-or-bundles/collections-or-bundles___aantal-keer-gedeeld-met-leerlingen'
+	),
 	icon: 'link-2',
 	sortable: true,
 	visibleByDefault: true,

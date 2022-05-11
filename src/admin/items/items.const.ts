@@ -170,7 +170,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'quick_lanes',
-		tooltip: i18n.t('aantal keer gedeeld met leerlingen'),
+		tooltip: i18n.t('admin/items/items___aantal-keer-gedeeld-met-leerlingen'),
 		icon: 'link-2',
 		sortable: true,
 		visibleByDefault: true,
