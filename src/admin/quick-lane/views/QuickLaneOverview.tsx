@@ -2,12 +2,17 @@ import { isEqual } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { useQueryParams } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingInfo } from '../../../shared/components';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { ITEMS_PER_PAGE, QUICK_LANE_COLUMNS } from '../../../shared/constants/quick-lane';
+import {
+	ITEMS_PER_PAGE,
+	QUICK_LANE_COLUMNS,
+	QUICK_LANE_DEFAULTS,
+} from '../../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../../shared/helpers';
 import { getTypeOptions } from '../../../shared/helpers/quick-lane';
 import { useDebounce } from '../../../shared/hooks';
@@ -17,9 +22,12 @@ import {
 } from '../../../shared/services/quick-lane-filter-service';
 import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../../shared/types';
 import FilterTable, { FilterableColumn } from '../../shared/components/FilterTable/FilterTable';
+import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../shared/components/FilterTable/FilterTable.const';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 interface QuickLaneOverviewProps extends DefaultSecureRouteProps {}
+
+const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -27,6 +35,12 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+
+	// Set default sorting
+	const [query, setQuery] = useQueryParams({
+		sort_order: queryParamConfig.sort_order,
+		sort_column: queryParamConfig.sort_column,
+	});
 
 	const [filters, setFilters] = useState<QuickLaneOverviewFilterState | undefined>(undefined);
 	const debouncedFilters: QuickLaneOverviewFilterState | undefined = useDebounce(filters, 250);
@@ -137,6 +151,13 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	useEffect(() => {
 		fetchQuickLanes();
 	}, [fetchQuickLanes]);
+
+	useEffect(() => {
+		setQuery({
+			sort_column: query.sort_column || QUICK_LANE_DEFAULTS.sort_column,
+			sort_order: query.sort_order || QUICK_LANE_DEFAULTS.sort_order,
+		});
+	});
 
 	// Rendering
 
