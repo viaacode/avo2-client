@@ -176,7 +176,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			);
 			const columnDataType: string = get(column, 'dataType', '');
 			const filters = getFilters(tableState);
-			filters.excludeChannelType = 'OVERIGE';
+			filters.excludeChannelType = null;
 			const [
 				collectionsTemp,
 				collectionsCountTemp,
