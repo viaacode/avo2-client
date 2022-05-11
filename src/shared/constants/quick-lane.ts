@@ -1,6 +1,5 @@
 export const QUICK_LANE_COLUMNS = {
 	TITLE: 'title',
-	URL: 'url',
 	CREATED_AT: 'created_at',
 	UPDATED_AT: 'updated_at',
 	CONTENT_LABEL: 'content_label',

@@ -590,6 +590,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
+			...(permissions.canQuickLane && permissions.canCreateAssignment
+				? [
+						createDropdownMenuItem(
+							COLLECTION_ACTIONS.openQuickLane,
+							t('collection/views/collection-detail___delen-met-leerlingen'),
+							'link-2'
+						),
+				  ]
+				: []),
 			...(permissions.canCreateCollections
 				? [
 						createDropdownMenuItem(
@@ -635,7 +644,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
 					/>
 				)}
-				{permissions.canQuickLane && (
+				{permissions.canQuickLane && !permissions.canCreateAssignment && (
 					<Button
 						type="secondary"
 						icon="link-2"
