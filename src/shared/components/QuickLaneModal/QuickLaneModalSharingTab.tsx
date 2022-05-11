@@ -129,16 +129,23 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 		})();
 	}, [debounced]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	const avatar = {
+		name: user?.profile?.organisation?.name,
+		image: user?.profile?.organisation?.logo_url,
+	};
+
 	return user && content && content_label ? (
 		<>
-			<Spacer margin={['bottom']}>
-				<Avatar
-					className="m-quick-lane-modal__avatar"
-					dark={true}
-					name={content.organisation?.name}
-					image={content.organisation?.logo_url}
-				/>
-			</Spacer>
+			{(avatar.name || avatar.image) && (
+				<Spacer margin={['bottom']}>
+					<Avatar
+						className="m-quick-lane-modal__avatar"
+						dark={true}
+						name={avatar.name}
+						image={avatar.image}
+					/>
+				</Spacer>
+			)}
 
 			<Spacer margin={['bottom']}>
 				<FormGroup

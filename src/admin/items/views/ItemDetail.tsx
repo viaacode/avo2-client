@@ -30,7 +30,7 @@ import {
 } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { QUICK_LANE_COLUMNS } from '../../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS } from '../../../shared/constants/quick-lane';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
@@ -81,7 +81,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
-		QUICK_LANE_COLUMNS.TITLE
+		QUICK_LANE_DEFAULTS.sort_column
 	);
 	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
 
