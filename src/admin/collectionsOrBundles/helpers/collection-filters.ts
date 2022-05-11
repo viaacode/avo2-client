@@ -191,7 +191,7 @@ export function generateCollectionWhereObject(
 		});
 	} else if (excludeChannelType === null) {
 		andFilters.push({
-			channel_type: { _ilike: '%' },
+			channel_type: { _is_null: false },
 		});
 	}
 
