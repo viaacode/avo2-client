@@ -6,4 +6,9 @@ export const QUICK_LANE_COLUMNS = {
 	AUTHOR: 'author',
 };
 
+export const QUICK_LANE_DEFAULTS = {
+	sort_column: QUICK_LANE_COLUMNS.CREATED_AT,
+	sort_order: 'desc',
+};
+
 export const ITEMS_PER_PAGE = 20;
