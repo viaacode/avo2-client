@@ -1,5 +1,4 @@
 import { ContentPickerType } from '@viaa/avo2-components';
-import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import i18n from '../../../../shared/translations/i18n';
 import { PickerTypeOption } from '../../types';
@@ -25,7 +24,7 @@ export const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => (
 	FILE: i18n.t('admin/shared/components/content-picker/content-picker___bestand'),
 });
 
-export const GET_CONTENT_TYPES: (user?: UserSchema) => PickerTypeOption[] = (user) => {
+export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 	const labels = GET_CONTENT_TYPE_LABELS();
 	return [
 		{
@@ -90,7 +89,7 @@ export const GET_CONTENT_TYPES: (user?: UserSchema) => PickerTypeOption[] = (use
 			value: 'PROFILE',
 			label: labels['PROFILE'],
 			disabled: false,
-			fetch: (name, limit) => retrieveProfiles(name, limit, user),
+			fetch: (name, limit) => retrieveProfiles(name, limit),
 			picker: 'SELECT',
 		},
 		{

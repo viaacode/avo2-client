@@ -17,7 +17,6 @@ import {
 
 import { FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
-import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
@@ -41,7 +40,7 @@ export interface ContentPickerProps {
 	errors?: string | string[];
 }
 
-const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> = ({
+const ContentPickerComponent: FunctionComponent<ContentPickerProps> = ({
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
 	initialValue,
 	onSelect,
@@ -51,12 +50,11 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	hideTypeDropdown = false,
 	hideTargetSwitch = false,
 	errors = [],
-	user,
 }) => {
 	const [t] = useTranslation();
 
 	// filter available options for the type picker
-	const typeOptions = filterTypes(GET_CONTENT_TYPES(user), allowedTypes as ContentPickerType[]);
+	const typeOptions = filterTypes(GET_CONTENT_TYPES(), allowedTypes as ContentPickerType[]);
 
 	// apply initial type from `initialValue`, default to first available type
 	const currentTypeObject = typeOptions.find((type) => type.value === get(initialValue, 'type'));
@@ -366,6 +364,4 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	);
 };
 
-export const ContentPicker = withUser(ContentPickerComponent) as FunctionComponent<
-	ContentPickerProps
->;
+export const ContentPicker = ContentPickerComponent as FunctionComponent<ContentPickerProps>;
