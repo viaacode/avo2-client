@@ -89,7 +89,7 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 			value: 'PROFILE',
 			label: labels['PROFILE'],
 			disabled: false,
-			fetch: (name, limit) => retrieveProfiles(name, limit),
+			fetch: retrieveProfiles,
 			picker: 'SELECT',
 		},
 		{
