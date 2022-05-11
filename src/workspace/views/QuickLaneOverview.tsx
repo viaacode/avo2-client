@@ -202,7 +202,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			sort_column: query.sort_column || QUICK_LANE_DEFAULTS.sort_column,
 			sort_order: query.sort_order || QUICK_LANE_DEFAULTS.sort_order,
 		});
-	});
+	}, []); // eslint-disable-line
 
 	// Rendering
 
