@@ -1,9 +1,11 @@
 import { ApolloQueryResult } from 'apollo-boost';
+import { DocumentNode } from 'graphql';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
 
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
@@ -20,6 +22,7 @@ import {
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
 	GET_USERS,
+	GET_USERS_IN_SAME_COMPANY,
 	GET_USER_BY_ID,
 	GET_USER_TEMP_ACCESS_BY_ID,
 	UPDATE_USER_TEMP_ACCESS_BY_ID,
@@ -169,15 +172,43 @@ export class UserService {
 		}
 	}
 
+	static async getCompanyProfiles(
+		page: number,
+		sortColumn: UserOverviewTableCol,
+		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
+		where: any = {},
+		user?: UserSchema,
+		itemsPerPage: number = ITEMS_PER_PAGE
+	): Promise<[Avo.User.Profile[], number]> {
+		if (!user?.profile?.company_id) {
+			return Promise.resolve([[], 0]);
+		}
+
+		return this.getProfiles(
+			page,
+			sortColumn,
+			sortOrder,
+			tableColumnDataType,
+			where,
+			itemsPerPage,
+			GET_USERS_IN_SAME_COMPANY,
+			{ companyId: user.profile.company_id }
+		);
+	}
+
 	static async getProfiles(
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: string,
 		where: any = {},
-		itemsPerPage: number = ITEMS_PER_PAGE
+		itemsPerPage: number = ITEMS_PER_PAGE,
+		query: DocumentNode = GET_USERS,
+		initialVariables: any = {}
 	): Promise<[Avo.User.Profile[], number]> {
-		let variables: any;
+		let variables = initialVariables;
+
 		try {
 			const whereWithoutDeleted = {
 				...where,
@@ -185,6 +216,7 @@ export class UserService {
 			};
 
 			variables = {
+				...variables,
 				offset: itemsPerPage * page,
 				limit: itemsPerPage,
 				where: whereWithoutDeleted,
@@ -198,7 +230,7 @@ export class UserService {
 
 			const response = await dataService.query({
 				variables,
-				query: GET_USERS,
+				query,
 				fetchPolicy: 'no-cache',
 			});
 

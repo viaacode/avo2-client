@@ -177,6 +177,77 @@ export const GET_USERS = gql`
 	}
 `;
 
+export const GET_USERS_IN_SAME_COMPANY = gql`
+	query getUsersInSameCompany(
+		$offset: Int!
+		$limit: Int!
+		$orderBy: [users_summary_view_order_by!]!
+		$where: users_summary_view_bool_exp!
+		$companyId: String!
+	) {
+		users_summary_view(
+			offset: $offset
+			limit: $limit
+			order_by: $orderBy
+			where: { _and: [{ company_id: { _eq: $companyId } }, $where] }
+		) {
+			user_id
+			full_name
+			first_name
+			last_name
+			mail
+			last_access_at
+			is_blocked
+			blocked_at {
+				date: max
+			}
+			unblocked_at {
+				date: max
+			}
+			profile_id
+			stamboek
+			acc_created_at
+			group_id
+			group_name
+			company_name
+			is_exception
+			business_category
+			idps {
+				idp
+			}
+			classifications {
+				key
+			}
+			contexts {
+				key
+			}
+			organisations {
+				organization_id
+				unit_id
+				organization {
+					ldap_description
+				}
+			}
+			user {
+				temp_access {
+					until
+					from
+					current {
+						status
+					}
+				}
+			}
+		}
+		users_summary_view_aggregate(
+			where: { _and: [{ company_id: { _eq: $companyId } }, $where] }
+		) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
 export const GET_USER_TEMP_ACCESS_BY_ID = gql`
 	query getUserTempAccess($id: uuid!) {
 		shared_users(where: { profile: { id: { _eq: $id }, is_deleted: { _eq: false } } }) {

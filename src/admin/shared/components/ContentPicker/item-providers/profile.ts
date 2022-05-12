@@ -39,14 +39,17 @@ export const retrieveProfiles = async (
 				: {}),
 		};
 
-		const response: [Avo.User.Profile[], number] = await UserService.getProfiles(
-			0,
-			'last_access_at',
-			'desc',
-			'dateTime',
-			where,
-			limit
-		);
+		const response: [Avo.User.Profile[], number] = await (shouldFetchUsersInCompany(user)
+			? UserService.getCompanyProfiles(
+					0,
+					'last_access_at',
+					'desc',
+					'dateTime',
+					where,
+					user,
+					limit
+			  )
+			: UserService.getProfiles(0, 'last_access_at', 'desc', 'dateTime', where, limit));
 
 		return parseProfiles(response[0]);
 	} catch (err) {
