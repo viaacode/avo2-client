@@ -4,6 +4,7 @@ export const QUICK_LANE_COLUMNS = {
 	UPDATED_AT: 'updated_at',
 	CONTENT_LABEL: 'content_label',
 	AUTHOR: 'author',
+	ORGANISATION: 'organisation',
 };
 
 export const QUICK_LANE_DEFAULTS = {

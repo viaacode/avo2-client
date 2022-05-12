@@ -47,6 +47,9 @@ const QuickLaneFilterTableCell: FunctionComponent<QuickLaneFilterTableCellProps>
 			const date = data[id as 'created_at' | 'updated_at'];
 			return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 
+		case QUICK_LANE_COLUMNS.ORGANISATION:
+			return <span>{data.owner?.organisation?.name || '-'}</span>;
+
 		default:
 			return null;
 	}
