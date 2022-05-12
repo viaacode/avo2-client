@@ -13,7 +13,6 @@ import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour
 import { renderItemRoutes, renderPublishItemRoutes } from './items/items.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
 import { renderAdminPermissionGroupRoutes } from './permission-groups/permission-group.routes';
-import { renderQuickLaneRoutes } from './quick-lane/quick-lane.routes';
 import { renderAdminTranslationsRoutes } from './translations/translations.routes';
 import { renderAdminUserGroupRoutes } from './user-groups/user-group.routes';
 import { renderAdminUserRoutes } from './users/user.routes';
@@ -69,9 +68,6 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 			])}
 			{renderWithPermissions(renderAdminTranslationsRoutes, [
 				PermissionName.EDIT_TRANSLATIONS,
-			])}
-			{renderWithPermissions(renderQuickLaneRoutes, [
-				PermissionName.VIEW_ANY_QUICK_LANE_OVERVIEW,
 			])}
 			{/* Default routes */}
 			{renderErrorRoutes()}
