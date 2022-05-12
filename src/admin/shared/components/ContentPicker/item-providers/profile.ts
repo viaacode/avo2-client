@@ -34,9 +34,6 @@ export const retrieveProfiles = async (
 						],
 				  }
 				: {}),
-			...(shouldFetchUsersInCompany(user)
-				? { company_id: { _eq: user?.profile?.company_id } }
-				: {}),
 		};
 
 		const response: [Avo.User.Profile[], number] = await (shouldFetchUsersInCompany(user)

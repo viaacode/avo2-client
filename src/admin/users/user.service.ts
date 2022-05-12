@@ -192,6 +192,7 @@ export class UserService {
 			tableColumnDataType,
 			where,
 			itemsPerPage,
+			// Change query and variables
 			GET_USERS_IN_SAME_COMPANY,
 			{ companyId: user.profile.company_id }
 		);
