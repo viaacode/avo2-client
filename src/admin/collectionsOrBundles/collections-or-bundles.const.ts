@@ -73,9 +73,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			in_assignment: order,
 		},
 	}),
-	quick_lanes: (order: Avo.Search.OrderDirection) => ({
+	quick_lane_links: (order: Avo.Search.OrderDirection) => ({
 		counts: {
-			quick_lanes: order,
+			quick_lane_links: order,
 		},
 	}),
 };
@@ -343,7 +343,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 };
 
 const getCollectionQuickLanesColumn = (): FilterableColumn => ({
-	id: 'quick_lanes',
+	id: 'quick_lane_links',
 	tooltip: i18n.t(
 		'admin/collections-or-bundles/collections-or-bundles___aantal-keer-gedeeld-met-leerlingen'
 	),

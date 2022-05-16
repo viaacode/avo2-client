@@ -31,7 +31,7 @@ export type ItemsOverviewTableCols =
 	| 'in_collection'
 	| 'bookmarks'
 	| 'in_assignment'
-	| 'quick_lanes'
+	| 'quick_lane_links'
 	| 'actions';
 
 export type UnpublishedItemsOverviewTableCols =
@@ -68,6 +68,7 @@ export interface ItemsTableState extends FilterableTableState {
 	in_collection: number;
 	bookmarks: number;
 	in_assignment: number;
+	quick_lane_links: number;
 }
 
 export type UnpublishedStatus = 'NEW' | 'UPDATE' | 'OK' | null;

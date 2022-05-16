@@ -34,9 +34,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	in_assignment: (order: Avo.Search.OrderDirection) => ({
 		item_counts: { in_assignment: order },
 	}),
-	quick_lanes: (order: Avo.Search.OrderDirection) => ({
+	quick_lane_links: (order: Avo.Search.OrderDirection) => ({
 		item_counts: {
-			quick_lanes: order,
+			quick_lane_links: order,
 		},
 	}),
 };
@@ -169,7 +169,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		dataType: 'number',
 	},
 	{
-		id: 'quick_lanes',
+		id: 'quick_lane_links',
 		tooltip: i18n.t('admin/items/items___aantal-keer-gedeeld-met-leerlingen'),
 		icon: 'link-2',
 		sortable: true,

@@ -244,6 +244,9 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			case 'in_assignment':
 				return get(rowData, 'item_counts.in_assignment') || '0';
 
+			case 'quick_lane_links':
+				return get(rowData, 'item_counts.quick_lane_links') || '0';
+
 			case 'is_deleted':
 				return rowData[columnId] ? 'Ja' : 'Nee';
 

@@ -53,6 +53,7 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 				in_collection
 				plays
 				views
+				quick_lane_links
 			}
 		}
 		app_item_meta_aggregate(where: $where) {
