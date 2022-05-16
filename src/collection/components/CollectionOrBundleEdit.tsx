@@ -158,6 +158,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			canDelete: boolean;
 			canCreate: boolean;
 			canViewItems: boolean;
+			canPublish: boolean;
 		}>
 	>({});
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
@@ -358,6 +359,22 @@ const CollectionOrBundleEdit: FunctionComponent<
 				),
 				PermissionService.hasPermissions(
 					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{
+							name: isCollection
+								? PermissionName.PUBLISH_OWN_COLLECTIONS
+								: PermissionName.PUBLISH_OWN_BUNDLES,
+							obj: collectionId,
+						},
+						{
+							name: isCollection
+								? PermissionName.PUBLISH_ANY_COLLECTIONS
+								: PermissionName.PUBLISH_ANY_BUNDLES,
+						},
+					],
 					user
 				),
 			]);
@@ -1125,16 +1142,18 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 		return (
 			<ButtonToolbar>
-				<Button
-					type="secondary"
-					disabled={
-						unsavedChanges && !get(collectionState.initialCollection, 'is_public')
-					}
-					title={publishButtonTooltip}
-					ariaLabel={publishButtonTooltip}
-					icon={isPublic ? 'unlock-3' : 'lock'}
-					onClick={() => executeAction('openPublishModal')}
-				/>
+				{permissions.canPublish && (
+					<Button
+						type="secondary"
+						disabled={
+							unsavedChanges && !get(collectionState.initialCollection, 'is_public')
+						}
+						title={publishButtonTooltip}
+						ariaLabel={publishButtonTooltip}
+						icon={isPublic ? 'unlock-3' : 'lock'}
+						onClick={() => executeAction('openPublishModal')}
+					/>
+				)}
 				<Button
 					type="secondary"
 					label={t('collection/components/collection-or-bundle-edit___bekijk')}

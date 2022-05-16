@@ -8,11 +8,19 @@ export const GET_QUICK_LANE_BY_ID = gql`
 			content_label
 			title
 			view_mode
+			created_at
+			updated_at
 			owner {
 				id
 				avatar
-				usersByuserId {
+				user: usersByuserId {
 					full_name
+					first_name
+					last_name
+				}
+				organisation {
+					name
+					logo_url
 				}
 			}
 		}
@@ -33,8 +41,25 @@ export const GET_QUICK_LANE_BY_CONTENT_AND_OWNER = gql`
 			}
 		) {
 			id
+			content_id
+			content_label
 			title
 			view_mode
+			created_at
+			updated_at
+			owner {
+				id
+				avatar
+				user: usersByuserId {
+					full_name
+					first_name
+					last_name
+				}
+				organisation {
+					name
+					logo_url
+				}
+			}
 		}
 	}
 `;
@@ -45,8 +70,25 @@ export const INSERT_QUICK_LANE = gql`
 			affected_rows
 			returning {
 				id
+				content_id
+				content_label
 				title
 				view_mode
+				created_at
+				updated_at
+				owner {
+					id
+					avatar
+					user: usersByuserId {
+						full_name
+						first_name
+						last_name
+					}
+					organisation {
+						name
+						logo_url
+					}
+				}
 			}
 		}
 	}
@@ -58,8 +100,25 @@ export const UPDATE_QUICK_LANE = gql`
 			affected_rows
 			returning {
 				id
+				content_id
+				content_label
 				title
 				view_mode
+				created_at
+				updated_at
+				owner {
+					id
+					avatar
+					user: usersByuserId {
+						full_name
+						first_name
+						last_name
+					}
+					organisation {
+						name
+						logo_url
+					}
+				}
 			}
 		}
 	}

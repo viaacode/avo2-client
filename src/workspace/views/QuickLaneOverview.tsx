@@ -1,14 +1,16 @@
 import { isEqual } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueryParams } from 'use-query-params';
 
 import FilterTable, {
 	FilterableColumn,
 } from '../../admin/shared/components/FilterTable/FilterTable';
+import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { LoadingInfo } from '../../shared/components';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
+import { QUICK_LANE_COLUMNS, QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks';
@@ -29,12 +31,20 @@ interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
 
 // Component
 
+const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
+
 const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+
+	// Set default sorting
+	const [query, setQuery] = useQueryParams({
+		sort_order: queryParamConfig.sort_order,
+		sort_column: queryParamConfig.sort_column,
+	});
 
 	const [filters, setFilters] = useState<QuickLaneOverviewFilterState | undefined>(undefined);
 	const debouncedFilters: QuickLaneOverviewFilterState | undefined = useDebounce(filters, 250);
@@ -63,11 +73,6 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						filterProps: { options: getTypeOptions(t) },
 					},
 			  ]),
-		{
-			id: QUICK_LANE_COLUMNS.URL,
-			label: t('workspace/views/quick-lane-overview___url'),
-			visibleByDefault: true,
-		},
 		// Hide timestamps & author on mobile
 		...(isMobileWidth()
 			? []
@@ -95,14 +100,15 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 							visibleByDefault: true,
 							filterType: 'DateRangeDropdown',
 						},
-						{
-							id: QUICK_LANE_COLUMNS.UPDATED_AT,
-							label: t('workspace/views/quick-lane-overview___aangepast-op'),
-							sortable: true,
-							dataType: 'dateTime',
-							visibleByDefault: true,
-							filterType: 'DateRangeDropdown',
-						},
+						// Disabled due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
+						// {
+						// 	id: QUICK_LANE_COLUMNS.UPDATED_AT,
+						// 	label: t('workspace/views/quick-lane-overview___aangepast-op'),
+						// 	sortable: true,
+						// 	dataType: 'dateTime',
+						// 	visibleByDefault: true,
+						// 	filterType: 'DateRangeDropdown',
+						// },
 					],
 			  ]),
 	] as FilterableColumn[];
@@ -128,6 +134,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				createdAt: debouncedFilters?.created_at,
 				updatedAt: debouncedFilters?.updated_at,
 				contentLabels: debouncedFilters?.content_label,
+				sortOrder: debouncedFilters?.sort_order,
+				sortColumn: debouncedFilters?.sort_column,
+				sortType: columns.find((column) => {
+					return column.id === debouncedFilters?.sort_column;
+				})?.dataType,
 			};
 
 			if (isOrganisational(user)) {
@@ -177,6 +188,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]);
 
 	// Lifecycle
@@ -184,6 +196,13 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	useEffect(() => {
 		fetchQuickLanes();
 	}, [fetchQuickLanes]);
+
+	useEffect(() => {
+		setQuery({
+			sort_column: query.sort_column || QUICK_LANE_DEFAULTS.sort_column,
+			sort_order: query.sort_order || QUICK_LANE_DEFAULTS.sort_order,
+		});
+	}, []); // eslint-disable-line
 
 	// Rendering
 
@@ -218,6 +237,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			rowKey="id"
 			variant="styled"
 			isLoading={loadingInfo.state === 'loading'}
+			hideTableColumnsButton // Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
 		/>
 	);
 };

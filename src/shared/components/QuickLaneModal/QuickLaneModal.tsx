@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import {
@@ -42,6 +43,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 
 	const [t] = useTranslation();
 	const [publishRequired, setPublishRequired] = useState(false);
+	const [isCollectionAuthor, setIsCollectionAuthor] = useState(false);
 
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -67,20 +69,36 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	}, [user]);
 
 	useEffect(() => {
+		isCollection({ content_label }) &&
+			setIsCollectionAuthor(
+				user?.profile?.id === (content as CollectionSchema).owner_profile_id
+			);
+	}, [user, content, content_label]);
+
+	useEffect(() => {
 		if (!isOpen) return;
 
-		const shouldBePublishedFirst = isCollection({ content_label }) && publishRequired;
+		const shouldBePublishedFirst =
+			isCollection({ content_label }) &&
+			publishRequired &&
+			isCollectionAuthor &&
+			!(content as CollectionSchema).is_public; // AVO-1880
 
 		setActiveTab(
 			shouldBePublishedFirst ? QuickLaneModalTabs.publication : QuickLaneModalTabs.sharing
 		);
-	}, [isOpen, setActiveTab, publishRequired, content_label]);
+	}, [isOpen, setActiveTab, publishRequired, content_label, isCollectionAuthor, content]);
 
 	const getTabs = () => {
+		// AVO-1880
+		if ((content as CollectionSchema).is_public) {
+			return [];
+		}
+
 		return tabs.filter((tab) => {
 			switch (tab.id) {
 				case QuickLaneModalTabs.publication:
-					return isCollection({ content_label });
+					return isCollection({ content_label }) && isCollectionAuthor;
 
 				default:
 					return true;
@@ -96,9 +114,13 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 				);
 
 			case 'COLLECTIE':
-				return t(
-					'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
-				);
+				return tab === QuickLaneModalTabs.publication
+					? t(
+							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
+					  )
+					: t(
+							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek--niet-auteur'
+					  );
 
 			default:
 				return '';
@@ -163,15 +185,13 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 						</Spacer>
 					)}
 
-					{!isShareable(content) &&
-						isCollection({ content_label }) &&
-						tab === QuickLaneModalTabs.publication && (
-							<Spacer margin={['bottom']}>
-								<Alert type={isCollection({ content_label }) ? 'info' : 'danger'}>
-									<p>{renderContentNotShareableWarning()}</p>
-								</Alert>
-							</Spacer>
-						)}
+					{!isShareable(content) && isCollection({ content_label }) && (
+						<Spacer margin={['bottom']}>
+							<Alert type={isCollection({ content_label }) ? 'info' : 'danger'}>
+								<p>{renderContentNotShareableWarning()}</p>
+							</Alert>
+						</Spacer>
+					)}
 
 					{renderTab()}
 				</ModalBody>

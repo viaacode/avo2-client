@@ -29,7 +29,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import AssociatedQuickLaneTable from '../../quick-lane/components/AssociatedQuickLaneTable';
-import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -93,7 +93,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
-		QUICK_LANE_COLUMNS.TITLE
+		QUICK_LANE_DEFAULTS.sort_column
 	);
 	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
 

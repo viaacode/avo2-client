@@ -4,7 +4,7 @@ import {
 	AssignmentLayout,
 } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import { UserProfile, UserSchema } from '@viaa/avo2-types/types/user';
+import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 
@@ -14,14 +14,10 @@ export interface QuickLaneUrl {
 	content?: AssignmentContent;
 	content_id?: string;
 	content_label?: AssignmentContentLabel;
-	owner?: QuickLaneUrlOwner;
+	owner?: UserProfile;
 	owner_profile_id?: string;
 	created_at?: string;
 	updated_at?: string;
-}
-
-export interface QuickLaneUrlOwner extends Pick<UserProfile, 'id' | 'avatar'> {
-	usersByuserId: Pick<UserSchema, 'full_name'>;
 }
 
 export interface QuickLaneUrlObject extends QuickLaneUrl {

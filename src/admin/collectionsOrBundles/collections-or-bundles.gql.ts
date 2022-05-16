@@ -45,6 +45,7 @@ export const GET_COLLECTIONS = gql`
 				in_collection
 				views
 				copies
+				quick_lane_links
 			}
 			is_managed
 		}

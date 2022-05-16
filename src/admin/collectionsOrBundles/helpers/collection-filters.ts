@@ -189,6 +189,10 @@ export function generateCollectionWhereObject(
 		andFilters.push({
 			channel_type: { _neq: excludeChannelType },
 		});
+	} else if (excludeChannelType === null) {
+		andFilters.push({
+			channel_type: { _is_null: false },
+		});
 	}
 
 	// Actualisation filters

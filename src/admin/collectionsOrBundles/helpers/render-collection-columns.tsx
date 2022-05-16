@@ -74,6 +74,9 @@ export const renderCollectionOverviewColumns = (
 		case 'in_assignment':
 			return get(rowData, 'counts.in_assignment') || '0';
 
+		case 'quick_lane_links':
+			return get(rowData, 'counts.quick_lane_links') || '0';
+
 		case 'created_at':
 		case 'updated_at':
 			return formatDate(rowData[columnId]) || '-';

@@ -1,17 +1,5 @@
 import classnames from 'classnames';
-import {
-	cloneDeep,
-	compact,
-	fromPairs,
-	get,
-	isArray,
-	isEmpty,
-	isNil,
-	isPlainObject,
-	isString,
-	omitBy,
-	sortBy,
-} from 'lodash-es';
+import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
@@ -22,7 +10,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
+import { useQueryParams } from 'use-query-params';
 
 import {
 	Button,
@@ -44,6 +32,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 
 import {
 	BooleanCheckboxDropdown,
@@ -56,9 +45,10 @@ import { MultiEducationalOrganisationSelectModal } from '../../../../shared/comp
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
 import { KeyCode } from '../../../../shared/types';
-import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
+import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import './FilterTable.scss';
+import { cleanupObject } from './FilterTable.utils';
 
 export interface FilterableTableState {
 	query?: string;
@@ -78,15 +68,6 @@ export interface FilterableColumn extends TableColumn {
 	filterProps?: any;
 	visibleByDefault: boolean;
 }
-
-const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
-	CheckboxDropdownModal: CheckboxListParam,
-	DateRangeDropdown: DateRangeParam,
-	BooleanCheckboxDropdown: CheckboxListParam,
-	OkNokEmptyCheckboxDropdown: CheckboxListParam,
-	MultiUserSelectDropdown: CheckboxListParam,
-	MultiEducationalOrganisationSelectModal: CheckboxListParam,
-};
 
 interface FilterTableProps extends RouteComponentProps {
 	data: any[];
@@ -118,6 +99,7 @@ interface FilterTableProps extends RouteComponentProps {
 	selectedItemIds?: (string | number)[] | null;
 	onSelectionChanged?: (selectedItemIds: (string | number)[]) => void;
 	onSelectAll?: () => void;
+	hideTableColumnsButton?: boolean;
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -141,6 +123,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	selectedItemIds,
 	onSelectionChanged,
 	onSelectAll,
+	hideTableColumnsButton,
 }) => {
 	const [t] = useTranslation();
 
@@ -149,35 +132,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [selectedBulkAction, setSelectedBulkAction] = useState<string | null>(null);
 	const [confirmBulkActionModalOpen, setConfirmBulkActionModalOpen] = useState<boolean>(false);
-
-	// Build an object containing the filterable columns, so they can be converted to and from the query params
-	const queryParamConfig: { [queryParamId: string]: QueryParamConfig<any> } = {
-		page: NumberParam,
-		...cleanupObject(
-			fromPairs(
-				compact(
-					columns.map((col): [string, QueryParamConfig<any>] | null => {
-						if (
-							col.filterType &&
-							FILTER_TYPE_TO_QUERY_PARAM_CONVERTER[col.filterType]
-						) {
-							return [col.id, FILTER_TYPE_TO_QUERY_PARAM_CONVERTER[col.filterType]];
-						}
-						return null;
-					})
-				)
-			)
-		),
-		query: StringParam,
-		sort_column: StringParam,
-		sort_order: StringParam,
-		columns: CheckboxListParam,
-	};
-	const [tableState, setTableState] = useQueryParams(queryParamConfig);
+	const [tableState, setTableState] = useQueryParams(FILTER_TABLE_QUERY_PARAM_CONFIG(columns));
 
 	useEffect(() => {
 		onTableStateChanged(tableState);
-		setSearchTerm(tableState.query);
+		setSearchTerm(tableState.query || '');
 	}, [onTableStateChanged, tableState]);
 
 	const handleTableStateChanged = (value: any, id: string) => {
@@ -275,7 +234,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	};
 
 	const renderFilters = () => {
-		const page = tableState.page | 0;
+		const page = tableState.page || 0;
 		const from = page * itemsPerPage + 1;
 		const to = Math.min(page * itemsPerPage + itemsPerPage, dataCount);
 
@@ -425,18 +384,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								)}
 							</Flex>
 						</ToolbarLeft>
-						<ToolbarRight>
-							<CheckboxDropdownModal
-								label={t(
-									'admin/shared/components/filter-table/filter-table___kolommen'
-								)}
-								id="table_columns"
-								options={getColumnOptions()}
-								onChange={updateSelectedColumns}
-								showSelectedValuesOnCollapsed={false}
-								showSearch={false}
-							/>
-						</ToolbarRight>
+						{!hideTableColumnsButton && (
+							<ToolbarRight>
+								<CheckboxDropdownModal
+									label={t(
+										'admin/shared/components/filter-table/filter-table___kolommen'
+									)}
+									id="table_columns"
+									options={getColumnOptions()}
+									onChange={updateSelectedColumns}
+									showSelectedValuesOnCollapsed={false}
+									showSearch={false}
+								/>
+							</ToolbarRight>
+						)}
 					</Toolbar>
 				</Spacer>
 			</>
@@ -463,8 +424,10 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								renderCell={renderCell}
 								rowKey={rowKey}
 								variant={variant}
-								sortColumn={tableState.sort_column}
-								sortOrder={tableState.sort_order}
+								sortColumn={tableState.sort_column || undefined}
+								sortOrder={
+									(tableState.sort_order as SearchOrderDirection) || undefined
+								}
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes
 								}
@@ -522,16 +485,4 @@ export function getFilters(tableState: any | undefined) {
 	const { page, sort_column, sort_order, ...filters } = tableState;
 
 	return cleanupObject(filters);
-}
-
-// Removes all props where the value is undefined, null, [], {}, ''
-export function cleanupObject(obj: any) {
-	return omitBy(
-		obj,
-		(value: any) =>
-			isNil(value) ||
-			(isString(value) && !value.length) ||
-			((isPlainObject(value) || isArray(value)) && isEmpty(value)) ||
-			(isPlainObject(value) && value.gte === '' && value.lte === '')
-	);
 }

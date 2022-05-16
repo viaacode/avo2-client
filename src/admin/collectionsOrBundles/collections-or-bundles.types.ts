@@ -21,6 +21,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'copies'
 	| 'in_bundle'
 	| 'in_assignment'
+	| 'quick_lane_links'
 	| 'is_copy'
 	| 'organisation';
 
@@ -74,6 +75,7 @@ export interface CollectionsOrBundlesTableState extends CollectionOrBundleTableS
 	in_bundle: boolean;
 	in_assignment: boolean;
 	is_copy: boolean;
+	quick_lane_links: number;
 }
 
 export interface CollectionOrBundleActualisationTableState

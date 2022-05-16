@@ -35,10 +35,6 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 							sortable: true,
 							dataType: 'string',
 						},
-						{
-							id: QUICK_LANE_COLUMNS.URL,
-							label: t('workspace/views/quick-lane-overview___url'),
-						},
 						// Hide timestamps & author on mobile
 						...(isMobileWidth()
 							? []
@@ -52,17 +48,17 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 										dataType: 'string',
 									},
 									{
+										id: QUICK_LANE_COLUMNS.ORGANISATION,
+										label: t(
+											'workspace/views/quick-lane-overview___organisatie'
+										),
+										sortable: true,
+										dataType: 'string',
+									},
+									{
 										id: QUICK_LANE_COLUMNS.CREATED_AT,
 										label: t(
 											'workspace/views/quick-lane-overview___aangemaakt-op'
-										),
-										sortable: true,
-										dataType: 'dateTime',
-									},
-									{
-										id: QUICK_LANE_COLUMNS.UPDATED_AT,
-										label: t(
-											'workspace/views/quick-lane-overview___aangepast-op'
 										),
 										sortable: true,
 										dataType: 'dateTime',

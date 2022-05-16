@@ -16,7 +16,9 @@ import {
 	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
+import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -29,6 +31,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -70,9 +73,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [permissions, setPermissions] = useState<{
 		[collectionId: string]: { canEdit?: boolean; canDelete?: boolean };
 	}>({});
+	const [showPublicState, setShowPublicState] = useState(false);
 
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
-	const [idToDelete, setIdToDelete] = useState<string | null>(null);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [selected, setSelected] = useState<string | null>(null);
+	const [selectedDetail, setSelectedDetail] = useState<CollectionSchema | undefined>(undefined);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
@@ -83,7 +90,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	// Listeners
 	const onClickDelete = (collectionId: string) => {
 		setDropdownOpen({ [collectionId]: false });
-		setIdToDelete(collectionId);
+		setSelected(collectionId);
+		setIsDeleteModalOpen(true);
 	};
 
 	const isCollection = type === 'collection';
@@ -188,23 +196,53 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	}, [fetchCollections]);
 
 	useEffect(() => {
+		PermissionService.hasPermissions(
+			[
+				{
+					name: isCollection
+						? PermissionName.PUBLISH_OWN_COLLECTIONS
+						: PermissionName.PUBLISH_OWN_BUNDLES,
+				},
+				{
+					name: isCollection
+						? PermissionName.PUBLISH_ANY_COLLECTIONS
+						: PermissionName.PUBLISH_ANY_BUNDLES,
+				},
+			],
+			user
+		).then((showPublicState) => setShowPublicState(showPublicState));
+	}, [setShowPublicState, isCollection, user]);
+
+	useEffect(() => {
 		if (collections) {
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [setLoadingInfo, collections]);
 
+	useEffect(() => {
+		if (selected) {
+			CollectionService.fetchCollectionOrBundleById(
+				selected,
+				isCollection ? 'collection' : 'bundle',
+				undefined
+			).then((res) => setSelectedDetail(res || undefined));
+		} else {
+			setSelectedDetail(undefined);
+		}
+	}, [selected, isCollection]);
+
 	const onDeleteCollection = async () => {
 		try {
 			await triggerCollectionDelete({
 				variables: {
-					id: idToDelete,
+					id: selected,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			trackEvents(
 				{
-					object: String(idToDelete),
+					object: String(selected),
 					object_type: type,
 					action: 'delete',
 				},
@@ -235,7 +273,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			);
 		}
 
-		setIdToDelete(null);
+		setSelected(null);
 	};
 
 	const onClickCreate = () =>
@@ -323,6 +361,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						),
 				  ]
 				: []),
+			...(isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
+				? [
+						createDropdownMenuItem(
+							'createQuickLane',
+							t('collection/views/collection-overview___delen-met-leerlingen'),
+							'link-2'
+						),
+				  ]
+				: []),
 			...(permissions[collectionId] && permissions[collectionId].canDelete
 				? [
 						createDropdownMenuItem(
@@ -344,14 +391,22 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						{ id: collectionId }
 					);
 					break;
+
 				case 'createAssignment':
 					history.push(
 						generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE')
 					);
 					break;
+
+				case 'createQuickLane':
+					setSelected(collectionId);
+					setIsQuickLaneModalOpen(true);
+					break;
+
 				case 'delete':
 					onClickDelete(collectionId);
 					break;
+
 				default:
 					return null;
 			}
@@ -490,13 +545,19 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				sortable: true,
 				dataType: 'dateTime',
 			},
-			{
-				id: 'is_public',
-				label: t('collection/components/collection-or-bundle-overview___is-publiek'),
-				col: '2',
-				sortable: true,
-				dataType: 'boolean',
-			},
+			...(showPublicState
+				? [
+						{
+							id: 'is_public',
+							label: t(
+								'collection/components/collection-or-bundle-overview___is-publiek'
+							),
+							col: '2',
+							sortable: true,
+							dataType: 'boolean',
+						} as TableColumnSchema,
+				  ]
+				: []),
 			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
 			// ...(isCollection
 			// 	? [
@@ -601,9 +662,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		if (isCollection) {
 			return (
 				<DeleteCollectionModal
-					collectionId={idToDelete as string}
-					isOpen={!isNil(idToDelete)}
-					onClose={() => setIdToDelete(null)}
+					collectionId={selected as string}
+					isOpen={isDeleteModalOpen}
+					onClose={() => {
+						setSelected(null);
+						setIsDeleteModalOpen(false);
+					}}
 					deleteObjectCallback={onDeleteCollection}
 				/>
 			);
@@ -614,17 +678,39 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
-				isOpen={!isNil(idToDelete)}
-				onClose={() => setIdToDelete(null)}
+				isOpen={isDeleteModalOpen}
+				onClose={() => {
+					setSelected(null);
+					setIsDeleteModalOpen(false);
+				}}
 				deleteObjectCallback={onDeleteCollection}
 			/>
+		);
+	};
+
+	const renderQuickLaneModal = () => {
+		return (
+			selectedDetail && (
+				<QuickLaneModal
+					modalTitle={t('collection/views/collection-overview___delen-met-leerlingen')}
+					isOpen={isQuickLaneModalOpen}
+					content={selectedDetail}
+					content_label="COLLECTIE"
+					onClose={() => {
+						setSelected(null);
+						setIsQuickLaneModalOpen(false);
+					}}
+					onUpdate={() => fetchCollections()}
+				/>
+			)
 		);
 	};
 
 	const renderCollections = () => (
 		<>
 			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
-			{!isNil(idToDelete) && renderDeleteModal()}
+			{!isNil(selected) && renderDeleteModal()}
+			{renderQuickLaneModal()}
 		</>
 	);
 

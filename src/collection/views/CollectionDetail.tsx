@@ -124,6 +124,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			canCreateCollections: boolean;
 			canViewItems: boolean;
 			canQuickLane: boolean;
+			canAutoplay: boolean;
+			canCreateAssignment: boolean;
+			canCreateBundles: boolean;
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -240,6 +243,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					[{ name: PermissionName.CREATE_QUICK_LANE }],
 					user
 				),
+				PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION),
+				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS),
+				PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES),
 			]);
 
 			const permissionObj = {
@@ -252,6 +258,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canCreateCollections: rawPermissions[6],
 				canViewItems: rawPermissions[7],
 				canQuickLane: rawPermissions[8],
+				canAutoplay: rawPermissions[9],
+				canCreateAssignments: rawPermissions[10],
+				canCreateBundles: rawPermissions[11],
 			};
 
 			let showPopup = false;
@@ -571,8 +580,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
+			...(permissions.canCreateBundles
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
@@ -581,7 +589,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canQuickLane
+			...(permissions.canQuickLane && permissions.canCreateAssignment
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
@@ -611,7 +619,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		const isPublic = !!collection && collection.is_public;
 		return (
 			<ButtonToolbar>
-				{PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION) && (
+				{permissions.canAutoplay && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___speel-de-collectie-af')}
@@ -623,7 +631,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						}
 					/>
 				)}
-				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+				{permissions.canCreateAssignment && (
 					<Button
 						label={t('collection/views/collection-detail___maak-opdracht')}
 						type="secondary"
@@ -633,6 +641,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
 						)}
 						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
+					/>
+				)}
+				{permissions.canQuickLane && !permissions.canCreateAssignment && (
+					<Button
+						type="secondary"
+						icon="link-2"
+						label={t('item/views/item___delen-met-leerlingen')}
+						ariaLabel={t('collection/views/collection-detail___delen-met-leerlingen')}
+						title={t('collection/views/collection-detail___delen-met-leerlingen')}
+						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
 					/>
 				)}
 				{permissions.canPublishCollection && (
@@ -711,7 +729,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
+			...(permissions.canCreateAssignment
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.createAssignment,
@@ -745,7 +763,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES)
+			...(permissions.canCreateBundles
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
@@ -763,7 +781,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION)
+			...(permissions.canAutoplay
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openAutoplayCollectionModal,

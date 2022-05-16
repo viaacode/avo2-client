@@ -1,9 +1,11 @@
 import { ApolloQueryResult } from 'apollo-boost';
 
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import { CustomError } from '../helpers';
+import { getOrderObject } from '../helpers/generate-order-gql-query';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
 import { GET_QUICK_LANE_WITH_FILTERS } from '../queries/quick-lane-filter.gql';
 import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
@@ -17,6 +19,9 @@ export interface QuickLaneFilters {
 	contentLabels?: AssignmentContentLabel[];
 	createdAt?: DateRange;
 	updatedAt?: DateRange;
+	sortColumn?: string;
+	sortOrder?: SearchOrderDirection;
+	sortType?: string;
 }
 
 const asISO = (str?: string) => {
@@ -49,6 +54,14 @@ export class QuickLaneFilterService {
 						}),
 					},
 				].filter((condition) => condition._or && condition._or.length > 0),
+				orderBy:
+					params?.sortColumn && params?.sortOrder && params?.sortType
+						? getOrderObject(params.sortColumn, params.sortOrder, params.sortType, {
+								author: (order: SearchOrderDirection) => ({
+									owner: { usersByuserId: { first_name: order } },
+								}),
+						  })
+						: undefined,
 			};
 
 			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
