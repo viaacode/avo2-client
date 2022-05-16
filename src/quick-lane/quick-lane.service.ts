@@ -135,7 +135,7 @@ export class QuickLaneService {
 				'data.app_quick_lanes'
 			).map(quickLaneUrlRecordToObject);
 
-			if (!urls || urls.length !== 1) {
+			if (!urls || urls.length < 1) {
 				throw new CustomError('Quick lane url does not exist', null, {
 					response,
 				});
@@ -198,7 +198,7 @@ export class QuickLaneService {
 				});
 			}
 
-			return urls;
+			return [urls[0]];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get quick lane url by content and profile id from database',
