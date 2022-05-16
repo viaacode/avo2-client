@@ -198,7 +198,7 @@ export class QuickLaneService {
 				});
 			}
 
-			return [urls[0]];
+			return urls.length > 0 ? [urls[0]] : [];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get quick lane url by content and profile id from database',

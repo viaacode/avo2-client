@@ -580,7 +580,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			...(permissions.canCreateBundles
 				? [
 						createDropdownMenuItem(
