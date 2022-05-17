@@ -7,6 +7,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { BlockEditor, BlockType } from '../../shared/components/BlockEditor/BlockEditor';
 import { ToastService } from '../../shared/services';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
@@ -64,14 +65,85 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		return null;
 	}
 	const collectionFragments = collection.collection_fragments || [];
+
+	// TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
+
+	const handlePositionChange = (delta: number, index: number) => {
+		changeCollectionState({
+			index,
+			direction: delta > 0 ? 'down' : 'up',
+			type: 'SWAP_FRAGMENTS',
+		});
+	};
+
+	const handleDelete = (index: number) => {
+		changeCollectionState({
+			index,
+			type: 'DELETE_FRAGMENT',
+		});
+	};
+
+	// TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
+
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
+			{/* TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED */}
+
+			<Container mode="horizontal">
+				<BlockEditor
+					blocks={collectionFragments.map((fragment, i) => {
+						let type: BlockType = BlockType.Item;
+
+						switch (fragment.type) {
+							case 'COLLECTION':
+								type = BlockType.Collection;
+								break;
+
+							case 'ITEM':
+								type = BlockType.Item;
+								break;
+
+							case 'TEXT':
+								type = BlockType.Text;
+								break;
+
+							default:
+								break;
+						}
+
+						return {
+							type,
+							description: fragment.custom_description || undefined,
+							id: `${fragment.id}`,
+							/* tslint-disable-next-line variable-name */
+							onPositionChange: (_block, delta) => {
+								handlePositionChange(delta, i);
+							},
+							onDelete: (block) => {
+								handleDelete(
+									collectionFragments.findIndex(
+										(fragment) => `${fragment.id}` === block.id
+									)
+								);
+							},
+							position: fragment.position,
+							title: fragment.custom_title || undefined,
+						};
+					})}
+				></BlockEditor>
+			</Container>
+
+			<br />
+			<hr />
+			<br />
+
+			{/* TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED */}
+
 			<Container mode="horizontal" key={collectionFragments.map(getFragmentKey).join('_')}>
 				{collectionFragments.map((fragment: Avo.Collection.Fragment, index: number) => (
 					<FragmentEdit
 						// If the parent is a collection then the fragment is an ITEM or TEXT
 						// If the parent is a bundle then the fragment is a COLLECTION
-						type={isCollection ? 'itemOrText' : 'collection'}
 						key={getFragmentKey(fragment)}
 						index={index}
 						collectionId={collection.id}
@@ -98,6 +170,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					/>
 				))}
 			</Container>
+
 			{!collectionFragments.length && isCollection && (
 				<FragmentAdd
 					index={0}

@@ -1,0 +1,96 @@
+@import '../../../styles/settings/variables';
+
+$component: 'c-block-editor';
+
+// Sizes
+$block-editor-border-radius: 0.4rem;
+$block-editor-gap: $g-spacer-unit * 5; // 40px
+$block-editor-header-height: 5.1rem;
+
+// Colors
+$block-editor-background-color: $color-platinum;
+$block-editor-border-color: $color-gray-100;
+$block-editor-divider-color: $color-silver;
+$block-editor-heading-color: $color-gray-700;
+$block-editor-navy: $color-gray-600;
+$block-editor-thumbnail-background-color: $color-gray-50;
+
+// Shorthands
+$block-editor-border: 0.1rem solid $block-editor-border-color;
+
+.#{$component} {
+	&__item,
+	&__divider {
+		margin-bottom: $block-editor-gap;
+	}
+
+	&__item {
+		&__header {
+			background-color: $block-editor-background-color;
+			border-top-left-radius: $block-editor-border-radius;
+			border-top-right-radius: $block-editor-border-radius;
+			border: $block-editor-border;
+			display: grid;
+			grid-template-columns: $block-editor-header-height 1fr auto;
+			min-height: $block-editor-header-height;
+		}
+
+		&__thumbnail,
+		&__heading,
+		&__actions {
+			display: flex;
+		}
+
+		&__thumbnail,
+		&__actions {
+			align-items: center;
+			color: $block-editor-navy;
+		}
+
+		&__thumbnail {
+			background-color: $block-editor-thumbnail-background-color;
+			border-right: $block-editor-border;
+			justify-content: center;
+		}
+
+		&__heading {
+			padding: $g-spacer-unit * 2;
+			color: $block-editor-heading-color;
+		}
+
+		&__actions {
+			justify-content: end;
+
+			& > button,
+			& > div {
+				margin-right: $g-spacer-unit;
+			}
+		}
+
+		&__content {
+			background-color: $block-editor-background-color;
+			border-bottom-left-radius: $block-editor-border-radius;
+			border-bottom-right-radius: $block-editor-border-radius;
+			border-bottom: $block-editor-border;
+			border-left: $block-editor-border;
+			border-right: $block-editor-border;
+			padding: $g-spacer-unit * 3;
+		}
+	}
+
+	&__divider {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: $g-spacer-unit * 3;
+        align-items: center;
+
+		hr {
+			border-bottom-width: 0;
+            border-left-width: 0;
+            border-right-width: 0;
+			border-color: $block-editor-divider-color;
+			border-style: solid;
+			margin: 0;
+		}
+	}
+}
