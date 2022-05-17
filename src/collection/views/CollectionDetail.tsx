@@ -86,6 +86,21 @@ export const COLLECTION_ACTIONS = {
 	openAutoplayCollectionModal: 'openAutoplayCollectionModal',
 };
 
+type CollectionDetailPermissions = Partial<{
+	canViewCollections: boolean;
+	canViewPublishedCollections: boolean;
+	canViewUnpublishedCollections: boolean;
+	canEditCollections: boolean;
+	canPublishCollections: boolean;
+	canDeleteCollections: boolean;
+	canCreateCollections: boolean;
+	canViewAnyPublishedItems: boolean;
+	canCreateQuickLane: boolean;
+	canAutoplayCollection: boolean;
+	canCreateAssignments: boolean;
+	canCreateBundles: boolean;
+}>;
+
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
@@ -113,22 +128,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
-	const [permissions, setPermissions] = useState<
-		Partial<{
-			canViewCollections: boolean;
-			canViewPublishedCollections: boolean;
-			canViewUnpublishedCollections: boolean;
-			canEditCollection: boolean;
-			canPublishCollection: boolean;
-			canDeleteCollection: boolean;
-			canCreateCollections: boolean;
-			canViewItems: boolean;
-			canQuickLane: boolean;
-			canAutoplay: boolean;
-			canCreateAssignment: boolean;
-			canCreateBundles: boolean;
-		}>
-	>({});
+	const [permissions, setPermissions] = useState<CollectionDetailPermissions>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
@@ -248,17 +248,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES),
 			]);
 
-			const permissionObj = {
-				canViewCollection: rawPermissions[0],
+			const permissionObj: CollectionDetailPermissions = {
+				canViewCollections: rawPermissions[0],
 				canViewPublishedCollections: rawPermissions[1],
 				canViewUnpublishedCollections: rawPermissions[2],
-				canEditCollection: rawPermissions[3],
-				canPublishCollection: rawPermissions[4],
-				canDeleteCollection: rawPermissions[5],
+				canEditCollections: rawPermissions[3],
+				canPublishCollections: rawPermissions[4],
+				canDeleteCollections: rawPermissions[5],
 				canCreateCollections: rawPermissions[6],
-				canViewItems: rawPermissions[7],
-				canQuickLane: rawPermissions[8],
-				canAutoplay: rawPermissions[9],
+				canViewAnyPublishedItems: rawPermissions[7],
+				canCreateQuickLane: rawPermissions[8],
+				canAutoplayCollection: rawPermissions[9],
 				canCreateAssignments: rawPermissions[10],
 				canCreateBundles: rawPermissions[11],
 			};
@@ -266,7 +266,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			let showPopup = false;
 
 			if (
-				!permissionObj.canViewCollection &&
+				!permissionObj.canViewCollections &&
 				!permissionObj.canViewPublishedCollections &&
 				!permissionObj.canViewUnpublishedCollections
 			) {
@@ -291,10 +291,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			}
 
 			if (
-				(!permissionObj.canViewCollection &&
+				(!permissionObj.canViewCollections &&
 					collectionObj.is_public &&
 					!permissionObj.canViewPublishedCollections) ||
-				(!permissionObj.canViewCollection &&
+				(!permissionObj.canViewCollections &&
 					!collectionObj.is_public &&
 					!permissionObj.canViewUnpublishedCollections)
 			) {
@@ -589,7 +589,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canQuickLane && permissions.canCreateAssignment
+			...(permissions.canCreateQuickLane && permissions.canCreateAssignments
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
@@ -607,7 +607,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canDeleteCollection
+			...(permissions.canDeleteCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.delete,
@@ -616,10 +616,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				  ]
 				: []),
 		];
+
 		const isPublic = !!collection && collection.is_public;
+
 		return (
 			<ButtonToolbar>
-				{permissions.canAutoplay && (
+				{permissions.canAutoplayCollection && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___speel-de-collectie-af')}
@@ -631,7 +633,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						}
 					/>
 				)}
-				{permissions.canCreateAssignment && (
+				{permissions.canCreateAssignments && (
 					<Button
 						label={t('collection/views/collection-detail___maak-opdracht')}
 						type="secondary"
@@ -643,7 +645,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
 					/>
 				)}
-				{permissions.canQuickLane && !permissions.canCreateAssignment && (
+				{permissions.canCreateQuickLane && !permissions.canCreateAssignments && (
 					<Button
 						type="secondary"
 						icon="link-2"
@@ -653,7 +655,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
 					/>
 				)}
-				{permissions.canPublishCollection && (
+				{permissions.canPublishCollections && (
 					<Button
 						type="secondary"
 						title={
@@ -702,7 +704,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>
-				{permissions.canEditCollection && (
+				{permissions.canEditCollections && (
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
@@ -719,8 +721,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const renderHeaderButtonsMobile = () => {
-		const COLLECTION_DROPDOWN_ITEMS = [
-			...(permissions.canEditCollection
+		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
+			...(permissions.canEditCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.editCollection,
@@ -729,7 +731,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canCreateAssignment
+			...(permissions.canCreateAssignments
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.createAssignment,
@@ -738,7 +740,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canPublishCollection
+			...(permissions.canPublishCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openPublishCollectionModal,
@@ -772,7 +774,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canQuickLane
+			...(permissions.canCreateQuickLane
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
@@ -781,7 +783,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canAutoplay
+			...(permissions.canAutoplayCollection
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openAutoplayCollectionModal,
@@ -799,7 +801,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						),
 				  ]
 				: []),
-			...(permissions.canDeleteCollection
+			...(permissions.canDeleteCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.delete,
@@ -814,7 +816,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
-					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					menuItems={COLLECTION_DROPDOWN_ITEMS_MOBILE}
 					onOptionClicked={executeAction}
 				/>
 			</ButtonToolbar>
@@ -898,7 +900,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								<FragmentList
 									collectionFragments={collection_fragments}
 									showDescription
-									linkToItems={permissions.canViewItems || false}
+									linkToItems={permissions.canViewAnyPublishedItems || false}
 									canPlay={
 										!isAddToBundleModalOpen &&
 										!isDeleteModalOpen &&
