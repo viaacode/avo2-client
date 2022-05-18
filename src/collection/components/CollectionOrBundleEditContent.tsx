@@ -76,7 +76,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		});
 	};
 
-	const handleDelete = (index: number) => {
+	const handleSlice = (index: number) => {
 		changeCollectionState({
 			index,
 			type: 'DELETE_FRAGMENT',
@@ -99,10 +99,10 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 							onPositionChange: (_block, delta) => {
 								handlePositionChange(delta, i);
 							},
-							onDelete: (block) => {
-								handleDelete(
+							onSlice: (item) => {
+								handleSlice(
 									collectionFragments.findIndex(
-										(fragment) => `${fragment.id}` === block.id
+										(fragment) => `${fragment.id}` === item.id
 									)
 								);
 							},

@@ -8,7 +8,7 @@ import './ListSorter.scss';
 
 export interface ListSorterItem {
 	id: string;
-	onDelete?: (item: ListSorterItem) => void;
+	onSlice?: (item: ListSorterItem) => void;
 	onPositionChange?: (item: ListSorterItem, delta: number) => void;
 	position: number;
 	icon: IconName;
@@ -56,7 +56,7 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 };
 
 export const ListSorterDelete: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Button type="secondary" icon="trash-2" onClick={() => item.onDelete?.(item)}></Button>
+	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)}></Button>
 );
 
 // Main renderer
