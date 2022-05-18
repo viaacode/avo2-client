@@ -27,11 +27,11 @@ export interface ListSorterProps {
 
 // Default renderers
 
-export const BlockEditorThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => (
+export const ListSorterThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => (
 	<Icon name={item.icon} />
 );
 
-export const BlockEditorPosition: FC<{ item: ListSorterItem; i?: number }> = ({ item, i }) => {
+export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ item, i }) => {
 	const isFirst = useMemo(() => i === 0, [i]);
 	const isLast = useMemo(() => i === undefined, [i]);
 
@@ -55,7 +55,7 @@ export const BlockEditorPosition: FC<{ item: ListSorterItem; i?: number }> = ({ 
 	);
 };
 
-export const BlockEditorDelete: FC<{ item: ListSorterItem }> = ({ item }) => (
+export const ListSorterDelete: FC<{ item: ListSorterItem }> = ({ item }) => (
 	<Button type="secondary" icon="trash-2" onClick={() => item.onDelete?.(item)}></Button>
 );
 
@@ -63,39 +63,39 @@ export const BlockEditorDelete: FC<{ item: ListSorterItem }> = ({ item }) => (
 
 export const ListSorter: FC<ListSorterProps> = ({
 	items,
-	thumbnail = (item) => <BlockEditorThumbnail item={item} />,
+	thumbnail = (item) => <ListSorterThumbnail item={item} />,
 	heading = () => 'heading',
 	divider = () => 'divider',
 	actions = (item, i) => (
 		<>
-			<BlockEditorPosition item={item} i={i} />
-			<BlockEditorDelete item={item} />
+			<ListSorterPosition item={item} i={i} />
+			<ListSorterDelete item={item} />
 		</>
 	),
 	content = () => 'content',
 }) => {
-	const renderBlock: ListSorterRenderer = (item: ListSorterItem, i?: number) => (
+	const renderItem: ListSorterRenderer = (item: ListSorterItem, i?: number) => (
 		<>
-			<li className="c-block-editor__item" key={item.id}>
-				<div className="c-block-editor__item__header">
+			<li className="c-list-sorter__item" key={item.id}>
+				<div className="c-list-sorter__item__header">
 					{thumbnail && (
-						<div className="c-block-editor__item__thumbnail">{thumbnail(item, i)}</div>
+						<div className="c-list-sorter__item__thumbnail">{thumbnail(item, i)}</div>
 					)}
 
 					{heading && (
-						<div className="c-block-editor__item__heading">{heading(item, i)}</div>
+						<div className="c-list-sorter__item__heading">{heading(item, i)}</div>
 					)}
 
 					{actions && (
-						<div className="c-block-editor__item__actions">{actions(item, i)}</div>
+						<div className="c-list-sorter__item__actions">{actions(item, i)}</div>
 					)}
 				</div>
 
-				{content && <div className="c-block-editor__item__content">{content(item, i)}</div>}
+				{content && <div className="c-list-sorter__item__content">{content(item, i)}</div>}
 			</li>
 
 			{divider && (
-				<div className="c-block-editor__divider">
+				<div className="c-list-sorter__divider">
 					<hr />
 					{divider(item, i)}
 					<hr />
@@ -105,12 +105,12 @@ export const ListSorter: FC<ListSorterProps> = ({
 	);
 
 	return (
-		<ul className="c-block-editor">
+		<ul className="c-list-sorter">
 			{items
 				?.sort((a, b) => a.position - b.position)
-				.map((block, i) => {
+				.map((item, i) => {
 					const j = items.length === i + 1 ? undefined : i;
-					return renderBlock(block, j);
+					return renderItem(item, j);
 				})}
 		</ul>
 	);
