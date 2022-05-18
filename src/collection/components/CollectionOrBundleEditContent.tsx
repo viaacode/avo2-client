@@ -2,13 +2,14 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, Container, IconName, Spacer } from '@viaa/avo2-components';
+import { Alert, Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { ListSorter } from '../../shared/components/ListSorter/ListSorter';
+import { ListSorter, ListSorterItem } from '../../shared/components/ListSorter/ListSorter';
 import { ToastService } from '../../shared/services';
+import { NEW_FRAGMENT } from '../collection.const';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
@@ -64,7 +65,9 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	if (isNil(allowedToAddLinks)) {
 		return null;
 	}
+
 	const collectionFragments = collection.collection_fragments || [];
+	const byId = (obj: { id?: string | number }, id?: string | number) => `${obj.id}` === id;
 
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
@@ -72,13 +75,48 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 			<Container mode="horizontal">
 				<ListSorter
+					heading={(item) => {
+						const fragment = collectionFragments.find((f) => byId(f, item?.id));
+
+						return (
+							fragment &&
+							{
+								COLLECTION: t('Collectie'),
+								ITEM: t('Fragment'),
+								TEXT: t('Instructie- of tekstblok'),
+							}[fragment?.type]
+						);
+					}}
+					content={(item) => {
+						const fragment = collectionFragments.find((f) => byId(f, item?.id));
+
+						return fragment?.custom_title || fragment?.item_meta?.title;
+					}}
+					divider={(item) => {
+						const index = collectionFragments.findIndex((f) => byId(f, item?.id));
+
+						return (
+							<Button
+								type="secondary"
+								icon="plus"
+								onClick={() =>
+									changeCollectionState({
+										type: 'INSERT_FRAGMENT',
+										index: index + 1,
+										fragment: ({
+											...NEW_FRAGMENT.text,
+											id: new Date().valueOf(),
+											collection_uuid: collection.id,
+										} as unknown) as Avo.Collection.Fragment,
+									})
+								}
+							></Button>
+						);
+					}}
 					items={collectionFragments.map((fragment, i) => {
-						return {
-							type,
-							description: fragment.custom_description || undefined,
+						const mapped: ListSorterItem = {
 							id: `${fragment.id}`,
 							position: fragment.position,
-							title: fragment.custom_title || undefined,
 							icon: ({
 								ITEM: 'video',
 								TEXT: 'type',
@@ -104,6 +142,8 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 								});
 							},
 						};
+
+						return mapped;
 					})}
 				></ListSorter>
 			</Container>

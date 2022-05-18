@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useMemo } from 'react';
+import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
 import { Button, Icon, IconName } from '@viaa/avo2-components';
 
@@ -14,7 +14,7 @@ export interface ListSorterItem {
 	icon: IconName;
 }
 
-export type ListSorterRenderer = (item: ListSorterItem, i?: number) => ReactNode;
+export type ListSorterRenderer = (item?: ListSorterItem, i?: number) => ReactNode;
 
 export interface ListSorterProps {
 	actions?: ListSorterRenderer;
@@ -55,7 +55,7 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 	);
 };
 
-export const ListSorterDelete: FC<{ item: ListSorterItem }> = ({ item }) => (
+export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
 	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)}></Button>
 );
 
@@ -63,46 +63,52 @@ export const ListSorterDelete: FC<{ item: ListSorterItem }> = ({ item }) => (
 
 export const ListSorter: FC<ListSorterProps> = ({
 	items,
-	thumbnail = (item) => <ListSorterThumbnail item={item} />,
+	thumbnail = (item) => item && <ListSorterThumbnail item={item} />,
 	heading = () => 'heading',
 	divider = () => 'divider',
-	actions = (item, i) => (
-		<>
-			<ListSorterPosition item={item} i={i} />
-			<ListSorterDelete item={item} />
-		</>
-	),
+	actions = (item, i) =>
+		item && (
+			<>
+				<ListSorterPosition item={item} i={i} />
+				<ListSorterSlice item={item} />
+			</>
+		),
 	content = () => 'content',
 }) => {
-	const renderItem: ListSorterRenderer = (item: ListSorterItem, i?: number) => (
-		<>
-			<li className="c-list-sorter__item" key={item.id}>
-				<div className="c-list-sorter__item__header">
-					{thumbnail && (
-						<div className="c-list-sorter__item__thumbnail">{thumbnail(item, i)}</div>
+	const renderItem: ListSorterRenderer = (item?: ListSorterItem, i?: number) =>
+		item && (
+			<Fragment key={`${item.id}--${i}`}>
+				<li className="c-list-sorter__item">
+					<div className="c-list-sorter__item__header">
+						{thumbnail && (
+							<div className="c-list-sorter__item__thumbnail">
+								{thumbnail(item, i)}
+							</div>
+						)}
+
+						{heading && (
+							<div className="c-list-sorter__item__heading">{heading(item, i)}</div>
+						)}
+
+						{actions && (
+							<div className="c-list-sorter__item__actions">{actions(item, i)}</div>
+						)}
+					</div>
+
+					{content && (
+						<div className="c-list-sorter__item__content">{content(item, i)}</div>
 					)}
+				</li>
 
-					{heading && (
-						<div className="c-list-sorter__item__heading">{heading(item, i)}</div>
-					)}
-
-					{actions && (
-						<div className="c-list-sorter__item__actions">{actions(item, i)}</div>
-					)}
-				</div>
-
-				{content && <div className="c-list-sorter__item__content">{content(item, i)}</div>}
-			</li>
-
-			{divider && (
-				<div className="c-list-sorter__divider">
-					<hr />
-					{divider(item, i)}
-					<hr />
-				</div>
-			)}
-		</>
-	);
+				{divider && (
+					<div className="c-list-sorter__divider">
+						<hr />
+						{divider(item, i)}
+						<hr />
+					</div>
+				)}
+			</Fragment>
+		);
 
 	return (
 		<ul className="c-list-sorter">
