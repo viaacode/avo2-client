@@ -15,6 +15,6 @@ export { default as ResizablePanels } from './ResizablePanels/ResizablePanels';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
 export { default as ShortDescriptionField } from './ShortDescriptionField/ShortDescriptionField';
 export { default as SubjectsField } from './SubjectsField/SubjectsField';
-export * from './BlockEditor';
+export * from './ListSorter';
 export * from './CheckboxDropdownModal/CheckboxDropdownModal';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';

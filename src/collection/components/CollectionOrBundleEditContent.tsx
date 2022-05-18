@@ -7,7 +7,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { BlockEditor, BlockType } from '../../shared/components/BlockEditor/BlockEditor';
+import { ListSorter } from '../../shared/components/ListSorter/ListSorter';
 import { ToastService } from '../../shared/services';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
@@ -90,32 +90,12 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 			{/* TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED */}
 
 			<Container mode="horizontal">
-				<BlockEditor
-					blocks={collectionFragments.map((fragment, i) => {
-						let type: BlockType = BlockType.Item;
-
-						switch (fragment.type) {
-							case 'COLLECTION':
-								type = BlockType.Collection;
-								break;
-
-							case 'ITEM':
-								type = BlockType.Item;
-								break;
-
-							case 'TEXT':
-								type = BlockType.Text;
-								break;
-
-							default:
-								break;
-						}
-
+				<ListSorter
+					items={collectionFragments.map((fragment, i) => {
 						return {
 							type,
 							description: fragment.custom_description || undefined,
 							id: `${fragment.id}`,
-							/* tslint-disable-next-line variable-name */
 							onPositionChange: (_block, delta) => {
 								handlePositionChange(delta, i);
 							},
@@ -128,9 +108,22 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 							},
 							position: fragment.position,
 							title: fragment.custom_title || undefined,
+							icon: (() => {
+								switch (fragment.type) {
+									case 'ITEM':
+										return 'video';
+									case 'TEXT':
+										return 'type';
+									// case 'SEARCH':
+									// 	return 'search';
+
+									default:
+										return 'x';
+								}
+							})(),
 						};
 					})}
-				></BlockEditor>
+				></ListSorter>
 			</Container>
 
 			<br />
