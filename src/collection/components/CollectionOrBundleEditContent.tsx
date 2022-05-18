@@ -2,7 +2,7 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, Container, Spacer } from '@viaa/avo2-components';
+import { Alert, Container, IconName, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -66,25 +66,6 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	}
 	const collectionFragments = collection.collection_fragments || [];
 
-	// TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
-
-	const handlePositionChange = (delta: number, index: number) => {
-		changeCollectionState({
-			index,
-			direction: delta > 0 ? 'down' : 'up',
-			type: 'SWAP_FRAGMENTS',
-		});
-	};
-
-	const handleSlice = (index: number) => {
-		changeCollectionState({
-			index,
-			type: 'DELETE_FRAGMENT',
-		});
-	};
-
-	// TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
-
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
 			{/* TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED */}
@@ -96,31 +77,32 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 							type,
 							description: fragment.custom_description || undefined,
 							id: `${fragment.id}`,
-							onPositionChange: (_block, delta) => {
-								handlePositionChange(delta, i);
-							},
-							onSlice: (item) => {
-								handleSlice(
-									collectionFragments.findIndex(
-										(fragment) => `${fragment.id}` === item.id
-									)
-								);
-							},
 							position: fragment.position,
 							title: fragment.custom_title || undefined,
-							icon: (() => {
-								switch (fragment.type) {
-									case 'ITEM':
-										return 'video';
-									case 'TEXT':
-										return 'type';
-									// case 'SEARCH':
-									// 	return 'search';
+							icon: ({
+								ITEM: 'video',
+								TEXT: 'type',
+								COLLECTION: 'x',
+							}[fragment.type] || 'x') as IconName,
 
-									default:
-										return 'x';
-								}
-							})(),
+							onPositionChange: (_item, delta) => {
+								changeCollectionState({
+									direction: delta > 0 ? 'down' : 'up',
+									index: i,
+									type: 'SWAP_FRAGMENTS',
+								});
+							},
+
+							onSlice: (item) => {
+								const index = collectionFragments.findIndex(
+									(fragment) => `${fragment.id}` === item.id
+								);
+
+								changeCollectionState({
+									index,
+									type: 'DELETE_FRAGMENT',
+								});
+							},
 						};
 					})}
 				></ListSorter>
