@@ -122,6 +122,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 		const bookmarks: number = get(deleteContentCounts, 'bookmarks') || 0;
 		const publicContentPages: number = get(deleteContentCounts, 'publicContentPages') || 0;
 		const privateContentPages: number = get(deleteContentCounts, 'privateContentPages') || 0;
+		const quickLanes: number = get(deleteContentCounts, 'quickLanes') || 0;
 
 		const isDeleteAll = selectedDeleteOption === 'DELETE_ALL';
 		const isTransferAll = selectedDeleteOption === 'TRANSFER_ALL';
@@ -206,6 +207,11 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 		}
 		if (!isTransferAll && bookmarks) {
 			countOutputs.push(`${bookmarks} ${t('admin/users/views/user-overview___bladwijzers')}`);
+		}
+		if (isDeleteAll && quickLanes) {
+			countOutputs.push(
+				`${quickLanes} ${t('admin/users/components/user-delete-modal___gedeelde-links')}`
+			);
 		}
 		return (
 			<>

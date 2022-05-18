@@ -33,6 +33,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	const timeout = useRef<NodeJS.Timeout | null>(null);
 	// filter unplayable fragments
 	const playableFragments = collectionFragments.filter((fragment) => !!fragment.item_meta);
+	const frag = playableFragments[currentFragment];
 
 	const playVideo = (index: number) => {
 		cancelTimer();
@@ -113,22 +114,16 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 
 					<div className="c-modal__autoplay-video" ref={videoRef}>
 						<FlowPlayerWrapper
-							item={playableFragments[currentFragment].item_meta as Avo.Item.Item}
+							item={frag?.item_meta as Avo.Item.Item}
 							canPlay={true}
 							autoplay={isOpen && autoPlay}
 							cuePoints={{
-								start: playableFragments[currentFragment].start_oc,
-								end: playableFragments[currentFragment].end_oc,
+								start: frag?.start_oc,
+								end: frag?.end_oc,
 							}}
-							external_id={
-								(playableFragments[currentFragment].item_meta as Avo.Item.Item)
-									.external_id
-							}
-							duration={
-								(playableFragments[currentFragment].item_meta as Avo.Item.Item)
-									.duration
-							}
-							title={playableFragments[currentFragment].item_meta?.title}
+							external_id={(frag?.item_meta as Avo.Item.Item)?.external_id}
+							duration={(frag?.item_meta as Avo.Item.Item)?.duration}
+							title={frag?.item_meta?.title}
 							onEnded={handleVideoEnded}
 						/>
 						{showPlayNext && (

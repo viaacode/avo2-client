@@ -39,6 +39,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [quickLanesCount, setQuickLanesCount] = useState<number>(0);
 
 	// Set default sorting
 	const [query, setQuery] = useQueryParams({
@@ -130,15 +131,17 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			}
 
 			let params: QuickLaneFilters = {
-				filterString: debouncedFilters?.query,
-				createdAt: debouncedFilters?.created_at,
-				updatedAt: debouncedFilters?.updated_at,
-				contentLabels: debouncedFilters?.content_label,
-				sortOrder: debouncedFilters?.sort_order,
-				sortColumn: debouncedFilters?.sort_column,
+				filterString: debouncedFilters.query,
+				createdAt: debouncedFilters.created_at,
+				updatedAt: debouncedFilters.updated_at,
+				contentLabels: debouncedFilters.content_label,
+				sortOrder: debouncedFilters.sort_order,
+				sortColumn: debouncedFilters.sort_column,
 				sortType: columns.find((column) => {
-					return column.id === debouncedFilters?.sort_column;
+					return column.id === debouncedFilters.sort_column;
 				})?.dataType,
+				limit: ITEMS_PER_PAGE,
+				offset: debouncedFilters.page * ITEMS_PER_PAGE,
 			};
 
 			if (isOrganisational(user)) {
@@ -156,7 +159,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				params = {
 					...params,
 					companyIds: [user.profile.company_id],
-					profileIds: debouncedFilters?.author,
+					profileIds: debouncedFilters.author,
 				};
 			} else if (isPersonal(user)) {
 				if (!user.profile.id) {
@@ -176,7 +179,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				};
 			}
 
-			setQuickLanes(await QuickLaneFilterService.fetchFilteredQuickLanes(params));
+			const response = await QuickLaneFilterService.fetchFilteredQuickLanes(params);
+
+			setQuickLanes(response.urls);
+			setQuickLanesCount(response.count);
+
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
 			console.error(new CustomError('Failed to get all quick_lanes for user', err, { user }));
@@ -214,7 +221,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 		<FilterTable
 			columns={columns}
 			data={quickLanes}
-			dataCount={quickLanes.length}
+			dataCount={quickLanesCount}
 			itemsPerPage={ITEMS_PER_PAGE}
 			noContentMatchingFiltersMessage={
 				loadingInfo.state === 'loaded'

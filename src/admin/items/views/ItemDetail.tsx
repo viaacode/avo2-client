@@ -22,7 +22,9 @@ import { Avo } from '@viaa/avo2-types';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import AssociatedQuickLaneTable from '../../../quick-lane/components/AssociatedQuickLaneTable';
+import AssociatedQuickLaneTable, {
+	AssociatedQuickLaneTableOrderBy,
+} from '../../../quick-lane/components/AssociatedQuickLaneTable';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -235,7 +237,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		setQuickLaneSortOrder(sortOrder);
 
 		setAssociatedQuickLanes(
-			orderBy(associatedQuickLanes, [(col) => get(col, id)], [sortOrder])
+			orderBy(
+				associatedQuickLanes,
+				[(col) => get(col, AssociatedQuickLaneTableOrderBy[id] || id)],
+				[sortOrder]
+			)
 		);
 	};
 

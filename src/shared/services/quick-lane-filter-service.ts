@@ -22,6 +22,8 @@ export interface QuickLaneFilters {
 	sortColumn?: string;
 	sortOrder?: SearchOrderDirection;
 	sortType?: string;
+	limit: number;
+	offset: number;
 }
 
 const asISO = (str?: string) => {
@@ -32,6 +34,8 @@ export class QuickLaneFilterService {
 	static async fetchFilteredQuickLanes(params?: QuickLaneFilters) {
 		try {
 			const variables = {
+				limit: params?.limit,
+				offset: params?.offset,
 				filterString: `%${params?.filterString ?? ''}%`,
 				createdAtGte: asISO(params?.createdAt?.gte),
 				createdAtLte: asISO(params?.createdAt?.lte),
@@ -77,7 +81,7 @@ export class QuickLaneFilterService {
 				quickLaneUrlRecordToObject
 			);
 
-			return urls;
+			return { urls, count: response.data.app_quick_lanes_aggregate.aggregate.count };
 		} catch (err) {
 			throw new CustomError('Failed to get filtered quick lane urls from database', err, {
 				params,
