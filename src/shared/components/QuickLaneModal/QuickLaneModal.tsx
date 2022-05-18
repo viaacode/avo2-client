@@ -36,14 +36,28 @@ const needsToPublish = async (user: UserSchema) => {
 	);
 };
 
+const isAllowedToPublish = async (user: UserSchema, collection?: CollectionSchema) => {
+	return (
+		// Is the author && can publish his own collections
+		(collection?.owner_profile_id === user.profile?.id &&
+			(await PermissionService.hasPermissions(
+				[PermissionName.PUBLISH_OWN_COLLECTIONS],
+				user
+			))) ||
+		// Is not the author but can publish any collections
+		(await PermissionService.hasPermissions([PermissionName.PUBLISH_ANY_COLLECTIONS], user))
+	);
+};
+
 // Component
 
 const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
 	const { modalTitle, isOpen, content, content_label, onClose, user } = props;
 
 	const [t] = useTranslation();
-	const [publishRequired, setPublishRequired] = useState(false);
-	const [isCollectionAuthor, setIsCollectionAuthor] = useState(false);
+
+	const [isPublishRequired, setIsPublishRequired] = useState(false);
+	const [canPublish, setCanPublish] = useState(false);
 
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -62,17 +76,13 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	// Check permissions
 	useEffect(() => {
 		async function checkPermissions() {
-			user && setPublishRequired(await needsToPublish(user));
+			if (isCollection({ content_label })) {
+				user && setIsPublishRequired(await needsToPublish(user));
+				user && setCanPublish(await isAllowedToPublish(user, content as CollectionSchema));
+			}
 		}
 
 		checkPermissions();
-	}, [user]);
-
-	useEffect(() => {
-		isCollection({ content_label }) &&
-			setIsCollectionAuthor(
-				user?.profile?.id === (content as CollectionSchema).owner_profile_id
-			);
 	}, [user, content, content_label]);
 
 	useEffect(() => {
@@ -80,14 +90,15 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 
 		const shouldBePublishedFirst =
 			isCollection({ content_label }) &&
-			publishRequired &&
-			isCollectionAuthor &&
+			isPublishRequired &&
 			!(content as CollectionSchema).is_public; // AVO-1880
 
 		setActiveTab(
-			shouldBePublishedFirst ? QuickLaneModalTabs.publication : QuickLaneModalTabs.sharing
+			canPublish && shouldBePublishedFirst
+				? QuickLaneModalTabs.publication
+				: QuickLaneModalTabs.sharing
 		);
-	}, [isOpen, setActiveTab, publishRequired, content_label, isCollectionAuthor, content]);
+	}, [isOpen, setActiveTab, isPublishRequired, content_label, content, canPublish]);
 
 	const getTabs = () => {
 		// AVO-1880
@@ -98,7 +109,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		return tabs.filter((tab) => {
 			switch (tab.id) {
 				case QuickLaneModalTabs.publication:
-					return isCollection({ content_label }) && isCollectionAuthor;
+					return isCollection({ content_label }) && canPublish;
 
 				default:
 					return true;
@@ -166,7 +177,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 											break;
 
 										case 'sharing':
-											if (!publishRequired || isShareable(content)) {
+											if (!isPublishRequired || isShareable(content)) {
 												setActiveTab(tab);
 											} else {
 												ToastService.danger(
