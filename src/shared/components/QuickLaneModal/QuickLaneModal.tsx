@@ -76,9 +76,9 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	// Check permissions
 	useEffect(() => {
 		async function checkPermissions() {
-			if (isCollection({ content_label })) {
-				user && setIsPublishRequired(await needsToPublish(user));
-				user && setCanPublish(await isAllowedToPublish(user, content as CollectionSchema));
+			if (isCollection({ content_label }) && user) {
+				setIsPublishRequired(await needsToPublish(user));
+				setCanPublish(await isAllowedToPublish(user, content as CollectionSchema));
 			}
 		}
 
