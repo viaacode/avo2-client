@@ -79,6 +79,7 @@ export interface DeleteContentCounts {
 	bookmarks: number;
 	publicContentPages: number;
 	privateContentPages: number;
+	quickLanes: number;
 }
 
 export interface DeleteContentCountsRaw {

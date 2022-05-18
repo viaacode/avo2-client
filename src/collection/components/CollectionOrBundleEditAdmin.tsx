@@ -28,7 +28,9 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import AssociatedQuickLaneTable from '../../quick-lane/components/AssociatedQuickLaneTable';
+import AssociatedQuickLaneTable, {
+	AssociatedQuickLaneTableOrderBy,
+} from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -269,7 +271,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		setQuickLaneSortOrder(sortOrder);
 
 		setAssociatedQuickLanes(
-			orderBy(associatedQuickLanes, [(col) => get(col, id)], [sortOrder])
+			orderBy(
+				associatedQuickLanes,
+				[(col) => get(col, AssociatedQuickLaneTableOrderBy[id] || id)],
+				[sortOrder]
+			)
 		);
 	};
 

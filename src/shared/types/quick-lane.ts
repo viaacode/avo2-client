@@ -30,6 +30,11 @@ export interface QuickLaneUrlRecord extends QuickLaneUrl {
 
 export interface QuickLaneQueryResponse {
 	app_quick_lanes: QuickLaneUrlRecord[];
+	app_quick_lanes_aggregate: {
+		aggregate: {
+			count: number;
+		};
+	};
 }
 
 export interface QuickLaneInsertResponse {

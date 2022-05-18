@@ -82,3 +82,8 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 export default AssociatedQuickLaneTable as FunctionComponent<
 	AssociatedQuickLaneTableProps & TableProps
 >;
+
+export const AssociatedQuickLaneTableOrderBy = {
+	[QUICK_LANE_COLUMNS.AUTHOR]: 'owner.user.full_name',
+	[QUICK_LANE_COLUMNS.ORGANISATION]: 'owner.organisation.name',
+};

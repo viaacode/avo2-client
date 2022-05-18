@@ -406,5 +406,10 @@ export const GET_CONTENT_COUNTS_FOR_USERS = gql`
 				count
 			}
 		}
+		quickLanes: app_quick_lanes_aggregate(where: { owner_profile_id: { _in: $profileIds } }) {
+			aggregate {
+				count
+			}
+		}
 	}
 `;

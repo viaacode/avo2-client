@@ -256,9 +256,11 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 										</ToolbarLeft>
 										<ToolbarRight>
 											{!!profile && (
-												<HeaderAvatar>
-													{renderAvatar(profile, { dark: true })}
-												</HeaderAvatar>
+												<ToolbarItem>
+													<HeaderAvatar>
+														{renderAvatar(profile, { dark: true })}
+													</HeaderAvatar>
+												</ToolbarItem>
 											)}
 											{canReadOriginal && (
 												<ToolbarItem>

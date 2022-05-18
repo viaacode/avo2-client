@@ -9,6 +9,8 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 		$updatedAtLte: timestamptz
 		$filters: [app_quick_lanes_bool_exp]
 		$orderBy: [app_quick_lanes_order_by!]
+		$limit: Int = 100
+		$offset: Int = 0
 	) {
 		app_quick_lanes(
 			where: {
@@ -32,6 +34,8 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 				]
 			}
 			order_by: $orderBy
+			offset: $offset
+			limit: $limit
 		) {
 			id
 			content_id
@@ -52,6 +56,32 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 					name
 					logo_url
 				}
+			}
+		}
+		app_quick_lanes_aggregate(
+			where: {
+				_and: [
+					{
+						_or: [
+							{ title: { _ilike: $filterString } }
+							{
+								owner: {
+									_or: [
+										{ usersByuserId: { first_name: { _ilike: $filterString } } }
+										{ usersByuserId: { last_name: { _ilike: $filterString } } }
+									]
+								}
+							}
+						]
+					}
+					{ created_at: { _gte: $createdAtGte, _lte: $createdAtLte } }
+					{ updated_at: { _gte: $updatedAtGte, _lte: $updatedAtLte } }
+					{ _and: $filters }
+				]
+			}
+		) {
+			aggregate {
+				count
 			}
 		}
 	}

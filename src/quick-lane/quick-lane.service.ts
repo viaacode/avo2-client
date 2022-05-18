@@ -48,6 +48,9 @@ const quickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
 		delete (mapped as Partial<QuickLaneUrlRecord>).id;
 	}
 
+	// Don't pass the owner object in the mutation
+	delete (mapped as Partial<QuickLaneUrlRecord>).owner;
+
 	return mapped;
 };
 

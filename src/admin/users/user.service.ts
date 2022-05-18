@@ -440,6 +440,7 @@ export class UserService {
 					get(response, 'data.itemBookmarks.aggregate.count', 0),
 				publicContentPages: get(response, 'data.publicContentPages.aggregate.count'),
 				privateContentPages: get(response, 'data.privateContentPages.aggregate.count'),
+				quickLanes: get(response, 'data.quickLanes.aggregate.count'),
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get content counts for users from the database', err, {

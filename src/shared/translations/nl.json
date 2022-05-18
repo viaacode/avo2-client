@@ -1069,6 +1069,7 @@
   "admin/users/components/temp-access-modal___einddatum": "Tot en met",
   "admin/users/components/temp-access-modal___opslaan": "Opslaan",
   "admin/users/components/temp-access-modal___tijdelijke-toegang-instellen": "Tijdelijke toegang instellen",
+  "admin/users/components/user-delete-modal___gedeelde-links": "Gedeelde links",
   "admin/users/user___achternaam": "Achternaam",
   "admin/users/user___anonimiseer-de-publieke-content-verwijder-de-rest": "Anonimiseer de publieke content, verwijder de rest.",
   "admin/users/user___blokkeren": "Deactiveren",
@@ -2240,5 +2241,5 @@
   "workspace/workspace___collecties": "Collecties",
   "workspace/workspace___gedeelde-links": "Gedeelde links",
   "workspace/workspace___opdrachten": "Opdrachten",
-  "workspace/workspace___organisatie-content": "Bundels en collecties auteurs"
+  "workspace/workspace___organisatie-content": "Bundels en collecties organisatie"
 }
