@@ -128,6 +128,7 @@ export class ItemsService {
 			const response = await dataService.query({
 				variables,
 				query: GET_ITEM_BY_UUID,
+				errorPolicy: 'all',
 			});
 
 			const rawItem = get(response, 'data.app_item_meta[0]');

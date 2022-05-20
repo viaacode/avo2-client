@@ -63,7 +63,22 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			// Handle edge cases
 
-			if (isItem(response)) {
+			if (isCollection(response)) {
+				const content = response.content as CollectionSchema | undefined;
+
+				if (!content || !content.is_public) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
+						icon: 'search',
+					});
+
+					return;
+				}
+			} else {
+				// We assume the response isItem but don't check so we can handle the absence of VIEW_ANY_UNPUBLISHED_ITEMS
 				const content = response.content as ItemSchema;
 
 				// Check for a depublishing reason first
@@ -86,22 +101,6 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 					setLoadingInfo({
 						state: 'error',
 						message: t('item/views/item___dit-item-werd-niet-gevonden'),
-						icon: 'search',
-					});
-
-					return;
-				}
-			}
-
-			if (isCollection(response)) {
-				const content = response.content as CollectionSchema | undefined;
-
-				if (!content || !content.is_public) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-						),
 						icon: 'search',
 					});
 
