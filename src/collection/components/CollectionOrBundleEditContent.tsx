@@ -10,8 +10,17 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FlowPlayerWrapper } from '../../shared/components';
-import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
+import {
+	CustomiseItemForm,
+	CustomiseItemFormDescriptionField,
+	CustomiseItemFormTitleField,
+} from '../../shared/components/CustomiseItemForm';
 import { ListSorter, ListSorterItem } from '../../shared/components/ListSorter/ListSorter';
+import {
+	TitleDescriptionForm,
+	TitleDescriptionFormDescriptionField,
+	TitleDescriptionFormTitleField,
+} from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/constants';
 import { ToastService } from '../../shared/services';
 import { NEW_FRAGMENT } from '../collection.const';
@@ -99,11 +108,53 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 				case 'ITEM':
 					return listSorterItemContent(fragment, index);
 
+				case 'TEXT':
+					return listSorterTextContent(fragment, index);
+
 				default:
 					return fragment.custom_title || fragment.item_meta?.title;
 			}
 		}
 	};
+
+	// Define shared properties for "Title" fields
+	const listSorterItemTitleField = (
+		fragment: CollectionFragment,
+		index: number
+	): TitleDescriptionFormTitleField | CustomiseItemFormTitleField => ({
+		label: t('collection/components/fragment/fragment-edit___tekstblok-titel'),
+		placeholder: t(
+			'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
+		),
+		onChange: (value) =>
+			value !== fragment.custom_title &&
+			changeCollectionState({
+				index,
+				fragmentProp: 'custom_title',
+				fragmentPropValue: value,
+				type: 'UPDATE_FRAGMENT_PROP',
+			}),
+	});
+
+	// Define shared properties for "Description" fields
+	const listSorterItemDescriptionField = (
+		fragment: CollectionFragment,
+		index: number
+	): TitleDescriptionFormDescriptionField | CustomiseItemFormDescriptionField => ({
+		controls: allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT,
+		label: t('collection/components/fragment/fragment-edit___tekstblok-beschrijving'),
+		placeholder: t(
+			'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
+		),
+		onChange: (value) =>
+			value.toHTML() !== fragment.custom_description &&
+			changeCollectionState({
+				index,
+				fragmentProp: 'custom_description',
+				fragmentPropValue: value.toHTML(),
+				type: 'UPDATE_FRAGMENT_PROP',
+			}),
+	});
 
 	// Render the content of an "ITEM"-type list item
 	const listSorterItemContent = (fragment: CollectionFragment, index: number) => (
@@ -147,46 +198,37 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					}),
 			}}
 			title={{
-				label: t('collection/components/fragment/fragment-edit___tekstblok-titel'),
+				...listSorterItemTitleField(fragment, index),
+				disabled: !fragment.use_custom_fields,
 				value:
 					(fragment.use_custom_fields
 						? fragment.custom_title
 						: fragment.item_meta?.title) || undefined,
-				placeholder: t(
-					'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
-				),
-				onChange: (value) =>
-					value !== fragment.custom_title &&
-					changeCollectionState({
-						index,
-						fragmentProp: 'custom_title',
-						fragmentPropValue: value,
-						type: 'UPDATE_FRAGMENT_PROP',
-					}),
-				disabled: !fragment.use_custom_fields,
-				// onBlur={() => handleChangedValue('custom_title', tempTitle)}
 			}}
 			description={{
-				controls: allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT,
-				label: t('collection/components/fragment/fragment-edit___tekstblok-beschrijving'),
-				placeholder: t(
-					'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
-				),
+				...listSorterItemDescriptionField(fragment, index),
+				disabled: !fragment.use_custom_fields,
 				initialHtml: convertToHtml(
 					fragment.use_custom_fields
 						? fragment.custom_description
 						: fragment.item_meta?.description
 				),
-				onChange: (value) =>
-					value &&
-					value.toHTML() !== fragment.custom_description &&
-					changeCollectionState({
-						index,
-						fragmentProp: 'custom_description',
-						fragmentPropValue: value.toHTML(),
-						type: 'UPDATE_FRAGMENT_PROP',
-					}),
-				disabled: !fragment.use_custom_fields,
+			}}
+		/>
+	);
+
+	// Render the content of a "TEXT"-type list item
+	const listSorterTextContent = (fragment: CollectionFragment, index: number) => (
+		<TitleDescriptionForm
+			className="u-padding-l"
+			id={fragment.id}
+			title={{
+				...listSorterItemTitleField(fragment, index),
+				value: fragment.custom_title || undefined,
+			}}
+			description={{
+				...listSorterItemDescriptionField(fragment, index),
+				initialHtml: convertToHtml(fragment.custom_description),
 			}}
 		/>
 	);
