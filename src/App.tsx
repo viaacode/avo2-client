@@ -5,6 +5,7 @@ import { createBrowserHistory, Location } from 'history';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider, compose } from 'react-apollo';
+import 'react-datepicker/dist/react-datepicker.css';
 import { Provider } from 'react-redux';
 import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
