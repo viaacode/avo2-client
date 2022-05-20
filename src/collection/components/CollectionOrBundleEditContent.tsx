@@ -2,12 +2,17 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, Button, Container, IconName, Spacer } from '@viaa/avo2-components';
+import { Alert, Button, Container, convertToHtml, IconName, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionFragment } from '@viaa/avo2-types/types/collection';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { FlowPlayerWrapper } from '../../shared/components';
+import { FragmentForm } from '../../shared/components/FragmentForm';
 import { ListSorter, ListSorterItem } from '../../shared/components/ListSorter/ListSorter';
+import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/constants';
 import { ToastService } from '../../shared/services';
 import { NEW_FRAGMENT } from '../collection.const';
 import { FragmentAdd, FragmentEdit } from '../components';
@@ -62,12 +67,186 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		)}`;
 	};
 
+	const collectionFragments = collection.collection_fragments || [];
+	const byId = (obj: { id?: string | number }, id?: string | number) => `${obj.id}` === id;
+
+	// TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
+
+	// Render
+
+	const listSorterHeading = (item?: ListSorterItem) => {
+		const fragment = collectionFragments.find((f) => byId(f, item?.id));
+
+		return (
+			fragment &&
+			{
+				COLLECTION: t('Collectie'),
+				ITEM: t('Fragment'),
+				TEXT: t('Instructie- of tekstblok'),
+			}[fragment?.type]
+		);
+	};
+
+	const listSorterContent = (item?: ListSorterItem) => {
+		const fragment = collectionFragments.find((f) => byId(f, item?.id));
+		const index = collectionFragments.findIndex((f) => byId(f, item?.id));
+
+		if (fragment) {
+			switch (fragment.type) {
+				case 'ITEM':
+					return listSorterItemContent(fragment, index);
+
+				default:
+					return fragment.custom_title || fragment.item_meta?.title;
+			}
+		}
+	};
+
+	const listSorterItemContent = (fragment: CollectionFragment, index: number) => (
+		<FragmentForm
+			className="u-padding-l"
+			id={fragment.id}
+			preview={() => {
+				if (fragment.item_meta) {
+					const meta = fragment.item_meta as ItemSchema;
+
+					return (
+						<FlowPlayerWrapper
+							item={meta}
+							poster={fragment.thumbnail_path || meta.thumbnail_path}
+							external_id={meta.external_id}
+							duration={meta.duration}
+							title={meta.title}
+							cuePoints={{
+								start: fragment.start_oc,
+								end: fragment.end_oc,
+							}}
+							// canPlay={
+							// 	!isCutModalOpen &&
+							// 	!isDeleteModalOpen
+							// }
+						/>
+					);
+				}
+
+				return null;
+			}}
+			toggle={{
+				label: t('collection/components/fragment/fragment-edit___alternatieve-tekst'),
+				checked: fragment.use_custom_fields,
+				onChange: (value) =>
+					changeCollectionState({
+						index,
+						fragmentProp: 'use_custom_fields',
+						fragmentPropValue: value,
+						type: 'UPDATE_FRAGMENT_PROP',
+					}),
+			}}
+			title={{
+				label: t('collection/components/fragment/fragment-edit___tekstblok-titel'),
+				value:
+					(fragment.use_custom_fields
+						? fragment.custom_title
+						: fragment.item_meta?.title) || undefined,
+				placeholder: t(
+					'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
+				),
+				onChange: (value) =>
+					value !== fragment.custom_title &&
+					changeCollectionState({
+						index,
+						fragmentProp: 'custom_title',
+						fragmentPropValue: value,
+						type: 'UPDATE_FRAGMENT_PROP',
+					}),
+				disabled: !fragment.use_custom_fields,
+				// onBlur={() => handleChangedValue('custom_title', tempTitle)}
+			}}
+			description={{
+				controls: allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT,
+				label: t('collection/components/fragment/fragment-edit___tekstblok-beschrijving'),
+				placeholder: t(
+					'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
+				),
+				initialHtml: convertToHtml(
+					fragment.use_custom_fields
+						? fragment.custom_description
+						: fragment.item_meta?.description
+				),
+				onChange: (value) =>
+					value &&
+					value.toHTML() !== fragment.custom_description &&
+					changeCollectionState({
+						index,
+						fragmentProp: 'custom_description',
+						fragmentPropValue: value.toHTML(),
+						type: 'UPDATE_FRAGMENT_PROP',
+					}),
+				disabled: !fragment.use_custom_fields,
+			}}
+		/>
+	);
+
+	const listSorterDivider = (item?: ListSorterItem) => {
+		const index = collectionFragments.findIndex((f) => byId(f, item?.id));
+
+		return (
+			<Button
+				type="secondary"
+				icon="plus"
+				onClick={() =>
+					changeCollectionState({
+						type: 'INSERT_FRAGMENT',
+						index: index + 1,
+						fragment: ({
+							...NEW_FRAGMENT.text,
+							id: new Date().valueOf(),
+							collection_uuid: collection.id,
+						} as unknown) as Avo.Collection.Fragment,
+					})
+				}
+			></Button>
+		);
+	};
+
+	const listSorterItem = (fragment: CollectionFragment, i: number) => {
+		const mapped: ListSorterItem = {
+			id: `${fragment.id}`,
+			position: fragment.position,
+			icon: ({
+				ITEM: 'video',
+				TEXT: 'type',
+				COLLECTION: 'x',
+			}[fragment.type] || 'x') as IconName,
+
+			onPositionChange: (_item, delta) => {
+				changeCollectionState({
+					direction: delta > 0 ? 'down' : 'up',
+					index: i,
+					type: 'SWAP_FRAGMENTS',
+				});
+			},
+
+			onSlice: (item) => {
+				const index = collectionFragments.findIndex(
+					(fragment) => `${fragment.id}` === item.id
+				);
+
+				changeCollectionState({
+					index,
+					type: 'DELETE_FRAGMENT',
+				});
+			},
+		};
+
+		return mapped;
+	};
+
+	// TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
+
 	if (isNil(allowedToAddLinks)) {
 		return null;
 	}
-
-	const collectionFragments = collection.collection_fragments || [];
-	const byId = (obj: { id?: string | number }, id?: string | number) => `${obj.id}` === id;
 
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
@@ -75,76 +254,10 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 			<Container mode="horizontal">
 				<ListSorter
-					heading={(item) => {
-						const fragment = collectionFragments.find((f) => byId(f, item?.id));
-
-						return (
-							fragment &&
-							{
-								COLLECTION: t('Collectie'),
-								ITEM: t('Fragment'),
-								TEXT: t('Instructie- of tekstblok'),
-							}[fragment?.type]
-						);
-					}}
-					content={(item) => {
-						const fragment = collectionFragments.find((f) => byId(f, item?.id));
-
-						return fragment?.custom_title || fragment?.item_meta?.title;
-					}}
-					divider={(item) => {
-						const index = collectionFragments.findIndex((f) => byId(f, item?.id));
-
-						return (
-							<Button
-								type="secondary"
-								icon="plus"
-								onClick={() =>
-									changeCollectionState({
-										type: 'INSERT_FRAGMENT',
-										index: index + 1,
-										fragment: ({
-											...NEW_FRAGMENT.text,
-											id: new Date().valueOf(),
-											collection_uuid: collection.id,
-										} as unknown) as Avo.Collection.Fragment,
-									})
-								}
-							></Button>
-						);
-					}}
-					items={collectionFragments.map((fragment, i) => {
-						const mapped: ListSorterItem = {
-							id: `${fragment.id}`,
-							position: fragment.position,
-							icon: ({
-								ITEM: 'video',
-								TEXT: 'type',
-								COLLECTION: 'x',
-							}[fragment.type] || 'x') as IconName,
-
-							onPositionChange: (_item, delta) => {
-								changeCollectionState({
-									direction: delta > 0 ? 'down' : 'up',
-									index: i,
-									type: 'SWAP_FRAGMENTS',
-								});
-							},
-
-							onSlice: (item) => {
-								const index = collectionFragments.findIndex(
-									(fragment) => `${fragment.id}` === item.id
-								);
-
-								changeCollectionState({
-									index,
-									type: 'DELETE_FRAGMENT',
-								});
-							},
-						};
-
-						return mapped;
-					})}
+					heading={listSorterHeading}
+					content={listSorterContent}
+					divider={listSorterDivider}
+					items={collectionFragments.map(listSorterItem)}
 				></ListSorter>
 			</Container>
 
