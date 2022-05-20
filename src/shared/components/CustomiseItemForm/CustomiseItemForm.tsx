@@ -13,39 +13,39 @@ import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
 import WYSIWYGWrapper, { WYSIWYGWrapperProps } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
-import './FragmentForm.scss';
+import './CustomiseItemForm.scss';
 
-export interface FragmentFormField {
+export interface CustomiseItemFormField {
 	label?: string;
 }
 
-export type FragmentFormToggleField = FragmentFormField & ToggleProps;
-export type FragmentFormTitleField = FragmentFormField & TextInputProps;
-export type FragmentFormDescriptionField = FragmentFormField & WYSIWYGWrapperProps;
+export type CustomiseItemFormToggleField = CustomiseItemFormField & ToggleProps;
+export type CustomiseItemFormTitleField = CustomiseItemFormField & TextInputProps;
+export type CustomiseItemFormDescriptionField = CustomiseItemFormField & WYSIWYGWrapperProps;
 
-export interface FragmentFormProps extends DefaultProps {
+export interface CustomiseItemFormProps extends DefaultProps {
 	id: string | number;
-	toggle?: FragmentFormToggleField;
-	title?: FragmentFormTitleField;
-	description?: FragmentFormDescriptionField;
+	toggle?: CustomiseItemFormToggleField;
+	title?: CustomiseItemFormTitleField;
+	description?: CustomiseItemFormDescriptionField;
 	preview?: () => ReactNode;
 }
 
-export const FragmentFormIds = {
-	toggle: 'c-fragment-form__toggle',
-	title: 'c-fragment-form__title',
-	description: 'c-fragment-form__description',
+export const CustomiseItemFormIds = {
+	toggle: 'c-customise-item-form__toggle',
+	title: 'c-customise-item-form__title',
+	description: 'c-customise-item-form__description',
 };
 
-export const FragmentForm: FC<FragmentFormProps> = (props) => {
+export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 	const { id, toggle, preview, style, className } = props;
 
 	const titleValue = props.title?.value;
 	const descriptionInitialHtml = props.description?.initialHtml;
 
 	const wrapperClasses = [
-		'c-fragment-form',
-		...(!!preview ? ['c-fragment-form--has-preview'] : []),
+		'c-customise-item-form',
+		...(!!preview ? ['c-customise-item-form--has-preview'] : []),
 		...(!!className ? [className] : []),
 	];
 
@@ -66,27 +66,30 @@ export const FragmentForm: FC<FragmentFormProps> = (props) => {
 
 	return (
 		<div className={wrapperClasses.join(' ')} style={style}>
-			{preview && <div className="c-fragment-form__preview">{preview()}</div>}
+			{preview && <div className="c-customise-item-form__preview">{preview()}</div>}
 
-			<div className="c-fragment-form__fields">
+			<div className="c-customise-item-form__fields">
 				<Form>
 					{toggle && (
-						<FormGroup label={toggle.label} labelFor={getId(FragmentFormIds.toggle)}>
-							<Toggle {...toggle} id={getId(FragmentFormIds.toggle)}></Toggle>
+						<FormGroup
+							label={toggle.label}
+							labelFor={getId(CustomiseItemFormIds.toggle)}
+						>
+							<Toggle {...toggle} id={getId(CustomiseItemFormIds.toggle)}></Toggle>
 						</FormGroup>
 					)}
 
 					{props.title && (
 						<FormGroup
 							label={props.title.label}
-							labelFor={getId(FragmentFormIds.title)}
+							labelFor={getId(CustomiseItemFormIds.title)}
 						>
 							<TextInput
 								{...props.title}
 								value={title}
 								onChange={setTitle}
 								onBlur={() => props.title?.onChange?.(title as string)}
-								id={getId(FragmentFormIds.title)}
+								id={getId(CustomiseItemFormIds.title)}
 							/>
 						</FormGroup>
 					)}
@@ -94,7 +97,7 @@ export const FragmentForm: FC<FragmentFormProps> = (props) => {
 					{props.description && (
 						<FormGroup
 							label={props.description.label}
-							labelFor={getId(FragmentFormIds.description)}
+							labelFor={getId(CustomiseItemFormIds.description)}
 						>
 							<WYSIWYGWrapper
 								{...props.description}
@@ -103,7 +106,7 @@ export const FragmentForm: FC<FragmentFormProps> = (props) => {
 								onBlur={() =>
 									props.description?.onChange?.(description as RichEditorState)
 								}
-								id={getId(FragmentFormIds.description)}
+								id={getId(CustomiseItemFormIds.description)}
 							></WYSIWYGWrapper>
 						</FormGroup>
 					)}

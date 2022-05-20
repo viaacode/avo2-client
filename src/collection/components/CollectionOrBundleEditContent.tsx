@@ -10,7 +10,7 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { FlowPlayerWrapper } from '../../shared/components';
-import { FragmentForm } from '../../shared/components/FragmentForm';
+import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
 import { ListSorter, ListSorterItem } from '../../shared/components/ListSorter/ListSorter';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/constants';
 import { ToastService } from '../../shared/services';
@@ -107,7 +107,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 	// Render the content of an "ITEM"-type list item
 	const listSorterItemContent = (fragment: CollectionFragment, index: number) => (
-		<FragmentForm
+		<CustomiseItemForm
 			className="u-padding-l"
 			id={fragment.id}
 			preview={() => {
