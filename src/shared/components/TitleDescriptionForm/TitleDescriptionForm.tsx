@@ -19,7 +19,6 @@ export interface TitleDescriptionFormProps extends DefaultProps {
 }
 
 export const TitleDescriptionFormIds = {
-	toggle: 'c-title-description-form__toggle',
 	title: 'c-title-description-form__title',
 	description: 'c-title-description-form__description',
 };
