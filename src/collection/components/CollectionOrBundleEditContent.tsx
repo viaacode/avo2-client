@@ -72,8 +72,10 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 	// TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
 
-	// Render
+	// The `const`'s below look like they could be easily split into their own components
+	// but they're defined here to remain within the same scope and reduce callback- & passthrough-hell
 
+	// Render the different titles of each item
 	const listSorterHeading = (item?: ListSorterItem) => {
 		const fragment = collectionFragments.find((f) => byId(f, item?.id));
 
@@ -87,6 +89,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		);
 	};
 
+	// Decide what to show inside of each item in the list
 	const listSorterContent = (item?: ListSorterItem) => {
 		const fragment = collectionFragments.find((f) => byId(f, item?.id));
 		const index = collectionFragments.findIndex((f) => byId(f, item?.id));
@@ -102,6 +105,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		}
 	};
 
+	// Render the content of an "ITEM"-type list item
 	const listSorterItemContent = (fragment: CollectionFragment, index: number) => (
 		<FragmentForm
 			className="u-padding-l"
@@ -187,6 +191,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		/>
 	);
 
+	// Render the divider between each list item
 	const listSorterDivider = (item?: ListSorterItem) => {
 		const index = collectionFragments.findIndex((f) => byId(f, item?.id));
 
@@ -209,6 +214,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		);
 	};
 
+	// Map a CollectionFragment to a ListSorterItem
 	const listSorterItem = (fragment: CollectionFragment, i: number) => {
 		const mapped: ListSorterItem = {
 			id: `${fragment.id}`,

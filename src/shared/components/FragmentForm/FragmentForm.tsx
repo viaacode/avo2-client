@@ -41,8 +41,8 @@ export const FragmentForm: FC<FragmentFormProps> = (props) => {
 	const { id, toggle, preview, style, className } = props;
 
 	const titleValue = props.title?.value;
-	const descriptionDisabled = props.description?.disabled;
 	const descriptionInitialHtml = props.description?.initialHtml;
+
 	const wrapperClasses = [
 		'c-fragment-form',
 		...(!!preview ? ['c-fragment-form--has-preview'] : []),
@@ -54,20 +54,15 @@ export const FragmentForm: FC<FragmentFormProps> = (props) => {
 
 	const getId = (key: string | number) => `${id}--${key}`;
 
+	// Reflect changes to local state
 	useEffect(() => {
 		setTitle(titleValue);
 	}, [titleValue]);
 
+	// See WYSIWYGInternal.tsx:162
 	useEffect(() => {
-		if (descriptionDisabled) {
-			descriptionInitialHtml &&
-				setDescription(() => ({ toHTML: () => descriptionInitialHtml }));
-		} else {
-			setDescription(undefined);
-		}
-
-		console.info(descriptionDisabled, descriptionInitialHtml);
-	}, [descriptionDisabled, descriptionInitialHtml]);
+		setDescription(undefined);
+	}, [descriptionInitialHtml]);
 
 	return (
 		<div className={wrapperClasses.join(' ')} style={style}>
