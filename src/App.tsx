@@ -1,10 +1,10 @@
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
-// import { Modal } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { createBrowserHistory, Location } from 'history';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider, compose } from 'react-apollo';
+import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import { Provider } from 'react-redux';
 import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
