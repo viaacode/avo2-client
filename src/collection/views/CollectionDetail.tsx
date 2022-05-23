@@ -896,6 +896,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					</Header>
 					<Container mode="vertical">
 						<Container mode="horizontal">
+							{!!collection &&
+								collection_fragments.map((fragment) => (
+									<div key={fragment.id}>
+										<h4>
+											{fragment.custom_title || fragment.item_meta?.title}
+										</h4>
+									</div>
+								))}
+
+							<br />
+							<hr />
+							<br />
+
 							{!!collection && (
 								<FragmentList
 									collectionFragments={collection_fragments}

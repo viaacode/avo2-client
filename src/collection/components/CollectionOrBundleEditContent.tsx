@@ -2,7 +2,7 @@ import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, Button, Container, convertToHtml, IconName, Spacer } from '@viaa/avo2-components';
+import { Alert, Button, Container, convertToHtml, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
@@ -23,7 +23,11 @@ import {
 } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/constants';
 import { ToastService } from '../../shared/services';
-import { NEW_FRAGMENT } from '../collection.const';
+import {
+	COLLECTION_FRAGMENT_ICONS,
+	COLLECTION_FRAGMENT_LABELS,
+	NEW_FRAGMENT,
+} from '../collection.const';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
@@ -77,9 +81,10 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	};
 
 	const collectionFragments = collection.collection_fragments || [];
-	const byId = (obj: { id?: string | number }, id?: string | number) => `${obj.id}` === id;
 
 	// TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
+
+	const byId = (obj: { id?: string | number }, id?: string | number) => `${obj.id}` === id;
 
 	// The `const`'s below look like they could be easily split into their own components
 	// but they're defined here to remain within the same scope and reduce callback- & passthrough-hell
@@ -88,14 +93,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	const listSorterHeading = (item?: ListSorterItem) => {
 		const fragment = collectionFragments.find((f) => byId(f, item?.id));
 
-		return (
-			fragment &&
-			{
-				COLLECTION: t('Collectie'),
-				ITEM: t('Fragment'),
-				TEXT: t('Instructie- of tekstblok'),
-			}[fragment?.type]
-		);
+		return fragment && COLLECTION_FRAGMENT_LABELS(t)[fragment?.type];
 	};
 
 	// Decide what to show inside of each item in the list
@@ -261,11 +259,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		const mapped: ListSorterItem = {
 			id: `${fragment.id}`,
 			position: fragment.position,
-			icon: ({
-				ITEM: 'video',
-				TEXT: 'type',
-				COLLECTION: 'x',
-			}[fragment.type] || 'x') as IconName,
+			icon: COLLECTION_FRAGMENT_ICONS()[fragment.type],
 
 			onPositionChange: (_item, delta) => {
 				changeCollectionState({

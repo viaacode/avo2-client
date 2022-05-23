@@ -1,4 +1,6 @@
-import { SelectOption, TableColumn } from '@viaa/avo2-components';
+import { TFunction } from 'i18next';
+
+import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
 
 import i18n from '../shared/translations/i18n';
 
@@ -79,3 +81,21 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 		id: 'actions',
 	},
 ];
+
+// TODO: move to avo2-types
+type CollectionFragmentType = 'ITEM' | 'TEXT' | 'COLLECTION';
+type CollectionFragmentTypeDict<T> = { [key in CollectionFragmentType]: T }; // eslint-disable-line
+
+export const COLLECTION_FRAGMENT_LABELS: (t: TFunction) => CollectionFragmentTypeDict<string> = (
+	t
+) => ({
+	COLLECTION: t('Collectie'),
+	ITEM: t('Fragment'),
+	TEXT: t('Instructie- of tekstblok'),
+});
+
+export const COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<IconName> = () => ({
+	ITEM: 'video',
+	TEXT: 'type',
+	COLLECTION: 'x',
+});
