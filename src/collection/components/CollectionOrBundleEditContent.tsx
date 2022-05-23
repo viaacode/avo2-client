@@ -24,8 +24,8 @@ import {
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/constants';
 import { ToastService } from '../../shared/services';
 import {
-	COLLECTION_FRAGMENT_ICONS,
 	COLLECTION_FRAGMENT_LABELS,
+	EDIT_COLLECTION_FRAGMENT_ICONS,
 	NEW_FRAGMENT,
 } from '../collection.const';
 import { FragmentAdd, FragmentEdit } from '../components';
@@ -259,7 +259,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		const mapped: ListSorterItem = {
 			id: `${fragment.id}`,
 			position: fragment.position,
-			icon: COLLECTION_FRAGMENT_ICONS()[fragment.type],
+			icon: EDIT_COLLECTION_FRAGMENT_ICONS()[fragment.type],
 
 			onPositionChange: (_item, delta) => {
 				changeCollectionState({

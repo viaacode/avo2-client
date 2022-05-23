@@ -8,6 +8,7 @@ export { default as EducationLevelsField } from './EducationLevelsField/Educatio
 export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';
 export { default as Footer } from './Footer/Footer';
+export { default as IconBar } from './IconBar/IconBar';
 export { default as InputModal } from './InputModal/InputModal';
 export { default as InteractiveTour } from './InteractiveTour/InteractiveTour';
 export { default as Navigation } from './Navigation/Navigation';
@@ -15,6 +16,6 @@ export { default as ResizablePanels } from './ResizablePanels/ResizablePanels';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
 export { default as ShortDescriptionField } from './ShortDescriptionField/ShortDescriptionField';
 export { default as SubjectsField } from './SubjectsField/SubjectsField';
-export * from './ListSorter';
 export * from './CheckboxDropdownModal/CheckboxDropdownModal';
+export * from './ListSorter';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';

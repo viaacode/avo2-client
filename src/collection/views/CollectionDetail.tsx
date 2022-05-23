@@ -1,6 +1,13 @@
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
@@ -12,6 +19,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	convertToHtml,
 	Grid,
 	Header,
 	HeaderButtons,
@@ -26,7 +34,7 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -34,11 +42,13 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	IconBar,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -62,6 +72,7 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
@@ -823,6 +834,107 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	// Start
+
+	const renderCollectionFragmentTitle = (fragment: CollectionFragment) => {
+		const heading = (
+			<BlockHeading type="h3">
+				{fragment.use_custom_fields ? fragment.custom_title : fragment.item_meta?.title}
+			</BlockHeading>
+		);
+
+		if (
+			permissions.canViewAnyPublishedItems &&
+			fragment.type === 'ITEM' &&
+			fragment.item_meta?.type?.label &&
+			['video', 'audio'].includes(fragment.item_meta?.type?.label)
+		) {
+			const link = buildLink(APP_PATH.ITEM_DETAIL.route, {
+				id: fragment.item_meta.external_id || '',
+			});
+
+			return <Link to={link}>{heading}</Link>;
+		}
+
+		return heading;
+	};
+
+	const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}:[0-9]{2})/g;
+	const renderCollectionFragmentTimestamps = (description: string = ''): ReactNode => {
+		const formattedDescription = description
+			.replace(/[\n\r]+/, '')
+			.replace(TIMESTAMP_REGEX, (match) => {
+				return `<span class="c-description-timecode">${match}</span>`;
+			});
+
+		return <Html content={formattedDescription} type="span" sanitizePreset="full" />;
+	};
+
+	const renderCollectionFragmentRichText = (fragment: CollectionFragment) => {
+		return (
+			<p className="c-content">
+				{renderCollectionFragmentTimestamps(
+					convertToHtml(
+						fragment.use_custom_fields
+							? fragment.custom_description
+							: fragment.item_meta?.description
+					)
+				)}
+			</p>
+		);
+	};
+
+	const renderCollectionFragment = (fragment: CollectionFragment) => {
+		const layout = (children?: ReactNode) => (
+			<Container mode="horizontal" className="u-p-0">
+				<IconBar
+					icon={{
+						name: VIEW_COLLECTION_FRAGMENT_ICONS()[fragment.type](fragment),
+					}}
+				>
+					{children}
+				</IconBar>
+			</Container>
+		);
+
+		switch (fragment.type) {
+			case 'TEXT':
+				return layout(
+					<>
+						{renderCollectionFragmentTitle(fragment)}
+						{renderCollectionFragmentRichText(fragment)}
+					</>
+				);
+			case 'ITEM':
+				return layout(
+					<>
+						{renderCollectionFragmentTitle(fragment)}
+						{renderCollectionFragmentRichText(fragment)}
+					</>
+				);
+
+			default:
+				return null;
+		}
+	};
+
+	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
+		// TODO: disable
+		const hasBackground = fragment.type === 'TEXT';
+
+		return (
+			<div
+				key={fragment.id}
+				className={`u-padding-top-l u-padding-bottom-l ${
+					hasBackground ? ' u-bg-gray-50' : ''
+				}`.trim()}
+			>
+				{renderCollectionFragment(fragment)}
+			</div>
+		);
+	};
+	// End
+
 	const renderCollection = () => {
 		const {
 			id,
@@ -894,21 +1006,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Spacer>
 						</HeaderRow>
 					</Header>
+
+					{/* Start */}
+
+					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
+						{!!collection &&
+							collection_fragments.map((fragment) =>
+								renderCollectionFragmentWrapper(fragment)
+							)}
+					</Container>
+
+					<br />
+					<hr />
+					<br />
+
+					{/* End */}
+
 					<Container mode="vertical">
 						<Container mode="horizontal">
-							{!!collection &&
-								collection_fragments.map((fragment) => (
-									<div key={fragment.id}>
-										<h4>
-											{fragment.custom_title || fragment.item_meta?.title}
-										</h4>
-									</div>
-								))}
-
-							<br />
-							<hr />
-							<br />
-
 							{!!collection && (
 								<FragmentList
 									collectionFragments={collection_fragments}

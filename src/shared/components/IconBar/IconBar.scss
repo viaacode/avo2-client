@@ -1,5 +1,33 @@
+@import '../../../styles/settings/variables';
+
 $component: 'c-icon-bar';
 
 .#{$component} {
-    display: grid;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: $g-spacer-unit * 2;
+
+	@media screen and (min-width: $g-bp2) {
+		gap: $g-spacer-unit * 3;
+	}
+
+	&__sidebar {
+		padding-right: $g-spacer-unit;
+		border-right: 1px solid $color-gray-100;
+		color: $color-gray-600;
+
+		@media screen and (min-width: $g-bp2) {
+			padding-right: $g-spacer-unit * 3;
+		}
+
+		.o-svg-icon {
+			width: 2rem;
+			height: 2rem;
+
+			@media screen and (min-width: $g-bp2) {
+				width: 4rem;
+				height: 4rem;
+			}
+		}
+	}
 }
