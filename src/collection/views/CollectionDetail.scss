@@ -1,5 +1,7 @@
 @import '../../styles/settings/variables';
 
+$collection-detail-description-height-xs: 160px;
+
 .m-collection-detail {
 	&.hide-behind-login-popup {
 		opacity: 0;
@@ -35,5 +37,70 @@
 		.c-toolbar {
 			min-height: 0;
 		}
+	}
+}
+
+// Start
+
+.c-collapsible-column {
+	gap: $g-spacer-unit;
+
+	@media screen and (min-width: $g-collapsible-column-bp) {
+		grid-template-columns: 1fr 244px;
+		gap: $g-spacer-unit * 2;
+	}
+
+	@media screen and (min-width: $g-bp3) {
+		grid-template-columns: 1fr 366px;
+		gap: $g-spacer-unit * 3;
+	}
+
+	@media screen and (min-width: $g-bp4) {
+		grid-template-columns: 1fr 488px;
+		gap: $g-spacer-unit * 4;
+	}
+
+	@media screen and (max-width: $g-collapsible-column-bp - 1px) {
+		// Set a max height and allow the content to push
+		&__bounded {
+			max-height: $collection-detail-description-height-xs;
+
+			&-content {
+				position: static;
+			}
+
+			// If the content is higher than 160px and the toggle button has been pressed
+			// Limit the height to the max height and stretch the bounded-content so the
+			// `Scrollbar`-component can grow
+			&--scrollable {
+				height: $collection-detail-description-height-xs;
+
+				.c-collapsible-column {
+					&__bounded-content {
+						height: 100%;
+					}
+				}
+			}
+		}
+	}
+}
+
+.m-collection-detail__video-content {
+	margin-top: $g-spacer-unit;
+
+	@media screen and (max-width: $g-collapsible-column-bp - 1px) {
+		// Pull the video out of bounds
+		.c-video-player {
+			margin-left: -40px;
+			max-width: initial;
+		}
+	}
+
+	@media screen and (min-width: $g-collapsible-column-bp) {
+		margin-top: $g-spacer-unit * 2;
+	}
+
+	@media screen and (min-width: $g-bp4) {
+		margin-top: $g-spacer-unit * 3;
 	}
 }

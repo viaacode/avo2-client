@@ -18,7 +18,7 @@ const IconBar: FC<IconBarProps> = ({
 		<div className="c-icon-bar__sidebar">
 			<Icon {...icon}></Icon>
 		</div>
-		<div className="c-iconbar__content">{children}</div>
+		<div className="c-icon-bar__content">{children}</div>
 	</div>
 );
 

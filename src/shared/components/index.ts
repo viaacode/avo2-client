@@ -1,4 +1,5 @@
 export { default as BooleanCheckboxDropdown } from './BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+export { default as CollapsibleColumn } from './CollapsibleColumn/CollapsibleColumn';
 export { default as ControlledDropdown } from './ControlledDropdown/ControlledDropdown';
 export { default as DataQueryComponent } from './DataQueryComponent/DataQueryComponent';
 export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropdown';

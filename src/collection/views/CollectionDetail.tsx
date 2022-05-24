@@ -35,6 +35,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -42,6 +43,8 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	CollapsibleColumn,
+	FlowPlayerWrapper,
 	IconBar,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -884,6 +887,51 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	const renderCollectionFragmentVideo = (fragment: CollectionFragment) => {
+		const meta = fragment.item_meta as ItemSchema | undefined;
+
+		return (
+			<FlowPlayerWrapper
+				// TODO: add other props from ItemVideoDescription
+				item={meta}
+				cuePoints={{
+					start: fragment.start_oc,
+					end: fragment.end_oc,
+				}}
+			/>
+		);
+	};
+
+	const renderCollectionFragmentMeta = (fragment: CollectionFragment) => {
+		const organisation = fragment.item_meta?.organisation?.name;
+		const publishedAt = fragment.item_meta?.published_at;
+		const series = undefined; // TODO: determine & configure corresponding meta field
+
+		return (
+			(organisation || publishedAt || series) && (
+				<section className="u-spacer-bottom">
+					{organisation && (
+						<div>
+							{t('Uitzender')}: <b>{organisation}</b>
+						</div>
+					)}
+
+					{publishedAt && (
+						<div>
+							{t('Uitzenddatum')}: <b>{publishedAt}</b>
+						</div>
+					)}
+
+					{series && (
+						<div>
+							{t('Reeks')}: <b>{series}</b>
+						</div>
+					)}
+				</section>
+			)
+		);
+	};
+
 	const renderCollectionFragment = (fragment: CollectionFragment) => {
 		const layout = (children?: ReactNode) => (
 			<Container mode="horizontal" className="u-p-0">
@@ -909,7 +957,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				return layout(
 					<>
 						{renderCollectionFragmentTitle(fragment)}
-						{renderCollectionFragmentRichText(fragment)}
+						<CollapsibleColumn
+							className="m-collection-detail__video-content"
+							grow={renderCollectionFragmentVideo(fragment)}
+							bound={
+								<>
+									{renderCollectionFragmentMeta(fragment)}
+									{renderCollectionFragmentRichText(fragment)}
+								</>
+							}
+						/>
 					</>
 				);
 
@@ -919,15 +976,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
-		// TODO: disable
-		const hasBackground = fragment.type === 'TEXT';
+		// const hasBackground = fragment.type === 'TEXT';
 
 		return (
 			<div
 				key={fragment.id}
-				className={`u-padding-top-l u-padding-bottom-l ${
-					hasBackground ? ' u-bg-gray-50' : ''
-				}`.trim()}
+				// className={`u-padding-top-l u-padding-bottom-l ${hasBackground ? ' u-bg-gray-50' : ''}`.trim()}
+				className="u-padding-top-l u-padding-bottom-l"
 			>
 				{renderCollectionFragment(fragment)}
 			</div>

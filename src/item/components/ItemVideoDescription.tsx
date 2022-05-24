@@ -35,12 +35,11 @@ import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
-	showTitleOnVideo?: boolean;
 	showDescription?: boolean;
 	collapseDescription?: boolean;
 	showTitle?: boolean;
-	title?: string;
-	description?: string;
+	title?: string | null;
+	description?: string | null;
 	src?: string;
 	poster?: string;
 	cuePoints?: CuePoints;
@@ -155,7 +154,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 				onPlay={onPlay}
 				external_id={itemMetaData.external_id}
 				duration={itemMetaData.duration}
-				title={title}
+				title={title || undefined}
 			/>
 		);
 	};

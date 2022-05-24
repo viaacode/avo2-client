@@ -1,0 +1,44 @@
+@import '../../../styles/settings/variables';
+
+$component: 'c-collapsible-column';
+
+.#{$component} {
+	display: grid;
+
+	&__bounded {
+		position: relative;
+		overflow: hidden;
+
+		&-content {
+			inset: 0 0 0 0;
+			position: absolute;
+		}
+
+		&-toggle {
+			background: #fff;
+			bottom: 0;
+			left: 0;
+			position: absolute;
+			right: 0;
+
+			.c-button {
+				transform: translateX(0 - ($g-spacer-unit * 2));
+			}
+		}
+
+		&--scrollable {
+			.#{$component} {
+				&__bounded {
+					&-toggle {
+						position: static;
+					}
+				}
+			}
+		}
+	}
+
+	.ScrollbarsCustom-TrackY {
+		height: 100% !important;
+		top: 0 !important;
+	}
+}
