@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next';
 
 import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
-import { CollectionFragment } from '@viaa/avo2-types/types/collection';
+import { CollectionFragment, CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
 
 import i18n from '../shared/translations/i18n';
 
@@ -82,10 +82,6 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 		id: 'actions',
 	},
 ];
-
-// TODO: move to avo2-types
-type CollectionFragmentType = 'ITEM' | 'TEXT' | 'COLLECTION';
-type CollectionFragmentTypeDict<T> = { [key in CollectionFragmentType]: T }; // eslint-disable-line
 
 export const COLLECTION_FRAGMENT_LABELS: (t: TFunction) => CollectionFragmentTypeDict<string> = (
 	t
