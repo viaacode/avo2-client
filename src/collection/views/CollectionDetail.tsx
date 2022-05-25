@@ -912,19 +912,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<section className="u-spacer-bottom">
 					{organisation && (
 						<div>
-							{t('Uitzender')}: <b>{organisation}</b>
+							{t('collection/views/collection-detail___uitzender')}:{' '}
+							<b>{organisation}</b>
 						</div>
 					)}
 
 					{publishedAt && (
 						<div>
-							{t('Uitzenddatum')}: <b>{publishedAt}</b>
+							{t('collection/views/collection-detail___uitzenddatum')}:{' '}
+							<b>{publishedAt}</b>
 						</div>
 					)}
 
 					{series && (
 						<div>
-							{t('Reeks')}: <b>{series}</b>
+							{t('collection/views/collection-detail___reeks')}: <b>{series}</b>
 						</div>
 					)}
 				</section>

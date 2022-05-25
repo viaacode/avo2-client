@@ -48,7 +48,15 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 					<Button
 						type="underlined-link"
 						icon={scrollable ? 'close' : 'plus'} // TODO: add 'minus' icon
-						label={scrollable ? t('Toon minder') : t('Toon meer')}
+						label={
+							scrollable
+								? t(
+										'shared/components/collapsible-column/collapsible-column___toon-minder'
+								  )
+								: t(
+										'shared/components/collapsible-column/collapsible-column___toon-meer'
+								  )
+						}
 						onClick={() => setScrollable(!scrollable)}
 					/>
 				</div>

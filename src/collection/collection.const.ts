@@ -90,9 +90,9 @@ type CollectionFragmentTypeDict<T> = { [key in CollectionFragmentType]: T }; // 
 export const COLLECTION_FRAGMENT_LABELS: (t: TFunction) => CollectionFragmentTypeDict<string> = (
 	t
 ) => ({
-	COLLECTION: t('Collectie'),
-	ITEM: t('Fragment'),
-	TEXT: t('Instructie- of tekstblok'),
+	COLLECTION: t('collection/collection___collectie'),
+	ITEM: t('collection/collection___fragment'),
+	TEXT: t('collection/collection___instructie-of-tekstblok'),
 });
 
 export const EDIT_COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<IconName> = () => ({
