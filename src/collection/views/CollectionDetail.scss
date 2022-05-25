@@ -60,7 +60,7 @@ $collection-detail-description-height-xs: 160px;
 		gap: $g-spacer-unit * 4;
 	}
 
-	@media screen and (max-width: $g-collapsible-column-bp - 1px) {
+	@media screen and (max-width: ($g-collapsible-column-bp - 1px)) {
 		// Set a max height and allow the content to push
 		&__bounded {
 			max-height: $collection-detail-description-height-xs;
@@ -70,14 +70,15 @@ $collection-detail-description-height-xs: 160px;
 			}
 
 			// If the content is higher than 160px and the toggle button has been pressed
-			// Limit the height to the max height and stretch the bounded-content so the
-			// `Scrollbar`-component can grow
+			// Override the `Scrollbar`-component's styling on mobile, allowing the content
+			// to scale as normal while avoiding double scrollbars
 			&--scrollable {
-				height: $collection-detail-description-height-xs;
+				max-height: unset;
 
-				.c-collapsible-column {
-					&__bounded-content {
-						height: 100%;
+				.ScrollbarsCustom {
+					&-Wrapper,
+					&-Scroller {
+						position: static !important;
 					}
 				}
 			}
@@ -88,7 +89,7 @@ $collection-detail-description-height-xs: 160px;
 .m-collection-detail__video-content {
 	margin-top: $g-spacer-unit;
 
-	@media screen and (max-width: $g-collapsible-column-bp - 1px) {
+	@media screen and (max-width: ($g-collapsible-column-bp - 1px)) {
 		// Pull the video out of bounds
 		.c-video-player {
 			margin-left: -40px;

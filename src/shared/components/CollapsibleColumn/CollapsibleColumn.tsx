@@ -43,7 +43,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 	const content = (
 		<>
 			{bound}
-			{overflowing && (
+			{(overflowing || scrollable) && (
 				<div className="c-collapsible-column__bounded-toggle">
 					<Button
 						type="underlined-link"

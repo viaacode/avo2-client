@@ -841,7 +841,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const renderCollectionFragmentTitle = (fragment: CollectionFragment) => {
 		const heading = (
-			<BlockHeading type="h3">
+			<BlockHeading type="h2">
 				{fragment.use_custom_fields ? fragment.custom_title : fragment.item_meta?.title}
 			</BlockHeading>
 		);

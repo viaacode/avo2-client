@@ -21,6 +21,22 @@ $component: 'c-collapsible-column';
 			position: absolute;
 			right: 0;
 
+			&:before {
+				background: rgb(255, 255, 255);
+				background: linear-gradient(
+					0deg,
+					rgba(255, 255, 255, 1) 0%,
+					rgba(255, 255, 255, 0.667) 50%,
+					rgba(255, 255, 255, 0) 100%
+				);
+				bottom: 100%;
+				content: '';
+				display: block;
+				height: 1em;
+				position: absolute;
+				width: 100%;
+			}
+
 			.c-button {
 				transform: translateX(0 - ($g-spacer-unit * 2));
 			}
@@ -31,6 +47,10 @@ $component: 'c-collapsible-column';
 				&__bounded {
 					&-toggle {
 						position: static;
+
+						&:before {
+							display: none;
+						}
 					}
 				}
 			}
