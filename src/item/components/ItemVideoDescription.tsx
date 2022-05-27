@@ -1,14 +1,5 @@
 import { debounce } from 'lodash-es';
-import { parse } from 'querystring';
-import React, {
-	createRef,
-	FunctionComponent,
-	MouseEvent,
-	ReactNode,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import React, { createRef, FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
@@ -28,8 +19,9 @@ import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import Html from '../../shared/components/Html/Html';
-import { parseDuration, stripHtml } from '../../shared/helpers';
+import { stripHtml } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
+import { useVideoWithTimestamps } from '../../shared/hooks/useVideoWithTimestamps';
 
 import './ItemVideoDescription.scss';
 
@@ -66,29 +58,13 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	canPlay = true,
 	verticalLayout = false,
 	titleLink,
-	location,
 	onPlay,
 }) => {
-	const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}:[0-9]{2})/g;
-
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
+	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
-	const [time, setTime] = useState<number>(seekTime);
+	const [time, , formatTimestamps] = useVideoWithTimestamps(descriptionRef, seekTime);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
-
-	useEffect(() => {
-		// Set video current time from the query params once the video has loaded its meta data
-		// If this happens sooner, the time will be ignored by the video player
-		const queryParams = parse(location.search);
-
-		setTime(parseInt((queryParams.time as string) || String(seekTime || 0), 10));
-	}, [location.search, setTime, seekTime]);
-
-	useEffect(() => {
-		if (seekTime) {
-			setTime(seekTime);
-		}
-	}, [seekTime, setTime]);
 
 	useEffect(() => {
 		// Register window listener when the component mounts
@@ -112,35 +88,6 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 			window.removeEventListener('resize', onResizeHandler);
 		};
 	}, [videoRef]);
-
-	const isTimeCode = (text: string): boolean => {
-		return TIMESTAMP_REGEX.test(text);
-	};
-
-	const handleTimeLinkClicked = async (timestamp: string) => {
-		const seconds = parseDuration(timestamp);
-		setTime(seconds);
-	};
-
-	const handleDescriptionClicked = (evt: MouseEvent<HTMLDivElement>) => {
-		const clickedText = (evt.target as any).innerText;
-		if (isTimeCode(clickedText)) {
-			handleTimeLinkClicked(clickedText);
-		}
-	};
-
-	/**
-	 * Split string by time markers and adds links to those times into the output jsx code
-	 */
-	const formatTimestamps = (description: string = ''): ReactNode => {
-		const formattedDescription = description
-			.replace(/[\n\r]+/, '')
-			.replace(TIMESTAMP_REGEX, (match) => {
-				return `<span class="c-description-timecode">${match}</span>`;
-			});
-
-		return <Html content={formattedDescription} type="span" sanitizePreset="full" />;
-	};
 
 	const renderMedia = () => {
 		return (
@@ -192,7 +139,13 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 						</Trans>
 					</BlockHeading>
 				)}
-				<p className="c-content">{formatTimestamps(convertToHtml(description))}</p>
+
+				<Html
+					className="c-content"
+					sanitizePreset="full"
+					type="div"
+					content={formatTimestamps(convertToHtml(description))}
+				/>
 			</>
 		);
 	};
@@ -241,9 +194,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 					</Column>
 					<Column size={verticalLayout ? '2-12' : '2-5'}>
 						<Spacer margin={verticalLayout ? ['top'] : []}>
-							<div onClick={handleDescriptionClicked}>
-								{renderDescriptionWrapper()}
-							</div>
+							<div ref={descriptionRef}>{renderDescriptionWrapper()}</div>
 						</Spacer>
 					</Column>
 				</>

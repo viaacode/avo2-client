@@ -19,7 +19,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	convertToHtml,
 	Grid,
 	Header,
 	HeaderButtons,
@@ -35,7 +34,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -43,15 +41,12 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	CollapsibleColumn,
-	FlowPlayerWrapper,
 	IconBar,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -78,7 +73,13 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import { VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
-import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
+import {
+	AutoplayCollectionModal,
+	CollectionFragmentTypeItem,
+	CollectionFragmentTypeText,
+	FragmentList,
+	PublishCollectionModal,
+} from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
@@ -839,101 +840,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	// Start
 
-	const renderCollectionFragmentTitle = (fragment: CollectionFragment) => {
-		const heading = (
-			<BlockHeading type="h2">
-				{fragment.use_custom_fields ? fragment.custom_title : fragment.item_meta?.title}
-			</BlockHeading>
-		);
-
-		if (
-			permissions.canViewAnyPublishedItems &&
-			fragment.type === 'ITEM' &&
-			fragment.item_meta?.type?.label &&
-			['video', 'audio'].includes(fragment.item_meta?.type?.label)
-		) {
-			const link = buildLink(APP_PATH.ITEM_DETAIL.route, {
-				id: fragment.item_meta.external_id || '',
-			});
-
-			return <Link to={link}>{heading}</Link>;
-		}
-
-		return heading;
-	};
-
-	const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}:[0-9]{2})/g;
-	const renderCollectionFragmentTimestamps = (description: string = ''): ReactNode => {
-		const formattedDescription = description
-			.replace(/[\n\r]+/, '')
-			.replace(TIMESTAMP_REGEX, (match) => {
-				return `<span class="c-description-timecode">${match}</span>`;
-			});
-
-		return <Html content={formattedDescription} type="span" sanitizePreset="full" />;
-	};
-
-	const renderCollectionFragmentRichText = (fragment: CollectionFragment) => {
-		return (
-			<p className="c-content">
-				{renderCollectionFragmentTimestamps(
-					convertToHtml(
-						fragment.use_custom_fields
-							? fragment.custom_description
-							: fragment.item_meta?.description
-					)
-				)}
-			</p>
-		);
-	};
-
-	const renderCollectionFragmentVideo = (fragment: CollectionFragment) => {
-		const meta = fragment.item_meta as ItemSchema | undefined;
-
-		return (
-			<FlowPlayerWrapper
-				// TODO: add other props from ItemVideoDescription
-				item={meta}
-				cuePoints={{
-					start: fragment.start_oc,
-					end: fragment.end_oc,
-				}}
-			/>
-		);
-	};
-
-	const renderCollectionFragmentMeta = (fragment: CollectionFragment) => {
-		const organisation = fragment.item_meta?.organisation?.name;
-		const publishedAt = fragment.item_meta?.published_at;
-		const series = undefined; // TODO: determine & configure corresponding meta field
-
-		return (
-			(organisation || publishedAt || series) && (
-				<section className="u-spacer-bottom">
-					{organisation && (
-						<div>
-							{t('collection/views/collection-detail___uitzender')}:{' '}
-							<b>{organisation}</b>
-						</div>
-					)}
-
-					{publishedAt && (
-						<div>
-							{t('collection/views/collection-detail___uitzenddatum')}:{' '}
-							<b>{publishedAt}</b>
-						</div>
-					)}
-
-					{series && (
-						<div>
-							{t('collection/views/collection-detail___reeks')}: <b>{series}</b>
-						</div>
-					)}
-				</section>
-			)
-		);
-	};
-
 	const renderCollectionFragment = (fragment: CollectionFragment) => {
 		const layout = (children?: ReactNode) => (
 			<Container mode="horizontal" className="u-p-0">
@@ -950,26 +856,28 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		switch (fragment.type) {
 			case 'TEXT':
 				return layout(
-					<>
-						{renderCollectionFragmentTitle(fragment)}
-						{renderCollectionFragmentRichText(fragment)}
-					</>
+					<CollectionFragmentTypeText title={{ fragment }} richText={{ fragment }} />
 				);
 			case 'ITEM':
 				return layout(
-					<>
-						{renderCollectionFragmentTitle(fragment)}
-						<CollapsibleColumn
-							className="m-collection-detail__video-content"
-							grow={renderCollectionFragmentVideo(fragment)}
-							bound={
-								<>
-									{renderCollectionFragmentMeta(fragment)}
-									{renderCollectionFragmentRichText(fragment)}
-								</>
-							}
-						/>
-					</>
+					<CollectionFragmentTypeItem
+						className="m-collection-detail__video-content"
+						title={{
+							fragment,
+							canViewAnyPublishedItems: permissions.canViewAnyPublishedItems,
+						}}
+						richText={{ fragment }}
+						flowPlayer={{
+							fragment,
+							canPlay:
+								!isAddToBundleModalOpen &&
+								!isDeleteModalOpen &&
+								!isPublishModalOpen &&
+								!isShareThroughEmailModalOpen &&
+								!isAutoplayCollectionModalOpen,
+						}}
+						meta={{ fragment }}
+					/>
 				);
 
 			default:
@@ -1067,7 +975,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					{/* Start */}
 
 					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
-						{!!collection &&
+						{!!collection_fragments &&
 							collection_fragments.map((fragment) =>
 								renderCollectionFragmentWrapper(fragment)
 							)}
