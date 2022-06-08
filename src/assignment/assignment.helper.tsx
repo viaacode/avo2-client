@@ -42,7 +42,7 @@ export class AssignmentHelper {
 		history: History
 	) {
 		try {
-			if (isNil(assignment.uuid)) {
+			if (isNil(assignment.id)) {
 				ToastService.danger(
 					i18n.t(
 						'assignment/assignment___je-kan-een-opdracht-pas-dupliceren-nadat-je-hem-hebt-opgeslagen'
@@ -66,7 +66,7 @@ export class AssignmentHelper {
 
 			trackEvents(
 				{
-					object: String(assignment.uuid),
+					object: String(assignment.id),
 					object_type: 'assignment',
 					action: 'copy',
 				},
@@ -76,7 +76,7 @@ export class AssignmentHelper {
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.uuid });
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id });
 			ToastService.success(
 				i18n.t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
@@ -291,5 +291,51 @@ export class AssignmentHelper {
 				</Container>
 			</Container>
 		);
+	}
+
+	public static getLabels(assignment: any, type: string) {
+		// todo typings
+		return (
+			assignment?.labels?.filter((label: any) => label.assignment_label.type === type) || []
+		);
+	}
+
+	public static getClassroom(assignment: any): string {
+		const labels = AssignmentHelper.getLabels(assignment, 'CLASS');
+		return labels[0]?.assignment_label.label || '';
+	}
+
+	public static getDisplayTitle(block: any): string {
+		if (block.use_custom_fields === false) {
+			if (block.original_title || block.original_description) {
+				return block.original_title;
+			}
+			return block.item.title;
+		}
+		return block.custom_title;
+	}
+
+	public static getDisplayDescription(block: any): string {
+		if (block.use_custom_fields === false) {
+			if (block.original_title || block.original_description) {
+				return block.original_description;
+			}
+			return block.item.description;
+		}
+		return block.custom_description;
+	}
+
+	public static getCuePoints(block: any) {
+		if (block.start_oc || block.end_oc) {
+			return {
+				start: block.start_oc,
+				end: block.end_oc,
+			};
+		}
+		return undefined;
+	}
+
+	public static getThumbnail(block: any) {
+		return block.thumbnail_path || undefined;
 	}
 }

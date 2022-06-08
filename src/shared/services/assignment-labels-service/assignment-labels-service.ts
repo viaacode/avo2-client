@@ -23,6 +23,7 @@ export class AssignmentLabelsService {
 				query: GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
 				variables: {
 					profileId,
+					labelType: 'LABEL',
 				},
 			});
 
@@ -30,7 +31,7 @@ export class AssignmentLabelsService {
 				throw new CustomError('Response contains errors', null, { response });
 			}
 
-			return get(response, 'data.app_assignment_labels', []);
+			return get(response, 'data.app_assignment_labels_v2', []);
 		} catch (err) {
 			throw new CustomError('Failed to get assignment labels', err, {
 				profileId,

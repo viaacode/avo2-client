@@ -130,7 +130,7 @@ export class PermissionService {
 			case PermissionName.EDIT_ASSIGNMENTS:
 			case PermissionName.EDIT_OWN_ASSIGNMENTS:
 				const assignment = isString(obj)
-					? await AssignmentService.fetchAssignmentByUuid(obj)
+					? await AssignmentService.fetchAssignmentById(obj)
 					: obj;
 				const assignmentOwnerId = get(assignment, 'owner_profile_id');
 				return !!profileId && !!assignmentOwnerId && profileId === assignmentOwnerId;
