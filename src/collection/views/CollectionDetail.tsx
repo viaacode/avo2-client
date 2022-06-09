@@ -1,6 +1,13 @@
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
@@ -26,7 +33,7 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -34,6 +41,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	IconBar,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -62,9 +70,16 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
-import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
+import {
+	AutoplayCollectionModal,
+	CollectionFragmentTypeItem,
+	CollectionFragmentTypeText,
+	FragmentList,
+	PublishCollectionModal,
+} from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
@@ -823,6 +838,68 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	// Start
+
+	const renderCollectionFragment = (fragment: CollectionFragment) => {
+		const layout = (children?: ReactNode) => (
+			<Container mode="horizontal" className="u-p-0">
+				<IconBar
+					icon={{
+						name: VIEW_COLLECTION_FRAGMENT_ICONS()[fragment.type](fragment),
+					}}
+				>
+					{children}
+				</IconBar>
+			</Container>
+		);
+
+		switch (fragment.type) {
+			case 'TEXT':
+				return layout(
+					<CollectionFragmentTypeText title={{ fragment }} richText={{ fragment }} />
+				);
+			case 'ITEM':
+				return layout(
+					<CollectionFragmentTypeItem
+						className="m-collection-detail__video-content"
+						title={{
+							fragment,
+							canViewAnyPublishedItems: permissions.canViewAnyPublishedItems,
+						}}
+						richText={{ fragment }}
+						flowPlayer={{
+							fragment,
+							canPlay:
+								!isAddToBundleModalOpen &&
+								!isDeleteModalOpen &&
+								!isPublishModalOpen &&
+								!isShareThroughEmailModalOpen &&
+								!isAutoplayCollectionModalOpen,
+						}}
+						meta={{ fragment }}
+					/>
+				);
+
+			default:
+				return null;
+		}
+	};
+
+	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
+		// const hasBackground = fragment.type === 'TEXT';
+
+		return (
+			<div
+				key={fragment.id}
+				// className={`u-padding-top-l u-padding-bottom-l ${hasBackground ? ' u-bg-gray-50' : ''}`.trim()}
+				className="u-padding-top-l u-padding-bottom-l"
+			>
+				{renderCollectionFragment(fragment)}
+			</div>
+		);
+	};
+	// End
+
 	const renderCollection = () => {
 		const {
 			id,
@@ -894,6 +971,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Spacer>
 						</HeaderRow>
 					</Header>
+
+					{/* Start */}
+
+					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
+						{!!collection_fragments &&
+							collection_fragments.map((fragment) =>
+								renderCollectionFragmentWrapper(fragment)
+							)}
+					</Container>
+
+					<br />
+					<hr />
+					<br />
+
+					{/* End */}
+
 					<Container mode="vertical">
 						<Container mode="horizontal">
 							{!!collection && (

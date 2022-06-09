@@ -27,7 +27,7 @@ export interface CuePoints {
 	end: number | null;
 }
 
-type FlowPlayerWrapperProps = {
+export type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
 	src?: string;
 	poster?: string;

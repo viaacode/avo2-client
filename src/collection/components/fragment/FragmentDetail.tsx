@@ -61,7 +61,6 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 					collectionFragment.thumbnail_path ||
 					(collectionFragment.item_meta as Avo.Item.Item).thumbnail_path,
 			}}
-			showTitleOnVideo={false}
 			title={getFragmentProperty(
 				collectionFragment.item_meta as Avo.Item.Item,
 				collectionFragment,

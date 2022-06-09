@@ -14,7 +14,7 @@
 				"named-imports-order": "case-insensitive"
 			}
 		],
-		"variable-name": [true, "check-format", "allow-pascal-case"],
+		"variable-name": [true, "check-format", "allow-pascal-case", "allow-leading-underscore"],
 		"import-name": false,
 		"prettier": true,
 		"no-console": [true, "log"]
