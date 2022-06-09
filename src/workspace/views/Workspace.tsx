@@ -309,7 +309,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						active: isTabActive,
 						label: tabCounts[tab.id] ? (
 							<>
-								{`${tab.label}`}
+								{tab.label}
 								<Pill variants={isTabActive ? [PillVariants.active] : []}>
 									{tabCounts[tab.id]}
 								</Pill>
