@@ -54,10 +54,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	...rest
 }) => {
 	// State
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
-	const [assignmentBlocks, setAssignmentBlocks] = useState<
-		any // TODO TYping
-	>([]);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2>();
+	const [assignmentBlocks, setAssignmentBlocks] = useState<Avo.Assignment.Block[]>([]);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canCreateAssignmentResponse: boolean;
@@ -249,9 +247,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	};
 
 	// Render methods
-	const renderBlock = (block: any) => {
-		// TODO Typings
-
+	const renderBlock = (block: Avo.Assignment.Block) => {
 		switch (block.type) {
 			case 'ITEM':
 				return (
@@ -300,7 +296,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	const renderContent = () => {
 		return (
 			<ul className="c-collection-list">
-				{assignmentBlocks.map((block: any) => renderBlock(block))}
+				{assignmentBlocks.map((block: Avo.Assignment.Block) => renderBlock(block))}
 			</ul>
 		);
 	};

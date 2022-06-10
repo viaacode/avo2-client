@@ -100,6 +100,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			is_deleted
 			title
 			owner_profile_id
+			updated_at
 			created_at
 		}
 		count: app_assignments_v2_aggregate(
@@ -186,11 +187,11 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_RESPONSES = gql`
-	query getAssignmentResponses($profileId: String!, $assignmentUuid: uuid!) {
-		app_assignment_responses(
+	query getAssignmentResponses($profileId: String!, $assignmentId: uuid!) {
+		app_assignment_responses_v2(
 			where: {
 				owner_profile_ids: { _has_key: $profileId }
-				assignment_uuid: { _eq: $assignmentUuid }
+				assignment_id: { _eq: $assignmentId }
 			}
 		) {
 			id
@@ -284,11 +285,10 @@ export const GET_ASSIGNMENT_BLOCKS = gql`
 `;
 
 export const INSERT_ASSIGNMENT = gql`
-	mutation insertAssignment($assignment: app_assignments_insert_input!) {
-		insert_app_assignments(objects: [$assignment]) {
+	mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
+		insert_app_assignments_v2(objects: [$assignment]) {
 			affected_rows
 			returning {
-				uuid
 				id
 			}
 		}
@@ -296,19 +296,11 @@ export const INSERT_ASSIGNMENT = gql`
 `;
 
 export const UPDATE_ASSIGNMENT = gql`
-	mutation updateAssignmentById($assignmentUuid: uuid!, $assignment: app_assignments_set_input!) {
-		update_app_assignments(where: { uuid: { _eq: $assignmentUuid } }, _set: $assignment) {
-			affected_rows
-		}
-	}
-`;
-
-export const UPDATE_ASSIGNMENT_ARCHIVE_STATUS = gql`
-	mutation toggleAssignmentArchiveStatus($assignmentUuid: uuid!, $archived: Boolean!) {
-		update_app_assignments(
-			where: { uuid: { _eq: $assignmentUuid } }
-			_set: { is_archived: $archived }
-		) {
+	mutation updateAssignmentById(
+		$assignmentId: uuid!
+		$assignment: app_assignments_v2_set_input!
+	) {
+		update_app_assignments_v2(where: { id: { _eq: $assignmentId } }, _set: $assignment) {
 			affected_rows
 		}
 	}
@@ -335,17 +327,16 @@ export const DELETE_ASSIGNMENT = gql`
 
 export const INSERT_ASSIGNMENT_RESPONSE = gql`
 	mutation insertAssignmentResponse(
-		$assignmentResponses: [app_assignment_responses_insert_input!]!
+		$assignmentResponses: [app_assignment_responses_v2_insert_input!]!
 	) {
-		insert_app_assignment_responses(objects: $assignmentResponses) {
+		insert_app_assignment_responses_v2(objects: $assignmentResponses) {
 			affected_rows
 			returning {
 				id
 				created_at
-				submitted_at
 				owner_profile_ids
-				assignment_uuid
-				collection_uuid
+				assignment_id
+				collection_title
 			}
 		}
 	}

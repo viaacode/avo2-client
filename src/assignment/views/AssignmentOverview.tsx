@@ -49,6 +49,7 @@ import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/Mor
 import {
 	buildLink,
 	CustomError,
+	formatDate,
 	formatTimestamp,
 	isMobileWidth,
 	navigate,
@@ -62,7 +63,11 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns } from '../assignment.types';
+import {
+	AssignmentLabelType,
+	AssignmentOverviewTableColumns,
+	AssignmentView,
+} from '../assignment.types';
 
 import './AssignmentOverview.scss';
 
@@ -82,8 +87,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [selectedAssignmentLabelsIds, setSelectedAssignmentLabelsIds] = useState<string[]>([]);
+	const [selectedClassLabelsIds, setSelectedClassLabelsIds] = useState<string[]>([]);
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
@@ -93,7 +99,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		false
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
+	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(
 		null
 	);
 	const [page, setPage] = useState<number>(0);
@@ -152,13 +158,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
 				user,
-				canEditAssignments ? null : activeView === 'archived_assignments', // pupils can see assignments past deadline
+				activeView === AssignmentView.FINISHED, // true === past deadline
 				sortColumn,
 				sortOrder,
 				columnDataType,
 				page,
 				filterString,
-				selectedAssignmentLabelsIds
+				selectedAssignmentLabelsIds,
+				selectedClassLabelsIds
 			);
 			setAssignments(response.assignments);
 			setAssigmentCount(response.count);
@@ -177,6 +184,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		canEditAssignments,
 		setLoadingInfo,
 		filterString,
+		selectedClassLabelsIds,
 		selectedAssignmentLabelsIds,
 		page,
 		sortColumn,
@@ -211,7 +219,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const attemptDuplicateAssignment = async (
 		newTitle: string,
-		assignment: Partial<Avo.Assignment.Assignment> | null
+		assignment: Partial<Avo.Assignment.Assignment_v2> | null
 	) => {
 		try {
 			if (!assignment) {
@@ -219,7 +227,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					'Failed to duplicate the assignment because the marked assignment is null'
 				);
 			}
-			await AssignmentService.duplicateAssignment(newTitle, assignment, user);
+			await AssignmentService.duplicateAssignment(newTitle, assignment);
 
 			onUpdate();
 			fetchAssignments();
@@ -273,7 +281,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
-		dataRow: Avo.Assignment.Assignment
+		dataRow: Avo.Assignment.Assignment_v2
 	) => {
 		setDropdownOpenForAssignmentId(null);
 		if (!dataRow.id) {
@@ -290,7 +298,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 			case 'duplicate':
 				try {
-					const assignment: Avo.Assignment.Assignment = await AssignmentService.fetchAssignmentById(
+					const assignment: Avo.Assignment.Assignment_v2 = await AssignmentService.fetchAssignmentById(
 						(dataRow.id as unknown) as string
 					);
 
@@ -327,15 +335,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setMarkedAssignment(null);
 	};
 
-	const renderActions = (rowData: Avo.Assignment.Assignment) => {
+	const renderActions = (rowData: Avo.Assignment.Assignment_v2) => {
 		return (
 			<ButtonToolbar>
 				{canEditAssignments && (
 					<MoreOptionsDropdown
-						isOpen={dropdownOpenForAssignmentId === ((rowData.id as unknown) as string)} // todo typing
-						onOpen={() =>
-							setDropdownOpenForAssignmentId((rowData.id as unknown) as string)
-						}
+						isOpen={dropdownOpenForAssignmentId === rowData.id}
+						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 						onClose={() => setDropdownOpenForAssignmentId(null)}
 						menuItems={[
 							{
@@ -362,48 +368,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						}
 					/>
 				)}
-
-				{canEditAssignments && (
-					<Button
-						icon="chevron-right"
-						label={
-							isMobileWidth()
-								? t('assignment/views/assignment-overview___bewerken')
-								: undefined
-						}
-						title={t('assignment/views/assignment-overview___bewerk-de-opdracht')}
-						onClick={() =>
-							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
-								id: rowData.id,
-							})
-						}
-						type={isMobileWidth() ? 'tertiary' : 'borderless'}
-					/>
-				)}
-
-				{!canEditAssignments && (
-					<Button
-						icon="chevron-right"
-						label={
-							isMobileWidth()
-								? t('assignment/views/assignment-overview___bekijken')
-								: undefined
-						}
-						title={t('assignment/views/assignment-overview___bekijk-deze-opdracht')}
-						onClick={() =>
-							navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, {
-								id: rowData.id,
-							})
-						}
-						type={isMobileWidth() ? 'tertiary' : 'borderless'}
-					/>
-				)}
 			</ButtonToolbar>
 		);
 	};
 
 	const renderCell = (
-		assignment: Avo.Assignment.Assignment,
+		assignment: Avo.Assignment.Assignment_v2,
 		colKey: AssignmentOverviewTableColumns
 	) => {
 		const cellData: any = (assignment as any)[colKey];
@@ -468,6 +438,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'deadline_at':
 				return formatTimestamp(cellData, false);
 
+			case 'updated_at':
+				return formatDate(cellData);
+
 			case 'responses':
 				return (
 					<Link
@@ -488,18 +461,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	};
 
-	const getLabelOptions = (): CheckboxOption[] => {
+	const getLabelOptions = (labelType: AssignmentLabelType): CheckboxOption[] => {
 		return compact(
-			allAssignmentLabels.map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
-				if (!labelObj.label) {
-					return null;
-				}
-				return {
-					label: labelObj.label,
-					id: String(labelObj.id),
-					checked: selectedAssignmentLabelsIds.includes(String(labelObj.id)),
-				};
-			})
+			allAssignmentLabels
+				.filter((labelObj: Avo.Assignment.Label_v2) => labelObj.type === labelType)
+				.map((labelObj: Avo.Assignment.Label_v2): CheckboxOption | null => {
+					if (!labelObj.label) {
+						return null;
+					}
+					return {
+						label: labelObj.label,
+						id: labelObj.id,
+						checked: [
+							...selectedAssignmentLabelsIds,
+							...selectedClassLabelsIds,
+						].includes(labelObj.id),
+					};
+				})
 		);
 	};
 
@@ -517,20 +495,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								<Select
 									options={[
 										{
-											label: t(
-												'assignment/views/assignment-overview___opdrachten'
-											),
+											label: t('Actieve opdrachten'),
 											value: 'assignments',
 										},
 										{
-											label: canEditAssignments
-												? t(
-														'assignment/views/assignment-overview___gearchiveerde-opdrachten'
-												  )
-												: t(
-														'assignment/views/assignment-overview___verlopen-opdrachten'
-												  ),
-											value: 'archived_assignments',
+											label: t('Afgelopen opdrachten'),
+											value: 'finished_assignments',
 										},
 									]}
 									value={activeView}
@@ -543,49 +513,35 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								<ButtonGroup className="c-assignment-overview__archive-buttons">
 									<Button
 										type="secondary"
-										label={t(
-											'assignment/views/assignment-overview___opdrachten'
-										)}
-										title={t(
-											'assignment/views/assignment-overview___filter-op-niet-gearchiveerde-opdrachten'
-										)}
+										label={t('Actieve opdrachten')}
+										title={t('Filter op actieve opdrachten')}
 										active={activeView === 'assignments'}
 										onClick={() => setActiveView('assignments')}
 									/>
 									<Button
 										type="secondary"
-										label={
-											canEditAssignments
-												? t(
-														'assignment/views/assignment-overview___gearchiveerde-opdrachten'
-												  )
-												: t(
-														'assignment/views/assignment-overview___verlopen-opdrachten'
-												  )
-										}
-										title={
-											canEditAssignments
-												? t(
-														'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
-												  )
-												: t(
-														'assignment/views/assignment-overview___verlopen-opdrachten'
-												  )
-										}
-										active={activeView === 'archived_assignments'}
-										onClick={() => setActiveView('archived_assignments')}
+										label={t('Afgelopen opdrachten')}
+										title={t('Filter op afgelopen opdrachten')}
+										active={activeView === 'finished_assignments'}
+										onClick={() => setActiveView('finished_assignments')}
 									/>
 								</ButtonGroup>
 							)}
 							{canEditAssignments && (
-								<CheckboxDropdownModal
-									label={t(
-										'assignment/views/assignment-overview___vakken-of-projecten'
-									)}
-									id="labels"
-									options={getLabelOptions()}
-									onChange={setSelectedAssignmentLabelsIds}
-								/>
+								<>
+									<CheckboxDropdownModal
+										label={t('Klas')}
+										id="Klas"
+										options={getLabelOptions(AssignmentLabelType.CLASS)}
+										onChange={setSelectedClassLabelsIds}
+									/>
+									<CheckboxDropdownModal
+										label={t('Label')}
+										id="Label"
+										options={getLabelOptions(AssignmentLabelType.LABEL)}
+										onChange={setSelectedAssignmentLabelsIds}
+									/>
+								</>
 							)}
 						</ButtonToolbar>
 					</ToolbarItem>
@@ -711,7 +667,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							? t(
 									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
 							  )
-							: activeView === 'archived_assignments'
+							: activeView === AssignmentView.FINISHED
 							? t(
 									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
 							  )
@@ -719,7 +675,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
 							  )
 					}
-					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+					renderCell={(rowData: Avo.Assignment.Assignment_v2, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
 					}
 					rowKey="id"
@@ -748,11 +704,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					deleteObjectCallback={
-						() =>
-							deleteCurrentAssignment(
-								(get(markedAssignment, 'id', null) as unknown) as string
-							) // TODO typing
+					deleteObjectCallback={() =>
+						deleteCurrentAssignment(get(markedAssignment, 'id', null))
 					}
 				/>
 

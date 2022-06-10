@@ -8,7 +8,7 @@ export type AssignmentOverviewTableColumns =
 	| 'class_room'
 	| 'deadline_at'
 	| 'responses'
-	| 'submitted_at'
+	| 'updated_at'
 	| 'created_at'
 	| 'actions';
 
@@ -16,6 +16,22 @@ export interface AssignmentColumn extends TableColumn {
 	id: AssignmentOverviewTableColumns;
 	label: string;
 	sortable?: boolean;
+}
+
+export enum AssignmentLabelType {
+	LABEL = 'LABEL',
+	CLASS = 'CLASS',
+}
+
+export enum AssignmentBlockType {
+	TEXT = 'TEXT',
+	ITEM = 'ITEM',
+	ZOEK = 'ZOEK',
+}
+
+export enum AssignmentView {
+	ACTIVE = 'assignments',
+	FINISHED = 'finished_assignments',
 }
 
 export enum AssignmentLayout {
