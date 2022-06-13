@@ -6,6 +6,7 @@ import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
+	Button,
 	Container,
 	DropdownButton,
 	DropdownContent,
@@ -270,11 +271,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	};
 
 	// Get active tab based on above map with tabId
-	const getActiveTab = useCallback(() => {
-		const firstTabId = Object.keys(tabs)[0];
-		const safeTabId = tabId || firstTabId;
-		return tabs[safeTabId] || tabs[firstTabId];
+	const getActiveTabName = useCallback(() => {
+		const first = Object.keys(tabs)[0];
+		return tabId || first;
 	}, [tabs, tabId]);
+
+	const getActiveTab = useCallback(() => {
+		return tabs[getActiveTabName()];
+	}, [tabs, getActiveTabName]);
 
 	useEffect(() => {
 		updatePermissionsAndCounts();
@@ -395,9 +399,25 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		);
 	};
 
+	const renderActionButton = (activeTabName: string) => {
+		switch (activeTabName) {
+			case ASSIGNMENTS_ID:
+				return (
+					<Button
+						type="primary"
+						label={t('workspace/views/workspace___nieuwe-opdracht')}
+					/>
+				);
+
+			default:
+				break;
+		}
+	};
+
 	const renderTabsAndContent = () => {
 		const tabs = getNavTabs() as NavTab[];
 		const activeTab: TabView = getActiveTab();
+		const activeTabName: string = getActiveTabName();
 
 		return (
 			<div className="m-workspace">
@@ -411,15 +431,22 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 									</Trans>
 								</BlockHeading>
 							</ToolbarLeft>
-							<ToolbarRight>
-								<InteractiveTour showButton />
-							</ToolbarRight>
+
+							<ToolbarRight>{renderActionButton(activeTabName)}</ToolbarRight>
 						</Toolbar>
 					</Container>
 				</Container>
 
 				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">{renderToolbar(tabs, activeTab)}</Container>
+					<Container mode="horizontal">
+						<Toolbar className="c-toolbar--no-height">
+							<ToolbarLeft>{renderToolbar(tabs, activeTab)}</ToolbarLeft>
+
+							<ToolbarRight>
+								<InteractiveTour showButton />
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">

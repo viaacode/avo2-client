@@ -158,7 +158,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 
 			<Navbar background="alt" placement="top" autoHeight>
 				<Container mode="horizontal">
-					<Toolbar autoHeight>
+					<Toolbar autoHeight className="c-toolbar--no-height">
 						<ToolbarLeft>
 							<Tabs tabs={getTabHeaders()} onClick={goToTab} />
 						</ToolbarLeft>
