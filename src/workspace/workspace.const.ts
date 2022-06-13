@@ -10,7 +10,19 @@ export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
 export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
 
-export const GET_TABS: () => TabProps[] = () => [
+export type WorkspaceTabNames =
+	| typeof COLLECTIONS_ID
+	| typeof BUNDLES_ID
+	| typeof ASSIGNMENTS_ID
+	| typeof BOOKMARKS_ID
+	| typeof ORGANISATION_CONTENT_ID
+	| typeof QUICK_LANE_ID;
+
+export interface WorkspaceTab extends TabProps {
+	id: WorkspaceTabNames;
+}
+
+export const GET_TABS: () => WorkspaceTab[] = () => [
 	{
 		label: i18n.t('workspace/workspace___collecties'),
 		icon: 'collection',

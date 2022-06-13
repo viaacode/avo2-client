@@ -1,9 +1,9 @@
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 import { IconName, MenuItemInfo } from '@viaa/avo2-components';
 
 export type TabView = {
-	component: () => ReactElement;
+	component: ReactNode;
 	filter?: TabFilter;
 };
 
