@@ -51,16 +51,11 @@ export function formatTimestamp(
 		.format(`DD-MM-YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
 }
 
-export function formatVerboseTimestamp(
-	timestamp: DateLikeNullable,
-	includeSeconds: boolean = true
-): string {
+export function formatCustomTimestamp(timestamp: DateLikeNullable, format: string): string {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp)
-		.local()
-		.format(`DD MMMM YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
+	return normalizeTimestamp(timestamp).local().format(format);
 }
 
 export function formatDate(timestamp: DateLikeNullable): string {

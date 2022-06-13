@@ -109,20 +109,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					assignment_type: queryParams.assignment_type as Avo.Assignment.Type,
 				};
 			}
-			// TODO B
-			// if (typeof queryParams.content_id === 'string') {
-			// 	newAssignment = {
-			// 		...(newAssignment || {}),
-			// 		content_id: queryParams.content_id,
-			// 	};
-			// }
-
-			// if (typeof queryParams.content_label === 'string') {
-			// 	newAssignment = {
-			// 		...(newAssignment || {}),
-			// 		content_label: queryParams.content_label as Avo.Assignment.ContentLabel,
-			// 	};
-			// }
 
 			if (!newAssignment.assignment_type) {
 				throw new CustomError('Failed to create assignment without assignment type');

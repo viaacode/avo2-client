@@ -49,8 +49,8 @@ import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/Mor
 import {
 	buildLink,
 	CustomError,
+	formatCustomTimestamp,
 	formatDate,
-	formatVerboseTimestamp,
 	isMobileWidth,
 	navigate,
 	renderAvatar,
@@ -436,7 +436,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 
 			case 'deadline_at':
-				return formatVerboseTimestamp(cellData, false);
+				return formatCustomTimestamp(cellData, 'DD MMMM YYYY HH:mm');
 
 			case 'updated_at':
 				return formatDate(cellData);
@@ -497,11 +497,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								<Select
 									options={[
 										{
-											label: t('Actieve opdrachten'),
+											label: t(
+												'assignment/views/assignment-overview___actieve-opdrachten'
+											),
 											value: 'assignments',
 										},
 										{
-											label: t('Afgelopen opdrachten'),
+											label: t(
+												'assignment/views/assignment-overview___afgelopen-opdrachten'
+											),
 											value: 'finished_assignments',
 										},
 									]}
@@ -515,30 +519,38 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								<ButtonGroup className="c-assignment-overview__archive-buttons">
 									<Button
 										type="secondary"
-										label={t('Actieve opdrachten')}
-										title={t('Filter op actieve opdrachten')}
-										active={activeView === 'assignments'}
-										onClick={() => setActiveView('assignments')}
+										label={t(
+											'assignment/views/assignment-overview___actieve-opdrachten'
+										)}
+										title={t(
+											'assignment/views/assignment-overview___filter-op-actieve-opdrachten'
+										)}
+										active={activeView === AssignmentView.ACTIVE}
+										onClick={() => setActiveView(AssignmentView.ACTIVE)}
 									/>
 									<Button
 										type="secondary"
-										label={t('Afgelopen opdrachten')}
-										title={t('Filter op afgelopen opdrachten')}
-										active={activeView === 'finished_assignments'}
-										onClick={() => setActiveView('finished_assignments')}
+										label={t(
+											'assignment/views/assignment-overview___afgelopen-opdrachten'
+										)}
+										title={t(
+											'assignment/views/assignment-overview___filter-op-afgelopen-opdrachten'
+										)}
+										active={activeView === AssignmentView.FINISHED}
+										onClick={() => setActiveView(AssignmentView.FINISHED)}
 									/>
 								</ButtonGroup>
 							)}
 							{canEditAssignments && (
 								<>
 									<CheckboxDropdownModal
-										label={t('Klas')}
+										label={t('assignment/views/assignment-overview___klas')}
 										id="Klas"
 										options={getLabelOptions(AssignmentLabelType.CLASS)}
 										onChange={setSelectedClassLabelsIds}
 									/>
 									<CheckboxDropdownModal
-										label={t('Label')}
+										label={t('assignment/views/assignment-overview___label')}
 										id="Label"
 										options={getLabelOptions(AssignmentLabelType.LABEL)}
 										onChange={setSelectedAssignmentLabelsIds}
