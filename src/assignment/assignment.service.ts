@@ -319,6 +319,8 @@ export class AssignmentService {
 				);
 			}
 
+			assignment.updated_at = new Date().toISOString();
+
 			const [validationErrors, assignmentToSave] = AssignmentService.validateAssignment({
 				...assignment,
 			});
