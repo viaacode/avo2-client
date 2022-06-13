@@ -14,15 +14,15 @@ import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 interface AssignmentLabelsProps {
-	labels: Avo.Assignment.Label[];
+	labels: Avo.Assignment.Label_v2[];
 	user: Avo.User.User;
-	onChange: (newLabels: Avo.Assignment.Label[]) => void;
+	onChange: (newLabels: Avo.Assignment.Label_v2[]) => void;
 }
 
 const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, user, onChange }) => {
 	const [t] = useTranslation();
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
@@ -35,7 +35,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label_v2[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -50,7 +50,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: Avo.Assignment.Label[]): ColorOption[] => {
+	const getColorOptions = (labels: Avo.Assignment.Label_v2[]): ColorOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			value: String(labelObj.id),
@@ -85,7 +85,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 
 	const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
 		evt.stopPropagation();
-		onChange(labels.filter((labelObj: Avo.Assignment.Label) => labelObj.id !== labelId));
+		onChange(labels.filter((labelObj: Avo.Assignment.Label_v2) => labelObj.id !== labelId));
 	};
 
 	const assignmentLabelIds = labels.map((labelObj) => labelObj.id);

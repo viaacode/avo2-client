@@ -1,11 +1,11 @@
 import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_BY_UUID = gql`
-	query getAssignmentsById($uuid: uuid!) {
-		app_assignments(where: { uuid: { _eq: $uuid }, is_deleted: { _eq: false } }) {
+	query getAssignmentsById($id: uuid!) {
+		app_assignments_v2(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
 			answer_url
-			tags {
-				assignment_tag {
+			labels {
+				assignment_label {
 					color_enum_value
 					color_override
 					enum_color {
@@ -21,16 +21,10 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 			}
 			assignment_type
 			available_at
-			class_room
-			content_id
-			content_label
-			content_layout
 			created_at
 			deadline_at
 			description
-			uuid
 			id
-			is_archived
 			is_collaborative
 			is_deleted
 			title
@@ -71,10 +65,10 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 		$owner_profile_id: uuid
 		$offset: Int = 0
 		$limit: Int
-		$order: [app_assignments_order_by!]! = [{ deadline_at: desc }]
-		$filter: [app_assignments_bool_exp]
+		$order: [app_assignments_v2_order_by!]! = [{ deadline_at: desc }]
+		$filter: [app_assignments_v2_bool_exp]
 	) {
-		app_assignments(
+		app_assignments_v2(
 			where: {
 				owner_profile_id: { _eq: $owner_profile_id }
 				is_deleted: { _eq: false }
@@ -84,8 +78,9 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			limit: $limit
 			order_by: $order
 		) {
-			tags(order_by: { assignment_tag: { label: asc } }) {
-				assignment_tag {
+			id
+			labels(order_by: { assignment_label: { label: asc } }) {
+				assignment_label {
 					color_enum_value
 					color_override
 					enum_color {
@@ -94,22 +89,21 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 					}
 					id
 					label
+					type
 				}
 			}
 			responses {
 				id
 			}
 			assignment_type
-			class_room
 			deadline_at
-			uuid
-			is_archived
 			is_deleted
 			title
 			owner_profile_id
+			updated_at
 			created_at
 		}
-		count: app_assignments_aggregate(
+		count: app_assignments_v2_aggregate(
 			where: {
 				owner_profile_id: { _eq: $owner_profile_id }
 				is_deleted: { _eq: false }
@@ -128,10 +122,10 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 		$owner_profile_id: String!
 		$offset: Int = 0
 		$limit: Int
-		$filter: [app_assignments_bool_exp]
-		$order: [app_assignments_order_by!]!
+		$filter: [app_assignments_v2_bool_exp]
+		$order: [app_assignments_v2_order_by!]!
 	) {
-		app_assignments(
+		app_assignments_v2(
 			where: {
 				responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
 				is_deleted: { _eq: false }
@@ -141,8 +135,9 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 			offset: $offset
 			order_by: $order
 		) {
-			tags {
-				assignment_tag {
+			id
+			labels {
+				assignment_label {
 					color_enum_value
 					color_override
 					enum_color {
@@ -155,13 +150,9 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 			}
 			responses {
 				id
-				submitted_at
 			}
 			assignment_type
-			class_room
 			deadline_at
-			uuid
-			is_archived
 			is_deleted
 			title
 			created_at
@@ -181,7 +172,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 				id
 			}
 		}
-		count: app_assignments_aggregate(
+		count: app_assignments_v2_aggregate(
 			where: {
 				responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
 				is_deleted: { _eq: false }
@@ -196,11 +187,11 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_RESPONSES = gql`
-	query getAssignmentResponses($profileId: String!, $assignmentUuid: uuid!) {
-		app_assignment_responses(
+	query getAssignmentResponses($profileId: String!, $assignmentId: uuid!) {
+		app_assignment_responses_v2(
 			where: {
 				owner_profile_ids: { _has_key: $profileId }
-				assignment_uuid: { _eq: $assignmentUuid }
+				assignment_id: { _eq: $assignmentId }
 			}
 		) {
 			id
@@ -209,18 +200,14 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentUuid: uuid!, $pupilUuid: String!) {
-		assignments: app_assignments(
-			where: {
-				uuid: { _eq: $assignmentUuid }
-				is_deleted: { _eq: false }
-				is_archived: { _eq: false }
-			}
+	query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: String!) {
+		assignments: app_assignments_v2(
+			where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
 			order_by: [{ deadline_at: desc }]
 		) {
-			tags {
+			labels {
 				id
-				assignment_tag {
+				assignment_label {
 					color_enum_value
 					color_override
 					enum_color {
@@ -229,27 +216,22 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					}
 					id
 					label
+					type
 				}
 			}
 			responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {
 				id
 				created_at
-				submitted_at
 				owner_profile_ids
-				assignment_uuid
-				collection_uuid
+				assignment_id
+				collection_title
 			}
 			assignment_type
-			class_room
 			deadline_at
-			uuid
-			is_archived
+			id
 			is_deleted
 			title
 			description
-			content_id
-			content_label
-			content_layout
 			created_at
 			updated_at
 			answer_url
@@ -277,12 +259,36 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 	}
 `;
 
+export const GET_ASSIGNMENT_BLOCKS = gql`
+	query getAssignmentBlocks($assignmentId: uuid!) {
+		app_assignment_blocks_v2(
+			where: { assignment_id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
+			order_by: { position: asc }
+		) {
+			id
+			assignment_id
+			fragment_id
+			custom_title
+			custom_description
+			original_title
+			original_description
+			use_custom_fields
+			start_oc
+			end_oc
+			type
+			position
+			thumbnail_path
+			created_at
+			updated_at
+		}
+	}
+`;
+
 export const INSERT_ASSIGNMENT = gql`
-	mutation insertAssignment($assignment: app_assignments_insert_input!) {
-		insert_app_assignments(objects: [$assignment]) {
+	mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
+		insert_app_assignments_v2(objects: [$assignment]) {
 			affected_rows
 			returning {
-				uuid
 				id
 			}
 		}
@@ -290,19 +296,11 @@ export const INSERT_ASSIGNMENT = gql`
 `;
 
 export const UPDATE_ASSIGNMENT = gql`
-	mutation updateAssignmentById($assignmentUuid: uuid!, $assignment: app_assignments_set_input!) {
-		update_app_assignments(where: { uuid: { _eq: $assignmentUuid } }, _set: $assignment) {
-			affected_rows
-		}
-	}
-`;
-
-export const UPDATE_ASSIGNMENT_ARCHIVE_STATUS = gql`
-	mutation toggleAssignmentArchiveStatus($assignmentUuid: uuid!, $archived: Boolean!) {
-		update_app_assignments(
-			where: { uuid: { _eq: $assignmentUuid } }
-			_set: { is_archived: $archived }
-		) {
+	mutation updateAssignmentById(
+		$assignmentId: uuid!
+		$assignment: app_assignments_v2_set_input!
+	) {
+		update_app_assignments_v2(where: { id: { _eq: $assignmentId } }, _set: $assignment) {
 			affected_rows
 		}
 	}
@@ -329,26 +327,17 @@ export const DELETE_ASSIGNMENT = gql`
 
 export const INSERT_ASSIGNMENT_RESPONSE = gql`
 	mutation insertAssignmentResponse(
-		$assignmentResponses: [app_assignment_responses_insert_input!]!
+		$assignmentResponses: [app_assignment_responses_v2_insert_input!]!
 	) {
-		insert_app_assignment_responses(objects: $assignmentResponses) {
+		insert_app_assignment_responses_v2(objects: $assignmentResponses) {
 			affected_rows
 			returning {
 				id
 				created_at
-				submitted_at
 				owner_profile_ids
-				assignment_uuid
-				collection_uuid
+				assignment_id
+				collection_title
 			}
-		}
-	}
-`;
-
-export const GET_ASSIGNMENT_UUID_FROM_LEGACY_ID = gql`
-	query getAssignmentUuidFromLegacyId($legacyId: Int!) {
-		app_assignments(where: { id: { _eq: $legacyId } }, limit: 1) {
-			uuid
 		}
 	}
 `;
