@@ -110,7 +110,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	// Methods
 	// react to route changes by navigating back wih the browser history back button
 	useEffect(() => {
-		setTabId(match.params.tabId);
+		const param = match.params.tabId;
+		param && setTabId(param);
 	}, [match.params.tabId]);
 
 	const updatePermissionsAndCounts = useCallback(() => {
@@ -270,20 +271,29 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		});
 	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
 
-	const goToTab = (id: ReactText) => {
-		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
-		setTabId(String(id));
-	};
+	const goToTab = useCallback(
+		(id: ReactText) => {
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
+			setTabId(String(id));
+		},
+		[history, setTabId]
+	);
 
-	// Get active tab based on above map with tabId
-	const getActiveTabName = useCallback(() => {
-		const first = Object.keys(tabs)[0];
-		return tabId || first;
-	}, [tabs, tabId]);
+	const getFirstRenderableTab = useCallback(() => {
+		return Object.values(tabs).findIndex((tab) => tab.component !== null);
+	}, [tabs]);
+
+	// If no active tab is specified, navigate to the first renderable tab
+	useEffect(() => {
+		if (tabId === null) {
+			const first = Object.keys(tabs)[getFirstRenderableTab()];
+			first && goToTab(first);
+		}
+	}, [tabs, tabId, goToTab, getFirstRenderableTab]);
 
 	const getActiveTab = useCallback(() => {
-		return tabs[getActiveTabName()];
-	}, [tabs, getActiveTabName]);
+		return tabs[tabId || getFirstRenderableTab() || 0];
+	}, [tabs, tabId, getFirstRenderableTab]);
 
 	useEffect(() => {
 		updatePermissionsAndCounts();
@@ -413,11 +423,13 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		switch (activeTabName) {
 			case ASSIGNMENTS_ID:
 				return (
-					<Button
-						type="primary"
-						label={t('workspace/views/workspace___nieuwe-opdracht')}
-						onClick={handleCreateNewAssignmentClick}
-					/>
+					permissions.canCreateAssignments && (
+						<Button
+							type="primary"
+							label={t('workspace/views/workspace___nieuwe-opdracht')}
+							onClick={handleCreateNewAssignmentClick}
+						/>
+					)
 				);
 
 			default:
@@ -428,7 +440,6 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const renderTabsAndContent = () => {
 		const tabs = getNavTabs() as NavTab[];
 		const activeTab: TabView = getActiveTab();
-		const activeTabName: string = getActiveTabName();
 
 		return (
 			<div className="m-workspace">
@@ -443,7 +454,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								</BlockHeading>
 							</ToolbarLeft>
 
-							<ToolbarRight>{renderActionButton(activeTabName)}</ToolbarRight>
+							{tabId && <ToolbarRight>{renderActionButton(tabId)}</ToolbarRight>}
 						</Toolbar>
 					</Container>
 				</Container>
