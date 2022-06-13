@@ -50,7 +50,7 @@ import {
 	buildLink,
 	CustomError,
 	formatDate,
-	formatTimestamp,
+	formatVerboseTimestamp,
 	isMobileWidth,
 	navigate,
 	renderAvatar,
@@ -106,7 +106,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
 	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<AssignmentOverviewTableColumns>(
-		'created_at'
+		'updated_at'
 	);
 
 	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments), [
@@ -436,13 +436,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 
 			case 'deadline_at':
-				return formatTimestamp(cellData, false);
+				return formatVerboseTimestamp(cellData, false);
 
 			case 'updated_at':
 				return formatDate(cellData);
 
 			case 'responses':
-				return (
+				return (cellData || []).length === 0 ? (
+					'0'
+				) : (
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}
 					>
