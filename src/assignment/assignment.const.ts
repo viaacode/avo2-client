@@ -1,10 +1,16 @@
+import { object, SchemaOf, string } from 'yup';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 
-import { AssignmentColumn, AssignmentOverviewTableColumns } from './assignment.types';
+import {
+	AssignmentColumn,
+	AssignmentFormState,
+	AssignmentOverviewTableColumns,
+} from './assignment.types';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -128,4 +134,13 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			count: order,
 		},
 	}),
+};
+
+/// Zoek & bouw
+
+export const ASSIGNMENT_FORM_SCHEMA = (): SchemaOf<AssignmentFormState> => {
+	return object({
+		title: string().required(),
+		description: string().required(),
+	});
 };
