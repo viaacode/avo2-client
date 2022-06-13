@@ -1,7 +1,7 @@
-import { TabProps } from '@viaa/avo2-components';
-
 import { ROUTE_PARTS } from '../shared/constants';
 import i18n from '../shared/translations/i18n';
+
+import { WorkspaceTab } from './workspace.types';
 
 export const COLLECTIONS_ID = ROUTE_PARTS.collections;
 export const BUNDLES_ID = ROUTE_PARTS.bundles;
@@ -9,18 +9,6 @@ export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
 export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
-
-export type WorkspaceTabNames =
-	| typeof COLLECTIONS_ID
-	| typeof BUNDLES_ID
-	| typeof ASSIGNMENTS_ID
-	| typeof BOOKMARKS_ID
-	| typeof ORGANISATION_CONTENT_ID
-	| typeof QUICK_LANE_ID;
-
-export interface WorkspaceTab extends TabProps {
-	id: WorkspaceTabNames;
-}
 
 export const GET_TABS: () => WorkspaceTab[] = () => [
 	{
