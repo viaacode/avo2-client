@@ -14,6 +14,8 @@ import {
 	Flex,
 	Icon,
 	Navbar,
+	Pill,
+	Tabs,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -275,7 +277,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderAssignmentEditForm = () => {
 		return (
 			<div className="c-assignment-create-and-edit">
-				<Container background="alt" mode="vertical" size="small">
+				<Container background="alt" mode="vertical" size="small" className="u-p-b-0">
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
 							<ToolbarLeft>
@@ -347,10 +349,46 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					</Container>
 				</Container>
 
+				<Container
+					background="alt"
+					mode="vertical"
+					size="small"
+					className="u-padding-bottom-s"
+				>
+					<Container mode="horizontal">TODO: info</Container>
+				</Container>
+
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Toolbar className="c-toolbar--no-height">
-							<ToolbarLeft>TODO: tabs</ToolbarLeft>
+							<ToolbarLeft>
+								<Tabs
+									tabs={[
+										{
+											label: t('Opdracht'),
+											icon: 'clipboard',
+											id: 0,
+											active: true, // TODO
+										},
+										{
+											label: t('Zoeken'),
+											icon: 'search',
+											id: 1,
+										},
+										{
+											label: (
+												<>
+													{t('Mijn collectie')}
+
+													<Pill>123</Pill>
+												</>
+											),
+											icon: 'collection',
+											id: 2,
+										},
+									]}
+								></Tabs>
+							</ToolbarLeft>
 
 							<ToolbarRight>
 								<InteractiveTour showButton />
