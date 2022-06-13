@@ -1,4 +1,4 @@
-import { isEmpty, isNil } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -84,9 +84,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		const initAssignmentData = async () => {
 			try {
 				const tempAssignment = initAssignmentsByQueryParams();
-				setAssignmentContent(
-					await AssignmentService.fetchAssignmentContent(tempAssignment)
-				);
+				setAssignmentContent(null);
 				setBothAssignments(tempAssignment);
 			} catch (err) {
 				setLoadingInfo({
@@ -143,11 +141,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 
 	useEffect(() => {
-		if (
-			!isEmpty(initialAssignment) &&
-			!isEmpty(currentAssignment) &&
-			(isNil(currentAssignment.content_id) || !isEmpty(assignmentContent))
-		) {
+		if (!isEmpty(initialAssignment) && !isEmpty(currentAssignment)) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
