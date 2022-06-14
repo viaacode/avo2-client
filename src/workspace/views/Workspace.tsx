@@ -14,6 +14,8 @@ import {
 	Icon,
 	MenuContent,
 	Navbar,
+	Pill,
+	PillVariants,
 	Select,
 	SelectOption,
 	Spacer,
@@ -301,12 +303,20 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		return compact(
 			GET_TABS().map((tab) => {
 				if (permissions[tab.id]) {
+					const isTabActive = (tabId || Object.keys(tabs)[0]) === tab.id;
 					return {
 						...tab,
-						active: (tabId || Object.keys(tabs)[0]) === tab.id,
-						label: tabCounts[tab.id]
-							? `${tab.label} (${tabCounts[tab.id]})`
-							: tab.label,
+						active: isTabActive,
+						label: tabCounts[tab.id] ? (
+							<>
+								{tab.label}
+								<Pill variants={isTabActive ? [PillVariants.active] : []}>
+									{tabCounts[tab.id]}
+								</Pill>
+							</>
+						) : (
+							tab.label
+						),
 					};
 				}
 				return null;
