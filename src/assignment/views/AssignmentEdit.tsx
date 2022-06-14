@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -20,8 +20,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { TabPropsSchema } from '@viaa/avo2-components/dist/esm/components/Tabs/Tab/Tab';
-import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -42,10 +40,11 @@ import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { ASSIGNMENT_EDIT_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import { ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
+import { useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
 
@@ -77,6 +76,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
 
 	// Dropdowns
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
@@ -84,29 +84,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Modals
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
-
-	// Tabs
-	const [tab, setTab] = useState<ASSIGNMENT_EDIT_TABS>();
-	const tabs: TabPropsSchema[] = useMemo(
-		() =>
-			[
-				{
-					id: ASSIGNMENT_EDIT_TABS.Inhoud,
-					label: t('Inhoud'),
-					icon: 'collection' as IconNameSchema,
-				},
-				{
-					id: ASSIGNMENT_EDIT_TABS.Details,
-					label: t('Details'),
-					icon: 'settings' as IconNameSchema,
-				},
-			].map((item) => ({
-				...item,
-				onClick: () => setTab(item.id),
-				active: item.id === tab,
-			})),
-		[t, tab, setTab]
-	);
 
 	useEffect(() => {
 		console.info({ tab }); // TODO: navigate
@@ -384,7 +361,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					<Container mode="horizontal">
 						<Toolbar className="c-toolbar--no-height">
 							<ToolbarLeft>
-								<Tabs tabs={tabs}></Tabs>
+								<Tabs tabs={tabs} onClick={onTabClick}></Tabs>
 							</ToolbarLeft>
 
 							<ToolbarRight>
