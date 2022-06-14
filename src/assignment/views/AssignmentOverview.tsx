@@ -677,11 +677,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const getDeleteModalBody = () => {
 		if (markedAssignment?.assignment_type === AssignmentType.BOUW) {
 			return t(
-				'Deze opdracht bevat mogelijk collecties die eveneens verwijderd zullen worden'
+				'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
 			);
 		}
 		if (markedAssignment?.responses?.length) {
-			return t('Leerlingen bekeken deze opdracht reeds');
+			return t(
+				'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
+			);
 		}
 		return t(
 			'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
