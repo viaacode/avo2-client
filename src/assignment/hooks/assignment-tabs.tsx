@@ -22,12 +22,12 @@ export function useAssignmentLesgeverTabs(): [
 			[
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud,
-					label: t('Inhoud'),
+					label: t('assignment/hooks/assignment-tabs___inhoud'),
 					icon: 'collection' as IconNameSchema,
 				},
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Details,
-					label: t('Details'),
+					label: t('assignment/hooks/assignment-tabs___details'),
 					icon: 'settings' as IconNameSchema,
 				},
 			].map((item) => ({

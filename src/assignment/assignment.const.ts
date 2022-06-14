@@ -146,7 +146,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (): SchemaOf<AssignmentFormState> => {
 };
 
 export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
-	title: t('Titel opdracht'),
+	title: t('assignment/assignment___titel-opdracht'),
 	description: undefined,
 });
 
