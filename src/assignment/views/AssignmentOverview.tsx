@@ -31,6 +31,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -344,11 +345,17 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 						onClose={() => setDropdownOpenForAssignmentId(null)}
 						menuItems={[
-							{
-								icon: 'edit-2',
-								id: 'edit',
-								label: t('assignment/views/assignment-overview___bewerk'),
-							},
+							...(activeView === 'finished_assignments'
+								? []
+								: [
+										{
+											icon: 'edit-2',
+											id: 'edit',
+											label: t(
+												'assignment/views/assignment-overview___bewerk'
+											),
+										} as MenuItemInfoSchema,
+								  ]),
 							{
 								icon: 'copy',
 								id: 'duplicate',
