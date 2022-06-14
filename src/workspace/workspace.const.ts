@@ -1,7 +1,7 @@
-import { TabProps } from '@viaa/avo2-components';
-
 import { ROUTE_PARTS } from '../shared/constants';
 import i18n from '../shared/translations/i18n';
+
+import { WorkspaceTab } from './workspace.types';
 
 export const COLLECTIONS_ID = ROUTE_PARTS.collections;
 export const BUNDLES_ID = ROUTE_PARTS.bundles;
@@ -10,7 +10,7 @@ export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
 export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
 
-export const GET_TABS: () => TabProps[] = () => [
+export const GET_TABS: () => WorkspaceTab[] = () => [
 	{
 		label: i18n.t('workspace/workspace___collecties'),
 		icon: 'collection',

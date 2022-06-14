@@ -250,7 +250,7 @@ const InteractiveTour: FunctionComponent<
 				/>
 				{showButton && (
 					<Button
-						type="primary"
+						type="borderless"
 						label={t(
 							'shared/components/interactive-tour/interactive-tour___rondleiding'
 						)}

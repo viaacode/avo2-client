@@ -286,6 +286,8 @@ export function generateAssignmentCreateLink(
 	return buildLink(
 		APP_PATH.ASSIGNMENT_CREATE.route,
 		{},
-		`assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
+		`assignment_type=${assignmentType}
+		${contentId ? `&content_id=${contentId}` : ''}
+		${contentLabel ? `&content_label=${contentLabel}` : ''}`
 	);
 }
