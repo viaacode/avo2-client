@@ -5,17 +5,17 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { BlockHeading, Button, Flex, Icon } from '@viaa/avo2-components';
+import { BlockHeading, Button, Flex, Icon, Tabs } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { buildLink } from '../../shared/helpers';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { ASSIGNMENT_FORM_DEFAULT, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
+import { useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = () => {
@@ -32,6 +32,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = () => {
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [tabs, , , onTabClick] = useAssignmentLesgeverTabs();
 
 	// Effects
 
@@ -85,18 +86,38 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = () => {
 		() => (
 			<>
 				<Button
-					type="secondary"
 					disabled
 					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 					title={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
+					ariaLabel={t(
+						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+					)}
+					type="secondary"
 				/>
-				<MoreOptionsDropdown disabled isOpen={false} menuItems={[]} />
+				<Button
+					disabled
+					icon="more-horizontal"
+					type="secondary"
+					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
+					title={t('assignment/views/assignment-detail___meer-opties')}
+				/>
+				<Button
+					ariaLabel={t('Delen met leerlingen')}
+					title={t('Delen met leerlingen')}
+					label={t('Delen met leerlingen')}
+					disabled
+				/>
 			</>
 		),
 		[t]
 	);
+
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
+		tabs,
+		onTabClick,
+	]);
 
 	const render = () => (
 		<>
@@ -104,6 +125,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = () => {
 				back={renderBackButton}
 				title={renderTitle}
 				actions={renderActions}
+				tabs={renderTabs}
 			/>
 		</>
 	);

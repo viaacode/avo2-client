@@ -138,7 +138,6 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 };
 
 /// Zoek & bouw
-
 export const ASSIGNMENT_FORM_SCHEMA = (): SchemaOf<AssignmentFormState> => {
 	return object({
 		title: string().required(),
@@ -151,7 +150,7 @@ export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	description: undefined,
 });
 
-export enum ASSIGNMENT_EDIT_TABS {
+export enum ASSIGNMENT_CREATE_UPDATE_TABS {
 	Inhoud,
 	Details,
 }

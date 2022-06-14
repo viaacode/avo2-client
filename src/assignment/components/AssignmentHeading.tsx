@@ -9,6 +9,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { InteractiveTour } from '../../shared/components';
+
 import './AssignmentHeading.scss';
 
 interface AssignmentHeadingProps {
@@ -26,7 +28,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 	info,
 	tabs,
 	title,
-	tour,
+	tour = <InteractiveTour showButton />,
 }) => (
 	<>
 		<Navbar background="alt" placement="top" autoHeight className="c-assignment-heading">
@@ -66,13 +68,15 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 				</Container>
 			)}
 
-			<Container mode="horizontal">
-				<Toolbar className="c-toolbar--no-height">
-					<ToolbarLeft>{tabs}</ToolbarLeft>
+			{(tabs || tour) && (
+				<Container mode="horizontal">
+					<Toolbar className="c-toolbar--no-height">
+						{tabs && <ToolbarLeft>{tabs}</ToolbarLeft>}
 
-					<ToolbarRight>{tour}</ToolbarRight>
-				</Toolbar>
-			</Container>
+						{tour && <ToolbarRight>{tour}</ToolbarRight>}
+					</Toolbar>
+				</Container>
+			)}
 		</Navbar>
 	</>
 );
