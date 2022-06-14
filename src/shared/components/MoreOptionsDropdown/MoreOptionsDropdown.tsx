@@ -12,10 +12,11 @@ import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/Me
 
 export interface MoreOptionsDropdownProps {
 	isOpen: boolean;
-	onClose: () => void;
-	onOpen: () => void;
+	onClose?: () => void;
+	onOpen?: () => void;
 	menuItems: MenuItemInfoSchema[] | MenuItemInfoSchema[][];
-	onOptionClicked: (menuItemId: string | number) => void;
+	onOptionClicked?: (menuItemId: string | number) => void;
+	disabled?: boolean;
 }
 
 const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
@@ -24,10 +25,11 @@ const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
 	onClose,
 	menuItems,
 	onOptionClicked,
+	disabled,
 }) => {
 	const [t] = useTranslation();
 
-	return !!menuItems && !!menuItems.length ? (
+	return (
 		<Dropdown
 			isOpen={isOpen}
 			menuWidth="fit-content"
@@ -37,6 +39,7 @@ const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
 		>
 			<DropdownButton>
 				<Button
+					disabled={disabled}
 					icon="more-horizontal"
 					type="secondary"
 					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
@@ -44,10 +47,12 @@ const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
 				/>
 			</DropdownButton>
 			<DropdownContent>
-				<MenuContent menuItems={menuItems} onClick={onOptionClicked} />
+				{!!menuItems && !!menuItems.length && (
+					<MenuContent menuItems={menuItems} onClick={onOptionClicked} />
+				)}
 			</DropdownContent>
 		</Dropdown>
-	) : null;
+	);
 };
 
 export default MoreOptionsDropdown;

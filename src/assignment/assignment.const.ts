@@ -1,3 +1,4 @@
+import { TFunction } from 'i18next';
 import { object, SchemaOf, string } from 'yup';
 
 import { Avo } from '@viaa/avo2-types';
@@ -141,6 +142,16 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 export const ASSIGNMENT_FORM_SCHEMA = (): SchemaOf<AssignmentFormState> => {
 	return object({
 		title: string().required(),
-		description: string().required(),
+		description: string().optional(),
 	});
 };
+
+export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+	title: t('Titel opdracht'),
+	description: undefined,
+});
+
+export enum ASSIGNMENT_EDIT_TABS {
+	Inhoud,
+	Details,
+}

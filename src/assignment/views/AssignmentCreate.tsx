@@ -1,368 +1,112 @@
-import { isEmpty } from 'lodash-es';
-import queryString from 'query-string';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { yupResolver } from '@hookform/resolvers/yup';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import {
-	BlockHeading,
-	Button,
-	ButtonToolbar,
-	Container,
-	Form,
-	FormGroup,
-	Icon,
-	Navbar,
-	Spacer,
-	TextInput,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-	ToolbarRight,
-} from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
+import { BlockHeading, Button, Flex, Icon } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { PermissionName } from '../../authentication/helpers/permission-names';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import {
-	checkPermissions,
-	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	LoadingInfo,
-} from '../../shared/components';
-import { ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	copyToClipboard,
-	CustomError,
-	navigate,
-	sanitizeHtml,
-} from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { buildLink } from '../../shared/helpers';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { AssignmentHelper } from '../assignment.helper';
-import { AssignmentService } from '../assignment.service';
+import { ASSIGNMENT_FORM_DEFAULT, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import { AssignmentFormState } from '../assignment.types';
+import AssignmentHeading from '../components/AssignmentHeading';
 
 import './AssignmentEdit.scss';
-
-const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
-	history,
-	location,
-	match,
-	user,
-}) => {
+const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = () => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [currentAssignment, setCurrentAssignment] = useState<
-		Partial<Avo.Assignment.Assignment_v2>
-	>({});
-	const [initialAssignment, setInitialAssignment] = useState<
-		Partial<Avo.Assignment.Assignment_v2>
-	>({});
+	// Data
+	const [defaultValues] = useState<AssignmentFormState>(ASSIGNMENT_FORM_DEFAULT(t));
+	const [assignment] = useState<AssignmentFormState>(defaultValues);
 
-	const setBothAssignments = useCallback(
-		(assignment: Partial<Avo.Assignment.Assignment_v2>) => {
-			setCurrentAssignment(assignment);
-			setInitialAssignment(assignment);
-		},
-		[setCurrentAssignment, setInitialAssignment]
+	const { setValue } = useForm<AssignmentFormState>({
+		defaultValues,
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA()),
+	});
+
+	// UI
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
+	// Effects
+
+	// Synchronise the React state that triggers renders with the useForm hook
+	useEffect(() => {
+		Object.keys(assignment).forEach((key) => {
+			const cast = key as keyof AssignmentFormState;
+			setValue(cast, assignment[cast]);
+		});
+	}, [assignment, setValue]);
+
+	// Set the loading state when the form is ready
+	useEffect(() => {
+		if (loadingInfo.state !== 'loaded') {
+			assignment && setLoadingInfo({ state: 'loaded' });
+		}
+	}, [assignment, loadingInfo, setLoadingInfo]);
+
+	// Render
+
+	const renderBackButton = useMemo(
+		() => (
+			<Link
+				className="c-return"
+				to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
+					tabId: ASSIGNMENTS_ID,
+				})}
+			>
+				<Icon name="chevron-left" size="small" type="arrows" />
+				{t('assignment/views/assignment-edit___mijn-opdrachten')}
+			</Link>
+		),
+		[t]
 	);
 
-	/**
-	 *  Get query string variables and store them into the assignment state object
-	 */
-	useEffect(() => {
-		const initAssignmentData = async () => {
-			try {
-				const tempAssignment = initAssignmentsByQueryParams();
-				setAssignmentContent(null);
-				setBothAssignments(tempAssignment);
-			} catch (err) {
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
-					),
-					icon: 'alert-triangle',
-				});
-			}
-		};
+	const renderTitle = useMemo(
+		() => (
+			<Flex center className="u-spacer-top">
+				<Icon name="clipboard" size="large" />
 
-		/**
-		 * Get assignment_type, content_id and content_label from query params
-		 */
-		const initAssignmentsByQueryParams = (): Partial<Avo.Assignment.Assignment_v2> => {
-			const queryParams = queryString.parse(location.search);
-			let newAssignment: Partial<Avo.Assignment.Assignment_v2> = {};
+				<BlockHeading className="u-spacer-left" type="h2">
+					{assignment.title}
+				</BlockHeading>
+			</Flex>
+		),
+		[assignment.title]
+	);
 
-			if (typeof queryParams.assignment_type === 'string') {
-				newAssignment = {
-					assignment_type: queryParams.assignment_type as Avo.Assignment.Type,
-				};
-			}
-			// TODO B
-			// if (typeof queryParams.content_id === 'string') {
-			// 	newAssignment = {
-			// 		...(newAssignment || {}),
-			// 		content_id: queryParams.content_id,
-			// 	};
-			// }
+	// These actions are just UI, they are disabled because they can't be used during creation
+	const renderActions = useMemo(
+		() => (
+			<>
+				<Button
+					type="secondary"
+					disabled
+					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
+					title={t(
+						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+					)}
+				/>
+				<MoreOptionsDropdown disabled isOpen={false} menuItems={[]} />
+			</>
+		),
+		[t]
+	);
 
-			// if (typeof queryParams.content_label === 'string') {
-			// 	newAssignment = {
-			// 		...(newAssignment || {}),
-			// 		content_label: queryParams.content_label as Avo.Assignment.ContentLabel,
-			// 	};
-			// }
-
-			if (!newAssignment.assignment_type) {
-				throw new CustomError('Failed to create assignment without assignment type');
-			}
-
-			return newAssignment;
-		};
-
-		checkPermissions(
-			PermissionName.CREATE_ASSIGNMENTS,
-			user,
-			initAssignmentData,
-			setLoadingInfo,
-			t('assignment/views/assignment-create___je-hebt-geen-rechten-om-een-opdracht-te-maken')
-		);
-	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
-
-	useEffect(() => {
-		if (!isEmpty(initialAssignment) && !isEmpty(currentAssignment)) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
-		}
-	}, [initialAssignment, currentAssignment, assignmentContent]);
-
-	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
-			currentAssignment.id
-		}`;
-	};
-
-	const copyAssignmentUrl = () => {
-		copyToClipboard(getAssignmentUrl());
-		ToastService.success(
-			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
-		);
-
-		if (currentAssignment.id && user) {
-			trackEvents(
-				{
-					object: String(currentAssignment.id),
-					object_type: 'assignment',
-					action: 'view',
-				},
-				user
-			);
-		}
-	};
-
-	const setAssignmentProp = (
-		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
-		value: any
-	) => {
-		const newAssignment = {
-			...currentAssignment,
-			[property]: value,
-		};
-		setCurrentAssignment(newAssignment);
-	};
-
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment_v2>) => {
-		try {
-			setIsSaving(true);
-
-			// Convert description editor state to html and store it in the assignment
-			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
-				'descriptionRichEditorState'
-			];
-			assignment.description = sanitizeHtml(
-				descriptionRichEditorState
-					? descriptionRichEditorState.toHTML()
-					: assignment.description || '',
-				'full'
-			);
-			delete (assignment as any)['descriptionRichEditorState'];
-
-			// Copy content if it's a collection collection if not owned by logged in user
-			// so your assignment can work after the other user deletes his collection
-			// if (
-			// 	assignment.content_label === 'COLLECTIE' &&
-			// 	(assignmentContent as Avo.Collection.Collection).owner_profile_id !==
-			// 		getProfileId(user)
-			// ) {
-			// 	const sourceCollection = assignmentContent as Avo.Collection.Collection;
-			// 	assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
-			// 		sourceCollection,
-			// 		user
-			// 	);
-			// }
-
-			// create => insert into graphql
-			const newAssignment: Avo.Assignment.Assignment_v2 = {
-				...assignment,
-				owner_profile_id: getProfileId(user),
-			} as Avo.Assignment.Assignment_v2;
-			const insertedAssignment = await AssignmentService.insertAssignment(
-				newAssignment,
-				assignmentLabels
-			);
-
-			if (insertedAssignment) {
-				setBothAssignments(insertedAssignment);
-
-				trackEvents(
-					{
-						object: String(assignment.id),
-						object_type: 'assignment',
-						action: 'create',
-					},
-					user
-				);
-
-				ToastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
-				);
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: insertedAssignment.id });
-			}
-			setIsSaving(false);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
-			);
-			setIsSaving(false);
-		}
-	};
-
-	const renderAssignmentEditForm = () => {
-		return (
-			<div className="c-assignment-create-and-edit">
-				<Navbar autoHeight>
-					<Container mode="vertical" background="alt">
-						<Container mode="horizontal">
-							<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
-								<ToolbarLeft>
-									<ToolbarItem grow>
-										<Link
-											className="c-return"
-											to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-												tabId: ASSIGNMENTS_ID,
-											})}
-										>
-											<Icon name="chevron-left" size="small" type="arrows" />
-											<Trans i18nKey="assignment/views/assignment-edit___mijn-opdrachten">
-												Mijn opdrachten
-											</Trans>
-										</Link>
-										<BlockHeading className="u-m-0" type="h2">
-											{t(
-												'assignment/views/assignment-edit___nieuwe-opdracht'
-											)}
-										</BlockHeading>
-										{currentAssignment.id && (
-											<Spacer margin="top-small">
-												<Form type="inline">
-													<FormGroup
-														label={t(
-															'assignment/views/assignment-edit___url'
-														)}
-													>
-														<TextInput
-															value={getAssignmentUrl()}
-															disabled
-														/>
-													</FormGroup>
-													<Spacer margin="left-small">
-														<Button
-															icon="copy"
-															type="secondary"
-															ariaLabel={t(
-																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-															)}
-															title={t(
-																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-															)}
-															onClick={copyAssignmentUrl}
-														/>
-													</Spacer>
-												</Form>
-											</Spacer>
-										)}
-									</ToolbarItem>
-								</ToolbarLeft>
-								<ToolbarRight>
-									<ToolbarItem>
-										<ButtonToolbar>
-											<Button
-												type="secondary"
-												onClick={history.goBack}
-												label={t(
-													'assignment/views/assignment-edit___annuleren'
-												)}
-											/>
-											<Button
-												type="primary"
-												label={t(
-													'assignment/views/assignment-edit___opslaan'
-												)}
-												onClick={() => saveAssignment(currentAssignment)}
-												disabled={isSaving}
-											/>
-											<InteractiveTour showButton />
-										</ButtonToolbar>
-									</ToolbarItem>
-								</ToolbarRight>
-							</Toolbar>
-						</Container>
-					</Container>
-				</Navbar>
-				{AssignmentHelper.renderAssignmentForm(
-					currentAssignment,
-					assignmentLabels,
-					user,
-					setAssignmentProp,
-					setAssignmentLabels
-				)}
-				<Container background="alt" mode="vertical">
-					<Container size="small" mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<ButtonToolbar>
-										<Button
-											type="primary"
-											label={t('assignment/views/assignment-edit___opslaan')}
-											title={t(
-												'assignment/views/assignment-create___sla-de-opdracht-op'
-											)}
-											onClick={() => saveAssignment(currentAssignment)}
-											disabled={isSaving}
-										/>
-									</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarLeft>
-						</Toolbar>
-					</Container>
-				</Container>
-			</div>
-		);
-	};
+	const render = () => (
+		<>
+			<AssignmentHeading
+				back={renderBackButton}
+				title={renderTitle}
+				actions={renderActions}
+			/>
+		</>
+	);
 
 	return (
 		<>
@@ -372,6 +116,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						t('assignment/views/assignment-create___maak-opdracht-pagina-titel')
 					)}
 				</title>
+
 				<meta
 					name="description"
 					content={t(
@@ -379,9 +124,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					)}
 				/>
 			</MetaTags>
+
 			<LoadingErrorLoadedComponent
-				dataObject={currentAssignment}
-				render={renderAssignmentEditForm}
+				dataObject={assignment}
+				render={render}
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>

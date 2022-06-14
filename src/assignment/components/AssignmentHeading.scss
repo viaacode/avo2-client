@@ -1,0 +1,14 @@
+@import '../../styles/settings/variables';
+
+.c-assignment-heading {
+    .c-toolbar__left,
+	.c-toolbar__right {
+		flex: initial;
+	}
+
+    &__actions {
+        display: grid;
+        gap: $g-spacer-unit;
+        grid-template-columns: auto auto auto;
+    }
+}

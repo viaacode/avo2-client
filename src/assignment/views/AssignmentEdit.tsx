@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -14,13 +14,14 @@ import {
 	Flex,
 	Icon,
 	Navbar,
-	Pill,
 	Tabs,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { TabPropsSchema } from '@viaa/avo2-components/dist/esm/components/Tabs/Tab/Tab';
+import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -41,7 +42,7 @@ import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import { ASSIGNMENT_EDIT_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
@@ -72,14 +73,44 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [initialAssignment, setInitialAssignment] = useState<
 		Partial<Avo.Assignment.Assignment_v2>
 	>({});
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Block[] | null>(null);
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
+	// Dropdowns
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
+
+	// Modals
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Block[] | null>(null);
+	// Tabs
+	const [tab, setTab] = useState<ASSIGNMENT_EDIT_TABS>();
+	const tabs: TabPropsSchema[] = useMemo(
+		() =>
+			[
+				{
+					id: ASSIGNMENT_EDIT_TABS.Inhoud,
+					label: t('Inhoud'),
+					icon: 'collection' as IconNameSchema,
+				},
+				{
+					id: ASSIGNMENT_EDIT_TABS.Details,
+					label: t('Details'),
+					icon: 'settings' as IconNameSchema,
+				},
+			].map((item) => ({
+				...item,
+				onClick: () => setTab(item.id),
+				active: item.id === tab,
+			})),
+		[t, tab, setTab]
+	);
+
+	useEffect(() => {
+		console.info({ tab }); // TODO: navigate
+	}, [tab]);
 
 	const setBothAssignments = useCallback(
 		(assignment: Partial<Avo.Assignment.Assignment_v2>) => {
@@ -277,7 +308,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderAssignmentEditForm = () => {
 		return (
 			<div className="c-assignment-create-and-edit">
-				<Container background="alt" mode="vertical" size="small" className="u-p-b-0">
+				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
 							<ToolbarLeft>
@@ -349,45 +380,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					</Container>
 				</Container>
 
-				<Container
-					background="alt"
-					mode="vertical"
-					size="small"
-					className="u-padding-bottom-s"
-				>
-					<Container mode="horizontal">TODO: info</Container>
-				</Container>
-
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Toolbar className="c-toolbar--no-height">
 							<ToolbarLeft>
-								<Tabs
-									tabs={[
-										{
-											label: t('Opdracht'),
-											icon: 'clipboard',
-											id: 0,
-											active: true, // TODO
-										},
-										{
-											label: t('Zoeken'),
-											icon: 'search',
-											id: 1,
-										},
-										{
-											label: (
-												<>
-													{t('Mijn collectie')}
-
-													<Pill>123</Pill>
-												</>
-											),
-											icon: 'collection',
-											id: 2,
-										},
-									]}
-								></Tabs>
+								<Tabs tabs={tabs}></Tabs>
 							</ToolbarLeft>
 
 							<ToolbarRight>

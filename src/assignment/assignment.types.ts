@@ -53,4 +53,5 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title' | 'description'>;
+export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'> &
+	Partial<Pick<AssignmentSchema_v2, 'description'>>;
