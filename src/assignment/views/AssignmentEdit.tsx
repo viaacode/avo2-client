@@ -23,7 +23,6 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName } from '../../authentication/helpers/permission-names';
@@ -62,22 +61,22 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Block[] | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
-	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
+	const [currentAssignment, setCurrentAssignment] = useState<
+		Partial<Avo.Assignment.Assignment_v2>
+	>({});
+	const [initialAssignment, setInitialAssignment] = useState<
+		Partial<Avo.Assignment.Assignment_v2>
+	>({});
 
 	const setBothAssignments = useCallback(
-		(assignment: Partial<Avo.Assignment.Assignment>) => {
+		(assignment: Partial<Avo.Assignment.Assignment_v2>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
 		},
@@ -94,7 +93,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			// Determine if this is an edit or create page and initialize or fetch the assignment
 			const tempAssignment: Partial<
-				Avo.Assignment.Assignment
+				Avo.Assignment.Assignment_v2
 			> | null = await AssignmentService.fetchAssignmentById(assignmentId);
 
 			if (!tempAssignment) {
@@ -122,7 +121,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			}
 
 			// Fetch the content if the assignment has content
-			let tempAssignmentContent: AssignmentContent | null = null;
+			let tempAssignmentContent: Avo.Assignment.Block[] | null = null;
 			try {
 				tempAssignmentContent = await AssignmentService.fetchAssignmentBlocks(assignmentId);
 
@@ -237,7 +236,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		setCurrentAssignment(newAssignment);
 	};
 
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
+	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment_v2>) => {
 		try {
 			setIsSaving(true);
 
@@ -440,7 +439,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				</Navbar>
 				{AssignmentHelper.renderAssignmentForm(
 					currentAssignment,
-					assignmentContent,
 					assignmentLabels,
 					user,
 					setAssignmentProp,

@@ -60,17 +60,17 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
-	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
+	const [currentAssignment, setCurrentAssignment] = useState<
+		Partial<Avo.Assignment.Assignment_v2>
+	>({});
+	const [initialAssignment, setInitialAssignment] = useState<
+		Partial<Avo.Assignment.Assignment_v2>
+	>({});
 
 	const setBothAssignments = useCallback(
-		(assignment: Partial<Avo.Assignment.Assignment>) => {
+		(assignment: Partial<Avo.Assignment.Assignment_v2>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
 		},
@@ -100,27 +100,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		/**
 		 * Get assignment_type, content_id and content_label from query params
 		 */
-		const initAssignmentsByQueryParams = (): Partial<Avo.Assignment.Assignment> => {
+		const initAssignmentsByQueryParams = (): Partial<Avo.Assignment.Assignment_v2> => {
 			const queryParams = queryString.parse(location.search);
-			let newAssignment: Partial<Avo.Assignment.Assignment> = {};
+			let newAssignment: Partial<Avo.Assignment.Assignment_v2> = {};
 
 			if (typeof queryParams.assignment_type === 'string') {
 				newAssignment = {
 					assignment_type: queryParams.assignment_type as Avo.Assignment.Type,
-				};
-			}
-
-			if (typeof queryParams.content_id === 'string') {
-				newAssignment = {
-					...(newAssignment || {}),
-					content_id: queryParams.content_id,
-				};
-			}
-
-			if (typeof queryParams.content_label === 'string') {
-				newAssignment = {
-					...(newAssignment || {}),
-					content_label: queryParams.content_label as Avo.Assignment.ContentLabel,
 				};
 			}
 
@@ -150,7 +136,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
 		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
-			currentAssignment.uuid
+			currentAssignment.id
 		}`;
 	};
 
@@ -160,10 +146,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
-		if (currentAssignment.uuid && user) {
+		if (currentAssignment.id && user) {
 			trackEvents(
 				{
-					object: String(currentAssignment.uuid),
+					object: String(currentAssignment.id),
 					object_type: 'assignment',
 					action: 'view',
 				},
@@ -183,7 +169,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
+	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment_v2>) => {
 		try {
 			setIsSaving(true);
 
@@ -201,23 +187,23 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 			// Copy content if it's a collection collection if not owned by logged in user
 			// so your assignment can work after the other user deletes his collection
-			if (
-				assignment.content_label === 'COLLECTIE' &&
-				(assignmentContent as Avo.Collection.Collection).owner_profile_id !==
-					getProfileId(user)
-			) {
-				const sourceCollection = assignmentContent as Avo.Collection.Collection;
-				assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
-					sourceCollection,
-					user
-				);
-			}
+			// if (
+			// 	assignment.content_label === 'COLLECTIE' &&
+			// 	(assignmentContent as Avo.Collection.Collection).owner_profile_id !==
+			// 		getProfileId(user)
+			// ) {
+			// 	const sourceCollection = assignmentContent as Avo.Collection.Collection;
+			// 	assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
+			// 		sourceCollection,
+			// 		user
+			// 	);
+			// }
 
 			// create => insert into graphql
-			const newAssignment: Avo.Assignment.Assignment = {
+			const newAssignment: Avo.Assignment.Assignment_v2 = {
 				...assignment,
 				owner_profile_id: getProfileId(user),
-			} as Avo.Assignment.Assignment;
+			} as Avo.Assignment.Assignment_v2;
 			const insertedAssignment = await AssignmentService.insertAssignment(
 				newAssignment,
 				assignmentLabels
@@ -228,7 +214,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 				trackEvents(
 					{
-						object: String(assignment.uuid),
+						object: String(assignment.id),
 						object_type: 'assignment',
 						action: 'create',
 					},
@@ -238,7 +224,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: insertedAssignment.uuid });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: insertedAssignment.id });
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -275,7 +261,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 												'assignment/views/assignment-edit___nieuwe-opdracht'
 											)}
 										</BlockHeading>
-										{currentAssignment.uuid && (
+										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
 													<FormGroup
@@ -334,7 +320,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				</Navbar>
 				{AssignmentHelper.renderAssignmentForm(
 					currentAssignment,
-					assignmentContent,
 					assignmentLabels,
 					user,
 					setAssignmentProp,

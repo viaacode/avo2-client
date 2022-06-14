@@ -17,13 +17,12 @@ import {
 } from './assignment-labels-service.gql';
 
 export class AssignmentLabelsService {
-	public static async getLabelsForProfile(profileId: string): Promise<Avo.Assignment.Label[]> {
+	public static async getLabelsForProfile(profileId: string): Promise<Avo.Assignment.Label_v2[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
 				variables: {
 					profileId,
-					labelType: 'LABEL',
 				},
 			});
 
@@ -40,7 +39,7 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async insertLabels(labels: Avo.Assignment.Label[]): Promise<number[]> {
+	public static async insertLabels(labels: Avo.Assignment.Label_v2[]): Promise<number[]> {
 		let variables;
 		try {
 			variables = {
@@ -71,7 +70,7 @@ export class AssignmentLabelsService {
 
 	public static async updateLabel(
 		profileId: string,
-		labelId: number,
+		labelId: string,
 		label: string,
 		colorEnumValue: string
 	): Promise<void> {
@@ -100,7 +99,7 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async deleteLabels(profileId: string, labelIds: number[]): Promise<void> {
+	public static async deleteLabels(profileId: string, labelIds: string[]): Promise<void> {
 		let variables;
 		try {
 			variables = {
@@ -125,8 +124,8 @@ export class AssignmentLabelsService {
 	}
 
 	public static async linkLabelsFromAssignment(
-		assignmentUuid: string,
-		labelIds: number[]
+		assignmentId: string,
+		labelIds: string[]
 	): Promise<void> {
 		let variables;
 		try {
@@ -135,8 +134,8 @@ export class AssignmentLabelsService {
 			}
 			variables = {
 				objects: labelIds.map((labelId) => ({
-					assignment_uuid: assignmentUuid,
-					assignment_tag_id: labelId,
+					assignment_id: assignmentId,
+					assignment_label_id: labelId,
 				})),
 			};
 			const response = await dataService.mutate({
@@ -158,7 +157,7 @@ export class AssignmentLabelsService {
 
 	public static async unlinkLabelsFromAssignment(
 		assignmentUuid: string,
-		labelIds: number[]
+		labelIds: string[]
 	): Promise<void> {
 		let variables;
 		try {
@@ -205,10 +204,10 @@ export class AssignmentLabelsService {
 	}
 
 	public static getLabelsFromAssignment(
-		assignment: Partial<Avo.Assignment.Assignment>
-	): Avo.Assignment.Label[] {
+		assignment: Partial<Avo.Assignment.Assignment_v2>
+	): Avo.Assignment.Label_v2[] {
 		return (get(assignment, 'tags', []) as {
-			assignment_tag: Avo.Assignment.Label;
+			assignment_tag: Avo.Assignment.Label_v2;
 		}[]).map((assignmentLabelLink) => assignmentLabelLink.assignment_tag);
 	}
 }

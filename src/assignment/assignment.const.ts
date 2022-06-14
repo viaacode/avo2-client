@@ -25,7 +25,7 @@ const getLabelsColumn = (): AssignmentColumn[] => {
 		: [
 				{
 					id: 'labels' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/views/assignment-overview___vak-of-project'),
+					label: i18n.t('assignment/assignment___label'),
 					sortable: false,
 				},
 		  ];
@@ -44,32 +44,49 @@ const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 		  ];
 }; // Only show teacher for pupils
 
-const getClassColumn = (): AssignmentColumn[] => {
-	return isMobileWidth()
-		? []
-		: [
+const getClassColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [
 				{
 					id: 'class_room' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___klas'),
-					sortable: true,
+					sortable: false,
 					dataType: 'string',
 				},
-		  ];
+		  ]
+		: [];
 };
 
-const getStatusColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
 	return canEditAssignments
-		? []
-		: [
+		? [
 				{
-					id: 'submitted_at' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/views/assignment-overview___status'),
-					tooltip: i18n.t(
-						'assignment/views/assignment-overview___heb-je-deze-opdracht-reeds-ingediend'
-					),
-					sortable: false,
+					id: 'updated_at' as AssignmentOverviewTableColumns,
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
+					sortable: true,
+					dataType: 'dateTime',
 				},
-		  ];
+		  ]
+		: [];
+};
+
+const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [
+				{
+					id: 'responses' as AssignmentOverviewTableColumns,
+					label: i18n.t('assignment/assignment___respons'),
+					sortable: true,
+					dataType: 'number',
+				},
+		  ]
+		: [];
+};
+
+const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [{ id: 'actions' as AssignmentOverviewTableColumns, label: '' }]
+		: [];
 };
 
 export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
@@ -82,18 +99,18 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		dataType: 'string',
 	},
 	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
+	...getClassColumn(canEditAssignments),
 	...getLabelsColumn(),
 	...getTeacherColumn(canEditAssignments),
-	...getClassColumn(),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
 		label: i18n.t('assignment/views/assignment-overview___deadline'),
 		sortable: true,
 		dataType: 'dateTime',
 	},
-	...getStatusColumn(canEditAssignments),
-	// { id: 'responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
-	{ id: 'actions' as AssignmentOverviewTableColumns, label: '' },
+	...getLastEditColumn(canEditAssignments),
+	...getResponseColumn(canEditAssignments),
+	...getActionsColumn(canEditAssignments),
 ];
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
@@ -106,9 +123,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			full_name: order,
 		},
 	}),
-	submitted_at: (order: Avo.Search.OrderDirection) => ({
-		responses: {
-			submitted_at: order,
+	responses: (order: Avo.Search.OrderDirection) => ({
+		responses_aggregate: {
+			count: order,
 		},
 	}),
 };
