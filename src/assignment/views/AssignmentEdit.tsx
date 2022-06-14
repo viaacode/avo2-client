@@ -23,7 +23,6 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName } from '../../authentication/helpers/permission-names';
@@ -62,22 +61,22 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Block[] | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
-	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
+	const [currentAssignment, setCurrentAssignment] = useState<
+		Partial<Avo.Assignment.Assignment_v2>
+	>({});
+	const [initialAssignment, setInitialAssignment] = useState<
+		Partial<Avo.Assignment.Assignment_v2>
+	>({});
 
 	const setBothAssignments = useCallback(
-		(assignment: Partial<Avo.Assignment.Assignment>) => {
+		(assignment: Partial<Avo.Assignment.Assignment_v2>) => {
 			setCurrentAssignment(assignment);
 			setInitialAssignment(assignment);
 		},
@@ -92,37 +91,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			// Redirect if id is a legacy numeric assignment id instead of a guid
 			const assignmentId = match.params.id;
 
-			if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
-				const assignmentUuid:
-					| string
-					| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
-					assignmentId
-				);
-				if (!assignmentUuid) {
-					console.error(
-						new CustomError(
-							'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
-							null,
-							{ legacyId: assignmentId }
-						)
-					);
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'assignment/views/assignment-edit___de-opdracht-kon-niet-worden-gevonden'
-						),
-						icon: 'search',
-					});
-					return;
-				}
-				history.replace(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentUuid }));
-				return;
-			}
-
 			// Determine if this is an edit or create page and initialize or fetch the assignment
 			const tempAssignment: Partial<
-				Avo.Assignment.Assignment
-			> | null = await AssignmentService.fetchAssignmentByUuid(assignmentId);
+				Avo.Assignment.Assignment_v2
+			> | null = await AssignmentService.fetchAssignmentById(assignmentId);
 
 			if (!tempAssignment) {
 				// Something went wrong during init/fetch
@@ -149,14 +121,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			}
 
 			// Fetch the content if the assignment has content
-			let tempAssignmentContent: AssignmentContent | null = null;
+			let tempAssignmentContent: Avo.Assignment.Block[] | null = null;
 			try {
-				tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
-					tempAssignment
-				);
+				tempAssignmentContent = await AssignmentService.fetchAssignmentBlocks(assignmentId);
 
 				setAssignmentContent(tempAssignmentContent);
-			} catch (err) {
+			} catch (err: any) {
 				if (err.message !== 'NOT_FOUND') {
 					console.error(
 						new CustomError('Failed to fetch assignment content', err, {
@@ -203,7 +173,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
 		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
-			currentAssignment.uuid
+			currentAssignment.id
 		}`;
 	};
 
@@ -212,7 +182,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		trackEvents(
 			{
-				object: String(currentAssignment.uuid),
+				object: String(currentAssignment.id),
 				object_type: 'assignment',
 				action: 'share',
 				resource: {
@@ -226,10 +196,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
-		if (currentAssignment.uuid) {
+		if (currentAssignment.id) {
 			trackEvents(
 				{
-					object: String(currentAssignment.uuid),
+					object: String(currentAssignment.id),
 					object_type: 'assignment',
 					action: 'view',
 				},
@@ -240,52 +210,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const viewAsStudent = () => history.push(getAssignmentUrl(false));
 
-	const archiveAssignment = async (shouldBeArchived: boolean) => {
-		try {
-			// Use initialAssignment to avoid saving changes the user made, but hasn't explicitly saved yet
-			const archivedAssignment: Partial<Avo.Assignment.Assignment> = {
-				...initialAssignment,
-				is_archived: shouldBeArchived,
-			};
-			setInitialAssignment(archivedAssignment);
-
-			// Also set the currentAssignment to archived, so if the user saves, the assignment will stay archived
-			setCurrentAssignment({
-				...currentAssignment,
-				is_archived: shouldBeArchived,
-			});
-
-			if (await AssignmentService.updateAssignment(archivedAssignment)) {
-				ToastService.success(
-					shouldBeArchived
-						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
-						: t('assignment/views/assignment-edit___de-opdracht-is-gedearchiveerd')
-				);
-			}
-			// else: assignment was not valid and could not be saved yet
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				shouldBeArchived
-					? t(
-							'assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt'
-					  )
-					: t(
-							'assignment/views/assignment-edit___het-dearchiveren-van-de-opdracht-is-mislukt'
-					  )
-			);
-		}
-	};
-
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
 		setExtraOptionsMenuOpen(false);
 		switch (itemId) {
 			case 'duplicate':
 				setDuplicateModalOpen(true);
-				break;
-
-			case 'archive':
-				await archiveAssignment(!initialAssignment.is_archived);
 				break;
 
 			case 'delete':
@@ -307,7 +236,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		setCurrentAssignment(newAssignment);
 	};
 
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
+	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment_v2>) => {
 		try {
 			setIsSaving(true);
 
@@ -333,7 +262,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			trackEvents(
 				{
-					object: String(assignment.uuid),
+					object: String(assignment.id),
 					object_type: 'assignment',
 					action: 'edit',
 				},
@@ -355,16 +284,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const onDeleteAssignment = async () => {
 		try {
-			if (isNil(currentAssignment.uuid)) {
-				throw new CustomError('Assignment does not have an uuid', null, {
+			if (isNil(currentAssignment.id)) {
+				throw new CustomError('Assignment does not have an id', null, {
 					assignment: currentAssignment,
 				});
 			}
-			await AssignmentService.deleteAssignment(currentAssignment.uuid);
+			await AssignmentService.deleteAssignment(currentAssignment.id);
 
 			trackEvents(
 				{
-					object: String(currentAssignment.uuid),
+					object: String(currentAssignment.id),
 					object_type: 'assignment',
 					action: 'delete',
 				},
@@ -378,7 +307,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			trackEvents(
 				{
-					object: String(currentAssignment.uuid),
+					object: String(currentAssignment.id),
 					object_type: 'assignment',
 					action: 'delete',
 				},
@@ -417,7 +346,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 										<BlockHeading className="u-m-0" type="h2">
 											{currentAssignment.title}
 										</BlockHeading>
-										{currentAssignment.uuid && (
+										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form
 													type={isMobileWidth() ? 'standard' : 'inline'}
@@ -478,17 +407,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 														),
 													},
 													{
-														icon: 'archive',
-														id: 'archive',
-														label: initialAssignment.is_archived
-															? t(
-																	'assignment/views/assignment-edit___dearchiveer'
-															  )
-															: t(
-																	'assignment/views/assignment-edit___archiveer'
-															  ),
-													},
-													{
 														icon: 'delete',
 														id: 'delete',
 														label: t(
@@ -521,7 +439,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				</Navbar>
 				{AssignmentHelper.renderAssignmentForm(
 					currentAssignment,
-					assignmentContent,
 					assignmentLabels,
 					user,
 					setAssignmentProp,
