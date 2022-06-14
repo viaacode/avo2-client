@@ -426,7 +426,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return <TagList tags={tagOptions} swatches closable={false} />;
 
 			case 'class_room':
-				return AssignmentHelper.getClassroom(assignment);
+				return AssignmentHelper.getLabels(assignment, 'CLASS')
+					.map((label) => label.assignment_label.label)
+					.join(', ');
 
 			case 'author':
 				const profile = get(assignment, 'profile', null);

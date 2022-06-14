@@ -296,11 +296,6 @@ export class AssignmentHelper {
 		);
 	}
 
-	public static getClassroom(assignment: Avo.Assignment.Assignment_v2): string {
-		const labels = AssignmentHelper.getLabels(assignment, 'CLASS');
-		return labels[0]?.assignment_label.label || '';
-	}
-
 	public static getDisplayTitle(block: Avo.Assignment.Block): string {
 		if (!block.use_custom_fields) {
 			if (block.original_title || block.original_description) {
