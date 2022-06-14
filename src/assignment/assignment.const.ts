@@ -32,7 +32,7 @@ const getLabelsColumn = (): AssignmentColumn[] => {
 		: [
 				{
 					id: 'labels' as AssignmentOverviewTableColumns,
-					label: i18n.t('Label'),
+					label: i18n.t('assignment/assignment___label'),
 					sortable: false,
 				},
 		  ];
@@ -69,7 +69,7 @@ const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn
 		? [
 				{
 					id: 'updated_at' as AssignmentOverviewTableColumns,
-					label: i18n.t('Laatst bewerkt'),
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: 'dateTime',
 				},
@@ -82,7 +82,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 		? [
 				{
 					id: 'responses' as AssignmentOverviewTableColumns,
-					label: i18n.t('Respons'),
+					label: i18n.t('assignment/assignment___respons'),
 					sortable: true,
 					dataType: 'number',
 				},
