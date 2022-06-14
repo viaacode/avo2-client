@@ -16,7 +16,6 @@ export interface MoreOptionsDropdownProps {
 	onOpen?: () => void;
 	menuItems: MenuItemInfoSchema[] | MenuItemInfoSchema[][];
 	onOptionClicked?: (menuItemId: string | number) => void;
-	disabled?: boolean;
 }
 
 const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
@@ -25,11 +24,10 @@ const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
 	onClose,
 	menuItems,
 	onOptionClicked,
-	disabled,
 }) => {
 	const [t] = useTranslation();
 
-	return (
+	return !!menuItems && !!menuItems.length ? (
 		<Dropdown
 			isOpen={isOpen}
 			menuWidth="fit-content"
@@ -39,7 +37,6 @@ const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
 		>
 			<DropdownButton>
 				<Button
-					disabled={disabled}
 					icon="more-horizontal"
 					type="secondary"
 					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
@@ -47,12 +44,10 @@ const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
 				/>
 			</DropdownButton>
 			<DropdownContent>
-				{!!menuItems && !!menuItems.length && (
-					<MenuContent menuItems={menuItems} onClick={onOptionClicked} />
-				)}
+				<MenuContent menuItems={menuItems} onClick={onOptionClicked} />
 			</DropdownContent>
 		</Dropdown>
-	);
+	) : null;
 };
 
 export default MoreOptionsDropdown;
