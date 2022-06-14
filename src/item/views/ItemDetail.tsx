@@ -37,6 +37,7 @@ import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
@@ -54,7 +55,6 @@ import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
 	CustomError,
-	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
@@ -445,15 +445,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															title={t(
 																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
 															)}
-															onClick={() => {
-																history.push(
-																	generateAssignmentCreateLink(
-																		'KIJK',
-																		item.external_id,
-																		'ITEM'
-																	)
-																);
-															}}
+															onClick={() =>
+																redirectToClientPage(
+																	buildLink(
+																		APP_PATH.ASSIGNMENT_CREATE
+																			.route
+																	),
+																	history
+																)
+															}
 														/>
 													)}
 

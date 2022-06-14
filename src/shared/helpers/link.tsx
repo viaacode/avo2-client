@@ -277,17 +277,3 @@ export function generateSearchLinkString(
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
 	return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });
 }
-
-export function generateAssignmentCreateLink(
-	assignmentType: Avo.Assignment.Type,
-	contentId?: string,
-	contentLabel?: Avo.Assignment.ContentLabel
-) {
-	return buildLink(
-		APP_PATH.ASSIGNMENT_CREATE.route,
-		{},
-		`assignment_type=${assignmentType}
-		${contentId ? `&content_id=${contentId}` : ''}
-		${contentLabel ? `&content_label=${contentLabel}` : ''}`
-	);
-}

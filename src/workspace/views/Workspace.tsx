@@ -41,7 +41,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import { generateAssignmentCreateLink, isMobileWidth, navigate } from '../../shared/helpers';
+import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 import {
 	ASSIGNMENTS_ID,
@@ -346,8 +346,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
 	const handleCreateNewAssignmentClick = () => {
-		// TODO: adjust method to avoid unused query params when page is done
-		redirectToClientPage(generateAssignmentCreateLink('BOUW'), history);
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
 	};
 
 	// Render
