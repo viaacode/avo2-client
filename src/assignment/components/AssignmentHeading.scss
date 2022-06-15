@@ -1,14 +1,79 @@
+@use 'sass:math';
 @import '../../styles/settings/variables';
 
 .c-assignment-heading {
-    .c-toolbar__left,
+	.c-toolbar__left,
 	.c-toolbar__right {
 		flex: initial;
 	}
 
-    &__actions {
-        display: grid;
-        gap: $g-spacer-unit;
-        grid-template-columns: auto auto auto;
-    }
+	&__actions {
+		display: grid;
+		gap: $g-spacer-unit;
+		grid-template-columns: auto auto auto;
+
+		@media (min-width: $g-bp2) {
+			padding-left: $g-spacer-unit * 2;
+		}
+	}
+
+	&__top {
+		.c-toolbar__left {
+			flex-grow: 1;
+			margin-bottom: $g-spacer-unit * 2;
+
+			@media (min-width: $g-bp2) {
+				margin-top: 0;
+			}
+		}
+	}
+
+	&__title {
+		.c-h2 {
+			flex-grow: 1;
+		}
+
+		.c-content-input {
+			max-width: 100%;
+			min-height: 1.25em; // Equal to h2-title's line-height
+			position: relative;
+			transform: translateY(2px); // Visually center
+			width: 480px;
+
+			&--open {
+				&:before {
+					background: #fff;
+					border-radius: 4px;
+					border: 1px solid $color-gray-200;
+					content: '';
+					display: block;
+					inset: math.div($g-spacer-unit, -2);
+					pointer-events: none;
+					position: absolute;
+					transform: translateY(-2px); // Account for visual centering
+					z-index: 0;
+				}
+			}
+
+			> span,
+			input,
+			div {
+				z-index: 1;
+			}
+
+			&__submit,
+			&__cancel {
+				place-self: center;
+				transform: translateY(-2px); // Account for visual centering
+			}
+
+            &__submit {
+                color: $color-teal-bright;
+            }
+
+            &__cancel {
+                margin-right: math.div($g-spacer-unit, 2);
+            }
+		}
+	}
 }

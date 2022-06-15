@@ -1,0 +1,82 @@
+@use "sass:math";
+@import '../settings/variables';
+
+$component: "c-content-input";
+
+@mixin hide-without-interaction-loss {
+	position: absolute;
+	pointer-events: none;
+	opacity: 0;
+	max-width: 0;
+	max-height: 0;
+	overflow: hidden;
+}
+
+.#{$component} {
+	display: flex;
+	flex-flow: row nowrap;
+
+	&__field,
+	&__value {
+		background: none;
+		border: none;
+		flex-grow: 1;
+		outline: none;
+		padding: 0;
+		word-break: normal;
+		line-break: inherit;
+
+		&::first-line {
+			vertical-align: middle;
+		}
+	}
+
+	&__value {
+		cursor: text;
+	}
+
+	&__submit,
+	&__cancel,
+	&__icon {
+		display: flex;
+	}
+
+	&__submit,
+	&__cancel {
+		flex-grow: 0;
+		flex-shrink: 0;
+		margin-left: $g-spacer-unit;
+	}
+
+	&__icon {
+		&--start {
+			margin-right: math.div($g-spacer-unit, 2);
+		}
+
+		&--end {
+			.c-button {
+				margin-left: $g-spacer-unit;
+
+				@media (min-width: $g-bp2) {
+					margin-left: $g-spacer-unit * 2;
+				}
+			}
+		}
+	}
+
+	&--open {
+		.#{$component} {
+			&__value {
+				@include hide-without-interaction-loss;
+			}
+		}
+	}
+
+	&--closed {
+		.#{$component} {
+			&__field {
+				@include hide-without-interaction-loss;
+			}
+		}
+	}
+}
