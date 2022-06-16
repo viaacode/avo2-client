@@ -25,6 +25,7 @@ $component: "c-content-input";
 		padding: 0;
 		word-break: normal;
 		line-break: inherit;
+		min-width: 0;
 
 		&::first-line {
 			vertical-align: middle;

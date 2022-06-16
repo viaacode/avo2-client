@@ -47,6 +47,7 @@ import { AssignmentFormState } from '../assignment.types';
 import { useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
@@ -57,7 +58,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Data
 	const formHook = useForm<AssignmentFormState>({
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA()),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
 	console.info({ formHook });

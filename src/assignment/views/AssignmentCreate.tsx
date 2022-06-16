@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { addYears, startOfYear } from 'date-fns';
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -13,6 +12,7 @@ import {
 	ContentInput,
 	Flex,
 	Icon,
+	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
 
@@ -29,7 +29,9 @@ import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { useAssignmentLesgeverTabs } from '../hooks';
 
-import './AssignmentEdit.scss';
+import './AssignmentCreate.scss';
+import './AssignmentPage.scss';
+
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
 
@@ -37,9 +39,16 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [defaultValues] = useState<AssignmentFormState>(ASSIGNMENT_FORM_DEFAULT(t));
 	const [assignment, setAssignment] = useState<AssignmentFormState>(defaultValues);
 
-	const { setValue, control, getValues, handleSubmit } = useForm<AssignmentFormState>({
+	const {
+		setValue,
+		control,
+		getValues,
+		handleSubmit,
+		formState: { errors },
+		reset: resetForm,
+	} = useForm<AssignmentFormState>({
 		defaultValues,
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA()),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
 	// UI
@@ -70,9 +79,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			const created = await AssignmentService.insertAssignment({
 				...assignment,
 				owner_profile_id: user.profile?.id,
-				// TMP
-				deadline_at: addYears(startOfYear(new Date()), 1).toISOString(),
-				description: 'Beschrijving van deze opdracht',
 			});
 
 			if (created) {
@@ -88,7 +94,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
+
+				// Disable while dev
+				console.info(() =>
+					navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id })
+				);
 			}
 		} catch (err) {
 			console.error(err);
@@ -97,6 +107,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			);
 		}
 	};
+
+	const reset = useCallback(() => {
+		setAssignment(defaultValues);
+		resetForm();
+	}, [resetForm, setAssignment, defaultValues]);
 
 	// Render
 
@@ -117,29 +132,33 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderTitle = useMemo(
 		() => (
-			<Flex center className="u-spacer-top">
+			<Flex center className="u-spacer-top-l">
 				<Icon name="clipboard" size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">
 					<Controller
 						name="title"
 						control={control}
-						render={({ field }) => (
-							<ContentInput
-								{...field}
-								placeholder={t('placeholder')}
-								nodeCancel={<Icon name="x" size="small" />}
-								nodeSubmit={<Icon name="check" size="small" />}
-								onChange={(title) => {
-									field.onChange(title);
-									setAssignment((previous) => {
-										return {
-											...previous,
-											title,
-										};
-									});
-								}}
-							/>
+						render={({ field, fieldState: { error } }) => (
+							<>
+								<ContentInput
+									{...field}
+									placeholder={t('placeholder')}
+									nodeCancel={<Icon name="x" size="small" />}
+									nodeSubmit={<Icon name="check" size="small" />}
+									onChange={(title) => {
+										field.onChange(title);
+										setAssignment((previous) => {
+											return {
+												...previous,
+												title,
+											};
+										});
+									}}
+								/>
+
+								{error && <span className="c-floating-error">{error.message}</span>}
+							</>
 						)}
 					></Controller>
 				</BlockHeading>
@@ -187,7 +206,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	]);
 
 	const render = () => (
-		<>
+		<div className="c-assignment-page c-assignment-page--create">
 			<AssignmentHeading
 				back={renderBackButton}
 				title={renderTitle}
@@ -196,14 +215,27 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			/>
 
 			<Container mode="horizontal">
-				<Button
-					label="save"
-					onClick={handleSubmit(submit, (...args) => console.error(args))}
-				/>
-				{JSON.stringify(assignment)}
-				{JSON.stringify(getValues())}
+				<p>state: {JSON.stringify(assignment)}</p>
+
+				<p>form: {JSON.stringify(getValues())}</p>
+
+				<p style={{ color: 'red' }}>errors: {JSON.stringify(errors)}</p>
+
+				<StickyEdgeBar>
+					<p>
+						<strong>{t('Opdracht opslaan?')}</strong>
+					</p>
+
+					<Button label={t('Annuleer')} onClick={() => reset()} />
+
+					<Button
+						type="tertiary"
+						label={t('Opslaan')}
+						onClick={handleSubmit(submit, (...args) => console.error(args))}
+					/>
+				</StickyEdgeBar>
 			</Container>
-		</>
+		</div>
 	);
 
 	return (

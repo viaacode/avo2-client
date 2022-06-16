@@ -138,9 +138,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 };
 
 /// Zoek & bouw
-export const ASSIGNMENT_FORM_SCHEMA = (): SchemaOf<AssignmentFormState> => {
+export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
 	return object({
-		title: string().required(),
+		title: string().required(t('Titel is verplicht')),
 	});
 };
 
