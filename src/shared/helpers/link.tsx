@@ -55,7 +55,8 @@ export const navigate = (
 	history: History,
 	route: string,
 	params: RouteParams = {},
-	search?: string | { [paramName: string]: string }
+	search?: string | { [paramName: string]: string },
+	action: 'push' | 'replace' = 'push'
 ) => {
 	const missingParams = getMissingParams(route);
 
@@ -79,8 +80,11 @@ export const navigate = (
 
 		return;
 	}
-
-	history.push(builtLink);
+	if (action === 'push') {
+		history.push(builtLink);
+	} else if (action === 'replace') {
+		history.replace(builtLink);
+	}
 };
 
 // TODO see if we can replace this method completely by the new SmartLink component
