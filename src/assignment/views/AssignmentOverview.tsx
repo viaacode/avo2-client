@@ -97,10 +97,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
-	// const [selectedAssignmentLabelsIds, setSelectedAssignmentLabelsIds] = useState<string[]>([]);
-	// const [selectedClassLabelsIds, setSelectedClassLabelsIds] = useState<string[]>([]);
 	const [filterString, setFilterString] = useState<string>('');
-	// const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
 	);
@@ -111,7 +108,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(
 		null
 	);
-	// const [page, setPage] = useState<number>(0);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] = useTableSort<
