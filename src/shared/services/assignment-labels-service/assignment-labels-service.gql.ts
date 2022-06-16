@@ -60,9 +60,9 @@ export const DELETE_ASSIGNMENT_LABELS = gql`
 
 export const LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT = gql`
 	mutation linkAssignmentLabelsToAssignment(
-		$objects: [app_assignment_assignment_labels_v2_insert_input!]!
+		$objects: [app_assignments_v2_assignment_labels_v2_insert_input!]!
 	) {
-		insert_app_assignment_assignment_labels_v2(objects: $objects) {
+		insert_app_assignments_v2_assignment_labels_v2(objects: $objects) {
 			affected_rows
 		}
 	}

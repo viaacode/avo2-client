@@ -19,6 +19,12 @@ export interface AssignmentColumn extends TableColumn {
 	sortable?: boolean;
 }
 
+export enum AssignmentType {
+	ZOEK = 'ZOEK',
+	KIJK = 'KIJK',
+	BOUW = 'BOUW',
+}
+
 export enum AssignmentLabelType {
 	LABEL = 'LABEL',
 	CLASS = 'CLASS',
