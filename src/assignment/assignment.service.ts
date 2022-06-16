@@ -27,6 +27,7 @@ import {
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT,
+	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
@@ -51,10 +52,6 @@ const GET_OBLIGATORY_PROPERTIES = (): AssignmentProperty[] => [
 	{
 		name: 'description',
 		label: i18n.t('assignment/assignment___beschrijving'),
-	},
-	{
-		name: 'deadline_at',
-		label: i18n.t('assignment/assignment___deadline'),
 	},
 ];
 
@@ -108,7 +105,10 @@ export class AssignmentService {
 					});
 				} else {
 					filterArray.push({
-						deadline_at: { _gt: new Date().toISOString() },
+						_or: [
+							{ deadline_at: { _gt: new Date().toISOString() } },
+							{ deadline_at: { _is_null: true } },
+						],
 					});
 				}
 			}
@@ -291,15 +291,15 @@ export class AssignmentService {
 		return [errors, assignmentToSave as Avo.Assignment.Assignment_v2];
 	}
 
-	static async deleteAssignment(assignmentUuid: number | string) {
+	static async deleteAssignment(assignmentId: string) {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENT,
-				variables: { assignmentUuid },
+				variables: { assignmentId },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
-			const error = new CustomError('Failed to delete assignment', err, { assignmentUuid });
+			const error = new CustomError('Failed to delete assignment', err, { assignmentId });
 			console.error(error);
 			throw error;
 		}
@@ -462,7 +462,7 @@ export class AssignmentService {
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment_v2> | null
 	): Promise<Avo.Assignment.Assignment_v2> {
-		if (!initialAssignment) {
+		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
 				'Failed to copy assignment because the duplicateAssignment function received an empty assignment',
 				null,
@@ -474,13 +474,13 @@ export class AssignmentService {
 		const newAssignment = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
+			deadline_at: null,
 		};
 
 		delete newAssignment.id;
+		newAssignment.updated_at = new Date().toISOString();
 
 		const duplicatedAssignment = await AssignmentService.insertAssignment(newAssignment);
-
-		// TODO B copy blocks
 
 		if (!duplicatedAssignment) {
 			throw new CustomError(
@@ -493,7 +493,45 @@ export class AssignmentService {
 			);
 		}
 
+		const blocks = await AssignmentService.fetchAssignmentBlocks(initialAssignment.id);
+		await AssignmentService.copyBlocksToAssignment(blocks, duplicatedAssignment.id);
+
 		return duplicatedAssignment;
+	}
+
+	static async copyBlocksToAssignment(
+		blocks: Avo.Assignment.Block[],
+		assignmentId: string
+	): Promise<void> {
+		if (!blocks || !blocks.length) {
+			return;
+		}
+		try {
+			const newBlocks = blocks.map((block) => {
+				// clone the block
+				const newBlock: Partial<Avo.Assignment.Block> = {
+					...cloneDeep(block),
+					assignment_id: assignmentId,
+				};
+
+				delete newBlock.id;
+				newBlock.updated_at = new Date().toISOString();
+
+				return newBlock;
+			});
+
+			await dataService.mutate({
+				mutation: INSERT_ASSIGNMENT_BLOCKS,
+				variables: {
+					assignmentBlocks: newBlocks,
+				},
+			});
+		} catch (err) {
+			throw new CustomError('Failed to copy assignment blocks', err, {
+				blocks,
+				query: 'INSERT_ASSIGNMENT_BLOCKS',
+			});
+		}
 	}
 
 	private static warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment_v2) {

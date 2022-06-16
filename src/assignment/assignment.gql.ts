@@ -318,8 +318,8 @@ export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
 `;
 
 export const DELETE_ASSIGNMENT = gql`
-	mutation deleteAssignmentById($assignmentUuid: uuid!) {
-		delete_app_assignments(where: { uuid: { _eq: $assignmentUuid } }) {
+	mutation deleteAssignmentById($assignmentId: uuid!) {
+		delete_app_assignments_v2(where: { id: { _eq: $assignmentId } }) {
 			affected_rows
 		}
 	}
@@ -338,6 +338,14 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 				assignment_id
 				collection_title
 			}
+		}
+	}
+`;
+
+export const INSERT_ASSIGNMENT_BLOCKS = gql`
+	mutation insertBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
+		insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
+			affected_rows
 		}
 	}
 `;

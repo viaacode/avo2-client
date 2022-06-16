@@ -67,6 +67,7 @@ import { AssignmentService } from '../assignment.service';
 import {
 	AssignmentLabelType,
 	AssignmentOverviewTableColumns,
+	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
 
@@ -106,9 +107,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [page, setPage] = useState<number>(0);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
-	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<AssignmentOverviewTableColumns>(
-		'updated_at'
-	);
+	const [sortColumn, sortOrder, handleColumnClick, resetOverviewTableSort] = useTableSort<
+		AssignmentOverviewTableColumns
+	>('updated_at');
 
 	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments), [
 		canEditAssignments,
@@ -231,7 +232,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			await AssignmentService.duplicateAssignment(newTitle, assignment);
 
 			onUpdate();
-			fetchAssignments();
+			resetOverviewTableSort();
+			setPage(0);
 
 			ToastService.success(
 				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
@@ -672,6 +674,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		</>
 	);
 
+	const getDeleteModalBody = () => {
+		if (markedAssignment?.assignment_type === AssignmentType.BOUW) {
+			return t(
+				'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
+			);
+		}
+		if (markedAssignment?.responses?.length) {
+			return t(
+				'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
+			);
+		}
+		return t(
+			'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+		);
+	};
+
 	const renderAssignmentsView = () => {
 		if (!assignments) {
 			return null;
@@ -722,9 +740,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					title={t(
 						'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 					)}
-					body={t(
-						'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
+					body={getDeleteModalBody()}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
 					deleteObjectCallback={() =>

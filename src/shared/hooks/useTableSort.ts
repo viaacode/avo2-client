@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
-type UseTableSortTuple<T> = [T, Avo.Search.OrderDirection, (columnId: T) => void];
+type UseTableSortTuple<T> = [T, Avo.Search.OrderDirection, (columnId: T) => void, () => void];
 
 export const useTableSort = <T>(
 	initialSortColumn: T,
@@ -22,5 +22,10 @@ export const useTableSort = <T>(
 		}
 	};
 
-	return [sortColumn, sortOrder, handleTableSortClick];
+	const resetTableSort = () => {
+		setSortColumn(initialSortColumn);
+		setSortOrder(initialSortOrder);
+	};
+
+	return [sortColumn, sortOrder, handleTableSortClick, resetTableSort];
 };
