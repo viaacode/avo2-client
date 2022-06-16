@@ -58,10 +58,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Data
 	const formHook = useForm<AssignmentFormState>({
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA()),
-		defaultValues: {
-			title: 'Nieuwe opdracht', // TODO: i18n
-			description: undefined,
-		},
 	});
 
 	console.info({ formHook });

@@ -141,13 +141,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 export const ASSIGNMENT_FORM_SCHEMA = (): SchemaOf<AssignmentFormState> => {
 	return object({
 		title: string().required(),
-		description: string().optional(),
 	});
 };
 
 export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	title: t('assignment/assignment___titel-opdracht'),
-	description: undefined,
 });
 
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {
