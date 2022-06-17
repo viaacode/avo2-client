@@ -120,7 +120,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const [query, setQuery] = useQueryParams({
 		selectedAssignmentLabelIds: DelimitedArrayParam,
-		selectedClassLabelsIds: DelimitedArrayParam,
+		selectedClassLabelIds: DelimitedArrayParam,
 		filter: StringParam,
 		view: StringParam,
 		page: NumberParam,
@@ -180,7 +180,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const resetTableSort = () => {
 		const newQuery = {
 			selectedAssignmentLabelIds: [],
-			selectedClassLabelsIds: [],
+			selectedClassLabelIds: [],
 			filter: '',
 			view: AssignmentView.ACTIVE,
 			page: 0,
@@ -247,7 +247,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				query.page || 0,
 				query.filter || '',
 				(query.selectedAssignmentLabelIds as string[]) || [],
-				(query.selectedClassLabelsIds as string[]) || []
+				(query.selectedClassLabelIds as string[]) || []
 			);
 
 			setAssignments(response.assignments);
@@ -564,7 +564,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						id: labelObj.id,
 						checked: [
 							...(query.selectedAssignmentLabelIds || []),
-							...(query.selectedClassLabelsIds || []),
+							...(query.selectedClassLabelIds || []),
 						].includes(labelObj.id),
 					};
 				})
@@ -645,7 +645,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										onChange={(selectedClasses) =>
 											handleQueryChanged(
 												selectedClasses,
-												'selectedClassLabelsIds'
+												'selectedClassLabelIds'
 											)
 										}
 									/>
