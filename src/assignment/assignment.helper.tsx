@@ -1,4 +1,3 @@
-import { History } from 'history';
 import { isNil } from 'lodash-es';
 import React from 'react';
 import { Trans } from 'react-i18next';
@@ -17,11 +16,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../constants';
-import { LoadingInfo } from '../shared/components';
 import Html from '../shared/components/Html/Html';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
-import { navigate } from '../shared/helpers';
+import { buildLink } from '../shared/helpers';
 import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
@@ -34,10 +32,7 @@ export class AssignmentHelper {
 	public static async attemptDuplicateAssignment(
 		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment_v2>,
-		setCurrentAssignment: (assignment: Partial<Avo.Assignment.Assignment_v2>) => void,
-		setLoadingInfo: (loadingInfo: LoadingInfo) => void,
-		user: Avo.User.User | undefined,
-		history: History
+		user: Avo.User.User | undefined
 	) {
 		try {
 			if (isNil(assignment.id)) {
@@ -70,13 +65,17 @@ export class AssignmentHelper {
 				user
 			);
 
-			setCurrentAssignment({});
-			setLoadingInfo({ state: 'loading' });
-
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id });
+			const newWindow = window.open(
+				buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id }),
+				'_blank',
+				'noopener,noreferrer'
+			);
+			if (newWindow) {
+				newWindow.opener = null;
+			}
 			ToastService.success(
 				i18n.t(
-					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
+					'assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt'
 				)
 			);
 		} catch (err) {
