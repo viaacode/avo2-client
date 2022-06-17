@@ -672,11 +672,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										disabled={!assignments}
 									/>
 								</FormGroup>
-								<FormGroup inlineMode="shrink">
+								<FormGroup inlineMode="grow">
 									<Button
 										label={t('search/views/search___zoeken')}
 										type="primary"
-										className="c-search-button"
+										className="c-assignment-overview__search-input"
 										onClick={copySearchTermsToQueryState}
 									/>
 								</FormGroup>
