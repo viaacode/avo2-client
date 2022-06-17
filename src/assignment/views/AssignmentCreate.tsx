@@ -23,7 +23,11 @@ import { buildLink, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { ASSIGNMENT_FORM_DEFAULT, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	ASSIGNMENT_FORM_DEFAULT,
+	ASSIGNMENT_FORM_SCHEMA,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -53,7 +57,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, , , onTabClick] = useAssignmentLesgeverTabs();
+	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
 
 	// Effects
 
@@ -205,6 +209,19 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		onTabClick,
 	]);
 
+	const renderTabContent = useMemo(() => {
+		switch (tab) {
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+				return 'inhoud';
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
+				return 'details';
+
+			default:
+				return tab;
+		}
+	}, [tab]);
+
 	const render = () => (
 		<div className="c-assignment-page c-assignment-page--create">
 			<AssignmentHeading
@@ -215,12 +232,15 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			/>
 
 			<Container mode="horizontal">
+				{renderTabContent}
+
 				<p>state: {JSON.stringify(assignment)}</p>
 
 				<p>form: {JSON.stringify(getValues())}</p>
 
 				<p style={{ color: 'red' }}>errors: {JSON.stringify(errors)}</p>
 
+				{/* Always show on create */}
 				<StickyEdgeBar>
 					<p>
 						<strong>{t('Opdracht opslaan?')}</strong>
