@@ -302,7 +302,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					'Failed to duplicate the assignment because the marked assignment is null'
 				);
 			}
-			const newTitle = `(kopie) ${assignment.title}`;
+			const newTitle = `${t('assignment/views/assignment-overview___kopie')} ${
+				assignment.title
+			}`;
 			await AssignmentService.duplicateAssignment(newTitle, assignment);
 
 			onUpdate();
@@ -500,7 +502,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'class_room':
 				return AssignmentHelper.getLabels(assignment, 'CLASS')
-					.map((label) => label.assignment_label.label)
+					.map((label: any) => label.assignment_label.label)
 					.join(', ');
 
 			case 'author':
