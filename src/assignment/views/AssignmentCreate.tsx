@@ -147,7 +147,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 							<>
 								<ContentInput
 									{...field}
-									placeholder={t('placeholder')}
+									placeholder={t(
+										'assignment/views/assignment-create___placeholder'
+									)}
 									nodeCancel={<Icon name="x" size="small" />}
 									nodeSubmit={<Icon name="check" size="small" />}
 									onChange={(title) => {
@@ -222,32 +224,42 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 							state={[assignment, setAssignment]}
 							initial={defaultValues}
 							classrooms={{
-								label: t('Klas'),
+								label: t('assignment/views/assignment-create___klas'),
 								dictionary: {
-									placeholder: t('1 moderne talen'),
-									empty: t('Geen klassen gevonden.'),
+									placeholder: t(
+										'assignment/views/assignment-create___1-moderne-talen'
+									),
+									empty: t(
+										'assignment/views/assignment-create___geen-klassen-gevonden'
+									),
 								},
 							}}
 							labels={{
-								label: t('Label'),
+								label: t('assignment/views/assignment-create___label'),
 								dictionary: {
-									placeholder: t('Geschiedenis'),
-									empty: t('Geen labels gevonden.'),
+									placeholder: t(
+										'assignment/views/assignment-create___geschiedenis'
+									),
+									empty: t(
+										'assignment/views/assignment-create___geen-labels-gevonden'
+									),
 								},
 							}}
 							available_at={{
-								label: t('Beschikbaar vanaf'),
+								label: t('assignment/views/assignment-create___beschikbaar-vanaf'),
 							}}
 							deadline_at={{
-								label: t('Deadline'),
+								label: t('assignment/views/assignment-create___deadline'),
 								help: t(
-									'Na deze datum kan de leerling de opdracht niet meer invullen.'
+									'assignment/views/assignment-create___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
 								),
 							}}
 							answer_url={{
-								label: `${t('Link')} (${t('Optioneel')})`,
+								label: `${t('assignment/views/assignment-create___link')} (${t(
+									'assignment/views/assignment-create___optioneel'
+								)})`,
 								help: t(
-									'Wil je je leerling een taak laten maken? Voeg dan hier een hyperlink toe naar een eigen antwoordformulier of invuloefening.'
+									'assignment/views/assignment-create___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
 								),
 							}}
 						/>
@@ -279,14 +291,19 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				{/* Always show on create */}
 				<StickyEdgeBar>
 					<p>
-						<strong>{t('Opdracht opslaan?')}</strong>
+						<strong>
+							{t('assignment/views/assignment-create___opdracht-opslaan')}
+						</strong>
 					</p>
 
-					<Button label={t('Annuleer')} onClick={() => reset()} />
+					<Button
+						label={t('assignment/views/assignment-create___annuleer')}
+						onClick={() => reset()}
+					/>
 
 					<Button
 						type="tertiary"
-						label={t('Opslaan')}
+						label={t('assignment/views/assignment-create___opslaan')}
 						onClick={handleSubmit(submit, (...args) => console.error(args))}
 					/>
 				</StickyEdgeBar>

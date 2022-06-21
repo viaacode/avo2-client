@@ -142,7 +142,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
 	return object({
 		id: string().optional(),
-		title: string().required(t('Titel is verplicht')),
+		title: string().required(t('assignment/assignment___titel-is-verplicht')),
 		labels: array(
 			object({
 				id: string().required(),
