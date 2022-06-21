@@ -653,7 +653,7 @@ export class AssignmentService {
 	static async createAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment_v2,
 		user: Avo.User.User | undefined
-	): Promise<Avo.Assignment.Response | null> {
+	): Promise<Avo.Assignment.Response_v2 | null> {
 		try {
 			if (!user) {
 				return null;
@@ -698,7 +698,7 @@ export class AssignmentService {
 				});
 			}
 
-			const insertedAssignmentResponse: Avo.Assignment.Response | undefined = get(
+			const insertedAssignmentResponse: Avo.Assignment.Response_v2 | undefined = get(
 				response,
 				'data.insert_app_assignment_responses_v2.returning[0]'
 			);
