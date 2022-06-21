@@ -506,7 +506,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'class_room':
 				return AssignmentHelper.getLabels(assignment, 'CLASS')
-					.map((label) => label.assignment_label.label)
+					.map((label: any) => label.assignment_label.label)
 					.join(', ');
 
 			case 'author':
