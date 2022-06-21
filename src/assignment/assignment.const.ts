@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next';
-import { object, SchemaOf, string } from 'yup';
+import { array, object, SchemaOf, string } from 'yup';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -10,6 +10,7 @@ import i18n from '../shared/translations/i18n';
 import {
 	AssignmentColumn,
 	AssignmentFormState,
+	AssignmentLabelType,
 	AssignmentOverviewTableColumns,
 } from './assignment.types';
 
@@ -140,12 +141,26 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 /// Zoek & bouw
 export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
 	return object({
+		id: string().optional(),
 		title: string().required(t('Titel is verplicht')),
+		labels: array(
+			object({
+				id: string().required(),
+				type: string()
+					.is([AssignmentLabelType.LABEL, AssignmentLabelType.CLASS])
+					.required(),
+			})
+		),
+		answer_url: string().optional(),
+		available_at: string().optional(),
+		deadline_at: string().optional(),
 	});
 };
 
 export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	title: t('assignment/assignment___titel-opdracht'),
+	labels: [],
+	available_at: new Date().toISOString(),
 });
 
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {

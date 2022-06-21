@@ -13,14 +13,29 @@ import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
-interface AssignmentLabelsProps {
+export interface AssignmentLabelsProps {
+	id?: string;
 	labels: Avo.Assignment.Label_v2[];
-	user: Avo.User.User;
 	onChange: (newLabels: Avo.Assignment.Label_v2[]) => void;
+	user: Avo.User.User;
+	dictionary?: {
+		placeholder: string;
+		empty: string;
+	};
 }
 
-const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, user, onChange }) => {
+const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
+	id,
+	labels,
+	user,
+	onChange,
+	...props
+}) => {
 	const [t] = useTranslation();
+	const dictionary = props.dictionary || {
+		placeholder: t('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
+		empty: t('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
+	};
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
@@ -104,17 +119,12 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({ labels, us
 				<FlexItem>
 					<Spacer margin="right-small">
 						<ColorSelect
+							id={id}
 							options={getColorOptions(unselectedLabels)}
 							value={null}
 							onChange={addAssignmentLabel}
-							placeholder={t(
-								'assignment/views/assignment-edit___voeg-een-vak-of-project-toe'
-							)}
-							noOptionsMessage={() =>
-								t(
-									'assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'
-								)
-							}
+							placeholder={dictionary.placeholder}
+							noOptionsMessage={() => dictionary.empty}
 						/>
 					</Spacer>
 				</FlexItem>

@@ -146,7 +146,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				);
 
 				if (assignmentResponse) {
-					response.assignment.responses = [assignmentResponse];
+					response.assignment.responses = [
+						{
+							...assignmentResponse,
+							id: `${assignmentResponse.id}`,
+							assignment_id: `${assignmentResponse.assignment_id}`,
+						},
+					];
 				}
 			}
 
