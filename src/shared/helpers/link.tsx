@@ -295,3 +295,10 @@ export function generateAssignmentCreateLink(
 		${contentLabel ? `&content_label=${contentLabel}` : ''}`
 	);
 }
+
+export function openLinkInNewTab(link: string) {
+	const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+	if (newWindow) {
+		newWindow.opener = null;
+	}
+}

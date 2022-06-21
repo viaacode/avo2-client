@@ -213,7 +213,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		switch (itemId) {
 			case 'duplicate':
 				await AssignmentHelper.attemptDuplicateAssignment(
-					`(kopie) ${currentAssignment.title}`,
+					`${t('assignment/views/assignment-overview___kopie')} ${
+						currentAssignment.title
+					}`,
 					currentAssignment,
 					user
 				);

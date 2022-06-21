@@ -19,7 +19,7 @@ import { APP_PATH } from '../constants';
 import Html from '../shared/components/Html/Html';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
-import { buildLink } from '../shared/helpers';
+import { buildLink, openLinkInNewTab } from '../shared/helpers';
 import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
@@ -65,14 +65,10 @@ export class AssignmentHelper {
 				user
 			);
 
-			const newWindow = window.open(
-				buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id }),
-				'_blank',
-				'noopener,noreferrer'
+			openLinkInNewTab(
+				buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id })
 			);
-			if (newWindow) {
-				newWindow.opener = null;
-			}
+
 			ToastService.success(
 				i18n.t(
 					'assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt'
