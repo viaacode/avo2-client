@@ -141,7 +141,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 ): AssignmentResponseColumn[] => [
 	{
 		id: 'pupil',
-		label: i18n.t('Leerling'),
+		label: i18n.t('assignment/assignment___leerling'),
 		sortable: true,
 		dataType: 'string',
 	},
@@ -149,19 +149,19 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		? [
 				{
 					id: 'collection_title' as AssignmentResponseTableColumns,
-					label: i18n.t('Leerlingencollectie'),
+					label: i18n.t('assignment/assignment___leerlingencollectie'),
 					sortable: true,
 					dataType: 'string' as ColumnDataType,
 				},
 				{
 					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
-					label: i18n.t('Fragmenten'),
+					label: i18n.t('assignment/assignment___fragmenten'),
 					sortable: true,
 					dataType: 'number' as ColumnDataType,
 				},
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('Laatst bewerkt'),
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: 'dateTime' as ColumnDataType,
 				},
@@ -169,7 +169,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		: [
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('Laatst bekeken'),
+					label: i18n.t('assignment/assignment___laatst-bekeken'),
 					sortable: true,
 					dataType: 'dateTime' as ColumnDataType,
 				},

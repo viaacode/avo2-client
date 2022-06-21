@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { cloneDeep, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
@@ -12,6 +12,7 @@ import {
 	Flex,
 	Form,
 	FormGroup,
+	Icon,
 	Pagination,
 	Spacer,
 	Table,
@@ -39,7 +40,7 @@ import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { ASSIGNMENTS_ID, ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
@@ -276,7 +277,9 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			await fetchAssignmentResponses();
 
 			onUpdate();
-			ToastService.success(t('De response is verwijderd'));
+			ToastService.success(
+				t('assignment/views/assignment-responses___de-response-is-verwijderd')
+			);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -369,7 +372,8 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			>
 				<ToolbarLeft>
 					<BlockHeading type="h2" className="u-m-0">
-						{assignmentResponsesCount} {t('responsen')}
+						{assignmentResponsesCount}{' '}
+						{t('assignment/views/assignment-responses___responsen')}
 					</BlockHeading>
 				</ToolbarLeft>
 				<ToolbarRight>
@@ -404,9 +408,15 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			{renderHeader()}
 			<ErrorView
 				icon="clipboard"
-				message={t('Er zijn nog geen antwoorden geregistreerd voor deze opdracht')}
+				message={t(
+					'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
+				)}
 			>
-				<p>{t('Deel de link van deze opdracht met je leerlingen')}</p>
+				<p>
+					{t(
+						'assignment/views/assignment-responses___deel-de-link-van-deze-opdracht-met-je-leerlingen'
+					)}
+				</p>
 			</ErrorView>
 		</>
 	);
@@ -426,8 +436,12 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					data={assignmentResponses}
 					emptyStateMessage={
 						query.filter
-							? t('Er zijn geen antwoorden die voldoen aan de zoekopdracht')
-							: t('Er zijn nog geen antwoorden voor deze opdracht geregistreerd')
+							? t(
+									'assignment/views/assignment-responses___er-zijn-geen-antwoorden-die-voldoen-aan-de-zoekopdracht'
+							  )
+							: t(
+									'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-voor-deze-opdracht-geregistreerd'
+							  )
 					}
 					renderCell={(rowData: Avo.Assignment.Response_v2, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentResponseTableColumns)
@@ -448,7 +462,9 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				</Spacer>
 
 				<DeleteObjectModal
-					title={t('Ben je zeker dat je deze response wil verwijderen?')}
+					title={t(
+						'assignment/views/assignment-responses___ben-je-zeker-dat-je-deze-response-wil-verwijderen'
+					)}
 					body={t(
 						'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 					)}
@@ -469,9 +485,21 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
-								<BlockHeading type="h2" className="u-m-0">
-									{assignment?.title}
-								</BlockHeading>
+								<ToolbarItem grow>
+									<Link
+										className="c-return"
+										to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
+											tabId: ASSIGNMENTS_ID,
+										})}
+									>
+										<Icon name="chevron-left" size="small" type="arrows" />
+										<Trans i18nKey="Opdrachten">Opdrachten</Trans>
+									</Link>
+									<BlockHeading type="h2" className="u-m-0">
+										<Icon name="clipboard" size="large" />
+										{assignment?.title}
+									</BlockHeading>
+								</ToolbarItem>
 							</ToolbarLeft>
 						</Toolbar>
 					</Container>
