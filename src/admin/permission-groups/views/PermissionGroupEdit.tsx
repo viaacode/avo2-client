@@ -179,7 +179,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 		}
 		setPermissionGroup({
 			...permissionGroup,
-			permissions: [...permissionGroup.permissions, selectedPermission],
+			permissions: [...(permissionGroup.permissions || []), selectedPermission],
 		});
 		setSelectedPermissionId(null);
 	};
@@ -220,11 +220,11 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 
 			const addedPermissions = without(
 				permissionGroup.permissions,
-				...initialPermissionGroup.permissions
+				...(initialPermissionGroup.permissions || [])
 			);
 			const removedPermissions = without(
 				initialPermissionGroup.permissions,
-				...permissionGroup.permissions
+				...(permissionGroup.permissions || [])
 			);
 
 			await PermissionGroupService.addPermissionsToGroup(

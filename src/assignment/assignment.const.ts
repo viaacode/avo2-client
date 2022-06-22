@@ -1,10 +1,17 @@
+import { TFunction } from 'i18next';
+import { object, SchemaOf, string } from 'yup';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 
-import { AssignmentColumn, AssignmentOverviewTableColumns } from './assignment.types';
+import {
+	AssignmentColumn,
+	AssignmentFormState,
+	AssignmentOverviewTableColumns,
+} from './assignment.types';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -129,3 +136,19 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		},
 	}),
 };
+
+/// Zoek & bouw
+export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
+	return object({
+		title: string().required(t('Titel is verplicht')),
+	});
+};
+
+export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+	title: t('assignment/assignment___titel-opdracht'),
+});
+
+export enum ASSIGNMENT_CREATE_UPDATE_TABS {
+	Inhoud,
+	Details,
+}

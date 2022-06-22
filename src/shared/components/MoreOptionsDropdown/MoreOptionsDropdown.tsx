@@ -12,10 +12,10 @@ import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/Me
 
 export interface MoreOptionsDropdownProps {
 	isOpen: boolean;
-	onClose: () => void;
-	onOpen: () => void;
+	onClose?: () => void;
+	onOpen?: () => void;
 	menuItems: MenuItemInfoSchema[] | MenuItemInfoSchema[][];
-	onOptionClicked: (menuItemId: string | number) => void;
+	onOptionClicked?: (menuItemId: string | number) => void;
 }
 
 const MoreOptionsDropdown: FunctionComponent<MoreOptionsDropdownProps> = ({
