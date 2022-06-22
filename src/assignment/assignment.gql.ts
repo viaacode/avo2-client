@@ -110,7 +110,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			where: {
 				owner_profile_id: { _eq: $owner_profile_id }
 				is_deleted: { _eq: false }
-				_or: $filter
+				_and: $filter
 			}
 		) {
 			aggregate {

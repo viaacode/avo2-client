@@ -55,7 +55,8 @@ export const navigate = (
 	history: History,
 	route: string,
 	params: RouteParams = {},
-	search?: string | { [paramName: string]: string }
+	search?: string | { [paramName: string]: string },
+	action: 'push' | 'replace' = 'push'
 ) => {
 	const missingParams = getMissingParams(route);
 
@@ -79,8 +80,11 @@ export const navigate = (
 
 		return;
 	}
-
-	history.push(builtLink);
+	if (action === 'push') {
+		history.push(builtLink);
+	} else if (action === 'replace') {
+		history.replace(builtLink);
+	}
 };
 
 // TODO see if we can replace this method completely by the new SmartLink component
@@ -276,4 +280,25 @@ export function generateSearchLinkString(
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
 	return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });
+}
+
+export function generateAssignmentCreateLink(
+	assignmentType: Avo.Assignment.Type,
+	contentId?: string,
+	contentLabel?: Avo.Assignment.ContentLabel
+) {
+	return buildLink(
+		APP_PATH.ASSIGNMENT_CREATE.route,
+		{},
+		`assignment_type=${assignmentType}
+		${contentId ? `&content_id=${contentId}` : ''}
+		${contentLabel ? `&content_label=${contentLabel}` : ''}`
+	);
+}
+
+export function openLinkInNewTab(link: string) {
+	const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+	if (newWindow) {
+		newWindow.opener = null;
+	}
 }

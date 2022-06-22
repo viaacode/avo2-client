@@ -273,7 +273,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	const goToTab = useCallback(
 		(id: ReactText) => {
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id }, undefined, 'replace');
 			setTabId(String(id));
 		},
 		[history, setTabId]
