@@ -19,6 +19,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	Dropdown,
 	Grid,
 	Header,
 	HeaderButtons,
@@ -26,6 +27,7 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
+	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -35,6 +37,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
 
+import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
+import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -56,7 +60,6 @@ import {
 	createDropdownMenuItem,
 	CustomError,
 	formatDate,
-	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
 	getFullName,
@@ -96,6 +99,7 @@ export const COLLECTION_ACTIONS = {
 	openPublishCollectionModal: 'openPublishCollectionModal',
 	toggleBookmark: 'toggleBookmark',
 	createAssignment: 'createAssignment',
+	importToAssignment: 'importToAssignment',
 	editCollection: 'editCollection',
 	openQuickLane: 'openQuickLane',
 	openAutoplayCollectionModal: 'openAutoplayCollectionModal',
@@ -139,6 +143,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		false
 	);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
+		false
+	);
+	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
+		false
+	);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -403,6 +414,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
+		setIsCreateAssignmentDropdownOpen(false);
 		switch (item) {
 			case COLLECTION_ACTIONS.duplicate:
 				try {
@@ -473,7 +485,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				break;
 
 			case COLLECTION_ACTIONS.createAssignment:
-				createAssignment();
+				setIsCreateAssignmentModalOpen(true);
+				break;
+
+			case COLLECTION_ACTIONS.importToAssignment:
+				setIsImportToAssignmentModalOpen(true);
 				break;
 
 			case COLLECTION_ACTIONS.editCollection:
@@ -531,13 +547,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const createAssignment = (): void => {
-		redirectToClientPage(
-			generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
-			history
-		);
-	};
-
 	const onDeleteCollection = async (): Promise<void> => {
 		try {
 			await CollectionService.deleteCollection(collectionId);
@@ -562,6 +571,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				)
 			);
 		}
+	};
+
+	const onCreateAssignment = async (withDescription: boolean): Promise<void> => {
+		// console.log('Creating assignment with param ', withDescription);
+	};
+
+	const onImportToAssignment = async (
+		assignmentId: string,
+		withDescription: boolean
+	): Promise<void> => {
+		// console.log('Import to existing assignment ', { assignmentId, withDescription });
 	};
 
 	// Render functions
@@ -634,6 +654,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 		const isPublic = !!collection && collection.is_public;
 
+		const createAssignmentOptions = [
+			{
+				label: t('collection/views/collection-detail___nieuwe-opdracht'),
+				id: COLLECTION_ACTIONS.createAssignment,
+			},
+			{
+				label: t('collection/views/collection-detail___bestaande-opdracht'),
+				id: COLLECTION_ACTIONS.importToAssignment,
+			},
+		];
+
 		return (
 			<ButtonToolbar>
 				{permissions.canAutoplayCollection && (
@@ -649,16 +680,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					/>
 				)}
 				{permissions.canCreateAssignments && (
-					<Button
-						label={t('collection/views/collection-detail___maak-opdracht')}
-						type="secondary"
-						icon="clipboard"
-						ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
-						title={t(
-							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
-						)}
-						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
-					/>
+					<Dropdown
+						label={t('collection/views/collection-detail___importeer-naar-opdracht')}
+						isOpen={isCreateAssignmentDropdownOpen}
+						onClose={() => setIsCreateAssignmentDropdownOpen(false)}
+						onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
+					>
+						<MenuContent menuItems={createAssignmentOptions} onClick={executeAction} />
+					</Dropdown>
 				)}
 				{permissions.canCreateQuickLane && !permissions.canCreateAssignments && (
 					<Button
@@ -1219,6 +1248,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									}
 								}}
 							/>
+						)}
+						{collection && (
+							<>
+								<CreateAssignmentModal
+									isOpen={isCreateAssignmentModalOpen}
+									onClose={() => setIsCreateAssignmentModalOpen(false)}
+									createAssignmentCallback={onCreateAssignment}
+								/>
+								<ImportToAssignmentModal
+									user={user}
+									isOpen={isImportToAssignmentModalOpen}
+									onClose={() => setIsImportToAssignmentModalOpen(false)}
+									importToAssignmentCallback={onImportToAssignment}
+								/>
+							</>
 						)}
 					</>
 				)}

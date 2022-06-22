@@ -66,9 +66,10 @@ export class AssignmentService {
 		page: number,
 		filterString: string | undefined,
 		labelIds: string[] | undefined,
-		classIds: string[] | undefined
+		classIds: string[] | undefined,
+		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
-		assignments: Avo.Assignment.Assignment[];
+		assignments: Avo.Assignment.Assignment_v2[];
 		count: number;
 	}> {
 		let variables: any;
@@ -113,6 +114,8 @@ export class AssignmentService {
 				}
 			}
 			variables = {
+				limit,
+				offset: limit === null ? 0 : page * limit,
 				order: getOrderObject(
 					sortColumn,
 					sortOrder,
@@ -120,8 +123,6 @@ export class AssignmentService {
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				owner_profile_id: getProfileId(user),
-				offset: page * ITEMS_PER_PAGE,
-				limit: ITEMS_PER_PAGE,
 				filter: filterArray.length ? filterArray : {},
 			};
 			const assignmentQuery = {
