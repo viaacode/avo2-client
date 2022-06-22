@@ -28,7 +28,6 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	DeleteObjectModal,
-	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -80,7 +79,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Modals
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		console.info({ tab }); // TODO: navigate
@@ -220,12 +218,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const viewAsStudent = () => history.push(getAssignmentUrl(false));
 
-	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
+	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'delete') => {
 		setExtraOptionsMenuOpen(false);
 
 		switch (itemId) {
 			case 'duplicate':
-				setDuplicateModalOpen(true);
+				await AssignmentHelper.attemptDuplicateAssignment(
+					`${t('assignment/views/assignment-overview___kopie')} ${
+						currentAssignment.title
+					}`,
+					currentAssignment,
+					user
+				);
 				break;
 
 			case 'delete':
@@ -378,32 +382,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteAssignment}
-				/>
-
-				<InputModal
-					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel={t(
-						'assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam'
-					)}
-					inputValue={currentAssignment.title}
-					inputPlaceholder={t(
-						'assignment/views/assignment-edit___titel-van-de-nieuwe-taak'
-					)}
-					isOpen={isDuplicateModalOpen}
-					onClose={() => setDuplicateModalOpen(false)}
-					inputCallback={(newTitle: string) =>
-						AssignmentHelper.attemptDuplicateAssignment(
-							newTitle,
-							currentAssignment,
-							setCurrentAssignment,
-							setLoadingInfo,
-							user,
-							history
-						)
-					}
-					emptyMessage={t(
-						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
-					)}
 				/>
 			</div>
 		);
