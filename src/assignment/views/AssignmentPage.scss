@@ -50,5 +50,9 @@
 
 	.c-assignment-details-tab {
 		max-width: 664px;
+
+		.react-datepicker-popper {
+			z-index: 1000000; // Show datepicker over blue bar & zendesk
+		}
 	}
 }

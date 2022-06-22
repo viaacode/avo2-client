@@ -18,24 +18,27 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 
 import { ColorSelect } from '../../../admin/content-block/components/fields';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';
 import { AssignmentLabelsService, ToastService } from '../../../shared/services';
-import { AssignmentLabelColor, AssignmentLabelType } from '../../assignment.types';
+import { AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
 
 interface ManageAssignmentLabelsProps extends UserProps {
-	onClose: () => void;
 	isOpen: boolean;
+	onClose: () => void;
+	type?: AssignmentLabelType;
 }
 
 const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = ({
 	isOpen,
 	onClose,
+	type,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -50,7 +53,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	const fetchAssignmentLabels = useCallback(async () => {
 		try {
 			const labels = sortBy(
-				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id')),
+				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'), type),
 				'label'
 			);
 			setAssignmentLabels(labels);
@@ -65,7 +68,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				)
 			);
 		}
-	}, [user, setAssignmentLabels, t]);
+	}, [user, setAssignmentLabels, t, type]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -98,7 +101,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				owner_profile_id: get(user, 'profile.id'),
 				color_override: null,
 				enum_color: assignmentLabelColors[0],
-				type: AssignmentLabelType.LABEL,
+				type: type || 'LABEL',
 			},
 		]);
 	};
@@ -142,7 +145,16 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 			const profileId = get(user, 'profile.id');
 			await Promise.all([
-				AssignmentLabelsService.insertLabels(newLabels),
+				AssignmentLabelsService.insertLabels(
+					newLabels.map((item) =>
+						type
+							? {
+									...item,
+									type,
+							  }
+							: item
+					)
+				),
 				AssignmentLabelsService.deleteLabels(profileId, oldIds),
 				updatedLabels.map((l) =>
 					AssignmentLabelsService.updateLabel(

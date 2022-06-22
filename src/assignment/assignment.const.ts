@@ -10,9 +10,9 @@ import i18n from '../shared/translations/i18n';
 import {
 	AssignmentColumn,
 	AssignmentFormState,
-	AssignmentLabelType,
 	AssignmentOverviewTableColumns,
 } from './assignment.types';
+import { AssignmentDetailsFormProps } from './components/AssignmentDetailsForm';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -145,9 +145,20 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		title: string().required(t('assignment/assignment___titel-is-verplicht')),
 		labels: array(
 			object({
-				id: string().required(),
-				type: string()
-					.is([AssignmentLabelType.LABEL, AssignmentLabelType.CLASS])
+				assignment_label: object()
+					.shape({
+						id: string().required(),
+						label: string().nullable(),
+						color_enum_value: string().required(),
+						color_override: string().nullable(),
+						owner_profile_id: string().required(),
+						enum_color: object({
+							label: string().required(),
+							value: string().required(),
+						}).optional(),
+						type: string().is(['LABEL', 'CLASS']).required(),
+						profile: object().optional(),
+					})
 					.required(),
 			})
 		),
@@ -158,9 +169,49 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 };
 
 export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+	id: undefined,
 	title: t('assignment/assignment___titel-opdracht'),
 	labels: [],
 	available_at: new Date().toISOString(),
+	answer_url: undefined,
+	deadline_at: undefined,
+});
+
+export const ASSIGNMENT_FORM_FIELDS = (
+	t: TFunction
+): Pick<
+	AssignmentDetailsFormProps,
+	'classrooms' | 'labels' | 'available_at' | 'deadline_at' | 'answer_url'
+> => ({
+	classrooms: {
+		label: t('assignment/assignment___klas'),
+		dictionary: {
+			placeholder: t('assignment/assignment___1-moderne-talen'),
+			empty: t('assignment/assignment___geen-klassen-gevonden'),
+		},
+	},
+	labels: {
+		label: t('assignment/assignment___label'),
+		dictionary: {
+			placeholder: t('assignment/assignment___geschiedenis'),
+			empty: t('assignment/assignment___geen-labels-gevonden'),
+		},
+	},
+	available_at: {
+		label: t('assignment/assignment___beschikbaar-vanaf'),
+	},
+	deadline_at: {
+		label: t('assignment/assignment___deadline'),
+		help: t(
+			'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
+		),
+	},
+	answer_url: {
+		label: `${t('assignment/assignment___link')} (${t('assignment/assignment___optioneel')})`,
+		help: t(
+			'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
+		),
+	},
 });
 
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {

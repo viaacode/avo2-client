@@ -1,9 +1,9 @@
 import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_LABELS_BY_PROFILE_ID = gql`
-	query getAssignmentLabels($profileId: uuid!) {
+	query getAssignmentLabels($profileId: uuid!, $type: String) {
 		app_assignment_labels_v2(
-			where: { owner_profile_id: { _eq: $profileId } }
+			where: { owner_profile_id: { _eq: $profileId }, type: { _eq: $type } }
 			order_by: { label: asc }
 		) {
 			color_enum_value
@@ -15,13 +15,14 @@ export const GET_ASSIGNMENT_LABELS_BY_PROFILE_ID = gql`
 				value
 			}
 			type
+			owner_profile_id
 		}
 	}
 `;
 
 export const INSERT_ASSIGNMENT_LABELS = gql`
-	mutation insertAssignmentLabels($objects: [app_assignment_labels_insert_input!]!) {
-		insert_app_assignment_labels(objects: $objects) {
+	mutation insertAssignmentLabels($objects: [app_assignment_labels_v2_insert_input!]!) {
+		insert_app_assignment_labels_v2(objects: $objects) {
 			returning {
 				id
 			}

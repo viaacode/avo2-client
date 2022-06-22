@@ -25,11 +25,6 @@ export enum AssignmentType {
 	BOUW = 'BOUW',
 }
 
-export enum AssignmentLabelType {
-	LABEL = 'LABEL',
-	CLASS = 'CLASS',
-}
-
 export enum AssignmentBlockType {
 	TEXT = 'TEXT',
 	ITEM = 'ITEM',
@@ -59,9 +54,10 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-export type AssignmentFormStateLabel = Pick<AssignmentLabel_v2, 'id' | 'type'>;
+// Omit avoids a typescript error here
+export type AssignmentSchemaLabel_v2 = { assignment_label: Omit<AssignmentLabel_v2, 'profile'> };
 
 export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'> &
 	Partial<Pick<AssignmentSchema_v2, 'id' | 'available_at' | 'deadline_at' | 'answer_url'>> & {
-		labels: AssignmentFormStateLabel[];
+		labels: AssignmentSchemaLabel_v2[];
 	};

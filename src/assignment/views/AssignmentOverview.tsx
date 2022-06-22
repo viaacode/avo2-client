@@ -33,6 +33,7 @@ import {
 } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -62,11 +63,10 @@ import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
-import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import {
-	AssignmentLabelType,
 	AssignmentOverviewTableColumns,
+	AssignmentSchemaLabel_v2,
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
@@ -381,6 +381,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
+	const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
+		<TagList
+			tags={labels.map(({ assignment_label: item }) => ({
+				id: item.id,
+				label: item.label || '',
+				color: item.color_override || item.enum_color?.label || 'hotpink',
+			}))}
+			swatches
+			closable={false}
+		/>
+	);
+
 	const renderCell = (
 		assignment: Avo.Assignment.Assignment_v2,
 		colKey: AssignmentOverviewTableColumns
@@ -416,21 +428,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return `${capitalize(cellData)}`;
 
 			case 'labels':
-				const labels: Avo.Assignment.Label[] = AssignmentHelper.getLabels(
-					assignment,
-					'LABEL'
-				).map((labelLink: any) => labelLink.assignment_label);
-				const tagOptions = labels.map((labelObj: Avo.Assignment.Label) => ({
-					id: labelObj.id,
-					label: labelObj.label || '',
-					color: labelObj.color_override || get(labelObj, 'enum_color.label', ''),
-				}));
-				return <TagList tags={tagOptions} swatches closable={false} />;
+				return renderLabels(
+					assignment.labels.filter(({ assignment_label: item }) => item.type === 'LABEL')
+				);
 
 			case 'class_room':
-				return AssignmentHelper.getLabels(assignment, 'CLASS')
-					.map((item) => item.label)
-					.join(', ');
+				return renderLabels(
+					assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS')
+				);
 
 			case 'author':
 				const profile = get(assignment, 'profile', null);
@@ -557,13 +562,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									<CheckboxDropdownModal
 										label={t('assignment/views/assignment-overview___klas')}
 										id="Klas"
-										options={getLabelOptions(AssignmentLabelType.CLASS)}
+										options={getLabelOptions('CLASS')}
 										onChange={setSelectedClassLabelsIds}
 									/>
 									<CheckboxDropdownModal
 										label={t('assignment/views/assignment-overview___label')}
 										id="Label"
-										options={getLabelOptions(AssignmentLabelType.LABEL)}
+										options={getLabelOptions('LABEL')}
 										onChange={setSelectedAssignmentLabelsIds}
 									/>
 								</>

@@ -16,7 +16,6 @@ import {
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
-import { AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -25,7 +24,11 @@ import { buildLink, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	ASSIGNMENT_FORM_FIELDS,
+	ASSIGNMENT_FORM_SCHEMA,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
@@ -46,17 +49,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
-	const {
-		setValue,
-		control,
-		handleSubmit,
-		reset: resetForm,
-		formState: { errors },
-	} = form;
+	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+	const fields = useMemo(() => ASSIGNMENT_FORM_FIELDS(t), [t]);
 
 	// Effects
 
@@ -66,7 +64,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			const cast = key as keyof AssignmentFormState;
 			setValue(cast, assignment[cast]);
 		});
-	}, [assignment, setValue]);
+
+		trigger();
+	}, [assignment, setValue, trigger]);
 
 	// Set the loading state when the form is ready
 	useEffect(() => {
@@ -79,11 +79,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const submit = async () => {
 		try {
-			const created = await AssignmentService.insertAssignment({
-				...assignment,
-				owner_profile_id: user.profile?.id,
-				labels: assignment.labels as AssignmentLabel_v2[], // TODO: remove cast
-			});
+			const created = await AssignmentService.insertAssignment(
+				{
+					...assignment,
+					owner_profile_id: user.profile?.id,
+					labels: [],
+				},
+				assignment.labels
+			);
 
 			if (created) {
 				trackEvents(
@@ -223,45 +226,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 						<AssignmentDetailsForm
 							state={[assignment, setAssignment]}
 							initial={defaultValues}
-							classrooms={{
-								label: t('assignment/views/assignment-create___klas'),
-								dictionary: {
-									placeholder: t(
-										'assignment/views/assignment-create___1-moderne-talen'
-									),
-									empty: t(
-										'assignment/views/assignment-create___geen-klassen-gevonden'
-									),
-								},
-							}}
-							labels={{
-								label: t('assignment/views/assignment-create___label'),
-								dictionary: {
-									placeholder: t(
-										'assignment/views/assignment-create___geschiedenis'
-									),
-									empty: t(
-										'assignment/views/assignment-create___geen-labels-gevonden'
-									),
-								},
-							}}
-							available_at={{
-								label: t('assignment/views/assignment-create___beschikbaar-vanaf'),
-							}}
-							deadline_at={{
-								label: t('assignment/views/assignment-create___deadline'),
-								help: t(
-									'assignment/views/assignment-create___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
-								),
-							}}
-							answer_url={{
-								label: `${t('assignment/views/assignment-create___link')} (${t(
-									'assignment/views/assignment-create___optioneel'
-								)})`,
-								help: t(
-									'assignment/views/assignment-create___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
-								),
-							}}
+							{...fields}
 						/>
 					</div>
 				);
@@ -269,7 +234,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			default:
 				return tab;
 		}
-	}, [tab, defaultValues, t, assignment, setAssignment]);
+	}, [tab, defaultValues, assignment, setAssignment, fields]);
 
 	const render = () => (
 		<div className="c-assignment-page c-assignment-page--create">
@@ -281,12 +246,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			/>
 
 			<Container mode="horizontal">
-				{/* TODO: remove */}
-				<pre style={{ color: 'red' }}>debug: {JSON.stringify(errors)}</pre>
-
-				<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
-					{renderTabContent}
-				</Spacer>
+				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
 
 				{/* Always show on create */}
 				<StickyEdgeBar>
