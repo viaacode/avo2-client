@@ -162,7 +162,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 					.required(),
 			})
 		),
-		answer_url: string().optional(),
+		answer_url: string().nullable().optional(),
 		available_at: string().optional(),
 		deadline_at: string().optional(),
 	});
