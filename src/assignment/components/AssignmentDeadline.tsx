@@ -31,7 +31,7 @@ const AssignmentDeadline: FC<AssignmentDeadlineProps> = ({ deadline }) => {
 			return ['yellow', 'diamond'];
 		}
 
-		return ['success', 'square'];
+		return ['success', 'circle'];
 	}, [deadline]);
 
 	if (!config) {
