@@ -14,7 +14,7 @@
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix",
     "extract-translations": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format",
-    "whitelist-queries": "ts-node --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
+    "whitelist-queries": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
     "update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
     "licenses": "license-checker --csv --out licenses.csv",
     "analyse": "npm run build && source-map-explorer 'build/static/js/*.js'"
@@ -24,14 +24,15 @@
     "Benjamin Naesen <benjamin.naesen@studiohyperdrive.be>",
     "Andry Charlier <andry.charlier@studiohyperdrive.be>",
     "Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>",
-    "Ian Emsens <ian.emsens@sudiohypderive.be>"
+    "Ian Emsens <ian.emsens@studiohypderive.be>"
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
+    "@hookform/resolvers": "^2.9.1",
     "@popperjs/core": "^2.5.4",
     "@react-hook/resize-observer": "^1.2.5",
     "@storybook/addon-actions": "^6.3.12",
-    "@viaa/avo2-components": "^1.85.6",
+    "@viaa/avo2-components": "^1.87.0",
     "@viaa/avo2-types": "^2.39.2",
     "apollo-boost": "^0.4.3",
     "braft-editor": "^2.3.9",
@@ -60,6 +61,7 @@
     "react-copy-to-clipboard": "^5.0.2",
     "react-datepicker": "^2.9.6",
     "react-dom": "16.13.1",
+    "react-hook-form": "^7.32.0",
     "react-i18next": "^11.2.7",
     "react-joyride": "^2.2.1",
     "react-meta-tags": "^0.7.4",
@@ -82,7 +84,8 @@
     "ts-node": "^9.0.0",
     "unique-selector": "^0.5.0",
     "use-query-params": "^1.1.6",
-    "webpack": "^4.42.0"
+    "webpack": "^4.42.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -130,7 +133,7 @@
     "tslint-config-airbnb": "^5.11.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.3.0",
-    "typescript": "4.0.2"
+    "typescript": "^4.1"
   },
   "resolutions": {
     "immutable": "3.8.2",

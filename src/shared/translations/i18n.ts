@@ -5,7 +5,7 @@ import { initReactI18next } from 'react-i18next';
 
 import { getEnv } from '../helpers';
 
-let resolveTranslations: () => void | undefined;
+let resolveTranslations: (value?: unknown) => void | undefined;
 export const waitForTranslations = new Promise((resolve) => {
 	resolveTranslations = resolve;
 });

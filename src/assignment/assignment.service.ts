@@ -44,22 +44,6 @@ export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 export const GET_ASSIGNMENT_COPY_REGEX = () =>
 	new RegExp(`^${i18n.t('assignment/assignment___opdracht-kopie')} [0-9]+`, 'gi');
 
-interface AssignmentProperty {
-	name: string;
-	label: string;
-}
-
-const GET_OBLIGATORY_PROPERTIES = (): AssignmentProperty[] => [
-	{
-		name: 'title',
-		label: i18n.t('assignment/assignment___titel'),
-	},
-	{
-		name: 'description',
-		label: i18n.t('assignment/assignment___beschrijving'),
-	},
-];
-
 export class AssignmentService {
 	static async fetchAssignments(
 		canEditAssignments: boolean,
@@ -259,22 +243,10 @@ export class AssignmentService {
 	 * This will be used by the Assignments view and the AssignmentEdit view
 	 * @param assignment
 	 */
-	private static validateAssignment(
+	private static transformAssignment(
 		assignment: Partial<Avo.Assignment.Assignment_v2>
-	): [string[], Avo.Assignment.Assignment_v2] {
+	): Avo.Assignment.Assignment_v2 {
 		const assignmentToSave = cloneDeep(assignment);
-		const errors: string[] = [];
-
-		// Validate obligatory fields
-		GET_OBLIGATORY_PROPERTIES().forEach((prop: AssignmentProperty) => {
-			if (!(assignmentToSave as any)[prop.name]) {
-				errors.push(
-					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', {
-						eigenschap: prop.label,
-					})
-				);
-			}
-		});
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
@@ -294,7 +266,7 @@ export class AssignmentService {
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
 
-		return [errors, assignmentToSave as Avo.Assignment.Assignment_v2];
+		return assignmentToSave as Avo.Assignment.Assignment_v2;
 	}
 
 	static async deleteAssignment(assignmentId: string) {
@@ -327,14 +299,9 @@ export class AssignmentService {
 
 			assignment.updated_at = new Date().toISOString();
 
-			const [validationErrors, assignmentToSave] = AssignmentService.validateAssignment({
+			const assignmentToSave = AssignmentService.transformAssignment({
 				...assignment,
 			});
-
-			if (validationErrors.length) {
-				ToastService.danger(validationErrors);
-				return null;
-			}
 
 			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 
@@ -415,14 +382,9 @@ export class AssignmentService {
 		addedLabels?: Avo.Assignment.Label_v2[]
 	): Promise<Avo.Assignment.Assignment_v2 | null> {
 		try {
-			const [validationErrors, assignmentToSave] = AssignmentService.validateAssignment({
+			const assignmentToSave = AssignmentService.transformAssignment({
 				...assignment,
 			});
-
-			if (validationErrors.length) {
-				ToastService.danger(validationErrors);
-				return null;
-			}
 
 			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 

@@ -1,5 +1,7 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -10,18 +12,14 @@ import {
 	ButtonToolbar,
 	Container,
 	Flex,
-	Form,
-	FormGroup,
 	Icon,
 	Navbar,
-	Spacer,
-	TextInput,
+	Tabs,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -36,22 +34,19 @@ import {
 } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	copyToClipboard,
-	CustomError,
-	isMobileWidth,
-	navigate,
-	sanitizeHtml,
-} from '../../shared/helpers';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { buildLink, CustomError, navigate } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
+import { ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
+import { AssignmentFormState } from '../assignment.types';
+import { useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
@@ -60,18 +55,34 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Block[] | null>(null);
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
-	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
-	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
+	// Data
+	const formHook = useForm<AssignmentFormState>({
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+	});
+
+	console.info({ formHook });
+
 	const [currentAssignment, setCurrentAssignment] = useState<
 		Partial<Avo.Assignment.Assignment_v2>
 	>({});
 	const [initialAssignment, setInitialAssignment] = useState<
 		Partial<Avo.Assignment.Assignment_v2>
 	>({});
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Block[] | null>(null);
+
+	// UI
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+
+	// Dropdowns
+	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
+
+	// Modals
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+
+	useEffect(() => {
+		console.info({ tab }); // TODO: navigate
+	}, [tab]);
 
 	const setBothAssignments = useCallback(
 		(assignment: Partial<Avo.Assignment.Assignment_v2>) => {
@@ -145,7 +156,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				...tempAssignment,
 				title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
 			});
-			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(tempAssignment));
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -175,41 +185,42 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}`;
 	};
 
-	const copyAssignmentUrl = () => {
-		copyToClipboard(getAssignmentUrl());
+	// const copyAssignmentUrl = () => {
+	// 	copyToClipboard(getAssignmentUrl());
 
-		trackEvents(
-			{
-				object: String(currentAssignment.id),
-				object_type: 'assignment',
-				action: 'share',
-				resource: {
-					object_type: 'link',
-				},
-			},
-			user
-		);
+	// 	trackEvents(
+	// 		{
+	// 			object: String(currentAssignment.id),
+	// 			object_type: 'assignment',
+	// 			action: 'share',
+	// 			resource: {
+	// 				object_type: 'link',
+	// 			},
+	// 		},
+	// 		user
+	// 	);
 
-		ToastService.success(
-			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
-		);
+	// 	ToastService.success(
+	// 		t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
+	// 	);
 
-		if (currentAssignment.id) {
-			trackEvents(
-				{
-					object: String(currentAssignment.id),
-					object_type: 'assignment',
-					action: 'view',
-				},
-				user
-			);
-		}
-	};
+	// 	if (currentAssignment.id) {
+	// 		trackEvents(
+	// 			{
+	// 				object: String(currentAssignment.id),
+	// 				object_type: 'assignment',
+	// 				action: 'view',
+	// 			},
+	// 			user
+	// 		);
+	// 	}
+	// };
 
 	const viewAsStudent = () => history.push(getAssignmentUrl(false));
 
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'delete') => {
 		setExtraOptionsMenuOpen(false);
+
 		switch (itemId) {
 			case 'duplicate':
 				await AssignmentHelper.attemptDuplicateAssignment(
@@ -226,63 +237,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				break;
 			default:
 				return null;
-		}
-	};
-
-	const setAssignmentProp = (
-		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
-		value: any
-	) => {
-		const newAssignment = {
-			...currentAssignment,
-			[property]: value,
-		};
-		setCurrentAssignment(newAssignment);
-	};
-
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment_v2>) => {
-		try {
-			setIsSaving(true);
-
-			// copy description to assignment
-			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
-				'descriptionRichEditorState'
-			];
-			assignment.description = sanitizeHtml(
-				descriptionRichEditorState
-					? descriptionRichEditorState.toHTML()
-					: assignment.description || '',
-				'full'
-			);
-			delete (assignment as any)['descriptionRichEditorState'];
-
-			// edit => update graphql
-			await AssignmentService.updateAssignment(
-				assignment,
-				AssignmentLabelsService.getLabelsFromAssignment(initialAssignment),
-				assignmentLabels
-			);
-			setBothAssignments(assignment);
-
-			trackEvents(
-				{
-					object: String(assignment.id),
-					object_type: 'assignment',
-					action: 'edit',
-				},
-				user
-			);
-
-			ToastService.success(
-				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
-			);
-			setIsSaving(false);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
-			);
-			setIsSaving(false);
 		}
 	};
 
@@ -305,6 +259,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			);
 
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
+
 			ToastService.success(
 				i18n.t('assignment/views/assignment-edit___de-opdracht-is-verwijderd')
 			);
@@ -319,6 +274,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			);
 		} catch (err) {
 			console.error(err);
+
 			ToastService.danger(
 				i18n.t(
 					'assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt'
@@ -330,138 +286,70 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderAssignmentEditForm = () => {
 		return (
 			<div className="c-assignment-create-and-edit">
-				<Navbar autoHeight>
-					<Container mode="vertical" background="alt">
-						<Container mode="horizontal">
-							<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
-								<ToolbarLeft>
-									<ToolbarItem grow>
-										<Link
-											className="c-return"
-											to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-												tabId: ASSIGNMENTS_ID,
-											})}
-										>
-											<Icon name="chevron-left" size="small" type="arrows" />
-											<Trans i18nKey="assignment/views/assignment-edit___mijn-opdrachten">
-												Mijn opdrachten
-											</Trans>
-										</Link>
-										<BlockHeading className="u-m-0" type="h2">
+				<Container background="alt" mode="vertical" size="small">
+					<Container mode="horizontal">
+						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
+							<ToolbarLeft>
+								<ToolbarItem grow>
+									<Link
+										className="c-return"
+										to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
+											tabId: ASSIGNMENTS_ID,
+										})}
+									>
+										<Icon name="chevron-left" size="small" type="arrows" />
+
+										<Trans i18nKey="assignment/views/assignment-edit___mijn-opdrachten">
+											Mijn opdrachten
+										</Trans>
+									</Link>
+
+									<Flex center className="u-spacer-top">
+										<Icon name="clipboard" size="large" />
+
+										<BlockHeading className="u-spacer-left" type="h2">
 											{currentAssignment.title}
 										</BlockHeading>
-										{currentAssignment.id && (
-											<Spacer margin="top-small">
-												<Form
-													type={isMobileWidth() ? 'standard' : 'inline'}
-												>
-													<FormGroup
-														label={t(
-															'assignment/views/assignment-edit___url'
-														)}
-													>
-														<Flex>
-															<TextInput
-																value={getAssignmentUrl()}
-																disabled
-															/>
-															<Spacer margin="left-small">
-																<Button
-																	icon="copy"
-																	type="secondary"
-																	ariaLabel={t(
-																		'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-																	)}
-																	title={t(
-																		'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-																	)}
-																	onClick={copyAssignmentUrl}
-																/>
-															</Spacer>
-														</Flex>
-													</FormGroup>
-												</Form>
-											</Spacer>
-										)}
-									</ToolbarItem>
-								</ToolbarLeft>
-								<ToolbarRight>
-									<ToolbarItem>
-										<ButtonToolbar>
-											<Button
-												type="secondary"
-												onClick={viewAsStudent}
-												label={t(
-													'assignment/views/assignment-edit___bekijk-als-leerling'
-												)}
-												title={t(
-													'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-												)}
-											/>
-											<MoreOptionsDropdown
-												isOpen={isExtraOptionsMenuOpen}
-												onOpen={() => setExtraOptionsMenuOpen(true)}
-												onClose={() => setExtraOptionsMenuOpen(false)}
-												menuItems={[
-													{
-														icon: 'copy',
-														id: 'duplicate',
-														label: t(
-															'assignment/views/assignment-edit___dupliceer'
-														),
-													},
-													{
-														icon: 'delete',
-														id: 'delete',
-														label: t(
-															'assignment/views/assignment-edit___verwijder'
-														),
-													},
-												]}
-												onOptionClicked={(id: string | number) =>
-													handleExtraOptionClicked(id.toString() as any)
-												}
-											/>
-											<Button
-												type="primary"
-												label={t(
-													'assignment/views/assignment-edit___opslaan'
-												)}
-												title={t(
-													'assignment/views/assignment-edit___sla-de-opdracht-op'
-												)}
-												onClick={() => saveAssignment(currentAssignment)}
-												disabled={isSaving}
-											/>
-											<InteractiveTour showButton />
-										</ButtonToolbar>
-									</ToolbarItem>
-								</ToolbarRight>
-							</Toolbar>
-						</Container>
-					</Container>
-				</Navbar>
-				{AssignmentHelper.renderAssignmentForm(
-					currentAssignment,
-					assignmentLabels,
-					user,
-					setAssignmentProp,
-					setAssignmentLabels
-				)}
-				<Container background="alt" mode="vertical">
-					<Container size="small" mode="horizontal" className="c-last-vertical-container">
-						<Toolbar autoHeight>
+									</Flex>
+								</ToolbarItem>
+							</ToolbarLeft>
+
 							<ToolbarRight>
 								<ToolbarItem>
 									<ButtonToolbar>
 										<Button
-											type="primary"
-											label={t('assignment/views/assignment-edit___opslaan')}
-											title={t(
-												'assignment/views/assignment-edit___sla-de-opdracht-op'
+											type="secondary"
+											onClick={viewAsStudent}
+											label={t(
+												'assignment/views/assignment-edit___bekijk-als-leerling'
 											)}
-											onClick={() => saveAssignment(currentAssignment)}
-											disabled={isSaving}
+											title={t(
+												'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+											)}
+										/>
+										<MoreOptionsDropdown
+											isOpen={isExtraOptionsMenuOpen}
+											onOpen={() => setExtraOptionsMenuOpen(true)}
+											onClose={() => setExtraOptionsMenuOpen(false)}
+											menuItems={[
+												{
+													icon: 'copy',
+													id: 'duplicate',
+													label: t(
+														'assignment/views/assignment-edit___dupliceer'
+													),
+												},
+												{
+													icon: 'delete',
+													id: 'delete',
+													label: t(
+														'assignment/views/assignment-edit___verwijder'
+													),
+												},
+											]}
+											onOptionClicked={(id: string | number) =>
+												handleExtraOptionClicked(id.toString() as any)
+											}
 										/>
 									</ButtonToolbar>
 								</ToolbarItem>
@@ -469,6 +357,20 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						</Toolbar>
 					</Container>
 				</Container>
+
+				<Navbar background="alt" placement="top" autoHeight>
+					<Container mode="horizontal">
+						<Toolbar className="c-toolbar--no-height">
+							<ToolbarLeft>
+								<Tabs tabs={tabs} onClick={onTabClick}></Tabs>
+							</ToolbarLeft>
+
+							<ToolbarRight>
+								<InteractiveTour showButton />
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
+				</Navbar>
 
 				<DeleteObjectModal
 					title={t(
@@ -501,6 +403,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				</title>
 				<meta name="description" content={get(currentAssignment, 'description') || ''} />
 			</MetaTags>
+
 			<LoadingErrorLoadedComponent
 				dataObject={currentAssignment}
 				render={renderAssignmentEditForm}
