@@ -37,9 +37,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
 
+import { AssignmentService } from '../../assignment/assignment.service';
+import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
@@ -150,6 +153,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
 		false
 	);
+	const [
+		isConfirmImportToAssignmentWithResponsesModalOpen,
+		setIsConfirmImportToAssignmentWithResponsesModalOpen,
+	] = useState<boolean>(false);
+
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -160,6 +168,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
+	const [assignmentId, setAssignmentId] = useState<string>();
+	const [importWithDescription, setImportWithDescription] = useState<boolean>(false);
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -574,14 +584,66 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const onCreateAssignment = async (withDescription: boolean): Promise<void> => {
-		// console.log('Creating assignment with param ', withDescription);
+		if (user && collection) {
+			const assignmentId = await AssignmentService.createAssignmentFromCollection(
+				user,
+				collection,
+				withDescription
+			);
+			history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
+		}
 	};
 
 	const onImportToAssignment = async (
-		assignmentId: string,
+		importToAssignmentId: string,
 		withDescription: boolean
 	): Promise<void> => {
-		// console.log('Import to existing assignment ', { assignmentId, withDescription });
+		setAssignmentId(importToAssignmentId);
+
+		setImportWithDescription(withDescription);
+
+		// check if assignment has responses. If so: show additional confirmation modal
+		const hasResponses = await AssignmentService.getAssignmentResponses(
+			getProfileId(user),
+			importToAssignmentId
+		);
+		if (hasResponses.length > 0) {
+			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
+		} else {
+			doImportToAssignment(importToAssignmentId, withDescription);
+		}
+	};
+
+	const onConfirmImportAssignment = () => {
+		if (!assignmentId) {
+			return;
+		}
+		return doImportToAssignment(assignmentId, importWithDescription);
+	};
+
+	const doImportToAssignment = async (
+		importToAssignmentId: string,
+		withDescription: boolean
+	): Promise<void> => {
+		setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
+		if (collection && importToAssignmentId) {
+			await AssignmentService.importCollectionToAssignment(
+				collection,
+				importToAssignmentId,
+				withDescription
+			);
+			ToastService.success(
+				t(
+					'collection/views/collection-detail___de-collectie-is-geimporteerd-naar-de-opdracht'
+				)
+			);
+		} else {
+			ToastService.danger(
+				t(
+					'collection/views/collection-detail___de-collectie-kon-niet-worden-geimporteerd-naar-de-opdracht'
+				)
+			);
+		}
 	};
 
 	// Render functions
@@ -1261,6 +1323,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									isOpen={isImportToAssignmentModalOpen}
 									onClose={() => setIsImportToAssignmentModalOpen(false)}
 									importToAssignmentCallback={onImportToAssignment}
+								/>
+								<ConfirmImportToAssignmentWithResponsesModal
+									isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
+									onClose={() =>
+										setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
+									}
+									confirmCallback={onConfirmImportAssignment}
 								/>
 							</>
 						)}

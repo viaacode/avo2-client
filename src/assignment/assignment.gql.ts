@@ -187,12 +187,9 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_RESPONSES = gql`
-	query getAssignmentResponses($profileId: String!, $assignmentId: uuid!) {
+	query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
 		app_assignment_responses_v2(
-			where: {
-				owner_profile_ids: { _has_key: $profileId }
-				assignment_id: { _eq: $assignmentId }
-			}
+			where: { owner_profile_id: { _eq: $profileId }, assignment_id: { _eq: $assignmentId } }
 		) {
 			id
 		}
@@ -346,6 +343,20 @@ export const INSERT_ASSIGNMENT_BLOCKS = gql`
 	mutation insertBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
 		insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
 			affected_rows
+		}
+	}
+`;
+
+export const GET_MAX_POSITION_ASSIGNMENT_BLOCKS = gql`
+	query getMaxPositionAssignmentBlocks($assignmentId: uuid!) {
+		app_assignments_v2_by_pk(id: $assignmentId) {
+			blocks_aggregate {
+				aggregate {
+					max {
+						position
+					}
+				}
+			}
 		}
 	}
 `;
