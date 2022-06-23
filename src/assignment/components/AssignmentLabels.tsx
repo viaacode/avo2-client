@@ -1,18 +1,11 @@
 import { cloneDeep, get } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	MouseEvent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
 
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabelType, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
@@ -30,6 +23,7 @@ export type AssignmentLabelsProps = Pick<AssignmentSchema_v2, 'labels'> & {
 		placeholder: string;
 		empty: string;
 	};
+	type?: AssignmentLabelType;
 };
 
 const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
@@ -37,6 +31,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	labels,
 	user,
 	onChange,
+	type = 'LABEL',
 	...props
 }) => {
 	const [t] = useTranslation();
@@ -48,16 +43,6 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
-
-	const inferredType = useMemo(
-		() =>
-			labels.every(
-				({ assignment_label: item }) => item.type === labels[0]?.assignment_label.type
-			)
-				? labels[0]?.assignment_label.type
-				: undefined,
-		[labels]
-	);
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		// Fetch labels every time the manage labels modal closes and once at startup
@@ -86,7 +71,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 	const getColorOptions = (labels: Avo.Assignment.Label_v2[]): ColorOption[] => {
 		return labels
-			.filter((item) => !inferredType || item.type === inferredType)
+			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({
 				label: labelObj.label || '',
 				value: String(labelObj.id),
@@ -174,7 +159,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 				onClose={handleManageAssignmentLabelsModalClosed}
 				isOpen={isManageLabelsModalOpen}
 				user={user}
-				type={inferredType}
+				type={type}
 			/>
 		</>
 	);
