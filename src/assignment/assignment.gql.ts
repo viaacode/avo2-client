@@ -187,7 +187,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 `;
 
 export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
-	query getAssignmentResponses(
+	query getAssignmentResponsesByAssignmentId(
 		$assignmentId: uuid!
 		$offset: Int = 0
 		$limit: Int
