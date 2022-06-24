@@ -16,15 +16,21 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './assignment.const';
+import {
+	ITEMS_PER_PAGE,
+	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+} from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
+	DELETE_ASSIGNMENT_RESPONSE,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BLOCKS,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_RESPONSES,
+	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_BLOCKS,
@@ -583,6 +589,98 @@ export class AssignmentService {
 		return getProfileId(user) === assignment.owner_profile_id;
 	}
 
+	// Fetch assignment responses for response overview page
+	static async fetchAssignmentResponses(
+		assignmentId: string,
+		user: Avo.User.User,
+		sortColumn: AssignmentOverviewTableColumns,
+		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
+		page: number,
+		filterString: string | undefined
+	): Promise<{
+		assignmentResponses: Avo.Assignment.Response_v2[];
+		count: number;
+	}> {
+		let variables: any;
+		try {
+			const trimmedFilterString = filterString && filterString.trim();
+			const filterArray: any[] = [];
+
+			if (trimmedFilterString) {
+				filterArray.push({
+					_or: [
+						{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } },
+						{ collection_title: { _ilike: `%${trimmedFilterString}%` } },
+					],
+				});
+			}
+
+			variables = {
+				assignmentId,
+				order: getOrderObject(
+					sortColumn,
+					sortOrder,
+					tableColumnDataType,
+					RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
+				offset: page * ITEMS_PER_PAGE,
+				limit: ITEMS_PER_PAGE,
+				filter: filterArray.length ? filterArray : {},
+			};
+			const assignmentQuery = {
+				variables,
+				query: GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
+			};
+
+			// Get the assignment from graphql
+			const response: ApolloQueryResult<any> = await dataService.query(assignmentQuery);
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse = get(response, 'data');
+
+			if (
+				!assignmentResponse ||
+				!assignmentResponse.app_assignment_responses_v2 ||
+				!assignmentResponse.count
+			) {
+				throw new CustomError('Response does not have the expected format', null, {
+					assignmentResponse,
+				});
+			}
+
+			return {
+				assignmentResponses: get(assignmentResponse, 'app_assignment_responses_v2', []),
+				count: get(assignmentResponse, 'count.aggregate.count', 0),
+			};
+		} catch (err) {
+			throw new CustomError('Failed to fetch assignments from database', err, {
+				user,
+				variables,
+				query: 'GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID',
+			});
+		}
+	}
+
+	static async deleteAssignmentResponse(assignmentResponseId: string) {
+		try {
+			await dataService.mutate({
+				mutation: DELETE_ASSIGNMENT_RESPONSE,
+				variables: { assignmentResponseId },
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+		} catch (err) {
+			const error = new CustomError('Failed to delete assignment response', err, {
+				assignmentResponseId,
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
+	// Helper for create assignmentResponseObject method below
 	static async getAssignmentResponses(
 		profileId: string,
 		assignmentId: string
@@ -647,7 +745,7 @@ export class AssignmentService {
 
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response_v2> = {
-				owner_profile_ids: [getProfileId(user)],
+				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
 				collection_title: null,
 			};

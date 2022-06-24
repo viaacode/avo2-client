@@ -191,6 +191,42 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 	}
 `;
 
+export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
+	query getAssignmentResponsesByAssignmentId(
+		$assignmentId: uuid!
+		$offset: Int = 0
+		$limit: Int
+		$order: [app_assignment_responses_v2_order_by!]! = [{ updated_at: desc }]
+		$filter: [app_assignment_responses_v2_bool_exp]
+	) {
+		app_assignment_responses_v2(
+			where: { assignment_id: { _eq: $assignmentId }, _and: $filter }
+			offset: $offset
+			limit: $limit
+			order_by: $order
+		) {
+			id
+			collection_title
+			updated_at
+			pupil_collection_blocks_aggregate {
+				aggregate {
+					count
+				}
+			}
+			owner {
+				full_name
+			}
+		}
+		count: app_assignment_responses_v2_aggregate(
+			where: { assignment_id: { _eq: $assignmentId } }
+		) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
 export const GET_ASSIGNMENT_RESPONSES = gql`
 	query getAssignmentResponses($profileId: String!, $assignmentId: uuid!) {
 		app_assignment_responses_v2(
@@ -326,6 +362,14 @@ export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
 export const DELETE_ASSIGNMENT = gql`
 	mutation deleteAssignmentById($assignmentId: uuid!) {
 		delete_app_assignments_v2(where: { id: { _eq: $assignmentId } }) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_ASSIGNMENT_RESPONSE = gql`
+	mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
+		delete_app_assignment_responses_v2(where: { id: { _eq: $assignmentResponseId } }) {
 			affected_rows
 		}
 	}
