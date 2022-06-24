@@ -440,7 +440,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 									'assignment/views/assignment-responses___er-zijn-geen-antwoorden-die-voldoen-aan-de-zoekopdracht'
 							  )
 							: t(
-									'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-voor-deze-opdracht-geregistreerd'
+									'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
 							  )
 					}
 					renderCell={(rowData: Avo.Assignment.Response_v2, colKey: string) =>
