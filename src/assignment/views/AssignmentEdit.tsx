@@ -12,19 +12,30 @@ import {
 	Button,
 	Container,
 	ContentInput,
+	convertToHtml,
 	Flex,
 	Icon,
 	Spacer,
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import {
+	AssignmentBlockListSorter,
+	FlowPlayerWrapper,
+	ListSorterItem,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
+import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
+import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, CustomError, navigate } from '../../shared/helpers';
+import { buildLink, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -32,11 +43,14 @@ import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	ASSIGNMENT_FORM_FIELDS,
 	ASSIGNMENT_FORM_SCHEMA,
+	EDIT_ASSIGNMENT_BLOCK_ICONS,
+	EDIT_ASSIGNMENT_BLOCK_LABELS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
+import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
@@ -54,7 +68,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
 	const form = useForm<AssignmentFormState>({
-		defaultValues: original,
+		defaultValues: useMemo(() => original, [original]),
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
@@ -66,6 +80,30 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		setValue,
 		trigger,
 	} = form;
+
+	const setAssignmentBlockProperty = useCallback(
+		(block: AssignmentBlock, key: keyof AssignmentBlock, value: any) => {
+			if (block[key] === value) {
+				return;
+			}
+
+			const blocks = [
+				...assignment.blocks.filter((b) => b.id !== block.id),
+				{
+					...block,
+					[key]: value,
+				},
+			];
+
+			setAssignment((prev) => ({
+				...prev,
+				blocks,
+			}));
+
+			setValue('blocks', blocks, { shouldDirty: true });
+		},
+		[assignment.blocks, setAssignment, setValue]
+	);
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -104,9 +142,30 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		return mapped as typeof unmapped;
 	}, [t, assignment, setValue]);
 
-	/**
-	 *  Get query string variables and fetch the existing object
-	 */
+	const listSorterItems = useMemo(() => {
+		return assignment.blocks.map((block) => {
+			const mapped: AssignmentBlock & ListSorterItem = {
+				...block,
+				icon: EDIT_ASSIGNMENT_BLOCK_ICONS()[block.type],
+				onPositionChange: (item, delta) => {
+					const blocks = switchAssignmentBlockPositions(assignment.blocks, item, delta);
+
+					setAssignment((prev) => ({
+						...prev,
+						blocks,
+					}));
+
+					setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
+				},
+			};
+
+			return mapped;
+		});
+	}, [assignment.blocks, setAssignment, setValue]);
+
+	// HTTP
+
+	// Get query string variables and fetch the existing object
 	const fetchAssignment = useCallback(async () => {
 		try {
 			const id = match.params.id;
@@ -177,7 +236,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const submit = async () => {
 		try {
-			const created = await AssignmentService.updateAssignment(
+			const updated = await AssignmentService.updateAssignment(
 				{
 					...assignment,
 					owner_profile_id: user.profile?.id,
@@ -187,24 +246,22 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				assignment.labels.map((item) => item.assignment_label)
 			);
 
-			if (created) {
+			if (updated) {
 				trackEvents(
 					{
-						object: String(created.id),
+						object: String(assignment.id),
 						object_type: 'assignment',
-						action: 'create',
+						action: 'edit',
 					},
 					user
 				);
 
 				ToastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
 				);
 
-				// Disable while dev
-				console.info(() =>
-					navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id })
-				);
+				setOriginal(updated);
+				setAssignment(updated);
 			}
 		} catch (err) {
 			console.error(err);
@@ -308,6 +365,100 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t]
 	);
 
+	const renderBlockContent = useCallback(
+		(block: AssignmentBlock) => {
+			switch (block.type) {
+				case 'TEXT':
+					return (
+						<TitleDescriptionForm
+							className="u-padding-l"
+							id={block.id}
+							title={{
+								label: t('assignment/views/assignment-edit___titel'),
+								placeholder: t(
+									'assignment/views/assignment-edit___instructies-of-omschrijving'
+								),
+								value: block.custom_title,
+								onChange: (value) =>
+									setAssignmentBlockProperty(block, 'custom_title', value),
+							}}
+							description={{
+								placeholder: t(
+									'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
+								),
+								initialHtml: convertToHtml(block.custom_description),
+								onChange: (value) =>
+									setAssignmentBlockProperty(
+										block,
+										'custom_description',
+										value.toHTML()
+									),
+							}}
+						/>
+					);
+
+				case 'ITEM':
+					if (!block.item) {
+						return null;
+					}
+
+					return (
+						<CustomiseItemForm
+							className="u-padding-l"
+							id={block.item.id}
+							preview={() => {
+								const meta = block.item as ItemSchema;
+
+								return (
+									<FlowPlayerWrapper
+										item={meta}
+										poster={meta.thumbnail_path}
+										external_id={meta.external_id}
+										duration={meta.duration}
+										title={meta.title}
+										cuePoints={{
+											start: block.start_oc,
+											end: block.end_oc,
+										}}
+									/>
+								);
+							}}
+							toggle={{
+								label: t(
+									'collection/components/fragment/fragment-edit___alternatieve-tekst'
+								),
+								checked: block.use_custom_fields,
+								onChange: (value) =>
+									setAssignmentBlockProperty(block, 'use_custom_fields', value),
+							}}
+							title={{
+								label: t('assignment/views/assignment-edit___titel'),
+								placeholder: t(
+									'assignment/views/assignment-edit___instructies-of-omschrijving'
+								),
+								value: block.custom_title,
+								onChange: (value) =>
+									setAssignmentBlockProperty(block, 'custom_title', value),
+							}}
+							description={{
+								initialHtml: convertToHtml(block.custom_description),
+								onChange: (value) =>
+									setAssignmentBlockProperty(
+										block,
+										'custom_description',
+										value.toHTML()
+									),
+							}}
+						/>
+					);
+
+				default:
+					break;
+			}
+		},
+		[t, setAssignmentBlockProperty]
+	);
+
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
 		tabs,
 		onTabClick,
@@ -316,7 +467,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
-				return 'inhoud';
+				return (
+					<div className="c-assignment-contents-tab">
+						<AssignmentBlockListSorter
+							heading={(item) => item && EDIT_ASSIGNMENT_BLOCK_LABELS(t)[item.type]}
+							divider={() => <Button icon="plus" type="secondary" disabled />}
+							content={(item) => item && renderBlockContent(item)}
+							items={listSorterItems}
+						></AssignmentBlockListSorter>
+					</div>
+				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				// This form receives its parent's state because we don't care about rerender performance here
@@ -333,7 +493,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			default:
 				return tab;
 		}
-	}, [tab, defaultValues, assignment, setAssignment, fields]);
+	}, [
+		tab,
+		defaultValues,
+		assignment,
+		setAssignment,
+		fields,
+		listSorterItems,
+		t,
+		renderBlockContent,
+	]);
 
 	const render = () => (
 		<div className="c-assignment-page c-assignment-page--create">

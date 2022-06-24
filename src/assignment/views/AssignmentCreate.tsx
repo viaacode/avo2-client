@@ -102,10 +102,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
 
-				// Disable while dev
-				console.info(() =>
-					navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id })
-				);
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
 			}
 		} catch (err) {
 			console.error(err);

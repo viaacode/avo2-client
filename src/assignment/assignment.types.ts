@@ -1,5 +1,9 @@
 import { TableColumn } from '@viaa/avo2-components';
-import { AssignmentLabel_v2, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import {
+	AssignmentBlock,
+	AssignmentLabel_v2,
+	AssignmentSchema_v2,
+} from '@viaa/avo2-types/types/assignment';
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
@@ -60,4 +64,7 @@ export type AssignmentSchemaLabel_v2 = { assignment_label: Omit<AssignmentLabel_
 export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'> &
 	Partial<Pick<AssignmentSchema_v2, 'id' | 'available_at' | 'deadline_at' | 'answer_url'>> & {
 		labels: AssignmentSchemaLabel_v2[];
+		blocks: Omit<AssignmentBlock, 'item'>[]; // avoid circular reference ts error
 	};
+
+export type AssignmentBlockTypeDict<T> = { [key in AssignmentBlockType]: T }; // eslint-disable-line

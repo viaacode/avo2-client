@@ -1,6 +1,7 @@
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
 import { Button, Icon, IconName } from '@viaa/avo2-components';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 
 import './ListSorter.scss';
 
@@ -14,15 +15,15 @@ export interface ListSorterItem {
 	icon: IconName;
 }
 
-export type ListSorterRenderer = (item?: ListSorterItem, i?: number) => ReactNode;
+export type ListSorterRenderer<T> = (item?: T & ListSorterItem, i?: number) => ReactNode;
 
-export interface ListSorterProps {
-	actions?: ListSorterRenderer;
-	items?: ListSorterItem[];
-	content?: ListSorterRenderer;
-	divider?: ListSorterRenderer;
-	heading?: ListSorterRenderer;
-	thumbnail?: ListSorterRenderer;
+export interface ListSorterProps<T> {
+	actions?: ListSorterRenderer<T>;
+	items?: (T & ListSorterItem)[];
+	content?: ListSorterRenderer<T>;
+	divider?: ListSorterRenderer<T>;
+	heading?: ListSorterRenderer<T>;
+	thumbnail?: ListSorterRenderer<T>;
 }
 
 // Default renderers
@@ -60,10 +61,12 @@ export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
 );
 
 // Main renderer
-
-export const ListSorter: FC<ListSorterProps> = ({
-	items,
-	thumbnail = (item) => item && <ListSorterThumbnail item={item} />,
+type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>;
+export const ListSorter: ListSorterType = ({
+	items = [],
+	thumbnail = ((item) => item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<
+		unknown
+	>,
 	heading = () => 'heading',
 	divider = () => 'divider',
 	actions = (item, i) =>
@@ -75,7 +78,7 @@ export const ListSorter: FC<ListSorterProps> = ({
 		),
 	content = () => 'content',
 }) => {
-	const renderItem: ListSorterRenderer = (item?: ListSorterItem, i?: number) =>
+	const renderItem: ListSorterRenderer<unknown> = (item?: ListSorterItem, i?: number) =>
 		item && (
 			<Fragment key={`${item.id}--${i}`}>
 				<li className="c-list-sorter__item">
@@ -121,3 +124,6 @@ export const ListSorter: FC<ListSorterProps> = ({
 		</ul>
 	);
 };
+
+// TODO: use this pattern for CollectionOrBundle to reduce overhead
+export const AssignmentBlockListSorter = ListSorter as ListSorterType<AssignmentBlock>;
