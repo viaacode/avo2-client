@@ -54,7 +54,6 @@ import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/Mor
 import {
 	buildLink,
 	CustomError,
-	formatCustomTimestamp,
 	formatDate,
 	isMobileWidth,
 	navigate,
@@ -73,6 +72,7 @@ import {
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
+import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AssignmentOverview.scss';
 
@@ -525,7 +525,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 
 			case 'deadline_at':
-				return formatCustomTimestamp(cellData, 'DD MMMM YYYY HH:mm');
+				return <AssignmentDeadline deadline={assignment.deadline_at} />;
 
 			case 'updated_at':
 				return formatDate(cellData);

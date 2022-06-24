@@ -346,7 +346,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			<Container mode="horizontal">
 				{pastDeadline && (
-					<Spacer margin={['top-large', 'bottom-large']}>
+					<Spacer margin={['top-large']}>
 						<Alert type="info">
 							{t(
 								'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
