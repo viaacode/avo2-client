@@ -13,6 +13,9 @@ import {
 	AssignmentColumn,
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
+	AssignmentResponseColumn,
+	AssignmentResponseTableColumns,
+	AssignmentType,
 } from './assignment.types';
 import { AssignmentDetailsFormProps } from './components/AssignmentDetailsForm';
 
@@ -236,3 +239,61 @@ export const EDIT_ASSIGNMENT_BLOCK_LABELS: (t: TFunction) => AssignmentBlockType
 	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
 	ZOEK: t('assignment/assignment___zoekoefening'),
 });
+
+export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
+	assignmentType: AssignmentType
+): AssignmentResponseColumn[] => [
+	{
+		id: 'pupil',
+		label: i18n.t('assignment/assignment___leerling'),
+		sortable: true,
+		dataType: 'string',
+	},
+	...(assignmentType === AssignmentType.BOUW
+		? [
+				{
+					id: 'collection_title' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___leerlingencollectie'),
+					sortable: true,
+					dataType: 'string' as ColumnDataType,
+				},
+				{
+					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___fragmenten'),
+					sortable: true,
+					dataType: 'number' as ColumnDataType,
+				},
+				{
+					id: 'updated_at' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
+					sortable: true,
+					dataType: 'dateTime' as ColumnDataType,
+				},
+		  ]
+		: [
+				{
+					id: 'updated_at' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___laatst-bekeken'),
+					sortable: true,
+					dataType: 'dateTime' as ColumnDataType,
+				},
+		  ]),
+	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
+];
+
+export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	pupil: (order: Avo.Search.OrderDirection) => ({
+		owner: {
+			full_name: order,
+		},
+	}),
+	pupil_collection_block_count: (order: Avo.Search.OrderDirection) => ({
+		pupil_collection_blocks_aggregate: {
+			count: order,
+		},
+	}),
+};

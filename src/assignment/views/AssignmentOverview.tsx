@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { capitalize, cloneDeep, compact, get, isEqual, isNil } from 'lodash-es';
+import { cloneDeep, compact, get, isEqual, isNil } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -103,7 +103,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
+	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [filterString, setFilterString] = useState<string>('');
@@ -496,9 +496,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				) : (
 					renderTitle()
 				);
-
-			case 'assignment_type':
-				return `${capitalize(cellData)}`;
 
 			case 'labels':
 				return renderLabels(

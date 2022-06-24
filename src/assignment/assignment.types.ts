@@ -17,8 +17,21 @@ export type AssignmentOverviewTableColumns =
 	| 'created_at'
 	| 'actions';
 
+export type AssignmentResponseTableColumns =
+	| 'pupil'
+	| 'collection_title'
+	| 'pupil_collection_block_count'
+	| 'updated_at'
+	| 'actions';
+
 export interface AssignmentColumn extends TableColumn {
 	id: AssignmentOverviewTableColumns;
+	label: string;
+	sortable?: boolean;
+}
+
+export interface AssignmentResponseColumn extends TableColumn {
+	id: AssignmentResponseTableColumns;
 	label: string;
 	sortable?: boolean;
 }

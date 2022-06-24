@@ -16,16 +16,23 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './assignment.const';
+import {
+	ITEMS_PER_PAGE,
+	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+} from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
+	DELETE_ASSIGNMENT_RESPONSE,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BLOCKS,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_RESPONSES,
+	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
+	GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -36,6 +43,7 @@ import {
 	AssignmentOverviewTableColumns,
 	AssignmentRetrieveError,
 	AssignmentSchemaLabel_v2,
+	AssignmentType,
 } from './assignment.types';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
@@ -54,9 +62,10 @@ export class AssignmentService {
 		page: number,
 		filterString: string | undefined,
 		labelIds: string[] | undefined,
-		classIds: string[] | undefined
+		classIds: string[] | undefined,
+		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
-		assignments: Avo.Assignment.Assignment[];
+		assignments: Avo.Assignment.Assignment_v2[];
 		count: number;
 	}> {
 		let variables: any;
@@ -101,6 +110,8 @@ export class AssignmentService {
 				}
 			}
 			variables = {
+				limit,
+				offset: limit === null ? 0 : page * limit,
 				order: getOrderObject(
 					sortColumn,
 					sortOrder,
@@ -108,8 +119,6 @@ export class AssignmentService {
 					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				owner_profile_id: getProfileId(user),
-				offset: page * ITEMS_PER_PAGE,
-				limit: ITEMS_PER_PAGE,
 				filter: filterArray.length ? filterArray : {},
 			};
 			const assignmentQuery = {
@@ -598,6 +607,98 @@ export class AssignmentService {
 		return getProfileId(user) === assignment.owner_profile_id;
 	}
 
+	// Fetch assignment responses for response overview page
+	static async fetchAssignmentResponses(
+		assignmentId: string,
+		user: Avo.User.User,
+		sortColumn: AssignmentOverviewTableColumns,
+		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: string,
+		page: number,
+		filterString: string | undefined
+	): Promise<{
+		assignmentResponses: Avo.Assignment.Response_v2[];
+		count: number;
+	}> {
+		let variables: any;
+		try {
+			const trimmedFilterString = filterString && filterString.trim();
+			const filterArray: any[] = [];
+
+			if (trimmedFilterString) {
+				filterArray.push({
+					_or: [
+						{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } },
+						{ collection_title: { _ilike: `%${trimmedFilterString}%` } },
+					],
+				});
+			}
+
+			variables = {
+				assignmentId,
+				order: getOrderObject(
+					sortColumn,
+					sortOrder,
+					tableColumnDataType,
+					RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
+				offset: page * ITEMS_PER_PAGE,
+				limit: ITEMS_PER_PAGE,
+				filter: filterArray.length ? filterArray : {},
+			};
+			const assignmentQuery = {
+				variables,
+				query: GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
+			};
+
+			// Get the assignment from graphql
+			const response: ApolloQueryResult<any> = await dataService.query(assignmentQuery);
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse = get(response, 'data');
+
+			if (
+				!assignmentResponse ||
+				!assignmentResponse.app_assignment_responses_v2 ||
+				!assignmentResponse.count
+			) {
+				throw new CustomError('Response does not have the expected format', null, {
+					assignmentResponse,
+				});
+			}
+
+			return {
+				assignmentResponses: get(assignmentResponse, 'app_assignment_responses_v2', []),
+				count: get(assignmentResponse, 'count.aggregate.count', 0),
+			};
+		} catch (err) {
+			throw new CustomError('Failed to fetch assignments from database', err, {
+				user,
+				variables,
+				query: 'GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID',
+			});
+		}
+	}
+
+	static async deleteAssignmentResponse(assignmentResponseId: string) {
+		try {
+			await dataService.mutate({
+				mutation: DELETE_ASSIGNMENT_RESPONSE,
+				variables: { assignmentResponseId },
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+		} catch (err) {
+			const error = new CustomError('Failed to delete assignment response', err, {
+				assignmentResponseId,
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
+	// Helper for create assignmentResponseObject method below
 	static async getAssignmentResponses(
 		profileId: string,
 		assignmentId: string
@@ -662,7 +763,7 @@ export class AssignmentService {
 
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response_v2> = {
-				owner_profile_ids: [getProfileId(user)],
+				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
 				collection_title: null,
 			};
@@ -698,5 +799,104 @@ export class AssignmentService {
 				assignment,
 			});
 		}
+	}
+
+	static async getAssignmentBlockMaxPosition(assignmentId: string): Promise<number | null> {
+		const result = await dataService.query({
+			query: GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
+			variables: { assignmentId },
+		});
+		return get(
+			result,
+			'data.app_assignments_v2_by_pk.blocks_aggregate.aggregate.max.position',
+			null
+		);
+	}
+
+	static async importCollectionToAssignment(
+		collection: Avo.Collection.Collection,
+		assignmentId: string,
+		withDescription: boolean
+	): Promise<boolean> {
+		if (collection.collection_fragments.length > 0) {
+			const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
+				assignmentId
+			);
+			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
+			const blocks = collection.collection_fragments.map((fragment: any, index: number) => {
+				return {
+					assignment_id: assignmentId,
+					fragment_id: fragment.external_id,
+					custom_title: null,
+					custom_description: null,
+					original_title: withDescription ? fragment.custom_title : null,
+					original_description: withDescription ? fragment.custom_description : null,
+					use_custom_fields: false,
+					start_oc: fragment.start_oc,
+					end_oc: fragment.end_oc,
+					position: startPosition + index,
+					thumbnail_path: fragment.thumbnail_path,
+					type: fragment.type === 'TEXT' ? 'TEXT' : 'ITEM',
+				};
+			});
+			try {
+				await dataService.mutate({
+					mutation: INSERT_ASSIGNMENT_BLOCKS,
+					variables: {
+						assignmentBlocks: blocks,
+					},
+					update: ApolloCacheManager.clearAssignmentCache,
+				});
+			} catch (err) {
+				const error = new CustomError('Failed to import collection to assignment', err, {
+					assignmentId,
+					collectionId: collection.id,
+				});
+				console.error(error);
+				throw error;
+			}
+		}
+		return true;
+	}
+
+	static async createAssignmentFromCollection(
+		user: Avo.User.User,
+		collection: Avo.Collection.Collection,
+		withDescription: boolean
+	): Promise<string> {
+		const assignmentToSave = {
+			title: collection.title,
+			description: collection.description,
+			owner_profile_id: getProfileId(user),
+			assignment_type: AssignmentType.KIJK,
+		};
+
+		const assignment = await dataService.mutate<Avo.Assignment.Assignment_v2>({
+			mutation: INSERT_ASSIGNMENT,
+			variables: {
+				assignment: assignmentToSave,
+			},
+			update: ApolloCacheManager.clearAssignmentCache,
+		});
+
+		const assignmentId = get(assignment, 'data.insert_app_assignments_v2.returning[0].id');
+
+		if (isNil(assignmentId)) {
+			throw new CustomError(
+				'Saving the assignment failed, assignment id was undefined',
+				null,
+				{
+					assignment,
+				}
+			);
+		}
+
+		await AssignmentService.importCollectionToAssignment(
+			collection,
+			assignmentId,
+			withDescription
+		);
+
+		return assignmentId;
 	}
 }

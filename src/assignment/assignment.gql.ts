@@ -208,13 +208,46 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 	}
 `;
 
-export const GET_ASSIGNMENT_RESPONSES = gql`
-	query getAssignmentResponses($profileId: String!, $assignmentId: uuid!) {
+export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
+	query getAssignmentResponsesByAssignmentId(
+		$assignmentId: uuid!
+		$offset: Int = 0
+		$limit: Int
+		$order: [app_assignment_responses_v2_order_by!]! = [{ updated_at: desc }]
+		$filter: [app_assignment_responses_v2_bool_exp]
+	) {
 		app_assignment_responses_v2(
-			where: {
-				owner_profile_ids: { _has_key: $profileId }
-				assignment_id: { _eq: $assignmentId }
+			where: { assignment_id: { _eq: $assignmentId }, _and: $filter }
+			offset: $offset
+			limit: $limit
+			order_by: $order
+		) {
+			id
+			collection_title
+			updated_at
+			pupil_collection_blocks_aggregate {
+				aggregate {
+					count
+				}
 			}
+			owner {
+				full_name
+			}
+		}
+		count: app_assignment_responses_v2_aggregate(
+			where: { assignment_id: { _eq: $assignmentId } }
+		) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_ASSIGNMENT_RESPONSES = gql`
+	query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
+		app_assignment_responses_v2(
+			where: { owner_profile_id: { _eq: $profileId }, assignment_id: { _eq: $assignmentId } }
 		) {
 			id
 		}
@@ -348,6 +381,14 @@ export const DELETE_ASSIGNMENT = gql`
 	}
 `;
 
+export const DELETE_ASSIGNMENT_RESPONSE = gql`
+	mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
+		delete_app_assignment_responses_v2(where: { id: { _eq: $assignmentResponseId } }) {
+			affected_rows
+		}
+	}
+`;
+
 export const INSERT_ASSIGNMENT_RESPONSE = gql`
 	mutation insertAssignmentResponse(
 		$assignmentResponses: [app_assignment_responses_v2_insert_input!]!
@@ -369,6 +410,20 @@ export const INSERT_ASSIGNMENT_BLOCKS = gql`
 	mutation insertBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
 		insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
 			affected_rows
+		}
+	}
+`;
+
+export const GET_MAX_POSITION_ASSIGNMENT_BLOCKS = gql`
+	query getMaxPositionAssignmentBlocks($assignmentId: uuid!) {
+		app_assignments_v2_by_pk(id: $assignmentId) {
+			blocks_aggregate {
+				aggregate {
+					max {
+						position
+					}
+				}
+			}
 		}
 	}
 `;

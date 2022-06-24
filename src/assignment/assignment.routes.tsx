@@ -6,6 +6,7 @@ import { APP_PATH } from '../constants';
 import AssignmentCreate from './views/AssignmentCreate';
 import AssignmentDetail from './views/AssignmentDetail';
 import AssignmentEdit from './views/AssignmentEdit';
+import AssignmentResponses from './views/AssignmentResponses';
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
@@ -25,5 +26,11 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		exact
 		path={APP_PATH.ASSIGNMENT_DETAIL.route}
 		key={APP_PATH.ASSIGNMENT_DETAIL.route}
+	/>,
+	<SecuredRoute
+		component={AssignmentResponses}
+		exact
+		path={APP_PATH.ASSIGNMENT_RESPONSES.route}
+		key={APP_PATH.ASSIGNMENT_RESPONSES.route}
 	/>,
 ];
