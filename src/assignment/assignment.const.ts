@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next';
-import { object, SchemaOf, string } from 'yup';
+import { array, object, SchemaOf, string } from 'yup';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -11,10 +11,8 @@ import {
 	AssignmentColumn,
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
-	AssignmentResponseColumn,
-	AssignmentResponseTableColumns,
-	AssignmentType,
 } from './assignment.types';
+import { AssignmentDetailsFormProps } from './components/AssignmentDetailsForm';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -141,72 +139,79 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 };
 
 /// Zoek & bouw
-export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
-	assignmentType: AssignmentType
-): AssignmentResponseColumn[] => [
-	{
-		id: 'pupil',
-		label: i18n.t('assignment/assignment___leerling'),
-		sortable: true,
-		dataType: 'string',
-	},
-	...(assignmentType === AssignmentType.BOUW
-		? [
-				{
-					id: 'collection_title' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___leerlingencollectie'),
-					sortable: true,
-					dataType: 'string' as ColumnDataType,
-				},
-				{
-					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___fragmenten'),
-					sortable: true,
-					dataType: 'number' as ColumnDataType,
-				},
-				{
-					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___laatst-bewerkt'),
-					sortable: true,
-					dataType: 'dateTime' as ColumnDataType,
-				},
-		  ]
-		: [
-				{
-					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___laatst-bekeken'),
-					sortable: true,
-					dataType: 'dateTime' as ColumnDataType,
-				},
-		  ]),
-	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
-];
-
-export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
-	pupil: (order: Avo.Search.OrderDirection) => ({
-		owner: {
-			full_name: order,
-		},
-	}),
-	pupil_collection_block_count: (order: Avo.Search.OrderDirection) => ({
-		pupil_collection_blocks_aggregate: {
-			count: order,
-		},
-	}),
-};
-
 export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
 	return object({
+		id: string().optional(),
 		title: string().required(t('assignment/assignment___titel-is-verplicht')),
+		labels: array(
+			object({
+				assignment_label: object()
+					.shape({
+						id: string().required(),
+						label: string().nullable(),
+						color_enum_value: string().required(),
+						color_override: string().nullable(),
+						owner_profile_id: string().required(),
+						enum_color: object({
+							label: string().required(),
+							value: string().required(),
+						}).optional(),
+						type: string().is(['LABEL', 'CLASS']).required(),
+						profile: object().optional(),
+					})
+					.required(),
+			})
+		),
+		answer_url: string().nullable().optional(),
+		available_at: string().optional(),
+		deadline_at: string().optional(),
 	});
 };
 
 export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+	id: undefined,
 	title: t('assignment/assignment___titel-opdracht'),
+	labels: [],
+	available_at: new Date().toISOString(),
+	answer_url: undefined,
+	deadline_at: undefined,
+});
+
+export const ASSIGNMENT_FORM_FIELDS = (
+	t: TFunction
+): Pick<
+	AssignmentDetailsFormProps,
+	'classrooms' | 'labels' | 'available_at' | 'deadline_at' | 'answer_url'
+> => ({
+	classrooms: {
+		label: t('assignment/assignment___klas'),
+		dictionary: {
+			placeholder: t('assignment/assignment___1-moderne-talen'),
+			empty: t('assignment/assignment___geen-klassen-gevonden'),
+		},
+	},
+	labels: {
+		label: t('assignment/assignment___label'),
+		dictionary: {
+			placeholder: t('assignment/assignment___geschiedenis'),
+			empty: t('assignment/assignment___geen-labels-gevonden'),
+		},
+	},
+	available_at: {
+		label: t('assignment/assignment___beschikbaar-vanaf'),
+	},
+	deadline_at: {
+		label: t('assignment/assignment___deadline'),
+		help: t(
+			'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
+		),
+	},
+	answer_url: {
+		label: `${t('assignment/assignment___link')} (${t('assignment/assignment___optioneel')})`,
+		help: t(
+			'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
+		),
+	},
 });
 
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {

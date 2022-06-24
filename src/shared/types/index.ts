@@ -35,3 +35,8 @@ export type ReactAction<T, P = any> = {
 
 // Get all possible values from object
 export type ValueOf<T> = T[keyof T];
+
+export interface LabeledFormField {
+	label?: string;
+	help?: string;
+}
