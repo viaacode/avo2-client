@@ -1,6 +1,13 @@
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
@@ -12,6 +19,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	Dropdown,
 	Grid,
 	Header,
 	HeaderButtons,
@@ -19,6 +27,7 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
+	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -26,14 +35,20 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
 
+import { AssignmentService } from '../../assignment/assignment.service';
+import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
+import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	IconBar,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -48,7 +63,6 @@ import {
 	createDropdownMenuItem,
 	CustomError,
 	formatDate,
-	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
 	getFullName,
@@ -62,9 +76,16 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
-import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
+import {
+	AutoplayCollectionModal,
+	CollectionFragmentTypeItem,
+	CollectionFragmentTypeText,
+	FragmentList,
+	PublishCollectionModal,
+} from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
@@ -81,6 +102,7 @@ export const COLLECTION_ACTIONS = {
 	openPublishCollectionModal: 'openPublishCollectionModal',
 	toggleBookmark: 'toggleBookmark',
 	createAssignment: 'createAssignment',
+	importToAssignment: 'importToAssignment',
 	editCollection: 'editCollection',
 	openQuickLane: 'openQuickLane',
 	openAutoplayCollectionModal: 'openAutoplayCollectionModal',
@@ -124,6 +146,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		false
 	);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
+		false
+	);
+	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
+		false
+	);
+	const [
+		isConfirmImportToAssignmentWithResponsesModalOpen,
+		setIsConfirmImportToAssignmentWithResponsesModalOpen,
+	] = useState<boolean>(false);
+
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -134,6 +168,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
+	const [assignmentId, setAssignmentId] = useState<string>();
+	const [importWithDescription, setImportWithDescription] = useState<boolean>(false);
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -388,6 +424,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
+		setIsCreateAssignmentDropdownOpen(false);
 		switch (item) {
 			case COLLECTION_ACTIONS.duplicate:
 				try {
@@ -458,7 +495,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				break;
 
 			case COLLECTION_ACTIONS.createAssignment:
-				createAssignment();
+				setIsCreateAssignmentModalOpen(true);
+				break;
+
+			case COLLECTION_ACTIONS.importToAssignment:
+				setIsImportToAssignmentModalOpen(true);
 				break;
 
 			case COLLECTION_ACTIONS.editCollection:
@@ -516,13 +557,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const createAssignment = (): void => {
-		redirectToClientPage(
-			generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
-			history
-		);
-	};
-
 	const onDeleteCollection = async (): Promise<void> => {
 		try {
 			await CollectionService.deleteCollection(collectionId);
@@ -544,6 +578,69 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			ToastService.danger(
 				t(
 					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
+				)
+			);
+		}
+	};
+
+	const onCreateAssignment = async (withDescription: boolean): Promise<void> => {
+		if (user && collection) {
+			const assignmentId = await AssignmentService.createAssignmentFromCollection(
+				user,
+				collection,
+				withDescription
+			);
+			history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
+		}
+	};
+
+	const onImportToAssignment = async (
+		importToAssignmentId: string,
+		withDescription: boolean
+	): Promise<void> => {
+		setAssignmentId(importToAssignmentId);
+
+		setImportWithDescription(withDescription);
+
+		// check if assignment has responses. If so: show additional confirmation modal
+		const hasResponses = await AssignmentService.getAssignmentResponses(
+			getProfileId(user),
+			importToAssignmentId
+		);
+		if (hasResponses.length > 0) {
+			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
+		} else {
+			doImportToAssignment(importToAssignmentId, withDescription);
+		}
+	};
+
+	const onConfirmImportAssignment = () => {
+		if (!assignmentId) {
+			return;
+		}
+		return doImportToAssignment(assignmentId, importWithDescription);
+	};
+
+	const doImportToAssignment = async (
+		importToAssignmentId: string,
+		withDescription: boolean
+	): Promise<void> => {
+		setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
+		if (collection && importToAssignmentId) {
+			await AssignmentService.importCollectionToAssignment(
+				collection,
+				importToAssignmentId,
+				withDescription
+			);
+			ToastService.success(
+				t(
+					'collection/views/collection-detail___de-collectie-is-geimporteerd-naar-de-opdracht'
+				)
+			);
+		} else {
+			ToastService.danger(
+				t(
+					'collection/views/collection-detail___de-collectie-kon-niet-worden-geimporteerd-naar-de-opdracht'
 				)
 			);
 		}
@@ -619,6 +716,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 		const isPublic = !!collection && collection.is_public;
 
+		const createAssignmentOptions = [
+			{
+				label: t('collection/views/collection-detail___nieuwe-opdracht'),
+				id: COLLECTION_ACTIONS.createAssignment,
+			},
+			{
+				label: t('collection/views/collection-detail___bestaande-opdracht'),
+				id: COLLECTION_ACTIONS.importToAssignment,
+			},
+		];
+
 		return (
 			<ButtonToolbar>
 				{permissions.canAutoplayCollection && (
@@ -634,16 +742,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					/>
 				)}
 				{permissions.canCreateAssignments && (
-					<Button
-						label={t('collection/views/collection-detail___maak-opdracht')}
-						type="secondary"
-						icon="clipboard"
-						ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
-						title={t(
-							'collection/views/collection-detail___neem-deze-collectie-op-in-een-opdracht'
-						)}
-						onClick={() => executeAction(COLLECTION_ACTIONS.createAssignment)}
-					/>
+					<Dropdown
+						label={t('collection/views/collection-detail___importeer-naar-opdracht')}
+						isOpen={isCreateAssignmentDropdownOpen}
+						onClose={() => setIsCreateAssignmentDropdownOpen(false)}
+						onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
+					>
+						<MenuContent menuItems={createAssignmentOptions} onClick={executeAction} />
+					</Dropdown>
 				)}
 				{permissions.canCreateQuickLane && !permissions.canCreateAssignments && (
 					<Button
@@ -823,6 +929,68 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	// Start
+
+	const renderCollectionFragment = (fragment: CollectionFragment) => {
+		const layout = (children?: ReactNode) => (
+			<Container mode="horizontal" className="u-p-0">
+				<IconBar
+					icon={{
+						name: VIEW_COLLECTION_FRAGMENT_ICONS()[fragment.type](fragment),
+					}}
+				>
+					{children}
+				</IconBar>
+			</Container>
+		);
+
+		switch (fragment.type) {
+			case 'TEXT':
+				return layout(
+					<CollectionFragmentTypeText title={{ fragment }} richText={{ fragment }} />
+				);
+			case 'ITEM':
+				return layout(
+					<CollectionFragmentTypeItem
+						className="m-collection-detail__video-content"
+						title={{
+							fragment,
+							canViewAnyPublishedItems: permissions.canViewAnyPublishedItems,
+						}}
+						richText={{ fragment }}
+						flowPlayer={{
+							fragment,
+							canPlay:
+								!isAddToBundleModalOpen &&
+								!isDeleteModalOpen &&
+								!isPublishModalOpen &&
+								!isShareThroughEmailModalOpen &&
+								!isAutoplayCollectionModalOpen,
+						}}
+						meta={{ fragment }}
+					/>
+				);
+
+			default:
+				return null;
+		}
+	};
+
+	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
+		// const hasBackground = fragment.type === 'TEXT';
+
+		return (
+			<div
+				key={fragment.id}
+				// className={`u-padding-top-l u-padding-bottom-l ${hasBackground ? ' u-bg-gray-50' : ''}`.trim()}
+				className="u-padding-top-l u-padding-bottom-l"
+			>
+				{renderCollectionFragment(fragment)}
+			</div>
+		);
+	};
+	// End
+
 	const renderCollection = () => {
 		const {
 			id,
@@ -894,6 +1062,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Spacer>
 						</HeaderRow>
 					</Header>
+
+					{/* Start */}
+
+					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
+						{!!collection_fragments &&
+							collection_fragments.map((fragment) =>
+								renderCollectionFragmentWrapper(fragment)
+							)}
+					</Container>
+
+					<br />
+					<hr />
+					<br />
+
+					{/* End */}
+
 					<Container mode="vertical">
 						<Container mode="horizontal">
 							{!!collection && (
@@ -1126,6 +1310,28 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									}
 								}}
 							/>
+						)}
+						{collection && (
+							<>
+								<CreateAssignmentModal
+									isOpen={isCreateAssignmentModalOpen}
+									onClose={() => setIsCreateAssignmentModalOpen(false)}
+									createAssignmentCallback={onCreateAssignment}
+								/>
+								<ImportToAssignmentModal
+									user={user}
+									isOpen={isImportToAssignmentModalOpen}
+									onClose={() => setIsImportToAssignmentModalOpen(false)}
+									importToAssignmentCallback={onImportToAssignment}
+								/>
+								<ConfirmImportToAssignmentWithResponsesModal
+									isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
+									onClose={() =>
+										setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
+									}
+									confirmCallback={onConfirmImportAssignment}
+								/>
+							</>
 						)}
 					</>
 				)}

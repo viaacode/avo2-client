@@ -1,9 +1,9 @@
 import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_LABELS_BY_PROFILE_ID = gql`
-	query getAssignmentLabels($profileId: uuid!) {
-		app_assignment_labels(
-			where: { owner_profile_id: { _eq: $profileId } }
+	query getAssignmentLabels($profileId: uuid!, $type: String) {
+		app_assignment_labels_v2(
+			where: { owner_profile_id: { _eq: $profileId }, type: { _eq: $type } }
 			order_by: { label: asc }
 		) {
 			color_enum_value
@@ -14,13 +14,15 @@ export const GET_ASSIGNMENT_LABELS_BY_PROFILE_ID = gql`
 				label
 				value
 			}
+			type
+			owner_profile_id
 		}
 	}
 `;
 
 export const INSERT_ASSIGNMENT_LABELS = gql`
-	mutation insertAssignmentLabels($objects: [app_assignment_labels_insert_input!]!) {
-		insert_app_assignment_labels(objects: $objects) {
+	mutation insertAssignmentLabels($objects: [app_assignment_labels_v2_insert_input!]!) {
+		insert_app_assignment_labels_v2(objects: $objects) {
 			returning {
 				id
 			}
@@ -33,9 +35,9 @@ export const UPDATE_ASSIGNMENT_LABEL = gql`
 		$label: String!
 		$colorEnumValue: lookup_enum_colors_enum!
 		$profileId: uuid!
-		$labelId: Int!
+		$labelId: uuid!
 	) {
-		update_app_assignment_labels(
+		update_app_assignment_labels_v2(
 			_set: { label: $label, color_enum_value: $colorEnumValue }
 			where: { owner_profile_id: { _eq: $profileId }, id: { _eq: $labelId } }
 		) {
@@ -59,9 +61,9 @@ export const DELETE_ASSIGNMENT_LABELS = gql`
 
 export const LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT = gql`
 	mutation linkAssignmentLabelsToAssignment(
-		$objects: [app_assignment_assignment_tags_insert_input!]!
+		$objects: [app_assignments_v2_assignment_labels_v2_insert_input!]!
 	) {
-		insert_app_assignment_assignment_tags(objects: $objects) {
+		insert_app_assignments_v2_assignment_labels_v2(objects: $objects) {
 			affected_rows
 		}
 	}

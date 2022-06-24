@@ -1,6 +1,7 @@
 import { invert } from 'lodash-es';
 
 import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
+import { CollectionFragment } from '@viaa/avo2-types/types/collection';
 
 export enum ContentTypeNumber {
 	audio = 1,
@@ -67,4 +68,8 @@ export interface MarcomEntry {
 	publish_date: string;
 	collection_id: string;
 	parent_collection: { title: string } | null;
+}
+
+export interface FragmentComponent {
+	fragment: CollectionFragment;
 }

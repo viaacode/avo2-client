@@ -196,7 +196,8 @@ export const contentEditReducer = produce(
 					];
 				componentsState = config.components.state;
 				(componentsState as RepeatedContentBlockComponentState[]).push(
-					...addComponentsState.payload.formGroupState
+					...(addComponentsState.payload
+						.formGroupState as RepeatedContentBlockComponentState[])
 				);
 				return;
 

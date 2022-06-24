@@ -18,6 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 
 import { ColorSelect } from '../../../admin/content-block/components/fields';
 import { CustomError } from '../../../shared/helpers';
@@ -29,28 +30,30 @@ import { AssignmentLabelColor } from '../../assignment.types';
 import './ManageAssignmentLabels.scss';
 
 interface ManageAssignmentLabelsProps extends UserProps {
-	onClose: () => void;
 	isOpen: boolean;
+	onClose: () => void;
+	type?: AssignmentLabelType;
 }
 
 const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = ({
 	isOpen,
 	onClose,
+	type,
 	user,
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
-	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
-		[]
-	);
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
+	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<
+		Avo.Assignment.Label_v2[]
+	>([]);
 	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		try {
 			const labels = sortBy(
-				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id')),
+				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'), type),
 				'label'
 			);
 			setAssignmentLabels(labels);
@@ -65,7 +68,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				)
 			);
 		}
-	}, [user, setAssignmentLabels, t]);
+	}, [user, setAssignmentLabels, t, type]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -92,18 +95,19 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([
 			...assignmentLabels,
 			{
-				id: -generateRandomId(),
+				id: generateRandomId(),
 				label: '',
 				color_enum_value: assignmentLabelColors[0].value,
 				owner_profile_id: get(user, 'profile.id'),
 				color_override: null,
 				enum_color: assignmentLabelColors[0],
+				type: type || 'LABEL',
 			},
 		]);
 	};
 
 	const handleRowColorChanged = (
-		assignmentLabel: Avo.Assignment.Label,
+		assignmentLabel: Avo.Assignment.Label_v2,
 		newColor: ValueType<AssignmentLabelColor>
 	) => {
 		if (!newColor) {
@@ -113,12 +117,12 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels]);
 	};
 
-	const handleRowLabelChanged = (assignmentLabel: Avo.Assignment.Label, newLabel: string) => {
+	const handleRowLabelChanged = (assignmentLabel: Avo.Assignment.Label_v2, newLabel: string) => {
 		assignmentLabel.label = newLabel;
 		setAssignmentLabels([...assignmentLabels]);
 	};
 
-	const handleRowDelete = (id: number) => {
+	const handleRowDelete = (id: string) => {
 		setAssignmentLabels([...assignmentLabels.filter((labelObj) => labelObj.id !== id)]);
 	};
 
@@ -141,7 +145,16 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 			const profileId = get(user, 'profile.id');
 			await Promise.all([
-				AssignmentLabelsService.insertLabels(newLabels),
+				AssignmentLabelsService.insertLabels(
+					newLabels.map((item) =>
+						type
+							? {
+									...item,
+									type,
+							  }
+							: item
+					)
+				),
 				AssignmentLabelsService.deleteLabels(profileId, oldIds),
 				updatedLabels.map((l) =>
 					AssignmentLabelsService.updateLabel(
@@ -175,7 +188,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const renderCell = (rowData: any, columnId: string) => {
-		const assignmentLabel = rowData as Avo.Assignment.Label;
+		const assignmentLabel = rowData as Avo.Assignment.Label_v2;
 		const colorOptions = assignmentLabelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,

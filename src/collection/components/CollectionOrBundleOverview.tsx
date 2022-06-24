@@ -22,6 +22,7 @@ import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -37,7 +38,6 @@ import {
 	createDropdownMenuItem,
 	formatDate,
 	formatTimestamp,
-	generateAssignmentCreateLink,
 	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
@@ -393,9 +393,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					break;
 
 				case 'createAssignment':
-					history.push(
-						generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE')
-					);
+					redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
 					break;
 
 				case 'createQuickLane':

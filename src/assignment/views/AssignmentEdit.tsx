@@ -1,145 +1,192 @@
-import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { isPast } from 'date-fns/esm';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import {
+	Alert,
 	BlockHeading,
 	Button,
-	ButtonToolbar,
 	Container,
+	ContentInput,
+	convertToHtml,
 	Flex,
-	Form,
-	FormGroup,
 	Icon,
-	Navbar,
 	Spacer,
-	TextInput,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-	ToolbarRight,
+	StickyEdgeBar,
+	Tabs,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName } from '../../authentication/helpers/permission-names';
-import { PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	DeleteObjectModal,
-	InputModal,
-	InteractiveTour,
+	AssignmentBlockListSorter,
+	FlowPlayerWrapper,
+	ListSorterItem,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
+import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	copyToClipboard,
-	CustomError,
-	isMobileWidth,
-	navigate,
-	sanitizeHtml,
-} from '../../shared/helpers';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { buildLink, CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import i18n from '../../shared/translations/i18n';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { AssignmentHelper } from '../assignment.helper';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	ASSIGNMENT_FORM_FIELDS,
+	ASSIGNMENT_FORM_SCHEMA,
+	EDIT_ASSIGNMENT_BLOCK_ICONS,
+	EDIT_ASSIGNMENT_BLOCK_LABELS,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
+import { AssignmentFormState } from '../assignment.types';
+import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
+import AssignmentHeading from '../components/AssignmentHeading';
+import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
+import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
-	history,
 	match,
 	user,
+	history,
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | null>(null);
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
-	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
-	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
-	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
-		{}
-	);
+	// Data
+	const [original, setOriginal] = useState<AssignmentFormState | undefined>(undefined);
+	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
-	const setBothAssignments = useCallback(
-		(assignment: Partial<Avo.Assignment.Assignment>) => {
-			setCurrentAssignment(assignment);
-			setInitialAssignment(assignment);
-		},
-		[setCurrentAssignment, setInitialAssignment]
-	);
+	const form = useForm<AssignmentFormState>({
+		defaultValues: useMemo(() => original, [original]),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+	});
 
-	/**
-	 *  Get query string variables and store them into the assignment state object
-	 */
-	const checkPermissionsAndGetAssignment = useCallback(async () => {
-		try {
-			// Redirect if id is a legacy numeric assignment id instead of a guid
-			const assignmentId = match.params.id;
+	const {
+		control,
+		formState: { isDirty },
+		handleSubmit,
+		reset: resetForm,
+		setValue,
+		trigger,
+	} = form;
 
-			if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
-				const assignmentUuid:
-					| string
-					| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
-					assignmentId
-				);
-				if (!assignmentUuid) {
-					console.error(
-						new CustomError(
-							'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
-							null,
-							{ legacyId: assignmentId }
-						)
-					);
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'assignment/views/assignment-edit___de-opdracht-kon-niet-worden-gevonden'
-						),
-						icon: 'search',
-					});
-					return;
-				}
-				history.replace(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentUuid }));
+	const setAssignmentBlockProperty = useCallback(
+		(block: AssignmentBlock, key: keyof AssignmentBlock, value: any) => {
+			if (block[key] === value) {
 				return;
 			}
 
-			// Determine if this is an edit or create page and initialize or fetch the assignment
-			const tempAssignment: Partial<
-				Avo.Assignment.Assignment
-			> | null = await AssignmentService.fetchAssignmentByUuid(assignmentId);
+			const blocks = [
+				...assignment.blocks.filter((b) => b.id !== block.id),
+				{
+					...block,
+					[key]: value,
+				},
+			];
 
-			if (!tempAssignment) {
+			setAssignment((prev) => ({
+				...prev,
+				blocks,
+			}));
+
+			setValue('blocks', blocks, { shouldDirty: true });
+		},
+		[assignment.blocks, setAssignment, setValue]
+	);
+
+	// UI
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+
+	const pastDeadline = useMemo(
+		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
+		[original]
+	);
+
+	const fields = useMemo(() => {
+		const unmapped = ASSIGNMENT_FORM_FIELDS(t);
+		const mapped: Record<string, any> = {};
+
+		Object.keys(unmapped).forEach((key) => {
+			const cast = key as keyof typeof unmapped;
+			const field = unmapped[cast];
+
+			// Enrich each field with an onChange event to mark them
+			mapped[cast] = {
+				...field,
+				onChange: () => {
+					switch (cast) {
+						case 'classrooms':
+							setValue('labels', assignment.labels, { shouldDirty: true });
+							break;
+
+						default:
+							setValue(cast, assignment[cast], { shouldDirty: true });
+							break;
+					}
+				},
+			};
+		});
+
+		return mapped as typeof unmapped;
+	}, [t, assignment, setValue]);
+
+	const listSorterItems = useMemo(() => {
+		return assignment.blocks.map((block) => {
+			const mapped: AssignmentBlock & ListSorterItem = {
+				...block,
+				icon: EDIT_ASSIGNMENT_BLOCK_ICONS()[block.type],
+				onPositionChange: (item, delta) => {
+					const blocks = switchAssignmentBlockPositions(assignment.blocks, item, delta);
+
+					setAssignment((prev) => ({
+						...prev,
+						blocks,
+					}));
+
+					setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
+				},
+			};
+
+			return mapped;
+		});
+	}, [assignment.blocks, setAssignment, setValue]);
+
+	// HTTP
+
+	// Get query string variables and fetch the existing object
+	const fetchAssignment = useCallback(async () => {
+		try {
+			const id = match.params.id;
+			const res = await AssignmentService.fetchAssignmentById(id);
+
+			if (!res) {
 				// Something went wrong during init/fetch
-				return;
+				throw new CustomError('Failed to load resource.');
 			}
 
 			if (
 				!(await PermissionService.hasPermissions(
 					[
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: tempAssignment },
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
+						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: res },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: res },
 					],
 					user
 				))
 			) {
-				history.push(`/${ROUTE_PARTS.assignments}/${assignmentId}`);
+				history.push(`/${ROUTE_PARTS.assignments}/${id}`);
 				ToastService.info(
 					t(
 						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken-maar-je-kan-ze-wel-bekijken'
@@ -148,36 +195,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return;
 			}
 
-			// Fetch the content if the assignment has content
-			let tempAssignmentContent: AssignmentContent | null = null;
-			try {
-				tempAssignmentContent = await AssignmentService.fetchAssignmentContent(
-					tempAssignment
-				);
-
-				setAssignmentContent(tempAssignmentContent);
-			} catch (err) {
-				if (err.message !== 'NOT_FOUND') {
-					console.error(
-						new CustomError('Failed to fetch assignment content', err, {
-							assignment: tempAssignment,
-						})
-					);
-					ToastService.danger(
-						t(
-							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
-						)
-					);
-				}
-
-				setAssignmentContent(null);
-			}
-
-			setBothAssignments({
-				...tempAssignment,
-				title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
-			});
-			setAssignmentLabels(AssignmentLabelsService.getLabelsFromAssignment(tempAssignment));
+			setOriginal(res);
+			setAssignment(res);
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -187,428 +206,370 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				icon: 'alert-triangle',
 			});
 		}
-	}, [user, match.params, setLoadingInfo, t, setBothAssignments, history]);
+	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
+	// Effects
+
+	// Fetch initial data
 	useEffect(() => {
-		checkPermissionsAndGetAssignment();
-	}, [checkPermissionsAndGetAssignment]);
+		fetchAssignment();
+	}, [fetchAssignment]);
 
+	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
-		if (!isEmpty(initialAssignment) && !isEmpty(currentAssignment)) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
+		Object.keys(assignment).forEach((key) => {
+			const cast = key as keyof AssignmentFormState;
+			setValue(cast, assignment[cast]);
+		});
+
+		trigger();
+	}, [assignment, setValue, trigger]);
+
+	// Set the loading state when the form is ready
+	useEffect(() => {
+		if (loadingInfo.state !== 'loaded') {
+			assignment && setLoadingInfo({ state: 'loaded' });
 		}
-	}, [initialAssignment, currentAssignment, assignmentContent]);
+	}, [assignment, loadingInfo, setLoadingInfo]);
 
-	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
-			currentAssignment.uuid
-		}`;
-	};
+	// Events
 
-	const copyAssignmentUrl = () => {
-		copyToClipboard(getAssignmentUrl());
-
-		trackEvents(
-			{
-				object: String(currentAssignment.uuid),
-				object_type: 'assignment',
-				action: 'share',
-				resource: {
-					object_type: 'link',
-				},
-			},
-			user
-		);
-
-		ToastService.success(
-			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
-		);
-
-		if (currentAssignment.uuid) {
-			trackEvents(
-				{
-					object: String(currentAssignment.uuid),
-					object_type: 'assignment',
-					action: 'view',
-				},
-				user
-			);
-		}
-	};
-
-	const viewAsStudent = () => history.push(getAssignmentUrl(false));
-
-	const archiveAssignment = async (shouldBeArchived: boolean) => {
+	const submit = async () => {
 		try {
-			// Use initialAssignment to avoid saving changes the user made, but hasn't explicitly saved yet
-			const archivedAssignment: Partial<Avo.Assignment.Assignment> = {
-				...initialAssignment,
-				is_archived: shouldBeArchived,
-			};
-			setInitialAssignment(archivedAssignment);
+			const updated = await AssignmentService.updateAssignment(
+				{
+					...assignment,
+					owner_profile_id: user.profile?.id,
+					labels: [],
+				},
+				(original?.labels || []).map((item) => item.assignment_label),
+				assignment.labels.map((item) => item.assignment_label)
+			);
 
-			// Also set the currentAssignment to archived, so if the user saves, the assignment will stay archived
-			setCurrentAssignment({
-				...currentAssignment,
-				is_archived: shouldBeArchived,
-			});
-
-			if (await AssignmentService.updateAssignment(archivedAssignment)) {
-				ToastService.success(
-					shouldBeArchived
-						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
-						: t('assignment/views/assignment-edit___de-opdracht-is-gedearchiveerd')
+			if (updated) {
+				trackEvents(
+					{
+						object: String(assignment.id),
+						object_type: 'assignment',
+						action: 'edit',
+					},
+					user
 				);
+
+				ToastService.success(
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
+				);
+
+				setOriginal(updated);
+				setAssignment(updated);
 			}
-			// else: assignment was not valid and could not be saved yet
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				shouldBeArchived
-					? t(
-							'assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt'
-					  )
-					: t(
-							'assignment/views/assignment-edit___het-dearchiveren-van-de-opdracht-is-mislukt'
-					  )
-			);
-		}
-	};
-
-	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
-		setExtraOptionsMenuOpen(false);
-		switch (itemId) {
-			case 'duplicate':
-				setDuplicateModalOpen(true);
-				break;
-
-			case 'archive':
-				await archiveAssignment(!initialAssignment.is_archived);
-				break;
-
-			case 'delete':
-				setDeleteModalOpen(true);
-				break;
-			default:
-				return null;
-		}
-	};
-
-	const setAssignmentProp = (
-		property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
-		value: any
-	) => {
-		const newAssignment = {
-			...currentAssignment,
-			[property]: value,
-		};
-		setCurrentAssignment(newAssignment);
-	};
-
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
-		try {
-			setIsSaving(true);
-
-			// copy description to assignment
-			const descriptionRichEditorState: RichEditorState | undefined = (assignment as any)[
-				'descriptionRichEditorState'
-			];
-			assignment.description = sanitizeHtml(
-				descriptionRichEditorState
-					? descriptionRichEditorState.toHTML()
-					: assignment.description || '',
-				'full'
-			);
-			delete (assignment as any)['descriptionRichEditorState'];
-
-			// edit => update graphql
-			await AssignmentService.updateAssignment(
-				assignment,
-				AssignmentLabelsService.getLabelsFromAssignment(initialAssignment),
-				assignmentLabels
-			);
-			setBothAssignments(assignment);
-
-			trackEvents(
-				{
-					object: String(assignment.uuid),
-					object_type: 'assignment',
-					action: 'edit',
-				},
-				user
-			);
-
-			ToastService.success(
-				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
-			);
-			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
 				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
 			);
-			setIsSaving(false);
 		}
 	};
 
-	const onDeleteAssignment = async () => {
-		try {
-			if (isNil(currentAssignment.uuid)) {
-				throw new CustomError('Assignment does not have an uuid', null, {
-					assignment: currentAssignment,
-				});
-			}
-			await AssignmentService.deleteAssignment(currentAssignment.uuid);
+	const reset = useCallback(() => {
+		original && setAssignment(original);
+		resetForm();
+	}, [resetForm, setAssignment, original]);
 
-			trackEvents(
-				{
-					object: String(currentAssignment.uuid),
-					object_type: 'assignment',
-					action: 'delete',
-				},
-				user
-			);
+	// Render
 
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
-			ToastService.success(
-				i18n.t('assignment/views/assignment-edit___de-opdracht-is-verwijderd')
-			);
+	const renderBackButton = useMemo(
+		() => (
+			<Link
+				className="c-return"
+				to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
+					tabId: ASSIGNMENTS_ID,
+				})}
+			>
+				<Icon name="chevron-left" size="small" type="arrows" />
+				{t('assignment/views/assignment-edit___mijn-opdrachten')}
+			</Link>
+		),
+		[t]
+	);
 
-			trackEvents(
-				{
-					object: String(currentAssignment.uuid),
-					object_type: 'assignment',
-					action: 'delete',
-				},
-				user
-			);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				i18n.t(
-					'assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt'
-				)
-			);
-		}
-	};
+	const renderTitle = useMemo(
+		() => (
+			<Flex center className="u-spacer-top-l">
+				<Icon name="clipboard" size="large" />
 
-	const renderAssignmentEditForm = () => {
-		return (
-			<div className="c-assignment-create-and-edit">
-				<Navbar autoHeight>
-					<Container mode="vertical" background="alt">
-						<Container mode="horizontal">
-							<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
-								<ToolbarLeft>
-									<ToolbarItem grow>
-										<Link
-											className="c-return"
-											to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-												tabId: ASSIGNMENTS_ID,
-											})}
-										>
-											<Icon name="chevron-left" size="small" type="arrows" />
-											<Trans i18nKey="assignment/views/assignment-edit___mijn-opdrachten">
-												Mijn opdrachten
-											</Trans>
-										</Link>
-										<BlockHeading className="u-m-0" type="h2">
-											{currentAssignment.title}
-										</BlockHeading>
-										{currentAssignment.uuid && (
-											<Spacer margin="top-small">
-												<Form
-													type={isMobileWidth() ? 'standard' : 'inline'}
-												>
-													<FormGroup
-														label={t(
-															'assignment/views/assignment-edit___url'
-														)}
-													>
-														<Flex>
-															<TextInput
-																value={getAssignmentUrl()}
-																disabled
-															/>
-															<Spacer margin="left-small">
-																<Button
-																	icon="copy"
-																	type="secondary"
-																	ariaLabel={t(
-																		'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-																	)}
-																	title={t(
-																		'assignment/views/assignment-edit___kopieer-de-opdracht-url'
-																	)}
-																	onClick={copyAssignmentUrl}
-																/>
-															</Spacer>
-														</Flex>
-													</FormGroup>
-												</Form>
-											</Spacer>
-										)}
-									</ToolbarItem>
-								</ToolbarLeft>
-								<ToolbarRight>
-									<ToolbarItem>
-										<ButtonToolbar>
-											<Button
-												type="secondary"
-												onClick={viewAsStudent}
-												label={t(
-													'assignment/views/assignment-edit___bekijk-als-leerling'
-												)}
-												title={t(
-													'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-												)}
-											/>
-											<MoreOptionsDropdown
-												isOpen={isExtraOptionsMenuOpen}
-												onOpen={() => setExtraOptionsMenuOpen(true)}
-												onClose={() => setExtraOptionsMenuOpen(false)}
-												menuItems={[
-													{
-														icon: 'copy',
-														id: 'duplicate',
-														label: t(
-															'assignment/views/assignment-edit___dupliceer'
-														),
-													},
-													{
-														icon: 'archive',
-														id: 'archive',
-														label: initialAssignment.is_archived
-															? t(
-																	'assignment/views/assignment-edit___dearchiveer'
-															  )
-															: t(
-																	'assignment/views/assignment-edit___archiveer'
-															  ),
-													},
-													{
-														icon: 'delete',
-														id: 'delete',
-														label: t(
-															'assignment/views/assignment-edit___verwijder'
-														),
-													},
-												]}
-												onOptionClicked={(id: string | number) =>
-													handleExtraOptionClicked(id.toString() as any)
-												}
-											/>
-											<Button
-												type="primary"
-												label={t(
-													'assignment/views/assignment-edit___opslaan'
-												)}
-												title={t(
-													'assignment/views/assignment-edit___sla-de-opdracht-op'
-												)}
-												onClick={() => saveAssignment(currentAssignment)}
-												disabled={isSaving}
-											/>
-											<InteractiveTour showButton />
-										</ButtonToolbar>
-									</ToolbarItem>
-								</ToolbarRight>
-							</Toolbar>
-						</Container>
-					</Container>
-				</Navbar>
-				{AssignmentHelper.renderAssignmentForm(
-					currentAssignment,
-					assignmentContent,
-					assignmentLabels,
-					user,
-					setAssignmentProp,
-					setAssignmentLabels
-				)}
-				<Container background="alt" mode="vertical">
-					<Container size="small" mode="horizontal" className="c-last-vertical-container">
-						<Toolbar autoHeight>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ButtonToolbar>
-										<Button
-											type="primary"
-											label={t('assignment/views/assignment-edit___opslaan')}
-											title={t(
-												'assignment/views/assignment-edit___sla-de-opdracht-op'
-											)}
-											onClick={() => saveAssignment(currentAssignment)}
-											disabled={isSaving}
-										/>
-									</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</Container>
-				</Container>
+				<BlockHeading className="u-spacer-left" type="h2">
+					<Controller
+						name="title"
+						control={control}
+						render={({ field, fieldState: { error } }) => (
+							<>
+								<ContentInput
+									{...field}
+									placeholder={t(
+										'assignment/views/assignment-edit___placeholder'
+									)}
+									nodeCancel={<Icon name="x" size="small" />}
+									nodeSubmit={<Icon name="check" size="small" />}
+									onChange={(title) => {
+										field.onChange(title);
+										setAssignment((previous) => {
+											return {
+												...previous,
+												title,
+											};
+										});
+									}}
+								/>
 
-				<DeleteObjectModal
+								{error && <span className="c-floating-error">{error.message}</span>}
+							</>
+						)}
+					></Controller>
+				</BlockHeading>
+			</Flex>
+		),
+		[t, control, setAssignment]
+	);
+
+	// These actions are just UI, they are disabled because they can't be used during creation
+	const renderActions = useMemo(
+		() => (
+			<>
+				<Button
+					ariaLabel={t(
+						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+					)}
+					disabled
+					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 					title={t(
-						'assignment/views/assignment-edit___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
-					body={t(
-						'assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
-					isOpen={isDeleteModalOpen}
-					onClose={() => setDeleteModalOpen(false)}
-					deleteObjectCallback={onDeleteAssignment}
+					type="secondary"
 				/>
+				<Button
+					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
+					disabled
+					icon="more-horizontal"
+					title={t('assignment/views/assignment-detail___meer-opties')}
+					type="secondary"
+				/>
+				<Button
+					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
+					disabled
+					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
+					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
+				/>
+			</>
+		),
+		[t]
+	);
 
-				<InputModal
-					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel={t(
-						'assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam'
-					)}
-					inputValue={currentAssignment.title}
-					inputPlaceholder={t(
-						'assignment/views/assignment-edit___titel-van-de-nieuwe-taak'
-					)}
-					isOpen={isDuplicateModalOpen}
-					onClose={() => setDuplicateModalOpen(false)}
-					inputCallback={(newTitle: string) =>
-						AssignmentHelper.attemptDuplicateAssignment(
-							newTitle,
-							currentAssignment,
-							setCurrentAssignment,
-							setLoadingInfo,
-							user,
-							history
-						)
+	const renderBlockContent = useCallback(
+		(block: AssignmentBlock) => {
+			switch (block.type) {
+				case 'TEXT':
+					return (
+						<TitleDescriptionForm
+							className="u-padding-l"
+							id={block.id}
+							title={{
+								label: t('assignment/views/assignment-edit___titel'),
+								placeholder: t(
+									'assignment/views/assignment-edit___instructies-of-omschrijving'
+								),
+								value: block.custom_title,
+								onChange: (value) =>
+									setAssignmentBlockProperty(block, 'custom_title', value),
+							}}
+							description={{
+								placeholder: t(
+									'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
+								),
+								initialHtml: convertToHtml(block.custom_description),
+								onChange: (value) =>
+									setAssignmentBlockProperty(
+										block,
+										'custom_description',
+										value.toHTML()
+									),
+							}}
+						/>
+					);
+
+				case 'ITEM':
+					if (!block.item) {
+						return null;
 					}
-					emptyMessage={t(
-						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
-					)}
-				/>
-			</div>
-		);
-	};
+
+					return (
+						<CustomiseItemForm
+							className="u-padding-l"
+							id={block.item.id}
+							preview={() => {
+								const meta = block.item as ItemSchema;
+
+								return (
+									<FlowPlayerWrapper
+										item={meta}
+										poster={meta.thumbnail_path}
+										external_id={meta.external_id}
+										duration={meta.duration}
+										title={meta.title}
+										cuePoints={{
+											start: block.start_oc,
+											end: block.end_oc,
+										}}
+									/>
+								);
+							}}
+							toggle={{
+								label: t(
+									'collection/components/fragment/fragment-edit___alternatieve-tekst'
+								),
+								checked: block.use_custom_fields,
+								onChange: (value) =>
+									setAssignmentBlockProperty(block, 'use_custom_fields', value),
+							}}
+							title={{
+								label: t('assignment/views/assignment-edit___titel'),
+								placeholder: t(
+									'assignment/views/assignment-edit___instructies-of-omschrijving'
+								),
+								value: block.custom_title,
+								onChange: (value) =>
+									setAssignmentBlockProperty(block, 'custom_title', value),
+							}}
+							description={{
+								initialHtml: convertToHtml(block.custom_description),
+								onChange: (value) =>
+									setAssignmentBlockProperty(
+										block,
+										'custom_description',
+										value.toHTML()
+									),
+							}}
+						/>
+					);
+
+				default:
+					break;
+			}
+		},
+		[t, setAssignmentBlockProperty]
+	);
+
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
+		tabs,
+		onTabClick,
+	]);
+
+	const renderTabContent = useMemo(() => {
+		switch (tab) {
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+				return (
+					<div className="c-assignment-contents-tab">
+						<AssignmentBlockListSorter
+							heading={(item) => item && EDIT_ASSIGNMENT_BLOCK_LABELS(t)[item.type]}
+							divider={() => <Button icon="plus" type="secondary" disabled />}
+							content={(item) => item && renderBlockContent(item)}
+							items={listSorterItems}
+						></AssignmentBlockListSorter>
+					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
+				// This form receives its parent's state because we don't care about rerender performance here
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentDetailsForm
+							state={[assignment, setAssignment]}
+							initial={defaultValues}
+							{...fields}
+						/>
+					</div>
+				);
+
+			default:
+				return tab;
+		}
+	}, [
+		tab,
+		defaultValues,
+		assignment,
+		setAssignment,
+		fields,
+		listSorterItems,
+		t,
+		renderBlockContent,
+	]);
+
+	const render = () => (
+		<div className="c-assignment-page c-assignment-page--create">
+			<AssignmentHeading
+				back={renderBackButton}
+				title={renderTitle}
+				actions={renderActions}
+				tabs={renderTabs}
+			/>
+
+			<Container mode="horizontal">
+				{pastDeadline && (
+					<Spacer margin={['top-large']}>
+						<Alert type="info">
+							{t(
+								'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+							)}
+						</Alert>
+					</Spacer>
+				)}
+
+				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+
+				{isDirty && (
+					<StickyEdgeBar>
+						<p>
+							<strong>
+								{t('assignment/views/assignment-edit___wijzigingen-opslaan')}
+							</strong>
+						</p>
+
+						<Button
+							label={t('assignment/views/assignment-edit___annuleer')}
+							onClick={() => reset()}
+						/>
+
+						<Button
+							type="tertiary"
+							label={t('assignment/views/assignment-edit___opslaan')}
+							onClick={handleSubmit(submit, (...args) => console.error(args))}
+						/>
+					</StickyEdgeBar>
+				)}
+			</Container>
+		</div>
+	);
 
 	return (
 		<>
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(
-							currentAssignment,
-							'title',
-							t(
-								'assignment/views/assignment-edit___collectie-bewerken-pagina-titel-fallback'
-							)
-						)
+						t('assignment/views/assignment-create___maak-opdracht-pagina-titel')
 					)}
 				</title>
-				<meta name="description" content={get(currentAssignment, 'description') || ''} />
+
+				<meta
+					name="description"
+					content={t(
+						'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving'
+					)}
+				/>
 			</MetaTags>
+
 			<LoadingErrorLoadedComponent
-				dataObject={currentAssignment}
-				render={renderAssignmentEditForm}
+				dataObject={assignment}
+				render={render}
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>

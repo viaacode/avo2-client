@@ -376,7 +376,7 @@ export const GET_CONTENT_COUNTS_FOR_USERS = gql`
 				count
 			}
 		}
-		assignments: app_assignments_aggregate(
+		assignments: app_assignments_v2_aggregate(
 			where: { owner_profile_id: { _in: $profileIds }, is_deleted: { _eq: false } }
 		) {
 			aggregate {

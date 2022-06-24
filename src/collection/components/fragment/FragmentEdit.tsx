@@ -42,7 +42,6 @@ import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
 
 interface FragmentEditProps {
-	type: 'itemOrText' | 'collection';
 	index: number;
 	collectionId: string;
 	numberOfFragments: number;
@@ -55,7 +54,6 @@ interface FragmentEditProps {
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
-	type,
 	index,
 	collectionId,
 	numberOfFragments,
@@ -75,7 +73,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 		RichEditorState | undefined
 	>(undefined);
 
-	const isCollection = type === 'collection';
+	const isCollection = fragment.type === 'COLLECTION';
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -144,7 +142,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			type: 'DELETE_FRAGMENT',
 		});
 
-		const objectType = type === 'collection' ? 'bundle' : 'collection';
+		const objectType = isCollection ? 'bundle' : 'collection';
 		trackEvents(
 			{
 				object: collectionId,
@@ -245,7 +243,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 				{itemMetaData && (
 					<FormGroup
 						label={
-							type === 'itemOrText'
+							['ITEM', 'TEXT'].includes(fragment.type)
 								? t(
 										'collection/components/fragment/fragment-edit___alternatieve-tekst'
 								  )
@@ -440,8 +438,7 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 		isEqual(prevProps.fragment, nextProps.fragment) &&
 		isEqual(prevProps.openOptionsId, nextProps.openOptionsId) &&
 		prevProps.allowedToAddLinks === nextProps.allowedToAddLinks &&
-		prevProps.index === nextProps.index &&
-		prevProps.type === nextProps.type
+		prevProps.index === nextProps.index
 	);
 }
 

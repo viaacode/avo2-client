@@ -40,11 +40,13 @@ interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 	const [t] = useTranslation();
 
-	const [activeTab, setActiveTab] = useState<SettingsTab>(props.match.params.tabId || PROFILE_ID);
+	const [activeTab, setActiveTab] = useState<SettingsTab>(
+		(props.match.params.tabId as SettingsTab) || PROFILE_ID
+	);
 
 	const isPupil = get(props.user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
-	const generateTabHeader = (id: string, label: string) => ({
+	const generateTabHeader = (id: SettingsTab, label: string) => ({
 		id,
 		label,
 		active: activeTab === id,
@@ -158,7 +160,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 
 			<Navbar background="alt" placement="top" autoHeight>
 				<Container mode="horizontal">
-					<Toolbar autoHeight>
+					<Toolbar autoHeight className="c-toolbar--no-height">
 						<ToolbarLeft>
 							<Tabs tabs={getTabHeaders()} onClick={goToTab} />
 						</ToolbarLeft>

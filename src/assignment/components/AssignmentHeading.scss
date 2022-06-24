@@ -1,0 +1,133 @@
+@use 'sass:math';
+@import '../../styles/settings/variables';
+
+.c-assignment-heading {
+	&__actions {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		padding-left: $g-spacer-unit * 2;
+
+		@media screen and (min-width: $g-bp2) {
+			gap: $g-spacer-unit;
+		}
+
+		button {
+			transform: translateY(2px); // Account for visual centering
+
+			.c-button__label {
+				max-width: 100%;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+
+			&:first-child,
+			&:last-child {
+				display: none;
+
+				@media (min-width: $g-bp2) {
+					display: initial;
+				}
+			}
+
+			@media screen and (min-width: $g-bp2) {
+				min-width: 0;
+				transform: none;
+			}
+		}
+	}
+
+	&__top {
+		align-items: flex-end;
+
+		@media (min-width: $g-bp2) {
+			align-items: flex-start;
+		}
+
+		.c-toolbar {
+			&__left,
+			&__right {
+				flex: initial;
+				margin-bottom: $g-spacer-unit * 2;
+			}
+
+			&__left {
+				flex-grow: 1;
+				min-width: 0;
+	
+				@media (min-width: $g-bp2) {
+					margin-top: 0;
+				}
+			}
+
+			&__right {
+				@media (min-width: $g-bp2) {
+					min-width: 0;
+				}
+			}
+		}
+	}
+
+	&__title {
+		max-width: 100%;
+
+		.c-h2 {
+			flex-grow: 1;
+			min-width: 0;
+		}
+
+		.c-content-input {
+			max-width: 100%;
+			min-height: 1.25em; // Equal to h2-title's line-height
+			position: relative;
+			transform: translateY(2px); // Visually center
+			width: 480px;
+			min-width: 0;
+
+			&--open {
+				&:before {
+					background: #fff;
+					border-radius: 4px;
+					border: 1px solid $color-gray-200;
+					content: '';
+					display: block;
+					inset: math.div($g-spacer-unit, -2);
+					pointer-events: none;
+					position: absolute;
+					transform: translateY(-2px); // Account for visual centering
+					z-index: 0;
+				}
+			}
+
+			> span,
+			input,
+			div {
+				z-index: 1;
+			}
+
+			& + .c-floating-error {
+				margin-top: $g-spacer-unit;
+				font-size: $g-base-font-size;
+			}
+
+			&__submit,
+			&__cancel {
+				place-self: center;
+				transform: translateY(-2px); // Account for visual centering
+			}
+
+			&__submit {
+				color: $color-teal-bright;
+			}
+
+			&__cancel {
+				margin-right: math.div($g-spacer-unit, 2);
+			}
+		}
+	}
+
+	& + .o-container {
+		overflow: initial !important; // Allow sticky elements in this context
+		flex-grow: 1; // Shove the footer down and fill the container
+	}
+}

@@ -14,17 +14,6 @@
 		}
 	}
 
-	.c-description-timecode {
-		color: $color-teal-bright;
-		padding: 5px;
-		cursor: pointer;
-		border-radius: 3px;
-
-		&:hover {
-			background-color: $color-gray-50;
-		}
-	}
-
 	@media (max-width: $g-bp2) {
 		.c-video-column {
 			margin-left: 0;

@@ -1,4 +1,5 @@
 export { default as BooleanCheckboxDropdown } from './BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+export { default as CollapsibleColumn } from './CollapsibleColumn/CollapsibleColumn';
 export { default as ControlledDropdown } from './ControlledDropdown/ControlledDropdown';
 export { default as DataQueryComponent } from './DataQueryComponent/DataQueryComponent';
 export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropdown';
@@ -8,6 +9,7 @@ export { default as EducationLevelsField } from './EducationLevelsField/Educatio
 export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';
 export { default as Footer } from './Footer/Footer';
+export { default as IconBar } from './IconBar/IconBar';
 export { default as InputModal } from './InputModal/InputModal';
 export { default as InteractiveTour } from './InteractiveTour/InteractiveTour';
 export { default as Navigation } from './Navigation/Navigation';
@@ -16,4 +18,5 @@ export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/Shar
 export { default as ShortDescriptionField } from './ShortDescriptionField/ShortDescriptionField';
 export { default as SubjectsField } from './SubjectsField/SubjectsField';
 export * from './CheckboxDropdownModal/CheckboxDropdownModal';
+export * from './ListSorter';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';

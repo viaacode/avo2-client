@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
+	BlockIntro,
 	Box,
 	Checkbox,
 	Container,
@@ -28,19 +29,18 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { buildLink, CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
+import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
+import { AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
@@ -54,11 +54,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	...rest
 }) => {
 	// State
-	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
-	const [assignmentContent, setAssignmentContent] = useState<
-		Avo.Assignment.Content | null | undefined
-	>();
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2>();
+	const [assignmentBlocks, setAssignmentBlocks] = useState<Avo.Assignment.Block[]>([]);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canCreateAssignmentResponse: boolean;
@@ -73,37 +70,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	const fetchAssignmentAndContent = useCallback(async () => {
 		try {
 			const assignmentId = match.params.id;
-
-			if (AssignmentService.isLegacyAssignmentId(assignmentId)) {
-				const assignmentUuid:
-					| string
-					| undefined = await AssignmentService.getAssignmentUuidFromLegacyId(
-					assignmentId
-				);
-				if (!assignmentUuid) {
-					console.error(
-						new CustomError(
-							'The assignment id appears to be a legacy assignment id, but the matching uuid could not be found in the database',
-							null,
-							{ legacyId: assignmentId }
-						)
-					);
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'assignment/views/assignment-detail___de-opdracht-kon-niet-worden-gevonden'
-						),
-						icon: 'search',
-					});
-					return;
-				}
-
-				// Reload the page with the uuid url instead of the legacy url
-				history.replace(
-					buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentUuid })
-				);
-				return;
-			}
 
 			const response = await AssignmentService.fetchAssignmentAndContent(
 				getProfileId(user),
@@ -180,13 +146,19 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				);
 
 				if (assignmentResponse) {
-					response.assignment.responses = [assignmentResponse];
+					response.assignment.responses = [
+						{
+							...assignmentResponse,
+							id: `${assignmentResponse.id}`,
+							assignment_id: `${assignmentResponse.assignment_id}`,
+						},
+					];
 				}
 			}
 
 			trackEvents(
 				{
-					object: String(response.assignment.uuid),
+					object: String(response.assignment.id),
 					object_type: 'assignment',
 					action: 'view',
 				},
@@ -195,7 +167,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 			setPermissions({ canEditAssignment, canCreateAssignmentResponse });
 			setAssignment(response.assignment);
-			setAssignmentContent(response.assignmentContent);
+			setAssignmentBlocks(response.assignmentBlocks);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment and content for detail page', err, {
@@ -210,7 +182,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 				),
 			});
 		}
-	}, [setAssignment, setAssignmentContent, setLoadingInfo, match.params.id, t, user, history]);
+	}, [setAssignment, setAssignmentBlocks, setLoadingInfo, match.params.id, t, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
@@ -233,36 +205,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 			});
 		}
 	}, [assignment]);
-
-	const handleExtraOptionsClick = async (itemId: 'archive') => {
-		setActionsDropdownOpen(false);
-		if (itemId === 'archive') {
-			try {
-				if (!assignment) {
-					return;
-				}
-				const archived = !(get(assignment, 'is_archived') || false);
-				await AssignmentService.toggleAssignmentArchiveStatus(assignment.uuid, archived);
-				fetchAssignmentAndContent();
-				ToastService.success(
-					archived
-						? t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
-						: t('assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd')
-				);
-			} catch (err) {
-				console.error(
-					new CustomError('failed to archive the assignment object', err, {
-						assignment,
-					})
-				);
-				ToastService.danger(
-					t(
-						'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
-					)
-				);
-			}
-		}
-	};
 
 	const handleSubmittedAtChanged = async (checked: boolean) => {
 		try {
@@ -311,39 +253,36 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	};
 
 	// Render methods
-	const renderContent = () => {
-		if (!assignment || !assignmentContent) {
-			return null;
-		}
-
-		const { content_label, content_layout } = assignment;
-
-		switch (content_label) {
-			case 'COLLECTIE':
-				return (
-					<FragmentList
-						collectionFragments={
-							(assignmentContent as Avo.Collection.Collection).collection_fragments
-						}
-						showDescription={
-							assignment.content_layout === AssignmentLayout.PlayerAndText
-						}
-						linkToItems={false}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-						collection={assignmentContent as Avo.Collection.Collection}
-						{...rest}
-					/>
-				);
+	const renderBlock = (block: Avo.Assignment.Block) => {
+		switch (block.type) {
 			case 'ITEM':
 				return (
-					<ItemVideoDescription
-						itemMetaData={assignmentContent as Avo.Item.Item}
-						showDescription={content_layout === AssignmentLayout.PlayerAndText}
-						verticalLayout={isMobileWidth()}
-					/>
+					<li className="c-collection-list__item" key={`assignment-block-${block.id}`}>
+						<ItemVideoDescription
+							itemMetaData={block.item as Avo.Item.Item}
+							showTitle={true}
+							showDescription={true}
+							title={AssignmentHelper.getDisplayTitle(block)}
+							description={AssignmentHelper.getDisplayDescription(block)}
+							cuePoints={AssignmentHelper.getCuePoints(block)}
+							verticalLayout={isMobileWidth()}
+							poster={AssignmentHelper.getThumbnail(block)}
+							{...rest}
+						/>
+					</li>
+				);
+			case 'TEXT':
+				return (
+					<li className="c-collection-list__item" key={`assignment-block-${block.id}`}>
+						<BlockIntro
+							content={block.custom_description || ''}
+							title={block.custom_title || ''}
+							headingType="h3"
+							align="center"
+							className="c-fragment-detail__intro-block"
+							{...rest}
+						/>
+					</li>
 				);
 			default:
 				return (
@@ -352,12 +291,20 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 						message={t(
 							'assignment/views/assignment-detail___onverwacht-opdracht-inhoud-type-0',
 							{
-								type: content_label || undefined,
+								type: block.type || undefined,
 							}
 						)}
 					/>
 				);
 		}
+	};
+
+	const renderContent = () => {
+		return (
+			<ul className="c-collection-list">
+				{assignmentBlocks.map((block: Avo.Assignment.Block) => renderBlock(block))}
+			</ul>
+		);
 	};
 
 	/**
@@ -371,7 +318,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 		const isOwner = getProfileId(user) === assignment.owner_profile_id;
 		const backLink = isOwner
-			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.uuid })
+			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })
 			: buildLink(APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 
 		return isOwner ? (
@@ -393,8 +340,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 		const { answer_url, description, profile, title } = assignment;
 
-		const tags: TagOption[] = AssignmentLabelsService.getLabelsFromAssignment(assignment).map(
-			({ id, label, color_override, enum_color }: Avo.Assignment.Label) => ({
+		const tags: TagOption[] = AssignmentHelper.getLabels(assignment, 'LABEL').map(
+			({ assignment_label: { id, label, color_override, enum_color } }: any) => ({
 				id,
 				label: label || '',
 				color: color_override || get(enum_color, 'label'),
@@ -464,29 +411,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 											</ToolbarItem>
 										</ToolbarRight>
 									</Toolbar>
-								</FlexItem>
-								<FlexItem shrink className="c-more-options-dropdown">
-									{permissions.canEditAssignment && (
-										<MoreOptionsDropdown
-											isOpen={isActionsDropdownOpen}
-											onOpen={() => setActionsDropdownOpen(true)}
-											onClose={() => setActionsDropdownOpen(false)}
-											menuItems={[
-												{
-													icon: 'archive',
-													id: 'archive',
-													label: assignment.is_archived
-														? t(
-																'assignment/views/assignment-detail___dearchiveer'
-														  )
-														: t(
-																'assignment/views/assignment-detail___archiveer'
-														  ),
-												},
-											]}
-											onOptionClicked={handleExtraOptionsClick as any}
-										/>
-									)}
 								</FlexItem>
 							</Flex>
 						</Container>

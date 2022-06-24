@@ -1,0 +1,13 @@
+@import '../../../styles/settings/variables';
+
+$component: 'c-customise-item-form';
+
+.#{$component} {
+	&--has-preview {
+		@media screen and (min-width: $g-bp3) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: $g-spacer-unit * 3;
+		}
+	}
+}

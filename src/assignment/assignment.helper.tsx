@@ -1,4 +1,3 @@
-import { History } from 'history';
 import { isNil } from 'lodash-es';
 import React from 'react';
 import { Trans } from 'react-i18next';
@@ -17,32 +16,26 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../constants';
-import { LoadingInfo } from '../shared/components';
-import { ContentLink } from '../shared/components/ContentLink/ContentLink';
 import Html from '../shared/components/Html/Html';
-import { LayoutOptions } from '../shared/components/LayoutOptions/LayoutOptions';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
-import { navigate } from '../shared/helpers';
+import { buildLink, openLinkInNewTab } from '../shared/helpers';
 import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
 
 import { AssignmentService } from './assignment.service';
-import { AssignmentLayout } from './assignment.types';
+import { AssignmentLayout, AssignmentSchemaLabel_v2 } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
 
 export class AssignmentHelper {
 	public static async attemptDuplicateAssignment(
 		newTitle: string,
-		assignment: Partial<Avo.Assignment.Assignment>,
-		setCurrentAssignment: (assignment: Partial<Avo.Assignment.Assignment>) => void,
-		setLoadingInfo: (loadingInfo: LoadingInfo) => void,
-		user: Avo.User.User | undefined,
-		history: History
+		assignment: Partial<Avo.Assignment.Assignment_v2>,
+		user: Avo.User.User | undefined
 	) {
 		try {
-			if (isNil(assignment.uuid)) {
+			if (isNil(assignment.id)) {
 				ToastService.danger(
 					i18n.t(
 						'assignment/assignment___je-kan-een-opdracht-pas-dupliceren-nadat-je-hem-hebt-opgeslagen'
@@ -60,26 +53,25 @@ export class AssignmentHelper {
 			}
 			const duplicatedAssignment = await AssignmentService.duplicateAssignment(
 				newTitle,
-				assignment,
-				user
+				assignment
 			);
 
 			trackEvents(
 				{
-					object: String(assignment.uuid),
+					object: String(assignment.id),
 					object_type: 'assignment',
 					action: 'copy',
 				},
 				user
 			);
 
-			setCurrentAssignment({});
-			setLoadingInfo({ state: 'loading' });
+			openLinkInNewTab(
+				buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id })
+			);
 
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.uuid });
 			ToastService.success(
 				i18n.t(
-					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
+					'assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt'
 				)
 			);
 		} catch (err) {
@@ -90,7 +82,7 @@ export class AssignmentHelper {
 		}
 	}
 
-	private static isDeadlineInThePast(assignment: Partial<Avo.Assignment.Assignment>): boolean {
+	private static isDeadlineInThePast(assignment: Partial<Avo.Assignment.Assignment_v2>): boolean {
 		return !!assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now());
 	}
 
@@ -109,15 +101,15 @@ export class AssignmentHelper {
 	}
 
 	public static renderAssignmentForm(
-		assignment: Partial<Avo.Assignment.Assignment>,
-		assignmentContent: Avo.Assignment.Content | null,
-		assignmentLabels: Avo.Assignment.Label[],
+		assignment: Partial<Avo.Assignment.Assignment_v2>,
+		// assignmentContent: Avo.Assignment.Content | null,
+		assignmentLabels: Avo.Assignment.Label_v2[],
 		user: Avo.User.User,
 		setAssignmentProp: (
 			property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
 			value: any
 		) => void,
-		setAssignmentLabels: (labels: Avo.Assignment.Label[]) => void
+		setAssignmentLabels: (labels: AssignmentSchemaLabel_v2[]) => void
 	) {
 		const now = new Date(Date.now());
 
@@ -150,7 +142,7 @@ export class AssignmentHelper {
 								}
 							/>
 						</FormGroup>
-						<FormGroup label={i18n.t('assignment/views/assignment-edit___inhoud')}>
+						{/* <FormGroup label={i18n.t('assignment/views/assignment-edit___inhoud')}>
 							<ContentLink
 								parent={assignment}
 								content={assignmentContent}
@@ -167,14 +159,14 @@ export class AssignmentHelper {
 									);
 								}}
 							/>
-						</FormGroup>
+						</FormGroup> */}
 						<FormGroup
 							label={i18n.t('assignment/views/assignment-edit___klas-of-groep')}
 							required
 						>
 							<TextInput
 								id="class_room"
-								value={assignment.class_room || ''}
+								value={/*assignment.class_room || */ 'TODO CLASSroom was changes'}
 								onChange={(classRoom) => setAssignmentProp('class_room', classRoom)}
 							/>
 						</FormGroup>
@@ -182,7 +174,9 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___vak-of-project')}
 						>
 							<AssignmentLabels
-								labels={assignmentLabels}
+								labels={assignmentLabels.map((item) => ({
+									assignment_label: item,
+								}))}
 								user={user}
 								onChange={setAssignmentLabels}
 							/>
@@ -291,5 +285,45 @@ export class AssignmentHelper {
 				</Container>
 			</Container>
 		);
+	}
+
+	public static getLabels(assignment: Avo.Assignment.Assignment_v2, type: string) {
+		return (
+			assignment?.labels?.filter((label: any) => label.assignment_label.type === type) || []
+		);
+	}
+
+	public static getDisplayTitle(block: Avo.Assignment.Block): string {
+		if (!block.use_custom_fields) {
+			if (block.original_title || block.original_description) {
+				return block.original_title;
+			}
+			return block.item?.title || '';
+		}
+		return block.custom_title;
+	}
+
+	public static getDisplayDescription(block: Avo.Assignment.Block): string {
+		if (!block.use_custom_fields) {
+			if (block.original_title || block.original_description) {
+				return block.original_description;
+			}
+			return block.item?.description || '';
+		}
+		return block.custom_description;
+	}
+
+	public static getCuePoints(block: Avo.Assignment.Block) {
+		if (block.start_oc || block.end_oc) {
+			return {
+				start: block.start_oc,
+				end: block.end_oc,
+			};
+		}
+		return undefined;
+	}
+
+	public static getThumbnail(block: Avo.Assignment.Block) {
+		return block.thumbnail_path || undefined;
 	}
 }

@@ -1,10 +1,23 @@
+import { TFunction } from 'i18next';
+import { array, object, SchemaOf, string } from 'yup';
+
+import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 
-import { AssignmentColumn, AssignmentOverviewTableColumns } from './assignment.types';
+import {
+	AssignmentBlockTypeDict,
+	AssignmentColumn,
+	AssignmentFormState,
+	AssignmentOverviewTableColumns,
+	AssignmentResponseColumn,
+	AssignmentResponseTableColumns,
+	AssignmentType,
+} from './assignment.types';
+import { AssignmentDetailsFormProps } from './components/AssignmentDetailsForm';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -25,7 +38,7 @@ const getLabelsColumn = (): AssignmentColumn[] => {
 		: [
 				{
 					id: 'labels' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/views/assignment-overview___vak-of-project'),
+					label: i18n.t('assignment/assignment___label'),
 					sortable: false,
 				},
 		  ];
@@ -44,32 +57,49 @@ const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 		  ];
 }; // Only show teacher for pupils
 
-const getClassColumn = (): AssignmentColumn[] => {
-	return isMobileWidth()
-		? []
-		: [
+const getClassColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [
 				{
 					id: 'class_room' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___klas'),
-					sortable: true,
+					sortable: false,
 					dataType: 'string',
 				},
-		  ];
+		  ]
+		: [];
 };
 
-const getStatusColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
 	return canEditAssignments
-		? []
-		: [
+		? [
 				{
-					id: 'submitted_at' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/views/assignment-overview___status'),
-					tooltip: i18n.t(
-						'assignment/views/assignment-overview___heb-je-deze-opdracht-reeds-ingediend'
-					),
-					sortable: false,
+					id: 'updated_at' as AssignmentOverviewTableColumns,
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
+					sortable: true,
+					dataType: 'dateTime',
 				},
-		  ];
+		  ]
+		: [];
+};
+
+const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [
+				{
+					id: 'responses' as AssignmentOverviewTableColumns,
+					label: i18n.t('assignment/assignment___respons'),
+					sortable: true,
+					dataType: 'number',
+				},
+		  ]
+		: [];
+};
+
+const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [{ id: 'actions' as AssignmentOverviewTableColumns, label: '' }]
+		: [];
 };
 
 export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
@@ -82,18 +112,18 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		dataType: 'string',
 	},
 	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
+	...getClassColumn(canEditAssignments),
 	...getLabelsColumn(),
 	...getTeacherColumn(canEditAssignments),
-	...getClassColumn(),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
 		label: i18n.t('assignment/views/assignment-overview___deadline'),
 		sortable: true,
 		dataType: 'dateTime',
 	},
-	...getStatusColumn(canEditAssignments),
-	// { id: 'responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
-	{ id: 'actions' as AssignmentOverviewTableColumns, label: '' },
+	...getLastEditColumn(canEditAssignments),
+	...getResponseColumn(canEditAssignments),
+	...getActionsColumn(canEditAssignments),
 ];
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
@@ -106,9 +136,164 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			full_name: order,
 		},
 	}),
-	submitted_at: (order: Avo.Search.OrderDirection) => ({
-		responses: {
-			submitted_at: order,
+	responses: (order: Avo.Search.OrderDirection) => ({
+		responses_aggregate: {
+			count: order,
+		},
+	}),
+};
+
+/// Zoek & bouw
+export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
+	return object({
+		id: string().optional(),
+		title: string().required(t('assignment/assignment___titel-is-verplicht')),
+		labels: array(
+			object({
+				assignment_label: object()
+					.shape({
+						id: string().required(),
+						label: string().nullable(),
+						color_enum_value: string().required(),
+						color_override: string().nullable(),
+						owner_profile_id: string().required(),
+						enum_color: object({
+							label: string().required(),
+							value: string().required(),
+						}).optional(),
+						type: string().is(['LABEL', 'CLASS']).required(),
+						profile: object().optional(),
+					})
+					.required(),
+			})
+		),
+		blocks: array(),
+		answer_url: string().nullable().optional(),
+		available_at: string().optional(),
+		deadline_at: string().optional(),
+	});
+};
+
+export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+	id: undefined,
+	title: t('assignment/assignment___titel-opdracht'),
+	labels: [],
+	blocks: [],
+	available_at: new Date().toISOString(),
+	answer_url: undefined,
+	deadline_at: undefined,
+});
+
+export const ASSIGNMENT_FORM_FIELDS = (
+	t: TFunction
+): Pick<
+	AssignmentDetailsFormProps,
+	'classrooms' | 'labels' | 'available_at' | 'deadline_at' | 'answer_url'
+> => ({
+	classrooms: {
+		label: t('assignment/assignment___klas'),
+		dictionary: {
+			placeholder: t('assignment/assignment___1-moderne-talen'),
+			empty: t('assignment/assignment___geen-klassen-gevonden'),
+		},
+	},
+	labels: {
+		label: t('assignment/assignment___label'),
+		dictionary: {
+			placeholder: t('assignment/assignment___geschiedenis'),
+			empty: t('assignment/assignment___geen-labels-gevonden'),
+		},
+	},
+	available_at: {
+		label: t('assignment/assignment___beschikbaar-vanaf'),
+	},
+	deadline_at: {
+		label: t('assignment/assignment___deadline'),
+		help: t(
+			'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
+		),
+	},
+	answer_url: {
+		label: `${t('assignment/assignment___link')} (${t('assignment/assignment___optioneel')})`,
+		help: t(
+			'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
+		),
+	},
+});
+
+export enum ASSIGNMENT_CREATE_UPDATE_TABS {
+	Inhoud,
+	Details,
+}
+
+export const EDIT_ASSIGNMENT_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> = () => ({
+	ITEM: 'video',
+	TEXT: 'type',
+	ZOEK: 'search',
+});
+
+export const EDIT_ASSIGNMENT_BLOCK_LABELS: (t: TFunction) => AssignmentBlockTypeDict<string> = (
+	t
+) => ({
+	ITEM: t('assignment/assignment___fragment'),
+	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
+	ZOEK: t('assignment/assignment___zoekoefening'),
+});
+
+export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
+	assignmentType: AssignmentType
+): AssignmentResponseColumn[] => [
+	{
+		id: 'pupil',
+		label: i18n.t('assignment/assignment___leerling'),
+		sortable: true,
+		dataType: 'string',
+	},
+	...(assignmentType === AssignmentType.BOUW
+		? [
+				{
+					id: 'collection_title' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___leerlingencollectie'),
+					sortable: true,
+					dataType: 'string' as ColumnDataType,
+				},
+				{
+					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___fragmenten'),
+					sortable: true,
+					dataType: 'number' as ColumnDataType,
+				},
+				{
+					id: 'updated_at' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
+					sortable: true,
+					dataType: 'dateTime' as ColumnDataType,
+				},
+		  ]
+		: [
+				{
+					id: 'updated_at' as AssignmentResponseTableColumns,
+					label: i18n.t('assignment/assignment___laatst-bekeken'),
+					sortable: true,
+					dataType: 'dateTime' as ColumnDataType,
+				},
+		  ]),
+	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
+];
+
+export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	pupil: (order: Avo.Search.OrderDirection) => ({
+		owner: {
+			full_name: order,
+		},
+	}),
+	pupil_collection_block_count: (order: Avo.Search.OrderDirection) => ({
+		pupil_collection_blocks_aggregate: {
+			count: order,
 		},
 	}),
 };

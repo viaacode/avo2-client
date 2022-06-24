@@ -1,9 +1,18 @@
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
-import { IconName, MenuItemInfo } from '@viaa/avo2-components';
+import { IconName, MenuItemInfo, TabProps } from '@viaa/avo2-components';
+
+import {
+	ASSIGNMENTS_ID,
+	BOOKMARKS_ID,
+	BUNDLES_ID,
+	COLLECTIONS_ID,
+	ORGANISATION_CONTENT_ID,
+	QUICK_LANE_ID,
+} from './workspace.const';
 
 export type TabView = {
-	component: () => ReactElement;
+	component: ReactNode;
 	filter?: TabFilter;
 };
 
@@ -22,6 +31,18 @@ export type TabFilter = {
 export type TabViewMap = {
 	[key: string]: TabView;
 };
+
+export type WorkspaceTabNames =
+	| typeof COLLECTIONS_ID
+	| typeof BUNDLES_ID
+	| typeof ASSIGNMENTS_ID
+	| typeof BOOKMARKS_ID
+	| typeof ORGANISATION_CONTENT_ID
+	| typeof QUICK_LANE_ID;
+
+export interface WorkspaceTab extends TabProps {
+	id: WorkspaceTabNames;
+}
 
 interface Aggregate {
 	count: number;

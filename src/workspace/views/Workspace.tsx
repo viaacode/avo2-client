@@ -6,6 +6,7 @@ import MetaTags from 'react-meta-tags';
 
 import {
 	BlockHeading,
+	Button,
 	Container,
 	DropdownButton,
 	DropdownContent,
@@ -14,6 +15,8 @@ import {
 	Icon,
 	MenuContent,
 	Navbar,
+	Pill,
+	PillVariants,
 	Select,
 	SelectOption,
 	Spacer,
@@ -29,6 +32,7 @@ import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
@@ -37,7 +41,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import { isMobileWidth, navigate } from '../../shared/helpers';
+import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 import {
 	ASSIGNMENTS_ID,
@@ -82,6 +86,16 @@ const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown
 	return 0;
 };
 
+interface WorkspacePermissions {
+	canViewOwnCollections?: boolean;
+	canViewOwnBundles?: boolean;
+	canCreateAssignments?: boolean;
+	canViewAssignments?: boolean;
+	canCreateBookmarks?: boolean;
+	canViewContentInSameCompany?: boolean;
+	canViewSomeQuickLanes?: boolean;
+}
+
 const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
 
@@ -90,13 +104,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const [tabId, setTabId] = useState<string | null>(null);
 	const [tabs, setTabs] = useState<TabViewMap>({});
 	const [tabCounts, setTabCounts] = useState<{ [tabId: string]: number }>({});
-	const [permissions, setPermissions] = useState<{ [tabId: string]: boolean }>({});
+	const [permissions, setPermissions] = useState<WorkspacePermissions>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Methods
 	// react to route changes by navigating back wih the browser history back button
 	useEffect(() => {
-		setTabId(match.params.tabId);
+		const param = match.params.tabId;
+		param && setTabId(param);
 	}, [match.params.tabId]);
 
 	const updatePermissionsAndCounts = useCallback(() => {
@@ -139,12 +154,13 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
 				});
 				setPermissions({
-					[COLLECTIONS_ID]: response[1],
-					[BUNDLES_ID]: response[2],
-					[ASSIGNMENTS_ID]: response[3] || response[4],
-					[BOOKMARKS_ID]: response[5],
-					[ORGANISATION_CONTENT_ID]: response[6],
-					[QUICK_LANE_ID]: response[7],
+					canViewOwnCollections: response[1],
+					canViewOwnBundles: response[2],
+					canCreateAssignments: response[3],
+					canViewAssignments: response[4],
+					canCreateBookmarks: response[5],
+					canViewContentInSameCompany: response[6],
+					canViewSomeQuickLanes: response[7],
 				});
 			})
 			.catch((err) => {
@@ -164,115 +180,120 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	// Make map for available tab views
 	useEffect(() => {
-		const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
-			if (permissions[tabId]) {
-				return { [tabId]: obj };
-			}
-			return {};
-		};
-		const tempTabs = {
-			...addTabIfUserHasPerm(COLLECTIONS_ID, {
-				component: () => (
-					<CollectionOrBundleOverview
-						numberOfItems={tabCounts[COLLECTIONS_ID]}
-						type="collection"
-						onUpdate={updatePermissionsAndCounts}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
-				),
-				// TODO: DISABLED_FEATURE filter
-				// filter: {
-				// 	label: t('workspace/views/workspace___auteur'),
-				// 	options: [
-				// 		{ id: 'all', label: t('workspace/views/workspace___alles') },
-				// 		{ id: 'owner', label: t('workspace/views/workspace___enkel-waar-ik-eigenaar-ben') },
-				// 		{ id: 'sharedWith', label: t('workspace/views/workspace___enkel-gedeeld-met-mij') },
-				// 		{ id: 'sharedBy', label: t('workspace/views/workspace___enkel-gedeeld-door-mij') },
-				// 	],
-				// },
-			}),
-			...addTabIfUserHasPerm(BUNDLES_ID, {
-				component: () => (
-					<CollectionOrBundleOverview
-						numberOfItems={tabCounts[BUNDLES_ID]}
-						type="bundle"
-						onUpdate={updatePermissionsAndCounts}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
-				),
-				// TODO enable filtering by label
-				// filter: {
-				// 	label: t('workspace/views/workspace___filter-op-label'),
-				// 	options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
-				// },
-			}),
-			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
-				component: () => (
-					<AssignmentOverview
-						onUpdate={updatePermissionsAndCounts}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-					/>
-				),
-			}),
-			...addTabIfUserHasPerm(BOOKMARKS_ID, {
-				component: () => (
-					<BookmarksOverview
-						onUpdate={updatePermissionsAndCounts}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-						numberOfItems={tabCounts[BOOKMARKS_ID]}
-					/>
-				),
-			}),
-			...addTabIfUserHasPerm(ORGANISATION_CONTENT_ID, {
-				component: () => (
-					<OrganisationContentOverview
-						onUpdate={updatePermissionsAndCounts}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-						numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
-					/>
-				),
-			}),
-			...addTabIfUserHasPerm(QUICK_LANE_ID, {
-				component: () => (
-					<QuickLaneOverview
-						history={history}
-						location={location}
-						match={match}
-						user={user}
-						numberOfItems={tabCounts[QUICK_LANE_ID]}
-					/>
-				),
-			}),
-		};
-		setTabs(tempTabs);
+		const empty = { component: null };
+
+		setTabs({
+			[COLLECTIONS_ID]: permissions.canViewOwnCollections
+				? {
+						component: (
+							<CollectionOrBundleOverview
+								numberOfItems={tabCounts[COLLECTIONS_ID]}
+								type="collection"
+								onUpdate={updatePermissionsAndCounts}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+							/>
+						),
+				  }
+				: empty,
+			[BUNDLES_ID]: permissions.canViewOwnBundles
+				? {
+						component: (
+							<CollectionOrBundleOverview
+								numberOfItems={tabCounts[BUNDLES_ID]}
+								type="bundle"
+								onUpdate={updatePermissionsAndCounts}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+							/>
+						),
+				  }
+				: empty,
+			[ASSIGNMENTS_ID]:
+				permissions.canViewAssignments || permissions.canCreateAssignments
+					? {
+							component: (
+								<AssignmentOverview
+									onUpdate={updatePermissionsAndCounts}
+									history={history}
+									location={location}
+									match={match}
+									user={user}
+								/>
+							),
+					  }
+					: empty,
+			[BOOKMARKS_ID]: permissions.canCreateBookmarks
+				? {
+						component: (
+							<BookmarksOverview
+								onUpdate={updatePermissionsAndCounts}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+								numberOfItems={tabCounts[BOOKMARKS_ID]}
+							/>
+						),
+				  }
+				: empty,
+			[ORGANISATION_CONTENT_ID]: permissions.canViewContentInSameCompany
+				? {
+						component: (
+							<OrganisationContentOverview
+								onUpdate={updatePermissionsAndCounts}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+								numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
+							/>
+						),
+				  }
+				: empty,
+			[QUICK_LANE_ID]: permissions.canViewSomeQuickLanes
+				? {
+						component: (
+							<QuickLaneOverview
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+								numberOfItems={tabCounts[QUICK_LANE_ID]}
+							/>
+						),
+				  }
+				: empty,
+		});
 	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
 
-	const goToTab = (id: ReactText) => {
-		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
-		setTabId(String(id));
-	};
+	const goToTab = useCallback(
+		(id: ReactText) => {
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id }, undefined, 'replace');
+			setTabId(String(id));
+		},
+		[history, setTabId]
+	);
 
-	// Get active tab based on above map with tabId
+	const getFirstRenderableTab = useCallback(() => {
+		return Object.values(tabs).findIndex((tab) => tab.component !== null);
+	}, [tabs]);
+
+	// If no active tab is specified, navigate to the first renderable tab
+	useEffect(() => {
+		if (tabId === null) {
+			const first = Object.keys(tabs)[getFirstRenderableTab()];
+			first && goToTab(first);
+		}
+	}, [tabs, tabId, goToTab, getFirstRenderableTab]);
+
 	const getActiveTab = useCallback(() => {
-		const firstTabId = Object.keys(tabs)[0];
-		const safeTabId = tabId || firstTabId;
-		return tabs[safeTabId] || tabs[firstTabId];
-	}, [tabs, tabId]);
+		return tabs[tabId || getFirstRenderableTab() || 0];
+	}, [tabs, tabId, getFirstRenderableTab]);
 
 	useEffect(() => {
 		updatePermissionsAndCounts();
@@ -300,21 +321,33 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	const getNavTabs = useCallback(() => {
 		return compact(
 			GET_TABS().map((tab) => {
-				if (permissions[tab.id]) {
+				if (tabs[tab.id].component) {
+					const isTabActive = (tabId || Object.keys(tabs)[0]) === tab.id;
 					return {
 						...tab,
-						active: (tabId || Object.keys(tabs)[0]) === tab.id,
-						label: tabCounts[tab.id]
-							? `${tab.label} (${tabCounts[tab.id]})`
-							: tab.label,
+						active: isTabActive,
+						label: tabCounts[tab.id] ? (
+							<>
+								{tab.label}
+								<Pill variants={isTabActive ? [PillVariants.active] : []}>
+									{tabCounts[tab.id]}
+								</Pill>
+							</>
+						) : (
+							tab.label
+						),
 					};
 				}
 				return null;
 			})
 		);
-	}, [tabs, tabId, tabCounts, permissions]);
+	}, [tabs, tabId, tabCounts]);
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
+
+	const handleCreateNewAssignmentClick = () => {
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+	};
 
 	// Render
 	const renderFilter = (filter: TabFilter) => {
@@ -385,6 +418,24 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		);
 	};
 
+	const renderActionButton = (activeTabName: string) => {
+		switch (activeTabName) {
+			case ASSIGNMENTS_ID:
+				return (
+					permissions.canCreateAssignments && (
+						<Button
+							type="primary"
+							label={t('workspace/views/workspace___nieuwe-opdracht')}
+							onClick={handleCreateNewAssignmentClick}
+						/>
+					)
+				);
+
+			default:
+				break;
+		}
+	};
+
 	const renderTabsAndContent = () => {
 		const tabs = getNavTabs() as NavTab[];
 		const activeTab: TabView = getActiveTab();
@@ -401,19 +452,26 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 									</Trans>
 								</BlockHeading>
 							</ToolbarLeft>
-							<ToolbarRight>
-								<InteractiveTour showButton />
-							</ToolbarRight>
+
+							{tabId && <ToolbarRight>{renderActionButton(tabId)}</ToolbarRight>}
 						</Toolbar>
 					</Container>
 				</Container>
 
 				<Navbar background="alt" placement="top" autoHeight>
-					<Container mode="horizontal">{renderToolbar(tabs, activeTab)}</Container>
+					<Container mode="horizontal">
+						<Toolbar className="c-toolbar--no-height">
+							<ToolbarLeft>{renderToolbar(tabs, activeTab)}</ToolbarLeft>
+
+							<ToolbarRight>
+								<InteractiveTour showButton />
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{activeTab.component()}</Container>
+					<Container mode="horizontal">{activeTab.component}</Container>
 				</Container>
 			</div>
 		);
