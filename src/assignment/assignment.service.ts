@@ -16,7 +16,11 @@ import {
 } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './assignment.const';
+import {
+	ITEMS_PER_PAGE,
+	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+} from './assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	DELETE_ASSIGNMENT_RESPONSE,
@@ -621,7 +625,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
