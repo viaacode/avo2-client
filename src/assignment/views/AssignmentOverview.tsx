@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { capitalize, cloneDeep, compact, get, isNil } from 'lodash-es';
+import { capitalize, cloneDeep, compact, get, isEqual, isNil } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -46,7 +46,6 @@ import {
 	CheckboxDropdownModal,
 	CheckboxOption,
 	DeleteObjectModal,
-	InputModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
@@ -86,6 +85,16 @@ interface AssignmentOverviewProps extends DefaultSecureRouteProps {
 const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = 'desc';
 
+const defaultFiltersAndSort = {
+	selectedAssignmentLabelIds: [],
+	selectedClassLabelsIds: [],
+	filter: '',
+	view: AssignmentView.ACTIVE,
+	page: 0,
+	sort_column: DEFAULT_SORT_COLUMN,
+	sort_order: DEFAULT_SORT_ORDER,
+};
+
 const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	onUpdate = () => {},
 	history,
@@ -100,9 +109,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [filterString, setFilterString] = useState<string>('');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
-	);
-	const [isDuplicateAssignmentModalOpen, setDuplicateAssignmentModalOpen] = useState<boolean>(
-		false
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
 	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(
@@ -177,22 +183,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setQuery(newQuery, 'pushIn');
 	};
 
-	const resetTableSort = () => {
-		const newQuery = {
-			selectedAssignmentLabelIds: [],
-			selectedClassLabelIds: [],
-			filter: '',
-			view: AssignmentView.ACTIVE,
-			page: 0,
-			sort_column: DEFAULT_SORT_COLUMN,
-			sort_order: DEFAULT_SORT_ORDER,
-		};
-
+	const resetFiltersAndSort = () => {
 		setFilterString('');
 		setSortColumn(DEFAULT_SORT_COLUMN);
 		setSortOrder(DEFAULT_SORT_ORDER);
 
-		setQuery(newQuery, 'pushIn');
+		setQuery(defaultFiltersAndSort, 'pushIn');
 	};
 
 	const checkPermissions = useCallback(async () => {
@@ -297,8 +293,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	}, [assignments, assignmentCount]);
 
-	const attemptDuplicateAssignment = async (
-		newTitle: string,
+	const duplicateAssignment = async (
 		assignment: Partial<Avo.Assignment.Assignment_v2> | null
 	) => {
 		try {
@@ -307,16 +302,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					'Failed to duplicate the assignment because the marked assignment is null'
 				);
 			}
+			const newTitle = `${t('assignment/views/assignment-overview___kopie')} ${
+				assignment.title
+			}`;
 			await AssignmentService.duplicateAssignment(newTitle, assignment);
 
 			onUpdate();
-			resetTableSort();
+			if (isEqual(defaultFiltersAndSort, query)) {
+				fetchAssignments();
+			} else {
+				resetFiltersAndSort(); // This will trigger the fetchAssignments
+			}
 
 			ToastService.success(
 				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
 			);
 		} catch (err) {
-			console.error('Failed to copy the assignment', err, { newTitle, assignment });
+			console.error('Failed to copy the assignment', err, { assignment });
 			ToastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
@@ -382,8 +384,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						(dataRow.id as unknown) as string
 					);
 
-					setMarkedAssignment(assignment);
-					setDuplicateAssignmentModalOpen(true);
+					await duplicateAssignment(assignment);
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
@@ -407,11 +408,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleDeleteModalClose = () => {
 		setDeleteAssignmentModalOpen(false);
-		setMarkedAssignment(null);
-	};
-
-	const handleDuplicateModalClose = () => {
-		setDuplicateAssignmentModalOpen(false);
 		setMarkedAssignment(null);
 	};
 
@@ -678,11 +674,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										disabled={!assignments}
 									/>
 								</FormGroup>
-								<FormGroup inlineMode="shrink">
+								<FormGroup inlineMode="grow">
 									<Button
 										label={t('search/views/search___zoeken')}
 										type="primary"
-										className="c-search-button"
+										className="c-assignment-overview__search-input"
 										onClick={copySearchTermsToQueryState}
 									/>
 								</FormGroup>
@@ -846,25 +842,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					deleteObjectCallback={() =>
 						deleteCurrentAssignment(get(markedAssignment, 'id', null))
 					}
-				/>
-
-				<InputModal
-					title={t('assignment/views/assignment-overview___dupliceer-taak')}
-					inputLabel={t(
-						'assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam'
-					)}
-					inputValue={get(markedAssignment, 'title', '')}
-					inputPlaceholder={t(
-						'assignment/views/assignment-overview___titel-van-de-nieuwe-taak'
-					)}
-					isOpen={isDuplicateAssignmentModalOpen}
-					onClose={handleDuplicateModalClose}
-					inputCallback={(newTitle: string) =>
-						attemptDuplicateAssignment(newTitle, markedAssignment)
-					}
-					emptyMessage={t(
-						'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'
-					)}
 				/>
 			</>
 		);

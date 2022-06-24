@@ -56,7 +56,6 @@ import {
 	createDropdownMenuItem,
 	CustomError,
 	formatDate,
-	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
 	getFullName,
@@ -532,10 +531,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const createAssignment = (): void => {
-		redirectToClientPage(
-			generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
-			history
-		);
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
 	};
 
 	const onDeleteCollection = async (): Promise<void> => {

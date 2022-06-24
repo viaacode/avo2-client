@@ -1,4 +1,5 @@
 import { TableColumn } from '@viaa/avo2-components';
+import { AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
@@ -68,3 +69,7 @@ export interface AssignmentLabelColor {
 	label: string; // #FF0000
 	value: string; // BRIGHT_RED
 }
+
+/// Zoek & bouw
+
+export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'>;

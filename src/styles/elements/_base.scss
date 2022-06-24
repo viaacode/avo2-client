@@ -19,7 +19,7 @@ $g-base-background: #FFF !default;
 	box-sizing: border-box;
 }
 
-html, body {
+html { // Don't use body to allow sticky elements
 	overflow-x: hidden;
 }
 
