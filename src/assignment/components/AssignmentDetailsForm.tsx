@@ -88,6 +88,7 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps> = (props
 						required
 					>
 						<AssignmentLabels
+							type="CLASS"
 							id={getId(AssignmentDetailsFormIds.classrooms)}
 							labels={assignment.labels.filter(
 								(item) => item.assignment_label.type === 'CLASS'
@@ -117,6 +118,7 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps> = (props
 						required
 					>
 						<AssignmentLabels
+							type="LABEL"
 							id={getId(AssignmentDetailsFormIds.labels)}
 							labels={assignment.labels.filter(
 								(item) => item.assignment_label.type === 'LABEL'

@@ -35,9 +35,9 @@ export const UPDATE_ASSIGNMENT_LABEL = gql`
 		$label: String!
 		$colorEnumValue: lookup_enum_colors_enum!
 		$profileId: uuid!
-		$labelId: Int!
+		$labelId: uuid!
 	) {
-		update_app_assignment_labels(
+		update_app_assignment_labels_v2(
 			_set: { label: $label, color_enum_value: $colorEnumValue }
 			where: { owner_profile_id: { _eq: $profileId }, id: { _eq: $labelId } }
 		) {

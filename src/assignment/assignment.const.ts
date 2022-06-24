@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
+import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../shared/constants';
@@ -8,6 +9,7 @@ import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 
 import {
+	AssignmentBlockTypeDict,
 	AssignmentColumn,
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
@@ -165,6 +167,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 					.required(),
 			})
 		),
+		blocks: array(),
 		answer_url: string().nullable().optional(),
 		available_at: string().optional(),
 		deadline_at: string().optional(),
@@ -175,6 +178,7 @@ export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	id: undefined,
 	title: t('assignment/assignment___titel-opdracht'),
 	labels: [],
+	blocks: [],
 	available_at: new Date().toISOString(),
 	answer_url: undefined,
 	deadline_at: undefined,
@@ -222,12 +226,26 @@ export enum ASSIGNMENT_CREATE_UPDATE_TABS {
 	Details,
 }
 
+export const EDIT_ASSIGNMENT_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> = () => ({
+	ITEM: 'video',
+	TEXT: 'type',
+	ZOEK: 'search',
+});
+
+export const EDIT_ASSIGNMENT_BLOCK_LABELS: (t: TFunction) => AssignmentBlockTypeDict<string> = (
+	t
+) => ({
+	ITEM: t('assignment/assignment___fragment'),
+	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
+	ZOEK: t('assignment/assignment___zoekoefening'),
+});
+
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	assignmentType: AssignmentType
 ): AssignmentResponseColumn[] => [
 	{
 		id: 'pupil',
-		label: i18n.t('Leerling'),
+		label: i18n.t('assignment/assignment___leerling'),
 		sortable: true,
 		dataType: 'string',
 	},
@@ -235,19 +253,19 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		? [
 				{
 					id: 'collection_title' as AssignmentResponseTableColumns,
-					label: i18n.t('Leerlingencollectie'),
+					label: i18n.t('assignment/assignment___leerlingencollectie'),
 					sortable: true,
 					dataType: 'string' as ColumnDataType,
 				},
 				{
 					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
-					label: i18n.t('Fragmenten'),
+					label: i18n.t('assignment/assignment___fragmenten'),
 					sortable: true,
 					dataType: 'number' as ColumnDataType,
 				},
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('Laatst bewerkt'),
+					label: i18n.t('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: 'dateTime' as ColumnDataType,
 				},
@@ -255,7 +273,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		: [
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('Laatst bekeken'),
+					label: i18n.t('assignment/assignment___laatst-bekeken'),
 					sortable: true,
 					dataType: 'dateTime' as ColumnDataType,
 				},

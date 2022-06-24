@@ -189,7 +189,21 @@ export class AssignmentService {
 				});
 			}
 
-			return assignmentResponse;
+			return {
+				...assignmentResponse,
+				blocks: await Promise.all(
+					assignmentResponse.blocks.map(async (block) =>
+						block.fragment_id
+							? await ItemsService.fetchItemByExternalId(block.fragment_id).then(
+									(item) => ({
+										...block,
+										item,
+									})
+							  )
+							: block
+					)
+				),
+			};
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
 				assignmentId,
@@ -272,6 +286,7 @@ export class AssignmentService {
 		delete (assignmentToSave as any).labels;
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
+		delete assignmentToSave.blocks;
 
 		return assignmentToSave as Avo.Assignment.Assignment_v2;
 	}

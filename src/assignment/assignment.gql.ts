@@ -18,6 +18,23 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 					owner_profile_id
 				}
 			}
+			blocks {
+				created_at
+				custom_description
+				custom_title
+				end_oc
+				fragment_id
+				id
+				is_deleted
+				original_description
+				original_title
+				position
+				start_oc
+				thumbnail_path
+				type
+				updated_at
+				use_custom_fields
+			}
 			responses {
 				id
 			}
