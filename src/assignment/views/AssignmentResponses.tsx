@@ -80,7 +80,9 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		markedAssignmentResponse,
 		setMarkedAssignmentResponse,
 	] = useState<Avo.Assignment.Response_v2 | null>(null);
-	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
+	const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<boolean | null>(
+		null
+	);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] = useTableSort<
 		AssignmentOverviewTableColumns
@@ -150,12 +152,11 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const checkPermissions = useCallback(async () => {
 		try {
 			if (user) {
-				setCanEditAssignments(
+				setCanViewAssignmentResponses(
 					await PermissionService.hasPermissions(
 						[
-							PermissionName.EDIT_ANY_ASSIGNMENTS,
-							PermissionName.EDIT_OWN_ASSIGNMENTS,
-							PermissionName.EDIT_ASSIGNMENTS,
+							PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
+							PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
 						],
 						user
 					)
@@ -165,9 +166,8 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			console.error('Failed to check permissions', err, {
 				user,
 				permissions: [
-					PermissionName.EDIT_ANY_ASSIGNMENTS,
-					PermissionName.EDIT_OWN_ASSIGNMENTS,
-					PermissionName.EDIT_ASSIGNMENTS,
+					PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
+					PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
 				],
 			});
 			ToastService.danger(
@@ -176,7 +176,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				)
 			);
 		}
-	}, [setCanEditAssignments, user, t]);
+	}, [setCanViewAssignmentResponses, user, t]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -197,7 +197,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const fetchAssignmentResponses = useCallback(async () => {
 		try {
-			if (isNil(canEditAssignments)) {
+			if (isNil(canViewAssignmentResponses)) {
 				return;
 			}
 
@@ -229,7 +229,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			});
 		}
 	}, [
-		canEditAssignments,
+		canViewAssignmentResponses,
 		match.params.id,
 		tableColumns,
 		user,
@@ -249,10 +249,10 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	}, [fetchAssignment, match]);
 
 	useEffect(() => {
-		if (!isNil(canEditAssignments)) {
+		if (!isNil(canViewAssignmentResponses)) {
 			fetchAssignmentResponses();
 		}
-	}, [canEditAssignments, fetchAssignmentResponses]);
+	}, [canViewAssignmentResponses, fetchAssignmentResponses]);
 
 	useEffect(() => {
 		if (!isNil(assignmentResponses) && !isNil(assignmentResponsesCount) && !isNil(assignment)) {
@@ -512,7 +512,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		);
 	};
 
-	return canEditAssignments !== null ? (
+	return canViewAssignmentResponses !== null ? (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
 			dataObject={assignmentResponses}
