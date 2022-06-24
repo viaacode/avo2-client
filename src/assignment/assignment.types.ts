@@ -1,5 +1,5 @@
 import { TableColumn } from '@viaa/avo2-components';
-import { AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabel_v2, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
@@ -23,11 +23,6 @@ export enum AssignmentType {
 	ZOEK = 'ZOEK',
 	KIJK = 'KIJK',
 	BOUW = 'BOUW',
-}
-
-export enum AssignmentLabelType {
-	LABEL = 'LABEL',
-	CLASS = 'CLASS',
 }
 
 export enum AssignmentBlockType {
@@ -59,4 +54,10 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'>;
+// Omit avoids a typescript error here
+export type AssignmentSchemaLabel_v2 = { assignment_label: Omit<AssignmentLabel_v2, 'profile'> };
+
+export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'> &
+	Partial<Pick<AssignmentSchema_v2, 'id' | 'available_at' | 'deadline_at' | 'answer_url'>> & {
+		labels: AssignmentSchemaLabel_v2[];
+	};

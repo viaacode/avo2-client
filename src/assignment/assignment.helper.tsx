@@ -25,7 +25,7 @@ import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
 
 import { AssignmentService } from './assignment.service';
-import { AssignmentLayout } from './assignment.types';
+import { AssignmentLayout, AssignmentSchemaLabel_v2 } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
 
 export class AssignmentHelper {
@@ -109,7 +109,7 @@ export class AssignmentHelper {
 			property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
 			value: any
 		) => void,
-		setAssignmentLabels: (labels: Avo.Assignment.Label_v2[]) => void
+		setAssignmentLabels: (labels: AssignmentSchemaLabel_v2[]) => void
 	) {
 		const now = new Date(Date.now());
 
@@ -174,7 +174,9 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___vak-of-project')}
 						>
 							<AssignmentLabels
-								labels={assignmentLabels}
+								labels={assignmentLabels.map((item) => ({
+									assignment_label: item,
+								}))}
 								user={user}
 								onChange={setAssignmentLabels}
 							/>

@@ -2,7 +2,7 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { AssignmentContentLabel, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -32,7 +32,11 @@ import {
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
-import { AssignmentOverviewTableColumns, AssignmentRetrieveError } from './assignment.types';
+import {
+	AssignmentOverviewTableColumns,
+	AssignmentRetrieveError,
+	AssignmentSchemaLabel_v2,
+} from './assignment.types';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -279,8 +283,8 @@ export class AssignmentService {
 
 	static async updateAssignment(
 		assignment: Partial<Avo.Assignment.Assignment_v2>,
-		initialLabels?: Avo.Assignment.Label_v2[],
-		updatedLabels?: Avo.Assignment.Label_v2[]
+		initialLabels?: Pick<AssignmentLabel_v2, 'id'>[],
+		updatedLabels?: Pick<AssignmentLabel_v2, 'id'>[]
 	): Promise<Avo.Assignment.Assignment_v2 | null> {
 		try {
 			if (isNil(assignment.id)) {
@@ -373,7 +377,7 @@ export class AssignmentService {
 
 	static async insertAssignment(
 		assignment: Partial<Avo.Assignment.Assignment_v2>,
-		addedLabels?: Avo.Assignment.Label_v2[]
+		addedLabels?: AssignmentSchemaLabel_v2[]
 	): Promise<Avo.Assignment.Assignment_v2 | null> {
 		try {
 			const assignmentToSave = AssignmentService.transformAssignment({
@@ -404,7 +408,7 @@ export class AssignmentService {
 
 			if (addedLabels) {
 				// Update labels
-				const addedLabelIds = addedLabels.map((labelObj) => labelObj.id);
+				const addedLabelIds = addedLabels.map((item) => item.assignment_label.id);
 
 				await Promise.all([
 					AssignmentLabelsService.linkLabelsFromAssignment(assignmentId, addedLabelIds),

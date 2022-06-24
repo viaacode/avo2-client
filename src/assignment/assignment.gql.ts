@@ -14,6 +14,8 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 					}
 					id
 					label
+					type
+					owner_profile_id
 				}
 			}
 			responses {
@@ -90,6 +92,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 					id
 					label
 					type
+					owner_profile_id
 				}
 			}
 			responses {
@@ -146,6 +149,8 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 					}
 					id
 					label
+					type
+					owner_profile_id
 				}
 			}
 			responses {
@@ -217,6 +222,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					id
 					label
 					type
+					owner_profile_id
 				}
 			}
 			responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {

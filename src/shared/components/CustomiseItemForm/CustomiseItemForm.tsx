@@ -11,17 +11,14 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 
+import { LabeledFormField } from '../../types';
 import WYSIWYGWrapper, { WYSIWYGWrapperProps } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
 import './CustomiseItemForm.scss';
 
-export interface CustomiseItemFormField {
-	label?: string;
-}
-
-export type CustomiseItemFormToggleField = CustomiseItemFormField & ToggleProps;
-export type CustomiseItemFormTitleField = CustomiseItemFormField & TextInputProps;
-export type CustomiseItemFormDescriptionField = CustomiseItemFormField & WYSIWYGWrapperProps;
+export type CustomiseItemFormToggleField = LabeledFormField & ToggleProps;
+export type CustomiseItemFormTitleField = LabeledFormField & TextInputProps;
+export type CustomiseItemFormDescriptionField = LabeledFormField & WYSIWYGWrapperProps;
 
 export interface CustomiseItemFormProps extends DefaultProps {
 	id: string | number;
