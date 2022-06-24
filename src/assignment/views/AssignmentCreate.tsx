@@ -147,7 +147,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 							<>
 								<ContentInput
 									{...field}
-									placeholder={t('placeholder')}
+									placeholder={t(
+										'assignment/views/assignment-create___placeholder'
+									)}
 									nodeCancel={<Icon name="x" size="small" />}
 									nodeSubmit={<Icon name="check" size="small" />}
 									onChange={(title) => {
@@ -243,14 +245,19 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				{/* Always show on create */}
 				<StickyEdgeBar>
 					<p>
-						<strong>{t('Opdracht opslaan?')}</strong>
+						<strong>
+							{t('assignment/views/assignment-create___opdracht-opslaan')}
+						</strong>
 					</p>
 
-					<Button label={t('Annuleer')} onClick={() => reset()} />
+					<Button
+						label={t('assignment/views/assignment-create___annuleer')}
+						onClick={() => reset()}
+					/>
 
 					<Button
 						type="tertiary"
-						label={t('Opslaan')}
+						label={t('assignment/views/assignment-create___opslaan')}
 						onClick={handleSubmit(submit, (...args) => console.error(args))}
 					/>
 				</StickyEdgeBar>

@@ -262,12 +262,12 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		}
 	}, [assignmentResponses, assignmentResponsesCount, assignment]);
 
-	const deleteCurrentAssignment = async (assignmentResponseId: string | null) => {
+	const deleteAssignmentResponse = async (assignmentResponseId: string | null) => {
 		try {
 			if (isNil(assignmentResponseId)) {
 				ToastService.danger(
 					t(
-						'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
+						'assignment/views/assignment-responses___de-response-kon-niet-verwijderd-worden-geen-geldig-id'
 					)
 				);
 				return;
@@ -284,7 +284,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			console.error(err);
 			ToastService.danger(
 				t(
-					'assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt'
+					'assignment/views/assignment-responses___het-verwijderen-van-de-response-is-mislukt'
 				)
 			);
 		}
@@ -471,7 +471,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					isOpen={isDeleteAssignmentResponseModalOpen}
 					onClose={handleDeleteModalClose}
 					deleteObjectCallback={() =>
-						deleteCurrentAssignment(get(markedAssignmentResponse, 'id', null))
+						deleteAssignmentResponse(get(markedAssignmentResponse, 'id', null))
 					}
 				/>
 			</>

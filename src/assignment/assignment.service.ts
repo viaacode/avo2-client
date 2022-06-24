@@ -741,7 +741,7 @@ export class AssignmentService {
 
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response_v2> = {
-				owner_profile_ids: [getProfileId(user)],
+				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
 				collection_title: null,
 			};

@@ -201,7 +201,7 @@ export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 
 export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
 	return object({
-		title: string().required(t('Titel is verplicht')),
+		title: string().required(t('assignment/assignment___titel-is-verplicht')),
 	});
 };
 
