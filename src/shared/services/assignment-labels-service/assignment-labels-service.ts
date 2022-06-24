@@ -17,12 +17,16 @@ import {
 } from './assignment-labels-service.gql';
 
 export class AssignmentLabelsService {
-	public static async getLabelsForProfile(profileId: string): Promise<Avo.Assignment.Label_v2[]> {
+	public static async getLabelsForProfile(
+		profileId: string,
+		type?: string
+	): Promise<Avo.Assignment.Label_v2[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
 				variables: {
 					profileId,
+					type,
 				},
 			});
 

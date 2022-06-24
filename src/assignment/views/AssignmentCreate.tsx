@@ -12,6 +12,7 @@ import {
 	ContentInput,
 	Flex,
 	Icon,
+	Spacer,
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
@@ -25,13 +26,14 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
-	ASSIGNMENT_FORM_DEFAULT,
+	ASSIGNMENT_FORM_FIELDS,
 	ASSIGNMENT_FORM_SCHEMA,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
+import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentLesgeverTabs } from '../hooks';
+import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -40,24 +42,19 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [t] = useTranslation();
 
 	// Data
-	const [defaultValues] = useState<AssignmentFormState>(ASSIGNMENT_FORM_DEFAULT(t));
-	const [assignment, setAssignment] = useState<AssignmentFormState>(defaultValues);
+	const [assignment, setAssignment, defaultValues] = useAssignmentForm();
 
-	const {
-		setValue,
-		control,
-		getValues,
-		handleSubmit,
-		formState: { errors },
-		reset: resetForm,
-	} = useForm<AssignmentFormState>({
+	const form = useForm<AssignmentFormState>({
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
+	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
+
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+	const fields = useMemo(() => ASSIGNMENT_FORM_FIELDS(t), [t]);
 
 	// Effects
 
@@ -67,7 +64,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			const cast = key as keyof AssignmentFormState;
 			setValue(cast, assignment[cast]);
 		});
-	}, [assignment, setValue]);
+
+		trigger();
+	}, [assignment, setValue, trigger]);
 
 	// Set the loading state when the form is ready
 	useEffect(() => {
@@ -80,10 +79,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const submit = async () => {
 		try {
-			const created = await AssignmentService.insertAssignment({
-				...assignment,
-				owner_profile_id: user.profile?.id,
-			});
+			const created = await AssignmentService.insertAssignment(
+				{
+					...assignment,
+					owner_profile_id: user.profile?.id,
+					labels: [],
+				},
+				assignment.labels
+			);
 
 			if (created) {
 				trackEvents(
@@ -170,7 +173,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				</BlockHeading>
 			</Flex>
 		),
-		[t, control]
+		[t, control, setAssignment]
 	);
 
 	// These actions are just UI, they are disabled because they can't be used during creation
@@ -217,12 +220,21 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return 'inhoud';
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
-				return 'details';
+				// This form receives its parent's state because we don't care about rerender performance here
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentDetailsForm
+							state={[assignment, setAssignment]}
+							initial={defaultValues}
+							{...fields}
+						/>
+					</div>
+				);
 
 			default:
 				return tab;
 		}
-	}, [tab]);
+	}, [tab, defaultValues, assignment, setAssignment, fields]);
 
 	const render = () => (
 		<div className="c-assignment-page c-assignment-page--create">
@@ -234,13 +246,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			/>
 
 			<Container mode="horizontal">
-				{renderTabContent}
-
-				<p>state: {JSON.stringify(assignment)}</p>
-
-				<p>form: {JSON.stringify(getValues())}</p>
-
-				<p style={{ color: 'red' }}>errors: {JSON.stringify(errors)}</p>
+				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
 
 				{/* Always show on create */}
 				<StickyEdgeBar>
