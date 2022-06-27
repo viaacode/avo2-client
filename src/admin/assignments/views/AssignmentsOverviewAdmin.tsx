@@ -51,7 +51,10 @@ const AssignmentOverviewAdmin: FunctionComponent<
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({});
+	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({
+		sort_column: 'created_at',
+		sort_order: 'desc',
+	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedAssignmentIds, setSelectedAssignmentIds] = useState<string[]>([]);
 	const [assignmentsDeleteModalOpen, setAssignmentsDeleteModalOpen] = useState<boolean>(false);
@@ -118,7 +121,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 				assignmentCountTemp,
 			] = await AssignmentService.fetchAssignmentsForAdmin(
 				tableState.page || 0,
-				(tableState.sort_column || 'title') as AssignmentOverviewTableColumns,
+				(tableState.sort_column || 'created_at') as AssignmentOverviewTableColumns,
 				tableState.sort_order || 'desc',
 				columnDataType,
 				generateWhereObject(getFilters(tableState))
@@ -337,6 +340,8 @@ const AssignmentOverviewAdmin: FunctionComponent<
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(user as Avo.User.User)}
 					rowKey="id"
+					defaultOrderProp={'created_at'}
+					defaultOrderDirection={'desc'}
 				/>
 				<ConfirmModal
 					body={t(
