@@ -35,7 +35,7 @@ import {
 import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
 import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, CustomError } from '../../shared/helpers';
+import { buildLink, CustomError, isRichTextEmpty } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -81,17 +81,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		trigger,
 	} = form;
 
-	const setAssignmentBlockProperty = useCallback(
-		(block: AssignmentBlock, key: keyof AssignmentBlock, value: any) => {
-			if (block[key] === value) {
-				return;
-			}
-
+	const setBlock = useCallback(
+		(block: AssignmentBlock, update: Partial<AssignmentBlock>) => {
 			const blocks = [
 				...assignment.blocks.filter((b) => b.id !== block.id),
 				{
 					...block,
-					[key]: value,
+					...update,
 				},
 			];
 
@@ -162,6 +158,43 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return mapped;
 		});
 	}, [assignment.blocks, setAssignment, setValue]);
+
+	const fragmentSwitchButtons = useCallback(
+		(block: AssignmentBlock) => [
+			{
+				active: !block.use_custom_fields,
+				label: t('assignment/views/assignment-edit___origineel'),
+				onClick: () => {
+					setBlock(block, {
+						use_custom_fields: false,
+					});
+				},
+			},
+			{
+				active: block.use_custom_fields && !isRichTextEmpty(block.custom_description),
+				label: t('assignment/views/assignment-edit___aangepast'),
+				onClick: () => {
+					setBlock(block, {
+						use_custom_fields: true,
+						custom_title: block.original_title || block.item?.title,
+						custom_description: block.original_description || block.item?.description,
+					});
+				},
+			},
+			{
+				active: block.use_custom_fields && isRichTextEmpty(block.custom_description),
+				label: t('assignment/views/assignment-edit___geen-beschrijving'),
+				onClick: () => {
+					setBlock(block, {
+						use_custom_fields: true,
+						custom_title: block.original_title || block.item?.title,
+						custom_description: '',
+					});
+				},
+			},
+		],
+		[setBlock, t]
+	);
 
 	// HTTP
 
@@ -287,6 +320,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				})}
 			>
 				<Icon name="chevron-left" size="small" type="arrows" />
+
 				{t('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
@@ -332,7 +366,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t, control, setAssignment]
 	);
 
-	// These actions are just UI, they are disabled because they can't be used during creation
+	// These actions are just UI, they are disabled because they need to be implemented in a AssignmentActions component
 	const renderActions = useMemo(
 		() => (
 			<>
@@ -379,8 +413,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									'assignment/views/assignment-edit___instructies-of-omschrijving'
 								),
 								value: block.custom_title,
-								onChange: (value) =>
-									setAssignmentBlockProperty(block, 'custom_title', value),
+								onChange: (value) => setBlock(block, { custom_title: value }),
 							}}
 							description={{
 								placeholder: t(
@@ -388,11 +421,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								),
 								initialHtml: convertToHtml(block.custom_description),
 								onChange: (value) =>
-									setAssignmentBlockProperty(
-										block,
-										'custom_description',
-										value.toHTML()
-									),
+									setBlock(block, {
+										custom_description: value.toHTML(),
+									}),
 							}}
 						/>
 					);
@@ -407,15 +438,15 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							className="u-padding-l"
 							id={block.item.id}
 							preview={() => {
-								const meta = block.item as ItemSchema;
+								const item = block.item as ItemSchema;
 
 								return (
 									<FlowPlayerWrapper
-										item={meta}
-										poster={meta.thumbnail_path}
-										external_id={meta.external_id}
-										duration={meta.duration}
-										title={meta.title}
+										item={item}
+										poster={item.thumbnail_path}
+										external_id={item.external_id}
+										duration={item.duration}
+										title={item.title}
 										cuePoints={{
 											start: block.start_oc,
 											end: block.end_oc,
@@ -423,40 +454,51 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									/>
 								);
 							}}
-							toggle={{
+							buttons={{
 								label: t(
-									'collection/components/fragment/fragment-edit___alternatieve-tekst'
+									'assignment/views/assignment-edit___titel-en-beschrijving'
 								),
-								checked: block.use_custom_fields,
-								onChange: (value) =>
-									setAssignmentBlockProperty(block, 'use_custom_fields', value),
+								items: fragmentSwitchButtons(block),
 							}}
 							title={{
-								label: t('assignment/views/assignment-edit___titel'),
+								label: t('assignment/views/assignment-edit___titel-fragment'),
 								placeholder: t(
 									'assignment/views/assignment-edit___instructies-of-omschrijving'
 								),
-								value: block.custom_title,
-								onChange: (value) =>
-									setAssignmentBlockProperty(block, 'custom_title', value),
+								value: !block.use_custom_fields
+									? block.original_title || block.item?.title
+									: block.custom_title,
+								disabled: !block.use_custom_fields,
+								onChange: (value) => setBlock(block, { custom_title: value }),
 							}}
-							description={{
-								initialHtml: convertToHtml(block.custom_description),
-								onChange: (value) =>
-									setAssignmentBlockProperty(
-										block,
-										'custom_description',
-										value.toHTML()
-									),
-							}}
-						/>
+							description={
+								!isRichTextEmpty(block.custom_description)
+									? {
+											label: t(
+												'assignment/views/assignment-edit___beschrijving-fragment'
+											),
+											initialHtml: convertToHtml(
+												!block.use_custom_fields
+													? block.original_description ||
+															block.item?.description
+													: block.custom_description
+											),
+											disabled: !block.use_custom_fields,
+											onChange: (value) =>
+												setBlock(block, {
+													custom_description: value.toHTML(),
+												}),
+									  }
+									: undefined
+							}
+						></CustomiseItemForm>
 					);
 
 				default:
 					break;
 			}
 		},
-		[t, setAssignmentBlockProperty]
+		[t, setBlock, fragmentSwitchButtons]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
