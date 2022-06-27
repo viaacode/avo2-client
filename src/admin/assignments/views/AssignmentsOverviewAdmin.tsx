@@ -249,7 +249,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 		switch (columnId) {
 			case 'title':
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id })}>
 						{truncateTableValue(assignment.title)}
 					</Link>
 				);
@@ -273,8 +273,11 @@ const AssignmentOverviewAdmin: FunctionComponent<
 					: t('Actief');
 
 			case 'responses':
-				if (assignment.responses?.length) {
+				if ((assignment.responses?.length || 0) >= 1) {
 					return <Link to="#">{assignment.responses?.length}</Link>; // TODO add link to responses page
+				}
+				if (assignment.assignment_type === 'BOUW') {
+					return t('Aantal leerlingen collecties');
 				}
 				return t('nvt');
 
