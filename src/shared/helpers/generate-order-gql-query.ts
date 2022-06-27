@@ -1,5 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { TableColumnDataType } from '../types/table-column-data-type';
+
 const DEFAULT_NULL_ORDER: Record<Avo.Search.OrderDirection, string> = {
 	asc: 'asc_nulls_last',
 	desc: 'desc_nulls_first',
@@ -38,7 +40,7 @@ export const getSortOrder = (
 export const getOrderObject = (
 	sortColumn: string,
 	sortOrder: Avo.Search.OrderDirection,
-	tableColumnDataType: string,
+	tableColumnDataType: TableColumnDataType,
 	columns: Partial<{
 		[columnName: string]: (order: Avo.Search.OrderDirection) => any;
 	}>

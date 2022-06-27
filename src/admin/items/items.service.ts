@@ -9,6 +9,7 @@ import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
@@ -40,7 +41,7 @@ export class ItemsService {
 		page: number,
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		where: any
 	): Promise<[Avo.Item.Item[], number]> {
 		let variables: any;

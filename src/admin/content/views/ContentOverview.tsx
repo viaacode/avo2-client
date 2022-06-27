@@ -49,6 +49,7 @@ import {
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { useContentPageLabelOptions } from '../../content-page-labels/hooks/useContentPageLabelOptions';
 import FilterTable, {
 	FilterableColumn,
@@ -205,7 +206,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
 			const [
 				contentPagesArray,
 				contentPageCountTemp,

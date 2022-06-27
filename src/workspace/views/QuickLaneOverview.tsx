@@ -19,6 +19,7 @@ import {
 	QuickLaneFilterService,
 } from '../../shared/services/quick-lane-filter-service';
 import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../shared/types';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
 import './QuickLaneOverview.scss';
@@ -57,7 +58,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			id: QUICK_LANE_COLUMNS.TITLE,
 			label: t('workspace/views/quick-lane-overview___titel'),
 			sortable: true,
-			dataType: 'string',
+			dataType: TableColumnDataType.string,
 			visibleByDefault: true,
 		},
 		// Hide type on mobile
@@ -68,7 +69,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						id: QUICK_LANE_COLUMNS.CONTENT_LABEL,
 						label: t('workspace/views/quick-lane-overview___type'),
 						sortable: true,
-						dataType: 'string',
+						dataType: TableColumnDataType.string,
 						visibleByDefault: true,
 						filterType: 'CheckboxDropdownModal',
 						filterProps: { options: getTypeOptions(t) },
@@ -86,7 +87,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 										'workspace/views/quick-lane-overview___aangemaakt-door'
 									),
 									sortable: true,
-									dataType: 'string',
+									dataType: TableColumnDataType.string,
 									visibleByDefault: true,
 									filterType: 'MultiUserSelectDropdown',
 								},
@@ -97,7 +98,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 							id: QUICK_LANE_COLUMNS.CREATED_AT,
 							label: t('workspace/views/quick-lane-overview___aangemaakt-op'),
 							sortable: true,
-							dataType: 'dateTime',
+							dataType: TableColumnDataType.dateTime,
 							visibleByDefault: true,
 							filterType: 'DateRangeDropdown',
 						},
@@ -106,7 +107,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						// 	id: QUICK_LANE_COLUMNS.UPDATED_AT,
 						// 	label: t('workspace/views/quick-lane-overview___aangepast-op'),
 						// 	sortable: true,
-						// 	dataType: 'dateTime',
+						// 	dataType: TableColumnDataType.dateTime,
 						// 	visibleByDefault: true,
 						// 	filterType: 'DateRangeDropdown',
 						// },
@@ -139,7 +140,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				sortColumn: debouncedFilters.sort_column,
 				sortType: columns.find((column) => {
 					return column.id === debouncedFilters.sort_column;
-				})?.dataType,
+				})?.dataType as TableColumnDataType,
 				limit: ITEMS_PER_PAGE,
 				offset: debouncedFilters.page * ITEMS_PER_PAGE,
 			};

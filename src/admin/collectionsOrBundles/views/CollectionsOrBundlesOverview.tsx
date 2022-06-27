@@ -28,6 +28,7 @@ import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
@@ -193,7 +194,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
 			const [
 				collectionsTemp,
 				collectionsCountTemp,

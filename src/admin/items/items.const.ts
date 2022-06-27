@@ -3,6 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 import { ItemsOverviewTableCols } from './items.types';
@@ -50,14 +51,14 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/items/items___pid'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'title',
 		label: i18n.t('admin/items/items___titel'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'series',
@@ -69,7 +70,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 			options: seriesOptions,
 			showMaxOptions: 40,
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'issued',
@@ -77,7 +78,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'published_at',
@@ -85,7 +86,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'type',
@@ -100,7 +101,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 			] as CheckboxOption[],
 			showMaxOptions: 40,
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'organisation',
@@ -112,7 +113,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 			options: cpOptions,
 			showMaxOptions: 40,
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'is_published',
@@ -140,7 +141,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 				},
 			],
 		},
-		dataType: 'boolean',
+		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'views',
@@ -148,7 +149,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		icon: 'eye',
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'number',
+		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'in_collection',
@@ -156,7 +157,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		icon: 'collection',
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'number',
+		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'bookmarks',
@@ -166,7 +167,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		icon: 'bookmark',
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'number',
+		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'quick_lane_links',
@@ -174,7 +175,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		icon: 'link-2',
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'number',
+		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'in_assignment',
@@ -183,7 +184,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		),
 		icon: 'clipboard',
 		sortable: true,
-		dataType: 'number',
+		dataType: TableColumnDataType.number,
 	},
 	// {
 	// 	id: 'updated_at',
@@ -191,7 +192,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	// 	sortable: true, visibleByDefault: true,
 	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
-	// dataType: 'dateTime',
+	// dataType: TableColumnDataType.dateTime,
 	// },
 	// {
 	// 	id: 'publish_at',
@@ -199,7 +200,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	// 	sortable: true, visibleByDefault: true,
 	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
-	// 	dataType: 'dateTime',
+	// 	dataType: TableColumnDataType.dateTime,
 	// },
 	// {
 	// 	id: 'depublish_at',
@@ -207,7 +208,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	// 	sortable: true, visibleByDefault: true,
 	// 	visibleByDefault: true,
 	// 	filterType: 'DateRangeDropdown',
-	// 	dataType: 'dateTime',
+	// 	dataType: TableColumnDataType.dateTime,
 	// },
 	// { id: 'description', label: i18n.t('admin/items/items___beschrijving'), sortable: true, visibleByDefault: true },
 	// { id: 'duration', label: i18n.t('admin/items/items___duur'), sortable: true, visibleByDefault: true },
@@ -245,14 +246,14 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 		label: i18n.t('admin/items/items___titel'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'pid',
 		label: i18n.t('admin/items/items___pid'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'updated_at',
@@ -260,7 +261,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'status',
@@ -281,7 +282,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = ()
 			],
 		},
 
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'actions',

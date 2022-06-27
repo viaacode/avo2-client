@@ -9,6 +9,7 @@ import { getOrderObject } from '../helpers/generate-order-gql-query';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
 import { GET_QUICK_LANE_WITH_FILTERS } from '../queries/quick-lane-filter.gql';
 import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
+import { TableColumnDataType } from '../types/table-column-data-type';
 
 import { dataService } from './data-service';
 
@@ -21,7 +22,7 @@ export interface QuickLaneFilters {
 	updatedAt?: DateRange;
 	sortColumn?: string;
 	sortOrder?: SearchOrderDirection;
-	sortType?: string;
+	sortType?: TableColumnDataType;
 	limit: number;
 	offset: number;
 }

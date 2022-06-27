@@ -5,6 +5,7 @@ import { Switch } from 'react-router';
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { renderErrorRoutes } from '../error/error.routes';
 
+import { renderAdminAssignmentRoutes } from './assignments/assignment.routes';
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
 import { renderAdminContentPageLabelRoutes } from './content-page-labels/content-page-label.routes';
 import { renderAdminContentRoutes } from './content/content.routes';
@@ -63,6 +64,9 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 				[PermissionName.VIEW_COLLECTIONS_OVERVIEW, PermissionName.VIEW_BUNDLES_OVERVIEW],
 				'OR'
 			)}
+			{renderWithPermissions(renderAdminAssignmentRoutes, [
+				PermissionName.VIEW_ANY_ASSIGNMENTS,
+			])}
 			{renderWithPermissions(renderInteractiveTourRoutes, [
 				PermissionName.EDIT_INTERACTIVE_TOURS,
 			])}

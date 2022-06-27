@@ -41,6 +41,7 @@ import {
 } from '../../../shared/hooks';
 import { useIdps } from '../../../shared/hooks/useIdps';
 import { ToastService } from '../../../shared/services';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
@@ -251,7 +252,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			const column = columns.find((tableColumn: FilterableColumn) => {
 				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
 			});
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
 			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
@@ -402,7 +403,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			const column = columns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
 			const [profilesTemp] = await UserService.getProfiles(
 				0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,

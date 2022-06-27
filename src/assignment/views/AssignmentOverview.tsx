@@ -25,7 +25,6 @@ import {
 	Select,
 	Spacer,
 	Table,
-	TagList,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -51,24 +50,17 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import {
-	buildLink,
-	CustomError,
-	formatDate,
-	isMobileWidth,
-	navigate,
-	renderAvatar,
-} from '../../shared/helpers';
+import { buildLink, CustomError, formatDate, isMobileWidth, navigate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	AssignmentOverviewTableColumns,
-	AssignmentSchemaLabel_v2,
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
@@ -231,7 +223,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
 
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
@@ -454,17 +446,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
-		<TagList
-			tags={labels.map(({ assignment_label: item }) => ({
-				id: item.id,
-				label: item.label || '',
-				color: item.color_override || item.enum_color?.label || 'hotpink',
-			}))}
-			swatches
-			closable={false}
-		/>
-	);
+	// TODO re-enable rendering of labels with the v2 assignments
+	// const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
+	// 	<TagList
+	// 		tags={labels.map(({ assignment_label: item }) => ({
+	// 			id: item.id,
+	// 			label: item.label || '',
+	// 			color: item.color_override || item.enum_color?.label || 'hotpink',
+	// 		}))}
+	// 		swatches
+	// 		closable={false}
+	// 	/>
+	// );
 
 	const renderCell = (
 		assignment: Avo.Assignment.Assignment_v2,
@@ -497,29 +490,30 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					renderTitle()
 				);
 
-			case 'labels':
-				return renderLabels(
-					assignment.labels.filter(({ assignment_label: item }) => item.type === 'LABEL')
-				);
-
-			case 'class_room':
-				return renderLabels(
-					assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS')
-				);
-
-			case 'author':
-				const profile = get(assignment, 'profile', null);
-				const avatarOptions = {
-					dark: true,
-					abbreviatedName: true,
-					small: isMobileWidth(),
-				};
-
-				return isMobileWidth() ? (
-					<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
-				) : (
-					renderAvatar(profile, avatarOptions)
-				);
+			// TODO re-enable showing of these columns using the v2 assignments
+			// case 'labels':
+			// 	return renderLabels(
+			// 		assignment.labels.filter(({ assignment_label: item }) => item.type === 'LABEL')
+			// 	);
+			//
+			// case 'class_room':
+			// 	return renderLabels(
+			// 		assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS')
+			// 	);
+			//
+			// case 'author':
+			// 	const profile = get(assignment, 'profile', null);
+			// 	const avatarOptions = {
+			// 		dark: true,
+			// 		abbreviatedName: true,
+			// 		small: isMobileWidth(),
+			// 	};
+			//
+			// 	return isMobileWidth() ? (
+			// 		<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
+			// 	) : (
+			// 		renderAvatar(profile, avatarOptions)
+			// 	);
 
 			case 'deadline_at':
 				return <AssignmentDeadline deadline={assignment.deadline_at} />;
@@ -545,7 +539,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return renderActions(assignment);
 
 			default:
-				return cellData;
+				return '-';
 		}
 	};
 

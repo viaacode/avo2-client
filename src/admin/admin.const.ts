@@ -7,6 +7,7 @@ import { ContentPageService } from '../shared/services/content-page-service';
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 
+import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
 import { CONTENT_PATH } from './content/content.const';
@@ -29,6 +30,7 @@ export const ADMIN_PATH = Object.freeze({
 	...TRANSLATIONS_PATH,
 	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
+	...ASSIGNMENTS_PATH,
 	...ITEMS_PATH,
 	...INTERACTIVE_TOUR_PATH,
 });
@@ -138,7 +140,7 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<NavigationItemInfo[]> => {
 	return [
 		...getUserNavItems(userPermissions),
-		...hasPermissions(['EDIT_NAVIGATION_BARS'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.EDIT_NAVIGATION_BARS], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___navigatie'),
 			location: ADMIN_PATH.MENU_OVERVIEW,
 			key: 'navigatie',
@@ -216,87 +218,103 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 				],
 			}
 		),
-		...hasPermissions(['EDIT_CONTENT_PAGE_LABELS'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.EDIT_CONTENT_PAGE_LABELS], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___content-pagina-labels'),
 			location: ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
 			key: 'content-page-labels',
 			exact: false,
 		}),
-		...hasPermissions(['VIEW_ITEMS_OVERVIEW'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.VIEW_ITEMS_OVERVIEW], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___media-items'),
 			location: ADMIN_PATH.ITEMS_OVERVIEW,
 			key: 'items',
 			exact: false,
 		}),
-		...hasPermissions(['VIEW_COLLECTIONS_OVERVIEW'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.VIEW_COLLECTIONS_OVERVIEW], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___collectiebeheer'),
 			location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
 			key: 'collections',
 			exact: false,
 			subLinks: [
-				...hasPermissions(['VIEW_BUNDLE_EDITORIAL_OVERVIEWS'], 'OR', userPermissions, [
-					{
-						label: i18n.t('admin/admin___actualisatie'),
-						location: ADMIN_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
-						key: 'collections',
-						exact: false,
-					},
-					{
-						label: i18n.t('admin/admin___kwaliteitscontrole'),
-						location: ADMIN_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
-						key: 'collections',
-						exact: false,
-					},
-					{
-						label: i18n.t('admin/admin___marcom'),
-						location: ADMIN_PATH.COLLECTION_MARCOM_OVERVIEW,
-						key: 'collections',
-						exact: false,
-					},
-				]),
+				...hasPermissions(
+					[PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS],
+					'OR',
+					userPermissions,
+					[
+						{
+							label: i18n.t('admin/admin___actualisatie'),
+							location: ADMIN_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
+							key: 'collections',
+							exact: false,
+						},
+						{
+							label: i18n.t('admin/admin___kwaliteitscontrole'),
+							location: ADMIN_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
+							key: 'collections',
+							exact: false,
+						},
+						{
+							label: i18n.t('admin/admin___marcom'),
+							location: ADMIN_PATH.COLLECTION_MARCOM_OVERVIEW,
+							key: 'collections',
+							exact: false,
+						},
+					]
+				),
 			],
 		}),
-		...hasPermissions(['VIEW_BUNDLES_OVERVIEW'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.VIEW_BUNDLES_OVERVIEW], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___bundelbeheer'),
 			location: ADMIN_PATH.BUNDLES_OVERVIEW,
 			key: 'bundels',
 			exact: false,
 			subLinks: [
-				...hasPermissions(['VIEW_BUNDLE_EDITORIAL_OVERVIEWS'], 'OR', userPermissions, [
-					{
-						label: i18n.t('admin/admin___actualisatie'),
-						location: ADMIN_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
-						key: 'collections',
-						exact: false,
-					},
-					{
-						label: i18n.t('admin/admin___kwaliteitscontrole'),
-						location: ADMIN_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
-						key: 'collections',
-						exact: false,
-					},
-					{
-						label: i18n.t('admin/admin___marcom'),
-						location: ADMIN_PATH.BUNDLE_MARCOM_OVERVIEW,
-						key: 'collections',
-						exact: false,
-					},
-				]),
+				...hasPermissions(
+					[PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS],
+					'OR',
+					userPermissions,
+					[
+						{
+							label: i18n.t('admin/admin___actualisatie'),
+							location: ADMIN_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
+							key: 'collections',
+							exact: false,
+						},
+						{
+							label: i18n.t('admin/admin___kwaliteitscontrole'),
+							location: ADMIN_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
+							key: 'collections',
+							exact: false,
+						},
+						{
+							label: i18n.t('admin/admin___marcom'),
+							location: ADMIN_PATH.BUNDLE_MARCOM_OVERVIEW,
+							key: 'collections',
+							exact: false,
+						},
+					]
+				),
 			],
 		}),
-		...hasPermissions(['VIEW_PUBLISH_ITEMS_OVERVIEW'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.VIEW_ANY_ASSIGNMENTS], 'OR', userPermissions, {
+			label: i18n.t('Opdrachtenbeheer'),
+			location: ADMIN_PATH.ASSIGNMENTS_OVERVIEW,
+			key: 'assignments',
+			exact: false,
+		}),
+		...hasPermissions([PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___items-publiceren'),
 			location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
 			key: 'publish-items',
 			exact: false,
 		}),
-		...hasPermissions(['EDIT_INTERACTIVE_TOURS'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.EDIT_INTERACTIVE_TOURS], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___interactive-tours'),
 			location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,
 			key: 'interactiveTours',
 			exact: false,
 		}),
-		...hasPermissions(['EDIT_TRANSLATIONS'], 'OR', userPermissions, {
+		...hasPermissions([PermissionName.EDIT_TRANSLATIONS], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___vertaling'),
 			location: ADMIN_PATH.TRANSLATIONS,
 			key: 'translations',

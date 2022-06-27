@@ -38,6 +38,7 @@ import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { QuickLaneUrlObject } from '../../shared/types';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { CollectionService } from '../collection.service';
 import { QualityLabel } from '../collection.types';
 
@@ -86,7 +87,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>('asc');
 
 	const [assignmentsContainingCollection, setAssignmentsContainingCollection] = useState<
-		Partial<Avo.Assignment.Assignment>[] | undefined
+		Partial<Avo.Assignment.Assignment_v2>[] | undefined
 	>(undefined);
 	const [assignmentSortColumn, setAssignmentSortColumn] = useState<string>('title');
 	const [assignmentSortOrder, setAssignmentSortOrder] = useState<Avo.Search.OrderDirection>(
@@ -333,7 +334,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	};
 
 	const renderAssignmentCell = (
-		rowData: Partial<Avo.Assignment.Assignment>,
+		rowData: Partial<Avo.Assignment.Assignment_v2>,
 		columnId: AssignmentColumnId
 	): ReactNode => {
 		switch (columnId) {
@@ -345,7 +346,8 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
 
 			case 'is_archived':
-				return rowData[columnId]
+				return rowData.deadline_at &&
+					new Date(rowData.deadline_at).getTime() < new Date().getTime()
 					? t('collection/components/collection-or-bundle-edit-admin___gearchiveerd')
 					: t('collection/components/collection-or-bundle-edit-admin___actief');
 
@@ -393,7 +395,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							),
 							id: 'title',
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						{
 							label: t(
@@ -401,7 +403,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							),
 							id: 'author',
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						{
 							label: 'Organisatie',
@@ -412,7 +414,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							label: t('admin/items/items___publiek'),
 							id: 'is_public',
 							sortable: true,
-							dataType: 'boolean',
+							dataType: TableColumnDataType.boolean,
 						},
 						{
 							tooltip: t(
@@ -457,7 +459,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							),
 							id: 'title',
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						{
 							label: t(
@@ -465,7 +467,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							),
 							id: 'author',
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						{
 							label: t(
@@ -473,7 +475,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							),
 							id: 'is_archived',
 							sortable: true,
-							dataType: 'boolean',
+							dataType: TableColumnDataType.boolean,
 						},
 						{
 							tooltip: t(

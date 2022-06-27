@@ -7,14 +7,13 @@ import {
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
-	| 'assignment_type'
-	| 'labels'
-	| 'author'
-	| 'class_room'
-	| 'deadline_at'
-	| 'responses'
-	| 'updated_at'
+	| 'owner'
 	| 'created_at'
+	| 'updated_at'
+	| 'deadline_at'
+	| 'status'
+	| 'responses'
+	| 'views'
 	| 'actions';
 
 export type AssignmentResponseTableColumns =
