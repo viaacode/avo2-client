@@ -162,9 +162,12 @@ const AssignmentOverviewAdmin: FunctionComponent<
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t('Je hebt {{numOfSelectedAssignments}} geselecteerd', {
-					numOfSelectedAssignments: assignmentIds.length,
-				})
+				t(
+					'admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-geselecteerd',
+					{
+						numOfSelectedAssignments: assignmentIds.length,
+					}
+				)
 			);
 			setSelectedAssignmentIds(assignmentIds);
 		} catch (err) {
@@ -175,7 +178,11 @@ const AssignmentOverviewAdmin: FunctionComponent<
 					{ tableState }
 				)
 			);
-			ToastService.danger(t("Het ophalen van alle geselecteerde opdrachten id's is mislukt"));
+			ToastService.danger(
+				t(
+					'admin/assignments/views/assignments-overview-admin___het-ophalen-van-alle-geselecteerde-opdrachten-ids-is-mislukt'
+				)
+			);
 		}
 
 		setIsLoading(false);
@@ -202,16 +209,23 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			await AssignmentService.deleteAssignments(selectedAssignmentIds);
 			await fetchAssignments();
 			ToastService.success(
-				t('Je hebt {{numOfSelectedAssignments}} verwijderd', {
-					numOfSelectedAssignments: selectedAssignmentIds.length,
-				})
+				t(
+					'admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-verwijderd',
+					{
+						numOfSelectedAssignments: selectedAssignmentIds.length,
+					}
+				)
 			);
 			setSelectedAssignmentIds([]);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete the selected assignments', err, { tableState })
 			);
-			ToastService.danger(t('Het verwijderen van de geselecteerde opdrachten is mislukt'));
+			ToastService.danger(
+				t(
+					'admin/assignments/views/assignments-overview-admin___het-verwijderen-van-de-geselecteerde-opdrachten-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};
@@ -222,9 +236,12 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			await AssignmentService.changeAuthor(profileId, selectedAssignmentIds);
 			await fetchAssignments();
 			ToastService.success(
-				t('Je hebt de auteur van {{numOfSelectedAssignments}} aangepast', {
-					numOfSelectedAssignments: selectedAssignmentIds.length,
-				})
+				t(
+					'admin/assignments/views/assignments-overview-admin___je-hebt-de-auteur-van-num-of-selected-assignments-aangepast',
+					{
+						numOfSelectedAssignments: selectedAssignmentIds.length,
+					}
+				)
 			);
 			setSelectedAssignmentIds([]);
 		} catch (err) {
@@ -234,7 +251,9 @@ const AssignmentOverviewAdmin: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t('Het updaten van de auteur van de geselecteerde opdrachten is mislukt')
+				t(
+					'admin/assignments/views/assignments-overview-admin___het-updaten-van-de-auteur-van-de-geselecteerde-opdrachten-is-mislukt'
+				)
 			);
 		}
 		setIsLoading(false);
@@ -269,17 +288,19 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			case 'status':
 				return !!assignment.deadline_at &&
 					new Date(assignment.deadline_at).getTime() < new Date().getTime()
-					? t('Afgelopen')
-					: t('Actief');
+					? t('admin/assignments/views/assignments-overview-admin___afgelopen')
+					: t('admin/assignments/views/assignments-overview-admin___actief');
 
 			case 'responses':
 				if ((assignment.responses?.length || 0) >= 1) {
 					return <Link to="#">{assignment.responses?.length}</Link>; // TODO add link to responses page
 				}
 				if (assignment.assignment_type === 'BOUW') {
-					return t('Aantal leerlingen collecties');
+					return t(
+						'admin/assignments/views/assignments-overview-admin___aantal-leerlingen-collecties'
+					);
 				}
-				return t('nvt');
+				return t('admin/assignments/views/assignments-overview-admin___nvt');
 
 			case 'views':
 				return truncateTableValue('0'); // TODO implement views for assignments
@@ -325,10 +346,10 @@ const AssignmentOverviewAdmin: FunctionComponent<
 						columnId: string
 					) => renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)}
 					searchTextPlaceholder={t(
-						'admin/assignments/views/assignment-overview___zoek-op-naam-email-alias'
+						'admin/assignments/views/assignments-overview-admin___zoeken-op-titel-en-auteur'
 					)}
 					noContentMatchingFiltersMessage={t(
-						'admin/assignments/views/assignment-overview___er-zijn-geen-gebruikers-doe-voldoen-aan-de-opgegeven-filters'
+						'admin/assignments/views/assignments-overview-admin___er-zijn-geen-opdrachten-die-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={(newTableState) => {
@@ -348,7 +369,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 				/>
 				<ConfirmModal
 					body={t(
-						'Dit zal {{numOfSelectedAssignment}} opdrachten verwijderen. Deze actie kan niet ongedaan gemaakt worden!',
+						'admin/assignments/views/assignments-overview-admin___dit-zal-num-of-selected-assignment-opdrachten-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
 						{ numOfSelectedAssignment: selectedAssignmentIds.length }
 					)}
 					isOpen={assignmentsDeleteModalOpen}
@@ -367,13 +388,24 @@ const AssignmentOverviewAdmin: FunctionComponent<
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Opdrachten')} size="full-width">
+		<AdminLayout
+			pageTitle={t('admin/assignments/views/assignments-overview-admin___opdrachten')}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(t('opdrachten-overzicht-pagina-titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={t('opdrachten-overzicht-pagina-beschrijving')}
+						content={t(
+							'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<LoadingErrorLoadedComponent

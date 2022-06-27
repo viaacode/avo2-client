@@ -44,7 +44,7 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulk
 		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_ASSIGNMENTS)
 			? [
 					{
-						label: i18n.t('Verwijderen'),
+						label: i18n.t('admin/assignments/assignments___verwijderen'),
 						value: 'delete',
 					},
 			  ]
@@ -52,7 +52,7 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulk
 		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENTS)
 			? [
 					{
-						label: i18n.t('Auteur aanpassen'),
+						label: i18n.t('admin/assignments/assignments___auteur-aanpassen'),
 						value: 'change_author',
 					},
 			  ]
@@ -63,20 +63,20 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulk
 export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{
 		id: 'title',
-		label: i18n.t('Title'),
+		label: i18n.t('admin/assignments/assignments___title'),
 		sortable: true,
 		visibleByDefault: true,
 	},
 	{
 		id: 'owner',
-		label: i18n.t('Auteur'),
+		label: i18n.t('admin/assignments/assignments___auteur'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'MultiUserSelectDropdown',
 	},
 	{
 		id: 'created_at',
-		label: i18n.t('Aangemaakt op'),
+		label: i18n.t('admin/assignments/assignments___aangemaakt-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -84,7 +84,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 	},
 	{
 		id: 'updated_at',
-		label: i18n.t('Aangepast op'),
+		label: i18n.t('admin/assignments/assignments___aangepast-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -92,7 +92,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 	},
 	{
 		id: 'deadline_at',
-		label: i18n.t('Vervaldatum'),
+		label: i18n.t('admin/assignments/assignments___vervaldatum'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -100,20 +100,20 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 	},
 	{
 		id: 'status',
-		label: i18n.t('Status'),
+		label: i18n.t('admin/assignments/assignments___status'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
 		filterProps: {
-			trueLabel: i18n.t('Actief'),
-			falseLabel: i18n.t('Afgelopen'),
+			trueLabel: i18n.t('admin/assignments/assignments___actief'),
+			falseLabel: i18n.t('admin/assignments/assignments___afgelopen'),
 			includeEmpty: false,
 		} as BooleanCheckboxDropdownProps,
 		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'responses',
-		label: i18n.t('Leerlingencollecties'),
+		label: i18n.t('admin/assignments/assignments___leerlingencollecties'),
 		sortable: true,
 		visibleByDefault: true,
 	},

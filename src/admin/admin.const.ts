@@ -297,7 +297,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			],
 		}),
 		...hasPermissions([PermissionName.VIEW_ANY_ASSIGNMENTS], 'OR', userPermissions, {
-			label: i18n.t('Opdrachtenbeheer'),
+			label: i18n.t('admin/admin___opdrachtenbeheer'),
 			location: ADMIN_PATH.ASSIGNMENTS_OVERVIEW,
 			key: 'assignments',
 			exact: false,
