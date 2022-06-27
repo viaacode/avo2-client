@@ -19,7 +19,7 @@ import {
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { AssignmentBlock, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -34,8 +34,13 @@ import {
 } from '../../shared/components';
 import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
 import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
-import { ROUTE_PARTS, SEARCH_FILTER_STATE_SERIES_PROP } from '../../shared/constants';
+import {
+	ROUTE_PARTS,
+	SEARCH_FILTER_STATE_SERIES_PROP,
+	WYSIWYG_OPTIONS_AUTHOR,
+} from '../../shared/constants';
 import { buildLink, CustomError, formatDate, isRichTextEmpty } from '../../shared/helpers';
+import { useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -52,6 +57,7 @@ import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
+import ConfirmSlice from '../modals/ConfirmSlice';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -64,7 +70,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<AssignmentFormState | undefined>(undefined);
+	const [original, setOriginal] = useState<AssignmentSchema_v2 | undefined>(undefined);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
 	const form = useForm<AssignmentFormState>({
@@ -104,6 +110,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+	const [
+		isConfirmSliceOpen,
+		setConfirmSliceOpen,
+		getConfirmSliceBlock,
+		setConfirmSliceBlock,
+	] = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
 
 	const pastDeadline = useMemo(
 		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
@@ -152,6 +164,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					}));
 
 					setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
+				},
+				onSlice: (item) => {
+					setConfirmSliceBlock(item);
+					setConfirmSliceOpen(true);
 				},
 			};
 
@@ -462,6 +478,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
 								),
 								initialHtml: convertToHtml(block.custom_description),
+								controls: WYSIWYG_OPTIONS_AUTHOR,
 								onChange: (value) =>
 									setBlock(block, {
 										custom_description: value.toHTML(),
@@ -526,6 +543,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 															block.item?.description
 													: block.custom_description
 											),
+											controls: WYSIWYG_OPTIONS_AUTHOR,
 											disabled: !block.use_custom_fields,
 											onChange: (value) =>
 												setBlock(block, {
@@ -634,6 +652,28 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					</StickyEdgeBar>
 				)}
 			</Container>
+
+			{original && (
+				<ConfirmSlice
+					isOpen={!!isConfirmSliceOpen}
+					assignment={original}
+					block={getConfirmSliceBlock as AssignmentBlock}
+					onClose={() => setConfirmSliceOpen(false)}
+					onConfirm={() => {
+						const blocks = assignment.blocks.filter(
+							(item) => item.id !== getConfirmSliceBlock?.id
+						);
+
+						setAssignment((prev) => ({
+							...prev,
+							blocks,
+						}));
+
+						setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
+						setConfirmSliceOpen(false);
+					}}
+				/>
+			)}
 		</div>
 	);
 
