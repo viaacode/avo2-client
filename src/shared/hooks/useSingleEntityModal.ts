@@ -15,7 +15,7 @@ export function useSingleEntityModal<T>(): SingleEntityModalTuple<T> {
 		if (!isOpen && entity !== undefined) {
 			setEntity(undefined);
 		}
-	}, [isOpen]);
+	}, [isOpen, entity]);
 
 	return [isOpen, setOpen, entity, setEntity];
 }

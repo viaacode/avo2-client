@@ -52,11 +52,13 @@ import {
 	EDIT_ASSIGNMENT_BLOCK_LABELS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentFormState } from '../assignment.types';
+import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
+import { insertAssignmentBlockAtPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
+import AddBlock from '../modals/AddBlock';
 import ConfirmSlice from '../modals/ConfirmSlice';
 
 import './AssignmentEdit.scss';
@@ -116,6 +118,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		getConfirmSliceBlock,
 		setConfirmSliceBlock,
 	] = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
+	const [
+		isAddBlockOpen,
+		setAddBlockOpen,
+		getAddBlockPosition,
+		setAddBlockPosition,
+	] = useSingleEntityModal<number>();
 
 	const pastDeadline = useMemo(
 		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
@@ -173,7 +181,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			return mapped;
 		});
-	}, [assignment.blocks, setAssignment, setValue]);
+	}, [assignment.blocks, setAssignment, setValue, setConfirmSliceBlock, setConfirmSliceOpen]);
 
 	const fragmentSwitchButtons = useCallback(
 		(block: AssignmentBlock) => [
@@ -561,7 +569,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					break;
 			}
 		},
-		[t, setBlock, fragmentSwitchButtons]
+		[t, setBlock, fragmentSwitchButtons, renderMeta]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
@@ -576,7 +584,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					<div className="c-assignment-contents-tab">
 						<AssignmentBlockListSorter
 							heading={(item) => item && EDIT_ASSIGNMENT_BLOCK_LABELS(t)[item.type]}
-							divider={() => <Button icon="plus" type="secondary" disabled />}
+							divider={(item) => (
+								<Button
+									icon="plus"
+									type="secondary"
+									onClick={() => {
+										setAddBlockPosition(item?.position);
+										setAddBlockOpen(true);
+									}}
+								/>
+							)}
 							content={(item) => item && renderBlockContent(item)}
 							items={listSorterItems}
 						></AssignmentBlockListSorter>
@@ -607,6 +624,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		listSorterItems,
 		t,
 		renderBlockContent,
+		setAddBlockOpen,
+		setAddBlockPosition,
 	]);
 
 	const render = () => (
@@ -671,6 +690,45 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 						setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
 						setConfirmSliceOpen(false);
+					}}
+				/>
+			)}
+
+			{assignment && (
+				<AddBlock
+					isOpen={!!isAddBlockOpen}
+					assignment={assignment}
+					onClose={() => setAddBlockOpen(false)}
+					onConfirm={(type) => {
+						if (getAddBlockPosition === undefined) {
+							return;
+						}
+
+						switch (type) {
+							case AssignmentBlockType.TEXT:
+							case AssignmentBlockType.ZOEK:
+								const blocks = insertAssignmentBlockAtPosition(
+									assignment.blocks,
+									{ type },
+									getAddBlockPosition
+								);
+
+								setAssignment((prev) => ({
+									...prev,
+									blocks,
+								}));
+
+								setValue('blocks', blocks, {
+									shouldDirty: true,
+									shouldTouch: true,
+								});
+								break;
+
+							default:
+								break;
+						}
+
+						setAddBlockOpen(false);
 					}}
 				/>
 			)}
