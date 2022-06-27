@@ -46,6 +46,12 @@ interface ImportToAssignmentModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	importToAssignmentCallback: (assignmentId: string, createWithDescription: boolean) => void;
+	showToggle: boolean;
+	translations: {
+		title: string;
+		primaryButton: string;
+		secondaryButton: string;
+	};
 }
 
 const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> = ({
@@ -53,6 +59,8 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	isOpen,
 	onClose,
 	importToAssignmentCallback,
+	showToggle,
+	translations,
 }) => {
 	const [t] = useTranslation();
 
@@ -135,29 +143,33 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 		return (
 			<Toolbar spaced>
 				<ToolbarLeft>
-					<Flex>
-						<Toggle
-							checked={createWithDescription}
-							onChange={(checked) => setCreateWithDescription(checked)}
-						/>
-						<Spacer margin="left">
-							<FlexItem>Importeer fragmenten met beschrijving</FlexItem>
-						</Spacer>
-					</Flex>
+					{showToggle && (
+						<Flex>
+							<Toggle
+								checked={createWithDescription}
+								onChange={(checked) => setCreateWithDescription(checked)}
+							/>
+							<Spacer margin="left">
+								<FlexItem>
+									{t(
+										'assignment/modals/import-to-assignment-modal___importeer-fragmenten-met-beschrijving'
+									)}
+								</FlexItem>
+							</Spacer>
+						</Flex>
+					)}
 				</ToolbarLeft>
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={t('assignment/modals/import-to-assignment-modal___annuleer')}
+								label={translations.secondaryButton}
 								onClick={onClose}
 							/>
 							<Button
 								type="primary"
-								label={t(
-									'assignment/modals/import-to-assignment-modal___importeer'
-								)}
+								label={translations.primaryButton}
 								onClick={handleImportToAssignment}
 							/>
 						</ButtonToolbar>
@@ -284,9 +296,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
-				'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
-			)}
+			title={translations.title}
 			size="large"
 			onClose={onClose}
 			scrollable
