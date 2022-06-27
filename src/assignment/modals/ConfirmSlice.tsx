@@ -31,6 +31,8 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 }) => {
 	const [t] = useTranslation();
 
+	const label = block ? { type: EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] } : { type: '' };
+
 	const renderConfirmButtons = () => {
 		return (
 			<Toolbar spaced>
@@ -86,10 +88,7 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
-				'assignment/modals/confirm-slice___type-verwijderen',
-				block ? EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] : ''
-			)}
+			title={t('assignment/modals/confirm-slice___type-verwijderen', label)}
 			size="medium"
 			onClose={onClose}
 			scrollable
