@@ -34,8 +34,8 @@ import {
 } from '../../shared/components';
 import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
 import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
-import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, CustomError, isRichTextEmpty } from '../../shared/helpers';
+import { ROUTE_PARTS, SEARCH_FILTER_STATE_SERIES_PROP } from '../../shared/constants';
+import { buildLink, CustomError, formatDate, isRichTextEmpty } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -399,6 +399,48 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t]
 	);
 
+	const renderMeta = useCallback(
+		(block: AssignmentBlock) => {
+			const organisation = block.item?.organisation?.name;
+			const publishedAt = block.item?.published_at;
+			const series = block.item?.series; // TODO: determine & configure corresponding meta field
+
+			return organisation || publishedAt || series ? (
+				<section className="u-spacer-bottom">
+					{organisation && (
+						<div>
+							{t('assignment/views/assignment-edit___uitzender')}:{` ${organisation}`}
+						</div>
+					)}
+
+					{publishedAt && (
+						<div>
+							{t('assignment/views/assignment-edit___uitgezonden')}:
+							{` ${formatDate(publishedAt)}`}
+						</div>
+					)}
+
+					{series && (
+						<div>
+							{t('assignment/views/assignment-edit___reeks')}:{' '}
+							<Link
+								target="_blank"
+								to={buildLink(APP_PATH.SEARCH.route, undefined, {
+									filters: JSON.stringify({
+										[SEARCH_FILTER_STATE_SERIES_PROP]: [series],
+									}),
+								})}
+							>
+								{series}
+							</Link>
+						</div>
+					)}
+				</section>
+			) : null;
+		},
+		[t]
+	);
+
 	const renderBlockContent = useCallback(
 		(block: AssignmentBlock) => {
 			switch (block.type) {
@@ -472,7 +514,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								onChange: (value) => setBlock(block, { custom_title: value }),
 							}}
 							description={
-								!isRichTextEmpty(block.custom_description)
+								!isRichTextEmpty(block.custom_description) ||
+								!block.use_custom_fields
 									? {
 											label: t(
 												'assignment/views/assignment-edit___beschrijving-fragment'
@@ -491,7 +534,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									  }
 									: undefined
 							}
-						></CustomiseItemForm>
+						>
+							{renderMeta(block)}
+						</CustomiseItemForm>
 					);
 
 				default:
