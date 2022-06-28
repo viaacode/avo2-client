@@ -102,7 +102,7 @@ const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 		: [];
 };
 
-export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
+export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 	canEditAssignments: boolean | null
 ): AssignmentColumn[] => [
 	{
@@ -111,7 +111,6 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		sortable: true,
 		dataType: 'string',
 	},
-	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
 	...getClassColumn(canEditAssignments),
 	...getLabelsColumn(),
 	...getTeacherColumn(canEditAssignments),
@@ -122,6 +121,12 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		dataType: 'dateTime',
 	},
 	...getLastEditColumn(canEditAssignments),
+];
+
+export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
+	canEditAssignments: boolean | null
+): AssignmentColumn[] => [
+	...GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(canEditAssignments),
 	...getResponseColumn(canEditAssignments),
 	...getActionsColumn(canEditAssignments),
 ];
