@@ -5,9 +5,9 @@ export type AssignmentsOverviewTableCols =
 	| 'owner'
 	| 'created_at'
 	| 'updated_at'
-	| 'expiry_date'
+	| 'deadline_at'
 	| 'status'
-	| 'responses'
+	| 'pupilCollections'
 	| 'views'
 	| 'actions';
 
@@ -18,6 +18,7 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	updated_at: string;
 	deadline_at: string;
 	status: ('true' | 'false')[];
+	pupilCollections: ('true' | 'false')[];
 }
 
 export type AssignmentsBulkAction = 'delete' | 'change_author';

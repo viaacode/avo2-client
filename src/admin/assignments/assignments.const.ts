@@ -31,7 +31,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 			},
 		},
 	}),
-	responses: (order: Avo.Search.OrderDirection) => ({ responses_aggregate: { count: order } }),
+	pupilCollections: (order: Avo.Search.OrderDirection) => ({
+		responses_aggregate: { count: order },
+	}),
 };
 
 type AssignmentBulkActionOption = SelectOption<string> & {
@@ -112,10 +114,15 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 		dataType: TableColumnDataType.boolean,
 	},
 	{
-		id: 'responses',
+		id: 'pupilCollections',
 		label: i18n.t('admin/assignments/assignments___leerlingencollecties'),
 		sortable: true,
 		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
+		filterProps: {
+			includeEmpty: false,
+		} as BooleanCheckboxDropdownProps,
+		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'views',

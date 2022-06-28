@@ -12,7 +12,7 @@ export type AssignmentOverviewTableColumns =
 	| 'updated_at'
 	| 'deadline_at'
 	| 'status'
-	| 'responses'
+	| 'pupilCollections'
 	| 'views'
 	| 'actions';
 

@@ -7,7 +7,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -105,6 +105,27 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			}
 		}
 
+		// pupil collections filter: has collections, does not have collections
+		if (!isNil(filters.pupilCollections?.[0]) && filters.pupilCollections?.length === 1) {
+			if (filters.pupilCollections?.[0] === 'true') {
+				// Assignments with pupil collections
+				andFilters.push({
+					responses: {
+						collection_title: { _is_null: false },
+					},
+				});
+			} else {
+				// Assignments without pupil collections
+				andFilters.push({
+					_not: {
+						responses: {
+							collection_title: { _is_null: false },
+						},
+					},
+				});
+			}
+		}
+
 		return { _and: andFilters };
 	}, []);
 
@@ -136,9 +157,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
-					'admin/assignments/views/assignment-overview___het-ophalen-van-de-gebruikers-is-mislukt'
-				),
+				message: t('Het ophalen van de opdrachten is mislukt'),
 			});
 		}
 		setIsLoading(false);
@@ -292,7 +311,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 					? t('admin/assignments/views/assignments-overview-admin___afgelopen')
 					: t('admin/assignments/views/assignments-overview-admin___actief');
 
-			case 'responses':
+			case 'pupilCollections':
 				if ((assignment.responses?.length || 0) >= 1) {
 					return <Link to="#">{assignment.responses?.length}</Link>; // TODO add link to responses page
 				}
@@ -318,16 +337,8 @@ const AssignmentOverviewAdmin: FunctionComponent<
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView
-				message={t(
-					'admin/assignments/views/assignment-overview___er-bestaan-nog-geen-gebruikers'
-				)}
-			>
-				<p>
-					<Trans i18nKey="admin/assignments/views/assignment-overview___beschrijving-wanneer-er-nog-geen-gebruikers-zijn">
-						Beschrijving wanneer er nog geen gebruikers zijn
-					</Trans>
-				</p>
+			<ErrorView message={t('Er bestaan nog geen opdrachten')}>
+				<p>{t('Beschrijving wanneer er nog geen opdrachten zijn')}</p>
 			</ErrorView>
 		);
 	};
