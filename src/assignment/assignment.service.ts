@@ -906,7 +906,6 @@ export class AssignmentService {
 	): Promise<string> {
 		const assignmentToSave = {
 			title: item.title,
-			description: item.description,
 			owner_profile_id: getProfileId(user),
 			assignment_type: AssignmentType.KIJK,
 		};
@@ -953,7 +952,6 @@ export class AssignmentService {
 		item: Avo.Item.Item,
 		assignmentId: string
 	): Promise<string> {
-		// console.log('Actual import to existing ass done! ', { fragmentExternalId, assignmentId });
 		const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
 			assignmentId
 		);
