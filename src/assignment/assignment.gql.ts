@@ -468,6 +468,9 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 				full_name
 				profile_id
 			}
+			view_count {
+				count
+			}
 			responses_aggregate(where: { collection_title: { _is_null: false } }) {
 				aggregate {
 					count

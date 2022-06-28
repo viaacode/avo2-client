@@ -325,7 +325,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 				return t('admin/assignments/views/assignments-overview-admin___nvt');
 
 			case 'views':
-				return truncateTableValue('0'); // TODO implement views for assignments
+				return assignment?.view_count?.count || '0';
 
 			case 'actions':
 			default:
