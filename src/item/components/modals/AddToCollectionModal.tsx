@@ -40,6 +40,7 @@ import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
+import { ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
@@ -49,6 +50,8 @@ interface AddToCollectionModalProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
+	addToAssignment?: boolean;
+	onAddCallback?: (trimInfo: ItemTrimInfo) => void;
 }
 
 const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
@@ -57,6 +60,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	isOpen,
 	onClose,
 	user,
+	onAddCallback,
+	addToAssignment = false,
 }) => {
 	const [t] = useTranslation();
 
@@ -81,6 +86,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const minTime: number = 0;
 	const maxTime: number = toSeconds(itemMetaData.duration) || 0;
 
+	const addToCollection = !addToAssignment;
+
 	const clampDuration = (value: number): number => {
 		return clamp(value, minTime, maxTime);
 	};
@@ -103,15 +110,17 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	);
 
 	useEffect(() => {
-		fetchCollections().catch((err) => {
-			console.error('Failed to fetch collections', err);
-			ToastService.danger(
-				t(
-					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collecties-is-mislukt'
-				)
-			);
-		});
-	}, [fetchCollections, t]);
+		if (addToCollection) {
+			fetchCollections().catch((err) => {
+				console.error('Failed to fetch collections', err);
+				ToastService.danger(
+					t(
+						'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collecties-is-mislukt'
+					)
+				);
+			});
+		}
+	}, [addToCollection, fetchCollections, t]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -286,12 +295,19 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		setFragmentEndString(formatDurationHoursMinutesSeconds(values[1]));
 	};
 
-	const onApply = createNewCollection
-		? addItemToNewCollection
-		: () =>
-				addItemToExistingCollection(
-					selectedCollection as Partial<Avo.Collection.Collection>
-				);
+	const onApply = () => {
+		if (onAddCallback) {
+			const hasCut =
+				fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
+			return onAddCallback({ hasCut, fragmentStartTime, fragmentEndTime });
+		}
+		if (createNewCollection) {
+			return addItemToNewCollection();
+		}
+		return addItemToExistingCollection(
+			selectedCollection as Partial<Avo.Collection.Collection>
+		);
+	};
 
 	const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
 		if (value) {
@@ -376,9 +392,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 		return (
 			<Modal
-				title={t(
-					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
-				)}
+				title={
+					addToCollection
+						? t(
+								'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
+						  )
+						: t('Knip fragment (optioneel)')
+				}
 				size="extra-large"
 				isOpen={isOpen}
 				onClose={onClose}
@@ -425,141 +445,185 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											/>
 										</Container>
 									</Column>
-									<Column size="2-5">
-										<FormGroup
-											label={t(
-												'item/components/modals/add-to-collection-modal___collectie'
-											)}
-											required
-										>
-											<Spacer margin="bottom">
-												<RadioButton
-													label={t(
-														'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
-													)}
-													checked={!createNewCollection}
-													value="existing"
-													name="collection"
-													onChange={() => {
-														setCreateNewCollection(false);
-													}}
-												/>
-												<div>
-													{collections.length ? (
-														<Select
-															id="existingCollection"
-															options={[
-																{
-																	label: t(
-																		'item/components/modals/add-to-collection-modal___kies-collectie'
-																	),
-																	value: '',
-																	disabled: true,
-																},
-																...collections.map(
-																	(
-																		collection: Partial<
-																			Avo.Collection.Collection
-																		>
-																	) => ({
-																		label:
-																			collection.title || '',
-																		value: String(
-																			collection.id
-																		),
-																	})
-																),
-															]}
-															value={selectedCollectionId}
-															onChange={
-																setSelectedCollectionIdAndGetCollectionInfo
-															}
-															disabled={createNewCollection}
-														/>
-													) : (
-														<TextInput
-															disabled
-															value={t(
-																'item/components/modals/add-to-collection-modal___je-hebt-nog-geen-collecties'
-															)}
-														/>
-													)}
-												</div>
-											</Spacer>
-											<Spacer margin="bottom">
-												<RadioButton
-													label={t(
-														'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
-													)}
-													checked={createNewCollection}
-													value="new"
-													name="collection"
-													onChange={() => {
-														setCreateNewCollection(true);
-													}}
-												/>
-												<div>
-													<TextInput
-														placeholder={t(
-															'item/components/modals/add-to-collection-modal___collectie-titel'
+									{addToCollection && (
+										<Column size="2-5">
+											<FormGroup
+												label={t(
+													'item/components/modals/add-to-collection-modal___collectie'
+												)}
+												required
+											>
+												<Spacer margin="bottom">
+													<RadioButton
+														label={t(
+															'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
 														)}
-														disabled={!createNewCollection}
-														value={newCollectionTitle}
-														onChange={setNewCollectionTitle}
+														checked={!createNewCollection}
+														value="existing"
+														name="collection"
+														onChange={() => {
+															setCreateNewCollection(false);
+														}}
 													/>
-												</div>
-											</Spacer>
-										</FormGroup>
-									</Column>
+													<div>
+														{collections.length ? (
+															<Select
+																id="existingCollection"
+																options={[
+																	{
+																		label: t(
+																			'item/components/modals/add-to-collection-modal___kies-collectie'
+																		),
+																		value: '',
+																		disabled: true,
+																	},
+																	...collections.map(
+																		(
+																			collection: Partial<
+																				Avo.Collection.Collection
+																			>
+																		) => ({
+																			label:
+																				collection.title ||
+																				'',
+																			value: String(
+																				collection.id
+																			),
+																		})
+																	),
+																]}
+																value={selectedCollectionId}
+																onChange={
+																	setSelectedCollectionIdAndGetCollectionInfo
+																}
+																disabled={createNewCollection}
+															/>
+														) : (
+															<TextInput
+																disabled
+																value={t(
+																	'item/components/modals/add-to-collection-modal___je-hebt-nog-geen-collecties'
+																)}
+															/>
+														)}
+													</div>
+												</Spacer>
+												<Spacer margin="bottom">
+													<RadioButton
+														label={t(
+															'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
+														)}
+														checked={createNewCollection}
+														value="new"
+														name="collection"
+														onChange={() => {
+															setCreateNewCollection(true);
+														}}
+													/>
+													<div>
+														<TextInput
+															placeholder={t(
+																'item/components/modals/add-to-collection-modal___collectie-titel'
+															)}
+															disabled={!createNewCollection}
+															value={newCollectionTitle}
+															onChange={setNewCollectionTitle}
+														/>
+													</div>
+												</Spacer>
+											</FormGroup>
+										</Column>
+									)}
+									{addToAssignment && (
+										<Column size="2-5">
+											<Container
+												mode="vertical"
+												className="m-time-crop-controls"
+											>
+												<Toolbar alignTop>
+													<ToolbarRight>
+														<ToolbarItem>
+															<ButtonToolbar>
+																{isProcessing && <Spinner />}
+																<Button
+																	label={t('Overslaan')}
+																	type="secondary"
+																	block
+																	onClick={() =>
+																		onAddCallback &&
+																		onAddCallback({
+																			hasCut: false,
+																			fragmentStartTime: 0,
+																			fragmentEndTime: 0,
+																		})
+																	}
+																	disabled={isProcessing}
+																/>
+																<Button
+																	label={t('Knip')}
+																	type="primary"
+																	block
+																	onClick={onApply}
+																/>
+															</ButtonToolbar>
+														</ToolbarItem>
+													</ToolbarRight>
+												</Toolbar>
+											</Container>
+										</Column>
+									)}
 								</Grid>
 							</Form>
 						</Spacer>
 					</div>
 				</ModalBody>
-				<ModalFooterRight>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									{isProcessing && <Spinner />}
-									<Button
-										label={t(
-											'item/components/modals/add-to-collection-modal___annuleren'
-										)}
-										type="link"
-										block
-										onClick={onClose}
-										disabled={isProcessing}
-									/>
-									<Button
-										label={t(
-											'item/components/modals/add-to-collection-modal___toepassen'
-										)}
-										type="primary"
-										block
-										title={
-											createNewCollection && !newCollectionTitle
-												? t(
-														'item/components/modals/add-to-collection-modal___u-moet-een-collectie-titel-opgeven'
-												  )
-												: !createNewCollection && !selectedCollection
-												? t(
-														'item/components/modals/add-to-collection-modal___je-moet-een-collectie-kiezen-om-dit-item-aan-toe-te-voegen'
-												  )
-												: ''
-										}
-										disabled={
-											(createNewCollection && !newCollectionTitle) ||
-											(!createNewCollection && !selectedCollection) ||
-											isProcessing
-										}
-										onClick={onApply}
-									/>
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</ModalFooterRight>
+				{/** only add footer when adding to collection */}
+				{addToCollection && (
+					<ModalFooterRight>
+						<Toolbar spaced>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										{isProcessing && <Spinner />}
+										<Button
+											label={t(
+												'item/components/modals/add-to-collection-modal___annuleren'
+											)}
+											type="link"
+											block
+											onClick={onClose}
+											disabled={isProcessing}
+										/>
+										<Button
+											label={t(
+												'item/components/modals/add-to-collection-modal___toepassen'
+											)}
+											type="primary"
+											block
+											title={
+												createNewCollection && !newCollectionTitle
+													? t(
+															'item/components/modals/add-to-collection-modal___u-moet-een-collectie-titel-opgeven'
+													  )
+													: !createNewCollection && !selectedCollection
+													? t(
+															'item/components/modals/add-to-collection-modal___je-moet-een-collectie-kiezen-om-dit-item-aan-toe-te-voegen'
+													  )
+													: ''
+											}
+											disabled={
+												(createNewCollection && !newCollectionTitle) ||
+												(!createNewCollection && !selectedCollection) ||
+												isProcessing
+											}
+											onClick={onApply}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</ModalFooterRight>
+				)}
 			</Modal>
 		);
 	};
