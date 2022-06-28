@@ -265,6 +265,54 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
+	// Events
+
+	const submit = async () => {
+		try {
+			if (!user.profile?.id || !original) {
+				return;
+			}
+
+			const updated = await AssignmentService.updateAssignment(
+				{
+					...original,
+					owner_profile_id: user.profile?.id,
+				},
+				{
+					...original,
+					...assignment,
+				}
+			);
+
+			if (updated) {
+				trackEvents(
+					{
+						object: String(assignment.id),
+						object_type: 'assignment',
+						action: 'edit',
+					},
+					user
+				);
+
+				ToastService.success(
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
+				);
+
+				setOriginal(updated);
+			}
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
+			);
+		}
+	};
+
+	const reset = useCallback(() => {
+		original && setAssignment(original);
+		resetForm();
+	}, [resetForm, setAssignment, original]);
+
 	// Effects
 
 	// Fetch initial data
@@ -289,49 +337,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
-	// Events
-
-	const submit = async () => {
-		try {
-			const updated = await AssignmentService.updateAssignment(
-				{
-					...assignment,
-					owner_profile_id: user.profile?.id,
-					labels: [],
-				},
-				(original?.labels || []).map((item) => item.assignment_label),
-				assignment.labels.map((item) => item.assignment_label)
-			);
-
-			if (updated) {
-				trackEvents(
-					{
-						object: String(assignment.id),
-						object_type: 'assignment',
-						action: 'edit',
-					},
-					user
-				);
-
-				ToastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
-				);
-
-				setOriginal(updated);
-				setAssignment(updated);
-			}
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
-			);
-		}
-	};
-
-	const reset = useCallback(() => {
-		original && setAssignment(original);
-		resetForm();
-	}, [resetForm, setAssignment, original]);
+	// Reset the form when the original changes
+	useEffect(() => {
+		original && reset();
+	}, [original, reset]);
 
 	// Render
 

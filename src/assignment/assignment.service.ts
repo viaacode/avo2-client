@@ -2,7 +2,12 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentContentLabel, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
+import {
+	AssignmentBlock,
+	AssignmentContentLabel,
+	AssignmentLabel_v2,
+	AssignmentSchema_v2,
+} from '@viaa/avo2-types/types/assignment';
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -37,6 +42,7 @@ import {
 	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
+	UPDATE_ASSIGNMENT_BLOCK,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
@@ -306,32 +312,34 @@ export class AssignmentService {
 	}
 
 	static async updateAssignment(
-		assignment: Partial<Avo.Assignment.Assignment_v2>,
-		initialLabels?: Pick<AssignmentLabel_v2, 'id'>[],
-		updatedLabels?: Pick<AssignmentLabel_v2, 'id'>[]
-	): Promise<Avo.Assignment.Assignment_v2 | null> {
+		original: AssignmentSchema_v2,
+		update: Partial<AssignmentSchema_v2>
+	): Promise<AssignmentSchema_v2 | null> {
 		try {
-			if (isNil(assignment.id)) {
+			if (isNil(original.id)) {
 				throw new CustomError(
 					'Failed to update assignment because its id is undefined',
 					null,
-					assignment
+					{ original, update }
 				);
 			}
 
-			assignment.updated_at = new Date().toISOString();
+			AssignmentService.warnAboutDeadlineInThePast(update);
+			update.updated_at = new Date().toISOString();
 
-			const assignmentToSave = AssignmentService.transformAssignment({
-				...assignment,
+			await AssignmentService.updateAssignmentBlocks(original.id, update.blocks || []);
+
+			const assignment = AssignmentService.transformAssignment({
+				...update,
 			});
 
-			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
-
-			const response = await dataService.mutate<Avo.Assignment.Assignment>({
+			const response = await dataService.mutate<{
+				data: { update_app_assignments_v2: { affected_rows: number } };
+			}>({
 				mutation: UPDATE_ASSIGNMENT,
 				variables: {
-					assignmentId: assignment.id,
-					assignment: assignmentToSave,
+					assignment,
+					assignmentId: original.id,
 				},
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
@@ -341,33 +349,69 @@ export class AssignmentService {
 				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
 			}
 
-			if (initialLabels && updatedLabels) {
-				// Update labels
-				const initialLabelIds = initialLabels.map((labelObj) => labelObj.id);
-				const updatedLabelIds = updatedLabels.map((labelObj) => labelObj.id);
+			await this.updateAssignmentLabels(
+				original.id,
+				original.labels.map(({ assignment_label }) => assignment_label),
+				(update.labels || []).map(({ assignment_label }) => assignment_label)
+			);
 
-				const newLabelIds = without(updatedLabelIds, ...initialLabelIds);
-				const deletedLabelIds = without(initialLabelIds, ...updatedLabelIds);
-
-				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(assignment.id, newLabelIds),
-					AssignmentLabelsService.unlinkLabelsFromAssignment(
-						assignment.id,
-						deletedLabelIds
-					),
-				]);
-			}
-
-			return assignment as Avo.Assignment.Assignment_v2;
+			return {
+				...original,
+				...update,
+			};
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment', err, {
-				updatedLabels,
-				initialLabels,
-				assignment,
+				original,
+				update,
 			});
+
 			console.error(error);
 			throw error;
 		}
+	}
+
+	static async updateAssignmentLabels(
+		id: string,
+		original: AssignmentLabel_v2[],
+		update: AssignmentLabel_v2[]
+	): Promise<[void, void]> {
+		const initial = original.map((label) => label.id);
+		const updated = update.map((label) => label.id);
+
+		const newLabelIds = without(updated, ...initial);
+		const deletedLabelIds = without(initial, ...updated);
+
+		return await Promise.all([
+			AssignmentLabelsService.linkLabelsFromAssignment(id, newLabelIds),
+			AssignmentLabelsService.unlinkLabelsFromAssignment(id, deletedLabelIds),
+		]);
+	}
+
+	static async updateAssignmentBlocks(id: string, blocks: AssignmentBlock[]): Promise<any> {
+		const created = blocks.filter((block) => block.id === undefined);
+		const existing = blocks.filter((block) => block.id);
+
+		return await Promise.all([
+			dataService.mutate({
+				mutation: INSERT_ASSIGNMENT_BLOCKS,
+				variables: {
+					assignmentBlocks: created.map((block) => ({
+						...block,
+						assignment_id: id,
+					})),
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			}),
+			existing.map((block) => {
+				delete block.item;
+
+				return dataService.mutate<AssignmentBlock>({
+					mutation: UPDATE_ASSIGNMENT_BLOCK,
+					variables: { blockId: block.id, update: block },
+					update: ApolloCacheManager.clearAssignmentCache,
+				});
+			}),
+		]);
 	}
 
 	static async toggleAssignmentResponseSubmitStatus(
@@ -524,7 +568,9 @@ export class AssignmentService {
 		}
 	}
 
-	private static warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment_v2) {
+	private static warnAboutDeadlineInThePast(
+		assignment: Pick<AssignmentSchema_v2, 'deadline_at'>
+	) {
 		// Validate if deadline_at is not in the past
 		if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
 			ToastService.info([
