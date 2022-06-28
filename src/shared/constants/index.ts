@@ -12,3 +12,5 @@ export const DEFAULT_AUDIO_STILL = '/images/audio-still.svg';
 
 export const NOT_NOW_LOCAL_STORAGE_KEY = 'AVO.nudging_not_now';
 export const NOT_NOW_VAL = 'Yes';
+
+export { SEARCH_FILTER_STATE_SERIES_PROP } from './query-params';
