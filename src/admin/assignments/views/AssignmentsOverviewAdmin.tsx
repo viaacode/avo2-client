@@ -115,7 +115,8 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			const column = columns.find((tableColumn: FilterableColumn) => {
 				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
 			});
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [
 				assignmentsTemp,
 				assignmentCountTemp,

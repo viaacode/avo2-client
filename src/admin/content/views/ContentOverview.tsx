@@ -206,7 +206,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [
 				contentPagesArray,
 				contentPageCountTemp,

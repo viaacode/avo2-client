@@ -147,7 +147,8 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,

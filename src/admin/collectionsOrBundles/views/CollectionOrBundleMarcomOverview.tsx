@@ -175,7 +175,8 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<CollectionOrBundleMarc
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const filters = getFilters(tableState);
 			filters.excludeChannelType = null;
 			const [

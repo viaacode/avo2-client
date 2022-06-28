@@ -955,15 +955,10 @@ export class AssignmentService {
 				});
 			}
 
-			const assignments: Avo.Assignment.Assignment_v2[] = get(
-				response,
-				'data.app_assignments_v2'
-			);
+			const assignments: Avo.Assignment.Assignment_v2[] = response?.data?.app_assignments_v2;
 
-			const assignmentCount = get(
-				response,
-				'data.app_assignments_v2_aggregate.aggregate.count'
-			);
+			const assignmentCount =
+				response?.data?.app_assignments_v2_aggregate?.aggregate?.count || 0;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {
@@ -1004,7 +999,7 @@ export class AssignmentService {
 				});
 			}
 
-			const assignmentIds: string[] = get(response, 'data.app_assignments_v2').map(
+			const assignmentIds: string[] = (response?.data?.app_assignments_v2 || []).map(
 				(assignment: Avo.Assignment.Assignment_v2) => assignment.id
 			);
 
@@ -1039,7 +1034,7 @@ export class AssignmentService {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
 
-			return get(response, 'data.update_app_assignments_v2.affected_rows');
+			return response?.data?.update_app_assignments_v2?.affected_rows || 0;
 		} catch (err) {
 			throw new CustomError('Failed to update author for assignments in the database', err, {
 				profileId,

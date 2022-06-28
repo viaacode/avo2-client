@@ -223,7 +223,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,

@@ -252,7 +252,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			const column = columns.find((tableColumn: FilterableColumn) => {
 				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
 			});
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [profilesTemp, profileCountTemp] = await UserService.getProfiles(
 				tableState.page || 0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,
@@ -403,7 +404,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			const column = columns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [profilesTemp] = await UserService.getProfiles(
 				0,
 				(tableState.sort_column || 'last_access_at') as UserOverviewTableCol,

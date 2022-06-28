@@ -73,7 +73,8 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
-			const columnDataType = get(column, 'dataType', 'string') as TableColumnDataType;
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const assignmentData = await AssignmentService.fetchAssignments(
 				true, // canEditAssignments,
 				user,
