@@ -88,34 +88,44 @@ const AddBlock: FunctionComponent<AddBlockProps> = ({ assignment, isOpen, onClos
 				<Spacer margin={['top-small', 'bottom-small', 'left', 'right']}>
 					<ul className="c-add-block__list">
 						{items.map((item) => (
-							<li
-								className={[
-									'c-add-block__list-item',
-									...(item.disabled ? ['c-add-block__list-item--disabled'] : []),
-								].join(' ')}
-								key={item.type}
-							>
-								<div className="c-add-block__icon">
-									<Icon name={item.icon} />
-								</div>
+							<li key={item.type}>
+								<label
+									htmlFor={`c-add-block__${item.type}-button`}
+									className={[
+										'c-add-block__list-item',
+										...(item.disabled
+											? ['c-add-block__list-item--disabled']
+											: []),
+									].join(' ')}
+								>
+									<div className="c-add-block__icon">
+										<Icon name={item.icon} />
+									</div>
 
-								<div className="c-add-block__content">
-									<BlockHeading type="h4">{item.title}</BlockHeading>
+									<div className="c-add-block__content">
+										<BlockHeading type="h4">{item.title}</BlockHeading>
 
-									<p className="c-add-block__description">{item.description}</p>
-								</div>
+										<p className="c-add-block__description">
+											{item.description}
+										</p>
+									</div>
 
-								<div className="c-add-block__actions">
-									{!item.disabled && (
-										<Button
-											icon="plus"
-											type="primary"
-											onClick={() => {
-												onConfirm && onConfirm(item.type);
-											}}
-										/>
-									)}
-								</div>
+									<div className="c-add-block__actions">
+										{!item.disabled && (
+											<Button
+												id={`c-add-block__${item.type}-button`}
+												icon="plus"
+												type="primary"
+												onClick={() => {
+													console.info(
+														'onConfirm && onConfirm(item.type);'
+													);
+													onConfirm && onConfirm(item.type);
+												}}
+											/>
+										)}
+									</div>
+								</label>
 							</li>
 						))}
 					</ul>

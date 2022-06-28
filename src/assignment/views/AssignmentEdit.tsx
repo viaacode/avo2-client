@@ -56,7 +56,7 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { insertAssignmentBlockAtPosition } from '../helpers/insert-at-position';
+import { spliceByPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
 import AddBlock from '../modals/AddBlock';
@@ -708,11 +708,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						switch (type) {
 							case AssignmentBlockType.TEXT:
 							case AssignmentBlockType.ZOEK:
-								const blocks = insertAssignmentBlockAtPosition(
-									assignment.blocks,
-									{ type },
-									getAddBlockPosition
-								);
+								const blocks = spliceByPosition(assignment.blocks, {
+									type,
+									position: getAddBlockPosition + 1, // Always insert after
+								} as AssignmentBlock); // TODO: avoid cast
 
 								setAssignment((prev) => ({
 									...prev,

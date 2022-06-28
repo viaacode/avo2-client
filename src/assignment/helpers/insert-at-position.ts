@@ -1,33 +1,17 @@
-type Positioned = any & { id: string; position: number };
+type Positioned<T> = T & { id: string; position: number };
 
-export const insertAssignmentBlockAtPosition = (
-	list: Positioned[],
-	item: Positioned,
-	pos: number
-) => {
-	// Pass in the position of the preceding item
-	const before = list.find((x) => x.position === pos);
+const sortByPositionAsc = (a: Positioned<unknown>, b: Positioned<unknown>) =>
+	a.position - b.position;
 
-	// Determine target position
-	const target = before.position + 1;
+export function spliceByPosition<T>(list: Positioned<T>[], item: Positioned<T>): Positioned<T>[] {
+	const sorted = [...list.sort(sortByPositionAsc)];
 
-	// Increment all the following and the matching items
-	const after = list
-		.filter((x) => x.position >= target)
-		.map((x) => ({
-			...x,
-			position: x.position + 1,
-		}));
+	sorted.splice(item.position, 0, item);
 
-	return [
-		// Do not touch preceding items
-		...list.filter((x) => x.position < target),
-		// Insert the new item at the position
-		{
+	return sorted
+		.map((item, i) => ({
 			...item,
-			position: target,
-		},
-		// Add in the following
-		...after,
-	];
-};
+			position: i,
+		}))
+		.sort(sortByPositionAsc);
+}
