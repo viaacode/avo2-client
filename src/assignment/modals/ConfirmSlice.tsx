@@ -12,12 +12,13 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { AssignmentBlock, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 
 import { EDIT_ASSIGNMENT_BLOCK_LABELS } from '../assignment.const';
 
 interface ConfirmSliceProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	assignment: AssignmentSchema_v2;
+	assignment: Avo.Assignment.Assignment_v2;
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }

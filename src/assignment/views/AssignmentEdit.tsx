@@ -19,7 +19,8 @@ import {
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
-import { AssignmentBlock, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -72,7 +73,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<AssignmentSchema_v2 | undefined>(undefined);
+	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | undefined>(undefined);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
 	const form = useForm<AssignmentFormState>({
