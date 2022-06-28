@@ -31,12 +31,14 @@ import {
 	formatCustomTimestamp,
 	formatDate,
 	isMobileWidth,
+	renderAvatar,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
+import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
 
@@ -174,7 +176,9 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	) => {
 		const cellData: any = (assignment as any)[colKey];
 
-		switch (colKey) {
+		switch (
+			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
+		) {
 			case 'title':
 				const renderTitle = () => (
 					<div className="c-content-header c-content-header--small">
@@ -190,29 +194,29 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					renderTitle()
 				);
 
-			// case 'labels':
-			// 	return AssignmentHelper.getLabels(assignment, 'LABEL')
-			// 		.map((labelLink: any) => labelLink.assignment_label.label)
-			// 		.join(', ');
-			//
-			// case 'class_room':
-			// 	return AssignmentHelper.getLabels(assignment, 'CLASS')
-			// 		.map((label: any) => label.assignment_label.label)
-			// 		.join(', ');
-			//
-			// case 'author':
-			// 	const profile = get(assignment, 'profile', null);
-			// 	const avatarOptions = {
-			// 		dark: true,
-			// 		abbreviatedName: true,
-			// 		small: isMobileWidth(),
-			// 	};
-			//
-			// 	return isMobileWidth() ? (
-			// 		<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
-			// 	) : (
-			// 		renderAvatar(profile, avatarOptions)
-			// 	);
+			case 'labels':
+				return AssignmentHelper.getLabels(assignment, 'LABEL')
+					.map((labelLink: any) => labelLink.assignment_label.label)
+					.join(', ');
+
+			case 'class_room':
+				return AssignmentHelper.getLabels(assignment, 'CLASS')
+					.map((label: any) => label.assignment_label.label)
+					.join(', ');
+
+			case 'author':
+				const profile = get(assignment, 'profile', null);
+				const avatarOptions = {
+					dark: true,
+					abbreviatedName: true,
+					small: isMobileWidth(),
+				};
+
+				return isMobileWidth() ? (
+					<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
+				) : (
+					renderAvatar(profile, avatarOptions)
+				);
 
 			case 'deadline_at':
 				return formatCustomTimestamp(cellData, 'DD MMMM YYYY HH:mm');

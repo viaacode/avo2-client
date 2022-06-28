@@ -25,6 +25,7 @@ import {
 	Select,
 	Spacer,
 	Table,
+	TagList,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -50,7 +51,14 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { buildLink, CustomError, formatDate, isMobileWidth, navigate } from '../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	isMobileWidth,
+	navigate,
+	renderAvatar,
+} from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
@@ -447,18 +455,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	// TODO re-enable rendering of labels with the v2 assignments
-	// const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
-	// 	<TagList
-	// 		tags={labels.map(({ assignment_label: item }) => ({
-	// 			id: item.id,
-	// 			label: item.label || '',
-	// 			color: item.color_override || item.enum_color?.label || 'hotpink',
-	// 		}))}
-	// 		swatches
-	// 		closable={false}
-	// 	/>
-	// );
+	const renderLabels = (labels: Avo.Assignment.Label_v2[]) => (
+		<TagList
+			tags={(labels as any).map(({ assignment_label: item }: any) => ({
+				// TODO make types stricter
+				id: item.id,
+				label: item.label || '',
+				color: item.color_override || item.enum_color?.label || 'hotpink',
+			}))}
+			swatches
+			closable={false}
+		/>
+	);
 
 	const renderCell = (
 		assignment: Avo.Assignment.Assignment_v2,
@@ -468,7 +476,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
 		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id });
 
-		switch (colKey) {
+		switch (
+			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
+		) {
 			case 'title':
 				const renderTitle = () => (
 					<Flex>
@@ -491,30 +501,33 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					renderTitle()
 				);
 
-			// TODO re-enable showing of these columns using the v2 assignments
-			// case 'labels':
-			// 	return renderLabels(
-			// 		assignment.labels.filter(({ assignment_label: item }) => item.type === 'LABEL')
-			// 	);
-			//
-			// case 'class_room':
-			// 	return renderLabels(
-			// 		assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS')
-			// 	);
-			//
-			// case 'author':
-			// 	const profile = get(assignment, 'profile', null);
-			// 	const avatarOptions = {
-			// 		dark: true,
-			// 		abbreviatedName: true,
-			// 		small: isMobileWidth(),
-			// 	};
-			//
-			// 	return isMobileWidth() ? (
-			// 		<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
-			// 	) : (
-			// 		renderAvatar(profile, avatarOptions)
-			// 	);
+			case 'labels':
+				return renderLabels(
+					(assignment.labels as any[]).filter(
+						({ assignment_label: item }) => item.type === 'LABEL'
+					) // TODO remove cast once assignment_v2 types are fixed
+				);
+
+			case 'class_room':
+				return renderLabels(
+					(assignment.labels as any[]).filter(
+						({ assignment_label: item }) => item.type === 'CLASS'
+					) // TODO remove cast once assignment_v2 types are fixed
+				);
+
+			case 'author':
+				const profile = get(assignment, 'profile', null);
+				const avatarOptions = {
+					dark: true,
+					abbreviatedName: true,
+					small: isMobileWidth(),
+				};
+
+				return isMobileWidth() ? (
+					<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
+				) : (
+					renderAvatar(profile, avatarOptions)
+				);
 
 			case 'deadline_at':
 				return <AssignmentDeadline deadline={assignment.deadline_at} />;
@@ -540,7 +553,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return renderActions(assignment);
 
 			default:
-				return '-';
+				return JSON.stringify(cellData);
 		}
 	};
 
