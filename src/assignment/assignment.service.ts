@@ -908,7 +908,6 @@ export class AssignmentService {
 	): Promise<string> {
 		const assignmentToSave = {
 			title: item.title,
-			description: item.description,
 			owner_profile_id: getProfileId(user),
 			assignment_type: AssignmentType.KIJK,
 		};
