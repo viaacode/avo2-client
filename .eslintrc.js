@@ -14,6 +14,12 @@ module.exports = {
 		},
 	},
 	rules: {
+		'import/no-unresolved': [
+			2,
+			{
+				ignore: ['@viaa', '@meemoo'],
+			},
+		],
 		'@typescript-eslint/naming-convention': [
 			'error',
 			{
@@ -35,6 +41,13 @@ module.exports = {
 					order: 'asc',
 				},
 				'newlines-between': 'always',
+				pathGroups: [
+					{
+						pattern: `@{viaa,meemoo}/**`,
+						group: 'parent',
+						position: 'before',
+					},
+				],
 			},
 		],
 
