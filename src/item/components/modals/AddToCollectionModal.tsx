@@ -397,7 +397,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 						? t(
 								'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
 						  )
-						: t('Knip fragment (optioneel)')
+						: t(
+								'item/components/modals/add-to-collection-modal___knip-fragment-optioneel'
+						  )
 				}
 				size="extra-large"
 				isOpen={isOpen}
@@ -546,7 +548,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 															<ButtonToolbar>
 																{isProcessing && <Spinner />}
 																<Button
-																	label={t('Overslaan')}
+																	label={t(
+																		'item/components/modals/add-to-collection-modal___overslaan'
+																	)}
 																	type="secondary"
 																	block
 																	onClick={() =>
@@ -560,7 +564,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 																	disabled={isProcessing}
 																/>
 																<Button
-																	label={t('Knip')}
+																	label={t(
+																		'item/components/modals/add-to-collection-modal___knip'
+																	)}
 																	type="primary"
 																	block
 																	onClick={onApply}
