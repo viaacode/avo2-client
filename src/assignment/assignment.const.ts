@@ -83,25 +83,6 @@ const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn
 		: [];
 };
 
-const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
-	return canEditAssignments
-		? [
-				{
-					id: 'responses' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/assignment___respons'),
-					sortable: true,
-					dataType: 'number',
-				},
-		  ]
-		: [];
-};
-
-const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
-	return canEditAssignments
-		? [{ id: 'actions' as AssignmentOverviewTableColumns, label: '' }]
-		: [];
-};
-
 export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	canEditAssignments: boolean | null
 ): AssignmentColumn[] => [
@@ -111,7 +92,6 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		sortable: true,
 		dataType: 'string',
 	},
-	// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true, visibleByDefault: true }, // https://district01.atlassian.net/browse/AVO2-421
 	...getClassColumn(canEditAssignments),
 	...getLabelsColumn(),
 	...getTeacherColumn(canEditAssignments),
@@ -122,8 +102,6 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		dataType: 'dateTime',
 	},
 	...getLastEditColumn(canEditAssignments),
-	...getResponseColumn(canEditAssignments),
-	...getActionsColumn(canEditAssignments),
 ];
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
