@@ -83,7 +83,26 @@ const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn
 		: [];
 };
 
-export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
+const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [
+				{
+					id: 'responses' as AssignmentOverviewTableColumns,
+					label: i18n.t('assignment/assignment___respons'),
+					sortable: true,
+					dataType: 'number',
+				},
+		  ]
+		: [];
+};
+
+const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	return canEditAssignments
+		? [{ id: 'actions' as AssignmentOverviewTableColumns, label: '' }]
+		: [];
+};
+
+export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 	canEditAssignments: boolean | null
 ): AssignmentColumn[] => [
 	{
@@ -102,6 +121,14 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 		dataType: 'dateTime',
 	},
 	...getLastEditColumn(canEditAssignments),
+];
+
+export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
+	canEditAssignments: boolean | null
+): AssignmentColumn[] => [
+	...GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(canEditAssignments),
+	...getResponseColumn(canEditAssignments),
+	...getActionsColumn(canEditAssignments),
 ];
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<

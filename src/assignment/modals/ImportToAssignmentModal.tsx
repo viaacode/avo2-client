@@ -28,7 +28,6 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/component
 import {
 	buildLink,
 	CustomError,
-	formatCustomTimestamp,
 	formatDate,
 	isMobileWidth,
 	renderAvatar,
@@ -36,10 +35,11 @@ import {
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
-import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
+import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
+import AssignmentDeadline from '../components/AssignmentDeadline';
 
 interface ImportToAssignmentModalProps {
 	user: Avo.User.User;
@@ -75,7 +75,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	);
 	const [filterString, setFilterString] = useState<string>('');
 
-	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(true), []);
+	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(true), []);
 
 	const fetchAssignments = useCallback(async () => {
 		try {
@@ -227,7 +227,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				);
 
 			case 'deadline_at':
-				return formatCustomTimestamp(cellData, 'DD MMMM YYYY HH:mm');
+				return <AssignmentDeadline deadline={cellData} />;
 
 			case 'updated_at':
 				return formatDate(cellData);
