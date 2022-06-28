@@ -157,7 +157,9 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de opdrachten is mislukt'),
+				message: t(
+					'admin/assignments/views/assignments-overview-admin___het-ophalen-van-de-opdrachten-is-mislukt'
+				),
 			});
 		}
 		setIsLoading(false);
@@ -337,8 +339,16 @@ const AssignmentOverviewAdmin: FunctionComponent<
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er bestaan nog geen opdrachten')}>
-				<p>{t('Beschrijving wanneer er nog geen opdrachten zijn')}</p>
+			<ErrorView
+				message={t(
+					'admin/assignments/views/assignments-overview-admin___er-bestaan-nog-geen-opdrachten'
+				)}
+			>
+				<p>
+					{t(
+						'admin/assignments/views/assignments-overview-admin___beschrijving-wanneer-er-nog-geen-opdrachten-zijn'
+					)}
+				</p>
 			</ErrorView>
 		);
 	};
