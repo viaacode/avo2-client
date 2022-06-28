@@ -28,7 +28,6 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/component
 import {
 	buildLink,
 	CustomError,
-	formatCustomTimestamp,
 	formatDate,
 	isMobileWidth,
 	renderAvatar,
@@ -37,16 +36,23 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
+import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
+import AssignmentDeadline from '../components/AssignmentDeadline';
 
 interface ImportToAssignmentModalProps {
 	user: Avo.User.User;
 	isOpen: boolean;
 	onClose?: () => void;
 	importToAssignmentCallback: (assignmentId: string, createWithDescription: boolean) => void;
+	showToggle: boolean;
+	translations: {
+		title: string;
+		primaryButton: string;
+		secondaryButton: string;
+	};
 }
 
 const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> = ({
@@ -54,6 +60,8 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	isOpen,
 	onClose,
 	importToAssignmentCallback,
+	showToggle,
+	translations,
 }) => {
 	const [t] = useTranslation();
 
@@ -68,7 +76,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	);
 	const [filterString, setFilterString] = useState<string>('');
 
-	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(true), []);
+	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(true), []);
 
 	const fetchAssignments = useCallback(async () => {
 		try {
@@ -137,29 +145,33 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 		return (
 			<Toolbar spaced>
 				<ToolbarLeft>
-					<Flex>
-						<Toggle
-							checked={createWithDescription}
-							onChange={(checked) => setCreateWithDescription(checked)}
-						/>
-						<Spacer margin="left">
-							<FlexItem>Importeer fragmenten met beschrijving</FlexItem>
-						</Spacer>
-					</Flex>
+					{showToggle && (
+						<Flex>
+							<Toggle
+								checked={createWithDescription}
+								onChange={(checked) => setCreateWithDescription(checked)}
+							/>
+							<Spacer margin="left">
+								<FlexItem>
+									{t(
+										'assignment/modals/import-to-assignment-modal___importeer-fragmenten-met-beschrijving'
+									)}
+								</FlexItem>
+							</Spacer>
+						</Flex>
+					)}
 				</ToolbarLeft>
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={t('assignment/modals/import-to-assignment-modal___annuleer')}
+								label={translations.secondaryButton}
 								onClick={onClose}
 							/>
 							<Button
 								type="primary"
-								label={t(
-									'assignment/modals/import-to-assignment-modal___importeer'
-								)}
+								label={translations.primaryButton}
 								onClick={handleImportToAssignment}
 							/>
 						</ButtonToolbar>
@@ -219,7 +231,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				);
 
 			case 'deadline_at':
-				return formatCustomTimestamp(cellData, 'DD MMMM YYYY HH:mm');
+				return <AssignmentDeadline deadline={cellData} />;
 
 			case 'updated_at':
 				return formatDate(cellData);
@@ -288,9 +300,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
-				'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
-			)}
+			title={translations.title}
 			size="large"
 			onClose={onClose}
 			scrollable

@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -15,15 +14,22 @@ interface ConfirmImportToAssignmentWithResponsesModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	confirmCallback: () => void;
+	translations: {
+		title: string;
+		warningCallout: string;
+		warningMessage: string;
+		warningBody: string;
+		primaryButton: string;
+		secondaryButton: string;
+	};
 }
 
 const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<ConfirmImportToAssignmentWithResponsesModalProps> = ({
 	isOpen,
 	onClose,
 	confirmCallback,
+	translations,
 }) => {
-	const [t] = useTranslation();
-
 	const renderConfirmButtons = () => {
 		return (
 			<Toolbar spaced>
@@ -32,12 +38,12 @@ const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<ConfirmImpo
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={t('assignment/modals/create-assignment-modal___annuleer')}
+								label={translations.secondaryButton}
 								onClick={onClose}
 							/>
 							<Button
 								type="primary"
-								label={t('assignment/modals/create-assignment-modal___importeer')}
+								label={translations.primaryButton}
 								onClick={confirmCallback}
 							/>
 						</ButtonToolbar>
@@ -51,20 +57,10 @@ const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<ConfirmImpo
 		return (
 			<>
 				<p>
-					<strong>
-						{t(
-							'assignment/modals/confirm-import-to-assignment-with-responses-modal___opgelet'
-						)}
-					</strong>
-					{t(
-						'assignment/modals/confirm-import-to-assignment-with-responses-modal___leerlingen-hebben-deze-opdracht-reeds-bekeken'
-					)}
+					<strong>{translations.warningCallout}</strong>
+					{translations.warningMessage}
 				</p>
-				<p>
-					{t(
-						'assignment/modals/confirm-import-to-assignment-with-responses-modal___ben-je-zeker-dat-je-de-collectie-wil-importeren-tot-deze-opdracht'
-					)}
-				</p>
+				<p>{translations.warningBody}</p>
 				{renderConfirmButtons()}
 			</>
 		);
@@ -73,9 +69,7 @@ const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<ConfirmImpo
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
-				'assignment/modals/confirm-import-to-assignment-with-responses-modal___collectie-importeren'
-			)}
+			title={translations.title}
 			size="medium"
 			onClose={onClose}
 			scrollable
