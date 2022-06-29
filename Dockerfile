@@ -14,7 +14,7 @@ RUN mkdir ./build/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  
 COPY  . .
 RUN chown -R node:node /app && chmod -R  g+sw /app
 RUN apk update
-RUN apk add --no-cache --virtual python2 .gyp make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #USER node
 RUN npm ci --production=false
 FROM node:16-alpine AS build
