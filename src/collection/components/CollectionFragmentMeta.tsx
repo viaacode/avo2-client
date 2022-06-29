@@ -34,7 +34,7 @@ const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ fragment }) =
 
 			{series && (
 				<div>
-					{t('collection/views/collection-detail___reeks')}:
+					{t('collection/views/collection-detail___reeks')}:{' '}
 					<Link
 						target="_blank"
 						to={buildLink(APP_PATH.SEARCH.route, undefined, {
@@ -43,7 +43,7 @@ const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ fragment }) =
 							}),
 						})}
 					>
-						<b> {series}</b>
+						<b>{series}</b>
 					</Link>
 				</div>
 			)}

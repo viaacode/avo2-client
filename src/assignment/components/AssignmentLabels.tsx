@@ -5,7 +5,7 @@ import { ValueType } from 'react-select';
 
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
@@ -15,7 +15,7 @@ import { AssignmentSchemaLabel_v2 } from '../assignment.types';
 import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
-export type AssignmentLabelsProps = Pick<AssignmentSchema_v2, 'labels'> & {
+export type AssignmentLabelsProps = Pick<Avo.Assignment.Assignment_v2, 'labels'> & {
 	id?: string;
 	onChange: (changed: AssignmentSchemaLabel_v2[]) => void;
 	user: Avo.User.User;
