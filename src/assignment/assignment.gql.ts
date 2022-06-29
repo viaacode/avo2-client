@@ -534,7 +534,13 @@ export const GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW = gql`
 			}
 		}
 		app_assignment_responses_v2_aggregate(
-			where: { _and: [$where, { assignment: { is_deleted: { _eq: false } } }] }
+			where: {
+				_and: [
+					$where
+					{ collection_title: { _is_null: false } }
+					{ assignment: { is_deleted: { _eq: false } } }
+				]
+			}
 		) {
 			aggregate {
 				count

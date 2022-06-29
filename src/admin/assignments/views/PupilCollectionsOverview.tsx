@@ -134,7 +134,7 @@ const PupilCollectionsOverview: FunctionComponent<
 		[]
 	);
 
-	const fetchAssignments = useCallback(async () => {
+	const fetchPupilCollections = useCallback(async () => {
 		try {
 			setIsLoading(true);
 
@@ -171,8 +171,8 @@ const PupilCollectionsOverview: FunctionComponent<
 	}, [columns, tableState, generateWhereObject, t]);
 
 	useEffect(() => {
-		fetchAssignments();
-	}, [fetchAssignments]);
+		fetchPupilCollections();
+	}, [fetchPupilCollections]);
 
 	useEffect(() => {
 		if (pupilCollections) {
@@ -180,7 +180,7 @@ const PupilCollectionsOverview: FunctionComponent<
 				state: 'loaded',
 			});
 		}
-	}, [fetchAssignments, pupilCollections]);
+	}, [fetchPupilCollections, pupilCollections]);
 
 	const setAllPupilCollectionsAsSelected = async () => {
 		setIsLoading(true);
@@ -229,7 +229,7 @@ const PupilCollectionsOverview: FunctionComponent<
 		setIsLoading(true);
 		try {
 			await AssignmentService.deletePupilCollections(selectedPupilCollectionIds);
-			await fetchAssignments();
+			await fetchPupilCollections();
 			ToastService.success(
 				t('Je hebt {{numOfSelectedPupilCollections}} leerlingencollecties verwijderd', {
 					numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
@@ -256,7 +256,7 @@ const PupilCollectionsOverview: FunctionComponent<
 				profileId,
 				selectedPupilCollectionIds
 			);
-			await fetchAssignments();
+			await fetchPupilCollections();
 			ToastService.success(
 				t(
 					'Je hebt de auteur van {{numOfSelectedPupilCollections}} leerlingencollecties aangepast',
