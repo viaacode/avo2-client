@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,20 +16,25 @@ import { IconNameSchema } from '@viaa/avo2-components/dist/esm/components/Icon/I
 import { EDIT_ASSIGNMENT_BLOCK_ICONS } from '../assignment.const';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 
-import './AddBlock.scss';
+import './AddBlockModal.scss';
 
-type AddBlockType = AssignmentBlockType | 'COLLECTIE';
+type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
 
-interface AddBlockProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
+interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	assignment: AssignmentFormState;
-	onConfirm?: (type: AddBlockType) => void;
+	onConfirm?: (type: AddBlockModalType) => void;
 }
 
-const AddBlock: FunctionComponent<AddBlockProps> = ({ assignment, isOpen, onClose, onConfirm }) => {
+const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
+	assignment,
+	isOpen,
+	onClose,
+	onConfirm,
+}) => {
 	const [t] = useTranslation();
 
 	const items: {
-		type: AddBlockType;
+		type: AddBlockModalType;
 		icon: IconNameSchema;
 		title: ReactNode;
 		description: ReactNode;
@@ -91,12 +97,10 @@ const AddBlock: FunctionComponent<AddBlockProps> = ({ assignment, isOpen, onClos
 							<li key={item.type}>
 								<label
 									htmlFor={`c-add-block__${item.type}-button`}
-									className={[
-										'c-add-block__list-item',
-										...(item.disabled
-											? ['c-add-block__list-item--disabled']
-											: []),
-									].join(' ')}
+									className={classNames({
+										'c-add-block__list-item': true,
+										'c-add-block__list-item--disabled': item.disabled,
+									})}
 								>
 									<div className="c-add-block__icon">
 										<Icon name={item.icon} />
@@ -117,9 +121,6 @@ const AddBlock: FunctionComponent<AddBlockProps> = ({ assignment, isOpen, onClos
 												icon="plus"
 												type="primary"
 												onClick={() => {
-													console.info(
-														'onConfirm && onConfirm(item.type);'
-													);
 													onConfirm && onConfirm(item.type);
 												}}
 											/>
@@ -135,4 +136,4 @@ const AddBlock: FunctionComponent<AddBlockProps> = ({ assignment, isOpen, onClos
 	);
 };
 
-export default AddBlock;
+export default AddBlockModal;

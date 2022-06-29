@@ -17,13 +17,13 @@ import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 
 import { EDIT_ASSIGNMENT_BLOCK_LABELS } from '../assignment.const';
 
-interface ConfirmSliceProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
+interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	assignment: Avo.Assignment.Assignment_v2;
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }
 
-const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
+const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	assignment,
 	block,
 	isOpen,
@@ -32,7 +32,7 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const label = block ? { type: EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] } : { type: '' };
+	const label = { type: block ? EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] : '' };
 
 	const renderConfirmButtons = () => {
 		return (
@@ -103,4 +103,4 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 	);
 };
 
-export default ConfirmSlice;
+export default ConfirmSliceModal;

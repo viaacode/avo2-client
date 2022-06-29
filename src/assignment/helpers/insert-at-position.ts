@@ -8,10 +8,8 @@ export function spliceByPosition<T>(list: Positioned<T>[], item: Positioned<T>):
 
 	sorted.splice(item.position, 0, item);
 
-	return sorted
-		.map((item, i) => ({
-			...item,
-			position: i,
-		}))
-		.sort(sortByPositionAsc);
+	return sorted.map((item, i) => ({
+		...item,
+		position: i,
+	}));
 }
