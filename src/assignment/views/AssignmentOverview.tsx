@@ -472,7 +472,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	) => {
 		const cellData: any = (assignment as any)[colKey];
 		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
-		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id });
+		const detailLink = buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, {
+			id: assignment.id,
+		});
 
 		switch (colKey) {
 			case 'title':

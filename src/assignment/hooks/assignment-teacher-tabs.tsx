@@ -6,7 +6,7 @@ import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.t
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
-export function useAssignmentLesgeverTabs(): [
+export function useAssignmentTeacherTabs(): [
 	TabPropsSchema[],
 	ASSIGNMENT_CREATE_UPDATE_TABS | undefined,
 	React.Dispatch<React.SetStateAction<ASSIGNMENT_CREATE_UPDATE_TABS>>,

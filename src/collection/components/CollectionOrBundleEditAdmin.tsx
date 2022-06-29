@@ -234,7 +234,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	};
 
 	const navigateToAssignmentDetail = (id: string) => {
-		const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id });
+		const link = buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, { id });
 		redirectToClientPage(link, history);
 	};
 

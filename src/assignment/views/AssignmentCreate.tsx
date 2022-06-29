@@ -33,7 +33,7 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
+import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -53,7 +53,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 	const fields = useMemo(() => ASSIGNMENT_FORM_FIELDS(t), [t]);
 
 	// Effects

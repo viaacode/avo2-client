@@ -231,6 +231,12 @@ export enum ASSIGNMENT_CREATE_UPDATE_TABS {
 	Details,
 }
 
+export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
+	ASSIGNMENT = 'ASSIGNMENT',
+	SEARCH = 'SEARCH',
+	MY_COLLECTION = 'MY_COLLECTION',
+}
+
 export const EDIT_ASSIGNMENT_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> = () => ({
 	ITEM: 'video',
 	TEXT: 'type',
