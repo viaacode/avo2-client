@@ -19,7 +19,8 @@ import {
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
-import { AssignmentBlock, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -55,11 +56,11 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { insertAssignmentBlockAtPosition } from '../helpers/insert-at-position';
+import { spliceByPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
-import AddBlock from '../modals/AddBlock';
-import ConfirmSlice from '../modals/ConfirmSlice';
+import AddBlockModal from '../modals/AddBlockModal';
+import ConfirmSliceModal from '../modals/ConfirmSliceModal';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -72,7 +73,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<AssignmentSchema_v2 | undefined>(undefined);
+	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | undefined>(undefined);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
 	const form = useForm<AssignmentFormState>({
@@ -113,16 +114,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
 	const [
-		isConfirmSliceOpen,
-		setConfirmSliceOpen,
-		getConfirmSliceBlock,
-		setConfirmSliceBlock,
+		isConfirmSliceModalOpen,
+		setConfirmSliceModalOpen,
+		getConfirmSliceModalBlock,
+		setConfirmSliceModalBlock,
 	] = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
 	const [
-		isAddBlockOpen,
-		setAddBlockOpen,
-		getAddBlockPosition,
-		setAddBlockPosition,
+		isAddBlockModalOpen,
+		setAddBlockModalOpen,
+		getAddBlockModalPosition,
+		setAddBlockModalPosition,
 	] = useSingleEntityModal<number>();
 
 	const pastDeadline = useMemo(
@@ -174,14 +175,20 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
 				},
 				onSlice: (item) => {
-					setConfirmSliceBlock(item);
-					setConfirmSliceOpen(true);
+					setConfirmSliceModalBlock(item);
+					setConfirmSliceModalOpen(true);
 				},
 			};
 
 			return mapped;
 		});
-	}, [assignment.blocks, setAssignment, setValue, setConfirmSliceBlock, setConfirmSliceOpen]);
+	}, [
+		assignment.blocks,
+		setAssignment,
+		setValue,
+		setConfirmSliceModalBlock,
+		setConfirmSliceModalOpen,
+	]);
 
 	const fragmentSwitchButtons = useCallback(
 		(block: AssignmentBlock) => [
@@ -598,8 +605,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									icon="plus"
 									type="secondary"
 									onClick={() => {
-										setAddBlockPosition(item?.position);
-										setAddBlockOpen(true);
+										setAddBlockModalPosition(item?.position);
+										setAddBlockModalOpen(true);
 									}}
 								/>
 							)}
@@ -633,8 +640,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		listSorterItems,
 		t,
 		renderBlockContent,
-		setAddBlockOpen,
-		setAddBlockPosition,
+		setAddBlockModalOpen,
+		setAddBlockModalPosition,
 	]);
 
 	const render = () => (
@@ -682,14 +689,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			</Container>
 
 			{original && (
-				<ConfirmSlice
-					isOpen={!!isConfirmSliceOpen}
+				<ConfirmSliceModal
+					isOpen={!!isConfirmSliceModalOpen}
 					assignment={original}
-					block={getConfirmSliceBlock as AssignmentBlock}
-					onClose={() => setConfirmSliceOpen(false)}
+					block={getConfirmSliceModalBlock as AssignmentBlock}
+					onClose={() => setConfirmSliceModalOpen(false)}
 					onConfirm={() => {
 						const blocks = assignment.blocks.filter(
-							(item) => item.id !== getConfirmSliceBlock?.id
+							(item) => item.id !== getConfirmSliceModalBlock?.id
 						);
 
 						setAssignment((prev) => ({
@@ -698,29 +705,28 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						}));
 
 						setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
-						setConfirmSliceOpen(false);
+						setConfirmSliceModalOpen(false);
 					}}
 				/>
 			)}
 
 			{assignment && (
-				<AddBlock
-					isOpen={!!isAddBlockOpen}
+				<AddBlockModal
+					isOpen={!!isAddBlockModalOpen}
 					assignment={assignment}
-					onClose={() => setAddBlockOpen(false)}
+					onClose={() => setAddBlockModalOpen(false)}
 					onConfirm={(type) => {
-						if (getAddBlockPosition === undefined) {
+						if (getAddBlockModalPosition === undefined) {
 							return;
 						}
 
 						switch (type) {
 							case AssignmentBlockType.TEXT:
 							case AssignmentBlockType.ZOEK:
-								const blocks = insertAssignmentBlockAtPosition(
-									assignment.blocks,
-									{ type },
-									getAddBlockPosition
-								);
+								const blocks = spliceByPosition(assignment.blocks, {
+									type,
+									position: getAddBlockModalPosition + 1, // Always insert after
+								} as AssignmentBlock); // TODO: avoid cast
 
 								setAssignment((prev) => ({
 									...prev,
@@ -737,7 +743,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								break;
 						}
 
-						setAddBlockOpen(false);
+						setAddBlockModalOpen(false);
 					}}
 				/>
 			)}

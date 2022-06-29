@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	Dropdown,
 	EnglishContentType,
 	Flex,
 	Grid,
@@ -24,20 +25,28 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
+	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
 	Table,
 	Thumbnail,
 	ToggleButton,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { AssignmentService } from '../../assignment/assignment.service';
+import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
@@ -76,6 +85,11 @@ import './ItemDetail.scss';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
+export const ITEM_ACTIONS = {
+	createAssignment: 'createAssignment',
+	importToAssignment: 'importToAssignment',
+};
+
 const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
 
@@ -91,6 +105,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
+		false
+	);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
+		false
+	);
+	const [
+		isConfirmImportToAssignmentWithResponsesModalOpen,
+		setIsConfirmImportToAssignmentWithResponsesModalOpen,
+	] = useState<boolean>(false);
+	const [assignmentId, setAssignmentId] = useState<string>();
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 		getRelatedItems(currentItemId, 'items', limit)
@@ -311,12 +336,86 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		return null;
 	};
 
+	const createNewAssignment = async () => {
+		if (!item) {
+			return;
+		}
+		const assignmentId = await AssignmentService.createAssignmentFromFragment(user, item);
+		history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
+	};
+
+	const onImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
+		setAssignmentId(importToAssignmentId);
+
+		// check if assignment has responses. If so: show additional confirmation modal
+		const hasResponses = await AssignmentService.getAssignmentResponses(
+			getProfileId(user),
+			importToAssignmentId
+		);
+		if (hasResponses.length > 0) {
+			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
+		} else {
+			doImportToAssignment(importToAssignmentId);
+		}
+	};
+
+	const onConfirmImportAssignment = () => {
+		if (!assignmentId) {
+			return;
+		}
+		return doImportToAssignment(assignmentId);
+	};
+
+	const doImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
+		setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
+		if (item && importToAssignmentId) {
+			await AssignmentService.importFragmentToAssignment(item, importToAssignmentId);
+			ToastService.success(
+				t('item/views/item-detail___het-fragment-is-toegevoegd-aan-de-opdracht')
+			);
+		} else {
+			ToastService.danger(
+				t(
+					'item/views/item-detail___het-fragment-kon-niet-worden-toegevoegd-aan-de-opdracht'
+				)
+			);
+		}
+	};
+
+	const executeAction = async (item: ReactText) => {
+		setIsCreateAssignmentDropdownOpen(false);
+		switch (item) {
+			case ITEM_ACTIONS.createAssignment:
+				createNewAssignment();
+				break;
+
+			case ITEM_ACTIONS.importToAssignment:
+				setIsImportToAssignmentModalOpen(true);
+				break;
+
+			default:
+				console.warn(`An unhandled action "${item}" was executed without a binding.`);
+				return null;
+		}
+	};
+
 	const renderItem = () => {
 		if (!item) {
 			return null;
 		}
 		const englishContentType: EnglishContentType =
 			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
+
+		const createAssignmentOptions = [
+			{
+				label: t('item/views/item-detail___nieuwe-opdracht'),
+				id: ITEM_ACTIONS.createAssignment,
+			},
+			{
+				label: t('item/views/item-detail___bestaande-opdracht'),
+				id: ITEM_ACTIONS.importToAssignment,
+			},
+		];
 
 		return (
 			<>
@@ -409,106 +508,134 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										<Spacer margin="right-small">
-											<ButtonToolbar>
-												<Flex justify="between" wrap>
-													<Button
-														type="tertiary"
-														icon="scissors"
-														label={t(
-															'item/views/item___voeg-fragment-toe-aan-collectie'
-														)}
-														title={t(
-															'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-														)}
-														ariaLabel={t(
-															'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-														)}
-														onClick={() => {
-															setIsAddToCollectionModalOpen(true);
-														}}
-													/>
-
-													{PermissionService.hasPerm(
-														user,
-														PermissionName.CREATE_ASSIGNMENTS
-													) && (
+										{/* <Spacer margin="right-small"> */}
+										<Toolbar>
+											<ToolbarLeft>
+												<ToolbarItem>
+													<ButtonToolbar>
 														<Button
 															type="tertiary"
-															icon="clipboard"
+															icon="scissors"
 															label={t(
-																'item/views/item___maak-opdracht'
-															)}
-															ariaLabel={t(
-																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
+																'item/views/item___voeg-fragment-toe-aan-collectie'
 															)}
 															title={t(
-																'item/views/item-detail___neem-dit-item-op-in-een-opdracht'
-															)}
-															onClick={() =>
-																redirectToClientPage(
-																	buildLink(
-																		APP_PATH.ASSIGNMENT_CREATE
-																			.route
-																	),
-																	history
-																)
-															}
-														/>
-													)}
-
-													{PermissionService.hasPerm(
-														user,
-														PermissionName.CREATE_QUICK_LANE
-													) && (
-														<Button
-															type="tertiary"
-															icon="link-2"
-															label={t(
-																'item/views/item___delen-met-leerlingen'
+																'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 															)}
 															ariaLabel={t(
-																'item/views/item-detail___deel-dit-met-alle-leerlingen'
-															)}
-															title={t(
-																'item/views/item-detail___deel-dit-met-alle-leerlingen'
+																'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 															)}
 															onClick={() => {
-																setIsQuickLaneModalOpen(true);
+																setIsAddToCollectionModalOpen(true);
 															}}
 														/>
-													)}
-												</Flex>
-											</ButtonToolbar>
-										</Spacer>
-										<ButtonToolbar>
-											<ToggleButton
-												type="tertiary"
-												icon="bookmark"
-												active={bookmarkViewPlayCounts.isBookmarked}
-												ariaLabel={t('item/views/item___toggle-bladwijzer')}
-												title={t('item/views/item___toggle-bladwijzer')}
-												onClick={toggleBookmark}
-											/>
-											<Button
-												type="tertiary"
-												icon="share-2"
-												ariaLabel={t('item/views/item___share-item')}
-												title={t('item/views/item___share-item')}
-												onClick={() => {
-													setIsShareThroughEmailModalOpen(true);
-												}}
-											/>
-											<Button
-												type="tertiary"
-												icon="flag"
-												ariaLabel={t('item/views/item___rapporteer-item')}
-												title={t('item/views/item___rapporteer-item')}
-												onClick={() => {
-													setIsReportItemModalOpen(true);
-												}}
-											/>
-										</ButtonToolbar>
+
+														{PermissionService.hasPerm(
+															user,
+															PermissionName.CREATE_ASSIGNMENTS
+														) && (
+															<Dropdown
+																buttonType="tertiary"
+																icon="clipboard"
+																label={t(
+																	'item/views/item-detail___voeg-toe-aan-opdracht'
+																)}
+																isOpen={
+																	isCreateAssignmentDropdownOpen
+																}
+																onClose={() =>
+																	setIsCreateAssignmentDropdownOpen(
+																		false
+																	)
+																}
+																onOpen={() =>
+																	setIsCreateAssignmentDropdownOpen(
+																		true
+																	)
+																}
+															>
+																<MenuContent
+																	menuItems={
+																		createAssignmentOptions
+																	}
+																	onClick={executeAction}
+																/>
+															</Dropdown>
+														)}
+
+														{PermissionService.hasPerm(
+															user,
+															PermissionName.CREATE_QUICK_LANE
+														) && (
+															<Button
+																type="tertiary"
+																icon="link-2"
+																label={t(
+																	'item/views/item___delen-met-leerlingen'
+																)}
+																ariaLabel={t(
+																	'item/views/item-detail___deel-dit-met-alle-leerlingen'
+																)}
+																title={t(
+																	'item/views/item-detail___deel-dit-met-alle-leerlingen'
+																)}
+																onClick={() => {
+																	setIsQuickLaneModalOpen(true);
+																}}
+															/>
+														)}
+													</ButtonToolbar>
+												</ToolbarItem>
+											</ToolbarLeft>
+											<ToolbarRight>
+												<ToolbarItem>
+													<ButtonToolbar>
+														<ToggleButton
+															type="tertiary"
+															icon="bookmark"
+															active={
+																bookmarkViewPlayCounts.isBookmarked
+															}
+															ariaLabel={t(
+																'item/views/item___toggle-bladwijzer'
+															)}
+															title={t(
+																'item/views/item___toggle-bladwijzer'
+															)}
+															onClick={toggleBookmark}
+														/>
+														<Button
+															type="tertiary"
+															icon="share-2"
+															ariaLabel={t(
+																'item/views/item___share-item'
+															)}
+															title={t(
+																'item/views/item___share-item'
+															)}
+															onClick={() => {
+																setIsShareThroughEmailModalOpen(
+																	true
+																);
+															}}
+														/>
+														<Button
+															type="tertiary"
+															icon="flag"
+															ariaLabel={t(
+																'item/views/item___rapporteer-item'
+															)}
+															title={t(
+																'item/views/item___rapporteer-item'
+															)}
+															onClick={() => {
+																setIsReportItemModalOpen(true);
+															}}
+														/>
+													</ButtonToolbar>
+												</ToolbarItem>
+											</ToolbarRight>
+										</Toolbar>
 									</Flex>
 								</Spacer>
 							</Column>
@@ -746,6 +873,35 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					content_label="ITEM"
 					onClose={() => {
 						setIsQuickLaneModalOpen(false);
+					}}
+				/>
+				<ImportToAssignmentModal
+					user={user}
+					isOpen={isImportToAssignmentModalOpen}
+					onClose={() => setIsImportToAssignmentModalOpen(false)}
+					importToAssignmentCallback={onImportToAssignment}
+					showToggle={false}
+					translations={{
+						title: t('item/views/item-detail___voeg-toe-aan-bestaande-opdracht'),
+						primaryButton: t('item/views/item-detail___voeg-toe'),
+						secondaryButton: t('item/views/item-detail___annuleer'),
+					}}
+				/>
+				<ConfirmImportToAssignmentWithResponsesModal
+					isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
+					onClose={() => setIsConfirmImportToAssignmentWithResponsesModalOpen(false)}
+					confirmCallback={onConfirmImportAssignment}
+					translations={{
+						title: t('item/views/item-detail___fragment-toevoegen'),
+						warningCallout: t('item/views/item-detail___opgelet'),
+						warningMessage: t(
+							'item/views/item-detail___leerlingen-hebben-deze-opdracht-reeds-bekeken'
+						),
+						warningBody: t(
+							'item/views/item-detail___ben-je-zeker-dat-je-het-fragment-wil-toevoegen-aan-deze-opdracht'
+						),
+						primaryButton: t('item/views/item-detail___voeg-toe'),
+						secondaryButton: t('item/views/item-detail___annuleer'),
 					}}
 				/>
 			</>

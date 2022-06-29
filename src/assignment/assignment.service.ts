@@ -945,4 +945,79 @@ export class AssignmentService {
 
 		return assignmentId;
 	}
+
+	static async createAssignmentFromFragment(
+		user: Avo.User.User,
+		item: Avo.Item.Item
+	): Promise<string> {
+		const assignmentToSave = {
+			title: item.title,
+			owner_profile_id: getProfileId(user),
+			assignment_type: AssignmentType.KIJK,
+		};
+
+		const assignment = await dataService.mutate<Avo.Assignment.Assignment_v2>({
+			mutation: INSERT_ASSIGNMENT,
+			variables: {
+				assignment: assignmentToSave,
+			},
+			update: ApolloCacheManager.clearAssignmentCache,
+		});
+
+		const assignmentId = get(assignment, 'data.insert_app_assignments_v2.returning[0].id');
+
+		if (isNil(assignmentId)) {
+			throw new CustomError(
+				'Saving the assignment failed, assignment id was undefined',
+				null,
+				{
+					assignment,
+				}
+			);
+		}
+
+		// Add block with this fragment
+		const block = {
+			assignment_id: assignmentId,
+			fragment_id: item.external_id,
+			type: 'ITEM',
+			position: 0,
+		};
+
+		await dataService.mutate({
+			mutation: INSERT_ASSIGNMENT_BLOCKS,
+			variables: {
+				assignmentBlocks: [block],
+			},
+		});
+
+		return assignmentId;
+	}
+
+	static async importFragmentToAssignment(
+		item: Avo.Item.Item,
+		assignmentId: string
+	): Promise<string> {
+		const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
+			assignmentId
+		);
+		const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
+
+		// Add block with this fragment
+		const block = {
+			assignment_id: assignmentId,
+			fragment_id: item.external_id,
+			type: 'ITEM',
+			position: startPosition,
+		};
+
+		await dataService.mutate({
+			mutation: INSERT_ASSIGNMENT_BLOCKS,
+			variables: {
+				assignmentBlocks: [block],
+			},
+		});
+
+		return assignmentId;
+	}
 }

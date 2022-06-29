@@ -1323,6 +1323,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									isOpen={isImportToAssignmentModalOpen}
 									onClose={() => setIsImportToAssignmentModalOpen(false)}
 									importToAssignmentCallback={onImportToAssignment}
+									showToggle={true}
+									translations={{
+										title: t(
+											'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
+										),
+										primaryButton: t(
+											'assignment/modals/import-to-assignment-modal___importeer'
+										),
+										secondaryButton: t(
+											'assignment/modals/import-to-assignment-modal___annuleer'
+										),
+									}}
 								/>
 								<ConfirmImportToAssignmentWithResponsesModal
 									isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
@@ -1330,6 +1342,26 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
 									}
 									confirmCallback={onConfirmImportAssignment}
+									translations={{
+										title: t(
+											'assignment/modals/confirm-import-to-assignment-with-responses-modal___collectie-importeren'
+										),
+										warningCallout: t(
+											'assignment/modals/confirm-import-to-assignment-with-responses-modal___opgelet'
+										),
+										warningMessage: t(
+											'assignment/modals/confirm-import-to-assignment-with-responses-modal___leerlingen-hebben-deze-opdracht-reeds-bekeken'
+										),
+										warningBody: t(
+											'assignment/modals/confirm-import-to-assignment-with-responses-modal___ben-je-zeker-dat-je-de-collectie-wil-importeren-tot-deze-opdracht'
+										),
+										primaryButton: t(
+											'assignment/modals/create-assignment-modal___importeer'
+										),
+										secondaryButton: t(
+											'assignment/modals/create-assignment-modal___annuleer'
+										),
+									}}
 								/>
 							</>
 						)}
