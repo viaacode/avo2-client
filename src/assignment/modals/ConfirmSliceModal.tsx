@@ -12,17 +12,18 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { AssignmentBlock, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 
 import { EDIT_ASSIGNMENT_BLOCK_LABELS } from '../assignment.const';
 
-interface ConfirmSliceProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	assignment: AssignmentSchema_v2;
+interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
+	assignment: Avo.Assignment.Assignment_v2;
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }
 
-const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
+const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	assignment,
 	block,
 	isOpen,
@@ -30,6 +31,8 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 	onConfirm,
 }) => {
 	const [t] = useTranslation();
+
+	const label = { type: block ? EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] : '' };
 
 	const renderConfirmButtons = () => {
 		return (
@@ -86,10 +89,7 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
-				'assignment/modals/confirm-slice___type-verwijderen',
-				block ? EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] : ''
-			)}
+			title={t('assignment/modals/confirm-slice___type-verwijderen', label)}
 			size="medium"
 			onClose={onClose}
 			scrollable
@@ -103,4 +103,4 @@ const ConfirmSlice: FunctionComponent<ConfirmSliceProps> = ({
 	);
 };
 
-export default ConfirmSlice;
+export default ConfirmSliceModal;

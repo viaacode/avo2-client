@@ -1,0 +1,58 @@
+@import '../../styles/settings/variables';
+
+$component: 'c-add-block';
+
+.c-modal .#{$component} {
+	&__list {
+		list-style: none;
+		margin: 0;
+
+		&-item {
+			cursor: pointer;
+			border-radius: 4px;
+			border: 1px solid $color-gray-300;
+			display: grid;
+			grid-template-columns: min-content auto min-content;
+			overflow: hidden;
+			padding: 0;
+
+			&--disabled {
+				cursor: not-allowed;
+				opacity: 0.5;
+			}
+		}
+
+		li {
+			&:not(:first-child) {
+				margin-top: $g-spacer-unit * 3;
+			}
+		}
+	}
+
+	&__icon,
+	&__actions {
+		align-items: center;
+		display: flex;
+	}
+
+	&__icon {
+		background: $color-gray-100;
+		border-right: 1px solid $color-gray-300;
+		color: $color-dark-night-blue;
+		padding: $g-spacer-unit * 2;
+	}
+
+	&__content {
+		padding: $g-spacer-unit * 2;
+	}
+
+	&__description {
+		color: $color-gray-300;
+		margin-bottom: 0;
+		margin-top: $g-spacer-unit;
+	}
+
+	&__actions button {
+		margin-right: $g-spacer-unit * 4;
+	}
+}
