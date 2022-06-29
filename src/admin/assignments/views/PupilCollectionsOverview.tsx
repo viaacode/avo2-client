@@ -291,6 +291,7 @@ const PupilCollectionsOverview: FunctionComponent<
 
 		switch (columnId) {
 			case 'title':
+				// TODO link to correct edit page for pupil collection
 				return (
 					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id })}>
 						{truncateTableValue(pupilCollection?.collection_title || '-')}
@@ -327,6 +328,7 @@ const PupilCollectionsOverview: FunctionComponent<
 
 			case 'actions':
 			default:
+				// TODO link to correct edit page for pupil collection
 				return (
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: pupilCollection.id })}
