@@ -77,7 +77,7 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import { AddToCollectionModal, ItemVideoDescription } from '../components';
+import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
@@ -852,21 +852,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					/>
 				)}
 				{!isNil(match.params.id) && isAddToFragmentModalOpen && (
-					<AddToCollectionModal
+					<AddToAssignmentModal
 						history={history}
 						location={location}
 						match={match}
 						user={user}
 						itemMetaData={item}
-						externalId={match.params.id as string}
 						isOpen={isAddToFragmentModalOpen}
 						onClose={() => {
 							setIsAddToFragmentModalOpen(false);
 						}}
-						onAddCallback={(fragmentTrimInfo: ItemTrimInfo) =>
-							doImportToAssignment(fragmentTrimInfo)
-						}
-						addToAssignment={true}
+						onAddToAssignmentCallback={doImportToAssignment}
 					/>
 				)}
 				<ShareThroughEmailModal
