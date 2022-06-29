@@ -1,7 +1,3 @@
-import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import {
 	Alert,
 	Button,
@@ -13,7 +9,11 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
+import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
 import { APP_PATH } from '../../constants';
 import Html from '../../shared/components/Html/Html';
 import { ToastType } from '../../shared/services';
@@ -30,9 +30,8 @@ export interface StamboekInputProps {
 export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange, value = '' }) => {
 	const [t] = useTranslation();
 
-	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<
-		StamboekValidationStatus
-	>('INCOMPLETE');
+	const [stamboekValidationStatus, setStamboekValidationStatus] =
+		useState<StamboekValidationStatus>('INCOMPLETE');
 	const [rawStamboekNumber, setRawStamboekNumber] = useState<string>(value);
 
 	const STAMBOEK_MESSAGES: {
@@ -118,9 +117,8 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 			if (/^[0-9]{11}(-[0-9]*)?$/g.test(cleanedStamboekNumber)) {
 				const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
 				setStamboekValidationStatus('VALID_FORMAT');
-				const validationStatus: Avo.Stamboek.ValidationStatuses = await verifyStamboekNumber(
-					stamboekNumber
-				);
+				const validationStatus: Avo.Stamboek.ValidationStatuses =
+					await verifyStamboekNumber(stamboekNumber);
 				if (validationStatus === 'VALID') {
 					onChange(stamboekNumber);
 					setStamboekValidationStatus('VALID');
@@ -169,7 +167,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
 							)}
 							className="a-stamboek-image"
-							src="/Users/bert/Documents/studiohyperdrive/repos/avo2-client/src/assets/images/leerkrachten-kaart-voorbeeld-nummer.png"
+							src={stamboekExampleImage}
 						/>
 					</Spacer>
 				</TooltipContent>

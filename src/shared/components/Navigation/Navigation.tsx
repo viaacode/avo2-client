@@ -1,11 +1,3 @@
-import { get, last } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Dispatch } from 'redux';
-
 import {
 	Avatar,
 	Button,
@@ -19,7 +11,15 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get, last } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
+import { ReactComponent as AvoLogo } from '../../../assets/images/avo-logo-i.svg';
 import {
 	getFirstName,
 	getProfileAvatar,
@@ -248,13 +248,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 						<ToolbarLeft>
 							<ToolbarItem>
 								<h1 className="c-brand">
-									<img
-										className="c-brand__image"
-										src="/Users/bert/Documents/studiohyperdrive/repos/avo2-client/src/assets/images/avo-logo-i.svg"
-										alt={t(
-											'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
-										)}
-									/>
+									<AvoLogo />
 								</h1>
 							</ToolbarItem>
 						</ToolbarLeft>
@@ -278,13 +272,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 												: APP_PATH.LOGGED_OUT_HOME.route
 										}
 									>
-										<img
-											className="c-brand__image"
-											src="/Users/bert/Documents/studiohyperdrive/repos/avo2-client/src/assets/images/avo-logo-i.svg"
-											alt={t(
-												'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
-											)}
-										/>
+										<AvoLogo />
 									</Link>
 								</h1>
 							</ToolbarItem>

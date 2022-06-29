@@ -1,9 +1,8 @@
+import { Button, KeyValueEditor } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-
-import { Button, KeyValueEditor } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -13,9 +12,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';
 
-interface TranslationsOverviewProps extends DefaultSecureRouteProps {}
-
-const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () => {
+const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 	const [t] = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
@@ -52,34 +49,33 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 
 		const freshTranslations = convertTranslationsToData(await fetchTranslations());
 
-		const updatedTranslations = freshTranslations.map((freshTranslation: Translation): [
-			string,
-			string
-		] => {
-			const initialTranslation = initialTranslations.find(
-				(trans) => trans[0] === freshTranslation[0]
-			);
-			const currentTranslation = translations.find(
-				(trans) => trans[0] === freshTranslation[0]
-			);
+		const updatedTranslations = freshTranslations.map(
+			(freshTranslation: Translation): [string, string] => {
+				const initialTranslation = initialTranslations.find(
+					(trans) => trans[0] === freshTranslation[0]
+				);
+				const currentTranslation = translations.find(
+					(trans) => trans[0] === freshTranslation[0]
+				);
 
-			if (isNil(currentTranslation)) {
-				// This translation has been added to the database but didn't exist yet when the page was loaded
+				if (isNil(currentTranslation)) {
+					// This translation has been added to the database but didn't exist yet when the page was loaded
+					return freshTranslation;
+				}
+
+				if (
+					!isNil(initialTranslation) &&
+					!isNil(currentTranslation) &&
+					initialTranslation[1] !== currentTranslation[1]
+				) {
+					// This translation has changed since the page was loaded
+					return currentTranslation;
+				}
+
+				// This translation has not changed, we write the fresh value from the database back to the database
 				return freshTranslation;
 			}
-
-			if (
-				!isNil(initialTranslation) &&
-				!isNil(currentTranslation) &&
-				initialTranslation[1] !== currentTranslation[1]
-			) {
-				// This translation has changed since the page was loaded
-				return currentTranslation;
-			}
-
-			// This translation has not changed, we write the fresh value from the database back to the database
-			return freshTranslation;
-		});
+		);
 
 		convertDataToTranslations(updatedTranslations).forEach((context: any) => {
 			promises.push(updateTranslations(context.name, context));

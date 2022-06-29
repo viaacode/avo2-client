@@ -1,4 +1,4 @@
-import { ApolloProvider as ApolloHooksProvider, ApolloClient } from '@apollo/react-hooks';
+import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { wrapHistory } from 'oaf-react-router';
@@ -42,9 +42,7 @@ wrapHistory(history, {
 	},
 });
 
-interface AppProps extends RouteComponentProps {}
-
-const App: FunctionComponent<AppProps> = (props) => {
+const App: FunctionComponent<RouteComponentProps> = (props) => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -109,7 +107,7 @@ const AppWithRouter = compose(withRouter, withUser)(App);
 
 const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>
-		<ApolloHooksProvider client={(dataService as unknown) as ApolloClient<any>}>
+		<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
 			<Provider store={store}>
 				<Router history={history as any}>
 					<QueryParamProvider ReactRouterRoute={Route}>
