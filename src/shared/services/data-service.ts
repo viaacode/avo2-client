@@ -20,7 +20,7 @@ const logoutMiddleware = onError(({ networkError }) => {
 export const dataService = new ApolloClient({
 	cache,
 	link: logoutMiddleware.concat(httpLink),
-} as any);
+});
 
 type ApolloCache = { [key: string]: any };
 

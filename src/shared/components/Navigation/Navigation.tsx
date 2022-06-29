@@ -250,7 +250,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 								<h1 className="c-brand">
 									<img
 										className="c-brand__image"
-										src="/images/avo-logo-i.svg"
+										src="/Users/bert/Documents/studiohyperdrive/repos/avo2-client/src/assets/images/avo-logo-i.svg"
 										alt={t(
 											'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
 										)}
@@ -280,7 +280,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 									>
 										<img
 											className="c-brand__image"
-											src="/images/avo-logo-i.svg"
+											src="/Users/bert/Documents/studiohyperdrive/repos/avo2-client/src/assets/images/avo-logo-i.svg"
 											alt={t(
 												'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
 											)}

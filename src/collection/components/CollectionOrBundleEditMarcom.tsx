@@ -1,8 +1,7 @@
-import H from 'history';
 import { get, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -41,7 +40,7 @@ import { CollectionAction } from './CollectionOrBundleEdit';
 interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: H.History;
+	history: RouteComponentProps['history'];
 }
 
 const CollectionOrBundleEditMarcom: FunctionComponent<

@@ -1,4 +1,3 @@
-import { Location } from 'history';
 import { get } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';
@@ -22,6 +21,7 @@ import {
 	SetLoginLoadingAction,
 	SetLoginSuccessAction,
 } from './types';
+import { RouteComponentProps } from 'react-router-dom';
 
 let checkSessionTimeoutTimerId: number | null = null;
 
@@ -34,7 +34,7 @@ function checkIfSessionExpires(expiresAt: string) {
 		state: {
 			from: { pathname: window.location.pathname, search: window.location.search },
 		},
-	} as unknown) as Location;
+	} as unknown) as RouteComponentProps['location'];
 	if (date.subtract(5, 'minutes').valueOf() < new Date().getTime()) {
 		logoutAndRedirectToLogin(location);
 	} else if (date.subtract(10, 'minutes').valueOf() < new Date().getTime()) {

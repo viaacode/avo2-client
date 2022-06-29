@@ -80,7 +80,7 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 							</span>
 							<Spacer margin="left-small">
 								<img
-									src="/images/meemoo-logo.png"
+									src="../../../assets/images/meemoo-logo.png"
 									alt={t('shared/components/footer/footer___logo-van-meemoo')}
 								/>
 							</Spacer>
@@ -100,7 +100,7 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 							</span>
 							<Spacer margin="left-small">
 								<img
-									src="/images/vlaanderen-logo.png"
+									src="../../../assets/images/vlaanderen-logo.png"
 									alt={t(
 										'shared/components/footer/footer___logo-van-vlaamse-overheid'
 									)}

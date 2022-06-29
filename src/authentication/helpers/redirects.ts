@@ -1,4 +1,3 @@
-import { History, Location } from 'history';
 import { get, isString, omit, trimEnd, trimStart } from 'lodash-es';
 import queryString from 'query-string';
 
@@ -10,26 +9,30 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { getEnv } from '../../shared/helpers';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
+import { RouteComponentProps } from 'react-router-dom';
 
 /**
  *
  * Client redirect functions
  *
  **/
-export function redirectToClientPage(path: string, history: History) {
+export function redirectToClientPage(path: string, history: RouteComponentProps['history']) {
 	history.push(path);
 }
 
-export function redirectToErrorPage(props: ErrorViewQueryParams, location: Location) {
+export function redirectToErrorPage(
+	props: ErrorViewQueryParams,
+	location: RouteComponentProps['location']
+) {
 	const baseUrl = getBaseUrl(location);
 	window.location.href = `${baseUrl}/error?${queryString.stringify(props)}`;
 }
 
-export function redirectToLoggedOutHome(location: Location) {
+export function redirectToLoggedOutHome(location: RouteComponentProps['location']) {
 	window.location.href = getBaseUrl(location);
 }
 
-export function redirectToLoggedInHome(location: Location) {
+export function redirectToLoggedInHome(location: RouteComponentProps['location']) {
 	window.location.href = `${getBaseUrl(location)}/start`;
 }
 
@@ -38,7 +41,7 @@ export function redirectToLoggedInHome(location: Location) {
  * Server redirect functions
  *
  **/
-export function redirectToServerLoginPage(location: Location) {
+export function redirectToServerLoginPage(location: RouteComponentProps['location']) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
@@ -49,7 +52,7 @@ export function redirectToServerLoginPage(location: Location) {
 	})}`;
 }
 
-export function redirectToServerItsmeLogin(location: Location) {
+export function redirectToServerItsmeLogin(location: RouteComponentProps['location']) {
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
@@ -57,7 +60,7 @@ export function redirectToServerItsmeLogin(location: Location) {
 	})}`;
 }
 
-export function redirectToServerLeerIDLogin(location: Location) {
+export function redirectToServerLeerIDLogin(location: RouteComponentProps['location']) {
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
@@ -65,14 +68,14 @@ export function redirectToServerLeerIDLogin(location: Location) {
 	})}`;
 }
 
-export function redirectToServerACMIDMLogin(location: Location) {
+export function redirectToServerACMIDMLogin(location: RouteComponentProps['location']) {
 	const returnToUrl = getRedirectAfterLogin(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
 }
 
-export function redirectToServerSmartschoolLogin(location: Location) {
+export function redirectToServerSmartschoolLogin(location: RouteComponentProps['location']) {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
@@ -81,7 +84,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 	})}`;
 }
 
-export function redirectToServerKlascementLogin(location: Location) {
+export function redirectToServerKlascementLogin(location: RouteComponentProps['location']) {
 	// Redirect to klascement login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
@@ -90,7 +93,10 @@ export function redirectToServerKlascementLogin(location: Location) {
 	})}`;
 }
 
-export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
+export function redirectToServerArchiefRegistrationIdp(
+	location: RouteComponentProps['location'],
+	stamboekNumber: string
+) {
 	const returnToUrl = getBaseUrl(location) + APP_PATH.LOGIN.route;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
 		{
@@ -100,7 +106,10 @@ export function redirectToServerArchiefRegistrationIdp(location: Location, stamb
 	)}`;
 }
 
-export function redirectToServerLogoutPage(location: Location, routeAfterLogout: string) {
+export function redirectToServerLogoutPage(
+	location: RouteComponentProps['location'],
+	routeAfterLogout: string
+) {
 	// Url to return to after logout is completed
 	const returnToUrl = `${getBaseUrl(location)}${routeAfterLogout}`;
 	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
@@ -108,7 +117,7 @@ export function redirectToServerLogoutPage(location: Location, routeAfterLogout:
 	})}`;
 }
 
-export function logoutAndRedirectToLogin(location?: Location) {
+export function logoutAndRedirectToLogin(location?: RouteComponentProps['location']) {
 	// Url to return to after logout is completed
 	let returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
 
@@ -131,7 +140,7 @@ export function logoutAndRedirectToLogin(location?: Location) {
  * @param idpParameters optional query parameters that are sent to the IDP login url
  */
 export function redirectToServerLinkAccount(
-	location: Location,
+	location: RouteComponentProps['location'],
 	idpType: Avo.Auth.IdpType,
 	idpParameters?: string
 ) {
@@ -143,7 +152,10 @@ export function redirectToServerLinkAccount(
 	})}`;
 }
 
-export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
+export function redirectToServerUnlinkAccount(
+	location: RouteComponentProps['location'],
+	idpType: Avo.Auth.IdpType
+) {
 	const returnToUrl = getBaseUrl(location) + location.pathname;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
 		returnToUrl,
@@ -174,7 +186,7 @@ export function toAbsoluteUrl(link: string): string {
 	return `${trimEnd(window.location.origin, '/')}/${trimStart(link, '/')}`;
 }
 
-export function getBaseUrl(location: Location): string {
+export function getBaseUrl(location: RouteComponentProps['location']): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');
 	}
@@ -182,7 +194,7 @@ export function getBaseUrl(location: Location): string {
 }
 
 export function getFromPath(
-	location: Location,
+	location: RouteComponentProps['location'],
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
 	let fromPath = get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
@@ -194,7 +206,7 @@ export function getFromPath(
 }
 
 export function getRedirectAfterLogin(
-	location: Location,
+	location: RouteComponentProps['location'],
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ) {
 	// From query string

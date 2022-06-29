@@ -169,7 +169,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
 							)}
 							className="a-stamboek-image"
-							src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
+							src="/Users/bert/Documents/studiohyperdrive/repos/avo2-client/src/assets/images/leerkrachten-kaart-voorbeeld-nummer.png"
 						/>
 					</Spacer>
 				</TooltipContent>
