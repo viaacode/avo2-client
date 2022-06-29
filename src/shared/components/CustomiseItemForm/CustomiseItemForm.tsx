@@ -1,6 +1,9 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 
 import {
+	Button,
+	ButtonGroup,
+	ButtonProps,
 	DefaultProps,
 	Form,
 	FormGroup,
@@ -19,12 +22,14 @@ import './CustomiseItemForm.scss';
 export type CustomiseItemFormToggleField = LabeledFormField & ToggleProps;
 export type CustomiseItemFormTitleField = LabeledFormField & TextInputProps;
 export type CustomiseItemFormDescriptionField = LabeledFormField & WYSIWYGWrapperProps;
+export type CustomiseItemFormButtonsField = LabeledFormField & { items: ButtonProps[] };
 
 export interface CustomiseItemFormProps extends DefaultProps {
 	id: string | number;
 	toggle?: CustomiseItemFormToggleField;
 	title?: CustomiseItemFormTitleField;
 	description?: CustomiseItemFormDescriptionField;
+	buttons?: CustomiseItemFormButtonsField;
 	preview?: () => ReactNode;
 }
 
@@ -32,10 +37,11 @@ export const CustomiseItemFormIds = {
 	toggle: 'c-customise-item-form__toggle',
 	title: 'c-customise-item-form__title',
 	description: 'c-customise-item-form__description',
+	buttons: 'c-customise-item-form__switch',
 };
 
 export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
-	const { id, toggle, preview, style, className } = props;
+	const { id, toggle, buttons, preview, style, className, children } = props;
 
 	const titleValue = props.title?.value;
 	const descriptionInitialHtml = props.description?.initialHtml;
@@ -73,6 +79,23 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 							labelFor={getId(CustomiseItemFormIds.toggle)}
 						>
 							<Toggle {...toggle} id={getId(CustomiseItemFormIds.toggle)}></Toggle>
+
+							{toggle.help && <p className="c-form-help-text">{toggle.help}</p>}
+						</FormGroup>
+					)}
+
+					{buttons && (
+						<FormGroup
+							label={buttons.label}
+							labelFor={getId(CustomiseItemFormIds.buttons)}
+						>
+							<ButtonGroup>
+								{buttons.items.map((button) => {
+									return <Button type="secondary" {...button} />;
+								})}
+							</ButtonGroup>
+
+							{buttons.help && <p className="c-form-help-text">{buttons.help}</p>}
 						</FormGroup>
 					)}
 
@@ -88,8 +111,15 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 								onBlur={() => props.title?.onChange?.(title as string)}
 								id={getId(CustomiseItemFormIds.title)}
 							/>
+
+							{props.title.help && (
+								<p className="c-form-help-text">{props.title.help}</p>
+							)}
 						</FormGroup>
 					)}
+
+					{/* Arbitrary position, allows rendering of meta data in https://www.figma.com/file/CLxhzRtPtdHVIlY11TicxF/Zoek-%26-Bouw?node-id=5%3A162 */}
+					{children}
 
 					{props.description && (
 						<FormGroup
@@ -105,6 +135,10 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 								}
 								id={getId(CustomiseItemFormIds.description)}
 							></WYSIWYGWrapper>
+
+							{props.description.help && (
+								<p className="c-form-help-text">{props.description.help}</p>
+							)}
 						</FormGroup>
 					)}
 				</Form>
