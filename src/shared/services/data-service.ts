@@ -58,6 +58,9 @@ export class ApolloCacheManager {
 	 */
 	public static clearAssignmentCache(cache: ApolloCache) {
 		ApolloCacheManager.deleteFromCache(cache, 'app_assignment');
+		ApolloCacheManager.deleteFromCache(cache, 'app_assignment_blocks_v2');
+		ApolloCacheManager.deleteFromCache(cache, 'app_assignment_responses_v2');
+		ApolloCacheManager.deleteFromCache(cache, 'app_pupil_collection_blocks');
 	}
 
 	/**

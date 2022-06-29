@@ -66,6 +66,7 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 			)}
 			{renderWithPermissions(renderAdminAssignmentRoutes, [
 				PermissionName.VIEW_ANY_ASSIGNMENTS,
+				PermissionName.VIEW_ANY_PUPIL_COLLECTIONS,
 			])}
 			{renderWithPermissions(renderInteractiveTourRoutes, [
 				PermissionName.EDIT_INTERACTIVE_TOURS,

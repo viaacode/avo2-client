@@ -12,6 +12,7 @@ import { AssignmentsOverviewTableCols } from './assignments.types';
 
 export const ASSIGNMENTS_PATH = {
 	ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
+	ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.pupilCollections}`,
 };
 
 export const ITEMS_PER_PAGE = 20;
@@ -55,6 +56,29 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulk
 			? [
 					{
 						label: i18n.t('admin/assignments/assignments___auteur-aanpassen'),
+						value: 'change_author',
+					},
+			  ]
+			: []),
+	];
+};
+
+export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
+	user: Avo.User.User
+): AssignmentBulkActionOption[] => {
+	return [
+		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_PUPIL_COLLECTIONS)
+			? [
+					{
+						label: i18n.t('Verwijderen'),
+						value: 'delete',
+					},
+			  ]
+			: []),
+		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_PUPIL_COLLECTIONS)
+			? [
+					{
+						label: i18n.t('Auteur aanpassen'),
 						value: 'change_author',
 					},
 			  ]
@@ -130,6 +154,78 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 		tooltip: 'views',
 		sortable: false,
 		visibleByDefault: true,
+	},
+	{
+		id: 'actions',
+		tooltip: 'actions',
+		sortable: false,
+		visibleByDefault: true,
+	},
+];
+
+export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
+	{
+		id: 'title',
+		label: i18n.t('Titel collectie'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'pupil',
+		label: i18n.t('Leerling'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'MultiUserSelectDropdown',
+	},
+	{
+		id: 'assignmentTitle',
+		label: i18n.t('Titel opdracht'),
+		sortable: true,
+		visibleByDefault: true,
+	},
+	{
+		id: 'teacher',
+		label: i18n.t('Lesgever'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'MultiUserSelectDropdown',
+	},
+	{
+		id: 'created_at',
+		label: i18n.t('admin/assignments/assignments___aangemaakt-op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+		dataType: TableColumnDataType.dateTime,
+	},
+	{
+		id: 'updated_at',
+		label: i18n.t('admin/assignments/assignments___aangepast-op'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+		dataType: TableColumnDataType.dateTime,
+	},
+	{
+		id: 'deadline_at',
+		label: i18n.t('admin/assignments/assignments___vervaldatum'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'DateRangeDropdown',
+		dataType: TableColumnDataType.dateTime,
+	},
+	{
+		id: 'status',
+		label: i18n.t('admin/assignments/assignments___status'),
+		sortable: true,
+		visibleByDefault: true,
+		filterType: 'BooleanCheckboxDropdown',
+		filterProps: {
+			trueLabel: i18n.t('admin/assignments/assignments___actief'),
+			falseLabel: i18n.t('admin/assignments/assignments___afgelopen'),
+			includeEmpty: false,
+		} as BooleanCheckboxDropdownProps,
+		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'actions',

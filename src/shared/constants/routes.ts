@@ -2,6 +2,7 @@ export const ROUTE_PARTS = Object.freeze({
 	admin: 'beheer',
 	assignment: 'opdracht',
 	assignments: 'opdrachten',
+	pupilCollections: 'leerlingen-collecties',
 	bookmarks: 'bladwijzers',
 	collection: 'collectie',
 	organisationContent: 'organisatie-content',

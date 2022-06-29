@@ -18,15 +18,18 @@ import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
+	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 	ITEMS_PER_PAGE,
+	PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
 	BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
+	BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS,
 	DELETE_ASSIGNMENT,
 	DELETE_ASSIGNMENTS,
 	DELETE_ASSIGNMENT_RESPONSE,
+	DELETE_PUPIL_COLLECTIONS,
 	GET_ASSIGNMENTS_ADMIN_OVERVIEW,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
@@ -38,6 +41,8 @@ import {
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
+	GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
+	GET_PUPIL_COLLECTION_IDS,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -116,7 +121,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				owner_profile_id: getProfileId(user),
 				filter: filterArray.length ? filterArray : {},
@@ -1014,7 +1019,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
 
@@ -1025,7 +1030,7 @@ export class AssignmentService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -1069,7 +1074,7 @@ export class AssignmentService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -1093,7 +1098,10 @@ export class AssignmentService {
 		}
 	}
 
-	static async changeAuthor(profileId: string, assignmentIds: string[]): Promise<void> {
+	static async changeAssignmentsAuthor(
+		profileId: string,
+		assignmentIds: string[]
+	): Promise<void> {
 		try {
 			const response = await dataService.mutate({
 				mutation: BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
@@ -1116,6 +1124,153 @@ export class AssignmentService {
 				assignmentIds,
 				query: 'BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS',
 			});
+		}
+	}
+
+	static async fetchPupilCollectionsForAdmin(
+		page: number,
+		sortColumn: AssignmentOverviewTableColumns,
+		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: TableColumnDataType,
+		where: any = {},
+		itemsPerPage: number = ITEMS_PER_PAGE
+	): Promise<[Avo.Assignment.Response_v2[], number]> {
+		let variables;
+		try {
+			variables = {
+				where,
+				offset: itemsPerPage * page,
+				limit: itemsPerPage,
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					tableColumnDataType,
+					PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
+			};
+
+			const response = await dataService.query({
+				variables,
+				query: GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from graphql contains errors', null, {
+					response,
+				});
+			}
+
+			const pupilCollections: Avo.Assignment.Response_v2[] =
+				response?.data?.app_assignment_responses_v2;
+
+			const assignmentCount =
+				response?.data?.app_assignment_responses_v2_aggregate?.aggregate?.count || 0;
+
+			if (!pupilCollections) {
+				throw new CustomError('Response does not contain any pupil collections', null, {
+					response,
+				});
+			}
+
+			return [pupilCollections as Avo.Assignment.Response_v2[], assignmentCount];
+		} catch (err) {
+			throw new CustomError('Failed to get pupil collections from the database', err, {
+				variables,
+				query: 'GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW',
+			});
+		}
+	}
+
+	static async getPupilCollectionIds(where: any = {}): Promise<string[]> {
+		let variables;
+		try {
+			const whereWithoutDeleted = {
+				...where,
+				is_deleted: { _eq: false },
+			};
+
+			variables = {
+				where: whereWithoutDeleted,
+			};
+
+			const response = await dataService.query({
+				variables,
+				query: GET_PUPIL_COLLECTION_IDS,
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from graphql contains errors', null, {
+					response,
+				});
+			}
+
+			const pupilCollectionIds: string[] = (response?.data?.app_assignments_v2 || []).map(
+				(assignment: Avo.Assignment.Assignment_v2) => assignment.id
+			);
+
+			if (!pupilCollectionIds) {
+				throw new CustomError('Response does not contain any pupil collection ids', null, {
+					response,
+				});
+			}
+
+			return pupilCollectionIds;
+		} catch (err) {
+			throw new CustomError('Failed to get pupil collection ids from the database', err, {
+				variables,
+				query: 'GET_PUPIL_COLLECTION_IDS',
+			});
+		}
+	}
+
+	static async changePupilCollectionsAuthor(
+		profileId: string,
+		pupilCollectionIds: string[]
+	): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS,
+				variables: {
+					pupilCollectionIds,
+					authorId: profileId,
+					now: new Date().toISOString(),
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return response?.data?.update_app_assignments_v2?.affected_rows || 0;
+		} catch (err) {
+			throw new CustomError(
+				'Failed to update author for pupil collections in the database',
+				err,
+				{
+					profileId,
+					pupilCollectionIds,
+					query: 'BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS',
+				}
+			);
+		}
+	}
+
+	static async deletePupilCollections(pupilCollectionIds: string[]) {
+		try {
+			await dataService.mutate({
+				mutation: DELETE_PUPIL_COLLECTIONS,
+				variables: { pupilCollectionIds },
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+		} catch (err) {
+			const error = new CustomError('Failed to delete pupil collections', err, {
+				pupilCollectionIds,
+			});
+			console.error(error);
+			throw error;
 		}
 	}
 }

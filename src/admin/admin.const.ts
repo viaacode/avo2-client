@@ -301,6 +301,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			location: ADMIN_PATH.ASSIGNMENTS_OVERVIEW,
 			key: 'assignments',
 			exact: false,
+			subLinks: [
+				...hasPermissions(
+					[PermissionName.VIEW_ANY_PUPIL_COLLECTIONS],
+					'OR',
+					userPermissions,
+					[
+						{
+							label: i18n.t('Leerlingencollecties'),
+							location: ADMIN_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
+							key: 'pupil-collections',
+							exact: false,
+						},
+					]
+				),
+			],
 		}),
 		...hasPermissions([PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS], 'OR', userPermissions, {
 			label: i18n.t('admin/admin___items-publiceren'),

@@ -255,7 +255,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 	const changeAuthorForSelectedAssignments = async (profileId: string) => {
 		setIsLoading(true);
 		try {
-			await AssignmentService.changeAuthor(profileId, selectedAssignmentIds);
+			await AssignmentService.changeAssignmentsAuthor(profileId, selectedAssignmentIds);
 			await fetchAssignments();
 			ToastService.success(
 				t(
