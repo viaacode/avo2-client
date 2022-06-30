@@ -63,12 +63,12 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	AssignmentOverviewTableColumns,
-	AssignmentSchemaLabel_v2,
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
@@ -231,7 +231,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
@@ -454,9 +455,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
+	const renderLabels = (labels: Avo.Assignment.Label_v2[]) => (
 		<TagList
-			tags={labels.map(({ assignment_label: item }) => ({
+			tags={(labels as any).map(({ assignment_label: item }: any) => ({
+				// TODO make types stricter
 				id: item.id,
 				label: item.label || '',
 				color: item.color_override || item.enum_color?.label || 'hotpink',
@@ -476,7 +478,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			id: assignment.id,
 		});
 
-		switch (colKey) {
+		switch (
+			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
+		) {
 			case 'title':
 				const renderTitle = () => (
 					<Flex>
@@ -501,12 +505,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'labels':
 				return renderLabels(
-					assignment.labels.filter(({ assignment_label: item }) => item.type === 'LABEL')
+					(assignment.labels as any[]).filter(
+						({ assignment_label: item }) => item.type === 'LABEL'
+					) // TODO remove cast once assignment_v2 types are fixed
 				);
 
 			case 'class_room':
 				return renderLabels(
-					assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS')
+					(assignment.labels as any[]).filter(
+						({ assignment_label: item }) => item.type === 'CLASS'
+					) // TODO remove cast once assignment_v2 types are fixed
 				);
 
 			case 'author':
@@ -547,7 +555,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return renderActions(assignment);
 
 			default:
-				return cellData;
+				return JSON.stringify(cellData);
 		}
 	};
 

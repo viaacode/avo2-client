@@ -384,6 +384,14 @@ export const DELETE_ASSIGNMENT = gql`
 	}
 `;
 
+export const DELETE_ASSIGNMENTS = gql`
+	mutation deleteAssignmentsById($assignmentIds: [uuid!]!) {
+		delete_app_assignments_v2(where: { id: { _in: $assignmentIds } }) {
+			affected_rows
+		}
+	}
+`;
+
 export const DELETE_ASSIGNMENT_RESPONSE = gql`
 	mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
 		delete_app_assignment_responses_v2(where: { id: { _eq: $assignmentResponseId } }) {
@@ -427,6 +435,63 @@ export const GET_MAX_POSITION_ASSIGNMENT_BLOCKS = gql`
 					}
 				}
 			}
+		}
+	}
+`;
+
+export const BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS = gql`
+	mutation bulkUpdateAuthorForAssignments(
+		$authorId: uuid!
+		$assignmentIds: [uuid!]!
+		$now: timestamptz!
+	) {
+		update_app_assignments_v2(
+			where: { id: { _in: $assignmentIds }, is_deleted: { _eq: false } }
+			_set: { owner_profile_id: $authorId, updated_at: $now }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
+	query getAssignmentsAdminOverview(
+		$offset: Int!
+		$limit: Int!
+		$orderBy: [app_assignments_v2_order_by!]!
+		$where: app_assignments_v2_bool_exp!
+	) {
+		app_assignments_v2(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
+			id
+			title
+			created_at
+			updated_at
+			deadline_at
+			owner {
+				full_name
+				profile_id
+			}
+			view_count {
+				count
+			}
+			responses_aggregate(where: { collection_title: { _is_null: false } }) {
+				aggregate {
+					count
+				}
+			}
+		}
+		app_assignments_v2_aggregate(where: $where) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_ASSIGNMENT_IDS = gql`
+	query getAssignmentIds($where: app_assignments_v2_bool_exp!) {
+		app_assignments_v2(where: $where) {
+			id
 		}
 	}
 `;

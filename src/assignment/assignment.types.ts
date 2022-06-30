@@ -6,14 +6,13 @@ import { FilterState } from '../search/search.types';
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
-	| 'assignment_type'
-	| 'labels'
-	| 'author'
-	| 'class_room'
-	| 'deadline_at'
-	| 'responses'
-	| 'updated_at'
+	| 'owner'
 	| 'created_at'
+	| 'updated_at'
+	| 'deadline_at'
+	| 'status'
+	| 'pupilCollections'
+	| 'views'
 	| 'actions';
 
 export type AssignmentResponseTableColumns =

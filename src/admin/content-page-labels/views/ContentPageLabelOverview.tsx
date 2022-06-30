@@ -21,6 +21,7 @@ import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import { useContentTypes } from '../../content/hooks';
 import { ItemsTableState } from '../../items/items.types';
@@ -129,7 +130,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___label'),
 			sortable: true,
 			visibleByDefault: true,
-			dataType: 'string',
+			dataType: TableColumnDataType.string,
 		},
 		{
 			id: 'content_type',
@@ -140,7 +141,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			filterProps: {
 				options: contentTypeOptions,
 			} as CheckboxDropdownModalProps,
-			dataType: 'string',
+			dataType: TableColumnDataType.string,
 		},
 		{
 			id: 'link_to',
@@ -156,7 +157,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
-			dataType: 'dateTime',
+			dataType: TableColumnDataType.dateTime,
 		},
 		{
 			id: 'updated_at',
@@ -166,7 +167,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'DateRangeDropdown',
-			dataType: 'dateTime',
+			dataType: TableColumnDataType.dateTime,
 		},
 		{
 			id: 'actions',

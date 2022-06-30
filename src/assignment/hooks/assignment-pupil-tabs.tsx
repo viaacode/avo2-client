@@ -1,5 +1,4 @@
-import { TabPropsSchema } from '@viaa/avo2-components/dist/esm/components/Tabs/Tab/Tab';
-import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
+import { IconName, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,20 +10,20 @@ export function useAssignmentPupilTabs(
 	tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
 ): [
-	TabPropsSchema[],
+	TabProps[],
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
 	(newTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void,
 	(id: string | number) => void
 ] {
 	const [t] = useTranslation();
 
-	const tabs: TabPropsSchema[] = useMemo(
+	const tabs: TabProps[] = useMemo(
 		() =>
 			[
 				{
 					id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 					label: t('assignment/hooks/assignment-pupil-tabs___opdracht'),
-					icon: 'clipboard' as IconNameSchema,
+					icon: 'clipboard' as IconName,
 				},
 				...(assignment?.assignment_type &&
 				['ZOEK', 'BOUW'].includes(assignment?.assignment_type)
@@ -32,7 +31,7 @@ export function useAssignmentPupilTabs(
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
 								label: t('assignment/hooks/assignment-pupil-tabs___zoeken'),
-								icon: 'search' as IconNameSchema,
+								icon: 'search' as IconName,
 							},
 					  ]
 					: []),
@@ -41,7 +40,7 @@ export function useAssignmentPupilTabs(
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,
 								label: t('assignment/hooks/assignment-pupil-tabs___mijn-collectie'),
-								icon: 'briefcase' as IconNameSchema,
+								icon: 'briefcase' as IconName,
 							},
 					  ]
 					: []),

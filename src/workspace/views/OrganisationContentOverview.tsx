@@ -13,6 +13,7 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/component
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import i18n from '../../shared/translations/i18n';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 // Constants
 
@@ -168,19 +169,19 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 					id: 'title',
 					label: t('workspace/views/organisation-content-overview___titel'),
 					col: '6',
-					dataType: 'string',
+					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'type',
 					label: t('workspace/views/organisation-content-overview___type'),
 					col: '3',
-					dataType: 'string',
+					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'author',
 					label: t('workspace/views/organisation-content-overview___auteur'),
 					col: '3',
-					dataType: 'string',
+					dataType: TableColumnDataType.string,
 				},
 			];
 		}
@@ -190,37 +191,37 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 				id: 'title',
 				label: t('workspace/views/organisation-content-overview___titel'),
 				col: '4',
-				dataType: 'string',
+				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'type',
 				label: t('workspace/views/organisation-content-overview___type'),
 				col: '2',
-				dataType: 'string',
+				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'author',
 				label: t('workspace/views/organisation-content-overview___auteur'),
 				col: '2',
-				dataType: 'string',
+				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'created_at',
 				label: t('workspace/views/organisation-content-overview___aangemaakt'),
 				col: '1',
-				dataType: 'dateTime',
+				dataType: TableColumnDataType.dateTime,
 			},
 			{
 				id: 'updated_at',
 				label: t('workspace/views/organisation-content-overview___laatst-bewerkt'),
 				col: '1',
-				dataType: 'dateTime',
+				dataType: TableColumnDataType.dateTime,
 			},
 			{
 				id: 'last_edited',
 				label: t('workspace/views/organisation-content-overview___laatste-bewerkt-door'),
 				col: '2',
-				dataType: 'string',
+				dataType: TableColumnDataType.string,
 			},
 		];
 	};

@@ -7,6 +7,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
+import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	AssignmentBlockTypeDict,
@@ -52,7 +53,7 @@ const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 					id: 'author' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___leerkracht'),
 					sortable: true,
-					dataType: 'string' as ColumnDataType,
+					dataType: TableColumnDataType.string as ColumnDataType,
 				},
 		  ];
 }; // Only show teacher for pupils
@@ -64,7 +65,7 @@ const getClassColumn = (canEditAssignments: boolean | null): AssignmentColumn[] 
 					id: 'class_room' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/views/assignment-overview___klas'),
 					sortable: false,
-					dataType: 'string',
+					dataType: TableColumnDataType.string,
 				},
 		  ]
 		: [];
@@ -77,7 +78,7 @@ const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn
 					id: 'updated_at' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
-					dataType: 'dateTime',
+					dataType: TableColumnDataType.dateTime,
 				},
 		  ]
 		: [];
@@ -90,7 +91,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 					id: 'responses' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/assignment___respons'),
 					sortable: true,
-					dataType: 'number',
+					dataType: TableColumnDataType.number,
 				},
 		  ]
 		: [];
@@ -109,7 +110,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 		id: 'title',
 		label: i18n.t('assignment/views/assignment-overview___titel'),
 		sortable: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	...getClassColumn(canEditAssignments),
 	...getLabelsColumn(),
@@ -118,7 +119,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
 		label: i18n.t('assignment/views/assignment-overview___deadline'),
 		sortable: true,
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	...getLastEditColumn(canEditAssignments),
 ];
@@ -136,12 +137,15 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 		[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
 	}
 > = {
-	author: (order: Avo.Search.OrderDirection) => ({
-		owner: {
+	owner: (order: Avo.Search.OrderDirection) => ({
+		profile: {
 			full_name: order,
 		},
 	}),
-	responses: (order: Avo.Search.OrderDirection) => ({
+	status: (order: Avo.Search.OrderDirection) => ({
+		deadline_at: order,
+	}),
+	pupilCollections: (order: Avo.Search.OrderDirection) => ({
 		responses_aggregate: {
 			count: order,
 		},
@@ -258,7 +262,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		id: 'pupil',
 		label: i18n.t('assignment/assignment___leerling'),
 		sortable: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	...(assignmentType === AssignmentType.BOUW
 		? [
@@ -266,19 +270,19 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 					id: 'collection_title' as AssignmentResponseTableColumns,
 					label: i18n.t('assignment/assignment___leerlingencollectie'),
 					sortable: true,
-					dataType: 'string' as ColumnDataType,
+					dataType: TableColumnDataType.string as ColumnDataType,
 				},
 				{
 					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
 					label: i18n.t('assignment/assignment___fragmenten'),
 					sortable: true,
-					dataType: 'number' as ColumnDataType,
+					dataType: TableColumnDataType.number as ColumnDataType,
 				},
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
 					label: i18n.t('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
-					dataType: 'dateTime' as ColumnDataType,
+					dataType: TableColumnDataType.dateTime as ColumnDataType,
 				},
 		  ]
 		: [
@@ -286,7 +290,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 					id: 'updated_at' as AssignmentResponseTableColumns,
 					label: i18n.t('assignment/assignment___laatst-bekeken'),
 					sortable: true,
-					dataType: 'dateTime' as ColumnDataType,
+					dataType: TableColumnDataType.dateTime as ColumnDataType,
 				},
 		  ]),
 	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
