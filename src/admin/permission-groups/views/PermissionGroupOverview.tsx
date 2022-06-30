@@ -1,10 +1,9 @@
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -36,7 +35,7 @@ import {
 
 import './PermissionGroupOverview.scss';
 
-interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
+type PermissionGroupOverviewProps = DefaultSecureRouteProps;
 
 const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> = ({ history }) => {
 	// Hooks
@@ -65,15 +64,13 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		};
 
 		try {
-			const [
-				permissionGroupTemp,
-				permissionGroupCountTemp,
-			] = await PermissionGroupService.fetchPermissionGroups(
-				tableState.page || 0,
-				(tableState.sort_column || 'updated_at') as PermissionGroupOverviewTableCols,
-				tableState.sort_order || 'desc',
-				generateWhereObject(getFilters(tableState))
-			);
+			const [permissionGroupTemp, permissionGroupCountTemp] =
+				await PermissionGroupService.fetchPermissionGroups(
+					tableState.page || 0,
+					(tableState.sort_column || 'updated_at') as PermissionGroupOverviewTableCols,
+					tableState.sort_order || 'desc',
+					generateWhereObject(getFilters(tableState))
+				);
 
 			setPermissionGroups(permissionGroupTemp);
 			setPermissionGroupCount(permissionGroupCountTemp);
@@ -129,7 +126,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 
 			case 'created_at':
 			case 'updated_at':
-				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
+				return rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 
 			case 'actions':
 				return (
