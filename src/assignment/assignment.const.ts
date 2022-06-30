@@ -1,10 +1,8 @@
+import { IconName } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
-import { IconName } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { PupilCollectionOverviewTableColumns } from '../admin/assignments/assignments.types';
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
@@ -133,11 +131,9 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	...getActionsColumn(canEditAssignments),
 ];
 
-export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	owner: (order: Avo.Search.OrderDirection) => ({
 		owner: {
 			full_name: order,
@@ -149,45 +145,6 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	pupilCollections: (order: Avo.Search.OrderDirection) => ({
 		responses_aggregate: {
 			count: order,
-		},
-	}),
-};
-
-export const PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in PupilCollectionOverviewTableColumns]: (
-			order: Avo.Search.OrderDirection
-		) => any;
-	}
-> = {
-	title: (order: Avo.Search.OrderDirection) => ({
-		collection_title: order,
-	}),
-	pupil: (order: Avo.Search.OrderDirection) => ({
-		owner: {
-			full_name: order,
-		},
-	}),
-	assignmentTitle: (order: Avo.Search.OrderDirection) => ({
-		assignment: {
-			title: order,
-		},
-	}),
-	teacher: (order: Avo.Search.OrderDirection) => ({
-		assignment: {
-			owner: {
-				full_name: order,
-			},
-		},
-	}),
-	deadline_at: (order: Avo.Search.OrderDirection) => ({
-		assignment: {
-			deadline_at: order,
-		},
-	}),
-	status: (order: Avo.Search.OrderDirection) => ({
-		assignment: {
-			deadline_at: order,
 		},
 	}),
 };
@@ -330,11 +287,9 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
 ];
 
-export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	pupil: (order: Avo.Search.OrderDirection) => ({
 		owner: {
 			full_name: order,

@@ -16,6 +16,7 @@ import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const
 import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
 import { PERMISSION_GROUP_PATH } from './permission-groups/permission-group.const';
+import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
@@ -31,6 +32,7 @@ export const ADMIN_PATH = Object.freeze({
 	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
 	...ASSIGNMENTS_PATH,
+	...PUPIL_COLLECTIONS_PATH,
 	...ITEMS_PATH,
 	...INTERACTIVE_TOUR_PATH,
 });
@@ -308,7 +310,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 					userPermissions,
 					[
 						{
-							label: i18n.t('Leerlingencollecties'),
+							label: i18n.t('admin/admin___leerlingencollecties'),
 							location: ADMIN_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
 							key: 'pupil-collections',
 							exact: false,

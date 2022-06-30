@@ -1,12 +1,10 @@
+import { Button, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FC, useCallback, useEffect } from 'react';
-import { compose } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Dispatch } from 'redux';
-
-import { Button, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
+import { compose, Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -24,8 +22,6 @@ import {
 } from '../../services/profile-preferences.service';
 
 import './ACMIDMNudgeModal.scss';
-
-export interface ACMIDMNudgeModalProps {}
 
 interface UiStateProps {
 	showNudgingModal: boolean;

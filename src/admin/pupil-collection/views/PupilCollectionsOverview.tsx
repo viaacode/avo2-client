@@ -1,3 +1,5 @@
+import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -12,13 +14,10 @@ import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { AssignmentService } from '../../../assignment/assignment.service';
-import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
+import { PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
@@ -26,6 +25,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
+import { AssignmentsBulkAction } from '../../assignments/assignments.types';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
 	FilterableColumn,
@@ -35,21 +35,13 @@ import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import {
-	GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
 	GET_PUPIL_COLLECTION_BULK_ACTIONS,
+	GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
-} from '../assignments.const';
-import {
-	AssignmentsBulkAction,
-	PupilCollectionOverviewTableColumns,
-	PupilCollectionsOverviewTableState,
-} from '../assignments.types';
+} from '../pupil-collection.const';
+import { PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
-interface PupilCollectionsOverviewProps {}
-
-const PupilCollectionsOverview: FunctionComponent<
-	PupilCollectionsOverviewProps & RouteComponentProps & UserProps
-> = ({ user }) => {
+const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response_v2[] | null>(
@@ -63,9 +55,8 @@ const PupilCollectionsOverview: FunctionComponent<
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [selectedPupilCollectionIds, setSelectedPupilCollectionIds] = useState<string[]>([]);
-	const [pupilCollectionsDeleteModalOpen, setPupilCollectionsDeleteModalOpen] = useState<boolean>(
-		false
-	);
+	const [pupilCollectionsDeleteModalOpen, setPupilCollectionsDeleteModalOpen] =
+		useState<boolean>(false);
 	const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] = useState<boolean>(false);
 
 	const columns = useMemo(() => GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS(), []);
@@ -143,16 +134,14 @@ const PupilCollectionsOverview: FunctionComponent<
 			});
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const [
-				pupilCollectionsTemp,
-				pupilCollectionsCountTemp,
-			] = await AssignmentService.fetchPupilCollectionsForAdmin(
-				tableState.page || 0,
-				(tableState.sort_column || 'created_at') as AssignmentOverviewTableColumns,
-				tableState.sort_order || 'desc',
-				columnDataType,
-				generateWhereObject(getFilters(tableState))
-			);
+			const [pupilCollectionsTemp, pupilCollectionsCountTemp] =
+				await PupilCollectionService.fetchPupilCollectionsForAdmin(
+					tableState.page || 0,
+					(tableState.sort_column || 'created_at') as PupilCollectionOverviewTableColumns,
+					tableState.sort_order || 'desc',
+					columnDataType,
+					generateWhereObject(getFilters(tableState))
+				);
 
 			setPupilCollections(pupilCollectionsTemp);
 			setPupilCollectionsCount(pupilCollectionsCountTemp);
@@ -164,7 +153,9 @@ const PupilCollectionsOverview: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de leerlingencollecties is mislukt'),
+				message: t(
+					'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-de-leerlingencollecties-is-mislukt'
+				),
 			});
 		}
 		setIsLoading(false);
@@ -185,13 +176,16 @@ const PupilCollectionsOverview: FunctionComponent<
 	const setAllPupilCollectionsAsSelected = async () => {
 		setIsLoading(true);
 		try {
-			const pupilCollectionIds = await AssignmentService.getPupilCollectionIds(
+			const pupilCollectionIds = await PupilCollectionService.getPupilCollectionIds(
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t('Je hebt {{numOfSelectedPupilCollections}} geselecteerd', {
-					numOfSelectedPupilCollections: pupilCollectionIds.length,
-				})
+				t(
+					'admin/pupil-collection/views/pupil-collections-overview___je-hebt-num-of-selected-pupil-collections-geselecteerd',
+					{
+						numOfSelectedPupilCollections: pupilCollectionIds.length,
+					}
+				)
 			);
 			setSelectedPupilCollectionIds(pupilCollectionIds);
 		} catch (err) {
@@ -203,7 +197,9 @@ const PupilCollectionsOverview: FunctionComponent<
 				)
 			);
 			ToastService.danger(
-				t('Het ophalen van alle geselecteerde leerlingencollectie ids is mislukt')
+				t(
+					'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-alle-geselecteerde-leerlingencollectie-ids-is-mislukt'
+				)
 			);
 		}
 
@@ -228,12 +224,15 @@ const PupilCollectionsOverview: FunctionComponent<
 	const deleteSelectedPupilCollections = async () => {
 		setIsLoading(true);
 		try {
-			await AssignmentService.deletePupilCollections(selectedPupilCollectionIds);
+			await PupilCollectionService.deletePupilCollections(selectedPupilCollectionIds);
 			await fetchPupilCollections();
 			ToastService.success(
-				t('Je hebt {{numOfSelectedPupilCollections}} leerlingencollecties verwijderd', {
-					numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
-				})
+				t(
+					'admin/pupil-collection/views/pupil-collections-overview___je-hebt-num-of-selected-pupil-collections-leerlingencollecties-verwijderd',
+					{
+						numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
+					}
+				)
 			);
 			setSelectedPupilCollectionIds([]);
 		} catch (err) {
@@ -243,7 +242,9 @@ const PupilCollectionsOverview: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t('Het verwijderen van de geselecteerde leerlingencollecties is mislukt')
+				t(
+					'admin/pupil-collection/views/pupil-collections-overview___het-verwijderen-van-de-geselecteerde-leerlingencollecties-is-mislukt'
+				)
 			);
 		}
 		setIsLoading(false);
@@ -252,14 +253,14 @@ const PupilCollectionsOverview: FunctionComponent<
 	const changeAuthorForSelectedPupilCollections = async (profileId: string) => {
 		setIsLoading(true);
 		try {
-			await AssignmentService.changePupilCollectionsAuthor(
+			await PupilCollectionService.changePupilCollectionsAuthor(
 				profileId,
 				selectedPupilCollectionIds
 			);
 			await fetchPupilCollections();
 			ToastService.success(
 				t(
-					'Je hebt de auteur van {{numOfSelectedPupilCollections}} leerlingencollecties aangepast',
+					'admin/pupil-collection/views/pupil-collections-overview___je-hebt-de-auteur-van-num-of-selected-pupil-collections-leerlingencollecties-aangepast',
 					{
 						numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
 					}
@@ -277,7 +278,9 @@ const PupilCollectionsOverview: FunctionComponent<
 				)
 			);
 			ToastService.danger(
-				t('Het updaten van de auteur van de geselecteerde leerlingencollecties is mislukt')
+				t(
+					'admin/pupil-collection/views/pupil-collections-overview___het-updaten-van-de-auteur-van-de-geselecteerde-leerlingencollecties-is-mislukt'
+				)
 			);
 		}
 		setIsLoading(false);
@@ -323,8 +326,8 @@ const PupilCollectionsOverview: FunctionComponent<
 			case 'status':
 				return !!assignment?.deadline_at &&
 					new Date(assignment?.deadline_at).getTime() < new Date().getTime()
-					? t('Afgelopen')
-					: t('Actief');
+					? t('admin/pupil-collection/views/pupil-collections-overview___afgelopen')
+					: t('admin/pupil-collection/views/pupil-collections-overview___actief');
 
 			case 'actions':
 			default:
@@ -341,8 +344,16 @@ const PupilCollectionsOverview: FunctionComponent<
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er bestaan nog geen leerlingencollecties')}>
-				<p>{t('Beschrijving wanneer er nog geen leerlingencollecties zijn')}</p>
+			<ErrorView
+				message={t(
+					'admin/pupil-collection/views/pupil-collections-overview___er-bestaan-nog-geen-leerlingencollecties'
+				)}
+			>
+				<p>
+					{t(
+						'admin/pupil-collection/views/pupil-collections-overview___beschrijving-wanneer-er-nog-geen-leerlingencollecties-zijn'
+					)}
+				</p>
 			</ErrorView>
 		);
 	};
@@ -361,10 +372,10 @@ const PupilCollectionsOverview: FunctionComponent<
 						renderTableCell(rowData, columnId as PupilCollectionOverviewTableColumns)
 					}
 					searchTextPlaceholder={t(
-						'Zoek op titel van collectie, opdracht, naam leerling, ...'
+						'admin/pupil-collection/views/pupil-collections-overview___zoek-op-titel-van-collectie-opdracht-naam-leerling'
 					)}
 					noContentMatchingFiltersMessage={t(
-						'Er zijn geen leerlingen collecties die voldoen aan de opgegeven filters'
+						'admin/pupil-collection/views/pupil-collections-overview___er-zijn-geen-leerlingen-collecties-die-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={(newTableState) => {
@@ -386,7 +397,7 @@ const PupilCollectionsOverview: FunctionComponent<
 				/>
 				<ConfirmModal
 					body={t(
-						'Dit zal {{numOfSelectedPupilCollections}} leerlingencollecties verwijderen. Deze actie kan niet ongedaan gemaakt worden!',
+						'admin/pupil-collection/views/pupil-collections-overview___dit-zal-num-of-selected-pupil-collections-leerlingencollecties-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
 						{ numOfSelectedPupilCollections: selectedPupilCollectionIds.length }
 					)}
 					isOpen={pupilCollectionsDeleteModalOpen}
@@ -405,15 +416,26 @@ const PupilCollectionsOverview: FunctionComponent<
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Leerlingencollecties')} size="full-width">
+		<AdminLayout
+			pageTitle={t(
+				'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties'
+			)}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
-						{GENERATE_SITE_TITLE(t('Leerlingencollecties overzicht pagina titel'))}
+						{GENERATE_SITE_TITLE(
+							t(
+								'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel'
+							)
+						)}
 					</title>
 					<meta
 						name="description"
-						content={t('Leerlingencollecties overzicht pagina beschrijving')}
+						content={t(
+							'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving'
+						)}
 					/>
 				</MetaTags>
 				<LoadingErrorLoadedComponent
@@ -426,7 +448,7 @@ const PupilCollectionsOverview: FunctionComponent<
 	);
 };
 
-export default (compose(
+export default compose(
 	withRouter,
 	withUser
-)(PupilCollectionsOverview) as unknown) as FunctionComponent<PupilCollectionsOverviewProps>;
+)(PupilCollectionsOverview) as unknown as FunctionComponent;
