@@ -1,9 +1,10 @@
+import { Container, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
-import { Container, Spacer } from '@viaa/avo2-components';
-
+import meemooLogo from '../../../assets/images/meemoo-logo.png';
+import vlaamseOverheidLogo from '../../../assets/images/vlaanderen-logo.png';
 import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
@@ -80,7 +81,7 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 							</span>
 							<Spacer margin="left-small">
 								<img
-									src="/images/meemoo-logo.png"
+									src={meemooLogo}
 									alt={t('shared/components/footer/footer___logo-van-meemoo')}
 								/>
 							</Spacer>
@@ -100,7 +101,7 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 							</span>
 							<Spacer margin="left-small">
 								<img
-									src="/images/vlaanderen-logo.png"
+									src={vlaamseOverheidLogo}
 									alt={t(
 										'shared/components/footer/footer___logo-van-vlaamse-overheid'
 									)}

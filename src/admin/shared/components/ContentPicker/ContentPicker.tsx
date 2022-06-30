@@ -68,7 +68,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
 
 	// selected option, keep track of whether initial item from `initialValue` has been applied
-	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem>>();
+	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem, any>>();
 	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
 
 	// apply initial input if INPUT-based type, default to ''
@@ -137,7 +137,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	}, [itemOptions, hasAppliedInitialItem, initialValue]);
 
 	// events
-	const onSelectType = async (selected: ValueType<PickerTypeOption>) => {
+	const onSelectType = async (selected: ValueType<PickerTypeOption, any>) => {
 		if (selectedType !== selected) {
 			const selectedOption = selected as PickerTypeOption<ContentPickerType>;
 			setSelectedType(selectedOption);
@@ -146,7 +146,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 		}
 	};
 
-	const onSelectItem = (selectedItem: ValueType<PickerItem>, event?: ActionMeta) => {
+	const onSelectItem = (selectedItem: ValueType<PickerItem, any>, event?: ActionMeta<any>) => {
 		// reset `selectedItem` when clearing item picker
 		if (get(event, 'action') === 'clear') {
 			propertyChanged('selectedItem', null);
@@ -186,7 +186,13 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 
 	const propertyChanged = (
 		prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
-		propValue: ContentPickerType | ValueType<PickerItem> | string | number | null | LinkTarget
+		propValue:
+			| ContentPickerType
+			| ValueType<PickerItem, any>
+			| string
+			| number
+			| null
+			| LinkTarget
 	) => {
 		let newType: ContentPickerType;
 		if (prop === 'type') {

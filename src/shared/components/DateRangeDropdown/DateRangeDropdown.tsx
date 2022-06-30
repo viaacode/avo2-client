@@ -1,14 +1,3 @@
-import moment from 'moment';
-import React, {
-	FunctionComponent,
-	MouseEvent,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Column,
@@ -23,6 +12,16 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import moment from 'moment';
+import React, {
+	FunctionComponent,
+	MouseEvent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { reorderDate } from '../../helpers';
 import { ToastService } from '../../services';
@@ -89,8 +88,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		}
 	}, [dateControls, setRangeState]);
 
-	// @ts-ignore
-	const resetInternalRangeState = async (tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
+	const resetInternalRangeState = async (_tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
 		evt && evt.stopPropagation();
 		applyDefaultRangeState();
 	};
@@ -107,8 +105,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		await closeDropdown();
 	};
 
-	// @ts-ignore
-	const removeFilter = (tagId: ReactText, evt: MouseEvent) => {
+	const removeFilter = (_tagId: ReactText, evt: MouseEvent) => {
 		evt.stopPropagation();
 		setRangeState(DEFAULT_DATE_RANGE);
 		setYearInputGte('');
