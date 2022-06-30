@@ -1,9 +1,8 @@
 import classnames from 'classnames';
-import { Location } from 'history';
 import { flatten } from 'lodash-es';
 import React, { FunctionComponent, ReactElement } from 'react';
 import { Trans } from 'react-i18next';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
 import { CustomError } from '../../../../shared/helpers';
 import { NavigationItemInfo } from '../../../../shared/types';
@@ -24,7 +23,10 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	light = false,
 	navItems,
 }) => {
-	const isActiveClass = (item: NavigationItemInfo, location: Location): boolean => {
+	const isActiveClass = (
+		item: NavigationItemInfo,
+		location: RouteComponentProps['location']
+	): boolean => {
 		return (
 			(!!item.location && item.location === location.pathname && !item.exact) ||
 			(!!item.location &&

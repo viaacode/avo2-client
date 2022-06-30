@@ -1,8 +1,9 @@
-import { createBrowserHistory } from 'history';
+import { createMemoryHistory } from 'history';
 
 import { ROUTE_PARTS } from '../constants';
 
 import { buildLink, navigate } from './link';
+import { RouteComponentProps } from 'react-router-dom';
 
 const route = `/${ROUTE_PARTS.search}`;
 const routeWithParam = `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`;
@@ -26,7 +27,7 @@ describe('Link - buildLink', () => {
 });
 
 describe('Link - navigate', () => {
-	const history = createBrowserHistory();
+	const history = (createMemoryHistory() as unknown) as RouteComponentProps['history'];
 	const pushSpy = jest.spyOn(history, 'push');
 
 	afterEach(() => {
