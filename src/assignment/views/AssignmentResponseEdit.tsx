@@ -24,7 +24,7 @@ import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../hooks';
-import { getAssignmentById } from '../hooks/get-assignment-by-id';
+import { useGetAssignmentById } from '../hooks/get-assignment-by-id';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -39,7 +39,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		data: assignmentResponse,
 		loading: isAssignmentLoading,
 		error: assignmentError,
-	} = getAssignmentById(match.params.id);
+	} = useGetAssignmentById(match.params.id);
 	const assignment = assignmentResponse?.app_assignments_v2?.[0];
 
 	// UI
