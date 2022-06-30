@@ -1,7 +1,6 @@
-import { DocumentNode } from 'graphql';
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import type { DocumentNode } from 'graphql';
+import { get } from 'lodash-es';
 
 import {
 	GET_COLLECTION_PLAYS,

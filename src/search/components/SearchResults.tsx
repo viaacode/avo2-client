@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Blankslate,
 	Button,
@@ -11,6 +8,8 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { CollectionService } from '../../collection/collection.service';
 import { CustomError } from '../../shared/helpers';
@@ -28,6 +27,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	setPage,
 	bookmarkStatuses,
 	navigateUserRequestForm,
+	bookmarkButtons,
 	...resultProps
 }) => {
 	const [t] = useTranslation();
@@ -65,6 +65,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 			result={result}
 			collectionLabelLookup={collectionLabels}
 			isBookmarked={getIsBookmarked(result)}
+			bookmarkButton={bookmarkButtons}
 		/>
 	);
 

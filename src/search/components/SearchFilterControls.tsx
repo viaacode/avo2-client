@@ -1,10 +1,9 @@
+import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../collection/collection.service';
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
@@ -24,6 +23,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	handleFilterFieldChange,
 	multiOptions,
 	onSearch,
+	enabledFilters,
 }) => {
 	const [t] = useTranslation();
 
@@ -57,6 +57,13 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			);
 		});
 		return combinedMultiOptions;
+	};
+
+	const isFilterEnabled = (filterName: keyof Avo.Search.Filters): boolean => {
+		if (!enabledFilters) {
+			return true;
+		}
+		return enabledFilters.includes(filterName);
 	};
 
 	const renderCheckboxDropdownModal = (
@@ -122,9 +129,9 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					label={label}
 					id={propertyName}
 					range={correctRange as { gte: string; lte: string }}
-					onChange={async (dateRange: Avo.Search.DateRange) =>
-						await handleFilterFieldChange(dateRange, propertyName)
-					}
+					onChange={async (dateRange: Avo.Search.DateRange) => {
+						await handleFilterFieldChange(dateRange, propertyName);
+					}}
 				/>
 			</li>
 		);
@@ -136,48 +143,57 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				'c-filter-dropdown-list--mobile': isMobileWidth(),
 			})}
 		>
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___type'),
-				'type'
-			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___onderwijsniveau'),
-				'educationLevel'
-			)}
-			{/*{renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
+			{isFilterEnabled('type') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___type'),
+					'type'
+				)}
+			{isFilterEnabled('educationLevel') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___onderwijsniveau'),
+					'educationLevel'
+				)}
+			{/*{isFilterEnabled('domain') && renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
 			{/*	t('search/components/search-filter-controls___domein'),*/}
 			{/*	'domain',*/}
 			{/*)}*/}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___vak'),
-				'subject'
-			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___trefwoord'),
-				'keyword'
-			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___serie'),
-				'serie'
-			)}
-			{renderDateRangeDropdown(
-				t('search/components/search-filter-controls___uitzenddatum'),
-				'broadcastDate'
-			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___taal'),
-				'language'
-			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___aanbieder'),
-				'provider'
-			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___label'),
-				'collectionLabel',
-				false,
-				collectionLabels
-			)}
+			{isFilterEnabled('subject') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___vak'),
+					'subject'
+				)}
+			{isFilterEnabled('keyword') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___trefwoord'),
+					'keyword'
+				)}
+			{isFilterEnabled('serie') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___serie'),
+					'serie'
+				)}
+			{isFilterEnabled('broadcastDate') &&
+				renderDateRangeDropdown(
+					t('search/components/search-filter-controls___uitzenddatum'),
+					'broadcastDate'
+				)}
+			{isFilterEnabled('language') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___taal'),
+					'language'
+				)}
+			{isFilterEnabled('provider') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___aanbieder'),
+					'provider'
+				)}
+			{isFilterEnabled('collectionLabel') &&
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___label'),
+					'collectionLabel',
+					false,
+					collectionLabels
+				)}
 		</ul>
 	);
 

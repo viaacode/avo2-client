@@ -1,9 +1,3 @@
-import { isPast } from 'date-fns/esm';
-import React, { FunctionComponent, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-
 import {
 	Alert,
 	BlockHeading,
@@ -14,17 +8,27 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { isPast } from 'date-fns/esm';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
+import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { SearchFiltersAndResults } from '../../search/components';
+import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
+import { AssignmentService } from '../assignment.service';
+import { PupilSearchFilterState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../hooks';
-import { useGetAssignmentById } from '../hooks/get-assignment-by-id';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -35,15 +39,31 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	const [t] = useTranslation();
 
 	// Data
-	const {
-		data: assignmentResponse,
-		loading: isAssignmentLoading,
-		error: assignmentError,
-	} = useGetAssignmentById(match.params.id);
-	const assignment = assignmentResponse?.app_assignments_v2?.[0];
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
+	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 
 	// UI
-	const [tabs, tab, , onTabClick] = useAssignmentPupilTabs(assignment);
+	const queryParamConfig = {
+		filters: JsonParam,
+		orderProperty: StringParam,
+		orderDirection: StringParam,
+		tab: StringParam,
+	};
+	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
+		PupilSearchFilterState,
+		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
+	];
+	const [tabs, tab, , onTabClick] = useAssignmentPupilTabs(
+		assignment || undefined,
+		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+		(newTab: string) => {
+			setFilterState({
+				...(filterState as PupilSearchFilterState),
+				tab: newTab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+			});
+		}
+	);
 
 	const pastDeadline = useMemo(
 		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
@@ -51,8 +71,21 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	);
 
 	// HTTP
+	const fetchAssignment = useCallback(async () => {
+		try {
+			setAssignmentLoading(true);
+			setAssignmentError(null);
+			setAssignment(await AssignmentService.fetchAssignmentById(match.params.id));
+		} catch (err) {
+			setAssignmentError(err);
+		}
+		setAssignmentLoading(false);
+	}, [match.params.id]);
 
 	// Effects
+	useEffect(() => {
+		fetchAssignment();
+	}, []);
 
 	// Events
 
@@ -137,10 +170,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		);
 	}, [assignment, t]);
 
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
-		tabs,
-		onTabClick,
-	]);
+	const tabBar = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
@@ -149,7 +179,19 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				// This form receives its parent's state because we don't care about rerender performance here
-				return 'search page';
+				return (
+					<SearchFiltersAndResults
+						enabledFilters={['type', 'serie', 'broadcastDate', 'provider']}
+						bookmarks={false}
+						filterState={filterState}
+						setFilterState={(newFilterState: FilterState) => {
+							setFilterState({
+								...filterState,
+								...newFilterState,
+							});
+						}}
+					/>
+				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
 				// This form receives its parent's state because we don't care about rerender performance here
@@ -161,7 +203,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	}, [tab]);
 
 	const renderPageContent = () => {
-		if (isAssignmentLoading) {
+		if (assignmentLoading) {
 			return <Spinner size="large" />;
 		}
 		if (assignmentError) {
@@ -189,8 +231,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderTitle}
-					actions={null}
-					tabs={renderTabs}
+					tabs={tabBar}
 					info={renderMeta()}
 					tour={<InteractiveTour showButton />}
 				/>
