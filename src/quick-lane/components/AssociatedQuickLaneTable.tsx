@@ -8,6 +8,7 @@ import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTab
 import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
 import { isMobileWidth } from '../../shared/helpers';
 import { QuickLaneUrlObject } from '../../shared/types';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 interface AssociatedQuickLaneTableProps {}
 
@@ -33,7 +34,7 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 							id: QUICK_LANE_COLUMNS.TITLE,
 							label: t('workspace/views/quick-lane-overview___titel'),
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						// Hide timestamps & author on mobile
 						...(isMobileWidth()
@@ -45,7 +46,7 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 											'workspace/views/quick-lane-overview___aangemaakt-door'
 										),
 										sortable: true,
-										dataType: 'string',
+										dataType: TableColumnDataType.string,
 									},
 									{
 										id: QUICK_LANE_COLUMNS.ORGANISATION,
@@ -53,7 +54,7 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 											'workspace/views/quick-lane-overview___organisatie'
 										),
 										sortable: true,
-										dataType: 'string',
+										dataType: TableColumnDataType.string,
 									},
 									{
 										id: QUICK_LANE_COLUMNS.CREATED_AT,
@@ -61,7 +62,7 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 											'workspace/views/quick-lane-overview___aangemaakt-op'
 										),
 										sortable: true,
-										dataType: 'dateTime',
+										dataType: TableColumnDataType.dateTime,
 									},
 							  ]),
 					] as TableColumnSchema[]

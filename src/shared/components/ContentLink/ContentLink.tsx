@@ -10,7 +10,7 @@ import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.con
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { toEnglishContentType } from '../../../collection/collection.types';
 
-type ParentType = Pick<Avo.Assignment.Assignment, 'content_label' | 'content_id'>;
+type ParentType = Pick<Avo.Assignment.Assignment, 'content_label' | 'content_id'>; // TODO switch to assignments v2
 type ContentType = Avo.Assignment.Content | null;
 
 export interface ContentLinkProps {

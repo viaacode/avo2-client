@@ -11,6 +11,7 @@ import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
 import {
@@ -176,7 +177,7 @@ export class UserService {
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		user?: UserSchema,
 		itemsPerPage: number = ITEMS_PER_PAGE
@@ -202,7 +203,7 @@ export class UserService {
 		page: number,
 		sortColumn: UserOverviewTableCol,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE,
 		query: DocumentNode = GET_USERS,
