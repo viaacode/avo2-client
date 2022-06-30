@@ -58,7 +58,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 					value={menuParentOptions.find((opt) => opt.value === menuParentId)}
 					formatCreateLabel={(inputValue) => `Aanmaken: ${inputValue}`}
 					getNewOptionData={handleMenuCreate}
-					onChange={(option: ValueType<ReactSelectOption<string>>) =>
+					onChange={(option: ValueType<ReactSelectOption<string>, any>) =>
 						onChange('placement', get(option, 'value', ''))
 					}
 					options={menuParentOptions}
@@ -84,7 +84,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			<FormGroup label={t('admin/menu/components/menu-edit-form/menu-edit-form___icoon')}>
 				<IconPicker
 					options={GET_ADMIN_ICON_OPTIONS()}
-					onChange={(option: ValueType<ReactSelectOption<string>>) =>
+					onChange={(option: ValueType<ReactSelectOption<string>, any>) =>
 						onChange('icon_name', get(option, 'value', ''))
 					}
 					value={GET_ADMIN_ICON_OPTIONS().find(

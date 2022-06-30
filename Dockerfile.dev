@@ -1,4 +1,4 @@
-FROM node:12-alpine AS build
+FROM node:16-alpine AS build
 
 # install dependencies first, in a different location for easier app bind mounting for local development
 RUN mkdir /opt/react-app

@@ -1,8 +1,3 @@
-import { cloneDeep, get, isNumber } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
-
 import {
 	BlockPageOverview,
 	ContentItemStyle,
@@ -12,7 +7,12 @@ import {
 	RenderLinkFunction,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { cloneDeep, get, isNumber } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
+import placeholderWide from '../../../../../assets/images/placeholder-wide.png';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
@@ -105,7 +105,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 
 	const dbToPageOverviewContentPage = (contentPageInfo: ContentPageInfo): PageInfo => {
 		return {
-			thumbnail_path: contentPageInfo.thumbnail_path || '/images/placeholder-wide.png',
+			thumbnail_path: contentPageInfo.thumbnail_path || placeholderWide,
 			labels: ((contentPageInfo.labels || []) as Avo.ContentPage.Label[]).map((labelObj) => ({
 				id: labelObj.id,
 				label: labelObj.label,
@@ -136,7 +136,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		}
 		// Old format where we save the whole label object
 		// TODO deprecated remove when all content pages with type overview have been resaved
-		return (((contentTypeAndTabs.selectedLabels || []) as unknown) as LabelObj[]).map(
+		return ((contentTypeAndTabs.selectedLabels || []) as unknown as LabelObj[]).map(
 			(label) => label.id
 		);
 	};
@@ -157,10 +157,11 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			if (queryParamsState.label) {
 				const queryLabels = queryParamsState.label || [];
 				if (queryLabels.length) {
-					selectedTabs = await ContentPageLabelService.getContentPageLabelsByTypeAndLabels(
-						contentTypeAndTabs.selectedContentType,
-						queryLabels
-					);
+					selectedTabs =
+						await ContentPageLabelService.getContentPageLabelsByTypeAndLabels(
+							contentTypeAndTabs.selectedContentType,
+							queryLabels
+						);
 					setSelectedTabObjects(selectedTabs);
 				} else {
 					selectedTabs = [];
@@ -244,7 +245,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				),
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		itemStyle,
 		queryParamsState,
@@ -255,7 +255,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		contentTypeAndTabs.selectedContentType,
 		// Deep compare by value and not by ref
 		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		JSON.stringify(contentTypeAndTabs.selectedLabels),
 		t,
 	]);

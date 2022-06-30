@@ -1,4 +1,3 @@
-import H from 'history';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,11 +24,12 @@ import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
+import { RouteComponentProps } from 'react-router-dom';
 
 interface CollectionOrBundleEditActualisationProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: H.History;
+	history: RouteComponentProps['history'];
 }
 
 const CollectionOrBundleEditActualisation: FunctionComponent<

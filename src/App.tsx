@@ -1,6 +1,6 @@
-import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
-import { createBrowserHistory, Location } from 'history';
+import { createBrowserHistory } from 'history';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider, compose } from 'react-apollo';
@@ -30,7 +30,10 @@ import './styles/main.scss';
 const history = createBrowserHistory();
 wrapHistory(history, {
 	smoothScroll: false,
-	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
+	shouldHandleAction: (
+		previousLocation: RouteComponentProps['location'],
+		nextLocation: RouteComponentProps['location']
+	) => {
 		// We don't want to set focus when only the hash changes
 		return (
 			previousLocation.pathname !== nextLocation.pathname ||
@@ -39,9 +42,7 @@ wrapHistory(history, {
 	},
 });
 
-interface AppProps extends RouteComponentProps {}
-
-const App: FunctionComponent<AppProps> = (props) => {
+const App: FunctionComponent<RouteComponentProps> = (props) => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -106,9 +107,9 @@ const AppWithRouter = compose(withRouter, withUser)(App);
 
 const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>
-		<ApolloHooksProvider client={dataService}>
+		<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
 			<Provider store={store}>
-				<Router history={history}>
+				<Router history={history as any}>
 					<QueryParamProvider ReactRouterRoute={Route}>
 						<AppWithRouter />
 					</QueryParamProvider>
