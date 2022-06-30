@@ -8,9 +8,12 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, ReactText, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import {
@@ -23,14 +26,15 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { copyToClipboard } from '../../shared/helpers';
+import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { SearchFiltersAndResults } from '../components';
-import './Search.scss';
 import { FilterState } from '../search.types';
 
-const Search: FunctionComponent<UserProps> = ({ user }) => {
+import './Search.scss';
+
+const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user, history }) => {
 	const [t] = useTranslation();
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
@@ -63,6 +67,10 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
 		ToastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
+	};
+
+	const handleSearchResultClicked = (id: string, type: Avo.Core.ContentType) => {
+		history.push(generateContentLinkString(type, id));
 	};
 
 	return (
@@ -115,6 +123,7 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 						bookmarks
 						filterState={filterState}
 						setFilterState={setFilterState}
+						handleSearchResultClicked={handleSearchResultClicked}
 					/>
 				</PermissionGuardPass>
 				<PermissionGuardFail>
@@ -131,4 +140,4 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 	);
 };
 
-export default withUser(Search) as FunctionComponent;
+export default compose(withRouter, withUser)(Search) as FunctionComponent;

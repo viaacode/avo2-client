@@ -1,6 +1,7 @@
 import {
 	Alert,
 	BlockHeading,
+	Button,
 	Container,
 	Flex,
 	Icon,
@@ -13,16 +14,21 @@ import { isPast } from 'date-fns/esm';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import BundleDetail from '../../bundle/views/BundleDetail';
+import { CollectionDetail } from '../../collection/views';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
+import ItemDetail from '../../item/views/ItemDetail';
 import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -32,10 +38,11 @@ import { useAssignmentPupilTabs } from '../hooks';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
-	match,
-}) => {
+const AssignmentResponseEdit: FunctionComponent<
+	UserProps & DefaultSecureRouteProps<{ id: string }>
+> = ({ match, user }) => {
 	const [t] = useTranslation();
 
 	// Data
@@ -49,6 +56,8 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		orderProperty: StringParam,
 		orderDirection: StringParam,
 		tab: StringParam,
+		selectedSearchResultId: StringParam,
+		selectedSearchResultType: StringParam,
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		PupilSearchFilterState,
@@ -88,6 +97,13 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	}, []);
 
 	// Events
+	const handleSearchResultClicked = (id: string, type: Avo.Core.ContentType) => {
+		setFilterState({
+			...(filterState as PupilSearchFilterState),
+			selectedSearchResultId: id,
+			selectedSearchResultType: type,
+		});
+	};
 
 	// Render
 
@@ -172,26 +188,72 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 
 	const tabBar = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
+	const renderSearchResultDetailPage = () => {
+		// Render detail page
+		if (
+			filterState.selectedSearchResultType === 'video' ||
+			filterState.selectedSearchResultType === 'audio'
+		) {
+			return <ItemDetail id={filterState.selectedSearchResultId} />;
+		} else if (filterState.selectedSearchResultType === 'collectie') {
+			return <CollectionDetail user={user} id={filterState.selectedSearchResultId} />;
+		} else {
+			return <BundleDetail user={user} id={filterState.selectedSearchResultId} />;
+		}
+	};
+
+	const renderSearchContent = () => {
+		if (filterState.selectedSearchResultId) {
+			return (
+				<>
+					<Container bordered>
+						<Container mode="horizontal">
+							<Button
+								type="link"
+								className="c-return--search-results"
+								onClick={() => {
+									setFilterState({
+										...filterState,
+										selectedSearchResultId: undefined,
+										selectedSearchResultType: undefined,
+									});
+								}}
+							>
+								<Icon name="chevron-left" size="small" type="arrows" />
+								{t('Zoekresultaten')}
+							</Button>
+						</Container>
+					</Container>
+					{renderSearchResultDetailPage()}
+				</>
+			);
+		}
+		// This form receives its parent's state because we don't care about rerender performance here
+		return (
+			<Spacer margin={['top-large', 'bottom-large']}>
+				<SearchFiltersAndResults
+					enabledFilters={['type', 'serie', 'broadcastDate', 'provider']}
+					bookmarks={false}
+					filterState={filterState}
+					setFilterState={(newFilterState: FilterState) => {
+						setFilterState({
+							...filterState,
+							...newFilterState,
+						});
+					}}
+					handleSearchResultClicked={handleSearchResultClicked}
+				/>
+			</Spacer>
+		);
+	};
+
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return 'assignment details';
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
-				// This form receives its parent's state because we don't care about rerender performance here
-				return (
-					<SearchFiltersAndResults
-						enabledFilters={['type', 'serie', 'broadcastDate', 'provider']}
-						bookmarks={false}
-						filterState={filterState}
-						setFilterState={(newFilterState: FilterState) => {
-							setFilterState({
-								...filterState,
-								...newFilterState,
-							});
-						}}
-					/>
-				);
+				return renderSearchContent();
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
 				// This form receives its parent's state because we don't care about rerender performance here
@@ -227,7 +289,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 			);
 		}
 		return (
-			<div className="c-assignment-page c-assignment-page--create">
+			<div className="c-assignment-response-page c-assignment-response-page--edit">
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderTitle}
@@ -235,7 +297,6 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 					info={renderMeta()}
 					tour={<InteractiveTour showButton />}
 				/>
-
 				<Container mode="horizontal">
 					{pastDeadline && (
 						<Spacer margin={['top-large']}>
@@ -249,9 +310,8 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 							</Alert>
 						</Spacer>
 					)}
-
-					<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
 				</Container>
+				{renderTabContent}
 			</div>
 		);
 	};
@@ -280,4 +340,4 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	);
 };
 
-export default AssignmentResponseEdit;
+export default compose(withRouter, withUser)(AssignmentResponseEdit) as FunctionComponent;

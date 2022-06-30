@@ -1,18 +1,3 @@
-import classnames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -36,6 +21,20 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
+import classnames from 'classnames';
+import { get, isEmpty, isNil } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -123,9 +122,10 @@ type CollectionDetailPermissions = Partial<{
 	canCreateBundles: boolean;
 }>;
 
-interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+type CollectionDetailProps = { id?: string } & DefaultSecureRouteProps<{ id: string }>;
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
+	id,
 	history,
 	location,
 	match,
@@ -134,7 +134,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [t] = useTranslation();
 
 	// State
-	const [collectionId, setCollectionId] = useState(match.params.id);
+	const [collectionId, setCollectionId] = useState(id || match.params.id);
 	const [collection, setCollection] = useState<Avo.Collection.Collection | null>(null);
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -142,17 +142,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
-	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] = useState<boolean>(
-		false
-	);
+	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
+		useState<boolean>(false);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
-	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
-		false
-	);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
+		useState<boolean>(false);
 	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
-	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
-		false
-	);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
+		useState<boolean>(false);
 	const [
 		isConfirmImportToAssignmentWithResponsesModalOpen,
 		setIsConfirmImportToAssignmentWithResponsesModalOpen,
@@ -190,8 +187,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	}, [setRelatedCollections, t, collectionId]);
 
 	useEffect(() => {
-		setCollectionId(match.params.id);
-	}, [match.params.id]);
+		setCollectionId(id || match.params.id);
+	}, [id, match.params.id]);
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
@@ -1178,11 +1175,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													{`${t(
 														'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
 													)} `}
-													{(get(
-														collection,
-														'relations',
-														[]
-													) as Relation[]).map((relation: Relation) => (
+													{(
+														get(
+															collection,
+															'relations',
+															[]
+														) as Relation[]
+													).map((relation: Relation) => (
 														<Link
 															key={`copy-of-link-${relation.object_meta.id}`}
 															to={buildLink(
@@ -1195,6 +1194,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													))}
 												</p>
 											)}
+
 											{hasParentBundles && (
 												<p className="c-body-1">
 													{`${t(

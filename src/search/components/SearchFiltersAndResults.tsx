@@ -6,6 +6,7 @@ import {
 	Navbar,
 	Select,
 	Spacer,
+	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -76,6 +77,8 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	bookmarks,
 	filterState,
 	setFilterState,
+	handleSearchResultClicked,
+
 	// Automatically injected props
 	searchResults,
 	searchResultsLoading,
@@ -389,6 +392,37 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
+	const renderSearchResults = () => {
+		if (searchResultsLoading) {
+			return <Spinner size="large" />;
+		}
+		if (searchResultsError) {
+			return (
+				<ErrorView
+					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
+					actionButtons={['home']}
+				/>
+			);
+		}
+		return (
+			<SearchResults
+				currentPage={currentPage}
+				data={searchResults}
+				handleBookmarkToggle={handleBookmarkToggle}
+				handleTagClicked={handleTagClicked}
+				handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
+				handleTitleLinkClicked={handleSearchResultClicked}
+				handleThumbnailClicked={handleSearchResultClicked}
+				loading={searchResultsLoading}
+				pageCount={pageCount}
+				setPage={setPage}
+				bookmarkStatuses={bookmarkStatuses}
+				navigateUserRequestForm={navigateToUserRequestForm}
+				bookmarkButtons={bookmarks}
+			/>
+		);
+	};
+
 	const renderSearchPage = () => (
 		<div className="c-search-view">
 			<Navbar autoHeight>
@@ -476,26 +510,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					</ToolbarRight>
 				</Toolbar>
 			</Container>
-			{searchResultsError ? (
-				<ErrorView
-					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
-					actionButtons={['home']}
-				/>
-			) : (
-				<SearchResults
-					currentPage={currentPage}
-					data={searchResults}
-					handleBookmarkToggle={handleBookmarkToggle}
-					handleTagClicked={handleTagClicked}
-					handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
-					loading={searchResultsLoading}
-					pageCount={pageCount}
-					setPage={setPage}
-					bookmarkStatuses={bookmarkStatuses}
-					navigateUserRequestForm={navigateToUserRequestForm}
-					bookmarkButtons={bookmarks}
-				/>
-			)}
+			{renderSearchResults()}
 		</div>
 	);
 

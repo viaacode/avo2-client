@@ -1,11 +1,3 @@
-import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-import { StringParam, useQueryParam } from 'use-query-params';
-
 import {
 	BlockHeading,
 	Button,
@@ -38,6 +30,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
+import { get, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -82,16 +82,21 @@ import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 
 import './ItemDetail.scss';
+import withUser from '../../shared/hocs/withUser';
 
-interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {
+	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+}
 
 export const ITEM_ACTIONS = {
 	createAssignment: 'createAssignment',
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user }) => {
+const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, location, user }) => {
 	const [t] = useTranslation();
+
+	const itemId = id || match.params.id;
 
 	const [cuePoint] = useQueryParam('t', StringParam);
 
@@ -105,12 +110,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
-		false
-	);
-	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
-		false
-	);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
+		useState<boolean>(false);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
+		useState<boolean>(false);
 	const [
 		isConfirmImportToAssignmentWithResponsesModalOpen,
 		setIsConfirmImportToAssignmentWithResponsesModalOpen,
@@ -132,7 +135,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			});
 	};
 
-	const checkPermissionsAndGetItem = async () => {
+	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
 			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
 				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
@@ -155,9 +158,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				return;
 			}
 
-			const itemObj:
-				| (Avo.Item.Item & { replacement_for?: string })
-				| null = await ItemsService.fetchItemByExternalId(match.params.id);
+			const itemObj: (Avo.Item.Item & { replacement_for?: string }) | null =
+				await ItemsService.fetchItemByExternalId(itemId);
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',
@@ -188,7 +190,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 			trackEvents(
 				{
-					object: match.params.id,
+					object: itemId,
 					object_type: 'item',
 					action: 'view',
 				},
@@ -197,7 +199,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
 
-			retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 			try {
 				const counts = await BookmarksViewsPlaysService.getItemCounts(
 					(itemObj as any).uid,
@@ -222,7 +224,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			console.error(
 				new CustomError('Failed to check permissions or get item from graphql', err, {
 					user,
-					itemId: match.params.id,
+					itemId,
 				})
 			);
 			setLoadingInfo({
@@ -230,7 +232,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 			});
 		}
-	};
+	}, [itemId, setItem, t, history, user]);
 
 	useEffect(() => {
 		if (item) {
@@ -245,7 +247,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	 */
 	useEffect(() => {
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, history, user]); // eslint-disable-line
+	}, [checkPermissionsAndGetItem]);
 
 	const toggleBookmark = async () => {
 		try {
@@ -932,4 +934,4 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	);
 };
 
-export default ItemDetail;
+export default compose(withRouter, withUser)(ItemDetail) as FunctionComponent<{ id?: string }>;

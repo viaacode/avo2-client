@@ -1,11 +1,3 @@
-import classnames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -30,6 +22,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
+import { get, isEmpty, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -70,13 +69,19 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
 
-interface BundleDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+type BundleDetailProps = { id?: string } & DefaultSecureRouteProps<{ id: string }>;
 
-const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location, match, user }) => {
+const BundleDetail: FunctionComponent<BundleDetailProps> = ({
+	id,
+	history,
+	location,
+	match,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// State
-	const [bundleId, setBundleId] = useState(match.params.id);
+	const [bundleId, setBundleId] = useState(id || match.params.id);
 	const [bundle, setBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -669,13 +674,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		if (!bundle) {
 			return null;
 		}
-		const {
-			id,
-			lom_context,
-			created_at,
-			updated_at,
-			lom_classification,
-		} = bundle as Avo.Collection.Collection;
+		const { id, lom_context, created_at, updated_at, lom_classification } =
+			bundle as Avo.Collection.Collection;
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
@@ -747,12 +747,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	const renderBundle = () => {
-		const {
-			is_public,
-			thumbnail_path,
-			title,
-			description_long,
-		} = bundle as Avo.Collection.Collection;
+		const { is_public, thumbnail_path, title, description_long } =
+			bundle as Avo.Collection.Collection;
 
 		if (!isFirstRender) {
 			setIsFirstRender(true);

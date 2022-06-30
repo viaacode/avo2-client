@@ -9,23 +9,24 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { Link } from 'react-router-dom';
 
 import { toEnglishContentType } from '../../collection/collection.types';
-import { formatDate, generateContentLinkString, generateSearchLink } from '../../shared/helpers';
+import { formatDate, generateSearchLink } from '../../shared/helpers';
 import { SearchResultItemProps } from '../search.types';
+
+import './SearchResultItem.scss';
 
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	handleBookmarkToggle,
 	handleTagClicked,
 	handleOriginalCpLinkClicked,
+	handleTitleLinkClicked,
+	handleThumbnailClicked,
 	result,
 	isBookmarked,
 	collectionLabelLookup,
 	bookmarkButton,
 }) => {
-	const contentLink: string = generateContentLinkString(result.administrative_type, result.id);
-
 	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
 		return compact(
 			(get(result, 'collection_labels', []) as string[]).map((id: string) => {
@@ -72,7 +73,12 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			onTagClicked={handleTagClicked}
 		>
 			<SearchResultTitle>
-				<Link to={contentLink}>{result.dc_title}</Link>
+				<a
+					href="#"
+					onClick={() => handleTitleLinkClicked(result.id, result.administrative_type)}
+				>
+					{result.dc_title}
+				</a>
 			</SearchResultTitle>
 			{!!result.original_cp && (
 				<SearchResultSubtitle>
@@ -82,14 +88,13 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				</SearchResultSubtitle>
 			)}
 			<SearchResultThumbnail>
-				<Link to={contentLink}>
-					<Thumbnail
-						category={toEnglishContentType(result.administrative_type)}
-						src={result.thumbnail_path}
-						label={result.administrative_type}
-						meta={getMetaData()}
-					/>
-				</Link>
+				<Thumbnail
+					category={toEnglishContentType(result.administrative_type)}
+					src={result.thumbnail_path}
+					label={result.administrative_type}
+					meta={getMetaData()}
+					onClick={() => handleThumbnailClicked(result.id, result.administrative_type)}
+				/>
 			</SearchResultThumbnail>
 		</SearchResult>
 	);

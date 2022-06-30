@@ -30,6 +30,7 @@ export interface SearchFiltersAndResultsPropsManual {
 	bookmarks: boolean;
 	filterState: FilterState;
 	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
+	handleSearchResultClicked: (id: string, type: Avo.Core.ContentType) => void;
 }
 
 export interface SortOrder {
@@ -58,6 +59,8 @@ interface SearchResultItemHandlers {
 	handleBookmarkToggle: (uuid: string, active: boolean) => void;
 	handleTagClicked: (id: string) => void;
 	handleOriginalCpLinkClicked: (id: string, cp: string) => void;
+	handleTitleLinkClicked: (id: string, type: Avo.Core.ContentType) => void;
+	handleThumbnailClicked: (id: string, type: Avo.Core.ContentType) => void;
 }
 
 export interface SearchResultItemProps extends SearchResultItemHandlers {
