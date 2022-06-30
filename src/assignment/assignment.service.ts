@@ -327,7 +327,11 @@ export class AssignmentService {
 			AssignmentService.warnAboutDeadlineInThePast(update);
 			update.updated_at = new Date().toISOString();
 
-			await AssignmentService.updateAssignmentBlocks(original.id, update.blocks || []);
+			await AssignmentService.updateAssignmentBlocks(
+				original.id,
+				original.blocks || [],
+				update.blocks || []
+			);
 
 			const assignment = AssignmentService.transformAssignment({
 				...update,
@@ -387,31 +391,63 @@ export class AssignmentService {
 		]);
 	}
 
-	static async updateAssignmentBlocks(id: string, blocks: AssignmentBlock[]): Promise<any> {
-		const created = blocks.filter((block) => block.id === undefined);
-		const existing = blocks.filter((block) => block.id);
+	static async updateAssignmentBlocks(
+		id: string,
+		original: AssignmentBlock[],
+		update: AssignmentBlock[]
+	): Promise<any> {
+		const deleted = original.filter((block) =>
+			without(
+				original.map((block) => block.id),
+				...update.map((block) => block.id)
+			).includes(block.id)
+		);
 
-		return await Promise.all([
-			dataService.mutate({
-				mutation: INSERT_ASSIGNMENT_BLOCKS,
-				variables: {
-					assignmentBlocks: created.map((block) => ({
-						...block,
-						assignment_id: id,
-					})),
-				},
-				update: ApolloCacheManager.clearAssignmentCache,
-			}),
-			existing.map((block) => {
-				delete block.item;
+		const created = update.filter((block) => block.id === undefined);
+		const existing = original.filter((block) => !deleted.map((d) => d.id).includes(block.id));
 
-				return dataService.mutate<AssignmentBlock>({
+		const cleanup = (block: AssignmentBlock) => {
+			delete block.item;
+			delete (block as any).icon;
+
+			block.updated_at = new Date().toISOString();
+
+			return block;
+		};
+
+		const promises = [
+			...existing.map(cleanup).map((block) =>
+				dataService.mutate({
 					mutation: UPDATE_ASSIGNMENT_BLOCK,
 					variables: { blockId: block.id, update: block },
 					update: ApolloCacheManager.clearAssignmentCache,
-				});
-			}),
-		]);
+				})
+			),
+			...deleted.map(cleanup).map((block) =>
+				dataService.mutate({
+					mutation: UPDATE_ASSIGNMENT_BLOCK,
+					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
+					update: ApolloCacheManager.clearAssignmentCache,
+				})
+			),
+		];
+
+		if (created.length > 0) {
+			promises.push(
+				dataService.mutate({
+					mutation: INSERT_ASSIGNMENT_BLOCKS,
+					variables: {
+						assignmentBlocks: created.map(cleanup).map((block) => ({
+							...block,
+							assignment_id: id,
+						})),
+					},
+					update: ApolloCacheManager.clearAssignmentCache,
+				})
+			);
+		}
+
+		return await Promise.all(promises);
 	}
 
 	static async toggleAssignmentResponseSubmitStatus(
