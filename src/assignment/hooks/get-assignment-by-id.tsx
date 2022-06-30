@@ -1,5 +1,4 @@
-import { QueryResult } from '@apollo/react-common';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, QueryResult } from '@apollo/react-hooks';
 
 import { Avo } from '@viaa/avo2-types';
 
