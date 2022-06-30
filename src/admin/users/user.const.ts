@@ -5,6 +5,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
@@ -46,21 +47,21 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		label: i18n.t('admin/users/user___voornaam'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'last_name',
 		label: i18n.t('admin/users/user___achternaam'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'mail',
 		label: i18n.t('admin/users/user___email'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'user_group',
@@ -74,7 +75,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'business_category',
@@ -88,7 +89,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'is_exception',
@@ -96,7 +97,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
-		dataType: 'boolean',
+		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'is_blocked',
@@ -104,7 +105,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
-		dataType: 'boolean',
+		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'blocked_at',
@@ -112,7 +113,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'unblocked_at',
@@ -120,7 +121,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	...((PermissionService.hasPerm(user, PermissionName.EDIT_USER_TEMP_ACCESS)
 		? [
@@ -136,21 +137,21 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 							{ label: i18n.t('admin/users/user___tijdelijke-toegang-nee'), id: '0' },
 						],
 					} as CheckboxDropdownModalProps,
-					dataType: 'booleanNullsLast', // Users without a value are always last when sorting
+					dataType: TableColumnDataType.booleanNullsLast, // Users without a value are always last when sorting
 				},
 				{
 					id: 'temp_access_from',
 					label: i18n.t('admin/users/user___te-deblokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
-					dataType: 'dateTime',
+					dataType: TableColumnDataType.dateTime,
 				},
 				{
 					id: 'temp_access_until',
 					label: i18n.t('admin/users/user___te-blokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
-					dataType: 'dateTime',
+					dataType: TableColumnDataType.dateTime,
 				},
 		  ]
 		: []) as FilterableColumn[]),
@@ -160,7 +161,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
-		dataType: 'number',
+		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'organisation',
@@ -174,7 +175,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'created_at',
@@ -182,7 +183,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'last_access_at',
@@ -190,7 +191,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'education_levels',

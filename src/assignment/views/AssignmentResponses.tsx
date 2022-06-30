@@ -40,6 +40,7 @@ import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ASSIGNMENTS_ID, ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -206,7 +207,8 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 
 			const response = await AssignmentService.fetchAssignmentResponses(
 				assignmentId,

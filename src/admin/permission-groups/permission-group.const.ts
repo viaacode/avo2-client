@@ -2,6 +2,7 @@ import { TableColumn } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 export const PERMISSION_GROUP_PATH = {
@@ -19,14 +20,14 @@ export const GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		label: i18n.t('admin/permission-groups/permission-group___naam'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'description',
 		label: i18n.t('admin/permission-groups/permission-group___beschrijving'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'created_at',
@@ -34,7 +35,7 @@ export const GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'updated_at',
@@ -42,7 +43,7 @@ export const GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'actions',
@@ -57,14 +58,14 @@ export const GET_PERMISSIONS_TABLE_COLS: () => TableColumn[] = () => [
 		label: i18n.t('admin/permission-groups/permission-group___permissie-code'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'description',
 		label: i18n.t('admin/permission-groups/permission-group___permissie-beschrijving'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'actions',

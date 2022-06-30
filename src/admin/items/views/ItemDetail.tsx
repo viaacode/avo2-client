@@ -40,6 +40,7 @@ import { ToastService } from '../../../shared/services';
 import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { QuickLaneUrlObject } from '../../../shared/types';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -333,13 +334,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							label: t('admin/items/views/item-detail___titel'),
 							id: 'title',
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						{
 							label: t('admin/items/views/item-detail___auteur'),
 							id: 'author',
 							sortable: true,
-							dataType: 'string',
+							dataType: TableColumnDataType.string,
 						},
 						{
 							label: 'Organisatie',
@@ -350,7 +351,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							label: t('admin/items/items___publiek'),
 							id: 'is_public',
 							sortable: true,
-							dataType: 'boolean',
+							dataType: TableColumnDataType.boolean,
 						},
 						{
 							tooltip: t('admin/items/views/item-detail___acties'),

@@ -23,6 +23,7 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import { ToastService } from '../../../shared/services';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, {
 	FilterableColumn,
@@ -146,7 +147,8 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,

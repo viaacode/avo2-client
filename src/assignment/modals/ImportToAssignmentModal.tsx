@@ -35,6 +35,7 @@ import {
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
@@ -82,7 +83,8 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const assignmentData = await AssignmentService.fetchAssignments(
 				true, // canEditAssignments,
 				user,
@@ -186,7 +188,9 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	) => {
 		const cellData: any = (assignment as any)[colKey];
 
-		switch (colKey) {
+		switch (
+			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
+		) {
 			case 'title':
 				const renderTitle = () => (
 					<div className="c-content-header c-content-header--small">
