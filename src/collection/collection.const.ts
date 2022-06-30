@@ -4,6 +4,7 @@ import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
 import { CollectionFragment, CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
 
 import i18n from '../shared/translations/i18n';
+import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 export const STILL_DIMENSIONS = {
 	width: 177,
@@ -58,12 +59,12 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 	{
 		label: i18n.t('collection/collection___kanaal-type'),
 		id: 'channel_type',
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		label: i18n.t('collection/collection___kanaal-naam'),
 		id: 'channel_name',
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		label: i18n.t('collection/collection___link'),
