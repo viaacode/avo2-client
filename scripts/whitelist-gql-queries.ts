@@ -1,10 +1,10 @@
-// tslint:disable:no-console
 /**
  * This script runs over all files that match *.gql.ts and extracts the gql queries and outputs them to the client-whitelist.json file in /scripts
  */
+import * as path from 'path';
+
 import glob from 'glob';
 import { split } from 'lodash';
-import * as path from 'path';
 
 const fs = require('fs-extra');
 
@@ -107,4 +107,3 @@ function extractQueriesFromCode(gqlRegex: RegExp) {
 }
 
 extractQueriesFromCode(/const ([^\s]+) = gql`([^`]+?)`/gm);
-// tslint:enable:no-console

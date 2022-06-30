@@ -2,41 +2,41 @@
 <html lang="nl">
 <head>
 	<script id="Cookiebot"
-					src="https://consent.cookiebot.com/uc.js"
-					data-cbid="8fb68e92-94b2-4334-bc47-7bcda08bc9c7"
-					data-blockingmode="auto"
-					type="text/javascript"></script>
+			src="https://consent.cookiebot.com/uc.js"
+			data-cbid="8fb68e92-94b2-4334-bc47-7bcda08bc9c7"
+			data-blockingmode="auto"
+			type="text/javascript"></script>
 
 	<!-- Init .env variables -->
 	<script src="%PUBLIC_URL%/env-config.js"></script>
 
 	<!-- Google Tag Manager -->
 	<script>
-	(function(w, d, s, l, i) {
-		w[l] = w[l] || [];
-		w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-		var f = d.getElementsByTagName(s)[0],
-			j = d.createElement(s),
-			dl = l != 'dataLayer'
-				? '&l=' + l
-				: '';
-		j.async = true;
-		j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-		f
-			.parentNode
-			.insertBefore(j, f);
-	})(window, document, 'script', 'dataLayer', window._ENV_.GOOGLE_ANALYTICS_ID);
+			(function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+				var f = d.getElementsByTagName(s)[0],
+					j = d.createElement(s),
+					dl = l != 'dataLayer'
+						? '&l=' + l
+						: '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f
+					.parentNode
+					.insertBefore(j, f);
+			})(window, document, 'script', 'dataLayer', window._ENV_.GOOGLE_ANALYTICS_ID);
 	</script>
 	<!-- End Google Tag Manager -->
 
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="theme-color" content="#000000" />
-	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-	<link rel="preload" href="/fonts/montserrat-italic.woff2" as="font" crossorigin>
-	<link rel="preload" href="/fonts/montserrat-medium.woff2" as="font" crossorigin>
-	<link rel="preload" href="/fonts/avenir-lt-std-medium.woff2" as="font" crossorigin>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta name="theme-color" content="#000000"/>
+	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"/>
+	<link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+	<link rel="preload" href="/src/fonts/montserrat-italic.woff2" as="font" crossorigin>
+	<link rel="preload" href="/src/fonts/montserrat-medium.woff2" as="font" crossorigin>
+	<link rel="preload" href="/src/fonts/avenir-lt-std-medium.woff2" as="font" crossorigin>
 
 	<!-- Flowplayer -->
 	<link rel="stylesheet" href="/flowplayer/style/flowplayer.css">
@@ -64,12 +64,12 @@
 <!-- Detect old browsers-->
 <script src="%PUBLIC_URL%/old-browser-detector.min.js"></script>
 <script type="text/javascript">
-var Detector = new oldBrowserDetector(null, function() {
-	// unsupported browser
-	window.open('/unsupported-browser.html');
-});
+	var Detector = new oldBrowserDetector(null, function () {
+		// unsupported browser
+		window.open('/unsupported-browser.html');
+	});
 
-Detector.detect();
+	Detector.detect();
 </script>
 </body>
 </html>
