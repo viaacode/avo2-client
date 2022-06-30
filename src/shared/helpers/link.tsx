@@ -1,8 +1,7 @@
-import { History } from 'history';
 import { fromPairs, get, isArray, isEmpty, isNil, isString, map, noop } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, ReactElement, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -52,7 +51,7 @@ export const buildLink = (
 };
 
 export const navigate = (
-	history: History,
+	history: RouteComponentProps['history'],
 	route: string,
 	params: RouteParams = {},
 	search?: string | { [paramName: string]: string },
@@ -90,7 +89,7 @@ export const navigate = (
 // TODO see if we can replace this method completely by the new SmartLink component
 export function navigateToAbsoluteOrRelativeUrl(
 	url: string,
-	history: History,
+	history: RouteComponentProps['history'],
 	target: LinkTarget = LinkTarget.Self
 ) {
 	let fullUrl = url;
@@ -134,7 +133,10 @@ export const generateSmartLink = (
 	);
 };
 
-export const navigateToContentType = (action: ButtonAction, history: History) => {
+export const navigateToContentType = (
+	action: ButtonAction,
+	history: RouteComponentProps['history']
+) => {
 	if (action) {
 		const { type, value, target } = action;
 

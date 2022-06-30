@@ -1,7 +1,7 @@
 FROM nginxinc/nginx-unprivileged
 USER nginx
 
-FROM node:12-alpine AS compile
+FROM node:16-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
 ARG PRODUCTION=$PRODUCTION
@@ -13,10 +13,11 @@ WORKDIR /app
 RUN mkdir ./build/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
 COPY  . .
 RUN chown -R node:node /app && chmod -R  g+sw /app
-RUN apk add --no-cache --virtual .gyp python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk update
+RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #USER node
-RUN npm ci --production=false
-FROM node:12-alpine AS build
+RUN npm ci --production=false --force
+FROM node:16-alpine AS build
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production

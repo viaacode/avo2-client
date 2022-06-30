@@ -1,9 +1,6 @@
 import { TableColumn } from '@viaa/avo2-components';
-import {
-	AssignmentBlock,
-	AssignmentLabel_v2,
-	AssignmentSchema_v2,
-} from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
@@ -73,8 +70,10 @@ export interface AssignmentLabelColor {
 // Omit avoids a typescript error here
 export type AssignmentSchemaLabel_v2 = { assignment_label: Omit<AssignmentLabel_v2, 'profile'> };
 
-export type AssignmentFormState = Pick<AssignmentSchema_v2, 'title'> &
-	Partial<Pick<AssignmentSchema_v2, 'id' | 'available_at' | 'deadline_at' | 'answer_url'>> & {
+export type AssignmentFormState = Pick<Avo.Assignment.Assignment_v2, 'title'> &
+	Partial<
+		Pick<Avo.Assignment.Assignment_v2, 'id' | 'available_at' | 'deadline_at' | 'answer_url'>
+	> & {
 		labels: AssignmentSchemaLabel_v2[];
 		blocks: Omit<AssignmentBlock, 'item'>[]; // avoid circular reference ts error
 	};
