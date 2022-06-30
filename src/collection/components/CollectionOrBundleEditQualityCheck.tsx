@@ -1,4 +1,3 @@
-import H from 'history';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,11 +22,12 @@ import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
+import { RouteComponentProps } from 'react-router-dom';
 
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: H.History;
+	history: RouteComponentProps['history'];
 }
 
 const CollectionOrBundleEditQualityCheck: FunctionComponent<

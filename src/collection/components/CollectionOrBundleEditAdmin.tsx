@@ -1,4 +1,3 @@
-import H from 'history';
 import { get, isNil, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +41,7 @@ import { CollectionService } from '../collection.service';
 import { QualityLabel } from '../collection.types';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
+import { RouteComponentProps } from 'react-router-dom';
 
 type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 type AssignmentColumnId = 'title' | 'author' | 'is_archived' | 'actions';
@@ -68,7 +68,7 @@ const columnIdToAssignmentPath: { [columnId in AssignmentColumnId]: string } = {
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: H.History;
+	history: RouteComponentProps['history'];
 }
 
 const CollectionOrBundleEditAdmin: FunctionComponent<

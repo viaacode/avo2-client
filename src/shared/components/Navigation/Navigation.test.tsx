@@ -1,6 +1,6 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
-import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Link, MemoryRouter, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../../constants';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
@@ -28,7 +28,7 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 	const links = menuItems.find(Link);
 
 	links.forEach((link) => {
-		const to: Location = link.prop('to') as Location;
+		const to = link.prop('to') as RouteComponentProps['location'];
 		if (to) {
 			expect(link.text()).toBeTruthy();
 			expect(
