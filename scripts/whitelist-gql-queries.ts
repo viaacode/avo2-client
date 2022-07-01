@@ -7,8 +7,6 @@ import fse from 'fs-extra';
 import glob from 'glob';
 import { split } from 'lodash';
 
-// require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-
 if (!process.env.GRAPHQL_URL) {
 	throw new Error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_URL is not set'
