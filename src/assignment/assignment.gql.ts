@@ -142,7 +142,7 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 
 export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 	query getAssignmentsByResponseOwnerId(
-		$owner_profile_id: String!
+		$owner_profile_id: uuid!
 		$offset: Int = 0
 		$limit: Int
 		$filter: [app_assignments_v2_bool_exp]
@@ -150,7 +150,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 	) {
 		app_assignments_v2(
 			where: {
-				responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
+				responses: { owner_profile_id: { _eq: $owner_profile_id } }
 				is_deleted: { _eq: false }
 				_and: $filter
 			}
@@ -199,7 +199,7 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 		}
 		count: app_assignments_v2_aggregate(
 			where: {
-				responses: { owner_profile_ids: { _has_key: $owner_profile_id } }
+				responses: { owner_profile_id: { _eq: $owner_profile_id } }
 				is_deleted: { _eq: false }
 				_or: $filter
 			}
@@ -258,7 +258,7 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: String!) {
+	query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 		assignments: app_assignments_v2(
 			where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
 			order_by: [{ deadline_at: desc }]
@@ -278,10 +278,10 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					owner_profile_id
 				}
 			}
-			responses(where: { owner_profile_ids: { _has_key: $pupilUuid } }) {
+			responses(where: { owner_profile_id: { _eq: $pupilUuid } }) {
 				id
 				created_at
-				owner_profile_ids
+				owner_profile_id
 				assignment_id
 				collection_title
 			}
@@ -409,7 +409,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 			returning {
 				id
 				created_at
-				owner_profile_ids
+				owner_profile_id
 				assignment_id
 				collection_title
 			}
@@ -471,9 +471,6 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 				full_name
 				profile_id
 			}
-			view_count {
-				count
-			}
 			responses_aggregate(where: { collection_title: { _is_null: false } }) {
 				aggregate {
 					count
@@ -488,10 +485,116 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 	}
 `;
 
+// TODO re-enable view-count after fix hasura
+// view_count {
+// 	count
+// }
+
 export const GET_ASSIGNMENT_IDS = gql`
 	query getAssignmentIds($where: app_assignments_v2_bool_exp!) {
 		app_assignments_v2(where: $where) {
 			id
+		}
+	}
+`;
+
+export const GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW = gql`
+	query getPupilCollectionsAdminOverview(
+		$offset: Int!
+		$limit: Int!
+		$orderBy: [app_assignment_responses_v2_order_by!]!
+		$where: app_assignment_responses_v2_bool_exp!
+	) {
+		app_assignment_responses_v2(
+			offset: $offset
+			limit: $limit
+			order_by: $orderBy
+			where: {
+				_and: [
+					$where
+					{
+						collection_title: { _is_null: false }
+						assignment: { is_deleted: { _eq: false } }
+					}
+				]
+			}
+		) {
+			id
+			collection_title
+			created_at
+			updated_at
+			owner {
+				full_name
+			}
+			owner_profile_id
+			assignment {
+				title
+				deadline_at
+				owner {
+					full_name
+				}
+				owner_profile_id
+			}
+		}
+		app_assignment_responses_v2_aggregate(
+			where: {
+				_and: [
+					$where
+					{ collection_title: { _is_null: false } }
+					{ assignment: { is_deleted: { _eq: false } } }
+				]
+			}
+		) {
+			aggregate {
+				count
+			}
+		}
+	}
+`;
+
+export const GET_PUPIL_COLLECTION_IDS = gql`
+	query getPupilCollectionIds($where: app_assignment_responses_v2_bool_exp!) {
+		app_assignment_responses_v2(
+			where: {
+				_and: [
+					$where
+					{ collection_title: { _is_null: false } }
+					{ assignment: { is_deleted: { _eq: false } } }
+				]
+			}
+		) {
+			id
+		}
+	}
+`;
+
+export const BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS = gql`
+	mutation bulkUpdateAuthorForPupilCollections(
+		$authorId: uuid!
+		$pupilCollectionIds: [uuid!]!
+		$now: timestamptz!
+	) {
+		update_app_assignment_responses_v2(
+			where: { id: { _in: $pupilCollectionIds } }
+			_set: { owner_profile_id: $authorId, updated_at: $now }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_PUPIL_COLLECTIONS = gql`
+	mutation deletePupilCollections($pupilCollectionIds: [uuid!]!) {
+		update_app_assignment_responses_v2(
+			_set: { collection_title: null }
+			where: { id: { _in: $pupilCollectionIds } }
+		) {
+			affected_rows
+		}
+		delete_app_pupil_collection_blocks(
+			where: { assignment_response_id: { _in: $pupilCollectionIds } }
+		) {
+			affected_rows
 		}
 	}
 `;
