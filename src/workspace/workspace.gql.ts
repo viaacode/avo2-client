@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const GET_WORKSPACE_TAB_COUNTS = gql`
-	query getWorkspaceTabCounts($owner_profile_id: uuid, $company_id: String) {
+	query getWorkspaceTabCounts($owner_profile_id: uuid, $company_id: String, $now: timestamptz) {
 		collection_counts: app_collections_aggregate(
 			where: {
 				owner_profile_id: { _eq: $owner_profile_id }
@@ -25,7 +25,11 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 			}
 		}
 		assignment_counts: app_assignments_v2_aggregate(
-			where: { owner_profile_id: { _eq: $owner_profile_id }, is_deleted: { _eq: false } }
+			where: {
+				owner_profile_id: { _eq: $owner_profile_id }
+				is_deleted: { _eq: false }
+				_or: [{ deadline_at: { _gt: $now } }, { deadline_at: { _is_null: true } }]
+			}
 		) {
 			aggregate {
 				count

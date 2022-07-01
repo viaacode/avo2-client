@@ -121,6 +121,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				variables: {
 					owner_profile_id: getProfileId(user),
 					company_id: get(user, 'profile.company_id') || 'EMPTY',
+					now: new Date().toISOString(),
 				},
 			}),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, user),

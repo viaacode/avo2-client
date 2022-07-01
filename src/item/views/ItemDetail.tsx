@@ -77,9 +77,10 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import { AddToCollectionModal, ItemVideoDescription } from '../components';
+import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
+import { ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
 import withUser from '../../shared/hocs/withUser';
@@ -103,6 +104,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
+	const [isAddToFragmentModalOpen, setIsAddToFragmentModalOpen] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
@@ -357,7 +359,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 		if (hasResponses.length > 0) {
 			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
 		} else {
-			doImportToAssignment(importToAssignmentId);
+			setIsAddToFragmentModalOpen(true);
 		}
 	};
 
@@ -365,13 +367,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 		if (!assignmentId) {
 			return;
 		}
-		return doImportToAssignment(assignmentId);
+		setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
+		setIsAddToFragmentModalOpen(true);
 	};
 
-	const doImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
-		setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
-		if (item && importToAssignmentId) {
-			await AssignmentService.importFragmentToAssignment(item, importToAssignmentId);
+	const doImportToAssignment = async (itemTrimInfo?: ItemTrimInfo): Promise<void> => {
+		setIsAddToFragmentModalOpen(false);
+		if (item && assignmentId) {
+			await AssignmentService.importFragmentToAssignment(item, assignmentId, itemTrimInfo);
 			ToastService.success(
 				t('item/views/item-detail___het-fragment-is-toegevoegd-aan-de-opdracht')
 			);
@@ -848,6 +851,20 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 						onClose={() => {
 							setIsAddToCollectionModalOpen(false);
 						}}
+					/>
+				)}
+				{!isNil(match.params.id) && isAddToFragmentModalOpen && (
+					<AddToAssignmentModal
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						itemMetaData={item}
+						isOpen={isAddToFragmentModalOpen}
+						onClose={() => {
+							setIsAddToFragmentModalOpen(false);
+						}}
+						onAddToAssignmentCallback={doImportToAssignment}
 					/>
 				)}
 				<ShareThroughEmailModal
