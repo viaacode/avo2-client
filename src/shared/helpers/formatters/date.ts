@@ -48,7 +48,7 @@ export function formatTimestamp(
 	}
 	return normalizeTimestamp(timestamp)
 		.local()
-		.format(`DD-MM-YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
+		.format(`D MMMM YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
 }
 
 export function formatCustomTimestamp(timestamp: DateLikeNullable, format: string): string {

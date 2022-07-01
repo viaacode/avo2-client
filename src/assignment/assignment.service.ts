@@ -1,8 +1,7 @@
-import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, without } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
+import { ApolloQueryResult } from 'apollo-boost';
+import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -20,18 +19,15 @@ import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
+	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 	ITEMS_PER_PAGE,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
 	BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
 	DELETE_ASSIGNMENT,
-	DELETE_ASSIGNMENTS,
 	DELETE_ASSIGNMENT_RESPONSE,
-	GET_ASSIGNMENTS_ADMIN_OVERVIEW,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
+	DELETE_ASSIGNMENTS,
 	GET_ASSIGNMENT_BLOCKS,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
@@ -39,6 +35,9 @@ import {
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
+	GET_ASSIGNMENTS_ADMIN_OVERVIEW,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_BLOCKS,
@@ -47,6 +46,7 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
+	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentRetrieveError,
 	AssignmentSchemaLabel_v2,
@@ -118,7 +118,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				owner_profile_id: getProfileId(user),
 				filter: filterArray.length ? filterArray : {},
@@ -564,16 +564,15 @@ export class AssignmentService {
 	> {
 		try {
 			// Load assignment
-			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> = await dataService.query(
-				{
+			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> =
+				await dataService.query({
 					query: GET_ASSIGNMENT_WITH_RESPONSE,
 					variables: {
 						assignmentId,
 						pupilUuid: pupilProfileId,
 					},
 					fetchPolicy: 'no-cache',
-				}
-			);
+				});
 
 			if (response.errors) {
 				throw new CustomError('Response contains graphql errors', null, response);
@@ -761,12 +760,13 @@ export class AssignmentService {
 			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
-			const existingAssignmentResponses: string[] = await AssignmentService.getAssignmentResponses(
-				get(user, 'profile.id'),
-				(get(assignment, 'id') as unknown) as string
-			);
+			const existingAssignmentResponses: string[] =
+				await AssignmentService.getAssignmentResponses(
+					get(user, 'profile.id'),
+					get(assignment, 'id') as unknown as string
+				);
 
-			if (!!existingAssignmentResponses.length) {
+			if (existingAssignmentResponses.length) {
 				if (existingAssignmentResponses.length > 1) {
 					console.error(
 						new CustomError(
@@ -854,7 +854,10 @@ export class AssignmentService {
 					end_oc: fragment.end_oc,
 					position: startPosition + index,
 					thumbnail_path: fragment.thumbnail_path,
-					type: fragment.type === 'TEXT' ? 'TEXT' : 'ITEM',
+					type:
+						fragment.type === AssignmentBlockType.TEXT
+							? AssignmentBlockType.TEXT
+							: AssignmentBlockType.ITEM,
 				};
 			});
 			try {
@@ -978,7 +981,7 @@ export class AssignmentService {
 			fragmentStartTime: 0,
 			fragmentEndTime: 0,
 		};
-		const thumbnailPath = !!trimInfo.fragmentStartTime
+		const thumbnailPath = trimInfo.fragmentStartTime
 			? await VideoStillService.getVideoStill(
 					item.external_id,
 					trimInfo.fragmentStartTime * 1000
@@ -1036,7 +1039,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
 
@@ -1047,7 +1050,7 @@ export class AssignmentService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -1091,7 +1094,7 @@ export class AssignmentService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -1115,7 +1118,10 @@ export class AssignmentService {
 		}
 	}
 
-	static async changeAuthor(profileId: string, assignmentIds: string[]): Promise<void> {
+	static async changeAssignmentsAuthor(
+		profileId: string,
+		assignmentIds: string[]
+	): Promise<void> {
 		try {
 			const response = await dataService.mutate({
 				mutation: BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,

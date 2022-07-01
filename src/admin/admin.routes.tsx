@@ -14,11 +14,12 @@ import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour
 import { renderItemRoutes, renderPublishItemRoutes } from './items/items.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
 import { renderAdminPermissionGroupRoutes } from './permission-groups/permission-group.routes';
+import { renderAdminPupilCollectionRoutes } from './pupil-collection/pupil-collection.routes';
 import { renderAdminTranslationsRoutes } from './translations/translations.routes';
 import { renderAdminUserGroupRoutes } from './user-groups/user-group.routes';
 import { renderAdminUserRoutes } from './users/user.routes';
 
-export const renderAdminRoutes = (userPermissions: string[]) => {
+export const renderAdminRoutes = (userPermissions: string[]): ReactNode => {
 	const renderWithPermissions = (
 		renderFunc: (userPermissions: string[]) => ReactNode[],
 		permissions: string[],
@@ -66,6 +67,9 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 			)}
 			{renderWithPermissions(renderAdminAssignmentRoutes, [
 				PermissionName.VIEW_ANY_ASSIGNMENTS,
+			])}
+			{renderWithPermissions(renderAdminPupilCollectionRoutes, [
+				PermissionName.VIEW_ANY_PUPIL_COLLECTIONS,
 			])}
 			{renderWithPermissions(renderInteractiveTourRoutes, [
 				PermissionName.EDIT_INTERACTIVE_TOURS,
