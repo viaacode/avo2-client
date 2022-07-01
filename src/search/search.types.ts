@@ -1,4 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
+import { ReactNode } from 'react';
 import { Dispatch } from 'redux';
 import { UrlUpdateType } from 'use-query-params';
 
@@ -30,7 +31,16 @@ export interface SearchFiltersAndResultsPropsManual {
 	bookmarks: boolean;
 	filterState: FilterState;
 	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
-	handleSearchResultClicked: (id: string, type: Avo.Core.ContentType) => void;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
 }
 
 export interface SortOrder {
@@ -58,9 +68,16 @@ export interface SearchFilterControlsProps {
 interface SearchResultItemHandlers {
 	handleBookmarkToggle: (uuid: string, active: boolean) => void;
 	handleTagClicked: (id: string) => void;
-	handleOriginalCpLinkClicked: (id: string, cp: string) => void;
-	handleTitleLinkClicked: (id: string, type: Avo.Core.ContentType) => void;
-	handleThumbnailClicked: (id: string, type: Avo.Core.ContentType) => void;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
 }
 
 export interface SearchResultItemProps extends SearchResultItemHandlers {
@@ -68,6 +85,16 @@ export interface SearchResultItemProps extends SearchResultItemHandlers {
 	collectionLabelLookup: CollectionLabelLookup;
 	isBookmarked: boolean | null;
 	bookmarkButton: boolean;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
 }
 
 export interface SearchResultsProps extends SearchResultItemHandlers {

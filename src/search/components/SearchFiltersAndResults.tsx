@@ -1,6 +1,7 @@
 import {
 	Button,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Navbar,
@@ -77,7 +78,8 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	bookmarks,
 	filterState,
 	setFilterState,
-	handleSearchResultClicked,
+	renderDetailLink,
+	renderSearchLink,
 
 	// Automatically injected props
 	searchResults,
@@ -309,18 +311,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		);
 	};
 
-	const handleOriginalCpLinkClicked = async (_id: string, originalCp: string | undefined) => {
-		if (originalCp) {
-			setFilterState({
-				...filterState,
-				filters: {
-					...DEFAULT_FILTER_STATE,
-					provider: [originalCp],
-				},
-			});
-		}
-	};
-
 	const deleteAllFilters = () => {
 		setSearchTerms('');
 		setFilterState({}, urlUpdateType);
@@ -394,7 +384,13 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const renderSearchResults = () => {
 		if (searchResultsLoading) {
-			return <Spinner size="large" />;
+			return (
+				<Spacer margin="top-extra-large">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Spacer>
+			);
 		}
 		if (searchResultsError) {
 			return (
@@ -410,15 +406,14 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				data={searchResults}
 				handleBookmarkToggle={handleBookmarkToggle}
 				handleTagClicked={handleTagClicked}
-				handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
-				handleTitleLinkClicked={handleSearchResultClicked}
-				handleThumbnailClicked={handleSearchResultClicked}
 				loading={searchResultsLoading}
 				pageCount={pageCount}
 				setPage={setPage}
 				bookmarkStatuses={bookmarkStatuses}
 				navigateUserRequestForm={navigateToUserRequestForm}
 				bookmarkButtons={bookmarks}
+				renderDetailLink={renderDetailLink}
+				renderSearchLink={renderSearchLink}
 			/>
 		);
 	};

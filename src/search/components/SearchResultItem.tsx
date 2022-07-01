@@ -11,7 +11,7 @@ import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { toEnglishContentType } from '../../collection/collection.types';
-import { formatDate, generateSearchLink } from '../../shared/helpers';
+import { formatDate } from '../../shared/helpers';
 import { SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss';
@@ -19,13 +19,12 @@ import './SearchResultItem.scss';
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	handleBookmarkToggle,
 	handleTagClicked,
-	handleOriginalCpLinkClicked,
-	handleTitleLinkClicked,
-	handleThumbnailClicked,
 	result,
 	isBookmarked,
 	collectionLabelLookup,
 	bookmarkButton,
+	renderDetailLink,
+	renderSearchLink,
 }) => {
 	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
 		return compact(
@@ -53,6 +52,17 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		return description.replace(/\[([^\]]+)]\([^)]+\)/gi, '$1');
 	};
 
+	const renderThumbnail = (result: Avo.Search.ResultItem) => {
+		return (
+			<Thumbnail
+				category={toEnglishContentType(result.administrative_type)}
+				src={result.thumbnail_path}
+				label={result.administrative_type}
+				meta={getMetaData()}
+			/>
+		);
+	};
+
 	let date: string;
 	if (result.administrative_type === 'collectie' || result.administrative_type === 'bundel') {
 		date = result.created_at;
@@ -73,28 +83,19 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			onTagClicked={handleTagClicked}
 		>
 			<SearchResultTitle>
-				<a
-					href="#"
-					onClick={() => handleTitleLinkClicked(result.id, result.administrative_type)}
-				>
-					{result.dc_title}
-				</a>
+				{renderDetailLink(result.dc_title, result.id, result.administrative_type)}
 			</SearchResultTitle>
 			{!!result.original_cp && (
 				<SearchResultSubtitle>
-					{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
-						handleOriginalCpLinkClicked(result.id, result.original_cp || '')
+					{renderSearchLink(
+						result.original_cp,
+						{ filters: { provider: [result.original_cp] } },
+						'c-body-2'
 					)}
 				</SearchResultSubtitle>
 			)}
 			<SearchResultThumbnail>
-				<Thumbnail
-					category={toEnglishContentType(result.administrative_type)}
-					src={result.thumbnail_path}
-					label={result.administrative_type}
-					meta={getMetaData()}
-					onClick={() => handleThumbnailClicked(result.id, result.administrative_type)}
-				/>
+				{renderDetailLink(renderThumbnail(result), result.id, result.administrative_type)}
 			</SearchResultThumbnail>
 		</SearchResult>
 	);

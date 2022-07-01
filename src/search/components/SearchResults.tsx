@@ -28,6 +28,8 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	bookmarkStatuses,
 	navigateUserRequestForm,
 	bookmarkButtons,
+	renderDetailLink,
+	renderSearchLink,
 	...resultProps
 }) => {
 	const [t] = useTranslation();
@@ -66,6 +68,8 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 			collectionLabelLookup={collectionLabels}
 			isBookmarked={getIsBookmarked(result)}
 			bookmarkButton={bookmarkButtons}
+			renderDetailLink={renderDetailLink}
+			renderSearchLink={renderSearchLink}
 		/>
 	);
 

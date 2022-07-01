@@ -9,10 +9,11 @@ import {
 	ToolbarTitle,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, ReactText, useState } from 'react';
+import queryString from 'query-string';
+import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
@@ -22,11 +23,11 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
+import { buildLink, copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { SearchFiltersAndResults } from '../components';
@@ -34,7 +35,7 @@ import { FilterState } from '../search.types';
 
 import './Search.scss';
 
-const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user, history }) => {
+const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
@@ -69,8 +70,27 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user, hist
 		ToastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
 	};
 
-	const handleSearchResultClicked = (id: string, type: Avo.Core.ContentType) => {
-		history.push(generateContentLinkString(type, id));
+	const renderDetailLink = (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => {
+		return <Link to={generateContentLinkString(type, id)}>{linkText}</Link>;
+	};
+
+	const renderSearchLink = (
+		linkText: string | ReactNode,
+		newFilterState: FilterState,
+		className?: string
+	) => {
+		return (
+			<Link
+				to={buildLink(APP_PATH.SEARCH.route, {}, queryString.stringify(newFilterState))}
+				className={className}
+			>
+				{linkText}
+			</Link>
+		);
 	};
 
 	return (
@@ -123,7 +143,8 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user, hist
 						bookmarks
 						filterState={filterState}
 						setFilterState={setFilterState}
-						handleSearchResultClicked={handleSearchResultClicked}
+						renderDetailLink={renderDetailLink}
+						renderSearchLink={renderSearchLink}
 					/>
 				</PermissionGuardPass>
 				<PermissionGuardFail>

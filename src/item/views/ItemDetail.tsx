@@ -31,11 +31,19 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import { get, isArray, isNil } from 'lodash-es';
+import React, {
+	Fragment,
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParam } from 'use-query-params';
 
@@ -53,6 +61,7 @@ import {
 	toEnglishContentType,
 } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { FilterState } from '../../search/search.types';
 import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -61,17 +70,9 @@ import {
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES } from '../../shared/constants';
-import {
-	buildLink,
-	CustomError,
-	generateSearchLink,
-	generateSearchLinks,
-	generateSearchLinkString,
-	isMobileWidth,
-	reorderDate,
-} from '../../shared/helpers';
-import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
+import { buildLink, CustomError, isMobileWidth, reorderDate } from '../../shared/helpers';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
+import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -83,10 +84,22 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
-import withUser from '../../shared/hocs/withUser';
 
-interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {
+interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType,
+		className?: string
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
+	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
+	goToSearchLink: (newFilters: FilterState) => void;
 }
 
 export const ITEM_ACTIONS = {
@@ -94,7 +107,17 @@ export const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, location, user }) => {
+const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
+	id,
+	renderDetailLink,
+	renderSearchLink,
+	goToDetailLink,
+	goToSearchLink,
+	history,
+	match,
+	location,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	const itemId = id || match.params.id;
@@ -186,7 +209,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 			if (itemObj.replacement_for) {
 				// Item was replaced by another item
 				// We should reload the page, to update the url
-				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id }));
+				goToDetailLink(itemObj.external_id, 'video');
 				return;
 			}
 
@@ -286,10 +309,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 		}
 	};
 
-	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
-		history.push(generateSearchLinkString(prop, value));
-	};
-
 	const trackOnPlay = () => {
 		trackEvents(
 			{
@@ -301,38 +320,43 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 		);
 	};
 
+	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
+		const englishContentType: EnglishContentType =
+			toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+
+		return (
+			<MediaCard
+				category={englishContentType}
+				orientation="horizontal"
+				title={relatedItem.dc_title}
+			>
+				<MediaCardThumbnail>
+					<Thumbnail
+						category={englishContentType}
+						src={relatedItem.thumbnail_path}
+						showCategoryIcon
+					/>
+				</MediaCardThumbnail>
+				<MediaCardMetaData>
+					<MetaData category={englishContentType}>
+						<MetaDataItem label={relatedItem.original_cp || ''} />
+					</MetaData>
+				</MediaCardMetaData>
+			</MediaCard>
+		);
+	};
+
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map((relatedItem) => {
-				const englishContentType: EnglishContentType =
-					toEnglishContentType(relatedItem.administrative_type) ||
-					ContentTypeString.video;
-
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
-						<Link
-							to={generateRelatedItemLink(relatedItem)}
-							className="a-link__no-styles"
-						>
-							<MediaCard
-								category={englishContentType}
-								orientation="horizontal"
-								title={relatedItem.dc_title}
-							>
-								<MediaCardThumbnail>
-									<Thumbnail
-										category={englishContentType}
-										src={relatedItem.thumbnail_path}
-										showCategoryIcon
-									/>
-								</MediaCardThumbnail>
-								<MediaCardMetaData>
-									<MetaData category={englishContentType}>
-										<MetaDataItem label={relatedItem.original_cp || ''} />
-									</MetaData>
-								</MediaCardMetaData>
-							</MediaCard>
-						</Link>
+						{renderDetailLink(
+							renderRelatedItem(relatedItem),
+							relatedItem.id,
+							relatedItem.administrative_type,
+							'a-link__no-styles'
+						)}
 					</li>
 				);
 			});
@@ -404,6 +428,36 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 		}
 	};
 
+	const renderSearchLinks = (
+		key: string,
+		filterProp: Avo.Search.FilterProp,
+		filterValue: string | string[] | undefined,
+		className = ''
+	) => {
+		if (isArray(filterValue)) {
+			return filterValue.map((value: string, index: number) => (
+				<Fragment key={`${key}:${filterProp}":${value}`}>
+					{renderSearchLink(
+						value,
+						{
+							filters: { [filterProp]: [value] },
+						},
+						className
+					)}
+					{index === filterValue.length - 1 ? '' : ', '}
+				</Fragment>
+			));
+		}
+
+		return renderSearchLink(
+			filterValue,
+			{
+				filters: { [filterProp]: [filterValue] },
+			},
+			className
+		);
+	};
+
 	const renderItem = () => {
 		if (!item) {
 			return null;
@@ -469,7 +523,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 							{!!get(item, 'organisation.name') && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										{generateSearchLink('provider', item.organisation.name)}
+										{renderSearchLink(item.organisation.name, {
+											filters: { provider: [item.organisation.name] },
+										})}
 									</p>
 								</MetaDataItem>
 							)}
@@ -486,7 +542,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
 										<span>{`${t('item/views/item-detail___reeks')} `}</span>
-										{generateSearchLink('serie', item.series)}
+										{renderSearchLink(item.series, {
+											filters: { serie: [item.series] },
+										})}
 									</p>
 								</MetaDataItem>
 							)}
@@ -692,10 +750,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 														</Trans>
 													</th>
 													<td>
-														{generateSearchLink(
-															'provider',
-															item.organisation.name
-														)}
+														{renderSearchLink(item.organisation.name, {
+															filters: {
+																provider: [item.organisation.name],
+															},
+														})}
 													</td>
 												</Column>
 											)}
@@ -719,7 +778,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 														</Trans>
 													</th>
 													<td>
-														{generateSearchLink('serie', item.series)}
+														{renderSearchLink(item.series, {
+															filters: { serie: [item.series] },
+														})}
 													</td>
 												</Column>
 											)}
@@ -759,7 +820,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 														</Trans>
 													</th>
 													<td>
-														{generateSearchLinks(
+														{renderSearchLinks(
 															item.external_id,
 															'educationLevel',
 															item.lom_context
@@ -775,7 +836,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 														</Trans>
 													</th>
 													<td>
-														{generateSearchLinks(
+														{renderSearchLinks(
 															item.external_id,
 															'subject',
 															item.lom_classification
@@ -806,10 +867,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 															item.lom_keywords || [],
 															null,
 															(tagId: string | number) =>
-																goToSearchPage(
-																	'keyword',
-																	tagId as string
-																)
+																goToSearchLink({
+																	filters: {
+																		keyword: [tagId as string],
+																	},
+																})
 														)}
 													</td>
 												</tr>
@@ -951,4 +1013,4 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ id, history, match, lo
 	);
 };
 
-export default compose(withRouter, withUser)(ItemDetail) as FunctionComponent<{ id?: string }>;
+export default compose(withRouter, withUser)(ItemDetail) as FunctionComponent<ItemDetailProps>;

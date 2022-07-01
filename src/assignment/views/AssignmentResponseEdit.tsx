@@ -11,7 +11,14 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns/esm';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, withRouter } from 'react-router-dom';
@@ -97,12 +104,44 @@ const AssignmentResponseEdit: FunctionComponent<
 	}, []);
 
 	// Events
-	const handleSearchResultClicked = (id: string, type: Avo.Core.ContentType) => {
+	const goToDetailLink = (id: string, type: Avo.Core.ContentType) => {
 		setFilterState({
 			...(filterState as PupilSearchFilterState),
 			selectedSearchResultId: id,
 			selectedSearchResultType: type,
 		});
+	};
+
+	const goToSearchLink = (newFilters: FilterState) => {
+		setFilterState({ ...filterState, ...newFilters });
+	};
+
+	const renderDetailLink = (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => {
+		return (
+			<a href="" onClick={() => goToDetailLink(id, type)}>
+				{linkText}
+			</a>
+		);
+	};
+
+	const renderSearchLink = (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => {
+		return (
+			<a
+				href=""
+				className={className}
+				onClick={() => setFilterState({ ...filterState, ...newFilters })}
+			>
+				{linkText}
+			</a>
+		);
 	};
 
 	// Render
@@ -194,7 +233,15 @@ const AssignmentResponseEdit: FunctionComponent<
 			filterState.selectedSearchResultType === 'video' ||
 			filterState.selectedSearchResultType === 'audio'
 		) {
-			return <ItemDetail id={filterState.selectedSearchResultId} />;
+			return (
+				<ItemDetail
+					id={filterState.selectedSearchResultId}
+					renderDetailLink={renderDetailLink}
+					renderSearchLink={renderSearchLink}
+					goToDetailLink={goToDetailLink}
+					goToSearchLink={goToSearchLink}
+				/>
+			);
 		} else if (filterState.selectedSearchResultType === 'collectie') {
 			return <CollectionDetail user={user} id={filterState.selectedSearchResultId} />;
 		} else {
@@ -241,7 +288,8 @@ const AssignmentResponseEdit: FunctionComponent<
 							...newFilterState,
 						});
 					}}
-					handleSearchResultClicked={handleSearchResultClicked}
+					renderDetailLink={renderDetailLink}
+					renderSearchLink={renderSearchLink}
 				/>
 			</Spacer>
 		);
@@ -262,11 +310,17 @@ const AssignmentResponseEdit: FunctionComponent<
 			default:
 				return tab;
 		}
-	}, [tab]);
+	}, [tab, filterState]);
 
 	const renderPageContent = () => {
 		if (assignmentLoading) {
-			return <Spinner size="large" />;
+			return (
+				<Spacer margin="top-extra-large">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Spacer>
+			);
 		}
 		if (assignmentError) {
 			return (
