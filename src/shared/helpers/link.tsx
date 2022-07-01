@@ -264,15 +264,15 @@ export const renderSearchLinks = (
 };
 
 export function generateSearchLinkString(
-	filterProp: Avo.Search.FilterProp,
-	filterValue: string,
+	filterProp?: Avo.Search.FilterProp,
+	filterValue?: string,
 	orderProperty?: Avo.Search.OrderProperty,
 	orderDirection?: Avo.Search.OrderDirection
 ): string {
 	const queryParamObject: any = {};
 	if (String(filterProp) === SearchFilter.query) {
 		queryParamObject.filters = JSON.stringify({ query: filterValue });
-	} else {
+	} else if (!!filterProp && !!filterValue) {
 		queryParamObject.filters = `{"${filterProp}":["${filterValue}"]}`;
 	}
 	if (orderProperty) {

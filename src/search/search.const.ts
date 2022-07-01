@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { SearchFilters } from '@viaa/avo2-types/types/search';
 
 import { SortOrder } from './search.types';
 
@@ -19,7 +18,7 @@ export enum SearchFilter {
 	collectionLabel = 'collectionLabel',
 }
 
-export const ALL_SEARCH_FILTERS: (keyof SearchFilters)[] = [
+export const ALL_SEARCH_FILTERS: SearchFilter[] = [
 	SearchFilter.query,
 	SearchFilter.type,
 	SearchFilter.educationLevel,

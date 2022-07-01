@@ -276,6 +276,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 					renderSearchLink={renderSearchLink}
 					goToDetailLink={goToDetailLink}
 					goToSearchLink={goToSearchLink}
+					enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
 				/>
 			);
 		} else {
@@ -286,6 +287,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 					renderSearchLink={renderSearchLink}
 					goToDetailLink={goToDetailLink}
 					goToSearchLink={goToSearchLink}
+					enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
 				/>
 			);
 		}

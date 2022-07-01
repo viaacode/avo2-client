@@ -77,6 +77,14 @@ import {
 	renderSearchLinks,
 	reorderDate,
 } from '../../shared/helpers';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
+import {
+	defaultGoToSearchLink,
+	defaultRenderSearchLink,
+} from '../../shared/helpers/default-render-search-link';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
@@ -115,16 +123,16 @@ export const ITEM_ACTIONS = {
 };
 
 const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
-	id,
-	renderDetailLink,
-	renderSearchLink,
-	goToDetailLink,
-	goToSearchLink,
-	enabledMetaData = ALL_SEARCH_FILTERS,
 	history,
 	match,
 	location,
 	user,
+	id,
+	renderDetailLink = defaultRenderDetailLink,
+	renderSearchLink = defaultRenderSearchLink,
+	goToDetailLink = defaultGoToDetailLink(history),
+	goToSearchLink = defaultGoToSearchLink(history),
+	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const [t] = useTranslation();
 

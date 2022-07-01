@@ -1,23 +1,15 @@
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Column,
 	Container,
 	Dropdown,
-	EnglishContentType,
 	Grid,
 	Header,
 	HeaderButtons,
 	HeaderRow,
-	MediaCard,
-	MediaCardMetaData,
-	MediaCardThumbnail,
 	MenuContent,
-	MetaData,
-	MetaDataItem,
 	Spacer,
-	Thumbnail,
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -36,6 +28,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -45,7 +38,7 @@ import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { SearchFilter } from '../../search/search.const';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import {
 	IconBar,
@@ -62,13 +55,16 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
-	formatDate,
 	generateContentLinkString,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
-	renderSearchLinks,
 } from '../../shared/helpers';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { isUuid } from '../../shared/helpers/uuid';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
@@ -77,8 +73,9 @@ import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-pl
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionBlockType, VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
+import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
+import { ContentTypeString, Relation } from '../collection.types';
 import {
 	AutoplayCollectionModal,
 	CollectionFragmentTypeItem,
@@ -90,7 +87,6 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
-import { compose } from 'redux';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -139,19 +135,21 @@ type CollectionDetailProps = {
 	) => ReactNode;
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
+	enabledMetaData: SearchFilter[];
 };
 
 const CollectionDetail: FunctionComponent<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
 > = ({
-	id,
-	renderDetailLink,
-	renderSearchLink,
-	goToDetailLink,
 	history,
 	location,
 	match,
 	user,
+	id,
+	renderDetailLink = defaultRenderDetailLink,
+	renderSearchLink = defaultRenderSearchLink,
+	goToDetailLink = defaultGoToDetailLink(history),
+	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const [t] = useTranslation();
 
@@ -683,46 +681,6 @@ const CollectionDetail: FunctionComponent<
 	};
 
 	// Render functions
-	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-		const englishContentType: EnglishContentType =
-			toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
-
-		return (
-			<MediaCard
-				category={englishContentType}
-				orientation="horizontal"
-				title={relatedItem.dc_title}
-			>
-				<MediaCardThumbnail>
-					<Thumbnail
-						category={englishContentType}
-						src={relatedItem.thumbnail_path}
-						showCategoryIcon
-					/>
-				</MediaCardThumbnail>
-				<MediaCardMetaData>
-					<MetaData category={englishContentType}>
-						<MetaDataItem label={relatedItem.original_cp || ''} />
-					</MetaData>
-				</MediaCardMetaData>
-			</MediaCard>
-		);
-	};
-
-	const renderRelatedContent = () => {
-		return (relatedCollections || []).map((relatedItem: Avo.Search.ResultItem) => {
-			return (
-				<Column size="2-6" key={`related-item-${relatedItem.id}`}>
-					{renderDetailLink(
-						renderRelatedItem(relatedItem),
-						relatedItem.id,
-						relatedItem.administrative_type,
-						'a-link__no-styles'
-					)}
-				</Column>
-			);
-		});
-	};
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
@@ -1041,16 +999,10 @@ const CollectionDetail: FunctionComponent<
 	// End
 
 	const renderCollection = () => {
-		const {
-			id,
-			profile,
-			collection_fragments,
-			lom_context,
-			created_at,
-			updated_at,
-			title,
-			lom_classification,
-		} = collection as Avo.Collection.Collection;
+		if (!collection) {
+			return null;
+		}
+		const { profile, collection_fragments, title } = collection as Avo.Collection.Collection;
 		const hasCopies = (get(collection, 'relations') || []).length > 0;
 		const hasParentBundles = !!publishedBundles.length;
 
@@ -1153,69 +1105,15 @@ const CollectionDetail: FunctionComponent<
 					<Container mode="vertical">
 						<Container mode="horizontal">
 							<h3 className="c-h3">
-								<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">
-									Info over deze collectie
-								</Trans>
+								{t('collection/views/collection-detail___info-over-deze-collectie')}
 							</h3>
 							<Grid>
-								<Column size="3-3">
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
-												Onderwijsniveau
-											</Trans>
-										</p>
-										<p className="c-body-1">
-											{lom_context && lom_context.length ? (
-												renderSearchLinks(
-													renderSearchLink,
-													id,
-													SearchFilter.educationLevel,
-													lom_context
-												)
-											) : (
-												<span className="u-d-block">-</span>
-											)}
-										</p>
-									</Spacer>
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___vakken">
-												Vakken
-											</Trans>
-										</p>
-										<p className="c-body-1">
-											{lom_classification && lom_classification.length ? (
-												renderSearchLinks(
-													renderSearchLink,
-													id,
-													SearchFilter.subject,
-													lom_classification
-												)
-											) : (
-												<span className="u-d-block">-</span>
-											)}
-										</p>
-									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											{t(
-												'collection/views/collection-detail___aangemaakt-op'
-											)}
-										</p>
-										<p className="c-body-1">{formatDate(created_at)}</p>
-									</Spacer>
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											{t(
-												'collection/views/collection-detail___laatst-aangepast'
-											)}
-										</p>
-										<p className="c-body-1">{formatDate(updated_at)}</p>
-									</Spacer>
-								</Column>
+								{!!collection &&
+									renderCommonMetadata(
+										collection,
+										enabledMetaData,
+										renderSearchLink
+									)}
 								{(hasCopies || hasParentBundles) && (
 									<Column size="3-6">
 										<Spacer margin="top-large">
@@ -1277,19 +1175,7 @@ const CollectionDetail: FunctionComponent<
 									</Column>
 								)}
 							</Grid>
-							{!!relatedCollections && !!relatedCollections.length && (
-								<>
-									<hr className="c-hr" />
-									<BlockHeading type="h3">
-										<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
-											Bekijk ook
-										</Trans>
-									</BlockHeading>
-									<Grid className="c-media-card-list">
-										{renderRelatedContent()}
-									</Grid>
-								</>
-							)}
+							{renderRelatedItems(relatedCollections, renderDetailLink)}
 						</Container>
 					</Container>
 				</div>

@@ -25,7 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -34,12 +34,12 @@ import { compose } from 'redux';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import { renderCommonMetadata, renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
-import { toEnglishContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { SearchFilter } from '../../search/search.const';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import {
 	DeleteObjectModal,
@@ -56,12 +56,15 @@ import {
 	createDropdownMenuItem,
 	CustomError,
 	formatDate,
-	fromNow,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
-	renderSearchLinks,
 } from '../../shared/helpers';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
@@ -86,19 +89,21 @@ type BundleDetailProps = {
 	) => ReactNode;
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
+	enabledMetaData: SearchFilter[];
 };
 
 const BundleDetail: FunctionComponent<
 	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
 > = ({
-	id,
-	renderDetailLink,
-	renderSearchLink,
-	goToDetailLink,
 	history,
 	location,
 	match,
 	user,
+	id,
+	renderDetailLink = defaultRenderDetailLink,
+	renderSearchLink = defaultRenderSearchLink,
+	goToDetailLink = defaultGoToDetailLink(history),
+	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const [t] = useTranslation();
 
@@ -477,46 +482,6 @@ const BundleDetail: FunctionComponent<
 	};
 
 	// Render functions
-	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-		const contentType = toEnglishContentType(relatedItem.administrative_type);
-		return (
-			<MediaCard
-				className="u-clickable"
-				category={contentType}
-				orientation="horizontal"
-				title={relatedItem.dc_title}
-			>
-				<MediaCardThumbnail>
-					<Thumbnail
-						category={contentType}
-						src={relatedItem.thumbnail_path}
-						showCategoryIcon
-					/>
-				</MediaCardThumbnail>
-				<MediaCardMetaData>
-					<MetaData category={contentType}>
-						<MetaDataItem label={String(relatedItem.views_count || 0)} icon="eye" />
-						<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
-					</MetaData>
-				</MediaCardMetaData>
-			</MediaCard>
-		);
-	};
-	const renderRelatedContent = () => {
-		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
-			return (
-				<Column size="2-6" key={`related-bundle-${relatedItem.id}`}>
-					{renderDetailLink(
-						renderRelatedItem(relatedItem),
-						relatedItem.id,
-						relatedItem.administrative_type,
-						'a-link__no-styles'
-					)}
-				</Column>
-			);
-		});
-	};
-
 	function renderCollectionFragments() {
 		if (!bundle) {
 			return null;
@@ -717,83 +682,15 @@ const BundleDetail: FunctionComponent<
 		if (!bundle) {
 			return null;
 		}
-		const { id, lom_context, created_at, updated_at, lom_classification } =
-			bundle as Avo.Collection.Collection;
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<BlockHeading type="h3">
 						{t('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
-					<Grid>
-						<Column size="3-3">
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
-										Onderwijsniveau
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									{lom_context && lom_context.length ? (
-										renderSearchLinks(
-											renderSearchLink,
-											id,
-											SearchFilter.educationLevel,
-											lom_context
-										)
-									) : (
-										<span className="u-d-block">-</span>
-									)}
-								</p>
-							</Spacer>
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___vakken">
-										Vakken
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									{lom_classification && lom_classification.length ? (
-										renderSearchLinks(
-											renderSearchLink,
-											id,
-											SearchFilter.subject,
-											lom_classification
-										)
-									) : (
-										<span className="u-d-block">-</span>
-									)}
-								</p>
-							</Spacer>
-						</Column>
-						<Column size="3-3">
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									{t('bundle/views/bundle-detail___aangemaakt-op')}
-								</p>
-								<p className="c-body-1">{formatDate(created_at)}</p>
-							</Spacer>
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									{t('collection/views/collection-detail___laatst-aangepast')}
-								</p>
-								<p className="c-body-1">{formatDate(updated_at)}</p>
-							</Spacer>
-						</Column>
-					</Grid>
+					<Grid>{renderCommonMetadata(bundle, enabledMetaData, renderSearchLink)}</Grid>
 					<hr className="c-hr" />
-					{!!relatedItems && !!relatedItems.length && (
-						<>
-							<BlockHeading type="h3">
-								<Trans i18nKey="bundle/views/bundle-detail___bekijk-ook">
-									Bekijk ook
-								</Trans>
-							</BlockHeading>
-							<div className="c-media-card-list">
-								<Grid>{renderRelatedContent()}</Grid>
-							</div>
-						</>
-					)}
+					{renderRelatedItems(relatedItems, renderDetailLink)}
 				</Container>
 			</Container>
 		);
