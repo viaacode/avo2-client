@@ -4,6 +4,7 @@ import { Button, Icon, IconName } from '@viaa/avo2-components';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 
 import './ListSorter.scss';
+import { sortByPositionAsc } from '../../helpers';
 
 // Types
 
@@ -116,7 +117,7 @@ export const ListSorter: ListSorterType = ({
 	return (
 		<ul className="c-list-sorter">
 			{items
-				?.sort((a, b) => a.position - b.position)
+				?.sort(sortByPositionAsc)
 				.map((item, i) => {
 					const j = items.length === i + 1 ? undefined : i;
 					return renderItem(item, j);
