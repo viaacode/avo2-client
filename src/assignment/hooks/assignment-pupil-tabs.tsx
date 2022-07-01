@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
+import { AssignmentType } from '../assignment.types';
 
 export function useAssignmentPupilTabs(
 	assignment: Avo.Assignment.Assignment_v2 | undefined,
@@ -26,7 +27,9 @@ export function useAssignmentPupilTabs(
 					icon: 'clipboard' as IconName,
 				},
 				...(assignment?.assignment_type &&
-				['ZOEK', 'BOUW'].includes(assignment?.assignment_type)
+				[AssignmentType.ZOEK, AssignmentType.BOUW].includes(
+					assignment?.assignment_type as AssignmentType
+				)
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
@@ -35,7 +38,8 @@ export function useAssignmentPupilTabs(
 							},
 					  ]
 					: []),
-				...(assignment?.assignment_type && ['BOUW'].includes(assignment?.assignment_type)
+				...(assignment?.assignment_type &&
+				[AssignmentType.BOUW].includes(assignment?.assignment_type as AssignmentType)
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,

@@ -1,11 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { isPast } from 'date-fns/esm';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-
 import {
 	Alert,
 	BlockHeading,
@@ -22,6 +15,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { isPast } from 'date-fns/esm';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -292,7 +291,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Set the loading state when the form is ready
 	useEffect(() => {
 		if (loadingInfo.state !== 'loaded') {
-			assignment && setLoadingInfo({ state: 'loaded' });
+			assignment && assignment.id && setLoadingInfo({ state: 'loaded' });
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
@@ -390,7 +389,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								{error && <span className="c-floating-error">{error.message}</span>}
 							</>
 						)}
-					></Controller>
+					/>
 				</BlockHeading>
 			</Flex>
 		),
@@ -475,7 +474,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderBlockContent = useCallback(
 		(block: AssignmentBlock) => {
 			switch (block.type) {
-				case 'TEXT':
+				case AssignmentBlockType.TEXT:
 					return (
 						<TitleDescriptionForm
 							className="u-padding-l"
@@ -502,7 +501,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						/>
 					);
 
-				case 'ITEM':
+				case AssignmentBlockType.ITEM:
 					if (!block.item) {
 						return null;
 					}
@@ -579,10 +578,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t, setBlock, fragmentSwitchButtons, renderMeta]
 	);
 
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
-		tabs,
-		onTabClick,
-	]);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
@@ -603,7 +599,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							)}
 							content={(item) => item && renderBlockContent(item)}
 							items={listSorterItems}
-						></AssignmentBlockListSorter>
+						/>
 					</div>
 				);
 
@@ -713,7 +709,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 						switch (type) {
 							case AssignmentBlockType.TEXT:
-							case AssignmentBlockType.ZOEK:
+							case AssignmentBlockType.ZOEK: {
 								const blocks = spliceByPosition(assignment.blocks, {
 									type,
 									position: getAddBlockModalPosition + 1, // Always insert after
@@ -729,7 +725,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									shouldTouch: true,
 								});
 								break;
-
+							}
 							default:
 								break;
 						}

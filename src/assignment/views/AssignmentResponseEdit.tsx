@@ -30,7 +30,6 @@ import { PupilSearchFilterState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../hooks';
 
-import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
 
 const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
@@ -107,7 +106,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		[t]
 	);
 
-	const renderTitle = useMemo(
+	const renderedTitle = useMemo(
 		() => (
 			<Flex center className="u-spacer-top-l">
 				<Icon name="clipboard" size="large" />
@@ -170,9 +169,12 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		);
 	}, [assignment, t]);
 
-	const tabBar = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
+	const renderedTabs = useMemo(
+		() => <Tabs tabs={tabs} onClick={onTabClick} />,
+		[tabs, onTabClick]
+	);
 
-	const renderTabContent = useMemo(() => {
+	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return 'assignment details';
@@ -230,8 +232,8 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 			<div className="c-assignment-page c-assignment-page--create">
 				<AssignmentHeading
 					back={renderBackButton}
-					title={renderTitle}
-					tabs={tabBar}
+					title={renderedTitle}
+					tabs={renderedTabs}
 					info={renderMeta()}
 					tour={<InteractiveTour showButton />}
 				/>
@@ -250,7 +252,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 						</Spacer>
 					)}
 
-					<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+					<Spacer margin={['top-large', 'bottom-large']}>{renderedTabContent}</Spacer>
 				</Container>
 			</div>
 		);
