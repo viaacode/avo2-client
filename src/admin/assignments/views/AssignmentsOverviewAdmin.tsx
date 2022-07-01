@@ -1,3 +1,5 @@
+import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -11,9 +13,6 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
@@ -41,11 +40,7 @@ import {
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
 
-interface AssignmentOverviewAdminProps {}
-
-const AssignmentOverviewAdmin: FunctionComponent<
-	AssignmentOverviewAdminProps & RouteComponentProps & UserProps
-> = ({ user }) => {
+const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
@@ -138,16 +133,14 @@ const AssignmentOverviewAdmin: FunctionComponent<
 			});
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const [
-				assignmentsTemp,
-				assignmentCountTemp,
-			] = await AssignmentService.fetchAssignmentsForAdmin(
-				tableState.page || 0,
-				(tableState.sort_column || 'created_at') as AssignmentOverviewTableColumns,
-				tableState.sort_order || 'desc',
-				columnDataType,
-				generateWhereObject(getFilters(tableState))
-			);
+			const [assignmentsTemp, assignmentCountTemp] =
+				await AssignmentService.fetchAssignmentsForAdmin(
+					tableState.page || 0,
+					(tableState.sort_column || 'created_at') as AssignmentOverviewTableColumns,
+					tableState.sort_order || 'desc',
+					columnDataType,
+					generateWhereObject(getFilters(tableState))
+				);
 
 			setAssignments(assignmentsTemp);
 			setAssignmentCount(assignmentCountTemp);
@@ -255,7 +248,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 	const changeAuthorForSelectedAssignments = async (profileId: string) => {
 		setIsLoading(true);
 		try {
-			await AssignmentService.changeAuthor(profileId, selectedAssignmentIds);
+			await AssignmentService.changeAssignmentsAuthor(profileId, selectedAssignmentIds);
 			await fetchAssignments();
 			ToastService.success(
 				t(
@@ -440,7 +433,7 @@ const AssignmentOverviewAdmin: FunctionComponent<
 	);
 };
 
-export default (compose(
+export default compose(
 	withRouter,
 	withUser
-)(AssignmentOverviewAdmin) as unknown) as FunctionComponent<AssignmentOverviewAdminProps>;
+)(AssignmentOverviewAdmin) as unknown as FunctionComponent;

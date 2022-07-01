@@ -75,7 +75,7 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import { VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
+import { CollectionBlockType, VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
 import {
@@ -942,11 +942,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 
 		switch (fragment.type) {
-			case 'TEXT':
+			case CollectionBlockType.TEXT:
 				return layout(
 					<CollectionFragmentTypeText title={{ fragment }} richText={{ fragment }} />
 				);
-			case 'ITEM':
+			case CollectionBlockType.ITEM:
 				return layout(
 					<CollectionFragmentTypeItem
 						className="m-collection-detail__video-content"
@@ -974,7 +974,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
-		// const hasBackground = fragment.type === 'TEXT';
+		// const hasBackground = fragment.type === CollectionBlockType.TEXT';
 
 		return (
 			<div

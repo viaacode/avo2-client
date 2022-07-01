@@ -23,8 +23,6 @@ import {
 
 import './ACMIDMNudgeModal.scss';
 
-export interface ACMIDMNudgeModalProps {}
-
 interface UiStateProps {
 	showNudgingModal: boolean;
 	setShowNudgingModal: (showModal: boolean) => Dispatch;

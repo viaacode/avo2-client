@@ -48,7 +48,7 @@ export class UserService {
 			});
 
 			if (userResponse.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					userResponse,
 				});
 			}
@@ -237,7 +237,7 @@ export class UserService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -323,7 +323,7 @@ export class UserService {
 				fetchPolicy: 'no-cache',
 			});
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -427,7 +427,7 @@ export class UserService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -461,7 +461,7 @@ export class UserService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}

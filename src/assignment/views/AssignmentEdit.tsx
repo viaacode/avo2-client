@@ -474,7 +474,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderBlockContent = useCallback(
 		(block: AssignmentBlock) => {
 			switch (block.type) {
-				case 'TEXT':
+				case AssignmentBlockType.TEXT:
 					return (
 						<TitleDescriptionForm
 							className="u-padding-l"
@@ -501,7 +501,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						/>
 					);
 
-				case 'ITEM':
+				case AssignmentBlockType.ITEM:
 					if (!block.item) {
 						return null;
 					}

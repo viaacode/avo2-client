@@ -471,9 +471,6 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 				full_name
 				profile_id
 			}
-			view_count {
-				count
-			}
 			responses_aggregate(where: { collection_title: { _is_null: false } }) {
 				aggregate {
 					count
@@ -487,6 +484,11 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 		}
 	}
 `;
+
+// TODO re-enable view-count after fix hasura
+// view_count {
+// 	count
+// }
 
 export const GET_ASSIGNMENT_IDS = gql`
 	query getAssignmentIds($where: app_assignments_v2_bool_exp!) {
