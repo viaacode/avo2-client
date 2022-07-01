@@ -1,9 +1,9 @@
+import { useQuery } from '@apollo/react-hooks';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { DocumentNode } from 'graphql';
+import type { DocumentNode } from 'graphql';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useQuery } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
 
 import {
