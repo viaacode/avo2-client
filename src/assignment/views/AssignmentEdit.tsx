@@ -55,7 +55,7 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { spliceByPosition } from '../helpers/insert-at-position';
+import { insertAtPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
 import AddBlockModal from '../modals/AddBlockModal';
@@ -271,6 +271,55 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
+	// Events
+
+	const submit = async () => {
+		try {
+			if (!user.profile?.id || !original) {
+				return;
+			}
+
+			const updated = await AssignmentService.updateAssignment(
+				{
+					...original,
+					owner_profile_id: user.profile?.id,
+				},
+				{
+					...original,
+					...assignment,
+				}
+			);
+
+			if (updated) {
+				trackEvents(
+					{
+						object: String(assignment.id),
+						object_type: 'assignment',
+						action: 'edit',
+					},
+					user
+				);
+
+				// Re-fetch
+				await fetchAssignment();
+
+				ToastService.success(
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
+				);
+			}
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
+			);
+		}
+	};
+
+	const reset = useCallback(() => {
+		original && setAssignment(original);
+		resetForm();
+	}, [resetForm, setAssignment, original]);
+
 	// Effects
 
 	// Fetch initial data
@@ -291,53 +340,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Set the loading state when the form is ready
 	useEffect(() => {
 		if (loadingInfo.state !== 'loaded') {
-			assignment && assignment.id && setLoadingInfo({ state: 'loaded' });
+			assignment && setLoadingInfo({ state: 'loaded' });
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
-	// Events
-
-	const submit = async () => {
-		try {
-			const updated = await AssignmentService.updateAssignment(
-				{
-					...assignment,
-					owner_profile_id: user.profile?.id,
-					labels: [],
-				},
-				(original?.labels || []).map((item) => item.assignment_label),
-				assignment.labels.map((item) => item.assignment_label)
-			);
-
-			if (updated) {
-				trackEvents(
-					{
-						object: String(assignment.id),
-						object_type: 'assignment',
-						action: 'edit',
-					},
-					user
-				);
-
-				ToastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
-				);
-
-				setOriginal(updated);
-				setAssignment(updated);
-			}
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
-			);
-		}
-	};
-
-	const reset = useCallback(() => {
-		original && setAssignment(original);
-		resetForm();
-	}, [resetForm, setAssignment, original]);
+	// Reset the form when the original changes
+	useEffect(() => {
+		original && reset();
+	}, [original, reset]);
 
 	// Render
 
@@ -578,7 +588,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t, setBlock, fragmentSwitchButtons, renderMeta]
 	);
 
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
+	const renderTabs = useMemo(
+		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
+		[tabs, onTabClick]
+	);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
@@ -709,10 +722,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 						switch (type) {
 							case AssignmentBlockType.TEXT:
-							case AssignmentBlockType.ZOEK: {
-								const blocks = spliceByPosition(assignment.blocks, {
+							case AssignmentBlockType.ZOEK:
+								const blocks = insertAtPosition(assignment.blocks, {
 									type,
-									position: getAddBlockModalPosition + 1, // Always insert after
+									position: getAddBlockModalPosition,
 								} as AssignmentBlock); // TODO: avoid cast
 
 								setAssignment((prev) => ({
@@ -725,7 +738,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									shouldTouch: true,
 								});
 								break;
-							}
+
 							default:
 								break;
 						}
