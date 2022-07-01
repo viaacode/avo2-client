@@ -1,10 +1,3 @@
-import classnames from 'classnames';
-import { get, isString } from 'lodash-es';
-import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	BlockIntro,
@@ -25,6 +18,12 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
+import { get, isString } from 'lodash-es';
+import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
@@ -40,19 +39,13 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentRetrieveError } from '../assignment.types';
+import { AssignmentBlockType, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
-interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
+type AssignmentProps = DefaultSecureRouteProps<{ id: string }>;
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
-	history,
-	location,
-	match,
-	user,
-	...rest
-}) => {
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2>();
 	const [assignmentBlocks, setAssignmentBlocks] = useState<Avo.Assignment.Block[]>([]);
@@ -255,7 +248,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	// Render methods
 	const renderBlock = (block: Avo.Assignment.Block) => {
 		switch (block.type) {
-			case 'ITEM':
+			case AssignmentBlockType.ITEM:
 				return (
 					<li className="c-collection-list__item" key={`assignment-block-${block.id}`}>
 						<ItemVideoDescription
@@ -271,7 +264,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 						/>
 					</li>
 				);
-			case 'TEXT':
+			case AssignmentBlockType.TEXT:
 				return (
 					<li className="c-collection-list__item" key={`assignment-block-${block.id}`}>
 						<BlockIntro

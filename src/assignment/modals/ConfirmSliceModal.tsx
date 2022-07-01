@@ -1,6 +1,3 @@
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -14,8 +11,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { EDIT_ASSIGNMENT_BLOCK_LABELS } from '../assignment.const';
+import { AssignmentBlockType } from '../assignment.types';
 
 interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	assignment: Avo.Assignment.Assignment_v2;
@@ -59,15 +59,15 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 
 	const renderModalBody = () => {
 		switch (block?.type) {
-			case 'ITEM':
+			case AssignmentBlockType.ITEM:
 				return t(
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen'
 				);
-			case 'TEXT':
+			case AssignmentBlockType.TEXT:
 				return t(
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
 				);
-			case 'ZOEK':
+			case AssignmentBlockType.ZOEK:
 				return assignment.responses.length > 0 ? (
 					<>
 						<b>{t('assignment/modals/confirm-slice___opgelet')}: </b>

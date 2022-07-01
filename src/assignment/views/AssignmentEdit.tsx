@@ -57,7 +57,7 @@ import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
-import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
+import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
 import AddBlockModal from '../modals/AddBlockModal';
 import ConfirmSliceModal from '../modals/ConfirmSliceModal';
 
@@ -111,7 +111,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 	const [
 		isConfirmSliceModalOpen,
 		setConfirmSliceModalOpen,
@@ -484,7 +484,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderBlockContent = useCallback(
 		(block: AssignmentBlock) => {
 			switch (block.type) {
-				case 'TEXT':
+				case AssignmentBlockType.TEXT:
 					return (
 						<TitleDescriptionForm
 							className="u-padding-l"
@@ -511,7 +511,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						/>
 					);
 
-				case 'ITEM':
+				case AssignmentBlockType.ITEM:
 					if (!block.item) {
 						return null;
 					}

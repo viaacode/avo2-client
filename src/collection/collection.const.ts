@@ -1,7 +1,6 @@
-import { TFunction } from 'i18next';
-
 import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
 import { CollectionFragment, CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
+import { TFunction } from 'i18next';
 
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -15,6 +14,11 @@ export const MAX_TITLE_LENGTH = 110;
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 export const MAX_LONG_DESCRIPTION_LENGTH = 1200;
 
+export enum CollectionBlockType {
+	TEXT = 'TEXT',
+	ITEM = 'ITEM',
+}
+
 export const NEW_FRAGMENT = {
 	text: {
 		id: null,
@@ -26,7 +30,7 @@ export const NEW_FRAGMENT = {
 		end_oc: null,
 		start_oc: null,
 		use_custom_fields: true,
-		type: 'TEXT',
+		type: CollectionBlockType.TEXT,
 	},
 };
 
