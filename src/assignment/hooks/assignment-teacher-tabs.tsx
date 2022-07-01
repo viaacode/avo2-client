@@ -1,12 +1,11 @@
-import { TabPropsSchema } from '@viaa/avo2-components/dist/esm/components/Tabs/Tab/Tab';
-import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
+import { IconName, TabProps } from '@viaa/avo2-components';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
-export function useAssignmentLesgeverTabs(): [
-	TabPropsSchema[],
+export function useAssignmentTeacherTabs(): [
+	TabProps[],
 	ASSIGNMENT_CREATE_UPDATE_TABS | undefined,
 	React.Dispatch<React.SetStateAction<ASSIGNMENT_CREATE_UPDATE_TABS>>,
 	(id: string | number) => void
@@ -16,18 +15,18 @@ export function useAssignmentLesgeverTabs(): [
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
 		ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud
 	);
-	const tabs: TabPropsSchema[] = useMemo(
+	const tabs: TabProps[] = useMemo(
 		() =>
 			[
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud,
 					label: t('assignment/hooks/assignment-tabs___inhoud'),
-					icon: 'collection' as IconNameSchema,
+					icon: 'collection' as IconName,
 				},
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Details,
 					label: t('assignment/hooks/assignment-tabs___details'),
-					icon: 'settings' as IconNameSchema,
+					icon: 'settings' as IconName,
 				},
 			].map((item) => ({
 				...item,

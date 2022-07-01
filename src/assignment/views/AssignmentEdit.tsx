@@ -56,9 +56,9 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { spliceByPosition } from '../helpers/insert-at-position';
+import { insertAtPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
-import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
+import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
 import AddBlockModal from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal from '../modals/AddBookmarkFragmentModal';
 import ConfirmSliceModal from '../modals/ConfirmSliceModal';
@@ -113,7 +113,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentLesgeverTabs();
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 	const [
 		isConfirmSliceModalOpen,
 		setConfirmSliceModalOpen,
@@ -274,42 +274,23 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
-	// Effects
-
-	// Fetch initial data
-	useEffect(() => {
-		fetchAssignment();
-	}, [fetchAssignment]);
-
-	// Synchronise the React state that triggers renders with the useForm hook
-	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
-			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
-		});
-
-		trigger();
-	}, [assignment, setValue, trigger]);
-
-	// Set the loading state when the form is ready
-	useEffect(() => {
-		if (loadingInfo.state !== 'loaded') {
-			assignment && assignment.id && setLoadingInfo({ state: 'loaded' });
-		}
-	}, [assignment, loadingInfo, setLoadingInfo]);
-
 	// Events
 
 	const submit = async () => {
 		try {
+			if (!user.profile?.id || !original) {
+				return;
+			}
+
 			const updated = await AssignmentService.updateAssignment(
 				{
-					...assignment,
+					...original,
 					owner_profile_id: user.profile?.id,
-					labels: [],
 				},
-				(original?.labels || []).map((item) => item.assignment_label),
-				assignment.labels.map((item) => item.assignment_label)
+				{
+					...original,
+					...assignment,
+				}
 			);
 
 			if (updated) {
@@ -322,12 +303,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					user
 				);
 
+				// Re-fetch
+				await fetchAssignment();
+
 				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
 				);
-
-				setOriginal(updated);
-				setAssignment(updated);
 			}
 		} catch (err) {
 			console.error(err);
@@ -349,7 +330,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		// fetch item details
 		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = spliceByPosition(assignment.blocks, {
+		const blocks = insertAtPosition(assignment.blocks, {
 			item,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
@@ -366,6 +347,34 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			shouldTouch: true,
 		});
 	};
+	// Effects
+
+	// Fetch initial data
+	useEffect(() => {
+		fetchAssignment();
+	}, [fetchAssignment]);
+
+	// Synchronise the React state that triggers renders with the useForm hook
+	useEffect(() => {
+		Object.keys(assignment).forEach((key) => {
+			const cast = key as keyof AssignmentFormState;
+			setValue(cast, assignment[cast]);
+		});
+
+		trigger();
+	}, [assignment, setValue, trigger]);
+
+	// Set the loading state when the form is ready
+	useEffect(() => {
+		if (loadingInfo.state !== 'loaded') {
+			assignment && setLoadingInfo({ state: 'loaded' });
+		}
+	}, [assignment, loadingInfo, setLoadingInfo]);
+
+	// Reset the form when the original changes
+	useEffect(() => {
+		original && reset();
+	}, [original, reset]);
 
 	// Render
 
@@ -502,7 +511,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderBlockContent = useCallback(
 		(block: AssignmentBlock) => {
 			switch (block.type) {
-				case 'TEXT':
+				case AssignmentBlockType.TEXT:
 					return (
 						<TitleDescriptionForm
 							className="u-padding-l"
@@ -529,7 +538,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						/>
 					);
 
-				case 'ITEM':
+				case AssignmentBlockType.ITEM:
 					if (!block.item) {
 						return null;
 					}
@@ -743,7 +752,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								}
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
-									const blocks = spliceByPosition(assignment.blocks, {
+									const blocks = insertAtPosition(assignment.blocks, {
 										type,
 										position: getAddBlockModalPosition + 1, // Always insert after
 									} as AssignmentBlock); // TODO: avoid cast

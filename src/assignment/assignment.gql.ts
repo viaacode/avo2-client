@@ -18,7 +18,7 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 					owner_profile_id
 				}
 			}
-			blocks {
+			blocks(where: { is_deleted: { _eq: false } }, order_by: { position: asc }) {
 				created_at
 				custom_description
 				custom_title
@@ -49,6 +49,9 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 			title
 			updated_at
 			owner_profile_id
+			owner {
+				full_name
+			}
 		}
 	}
 `;
@@ -436,6 +439,28 @@ export const GET_MAX_POSITION_ASSIGNMENT_BLOCKS = gql`
 	}
 `;
 
+export const UPDATE_ASSIGNMENT_BLOCK = gql`
+	mutation updateAssignmentBlock($blockId: uuid!, $update: app_assignment_blocks_v2_set_input!) {
+		update_app_assignment_blocks_v2_by_pk(pk_columns: { id: $blockId }, _set: $update) {
+			id
+			assignment_id
+			fragment_id
+			custom_title
+			custom_description
+			original_title
+			original_description
+			use_custom_fields
+			start_oc
+			end_oc
+			type
+			position
+			thumbnail_path
+			created_at
+			updated_at
+		}
+	}
+`;
+
 export const BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS = gql`
 	mutation bulkUpdateAuthorForAssignments(
 		$authorId: uuid!
@@ -468,9 +493,6 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 				full_name
 				profile_id
 			}
-			view_count {
-				count
-			}
 			responses_aggregate(where: { collection_title: { _is_null: false } }) {
 				aggregate {
 					count
@@ -484,6 +506,11 @@ export const GET_ASSIGNMENTS_ADMIN_OVERVIEW = gql`
 		}
 	}
 `;
+
+// TODO re-enable view-count after fix hasura
+// view_count {
+// 	count
+// }
 
 export const GET_ASSIGNMENT_IDS = gql`
 	query getAssignmentIds($where: app_assignments_v2_bool_exp!) {

@@ -1,5 +1,10 @@
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentContentLabel, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
+import {
+	AssignmentBlock,
+	AssignmentContentLabel,
+	AssignmentLabel_v2,
+	AssignmentSchema_v2,
+} from '@viaa/avo2-types/types/assignment';
 import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
@@ -19,9 +24,9 @@ import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
+	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 	ITEMS_PER_PAGE,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
 	BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
@@ -43,9 +48,11 @@ import {
 	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
+	UPDATE_ASSIGNMENT_BLOCK,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
+	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentRetrieveError,
 	AssignmentSchemaLabel_v2,
@@ -117,7 +124,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				owner_profile_id: getProfileId(user),
 				filter: filterArray.length ? filterArray : {},
@@ -292,7 +299,7 @@ export class AssignmentService {
 		return assignmentToSave as Avo.Assignment.Assignment_v2;
 	}
 
-	static async deleteAssignment(assignmentId: string) {
+	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENT,
@@ -306,7 +313,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteAssignments(assignmentIds: string[]) {
+	static async deleteAssignments(assignmentIds: string[]): Promise<void> {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENTS,
@@ -321,32 +328,40 @@ export class AssignmentService {
 	}
 
 	static async updateAssignment(
-		assignment: Partial<Avo.Assignment.Assignment_v2>,
-		initialLabels?: Pick<AssignmentLabel_v2, 'id'>[],
-		updatedLabels?: Pick<AssignmentLabel_v2, 'id'>[]
-	): Promise<Avo.Assignment.Assignment_v2 | null> {
+		original: AssignmentSchema_v2,
+		update: Partial<AssignmentSchema_v2>
+	): Promise<AssignmentSchema_v2 | null> {
 		try {
-			if (isNil(assignment.id)) {
+			if (isNil(original.id)) {
 				throw new CustomError(
 					'Failed to update assignment because its id is undefined',
 					null,
-					assignment
+					{ original, update }
 				);
 			}
 
-			assignment.updated_at = new Date().toISOString();
+			AssignmentService.warnAboutDeadlineInThePast(update);
+			update.updated_at = new Date().toISOString();
 
-			const assignmentToSave = AssignmentService.transformAssignment({
-				...assignment,
+			await AssignmentService.updateAssignmentBlocks(
+				original.id,
+				original.blocks || [],
+				update.blocks || []
+			);
+
+			const assignment = AssignmentService.transformAssignment({
+				...update,
 			});
 
-			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
+			delete assignment.owner;
 
-			const response = await dataService.mutate<Avo.Assignment.Assignment_v2>({
+			const response = await dataService.mutate<{
+				data: { update_app_assignments_v2: { affected_rows: number } };
+			}>({
 				mutation: UPDATE_ASSIGNMENT,
 				variables: {
-					assignmentId: assignment.id,
-					assignment: assignmentToSave,
+					assignment,
+					assignmentId: original.id,
 				},
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
@@ -356,33 +371,104 @@ export class AssignmentService {
 				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
 			}
 
-			if (initialLabels && updatedLabels) {
-				// Update labels
-				const initialLabelIds = initialLabels.map((labelObj) => labelObj.id);
-				const updatedLabelIds = updatedLabels.map((labelObj) => labelObj.id);
+			await this.updateAssignmentLabels(
+				original.id,
+				original.labels.map(({ assignment_label }) => assignment_label),
+				(update.labels || []).map(({ assignment_label }) => assignment_label)
+			);
 
-				const newLabelIds = without(updatedLabelIds, ...initialLabelIds);
-				const deletedLabelIds = without(initialLabelIds, ...updatedLabelIds);
-
-				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(assignment.id, newLabelIds),
-					AssignmentLabelsService.unlinkLabelsFromAssignment(
-						assignment.id,
-						deletedLabelIds
-					),
-				]);
-			}
-
-			return assignment as Avo.Assignment.Assignment_v2;
+			return {
+				...original,
+				...update,
+			};
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment', err, {
-				updatedLabels,
-				initialLabels,
-				assignment,
+				original,
+				update,
 			});
+
 			console.error(error);
 			throw error;
 		}
+	}
+
+	static async updateAssignmentLabels(
+		id: string,
+		original: AssignmentLabel_v2[],
+		update: AssignmentLabel_v2[]
+	): Promise<[void, void]> {
+		const initial = original.map((label) => label.id);
+		const updated = update.map((label) => label.id);
+
+		const newLabelIds = without(updated, ...initial);
+		const deletedLabelIds = without(initial, ...updated);
+
+		return await Promise.all([
+			AssignmentLabelsService.linkLabelsFromAssignment(id, newLabelIds),
+			AssignmentLabelsService.unlinkLabelsFromAssignment(id, deletedLabelIds),
+		]);
+	}
+
+	static async updateAssignmentBlocks(
+		id: string,
+		original: AssignmentBlock[],
+		update: AssignmentBlock[]
+	): Promise<any> {
+		const deleted = original.filter((block) =>
+			without(
+				original.map((block) => block.id),
+				...update.map((block) => block.id)
+			).includes(block.id)
+		);
+
+		const created = update.filter((block) => block.id === undefined);
+		const existing = update.filter((block) => !deleted.map((d) => d.id).includes(block.id));
+
+		const cleanup = (block: AssignmentBlock) => {
+			delete block.item;
+			delete (block as any).icon;
+
+			block.updated_at = new Date().toISOString();
+
+			return block;
+		};
+
+		const promises = [
+			...existing
+				.map(cleanup)
+				.filter((block) => block.id)
+				.map((block) =>
+					dataService.mutate({
+						mutation: UPDATE_ASSIGNMENT_BLOCK,
+						variables: { blockId: block.id, update: block },
+						update: ApolloCacheManager.clearAssignmentCache,
+					})
+				),
+			...deleted.map(cleanup).map((block) =>
+				dataService.mutate({
+					mutation: UPDATE_ASSIGNMENT_BLOCK,
+					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
+					update: ApolloCacheManager.clearAssignmentCache,
+				})
+			),
+		];
+
+		if (created.length > 0) {
+			promises.push(
+				dataService.mutate({
+					mutation: INSERT_ASSIGNMENT_BLOCKS,
+					variables: {
+						assignmentBlocks: created.map(cleanup).map((block) => ({
+							...block,
+							assignment_id: id,
+						})),
+					},
+					update: ApolloCacheManager.clearAssignmentCache,
+				})
+			);
+		}
+
+		return await Promise.all(promises);
 	}
 
 	static async toggleAssignmentResponseSubmitStatus(
@@ -539,7 +625,9 @@ export class AssignmentService {
 		}
 	}
 
-	private static warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment_v2) {
+	private static warnAboutDeadlineInThePast(
+		assignment: Pick<AssignmentSchema_v2, 'deadline_at'>
+	) {
 		// Validate if deadline_at is not in the past
 		if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
 			ToastService.info([
@@ -619,7 +707,7 @@ export class AssignmentService {
 	static isOwnerOfAssignment(
 		assignment: Avo.Assignment.Assignment_v2,
 		user: Avo.User.User | undefined
-	) {
+	): boolean {
 		return getProfileId(user) === assignment.owner_profile_id;
 	}
 
@@ -698,7 +786,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteAssignmentResponse(assignmentResponseId: string) {
+	static async deleteAssignmentResponse(assignmentResponseId: string): Promise<void> {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENT_RESPONSE,
@@ -853,7 +941,10 @@ export class AssignmentService {
 					end_oc: fragment.end_oc,
 					position: startPosition + index,
 					thumbnail_path: fragment.thumbnail_path,
-					type: fragment.type === 'TEXT' ? 'TEXT' : 'ITEM',
+					type:
+						fragment.type === AssignmentBlockType.TEXT
+							? AssignmentBlockType.TEXT
+							: AssignmentBlockType.ITEM,
 				};
 			});
 			try {
@@ -1035,7 +1126,7 @@ export class AssignmentService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 			};
 
@@ -1046,7 +1137,7 @@ export class AssignmentService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -1090,7 +1181,7 @@ export class AssignmentService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -1114,7 +1205,10 @@ export class AssignmentService {
 		}
 	}
 
-	static async changeAuthor(profileId: string, assignmentIds: string[]): Promise<void> {
+	static async changeAssignmentsAuthor(
+		profileId: string,
+		assignmentIds: string[]
+	): Promise<void> {
 		try {
 			const response = await dataService.mutate({
 				mutation: BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,

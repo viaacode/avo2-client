@@ -131,11 +131,11 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	...getActionsColumn(canEditAssignments),
 ];
 
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
 }> = {
 	owner: (order: Avo.Search.OrderDirection) => ({
-		profile: {
+		owner: {
 			full_name: order,
 		},
 	}),
@@ -230,6 +230,12 @@ export const ASSIGNMENT_FORM_FIELDS = (
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {
 	Inhoud,
 	Details,
+}
+
+export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
+	ASSIGNMENT = 'ASSIGNMENT',
+	SEARCH = 'SEARCH',
+	MY_COLLECTION = 'MY_COLLECTION',
 }
 
 export const EDIT_ASSIGNMENT_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> = () => ({
