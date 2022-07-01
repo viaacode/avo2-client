@@ -37,8 +37,10 @@ export type RouteId =
 	| 'WORKSPACE_ASSIGNMENTS'
 	| 'WORKSPACE_BOOKMARKS'
 	| 'ASSIGNMENT_CREATE'
-	| 'ASSIGNMENT_DETAIL'
 	| 'ASSIGNMENT_EDIT'
+	| 'ASSIGNMENT_RESPONSE_CREATE'
+	| 'ASSIGNMENT_RESPONSE_DETAIL'
+	| 'ASSIGNMENT_RESPONSE_EDIT'
 	| 'ASSIGNMENT_RESPONSES'
 	| 'LINK_YOUR_ACCOUNT'
 	| 'SETTINGS'
@@ -186,12 +188,7 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	ASSIGNMENT_CREATE: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
-		showInContentPicker: false,
-		showForInteractiveTour: true,
-	},
-	ASSIGNMENT_DETAIL: {
-		route: `/${ROUTE_PARTS.assignments}/:id`,
-		showInContentPicker: false,
+		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_EDIT: {
@@ -203,6 +200,21 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.responses}`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
+	},
+	ASSIGNMENT_RESPONSE_CREATE: {
+		route: `/${ROUTE_PARTS.assignments}/:id`,
+		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
+	ASSIGNMENT_RESPONSE_DETAIL: {
+		route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.response}/:responseId`,
+		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
+	ASSIGNMENT_RESPONSE_EDIT: {
+		route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.response}/:responseId/${ROUTE_PARTS.edit}`,
+		showInContentPicker: false,
+		showForInteractiveTour: true,
 	},
 	SETTINGS: {
 		route: `/${ROUTE_PARTS.settings}`,
