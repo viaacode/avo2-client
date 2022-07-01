@@ -315,3 +315,9 @@ export const ENABLED_FILTERS_PUPIL_SEARCH: SearchFilter[] = [
 	SearchFilter.broadcastDate,
 	SearchFilter.provider,
 ];
+
+export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
+
+export const isNewAssignmentBlock = (item: {id: string}): boolean => {
+	return item.id.startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
+}

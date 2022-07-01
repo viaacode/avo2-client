@@ -40,3 +40,7 @@ export interface LabeledFormField {
 	label?: string;
 	help?: string;
 }
+
+export type Positioned<T> =
+	| (T & { id: string; position: number })
+	| (T & { id: number; position: number });
