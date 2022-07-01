@@ -299,7 +299,7 @@ export class AssignmentService {
 		return assignmentToSave as Avo.Assignment.Assignment_v2;
 	}
 
-	static async deleteAssignment(assignmentId: string) {
+	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENT,
@@ -313,7 +313,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteAssignments(assignmentIds: string[]) {
+	static async deleteAssignments(assignmentIds: string[]): Promise<void> {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENTS,
@@ -707,7 +707,7 @@ export class AssignmentService {
 	static isOwnerOfAssignment(
 		assignment: Avo.Assignment.Assignment_v2,
 		user: Avo.User.User | undefined
-	) {
+	): boolean {
 		return getProfileId(user) === assignment.owner_profile_id;
 	}
 
@@ -786,7 +786,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteAssignmentResponse(assignmentResponseId: string) {
+	static async deleteAssignmentResponse(assignmentResponseId: string): Promise<void> {
 		try {
 			await dataService.mutate({
 				mutation: DELETE_ASSIGNMENT_RESPONSE,
