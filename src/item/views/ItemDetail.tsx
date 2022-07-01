@@ -31,9 +31,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isArray, isNil } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, {
-	Fragment,
 	FunctionComponent,
 	ReactNode,
 	ReactText,
@@ -70,7 +69,13 @@ import {
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES } from '../../shared/constants';
-import { buildLink, CustomError, isMobileWidth, reorderDate } from '../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	isMobileWidth,
+	renderSearchLinks,
+	reorderDate,
+} from '../../shared/helpers';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
@@ -426,36 +431,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				console.warn(`An unhandled action "${item}" was executed without a binding.`);
 				return null;
 		}
-	};
-
-	const renderSearchLinks = (
-		key: string,
-		filterProp: Avo.Search.FilterProp,
-		filterValue: string | string[] | undefined,
-		className = ''
-	) => {
-		if (isArray(filterValue)) {
-			return filterValue.map((value: string, index: number) => (
-				<Fragment key={`${key}:${filterProp}":${value}`}>
-					{renderSearchLink(
-						value,
-						{
-							filters: { [filterProp]: [value] },
-						},
-						className
-					)}
-					{index === filterValue.length - 1 ? '' : ', '}
-				</Fragment>
-			));
-		}
-
-		return renderSearchLink(
-			filterValue,
-			{
-				filters: { [filterProp]: [filterValue] },
-			},
-			className
-		);
 	};
 
 	const renderItem = () => {
@@ -821,6 +796,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 													</th>
 													<td>
 														{renderSearchLinks(
+															renderSearchLink,
 															item.external_id,
 															'educationLevel',
 															item.lom_context
@@ -837,6 +813,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 													</th>
 													<td>
 														{renderSearchLinks(
+															renderSearchLink,
 															item.external_id,
 															'subject',
 															item.lom_classification

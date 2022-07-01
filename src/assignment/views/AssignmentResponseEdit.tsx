@@ -35,7 +35,7 @@ import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser from '../../shared/hocs/withUser';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -46,9 +46,9 @@ import { useAssignmentPupilTabs } from '../hooks';
 import './AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEdit: FunctionComponent<
-	UserProps & DefaultSecureRouteProps<{ id: string }>
-> = ({ match, user }) => {
+const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
+	match,
+}) => {
 	const [t] = useTranslation();
 
 	// Data
@@ -136,7 +136,14 @@ const AssignmentResponseEdit: FunctionComponent<
 			<a
 				href=""
 				className={className}
-				onClick={() => setFilterState({ ...filterState, ...newFilters })}
+				onClick={() =>
+					setFilterState({
+						...filterState,
+						...newFilters,
+						selectedSearchResultId: undefined,
+						selectedSearchResultType: undefined,
+					})
+				}
 			>
 				{linkText}
 			</a>
@@ -245,9 +252,25 @@ const AssignmentResponseEdit: FunctionComponent<
 				/>
 			);
 		} else if (filterState.selectedSearchResultType === 'collectie') {
-			return <CollectionDetail user={user} id={filterState.selectedSearchResultId} />;
+			return (
+				<CollectionDetail
+					id={filterState.selectedSearchResultId}
+					renderDetailLink={renderDetailLink}
+					renderSearchLink={renderSearchLink}
+					goToDetailLink={goToDetailLink}
+					goToSearchLink={goToSearchLink}
+				/>
+			);
 		} else {
-			return <BundleDetail user={user} id={filterState.selectedSearchResultId} />;
+			return (
+				<BundleDetail
+					id={filterState.selectedSearchResultId}
+					renderDetailLink={renderDetailLink}
+					renderSearchLink={renderSearchLink}
+					goToDetailLink={goToDetailLink}
+					goToSearchLink={goToSearchLink}
+				/>
+			);
 		}
 	};
 
@@ -300,14 +323,14 @@ const AssignmentResponseEdit: FunctionComponent<
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
-				return 'assignment details';
+				return <Container mode="horizontal">assignment details</Container>;
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				return renderSearchContent();
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
 				// This form receives its parent's state because we don't care about rerender performance here
-				return 'collection view';
+				return <Container mode="horizontal">collection view</Container>;
 
 			default:
 				return tab;
@@ -366,9 +389,8 @@ const AssignmentResponseEdit: FunctionComponent<
 							</Alert>
 						</Spacer>
 					)}
-					<Spacer margin={['bottom-large']}>{renderedTabContent}</Spacer>
 				</Container>
-				{renderTabContent}
+				<Spacer margin={['bottom-large']}>{renderedTabContent}</Spacer>
 			</div>
 		);
 	};

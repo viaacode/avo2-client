@@ -24,13 +24,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
@@ -39,6 +38,7 @@ import { toEnglishContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { FilterState } from '../../search/search.types';
 import {
 	DeleteObjectModal,
 	InteractiveTour,
@@ -55,12 +55,12 @@ import {
 	CustomError,
 	formatDate,
 	fromNow,
-	generateSearchLinks,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
+	renderSearchLinks,
 } from '../../shared/helpers';
-import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
+import { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -69,10 +69,30 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
 
-type BundleDetailProps = { id?: string } & DefaultSecureRouteProps<{ id: string }>;
+type BundleDetailProps = {
+	id?: string;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType,
+		className?: string
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
+	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
+	goToSearchLink: (newFilters: FilterState) => void;
+};
 
-const BundleDetail: FunctionComponent<BundleDetailProps> = ({
+const BundleDetail: FunctionComponent<
+	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
+> = ({
 	id,
+	renderDetailLink,
+	renderSearchLink,
+	goToDetailLink,
 	history,
 	location,
 	match,
@@ -110,6 +130,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
+			if (!user) {
+				return;
+			}
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
 					[{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
@@ -339,6 +362,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 				);
 				return;
 			}
+			if (!user) {
+				ToastService.danger(
+					t(
+						'Er was een probleem met het controleren van de ingelogde gebruiker. Log opnieuw in en probeer opnieuw.'
+					)
+				);
+				return;
+			}
 			const duplicateBundle = await CollectionService.duplicateCollection(
 				bundle,
 				user,
@@ -355,10 +386,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 				user
 			);
 
-			redirectToClientPage(
-				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateBundle.id }),
-				history
-			);
+			goToDetailLink(duplicateBundle.id, 'bundel');
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
@@ -405,6 +433,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 	};
 
 	const toggleBookmark = async () => {
+		if (!user) {
+			ToastService.danger(
+				t(
+					'Er was een probleem met het controleren van de ingelogde gebruiker. Log opnieuw in en probeer opnieuw.'
+				)
+			);
+			return;
+		}
 		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				bundleId,
@@ -439,36 +475,41 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 	};
 
 	// Render functions
+	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
+		const contentType = toEnglishContentType(relatedItem.administrative_type);
+		return (
+			<MediaCard
+				className="u-clickable"
+				category={contentType}
+				orientation="horizontal"
+				title={relatedItem.dc_title}
+			>
+				<MediaCardThumbnail>
+					<Thumbnail
+						category={contentType}
+						src={relatedItem.thumbnail_path}
+						showCategoryIcon
+					/>
+				</MediaCardThumbnail>
+				<MediaCardMetaData>
+					<MetaData category={contentType}>
+						<MetaDataItem label={String(relatedItem.views_count || 0)} icon="eye" />
+						<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
+					</MetaData>
+				</MediaCardMetaData>
+			</MediaCard>
+		);
+	};
 	const renderRelatedContent = () => {
 		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
-			const contentType = toEnglishContentType(relatedItem.administrative_type);
 			return (
 				<Column size="2-6" key={`related-bundle-${relatedItem.id}`}>
-					<Link to={generateRelatedItemLink(relatedItem)} className="a-link__no-styles">
-						<MediaCard
-							className="u-clickable"
-							category={contentType}
-							orientation="horizontal"
-							title={relatedItem.dc_title}
-						>
-							<MediaCardThumbnail>
-								<Thumbnail
-									category={contentType}
-									src={relatedItem.thumbnail_path}
-									showCategoryIcon
-								/>
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={contentType}>
-									<MetaDataItem
-										label={String(relatedItem.views_count || 0)}
-										icon="eye"
-									/>
-									<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</Link>
+					{renderDetailLink(
+						renderRelatedItem(relatedItem),
+						relatedItem.id,
+						relatedItem.administrative_type,
+						'a-link__no-styles'
+					)}
 				</Column>
 			);
 		});
@@ -692,7 +733,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 								</p>
 								<p className="c-body-1">
 									{lom_context && lom_context.length ? (
-										generateSearchLinks(id, 'educationLevel', lom_context)
+										renderSearchLinks(
+											renderSearchLink,
+											id,
+											'educationLevel',
+											lom_context
+										)
 									) : (
 										<span className="u-d-block">-</span>
 									)}
@@ -706,7 +752,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 								</p>
 								<p className="c-body-1">
 									{lom_classification && lom_classification.length ? (
-										generateSearchLinks(id, 'subject', lom_classification)
+										renderSearchLinks(
+											renderSearchLink,
+											id,
+											'subject',
+											lom_classification
+										)
 									) : (
 										<span className="u-d-block">-</span>
 									)}
@@ -870,7 +921,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 							</Container>
 						</Container>
 						{renderMetaDataAndRelated()}
-						{!!bundle && (
+						{!!bundle && !!user && (
 							<PublishCollectionModal
 								collection={bundle}
 								isOpen={isPublishModalOpen}
@@ -928,4 +979,4 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({
 	);
 };
 
-export default withRouter(BundleDetail);
+export default withRouter(BundleDetail) as unknown as FunctionComponent<BundleDetailProps>;
