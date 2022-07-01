@@ -35,7 +35,6 @@ function getQueryLabel(query: string): string {
 }
 
 async function extractQueriesFromCode(gqlRegex: RegExp) {
-	return;
 	const options = {
 		cwd: path.join(__dirname, '../src'),
 	};
