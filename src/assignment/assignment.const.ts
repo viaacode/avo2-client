@@ -307,3 +307,9 @@ export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 		},
 	}),
 };
+
+export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
+
+export const isNewAssignmentBlock = (item: {id: string}): boolean => {
+	return item.id.startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
+}
