@@ -1,7 +1,3 @@
-import { clamp } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -19,6 +15,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { clamp } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -58,7 +57,7 @@ const AddToAssignmentModal: FunctionComponent<AddToAssignmentModalProps> = ({
 		toSeconds(itemMetaData.duration) || 0
 	);
 
-	const minTime: number = 0;
+	const minTime = 0;
 	const maxTime: number = toSeconds(itemMetaData.duration) || 0;
 
 	const clampDuration = (value: number): number => {
@@ -151,7 +150,7 @@ const AddToAssignmentModal: FunctionComponent<AddToAssignmentModalProps> = ({
 					);
 					ToastService.danger(
 						t(
-							'item/components/modals/add-to-assignment-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
+							'item/components/modals/add-to-assignment-modal___de-ingevulde-eindtijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
 						)
 					);
 				}
