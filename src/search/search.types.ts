@@ -67,7 +67,7 @@ export interface SearchFilterControlsProps {
 
 interface SearchResultItemHandlers {
 	handleBookmarkToggle: (uuid: string, active: boolean) => void;
-	handleTagClicked: (id: string) => void;
+	handleTagClicked?: (id: string) => void;
 	renderDetailLink: (
 		linkText: string | ReactNode,
 		id: string,

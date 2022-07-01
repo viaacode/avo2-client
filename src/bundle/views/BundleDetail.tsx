@@ -29,6 +29,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -38,6 +39,7 @@ import { toEnglishContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import {
 	DeleteObjectModal,
@@ -60,7 +62,7 @@ import {
 	renderAvatar,
 	renderSearchLinks,
 } from '../../shared/helpers';
-import { UserProps } from '../../shared/hocs/withUser';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -736,7 +738,7 @@ const BundleDetail: FunctionComponent<
 										renderSearchLinks(
 											renderSearchLink,
 											id,
-											'educationLevel',
+											SearchFilter.educationLevel,
 											lom_context
 										)
 									) : (
@@ -755,7 +757,7 @@ const BundleDetail: FunctionComponent<
 										renderSearchLinks(
 											renderSearchLink,
 											id,
-											'subject',
+											SearchFilter.subject,
 											lom_classification
 										)
 									) : (
@@ -979,4 +981,4 @@ const BundleDetail: FunctionComponent<
 	);
 };
 
-export default withRouter(BundleDetail) as unknown as FunctionComponent<BundleDetailProps>;
+export default compose(withRouter, withUser)(BundleDetail) as FunctionComponent<BundleDetailProps>;

@@ -1,3 +1,5 @@
+import { Flex, Spinner } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -5,9 +7,6 @@ import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
-
-import { Flex, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { getPublishedDate } from '../../admin/content/helpers/get-published-state';
@@ -25,6 +24,7 @@ import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
+import { OrderDirection, SearchFilter } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
@@ -145,16 +145,20 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				PermissionService.hasPerm((loginState as any).userInfo, PermissionName.SEARCH)
 			) {
 				history.replace(
-					generateSearchLinkString('serie', 'KLAAR', 'broadcastDate', 'desc')
+					generateSearchLinkString(
+						SearchFilter.serie,
+						'KLAAR',
+						SearchFilter.broadcastDate,
+						OrderDirection.desc
+					)
 				);
 				return;
 			}
 
 			// Check if path points to a content page
 			try {
-				const contentPage: ContentPageInfo | null = await ContentPageService.getContentPageByPath(
-					pathname
-				);
+				const contentPage: ContentPageInfo | null =
+					await ContentPageService.getContentPageByPath(pathname);
 				// Path is indeed a content page url
 				setRouteInfo({ type: 'contentPage', data: contentPage });
 			} catch (err) {

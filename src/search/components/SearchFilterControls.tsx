@@ -13,6 +13,7 @@ import { ToastService } from '../../shared/services';
 import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
 import './SearchFilterControls.scss';
+import { SearchFilter } from '../search.const';
 
 const languageCodeToLabel = (code: string): string => {
 	return LANGUAGES.nl[code] || code;
@@ -44,7 +45,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 
 	const getCombinedMultiOptions = () => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
-		const arrayFilters = omit(filterState, ['query', 'broadcastDate']) as {
+		const arrayFilters = omit(filterState, [
+			SearchFilter.query,
+			SearchFilter.broadcastDate,
+		]) as {
 			[filterName: string]: string[];
 		};
 		forEach(arrayFilters, (values: string[], filterName: string) => {
@@ -76,7 +80,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
 				let checkboxLabel = option_name;
 
-				if (propertyName === 'language') {
+				if (propertyName === SearchFilter.language) {
 					checkboxLabel = languageCodeToLabel(option_name);
 				}
 
@@ -114,7 +118,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
-		const range: Avo.Search.DateRange = get(filterState, 'broadcastDate') || {
+		const range: Avo.Search.DateRange = get(filterState, SearchFilter.broadcastDate) || {
 			gte: '',
 			lte: '',
 		};
@@ -143,54 +147,54 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				'c-filter-dropdown-list--mobile': isMobileWidth(),
 			})}
 		>
-			{isFilterEnabled('type') &&
+			{isFilterEnabled(SearchFilter.type) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___type'),
-					'type'
+					SearchFilter.type
 				)}
-			{isFilterEnabled('educationLevel') &&
+			{isFilterEnabled(SearchFilter.educationLevel) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___onderwijsniveau'),
-					'educationLevel'
+					SearchFilter.educationLevel
 				)}
-			{/*{isFilterEnabled('domain') && renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
+			{/*{isFilterEnabled(SearchFilter.domain) && renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
 			{/*	t('search/components/search-filter-controls___domein'),*/}
-			{/*	'domain',*/}
+			{/*SearchFilter.domain,*/}
 			{/*)}*/}
-			{isFilterEnabled('subject') &&
+			{isFilterEnabled(SearchFilter.subject) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___vak'),
-					'subject'
+					SearchFilter.subject
 				)}
-			{isFilterEnabled('keyword') &&
+			{isFilterEnabled(SearchFilter.keyword) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___trefwoord'),
-					'keyword'
+					SearchFilter.keyword
 				)}
-			{isFilterEnabled('serie') &&
+			{isFilterEnabled(SearchFilter.serie) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___serie'),
-					'serie'
+					SearchFilter.serie
 				)}
-			{isFilterEnabled('broadcastDate') &&
+			{isFilterEnabled(SearchFilter.broadcastDate) &&
 				renderDateRangeDropdown(
 					t('search/components/search-filter-controls___uitzenddatum'),
-					'broadcastDate'
+					SearchFilter.broadcastDate
 				)}
-			{isFilterEnabled('language') &&
+			{isFilterEnabled(SearchFilter.language) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___taal'),
-					'language'
+					SearchFilter.language
 				)}
-			{isFilterEnabled('provider') &&
+			{isFilterEnabled(SearchFilter.provider) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___aanbieder'),
-					'provider'
+					SearchFilter.provider
 				)}
-			{isFilterEnabled('collectionLabel') &&
+			{isFilterEnabled(SearchFilter.collectionLabel) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___label'),
-					'collectionLabel',
+					SearchFilter.collectionLabel,
 					false,
 					collectionLabels
 				)}

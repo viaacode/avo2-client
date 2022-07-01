@@ -45,6 +45,7 @@ import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import {
 	IconBar,
@@ -69,7 +70,7 @@ import {
 	renderSearchLinks,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
-import { UserProps } from '../../shared/hocs/withUser';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -89,6 +90,7 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
+import { compose } from 'redux';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -1168,7 +1170,7 @@ const CollectionDetail: FunctionComponent<
 												renderSearchLinks(
 													renderSearchLink,
 													id,
-													'educationLevel',
+													SearchFilter.educationLevel,
 													lom_context
 												)
 											) : (
@@ -1187,7 +1189,7 @@ const CollectionDetail: FunctionComponent<
 												renderSearchLinks(
 													renderSearchLink,
 													id,
-													'subject',
+													SearchFilter.subject,
 													lom_classification
 												)
 											) : (
@@ -1435,4 +1437,7 @@ const CollectionDetail: FunctionComponent<
 	);
 };
 
-export default withRouter(CollectionDetail) as unknown as FunctionComponent<CollectionDetailProps>;
+export default compose(
+	withRouter,
+	withUser
+)(CollectionDetail) as FunctionComponent<CollectionDetailProps>;

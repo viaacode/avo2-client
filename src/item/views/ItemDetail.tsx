@@ -60,6 +60,7 @@ import {
 	toEnglishContentType,
 } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import {
 	InteractiveTour,
@@ -105,6 +106,7 @@ interface ItemDetailProps {
 	) => ReactNode;
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
+	enabledMetaData: SearchFilter[];
 }
 
 export const ITEM_ACTIONS = {
@@ -118,6 +120,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	renderSearchLink,
 	goToDetailLink,
 	goToSearchLink,
+	enabledMetaData = ALL_SEARCH_FILTERS,
 	history,
 	match,
 	location,
@@ -433,6 +436,204 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		}
 	};
 
+	const renderEducationLevels = (item: Avo.Item.Item) => {
+		if (
+			!item.external_id ||
+			!item.lom_context ||
+			!enabledMetaData.includes(SearchFilter.educationLevel)
+		) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
+						</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.educationLevel,
+								item.lom_context
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderSubjects = (item: Avo.Item.Item) => {
+		if (
+			!item.external_id ||
+			!item.lom_classification ||
+			!enabledMetaData.includes(SearchFilter.subject)
+		) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
+						</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.subject,
+								item.lom_classification
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderKeywords = (item: Avo.Item.Item) => {
+		if (!item.lom_keywords?.length || !enabledMetaData.includes(SearchFilter.keyword)) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
+						</th>
+						<td>
+							{stringsToTagList(
+								item.lom_keywords || [],
+								null,
+								(tagId: string | number) =>
+									goToSearchLink({
+										filters: {
+											keyword: [tagId as string],
+										},
+									})
+							)}
+						</td>
+					</tr>
+					{/*<tr>*/}
+					{/*<th scope="row"><Trans i18nKey="item/views/item___klascement">Klascement</Trans></th>*/}
+					{/*<td>*/}
+					{/*<a href={'http://www.klascement.be/link_item'}>*/}
+					{/*www.klascement.be/link_item*/}
+					{/*</a>*/}
+					{/*</td>*/}
+					{/*</tr>*/}
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderGeneralMetaData = (item: Avo.Item.Item) => {
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<Grid tag="tbody">
+					{!!item.issued && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___publicatiedatum">
+									Publicatiedatum
+								</Trans>
+							</th>
+							<td>{reorderDate(item.issued, '/')}</td>
+						</Column>
+					)}
+					{!!item.published_at && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___toegevoegd-op">
+									Toegevoegd op
+								</Trans>
+							</th>
+							<td>{reorderDate(item.published_at, '/')}</td>
+						</Column>
+					)}
+				</Grid>
+				<Grid tag="tbody">
+					{!!get(item, 'organisation.name') && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
+							</th>
+							<td>
+								{renderSearchLink(item.organisation.name, {
+									filters: {
+										provider: [item.organisation.name],
+									},
+								})}
+							</td>
+						</Column>
+					)}
+					{!!item.duration && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
+							</th>
+							<td>{item.duration}</td>
+						</Column>
+					)}
+				</Grid>
+				<Grid tag="tbody">
+					{!!item.series && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
+							</th>
+							<td>
+								{renderSearchLink(item.series, {
+									filters: { serie: [item.series] },
+								})}
+							</td>
+						</Column>
+					)}
+					{!!item.lom_languages && !!item.lom_languages.length && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___taal">Taal</Trans>
+							</th>
+							<td>
+								{item.lom_languages
+									.map((languageCode) => LANGUAGES.nl[languageCode])
+									.join(', ')}
+							</td>
+						</Column>
+					)}
+				</Grid>
+			</Table>
+		);
+	};
+
 	const renderItem = () => {
 		if (!item) {
 			return null;
@@ -687,182 +888,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 									<BlockHeading type="h3">
 										<Trans i18nKey="item/views/item___metadata">Metadata</Trans>
 									</BlockHeading>
-									<Table
-										horizontal
-										untable
-										className={classnames('c-meta-data__table', {
-											'c-meta-data__table-mobile': isMobileWidth(),
-										})}
-									>
-										<Grid tag="tbody">
-											{!!item.issued && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___publicatiedatum">
-															Publicatiedatum
-														</Trans>
-													</th>
-													<td>{reorderDate(item.issued, '/')}</td>
-												</Column>
-											)}
-											{!!item.published_at && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___toegevoegd-op">
-															Toegevoegd op
-														</Trans>
-													</th>
-													<td>{reorderDate(item.published_at, '/')}</td>
-												</Column>
-											)}
-										</Grid>
-										<Grid tag="tbody">
-											{!!get(item, 'organisation.name') && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___aanbieder">
-															Aanbieder
-														</Trans>
-													</th>
-													<td>
-														{renderSearchLink(item.organisation.name, {
-															filters: {
-																provider: [item.organisation.name],
-															},
-														})}
-													</td>
-												</Column>
-											)}
-											{!!item.duration && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___speelduur">
-															Speelduur
-														</Trans>
-													</th>
-													<td>{item.duration}</td>
-												</Column>
-											)}
-										</Grid>
-										<Grid tag="tbody">
-											{!!item.series && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___reeks">
-															Reeks
-														</Trans>
-													</th>
-													<td>
-														{renderSearchLink(item.series, {
-															filters: { serie: [item.series] },
-														})}
-													</td>
-												</Column>
-											)}
-											{!!item.lom_languages && !!item.lom_languages.length && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___taal">
-															Taal
-														</Trans>
-													</th>
-													<td>
-														{item.lom_languages
-															.map(
-																(languageCode) =>
-																	LANGUAGES.nl[languageCode]
-															)
-															.join(', ')}
-													</td>
-												</Column>
-											)}
-										</Grid>
-									</Table>
-									<div className="c-hr" />
-									<Table
-										horizontal
-										untable
-										className={classnames('c-meta-data__table', {
-											'c-meta-data__table-mobile': isMobileWidth(),
-										})}
-									>
-										<tbody>
-											{!!item.external_id && !!item.lom_context && (
-												<tr>
-													<th scope="row">
-														<Trans i18nKey="item/views/item___geschikt-voor">
-															Geschikt voor
-														</Trans>
-													</th>
-													<td>
-														{renderSearchLinks(
-															renderSearchLink,
-															item.external_id,
-															'educationLevel',
-															item.lom_context
-														)}
-													</td>
-												</tr>
-											)}
-											{!!item.external_id && !!item.lom_classification && (
-												<tr>
-													<th scope="row">
-														<Trans i18nKey="item/views/item___vakken">
-															Vakken
-														</Trans>
-													</th>
-													<td>
-														{renderSearchLinks(
-															renderSearchLink,
-															item.external_id,
-															'subject',
-															item.lom_classification
-														)}
-													</td>
-												</tr>
-											)}
-										</tbody>
-									</Table>
-									<div className="c-hr" />
-									<Table
-										horizontal
-										untable
-										className={classnames('c-meta-data__table', {
-											'c-meta-data__table-mobile': isMobileWidth(),
-										})}
-									>
-										<tbody>
-											{!!item.lom_keywords && !!item.lom_keywords.length && (
-												<tr>
-													<th scope="row">
-														<Trans i18nKey="item/views/item___trefwoorden">
-															Trefwoorden
-														</Trans>
-													</th>
-													<td>
-														{stringsToTagList(
-															item.lom_keywords || [],
-															null,
-															(tagId: string | number) =>
-																goToSearchLink({
-																	filters: {
-																		keyword: [tagId as string],
-																	},
-																})
-														)}
-													</td>
-												</tr>
-											)}
-											{/*<tr>*/}
-											{/*<th scope="row"><Trans i18nKey="item/views/item___klascement">Klascement</Trans></th>*/}
-											{/*<td>*/}
-											{/*<a href={'http://www.klascement.be/link_item'}>*/}
-											{/*www.klascement.be/link_item*/}
-											{/*</a>*/}
-											{/*</td>*/}
-											{/*</tr>*/}
-										</tbody>
-									</Table>
+									{renderGeneralMetaData(item)}
+									{(!!renderEducationLevels(item) || renderSubjects(item)) && (
+										<div className="c-hr" />
+									)}
+									{renderEducationLevels(item)}
+									{renderSubjects(item)}
+									{!!renderKeywords(item) && <div className="c-hr" />}
+									{renderKeywords(item)}
 								</Container>
 							</Column>
 							<Column size="2-5">

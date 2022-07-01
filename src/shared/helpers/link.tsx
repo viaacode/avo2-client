@@ -7,6 +7,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import SmartLink from '../components/SmartLink/SmartLink';
 import { ToastService } from '../services';
@@ -269,7 +270,7 @@ export function generateSearchLinkString(
 	orderDirection?: Avo.Search.OrderDirection
 ): string {
 	const queryParamObject: any = {};
-	if (String(filterProp) === 'query') {
+	if (String(filterProp) === SearchFilter.query) {
 		queryParamObject.filters = JSON.stringify({ query: filterValue });
 	} else {
 		queryParamObject.filters = `{"${filterProp}":["${filterValue}"]}`;

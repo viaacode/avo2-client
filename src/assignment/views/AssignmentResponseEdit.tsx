@@ -10,7 +10,9 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
 import { isPast } from 'date-fns/esm';
+import { intersection } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -37,7 +39,10 @@ import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
+import {
+	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+	ENABLED_FILTERS_PUPIL_SEARCH,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { PupilSearchFilterState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -103,7 +108,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	}, []);
 
 	// Events
-	const goToDetailLink = (id: string, type: Avo.Core.ContentType) => {
+	const goToDetailLink = (id: string, type: Avo.Core.ContentType): void => {
 		setFilterState({
 			...(filterState as PupilSearchFilterState),
 			selectedSearchResultId: id,
@@ -111,7 +116,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		});
 	};
 
-	const goToSearchLink = (newFilters: FilterState) => {
+	const goToSearchLink = (newFilters: FilterState): void => {
 		setFilterState({ ...filterState, ...newFilters });
 	};
 
@@ -121,9 +126,13 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		type: Avo.Core.ContentType
 	) => {
 		return (
-			<a href="" onClick={() => goToDetailLink(id, type)}>
+			<Button
+				type="inline-link"
+				className="c-button--relative-link"
+				onClick={() => goToDetailLink(id, type)}
+			>
 				{linkText}
-			</a>
+			</Button>
 		);
 	};
 
@@ -132,22 +141,29 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		newFilters: FilterState,
 		className?: string
 	) => {
-		return (
-			<a
-				href=""
-				className={className}
-				onClick={() =>
-					setFilterState({
-						...filterState,
-						...newFilters,
-						selectedSearchResultId: undefined,
-						selectedSearchResultType: undefined,
-					})
-				}
-			>
-				{linkText}
-			</a>
-		);
+		// Only render links for the filters that are enabled:
+		const filters = Object.keys(newFilters.filters || {});
+		if (intersection(ENABLED_FILTERS_PUPIL_SEARCH, filters).length > 0) {
+			return (
+				<Button
+					type="inline-link"
+					className={classnames('c-button--relative-link', className)}
+					onClick={() =>
+						setFilterState({
+							...filterState,
+							...newFilters,
+							selectedSearchResultId: undefined,
+							selectedSearchResultType: undefined,
+						})
+					}
+				>
+					{linkText}
+				</Button>
+			);
+		} else {
+			// Just render the text for the filters that are not enabled
+			return linkText;
+		}
 	};
 
 	// Render
@@ -249,6 +265,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 					renderSearchLink={renderSearchLink}
 					goToDetailLink={goToDetailLink}
 					goToSearchLink={goToSearchLink}
+					enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
 				/>
 			);
 		} else if (filterState.selectedSearchResultType === 'collectie') {
@@ -304,7 +321,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		return (
 			<Spacer margin={['top-large', 'bottom-large']}>
 				<SearchFiltersAndResults
-					enabledFilters={['type', 'serie', 'broadcastDate', 'provider']}
+					enabledFilters={ENABLED_FILTERS_PUPIL_SEARCH}
 					bookmarks={false}
 					filterState={filterState}
 					setFilterState={(newFilterState: FilterState) => {

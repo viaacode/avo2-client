@@ -1,9 +1,8 @@
+import { Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
 import { get } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-
-import { Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { CollectionService, OrganisationContentItem } from '../../collection/collection.service';
@@ -59,12 +58,13 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		try {
 			const organisationId = get(user, 'profile.organisation.or_id') || 'NONE';
 
-			const items: OrganisationContentItem[] = await CollectionService.fetchOrganisationContent(
-				page * ITEMS_PER_PAGE,
-				ITEMS_PER_PAGE,
-				{ [sortColumn]: sortOrder },
-				organisationId
-			);
+			const items: OrganisationContentItem[] =
+				await CollectionService.fetchOrganisationContent(
+					page * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
+					{ [sortColumn]: sortOrder },
+					organisationId
+				);
 
 			setOrganisationContent(items);
 		} catch (err) {
@@ -152,10 +152,11 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 				return item.last_editor ? item.last_editor.full_name : '-';
 
 			case 'created_at':
-			case 'updated_at':
+			case 'updated_at': {
 				const date = item[colKey as 'created_at' | 'updated_at'];
 
 				return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
+			}
 
 			default:
 				return null;

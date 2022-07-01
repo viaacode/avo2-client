@@ -1,17 +1,3 @@
-import classnames from 'classnames';
-import { cloneDeep, compact, get, isEqual, isNil } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactText,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { DelimitedArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
-
 import {
 	Button,
 	ButtonGroup,
@@ -37,6 +23,19 @@ import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/Me
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import classnames from 'classnames';
+import { cloneDeep, compact, get, isEqual, isNil } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { DelimitedArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -116,13 +115,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
-	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] = useTableSort<
-		AssignmentOverviewTableColumns
-	>(DEFAULT_SORT_COLUMN);
+	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
+		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
 
-	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments), [
-		canEditAssignments,
-	]);
+	const tableColumns = useMemo(
+		() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments),
+		[canEditAssignments]
+	);
 
 	const [query, setQuery] = useQueryParams({
 		selectedAssignmentLabelIds: DelimitedArrayParam,
@@ -381,9 +380,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 			case 'duplicate':
 				try {
-					const assignment: Avo.Assignment.Assignment_v2 = await AssignmentService.fetchAssignmentById(
-						(dataRow.id as unknown) as string
-					);
+					const assignment: Avo.Assignment.Assignment_v2 =
+						await AssignmentService.fetchAssignmentById(
+							dataRow.id as unknown as string
+						);
 
 					await duplicateAssignment(assignment);
 				} catch (err) {

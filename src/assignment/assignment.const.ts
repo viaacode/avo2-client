@@ -3,6 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
+import { SearchFilter } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
@@ -307,3 +308,10 @@ export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 		},
 	}),
 };
+
+export const ENABLED_FILTERS_PUPIL_SEARCH: SearchFilter[] = [
+	SearchFilter.type,
+	SearchFilter.serie,
+	SearchFilter.broadcastDate,
+	SearchFilter.provider,
+];

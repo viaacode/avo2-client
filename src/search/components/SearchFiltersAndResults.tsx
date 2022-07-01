@@ -57,6 +57,7 @@ import {
 	DEFAULT_SORT_ORDER,
 	GET_SEARCH_ORDER_OPTIONS,
 	ITEMS_PER_PAGE,
+	SearchFilter,
 } from '../search.const';
 import { fetchSearchResults } from '../search.service';
 import {
@@ -405,7 +406,11 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				currentPage={currentPage}
 				data={searchResults}
 				handleBookmarkToggle={handleBookmarkToggle}
-				handleTagClicked={handleTagClicked}
+				handleTagClicked={
+					!enabledFilters || enabledFilters.includes(SearchFilter.keyword)
+						? handleTagClicked
+						: undefined
+				}
 				loading={searchResultsLoading}
 				pageCount={pageCount}
 				setPage={setPage}

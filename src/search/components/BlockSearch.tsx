@@ -1,10 +1,3 @@
-import { find, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { Dispatch } from 'redux';
-
 import {
 	BlockHeading,
 	Button,
@@ -20,6 +13,12 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { find, get, isNil } from 'lodash-es';
+import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { toEnglishContentType } from '../../collection/collection.types';
@@ -32,6 +31,7 @@ import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 import './BlockSearch.scss';
+import { SearchFilter } from '../search.const';
 
 interface BlockSearchProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;
@@ -71,11 +71,9 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 	}, [debouncedSearchTerms, search]);
 
 	// Computed
-	const autocompleteMenuItems = (get(
-		searchResults,
-		'results',
-		[]
-	) as Avo.Search.ResultItem[]).map(
+	const autocompleteMenuItems = (
+		get(searchResults, 'results', []) as Avo.Search.ResultItem[]
+	).map(
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
 			id: searchResult.external_id,
@@ -89,7 +87,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps> = ({
 
 	// Methods
 	const gotoSearchPage = () => {
-		history.push(generateSearchLinkString('query', searchTerms));
+		history.push(generateSearchLinkString(SearchFilter.query, searchTerms));
 	};
 
 	const goToSearchResult = (searchResultId: string | undefined) => {
