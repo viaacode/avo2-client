@@ -49,6 +49,9 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 			title
 			updated_at
 			owner_profile_id
+			owner {
+				full_name
+			}
 		}
 	}
 `;

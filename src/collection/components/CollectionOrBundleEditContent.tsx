@@ -1,11 +1,10 @@
-import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { Alert, Button, Container, convertToHtml, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { get, isNil } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -25,6 +24,7 @@ import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/co
 import { ToastService } from '../../shared/services';
 import {
 	COLLECTION_FRAGMENT_LABELS,
+	CollectionBlockType,
 	EDIT_COLLECTION_FRAGMENT_ICONS,
 	NEW_FRAGMENT,
 } from '../collection.const';
@@ -103,10 +103,10 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 		if (fragment) {
 			switch (fragment.type) {
-				case 'ITEM':
+				case CollectionBlockType.ITEM:
 					return listSorterItemContent(fragment, index);
 
-				case 'TEXT':
+				case CollectionBlockType.TEXT:
 					return listSorterTextContent(fragment, index);
 
 				default:
@@ -243,14 +243,14 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					changeCollectionState({
 						type: 'INSERT_FRAGMENT',
 						index: index + 1,
-						fragment: ({
+						fragment: {
 							...NEW_FRAGMENT.text,
 							id: new Date().valueOf(),
 							collection_uuid: collection.id,
-						} as unknown) as Avo.Collection.Fragment,
+						} as unknown as Avo.Collection.Fragment,
 					})
 				}
-			></Button>
+			/>
 		);
 	};
 
@@ -300,7 +300,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					content={listSorterContent}
 					divider={listSorterDivider}
 					items={collectionFragments.map(listSorterItem)}
-				></ListSorter>
+				/>
 			</Container>
 
 			<br />

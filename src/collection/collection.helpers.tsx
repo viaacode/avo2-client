@@ -1,11 +1,14 @@
-import { compact, get, isNil, omit, sortBy } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { compact, get, isNil, omit, sortBy } from 'lodash-es';
 
 import { stripHtml } from '../shared/helpers/formatters';
 import i18n from '../shared/translations/i18n';
 
-import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
+import {
+	CollectionBlockType,
+	MAX_LONG_DESCRIPTION_LENGTH,
+	MAX_SEARCH_DESCRIPTION_LENGTH,
+} from './collection.const';
 import { CollectionService } from './collection.service';
 import { ContentTypeNumber } from './collection.types';
 
@@ -15,7 +18,7 @@ export const getValidationFeedbackForDescription = (
 	getTooLongErrorMessage: (count: string) => string,
 	isError?: boolean | null
 ): string => {
-	const count: string = `${(description || '').length}/${maxLength}`;
+	const count = `${(description || '').length}/${maxLength}`;
 
 	const exceedsSize: boolean = (description || '').length > maxLength;
 
@@ -127,32 +130,33 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	// TODO: Add check if owner or write-rights.
 ];
 
-const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<
-	Avo.Collection.Fragment
->[] = () => [
-	{
-		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
-		isValid: (collectionFragment: Avo.Collection.Fragment) => {
-			return !isNil(collectionFragment.start_oc);
+const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<Avo.Collection.Fragment>[] =
+	() => [
+		{
+			error: i18n.t(
+				'collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'
+			),
+			isValid: (collectionFragment: Avo.Collection.Fragment) => {
+				return !isNil(collectionFragment.start_oc);
+			},
 		},
-	},
-	{
-		error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
-		isValid: (collectionFragment: Avo.Collection.Fragment) => {
-			return !isNil(collectionFragment.end_oc);
+		{
+			error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
+			isValid: (collectionFragment: Avo.Collection.Fragment) => {
+				return !isNil(collectionFragment.end_oc);
+			},
 		},
-	},
-	{
-		error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
-		isValid: (collectionFragment: Avo.Collection.Fragment) => {
-			return (
-				!collectionFragment.start_oc ||
-				!collectionFragment.end_oc ||
-				collectionFragment.start_oc < collectionFragment.end_oc
-			);
+		{
+			error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
+			isValid: (collectionFragment: Avo.Collection.Fragment) => {
+				return (
+					!collectionFragment.start_oc ||
+					!collectionFragment.end_oc ||
+					collectionFragment.start_oc < collectionFragment.end_oc
+				);
+			},
 		},
-	},
-];
+	];
 
 const validateFragments = (
 	fragments: Avo.Collection.Fragment[],
@@ -195,7 +199,7 @@ const validateFragments = (
 			// Check if text fragment has custom_title or custom_description.
 			fragments.forEach((fragment) => {
 				if (
-					fragment.type === 'TEXT' &&
+					fragment.type === CollectionBlockType.TEXT &&
 					!stripHtml(fragment.custom_title || '').trim() &&
 					!stripHtml(fragment.custom_description || '').trim()
 				) {
