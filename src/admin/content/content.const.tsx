@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
@@ -21,7 +22,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		label: i18n.t('admin/content/content___titel'),
 		sortable: true,
 		visibleByDefault: true,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'content_type',
@@ -32,7 +33,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		filterProps: {
 			options: contentTypeOptions,
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'user_profile_id',
@@ -40,7 +41,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'MultiUserSelectDropdown',
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'author_user_group',
@@ -54,7 +55,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 				{ label: i18n.t('admin/content/content___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
-		dataType: 'string',
+		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'created_at',
@@ -62,7 +63,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'updated_at',
@@ -70,7 +71,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'is_public',
@@ -78,7 +79,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: false,
 		filterType: 'BooleanCheckboxDropdown',
-		dataType: 'boolean',
+		dataType: TableColumnDataType.boolean,
 	},
 	{
 		id: 'published_at',
@@ -86,7 +87,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'publish_at',
@@ -94,7 +95,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'depublish_at',
@@ -102,7 +103,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
-		dataType: 'dateTime',
+		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'labels',

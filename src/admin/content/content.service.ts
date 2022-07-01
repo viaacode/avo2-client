@@ -8,6 +8,7 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ContentBlockService } from '../content-block/services/content-block.service';
 import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
@@ -279,7 +280,7 @@ export class ContentService {
 		page: number,
 		sortColumn: ContentOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		where: any
 	): Promise<[ContentPageInfo[], number]> {
 		let variables: any;

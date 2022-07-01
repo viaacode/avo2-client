@@ -44,6 +44,7 @@ import {
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { SOFT_DELETE_COLLECTION } from '../collection.gql';
 import { CollectionService } from '../collection.service';
@@ -514,7 +515,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					label: t('collection/views/collection-overview___titel'),
 					col: '6',
 					sortable: true,
-					dataType: 'string',
+					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'actions',
@@ -534,14 +535,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				label: t('collection/views/collection-overview___titel'),
 				col: '6',
 				sortable: true,
-				dataType: 'string',
+				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'updated_at',
 				label: t('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
 				sortable: true,
-				dataType: 'dateTime',
+				dataType: TableColumnDataType.dateTime,
 			},
 			...(showPublicState
 				? [
@@ -552,7 +553,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 							),
 							col: '2',
 							sortable: true,
-							dataType: 'boolean',
+							dataType: TableColumnDataType.boolean,
 						} as TableColumnSchema,
 				  ]
 				: []),

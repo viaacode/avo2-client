@@ -1,11 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { isPast } from 'date-fns/esm';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-
 import {
 	Alert,
 	BlockHeading,
@@ -22,6 +15,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { isPast } from 'date-fns/esm';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -400,7 +399,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								{error && <span className="c-floating-error">{error.message}</span>}
 							</>
 						)}
-					></Controller>
+					/>
 				</BlockHeading>
 			</Flex>
 		),
@@ -613,7 +612,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							)}
 							content={(item) => item && renderBlockContent(item)}
 							items={listSorterItems}
-						></AssignmentBlockListSorter>
+						/>
 					</div>
 				);
 

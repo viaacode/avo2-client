@@ -107,7 +107,7 @@ export class AssignmentHelper {
 		assignmentLabels: Avo.Assignment.Label_v2[],
 		user: Avo.User.User,
 		setAssignmentProp: (
-			property: keyof Avo.Assignment.Assignment | 'descriptionRichEditorState',
+			property: keyof Avo.Assignment.Assignment_v2 | 'descriptionRichEditorState',
 			value: any
 		) => void,
 		setAssignmentLabels: (labels: AssignmentSchemaLabel_v2[]) => void
@@ -165,11 +165,11 @@ export class AssignmentHelper {
 							label={i18n.t('assignment/views/assignment-edit___klas-of-groep')}
 							required
 						>
-							<TextInput
-								id="class_room"
-								value={/*assignment.class_room || */ 'TODO CLASSroom was changes'}
-								onChange={(classRoom) => setAssignmentProp('class_room', classRoom)}
-							/>
+							{/*<TextInput*/}
+							{/*	id="class_room"*/}
+							{/*	value=/!*assignment.class_room || 'TODO CLASSroom was changes'}*/}
+							{/*	onChange={(classRoom) => setAssignmentProp('class_room', classRoom)}*/}
+							{/*/>*/}
 						</FormGroup>
 						<FormGroup
 							label={i18n.t('assignment/views/assignment-edit___vak-of-project')}

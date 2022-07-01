@@ -6,6 +6,7 @@ import {
 	PermissionService,
 } from '../../../../../authentication/helpers/permission-service';
 import { CustomError } from '../../../../../shared/helpers';
+import { TableColumnDataType } from '../../../../../shared/types/table-column-data-type';
 import { UserService } from '../../../../users/user.service';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
@@ -41,12 +42,19 @@ export const retrieveProfiles = async (
 					0,
 					'last_access_at',
 					'desc',
-					'dateTime',
+					TableColumnDataType.dateTime,
 					where,
 					user,
 					limit
 			  )
-			: UserService.getProfiles(0, 'last_access_at', 'desc', 'dateTime', where, limit));
+			: UserService.getProfiles(
+					0,
+					'last_access_at',
+					'desc',
+					TableColumnDataType.dateTime,
+					where,
+					limit
+			  ));
 
 		return parseProfiles(response[0]);
 	} catch (err) {

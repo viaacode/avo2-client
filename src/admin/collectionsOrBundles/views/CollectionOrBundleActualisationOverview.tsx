@@ -26,6 +26,7 @@ import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, {
 	FilterableColumn,
@@ -177,7 +178,8 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 			const column = tableColumns.find(
 				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 			);
-			const columnDataType: string = get(column, 'dataType', '');
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const [
 				collectionsTemp,
 				collectionsCountTemp,

@@ -11,6 +11,7 @@ import {
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
+import { ItemTrimInfo } from '../item/item.types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import {
@@ -19,7 +20,9 @@ import {
 	dataService,
 	ToastService,
 } from '../shared/services';
+import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
+import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	ITEMS_PER_PAGE,
@@ -27,13 +30,17 @@ import {
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
+	BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
 	DELETE_ASSIGNMENT,
+	DELETE_ASSIGNMENTS,
 	DELETE_ASSIGNMENT_RESPONSE,
+	GET_ASSIGNMENTS_ADMIN_OVERVIEW,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_ASSIGNMENT_BLOCKS,
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
+	GET_ASSIGNMENT_IDS,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -52,11 +59,6 @@ import {
 	AssignmentType,
 } from './assignment.types';
 
-export const GET_ASSIGNMENT_COPY_PREFIX = () =>
-	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
-export const GET_ASSIGNMENT_COPY_REGEX = () =>
-	new RegExp(`^${i18n.t('assignment/assignment___opdracht-kopie')} [0-9]+`, 'gi');
-
 export class AssignmentService {
 	static async fetchAssignments(
 		canEditAssignments: boolean,
@@ -64,7 +66,7 @@ export class AssignmentService {
 		pastDeadline: boolean | null,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		page: number,
 		filterString: string | undefined,
 		labelIds: string[] | undefined,
@@ -229,7 +231,7 @@ export class AssignmentService {
 	static async fetchAssignmentByContentIdAndType(
 		contentId: string,
 		contentType: AssignmentContentLabel
-	): Promise<Partial<Avo.Assignment.Assignment>[]> {
+	): Promise<Partial<Avo.Assignment.Assignment_v2>[]> {
 		try {
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 				query: GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
@@ -240,7 +242,7 @@ export class AssignmentService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			const assignments: Avo.Assignment.Assignment[] | undefined = get(
+			const assignments: Avo.Assignment.Assignment_v2[] | undefined = get(
 				response,
 				'data.app_assignments'
 			);
@@ -306,6 +308,20 @@ export class AssignmentService {
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment', err, { assignmentId });
+			console.error(error);
+			throw error;
+		}
+	}
+
+	static async deleteAssignments(assignmentIds: string[]) {
+		try {
+			await dataService.mutate({
+				mutation: DELETE_ASSIGNMENTS,
+				variables: { assignmentIds },
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+		} catch (err) {
+			const error = new CustomError('Failed to delete assignment', err, { assignmentIds });
 			console.error(error);
 			throw error;
 		}
@@ -455,7 +471,7 @@ export class AssignmentService {
 		submittedAt: string | null
 	): Promise<void> {
 		try {
-			const response = await dataService.mutate<Avo.Assignment.Assignment>({
+			const response = await dataService.mutate<Avo.Assignment.Assignment_v2>({
 				mutation: UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 				variables: {
 					id,
@@ -630,14 +646,16 @@ export class AssignmentService {
 	> {
 		try {
 			// Load assignment
-			const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
-				query: GET_ASSIGNMENT_WITH_RESPONSE,
-				variables: {
-					assignmentId,
-					pupilUuid: pupilProfileId,
-				},
-				fetchPolicy: 'no-cache',
-			});
+			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> = await dataService.query(
+				{
+					query: GET_ASSIGNMENT_WITH_RESPONSE,
+					variables: {
+						assignmentId,
+						pupilUuid: pupilProfileId,
+					},
+					fetchPolicy: 'no-cache',
+				}
+			);
 
 			if (response.errors) {
 				throw new CustomError('Response contains graphql errors', null, response);
@@ -695,7 +713,7 @@ export class AssignmentService {
 		user: Avo.User.User,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		page: number,
 		filterString: string | undefined
 	): Promise<{
@@ -1026,6 +1044,7 @@ export class AssignmentService {
 			variables: {
 				assignmentBlocks: [block],
 			},
+			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		return assignmentId;
@@ -1033,8 +1052,23 @@ export class AssignmentService {
 
 	static async importFragmentToAssignment(
 		item: Avo.Item.Item,
-		assignmentId: string
+		assignmentId: string,
+		itemTrimInfo?: ItemTrimInfo
 	): Promise<string> {
+		// Handle trim settings and thumbnail
+		const trimInfo: ItemTrimInfo = itemTrimInfo || {
+			hasCut: false,
+			fragmentStartTime: 0,
+			fragmentEndTime: 0,
+		};
+		const thumbnailPath = !!trimInfo.fragmentStartTime
+			? await VideoStillService.getVideoStill(
+					item.external_id,
+					trimInfo.fragmentStartTime * 1000
+			  )
+			: null;
+
+		// Determine block position
 		const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
 			assignmentId
 		);
@@ -1045,7 +1079,10 @@ export class AssignmentService {
 			assignment_id: assignmentId,
 			fragment_id: item.external_id,
 			type: 'ITEM',
+			start_oc: trimInfo.hasCut ? trimInfo.fragmentStartTime : null,
+			end_oc: trimInfo.hasCut ? trimInfo.fragmentEndTime : null,
 			position: startPosition,
+			thumbnail_path: thumbnailPath,
 		};
 
 		await dataService.mutate({
@@ -1053,8 +1090,137 @@ export class AssignmentService {
 			variables: {
 				assignmentBlocks: [block],
 			},
+			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		return assignmentId;
+	}
+
+	static async fetchAssignmentsForAdmin(
+		page: number,
+		sortColumn: AssignmentOverviewTableColumns,
+		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: TableColumnDataType,
+		where: any = {},
+		itemsPerPage: number = ITEMS_PER_PAGE
+	): Promise<[Avo.Assignment.Assignment_v2[], number]> {
+		let variables;
+		try {
+			const whereWithoutDeleted = {
+				...where,
+				is_deleted: { _eq: false },
+			};
+
+			variables = {
+				offset: itemsPerPage * page,
+				limit: itemsPerPage,
+				where: whereWithoutDeleted,
+				orderBy: getOrderObject(
+					sortColumn,
+					sortOrder,
+					tableColumnDataType,
+					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+				),
+			};
+
+			const response = await dataService.query({
+				variables,
+				query: GET_ASSIGNMENTS_ADMIN_OVERVIEW,
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+
+			const assignments: Avo.Assignment.Assignment_v2[] = response?.data?.app_assignments_v2;
+
+			const assignmentCount =
+				response?.data?.app_assignments_v2_aggregate?.aggregate?.count || 0;
+
+			if (!assignments) {
+				throw new CustomError('Response does not contain any assignments', null, {
+					response,
+				});
+			}
+
+			return [assignments as Avo.Assignment.Assignment_v2[], assignmentCount];
+		} catch (err) {
+			throw new CustomError('Failed to get assignments from the database', err, {
+				variables,
+				query: 'GET_ASSIGNMENTS_ADMIN_OVERVIEW',
+			});
+		}
+	}
+
+	static async getAssignmentIds(where: any = {}): Promise<string[]> {
+		let variables;
+		try {
+			const whereWithoutDeleted = {
+				...where,
+				is_deleted: { _eq: false },
+			};
+
+			variables = {
+				where: whereWithoutDeleted,
+			};
+
+			const response = await dataService.query({
+				variables,
+				query: GET_ASSIGNMENT_IDS,
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response from gragpql contains errors', null, {
+					response,
+				});
+			}
+
+			const assignmentIds: string[] = (response?.data?.app_assignments_v2 || []).map(
+				(assignment: Avo.Assignment.Assignment_v2) => assignment.id
+			);
+
+			if (!assignmentIds) {
+				throw new CustomError('Response does not contain any assignment ids', null, {
+					response,
+				});
+			}
+
+			return assignmentIds;
+		} catch (err) {
+			throw new CustomError('Failed to get assignment ids from the database', err, {
+				variables,
+				query: 'GET_ASSIGNMENT_IDS',
+			});
+		}
+	}
+
+	static async changeAuthor(profileId: string, assignmentIds: string[]): Promise<void> {
+		try {
+			const response = await dataService.mutate({
+				mutation: BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
+				variables: {
+					assignmentIds,
+					authorId: profileId,
+					now: new Date().toISOString(),
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return response?.data?.update_app_assignments_v2?.affected_rows || 0;
+		} catch (err) {
+			throw new CustomError('Failed to update author for assignments in the database', err, {
+				profileId,
+				assignmentIds,
+				query: 'BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS',
+			});
+		}
 	}
 }

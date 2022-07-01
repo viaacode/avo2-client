@@ -89,6 +89,8 @@ interface FilterTableProps extends RouteComponentProps {
 	rowKey?: string | ((row: any) => string);
 	variant?: 'bordered' | 'invisible' | 'styled';
 	isLoading?: boolean;
+	defaultOrderProp?: string;
+	defaultOrderDirection?: 'asc' | 'desc';
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
@@ -124,6 +126,8 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	onSelectionChanged,
 	onSelectAll,
 	hideTableColumnsButton,
+	defaultOrderProp,
+	defaultOrderDirection,
 }) => {
 	const [t] = useTranslation();
 
@@ -424,9 +428,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								renderCell={renderCell}
 								rowKey={rowKey}
 								variant={variant}
-								sortColumn={tableState.sort_column || undefined}
+								sortColumn={tableState.sort_column || defaultOrderProp || undefined}
 								sortOrder={
-									(tableState.sort_order as SearchOrderDirection) || undefined
+									(tableState.sort_order as SearchOrderDirection) ||
+									defaultOrderDirection ||
+									undefined
 								}
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes
