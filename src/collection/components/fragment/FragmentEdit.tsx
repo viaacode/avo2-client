@@ -1,14 +1,3 @@
-import { get, isEqual, isNil, isString } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Column,
@@ -27,6 +16,16 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { get, isEqual, isNil, isString } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
 import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
@@ -36,6 +35,7 @@ import { createDropdownMenuItem } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { CollectionBlockType } from '../../collection.const';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
@@ -236,14 +236,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean = !fragment.use_custom_fields && fragment.type !== 'TEXT';
+		const disableVideoFields: boolean =
+			!fragment.use_custom_fields && fragment.type !== CollectionBlockType.TEXT;
 
 		return (
 			<Form>
 				{itemMetaData && (
 					<FormGroup
 						label={
-							['ITEM', 'TEXT'].includes(fragment.type)
+							[CollectionBlockType.ITEM, CollectionBlockType.TEXT].includes(
+								fragment.type as CollectionBlockType
+							)
 								? t(
 										'collection/components/fragment/fragment-edit___alternatieve-tekst'
 								  )
@@ -357,7 +360,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 				</div>
 				{renderWarning()}
 				<div className="c-panel__body">
-					{fragment.type !== 'TEXT' && itemMetaData ? (
+					{fragment.type !== CollectionBlockType.TEXT && itemMetaData ? (
 						<Grid>
 							<Column size="3-6">
 								{!isCollection ? (

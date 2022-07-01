@@ -3,11 +3,12 @@ import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ApolloProvider, compose } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import { Provider } from 'react-redux';
 import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
+import { compose } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
@@ -25,6 +26,7 @@ import withUser from './shared/hocs/withUser';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
+
 import './styles/main.scss';
 
 const history = createBrowserHistory();
@@ -103,7 +105,7 @@ const App: FunctionComponent<RouteComponentProps> = (props) => {
 	);
 };
 
-const AppWithRouter = compose(withRouter, withUser)(App);
+const AppWithRouter = compose(withRouter, withUser)(App) as FunctionComponent;
 
 const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>

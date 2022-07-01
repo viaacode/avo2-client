@@ -162,7 +162,7 @@ export class ItemsService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -191,7 +191,7 @@ export class ItemsService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -220,7 +220,7 @@ export class ItemsService {
 			});
 
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
@@ -535,7 +535,7 @@ export class ItemsService {
 				fetchPolicy: 'no-cache',
 			});
 			if (response.errors) {
-				throw new CustomError('Response from gragpql contains errors', null, {
+				throw new CustomError('Response from graphql contains errors', null, {
 					response,
 				});
 			}
