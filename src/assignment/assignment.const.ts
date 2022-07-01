@@ -1,8 +1,7 @@
-import { TFunction } from 'i18next';
-import { array, object, SchemaOf, string } from 'yup';
-
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { TFunction } from 'i18next';
+import { array, object, SchemaOf, string } from 'yup';
 
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
@@ -132,11 +131,9 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	...getActionsColumn(canEditAssignments),
 ];
 
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	owner: (order: Avo.Search.OrderDirection) => ({
 		profile: {
 			full_name: order,
@@ -290,11 +287,9 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
 ];
 
-export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	pupil: (order: Avo.Search.OrderDirection) => ({
 		owner: {
 			full_name: order,

@@ -1,8 +1,3 @@
-import { orderBy } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import {
 	Button,
 	MetaData,
@@ -13,6 +8,10 @@ import {
 	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
+import { orderBy } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
@@ -48,7 +47,7 @@ interface BookmarksOverviewProps extends DefaultSecureRouteProps {
 
 const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	numberOfItems,
-	onUpdate = () => {},
+	onUpdate,
 	history,
 	user,
 }) => {
@@ -249,10 +248,10 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			case 'contentTitle':
 				return renderTitle(bookmarkInfo);
 
-			case 'createdAt':
+			case 'createdAt': {
 				const cellData = bookmarkInfo.createdAt;
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
-
+			}
 			case 'actions':
 				return renderDeleteAction(bookmarkInfo);
 

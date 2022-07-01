@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { TabPropsSchema } from '@viaa/avo2-components/dist/esm/components/Tabs/Tab/Tab';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 

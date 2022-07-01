@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -59,6 +60,7 @@ import { spliceByPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentLesgeverTabs } from '../hooks';
 import AddBlockModal from '../modals/AddBlockModal';
+import AddBookmarkFragmentModal from '../modals/AddBookmarkFragmentModal';
 import ConfirmSliceModal from '../modals/ConfirmSliceModal';
 
 import './AssignmentEdit.scss';
@@ -124,6 +126,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		getAddBlockModalPosition,
 		setAddBlockModalPosition,
 	] = useSingleEntityModal<number>();
+	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
 
 	const pastDeadline = useMemo(
 		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
@@ -338,6 +341,31 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		original && setAssignment(original);
 		resetForm();
 	}, [resetForm, setAssignment, original]);
+
+	const onAddItem = async (itemExternalId: string) => {
+		if (getAddBlockModalPosition == null) {
+			return;
+		}
+
+		// fetch item details
+		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
+		const blocks = spliceByPosition(assignment.blocks, {
+			item,
+			type: AssignmentBlockType.ITEM,
+			fragment_id: itemExternalId,
+			position: getAddBlockModalPosition + 1, // Always insert after
+		} as AssignmentBlock); // TODO: avoid cast
+
+		setAssignment((prev) => ({
+			...prev,
+			blocks,
+		}));
+
+		setValue('blocks', blocks, {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
+	};
 
 	// Render
 
@@ -698,41 +726,53 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			)}
 
 			{assignment && (
-				<AddBlockModal
-					isOpen={!!isAddBlockModalOpen}
-					assignment={assignment}
-					onClose={() => setAddBlockModalOpen(false)}
-					onConfirm={(type) => {
-						if (getAddBlockModalPosition === undefined) {
-							return;
-						}
-
-						switch (type) {
-							case AssignmentBlockType.TEXT:
-							case AssignmentBlockType.ZOEK: {
-								const blocks = spliceByPosition(assignment.blocks, {
-									type,
-									position: getAddBlockModalPosition + 1, // Always insert after
-								} as AssignmentBlock); // TODO: avoid cast
-
-								setAssignment((prev) => ({
-									...prev,
-									blocks,
-								}));
-
-								setValue('blocks', blocks, {
-									shouldDirty: true,
-									shouldTouch: true,
-								});
-								break;
+				<>
+					<AddBlockModal
+						isOpen={!!isAddBlockModalOpen}
+						assignment={assignment}
+						onClose={() => setAddBlockModalOpen(false)}
+						onConfirm={(type) => {
+							if (getAddBlockModalPosition === undefined) {
+								return;
 							}
-							default:
-								break;
-						}
 
-						setAddBlockModalOpen(false);
-					}}
-				/>
+							switch (type) {
+								case AssignmentBlockType.ITEM: {
+									setIsAddFragmentModalOpen(true);
+									break;
+								}
+								case AssignmentBlockType.TEXT:
+								case AssignmentBlockType.ZOEK: {
+									const blocks = spliceByPosition(assignment.blocks, {
+										type,
+										position: getAddBlockModalPosition + 1, // Always insert after
+									} as AssignmentBlock); // TODO: avoid cast
+
+									setAssignment((prev) => ({
+										...prev,
+										blocks,
+									}));
+
+									setValue('blocks', blocks, {
+										shouldDirty: true,
+										shouldTouch: true,
+									});
+									break;
+								}
+								default:
+									break;
+							}
+
+							setAddBlockModalOpen(false);
+						}}
+					/>
+					<AddBookmarkFragmentModal
+						user={user}
+						isOpen={isAddFragmentModalOpen}
+						onClose={() => setIsAddFragmentModalOpen(false)}
+						addFragmentCallback={onAddItem}
+					/>
+				</>
 			)}
 		</div>
 	);

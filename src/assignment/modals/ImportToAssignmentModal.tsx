@@ -1,8 +1,3 @@
-import { get, noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -22,6 +17,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get, noop } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
@@ -71,9 +70,8 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 		null
 	);
 	const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>();
-	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<AssignmentOverviewTableColumns>(
-		'updated_at'
-	);
+	const [sortColumn, sortOrder, handleColumnClick] =
+		useTableSort<AssignmentOverviewTableColumns>('updated_at');
 	const [filterString, setFilterString] = useState<string>('');
 
 	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(true), []);
@@ -191,7 +189,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
 		) {
-			case 'title':
+			case 'title': {
 				const renderTitle = () => (
 					<div className="c-content-header c-content-header--small">
 						<h3 className="c-content-header__header u-m-0">
@@ -205,7 +203,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				) : (
 					renderTitle()
 				);
-
+			}
 			case 'labels':
 				return AssignmentHelper.getLabels(assignment, 'LABEL')
 					.map((labelLink: any) => labelLink.assignment_label.label)
@@ -216,7 +214,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					.map((label: any) => label.assignment_label.label)
 					.join(', ');
 
-			case 'author':
+			case 'author': {
 				const profile = get(assignment, 'profile', null);
 				const avatarOptions = {
 					dark: true,
@@ -229,7 +227,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				) : (
 					renderAvatar(profile, avatarOptions)
 				);
-
+			}
 			case 'deadline_at':
 				return <AssignmentDeadline deadline={cellData} />;
 
