@@ -103,9 +103,14 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 
 function copyWhitelistToProxy() {
 	const sourceFile = path.join(__dirname, 'client-whitelist.json');
-	const dest = path.join(process.env.PROXY_PATH || '', 'scripts', 'client-whitelist.json');
+	const dest = path.join(
+		__dirname,
+		process.env.PROXY_PATH || '',
+		'scripts',
+		'client-whitelist.json'
+	);
 	fse.copySync(sourceFile, dest);
-	console.log('Whitelist file copied to proxy');
+	console.log('Whitelist file copied to proxy: ' + dest);
 }
 
 async function run() {
