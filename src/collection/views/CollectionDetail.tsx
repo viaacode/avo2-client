@@ -1,18 +1,3 @@
-import classnames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -36,6 +21,20 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
+import classnames from 'classnames';
+import { get, isEmpty, isNil } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -76,7 +75,7 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import { VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
+import { CollectionBlockType, VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
 import {
@@ -123,7 +122,7 @@ type CollectionDetailPermissions = Partial<{
 	canCreateBundles: boolean;
 }>;
 
-interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+type CollectionDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	history,
@@ -142,17 +141,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
-	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] = useState<boolean>(
-		false
-	);
+	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
+		useState<boolean>(false);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
-	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
-		false
-	);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
+		useState<boolean>(false);
 	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
-	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
-		false
-	);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
+		useState<boolean>(false);
 	const [
 		isConfirmImportToAssignmentWithResponsesModalOpen,
 		setIsConfirmImportToAssignmentWithResponsesModalOpen,
@@ -945,11 +941,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 
 		switch (fragment.type) {
-			case 'TEXT':
+			case CollectionBlockType.TEXT:
 				return layout(
 					<CollectionFragmentTypeText title={{ fragment }} richText={{ fragment }} />
 				);
-			case 'ITEM':
+			case CollectionBlockType.ITEM:
 				return layout(
 					<CollectionFragmentTypeItem
 						className="m-collection-detail__video-content"
@@ -977,7 +973,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
-		// const hasBackground = fragment.type === 'TEXT';
+		// const hasBackground = fragment.type === CollectionBlockType.TEXT';
 
 		return (
 			<div
@@ -1178,11 +1174,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													{`${t(
 														'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
 													)} `}
-													{(get(
-														collection,
-														'relations',
-														[]
-													) as Relation[]).map((relation: Relation) => (
+													{(
+														get(
+															collection,
+															'relations',
+															[]
+														) as Relation[]
+													).map((relation: Relation) => (
 														<Link
 															key={`copy-of-link-${relation.object_meta.id}`}
 															to={buildLink(
