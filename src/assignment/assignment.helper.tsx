@@ -27,6 +27,7 @@ import i18n from '../shared/translations/i18n';
 import { AssignmentService } from './assignment.service';
 import { AssignmentLayout, AssignmentSchemaLabel_v2 } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
+import { Positioned } from '../shared/types';
 
 export class AssignmentHelper {
 	public static async attemptDuplicateAssignment(
@@ -326,4 +327,13 @@ export class AssignmentHelper {
 	public static getThumbnail(block: Avo.Assignment.Block) {
 		return block.thumbnail_path || undefined;
 	}
+}
+
+// Zoek & bouw
+
+export function setPositionToIndex<T>(item: Positioned<T>, i: number) {
+	return {
+		...item,
+		position: i,
+	};
 }

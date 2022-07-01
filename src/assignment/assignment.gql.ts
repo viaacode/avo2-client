@@ -18,7 +18,7 @@ export const GET_ASSIGNMENT_BY_UUID = gql`
 					owner_profile_id
 				}
 			}
-			blocks(where: { is_deleted: { _eq: false } }) {
+			blocks(where: { is_deleted: { _eq: false } }, order_by: { position: asc }) {
 				created_at
 				custom_description
 				custom_title

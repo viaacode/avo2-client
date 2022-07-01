@@ -404,7 +404,7 @@ export class AssignmentService {
 		);
 
 		const created = update.filter((block) => block.id === undefined);
-		const existing = original.filter((block) => !deleted.map((d) => d.id).includes(block.id));
+		const existing = update.filter((block) => !deleted.map((d) => d.id).includes(block.id));
 
 		const cleanup = (block: AssignmentBlock) => {
 			delete block.item;
@@ -416,7 +416,7 @@ export class AssignmentService {
 		};
 
 		const promises = [
-			...existing.map(cleanup).map((block) =>
+			...existing.map(cleanup).filter(block => block.id).map((block) =>
 				dataService.mutate({
 					mutation: UPDATE_ASSIGNMENT_BLOCK,
 					variables: { blockId: block.id, update: block },
@@ -825,10 +825,11 @@ export class AssignmentService {
 			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
-			const existingAssignmentResponses: string[] = await AssignmentService.getAssignmentResponses(
-				get(user, 'profile.id'),
-				(get(assignment, 'id') as unknown) as string
-			);
+			const existingAssignmentResponses: string[] =
+				await AssignmentService.getAssignmentResponses(
+					get(user, 'profile.id'),
+					get(assignment, 'id') as unknown as string
+				);
 
 			if (!!existingAssignmentResponses.length) {
 				if (existingAssignmentResponses.length > 1) {
