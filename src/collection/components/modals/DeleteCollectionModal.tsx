@@ -35,7 +35,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignments, setAssignments] = useState<Partial<Avo.Assignment.Assignment>[] | null>(
+	const [assignments, setAssignments] = useState<Partial<Avo.Assignment.Assignment_v2>[] | null>(
 		null
 	);
 

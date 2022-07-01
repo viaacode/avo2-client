@@ -37,6 +37,7 @@ import {
 	BookmarkInfo,
 	EventContentType,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -71,7 +72,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			col: '6',
 			sortable: true,
 			visibleByDefault: true,
-			dataType: 'string',
+			dataType: TableColumnDataType.string,
 		},
 		...(isMobileWidth()
 			? []
@@ -82,7 +83,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 						col: '3',
 						sortable: true,
 						visibleByDefault: true,
-						dataType: 'dateTime',
+						dataType: TableColumnDataType.dateTime,
 					},
 			  ]),
 		{ id: 'actions', tooltip: t('workspace/views/bookmarks-overview___acties'), col: '1' },

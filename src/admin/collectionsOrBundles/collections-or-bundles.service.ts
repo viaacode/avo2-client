@@ -7,6 +7,7 @@ import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import {
 	EDITORIAL_QUERIES,
@@ -37,7 +38,7 @@ export class CollectionsOrBundlesService {
 		page: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		where: any
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
@@ -129,7 +130,7 @@ export class CollectionsOrBundlesService {
 			| CollectionOrBundleQualityCheckOverviewTableCols
 			| CollectionOrBundleMarcomOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: string,
+		tableColumnDataType: TableColumnDataType,
 		where: any,
 		editorialType: EditorialType
 	): Promise<[Avo.Collection.Collection[], number]> {
