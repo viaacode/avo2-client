@@ -3,22 +3,25 @@
  */
 import * as path from 'path';
 
+import fse from 'fs-extra';
 import glob from 'glob';
 import { split } from 'lodash';
 
-const fs = require('fs-extra');
-
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+// require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 if (!process.env.GRAPHQL_URL) {
-	console.error(
+	throw new Error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_URL is not set'
 	);
 }
 if (!process.env.GRAPHQL_SECRET) {
-	console.error(
+	throw new Error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_SECRET is not set'
 	);
+}
+
+if (!process.env.PROXY_PATH) {
+	throw new Error('PROXY_PATH env var is required');
 }
 
 /**
@@ -31,79 +34,84 @@ function getQueryLabel(query: string): string {
 	return split(query, /[ ({]/)[1];
 }
 
-function extractQueriesFromCode(gqlRegex: RegExp) {
+async function extractQueriesFromCode(gqlRegex: RegExp) {
+	return;
 	const options = {
 		cwd: path.join(__dirname, '../src'),
 	};
 
-	glob('**/*.gql.ts', options, async (err, files) => {
-		const queries: { [queryName: string]: string } = {};
-		const queryLabels: string[] = [];
+	const files = glob.sync('**/*.gql.ts', options);
 
-		try {
-			if (err) {
-				console.error('Failed to find files using **/*.gql.ts', err);
-				return;
-			}
+	const queries: { [queryName: string]: string } = {};
+	const queryLabels: string[] = [];
 
-			// Find and extract queries
-			files.forEach((relativeFilePath: string) => {
-				try {
-					const absoluteFilePath = `${options.cwd}/${relativeFilePath}`;
-					const content: string = fs.readFileSync(absoluteFilePath).toString();
+	try {
+		// Find and extract queries
+		files.forEach((relativeFilePath: string) => {
+			try {
+				const absoluteFilePath = `${options.cwd}/${relativeFilePath}`;
+				const content: string = fse.readFileSync(absoluteFilePath).toString();
 
-					let matches: RegExpExecArray | null;
-					do {
-						matches = gqlRegex.exec(content);
-						if (matches) {
-							const name = matches[1];
-							const query = matches[2];
-							if (query.includes('${')) {
-								console.warn(
-									`Extracting graphql queries with javascript template parameters isn't supported: ${name}`
-								);
-							}
-
-							if (queries[name]) {
-								console.error(
-									`Query with the same variable name is found twice. This will cause a conflicts in the query whitelist: ${name}`
-								);
-							}
-
-							const label = getQueryLabel(query);
-							if (queryLabels.includes(label)) {
-								console.error(
-									`Query with the same label is found twice. This will cause a conflicts in the query whitelist: ${label}`
-								);
-							}
-							queryLabels.push(label);
-
-							// Remove new lines and tabs
-							// Trim whitespace
-							queries[name] = query.replace(/[\t\r\n]+/gm, ' ').trim();
+				let matches: RegExpExecArray | null;
+				do {
+					matches = gqlRegex.exec(content);
+					if (matches) {
+						const name = matches[1];
+						const query = matches[2];
+						if (query.includes('${')) {
+							console.warn(
+								`Extracting graphql queries with javascript template parameters isn't supported: ${name}`
+							);
 						}
-					} while (matches);
-				} catch (err) {
-					console.error(`Failed to find queries in file: ${relativeFilePath}`, err);
-				}
-			});
 
-			const outputFile = path.join(__dirname, 'client-whitelist.json');
+						if (queries[name]) {
+							console.error(
+								`Query with the same variable name is found twice. This will cause a conflicts in the query whitelist: ${name}`
+							);
+						}
 
-			await fs.writeFile(outputFile, JSON.stringify(queries, null, 2));
+						const label = getQueryLabel(query);
+						if (queryLabels.includes(label)) {
+							console.error(
+								`Query with the same label is found twice. This will cause a conflicts in the query whitelist: ${label}`
+							);
+						}
+						queryLabels.push(label);
 
-			console.log(
-				`Found ${
-					Object.keys(queries).length
-				} queries, outputted to: ${outputFile}. Copy this file to /scripts folder in the avo2 proxy`
-			);
-		} catch (err) {
-			console.error(
-				'Failed to extract and upload graphql query whitelist',
-				JSON.stringify(err)
-			);
-		}
-	});
+						// Remove new lines and tabs
+						// Trim whitespace
+						queries[name] = query.replace(/[\t\r\n]+/gm, ' ').trim();
+					}
+				} while (matches);
+			} catch (err) {
+				console.error(`Failed to find queries in file: ${relativeFilePath}`, err);
+			}
+		});
+
+		const outputFile = path.join(__dirname, 'client-whitelist.json');
+
+		await fse.writeFile(outputFile, JSON.stringify(queries, null, 2));
+
+		console.log(
+			`Found ${
+				Object.keys(queries).length
+			} queries, outputted to: ${outputFile}. Copy this file to /scripts folder in the avo2 proxy`
+		);
+	} catch (err) {
+		console.error('Failed to extract and upload graphql query whitelist', JSON.stringify(err));
+	}
 }
 
-extractQueriesFromCode(/const ([^\s]+) = gql`([^`]+?)`/gm);
+function copyWhitelistToProxy() {
+	const sourceFile = path.join(__dirname, 'client-whitelist.json');
+	const dest = path.join(process.env.PROXY_PATH || '', 'scripts', 'client-whitelist.json');
+	fse.copySync(sourceFile, dest);
+	console.log('Whitelist file copied to proxy');
+}
+
+async function run() {
+	await extractQueriesFromCode(/const ([^\s]+) = gql`([^`]+?)`/gm);
+	copyWhitelistToProxy();
+}
+
+run();
