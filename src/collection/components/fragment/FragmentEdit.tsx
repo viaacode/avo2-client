@@ -1,14 +1,3 @@
-import { get, isEqual, isNil, isString } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Column,
@@ -27,7 +16,18 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { get, isEqual, isNil, isString } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { AssignmentBlockType } from '../../../assignment/assignment.types';
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
 import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
@@ -236,14 +236,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean = !fragment.use_custom_fields && fragment.type !== 'TEXT';
+		const disableVideoFields: boolean =
+			!fragment.use_custom_fields && fragment.type !== AssignmentBlockType.TEXT;
 
 		return (
 			<Form>
 				{itemMetaData && (
 					<FormGroup
 						label={
-							['ITEM', 'TEXT'].includes(fragment.type)
+							[AssignmentBlockType.ITEM, AssignmentBlockType.TEXT].includes(
+								fragment.type as AssignmentBlockType
+							)
 								? t(
 										'collection/components/fragment/fragment-edit___alternatieve-tekst'
 								  )

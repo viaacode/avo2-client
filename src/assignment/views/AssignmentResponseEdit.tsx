@@ -1,9 +1,3 @@
-import { isPast } from 'date-fns/esm';
-import React, { FunctionComponent, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-
 import {
 	Alert,
 	BlockHeading,
@@ -14,6 +8,11 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
+import { isPast } from 'date-fns/esm';
+import React, { FunctionComponent, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -26,7 +25,6 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../hooks';
 import { useGetAssignmentById } from '../hooks/get-assignment-by-id';
 
-import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
 
 const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
@@ -137,10 +135,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		);
 	}, [assignment, t]);
 
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
-		tabs,
-		onTabClick,
-	]);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {

@@ -46,6 +46,7 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
+	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentRetrieveError,
 	AssignmentSchemaLabel_v2,
@@ -853,7 +854,10 @@ export class AssignmentService {
 					end_oc: fragment.end_oc,
 					position: startPosition + index,
 					thumbnail_path: fragment.thumbnail_path,
-					type: fragment.type === 'TEXT' ? 'TEXT' : 'ITEM',
+					type:
+						fragment.type === AssignmentBlockType.TEXT
+							? AssignmentBlockType.TEXT
+							: AssignmentBlockType.ITEM,
 				};
 			});
 			try {
@@ -977,7 +981,7 @@ export class AssignmentService {
 			fragmentStartTime: 0,
 			fragmentEndTime: 0,
 		};
-		const thumbnailPath = !!trimInfo.fragmentStartTime
+		const thumbnailPath = trimInfo.fragmentStartTime
 			? await VideoStillService.getVideoStill(
 					item.external_id,
 					trimInfo.fragmentStartTime * 1000
