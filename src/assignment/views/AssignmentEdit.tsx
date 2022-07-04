@@ -334,7 +334,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			item,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
-			position: getAddBlockModalPosition + 1, // Always insert after
+			position: getAddBlockModalPosition,
 		} as AssignmentBlock); // TODO: avoid cast
 
 		setAssignment((prev) => ({
@@ -347,6 +347,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			shouldTouch: true,
 		});
 	};
+
 	// Effects
 
 	// Fetch initial data
@@ -754,7 +755,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								case AssignmentBlockType.ZOEK: {
 									const blocks = insertAtPosition(assignment.blocks, {
 										type,
-										position: getAddBlockModalPosition + 1, // Always insert after
+										position: getAddBlockModalPosition,
 									} as AssignmentBlock); // TODO: avoid cast
 
 									setAssignment((prev) => ({
