@@ -10,10 +10,10 @@ import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../
 import { LANGUAGES } from '../../shared/constants';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
+import { SearchFilter } from '../search.const';
 import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
 import './SearchFilterControls.scss';
-import { SearchFilter } from '../search.const';
 
 const languageCodeToLabel = (code: string): string => {
 	return LANGUAGES.nl[code] || code;

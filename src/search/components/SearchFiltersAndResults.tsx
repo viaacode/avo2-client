@@ -21,6 +21,7 @@ import {
 	cloneDeep,
 	every,
 	get,
+	intersection,
 	isArray,
 	isEmpty,
 	isEqual,
@@ -76,6 +77,7 @@ import SearchResults from './SearchResults';
 const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> = ({
 	// Manual props
 	enabledFilters,
+	enabledTypeOptions,
 	bookmarks,
 	filterState,
 	setFilterState,
@@ -144,7 +146,17 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	useEffect(() => {
 		if (searchResults) {
 			// Update the checkbox items and counts
-			setMultiOptions(searchResults.aggregations);
+			if (enabledTypeOptions) {
+				// Limit the type options
+				searchResults.aggregations['type'] = searchResults.aggregations['type'].filter(
+					(typeOption) =>
+						enabledTypeOptions.includes(typeOption.option_name as Avo.Core.ContentType)
+				);
+				setMultiOptions(searchResults.aggregations);
+			} else {
+				// Show all type options
+				setMultiOptions(searchResults.aggregations);
+			}
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
@@ -163,12 +175,26 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			(filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
 			DEFAULT_SORT_ORDER.orderDirection;
 
+		// Limit media types in query
+		const copiedFilterState = cloneDeep(filterState);
+		if (enabledTypeOptions) {
+			if (!copiedFilterState.filters?.type) {
+				copiedFilterState.filters = copiedFilterState.filters || {};
+				copiedFilterState.filters.type = enabledTypeOptions;
+			} else {
+				copiedFilterState.filters.type = intersection(
+					copiedFilterState.filters?.type,
+					enabledTypeOptions
+				);
+			}
+		}
+
 		search(
 			orderProperty,
 			orderDirection,
 			currentPage * ITEMS_PER_PAGE,
 			ITEMS_PER_PAGE,
-			cleanupFilterState(filterState).filters,
+			cleanupFilterState(copiedFilterState).filters,
 			{}
 		);
 	}, [filterState, currentPage, search]);

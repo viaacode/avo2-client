@@ -85,5 +85,4 @@ export type AssignmentBlockTypeDict<T> = { [key in AssignmentBlockType]: T }; //
 export interface PupilSearchFilterState extends FilterState {
 	tab: string;
 	selectedSearchResultId?: string;
-	selectedSearchResultType?: Avo.Core.ContentType;
 }

@@ -28,8 +28,6 @@ import { compose } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import BundleDetail from '../../bundle/views/BundleDetail';
-import { CollectionDetail } from '../../collection/views';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import ItemDetail from '../../item/views/ItemDetail';
@@ -42,6 +40,7 @@ import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	ENABLED_FILTERS_PUPIL_SEARCH,
+	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { PupilSearchFilterState } from '../assignment.types';
@@ -68,7 +67,6 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		orderDirection: StringParam,
 		tab: StringParam,
 		selectedSearchResultId: StringParam,
-		selectedSearchResultType: StringParam,
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		PupilSearchFilterState,
@@ -108,11 +106,10 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	}, []);
 
 	// Events
-	const goToDetailLink = (id: string, type: Avo.Core.ContentType): void => {
+	const goToDetailLink = (id: string): void => {
 		setFilterState({
 			...(filterState as PupilSearchFilterState),
 			selectedSearchResultId: id,
-			selectedSearchResultType: type,
 		});
 	};
 
@@ -120,16 +117,12 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 		setFilterState({ ...filterState, ...newFilters });
 	};
 
-	const renderDetailLink = (
-		linkText: string | ReactNode,
-		id: string,
-		type: Avo.Core.ContentType
-	) => {
+	const renderDetailLink = (linkText: string | ReactNode, id: string) => {
 		return (
 			<Button
 				type="inline-link"
 				className="c-button--relative-link"
-				onClick={() => goToDetailLink(id, type)}
+				onClick={() => goToDetailLink(id)}
 			>
 				{linkText}
 			</Button>
@@ -153,7 +146,6 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 							...filterState,
 							...newFilters,
 							selectedSearchResultId: undefined,
-							selectedSearchResultType: undefined,
 						})
 					}
 				>
@@ -253,44 +245,17 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 	);
 
 	const renderSearchResultDetailPage = () => {
-		// Render detail page
-		if (
-			filterState.selectedSearchResultType === 'video' ||
-			filterState.selectedSearchResultType === 'audio'
-		) {
-			return (
-				<ItemDetail
-					id={filterState.selectedSearchResultId}
-					renderDetailLink={renderDetailLink}
-					renderSearchLink={renderSearchLink}
-					goToDetailLink={goToDetailLink}
-					goToSearchLink={goToSearchLink}
-					enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
-				/>
-			);
-		} else if (filterState.selectedSearchResultType === 'collectie') {
-			return (
-				<CollectionDetail
-					id={filterState.selectedSearchResultId}
-					renderDetailLink={renderDetailLink}
-					renderSearchLink={renderSearchLink}
-					goToDetailLink={goToDetailLink}
-					goToSearchLink={goToSearchLink}
-					enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
-				/>
-			);
-		} else {
-			return (
-				<BundleDetail
-					id={filterState.selectedSearchResultId}
-					renderDetailLink={renderDetailLink}
-					renderSearchLink={renderSearchLink}
-					goToDetailLink={goToDetailLink}
-					goToSearchLink={goToSearchLink}
-					enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
-				/>
-			);
-		}
+		// Render fragment detail page
+		return (
+			<ItemDetail
+				id={filterState.selectedSearchResultId}
+				renderDetailLink={renderDetailLink}
+				renderSearchLink={renderSearchLink}
+				goToDetailLink={goToDetailLink}
+				goToSearchLink={goToSearchLink}
+				enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
+			/>
+		);
 	};
 
 	const renderSearchContent = () => {
@@ -306,7 +271,6 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 									setFilterState({
 										...filterState,
 										selectedSearchResultId: undefined,
-										selectedSearchResultType: undefined,
 									});
 								}}
 							>
@@ -324,6 +288,7 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 			<Spacer margin={['top-large', 'bottom-large']}>
 				<SearchFiltersAndResults
 					enabledFilters={ENABLED_FILTERS_PUPIL_SEARCH}
+					enabledTypeOptions={ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH}
 					bookmarks={false}
 					filterState={filterState}
 					setFilterState={(newFilterState: FilterState) => {

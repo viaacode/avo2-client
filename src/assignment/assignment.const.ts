@@ -3,6 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
+import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
@@ -316,8 +317,13 @@ export const ENABLED_FILTERS_PUPIL_SEARCH: SearchFilter[] = [
 	SearchFilter.provider,
 ];
 
+export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] = [
+	ContentTypeString.video,
+	ContentTypeString.audio,
+];
+
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: {id: string}): boolean => {
+export const isNewAssignmentBlock = (item: { id: string }): boolean => {
 	return item.id.startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
-}
+};

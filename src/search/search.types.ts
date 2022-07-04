@@ -28,6 +28,7 @@ export interface SearchFiltersAndResultsProps
 
 export interface SearchFiltersAndResultsPropsManual {
 	enabledFilters?: (keyof Avo.Search.Filters)[];
+	enabledTypeOptions?: Avo.Core.ContentType[];
 	bookmarks: boolean;
 	filterState: FilterState;
 	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
