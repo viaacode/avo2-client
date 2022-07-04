@@ -55,7 +55,6 @@ import {
 import {
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
-	AssignmentRetrieveError,
 	AssignmentSchemaLabel_v2,
 	AssignmentType,
 } from './assignment.types';
@@ -656,13 +655,10 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<
-		| {
-				assignmentBlocks: Avo.Assignment.Block[];
-				assignment: Avo.Assignment.Assignment_v2;
-		  }
-		| AssignmentRetrieveError
-	> {
+	): Promise<{
+		assignmentBlocks: Avo.Assignment.Block[];
+		assignment: Avo.Assignment.Assignment_v2;
+	}> {
 		try {
 			// Load assignment
 			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> =
@@ -820,9 +816,11 @@ export class AssignmentService {
 	static async getAssignmentResponses(
 		profileId: string,
 		assignmentId: string
-	): Promise<string[]> {
+	): Promise<Avo.Assignment.Response_v2[]> {
 		try {
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSES,
 				variables: { profileId, assignmentId },
 				fetchPolicy: 'no-cache',
@@ -832,9 +830,7 @@ export class AssignmentService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			return (get(response, 'data.app_assignment_responses_v2') || []).map(
-				(response: { id: string }) => response.id
-			);
+			return response?.data?.app_assignment_responses_v2;
 		} catch (err) {
 			throw new CustomError('Failed to get assignment responses from database', err, {
 				profileId,
@@ -861,7 +857,7 @@ export class AssignmentService {
 			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
-			const existingAssignmentResponses: string[] =
+			const existingAssignmentResponses: Avo.Assignment.Response_v2[] =
 				await AssignmentService.getAssignmentResponses(
 					get(user, 'profile.id'),
 					get(assignment, 'id') as unknown as string
@@ -877,14 +873,15 @@ export class AssignmentService {
 						)
 					);
 				}
-				return null;
+				return existingAssignmentResponses[0];
 			}
 
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
-				collection_title: null,
+				collection_title:
+					assignment.assignment_type === AssignmentType.BOUW ? 'Nieuwe collectie' : null,
 			};
 			const response = await dataService.mutate({
 				mutation: INSERT_ASSIGNMENT_RESPONSE,

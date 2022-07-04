@@ -1,5 +1,4 @@
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Column,
@@ -9,14 +8,8 @@ import {
 	Header,
 	HeaderButtons,
 	HeaderRow,
-	MediaCard,
-	MediaCardMetaData,
-	MediaCardThumbnail,
 	MenuContent,
-	MetaData,
-	MetaDataItem,
 	Spacer,
-	Thumbnail,
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -34,18 +27,19 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import { FilterState } from '../../search/search.types';
 import {
 	IconBar,
 	InteractiveTour,
@@ -61,23 +55,27 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
-	formatDate,
 	generateContentLinkString,
-	generateSearchLinks,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
-import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { isUuid } from '../../shared/helpers/uuid';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import { CollectionBlockType, VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
+import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { ContentTypeString, Relation, toEnglishContentType } from '../collection.types';
+import { ContentTypeString, Relation } from '../collection.types';
 import {
 	AutoplayCollectionModal,
 	CollectionFragmentTypeItem,
@@ -122,18 +120,41 @@ type CollectionDetailPermissions = Partial<{
 	canCreateBundles: boolean;
 }>;
 
-type CollectionDetailProps = DefaultSecureRouteProps<{ id: string }>;
+type CollectionDetailProps = {
+	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType,
+		className?: string
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
+	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
+	goToSearchLink: (newFilters: FilterState) => void;
+	enabledMetaData: SearchFilter[];
+};
 
-const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
+const CollectionDetail: FunctionComponent<
+	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
+> = ({
 	history,
 	location,
 	match,
 	user,
+	id,
+	renderDetailLink = defaultRenderDetailLink,
+	renderSearchLink = defaultRenderSearchLink,
+	goToDetailLink = defaultGoToDetailLink(history),
+	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const [t] = useTranslation();
 
 	// State
-	const [collectionId, setCollectionId] = useState(match.params.id);
+	const [collectionId, setCollectionId] = useState(id || match.params.id);
 	const [collection, setCollection] = useState<Avo.Collection.Collection | null>(null);
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -186,8 +207,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	}, [setRelatedCollections, t, collectionId]);
 
 	useEffect(() => {
-		setCollectionId(match.params.id);
-	}, [match.params.id]);
+		setCollectionId(id || match.params.id);
+	}, [id, match.params.id]);
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
@@ -197,6 +218,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
+			if (!user) {
+				return;
+			}
 			const uuid = isUuid(collectionId)
 				? collectionId
 				: await CollectionService.fetchUuidByAvo1Id(collectionId);
@@ -216,7 +240,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			if (collectionId !== uuid) {
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
-				history.replace(buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }));
+				goToDetailLink(uuid, 'collectie');
 
 				return;
 			}
@@ -395,7 +419,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, user, history]);
+	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, user, goToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -432,6 +456,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						);
 						return;
 					}
+					if (!user) {
+						ToastService.danger(
+							t(
+								'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
+							)
+						);
+						return;
+					}
 					const duplicateCollection = await CollectionService.duplicateCollection(
 						collection,
 						user,
@@ -448,10 +480,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						user
 					);
 
-					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
-						history
-					);
+					goToDetailLink(duplicateCollection.id, 'collectie');
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						t(
@@ -517,6 +546,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const toggleBookmark = async () => {
 		try {
+			if (!user) {
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
+					)
+				);
+				return;
+			}
 			await BookmarksViewsPlaysService.toggleBookmark(
 				collectionId,
 				user,
@@ -586,6 +623,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				collection,
 				withDescription
 			);
+
 			history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
 		}
 	};
@@ -643,33 +681,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	// Render functions
-	const renderRelatedContent = () => {
-		return (relatedCollections || []).map((relatedItem: Avo.Search.ResultItem) => {
-			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedItem;
-			const category = toEnglishContentType(relatedItem.administrative_type);
-
-			return (
-				<Column size="2-6" key={`related-item-${id}`}>
-					<Link to={generateRelatedItemLink(relatedItem)} className="a-link__no-styles">
-						<MediaCard category={category} orientation="horizontal" title={dc_title}>
-							<MediaCardThumbnail>
-								<Thumbnail
-									category={category}
-									src={thumbnail_path}
-									showCategoryIcon
-								/>
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={category}>
-									<MetaDataItem label={original_cp || undefined} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</Link>
-				</Column>
-			);
-		});
-	};
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
@@ -988,16 +999,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// End
 
 	const renderCollection = () => {
-		const {
-			id,
-			profile,
-			collection_fragments,
-			lom_context,
-			created_at,
-			updated_at,
-			title,
-			lom_classification,
-		} = collection as Avo.Collection.Collection;
+		if (!collection) {
+			return null;
+		}
+		const { profile, collection_fragments, title } = collection as Avo.Collection.Collection;
 		const hasCopies = (get(collection, 'relations') || []).length > 0;
 		const hasParentBundles = !!publishedBundles.length;
 
@@ -1076,7 +1081,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 					<Container mode="vertical">
 						<Container mode="horizontal">
-							{!!collection && (
+							{!!collection && !!user && (
 								<FragmentList
 									collectionFragments={collection_fragments}
 									showDescription
@@ -1100,67 +1105,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Container mode="vertical">
 						<Container mode="horizontal">
 							<h3 className="c-h3">
-								<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">
-									Info over deze collectie
-								</Trans>
+								{t('collection/views/collection-detail___info-over-deze-collectie')}
 							</h3>
 							<Grid>
-								<Column size="3-3">
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
-												Onderwijsniveau
-											</Trans>
-										</p>
-										<p className="c-body-1">
-											{lom_context && lom_context.length ? (
-												generateSearchLinks(
-													id,
-													'educationLevel',
-													lom_context
-												)
-											) : (
-												<span className="u-d-block">-</span>
-											)}
-										</p>
-									</Spacer>
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___vakken">
-												Vakken
-											</Trans>
-										</p>
-										<p className="c-body-1">
-											{lom_classification && lom_classification.length ? (
-												generateSearchLinks(
-													id,
-													'subject',
-													lom_classification
-												)
-											) : (
-												<span className="u-d-block">-</span>
-											)}
-										</p>
-									</Spacer>
-								</Column>
-								<Column size="3-3">
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											{t(
-												'collection/views/collection-detail___aangemaakt-op'
-											)}
-										</p>
-										<p className="c-body-1">{formatDate(created_at)}</p>
-									</Spacer>
-									<Spacer margin="top-large">
-										<p className="u-text-bold">
-											{t(
-												'collection/views/collection-detail___laatst-aangepast'
-											)}
-										</p>
-										<p className="c-body-1">{formatDate(updated_at)}</p>
-									</Spacer>
-								</Column>
+								{!!collection &&
+									renderCommonMetadata(
+										collection,
+										enabledMetaData,
+										renderSearchLink
+									)}
 								{(hasCopies || hasParentBundles) && (
 									<Column size="3-6">
 										<Spacer margin="top-large">
@@ -1193,6 +1146,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													))}
 												</p>
 											)}
+
 											{hasParentBundles && (
 												<p className="c-body-1">
 													{`${t(
@@ -1221,25 +1175,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</Column>
 								)}
 							</Grid>
-							{!!relatedCollections && !!relatedCollections.length && (
-								<>
-									<hr className="c-hr" />
-									<BlockHeading type="h3">
-										<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
-											Bekijk ook
-										</Trans>
-									</BlockHeading>
-									<Grid className="c-media-card-list">
-										{renderRelatedContent()}
-									</Grid>
-								</>
-							)}
+							{renderRelatedItems(relatedCollections, renderDetailLink)}
 						</Container>
 					</Container>
 				</div>
 				{!showLoginPopup && (
 					<>
-						{!!collection && (
+						{!!collection && !!user && (
 							<PublishCollectionModal
 								collection={collection}
 								isOpen={isPublishModalOpen}
@@ -1256,7 +1198,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								user={user}
 							/>
 						)}
-						{collectionId !== undefined && (
+						{collectionId !== undefined && !!user && (
 							<AddToBundleModal
 								history={history}
 								location={location}
@@ -1291,7 +1233,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								collectionFragments={collection_fragments}
 							/>
 						)}
-						{collection && (
+						{!!collection && (
 							<QuickLaneModal
 								modalTitle={t(
 									'collection/views/collection-detail___delen-met-leerlingen'
@@ -1309,7 +1251,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								}}
 							/>
 						)}
-						{collection && (
+						{!!collection && !!user && (
 							<>
 								<CreateAssignmentModal
 									isOpen={isCreateAssignmentModalOpen}
@@ -1381,4 +1323,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	);
 };
 
-export default withRouter(CollectionDetail);
+export default compose(
+	withRouter,
+	withUser
+)(CollectionDetail) as FunctionComponent<CollectionDetailProps>;

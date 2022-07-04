@@ -1,7 +1,6 @@
-import { DocumentNode } from 'graphql';
-
 import { ButtonType, SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import type { DocumentNode } from 'graphql';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';

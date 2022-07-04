@@ -1,24 +1,23 @@
 import { IconName, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentType } from '../assignment.types';
 
 export function useAssignmentPupilTabs(
-	assignment?: Avo.Assignment.Assignment_v2
+	assignment: Avo.Assignment.Assignment_v2 | undefined,
+	tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+	setTab: (newTab: string) => void
 ): [
 	TabProps[],
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
-	React.Dispatch<React.SetStateAction<ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS>>,
+	(newTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void,
 	(id: string | number) => void
 ] {
 	const [t] = useTranslation();
 
-	const [tab, setTab] = useState<ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS>(
-		ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT
-	);
 	const tabs: TabProps[] = useMemo(
 		() =>
 			[
@@ -63,5 +62,5 @@ export function useAssignmentPupilTabs(
 		[setTab]
 	);
 
-	return [tabs, tab, setTab, onTabClick];
+	return [tabs, tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined, setTab, onTabClick];
 }

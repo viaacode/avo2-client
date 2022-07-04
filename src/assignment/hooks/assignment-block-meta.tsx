@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
-import { SEARCH_FILTER_STATE_SERIES_PROP } from '../../shared/constants';
+import { SearchFilter } from '../../search/search.const';
 import { buildLink, formatDate } from '../../shared/helpers';
 
 export function useAssignmentBlockMeta() {
@@ -37,7 +37,7 @@ export function useAssignmentBlockMeta() {
 								target="_blank"
 								to={buildLink(APP_PATH.SEARCH.route, undefined, {
 									filters: JSON.stringify({
-										[SEARCH_FILTER_STATE_SERIES_PROP]: [series],
+										[SearchFilter.serie]: [series],
 									}),
 								})}
 							>

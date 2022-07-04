@@ -1,14 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-	Alert,
-	Button,
-	Container,
-	Icon,
-	Spacer,
-	StickyEdgeBar,
-	Tabs,
-} from '@viaa/avo2-components';
+import { Alert, Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { isPast } from 'date-fns/esm';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,16 +9,12 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import {
-	LoadingErrorLoadedComponent,
-	LoadingInfo,
-} from '../../shared/components';
-import {
-	ROUTE_PARTS,
-} from '../../shared/constants';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -33,11 +22,13 @@ import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	ASSIGNMENT_FORM_SCHEMA,
+	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentFormState } from '../assignment.types';
+import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { insertAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlocks,
 	useAssignmentContentModals,
@@ -181,8 +172,34 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	}, [resetForm, setAssignment, original]);
 
 	// Render
-	
+
 	const renderBlockContent = useAssignmentBlocks(setBlock);
+
+	const onAddItem = async (itemExternalId: string) => {
+		if (addBlockModal.entity == null) {
+			return;
+		}
+
+		// fetch item details
+		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
+		const blocks = insertAtPosition(assignment.blocks, {
+			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+			item,
+			type: AssignmentBlockType.ITEM,
+			fragment_id: itemExternalId,
+			position: addBlockModal.entity,
+		} as AssignmentBlock); // TODO: avoid cast
+
+		setAssignment((prev) => ({
+			...prev,
+			blocks,
+		}));
+
+		setValue('blocks', blocks, {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
+	};
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
 		assignment,
@@ -190,8 +207,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		setValue,
 		{
 			confirmSliceConfig: {
-				responses: original?.responses || []
-			}
+				responses: original?.responses || [],
+			},
+			addBookmarkFragmentConfig: {
+				user,
+				addFragmentCallback: onAddItem,
+			},
 		}
 	);
 

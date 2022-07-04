@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export type SingleEntityModal<T> = {
 	isOpen: boolean | undefined;
@@ -10,12 +10,6 @@ export type SingleEntityModal<T> = {
 export function useSingleEntityModal<T>(): SingleEntityModal<T> {
 	const [entity, setEntity] = useState<T | undefined>(undefined);
 	const [isOpen, setOpen] = useState<boolean>();
-
-	useEffect(() => {
-		if (!isOpen && entity !== undefined) {
-			setEntity(undefined);
-		}
-	}, [isOpen, entity]);
 
 	return { isOpen, setOpen, entity, setEntity };
 }

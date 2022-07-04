@@ -1,6 +1,5 @@
-import { get, isString, some } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { get, isString, some } from 'lodash-es';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -100,7 +99,7 @@ export class PermissionService {
 			case PermissionName.EDIT_OWN_COLLECTIONS:
 			case PermissionName.PUBLISH_OWN_COLLECTIONS:
 			case PermissionName.DELETE_OWN_COLLECTIONS:
-			case PermissionName.VIEW_OWN_COLLECTIONS:
+			case PermissionName.VIEW_OWN_COLLECTIONS: {
 				const collection = isString(obj)
 					? await CollectionService.fetchCollectionOrBundleById(
 							obj,
@@ -111,11 +110,12 @@ export class PermissionService {
 					: obj;
 				const collectionOwnerId = get(collection, 'owner_profile_id');
 				return !!profileId && !!collectionOwnerId && profileId === collectionOwnerId;
+			}
 
 			case PermissionName.EDIT_OWN_BUNDLES:
 			case PermissionName.PUBLISH_OWN_BUNDLES:
 			case PermissionName.DELETE_OWN_BUNDLES:
-			case PermissionName.VIEW_OWN_BUNDLES:
+			case PermissionName.VIEW_OWN_BUNDLES: {
 				const bundle = isString(obj)
 					? await CollectionService.fetchCollectionOrBundleById(
 							obj,
@@ -126,21 +126,24 @@ export class PermissionService {
 					: obj;
 				const bundleOwnerId = get(bundle, 'owner_profile_id');
 				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;
+			}
 
 			case PermissionName.EDIT_ASSIGNMENTS:
-			case PermissionName.EDIT_OWN_ASSIGNMENTS:
+			case PermissionName.EDIT_OWN_ASSIGNMENTS: {
 				const assignment = isString(obj)
 					? await AssignmentService.fetchAssignmentById(obj)
 					: obj;
 				const assignmentOwnerId = get(assignment, 'owner_profile_id');
 				return !!profileId && !!assignmentOwnerId && profileId === assignmentOwnerId;
+			}
 
-			case PermissionName.EDIT_OWN_CONTENT_PAGES:
+			case PermissionName.EDIT_OWN_CONTENT_PAGES: {
 				const contentPage: ContentPageInfo = isString(obj)
 					? await ContentPageService.getContentPageByPath(obj)
 					: obj;
 				const contentPageOwnerId = get(contentPage, 'user_profile_id');
 				return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;
+			}
 
 			default:
 				// The permission does not require any other checks besides is presence in the permission list

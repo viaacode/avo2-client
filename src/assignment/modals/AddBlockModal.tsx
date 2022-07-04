@@ -1,7 +1,3 @@
-import classNames from 'classnames';
-import React, { FunctionComponent, ReactNode, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -11,7 +7,10 @@ import {
 	ModalProps,
 	Spacer,
 } from '@viaa/avo2-components';
-import { IconNameSchema } from '@viaa/avo2-components/dist/esm/components/Icon/Icon.types';
+import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
+import classNames from 'classnames';
+import React, { FunctionComponent, ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS } from '../assignment.const';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';

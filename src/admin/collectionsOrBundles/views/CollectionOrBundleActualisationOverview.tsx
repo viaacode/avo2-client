@@ -1,3 +1,5 @@
+import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -10,9 +12,6 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -47,12 +46,11 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-interface CollectionOrBundleActualisationOverviewProps extends DefaultSecureRouteProps {}
+type CollectionOrBundleActualisationOverviewProps = DefaultSecureRouteProps;
 
-const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBundleActualisationOverviewProps> = ({
-	location,
-	user,
-}) => {
+const CollectionOrBundleActualisationOverview: FunctionComponent<
+	CollectionOrBundleActualisationOverviewProps
+> = ({ location, user }) => {
 	const [t] = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -68,7 +66,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
-	const [collectionLabels] = useCollectionQualityLabels();
+	const [collectionLabels] = useCollectionQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
@@ -180,18 +178,16 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<CollectionOrBun
 			);
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const [
-				collectionsTemp,
-				collectionsCountTemp,
-			] = await CollectionsOrBundlesService.getCollectionEditorial(
-				tableState.page || 0,
-				(tableState.sort_column ||
-					'created_at') as CollectionOrBundleActualisationOverviewTableCols,
-				tableState.sort_order || 'desc',
-				columnDataType,
-				generateWhereObject(getFilters(tableState)),
-				'actualisation'
-			);
+			const [collectionsTemp, collectionsCountTemp] =
+				await CollectionsOrBundlesService.getCollectionEditorial(
+					tableState.page || 0,
+					(tableState.sort_column ||
+						'created_at') as CollectionOrBundleActualisationOverviewTableCols,
+					tableState.sort_order || 'desc',
+					columnDataType,
+					generateWhereObject(getFilters(tableState)),
+					'actualisation'
+				);
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
