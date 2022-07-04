@@ -25,6 +25,7 @@ import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+	isNewAssignmentBlock,
 	ITEMS_PER_PAGE,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
@@ -421,8 +422,12 @@ export class AssignmentService {
 			).includes(block.id)
 		);
 
-		const created = update.filter((block) => block.id === undefined);
-		const existing = update.filter((block) => !deleted.map((d) => d.id).includes(block.id));
+		const created = update.filter(isNewAssignmentBlock);
+		const existing = update.filter(
+			(block) =>
+				!deleted.map((d) => d.id).includes(block.id) &&
+				!created.map((d) => d.id).includes(block.id)
+		);
 
 		const cleanup = (block: AssignmentBlock) => {
 			delete block.item;
@@ -458,10 +463,17 @@ export class AssignmentService {
 				dataService.mutate({
 					mutation: INSERT_ASSIGNMENT_BLOCKS,
 					variables: {
-						assignmentBlocks: created.map(cleanup).map((block) => ({
-							...block,
-							assignment_id: id,
-						})),
+						assignmentBlocks: created
+							.map(cleanup)
+							.map((block) => ({
+								...block,
+								assignment_id: id,
+							}))
+							.map((block) => {
+								delete (block as any).id;
+
+								return block;
+							}),
 					},
 					update: ApolloCacheManager.clearAssignmentCache,
 				})

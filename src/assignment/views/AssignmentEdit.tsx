@@ -51,6 +51,7 @@ import {
 	ASSIGNMENT_FORM_SCHEMA,
 	EDIT_ASSIGNMENT_BLOCK_ICONS,
 	EDIT_ASSIGNMENT_BLOCK_LABELS,
+	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
@@ -331,6 +332,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		// fetch item details
 		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
 		const blocks = insertAtPosition(assignment.blocks, {
+			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 			item,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
@@ -754,6 +756,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
 									const blocks = insertAtPosition(assignment.blocks, {
+										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
 										position: getAddBlockModalPosition,
 									} as AssignmentBlock); // TODO: avoid cast
