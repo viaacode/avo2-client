@@ -372,7 +372,7 @@ const BundleDetail: FunctionComponent<
 			if (!user) {
 				ToastService.danger(
 					t(
-						'Er was een probleem met het controleren van de ingelogde gebruiker. Log opnieuw in en probeer opnieuw.'
+						'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 					)
 				);
 				return;
@@ -443,7 +443,7 @@ const BundleDetail: FunctionComponent<
 		if (!user) {
 			ToastService.danger(
 				t(
-					'Er was een probleem met het controleren van de ingelogde gebruiker. Log opnieuw in en probeer opnieuw.'
+					'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 				)
 			);
 			return;

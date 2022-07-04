@@ -459,7 +459,7 @@ const CollectionDetail: FunctionComponent<
 					if (!user) {
 						ToastService.danger(
 							t(
-								'Er was een probleem met het controleren van de ingelogde gebruiker. Log opnieuw in en probeer opnieuw.'
+								'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 							)
 						);
 						return;
@@ -549,7 +549,7 @@ const CollectionDetail: FunctionComponent<
 			if (!user) {
 				ToastService.danger(
 					t(
-						'Er was een probleem met het controleren van de ingelogde gebruiker. Log opnieuw in en probeer opnieuw.'
+						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 					)
 				);
 				return;

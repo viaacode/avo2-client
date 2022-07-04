@@ -268,9 +268,15 @@ const AssignmentResponseEdit: FunctionComponent<
 							<Button
 								type="tertiary"
 								icon="collection"
-								label={t('Voeg toe aan mijn collectie')}
-								title={t('Knip fragment bij en/of voeg toe aan mijn collectie')}
-								ariaLabel={t('Knip fragment bij en/of voeg toe aan mijn collectie')}
+								label={t(
+									'assignment/views/assignment-response-edit___voeg-toe-aan-mijn-collectie'
+								)}
+								title={t(
+									'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
+								)}
+								ariaLabel={t(
+									'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
+								)}
 								onClick={() => {
 									// TODO add fragment to collection
 								}}
@@ -315,7 +321,7 @@ const AssignmentResponseEdit: FunctionComponent<
 								}}
 							>
 								<Icon name="chevron-left" size="small" type="arrows" />
-								{t('Zoekresultaten')}
+								{t('assignment/views/assignment-response-edit___zoekresultaten')}
 							</Button>
 						</Container>
 					</Container>
@@ -327,7 +333,9 @@ const AssignmentResponseEdit: FunctionComponent<
 		if (!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)) {
 			return (
 				<ErrorView
-					message={t('Je hebt geen rechten om te zoeken binnen een opdracht.')}
+					message={t(
+						'assignment/views/assignment-response-edit___je-hebt-geen-rechten-om-te-zoeken-binnen-een-opdracht'
+					)}
 					actionButtons={['home', 'helpdesk']}
 					icon="lock"
 				/>

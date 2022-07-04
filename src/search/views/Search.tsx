@@ -11,7 +11,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -23,6 +23,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
@@ -34,7 +35,6 @@ import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -111,9 +111,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 								<ToolbarLeft>
 									<ToolbarItem>
 										<ToolbarTitle>
-											<Trans i18nKey="search/views/search___zoekresultaten">
-												Zoekresultaten
-											</Trans>
+											{t('search/views/search___zoekresultaten')}
 										</ToolbarTitle>
 									</ToolbarItem>
 								</ToolbarLeft>
@@ -150,7 +148,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 						/>
 					) : (
 						<ErrorView
-							message={t('Je hebt geen rechten om te zoeken.')}
+							message={t('search/views/search___je-hebt-geen-rechten-om-te-zoeken')}
 							actionButtons={['home', 'helpdesk']}
 							icon="lock"
 						/>
