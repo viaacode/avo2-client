@@ -173,7 +173,6 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 		);
 	};
 
-	// very similar to table in assignment overview, but with differences
 	const renderCell = (bookmark: BookmarkInfo, colKey: keyof BookmarkInfo) => {
 		const cellData: any = (bookmark as any)[colKey];
 
