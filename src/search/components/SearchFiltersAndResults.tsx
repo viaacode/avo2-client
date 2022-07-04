@@ -1,11 +1,13 @@
 import {
 	Button,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Navbar,
 	Select,
 	Spacer,
+	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -19,6 +21,7 @@ import {
 	cloneDeep,
 	every,
 	get,
+	intersection,
 	isArray,
 	isEmpty,
 	isEqual,
@@ -39,6 +42,7 @@ import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
+import { useCollectionQualityLabels } from '../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../shared/services';
 import {
 	BookmarksViewsPlaysService,
@@ -55,6 +59,7 @@ import {
 	DEFAULT_SORT_ORDER,
 	GET_SEARCH_ORDER_OPTIONS,
 	ITEMS_PER_PAGE,
+	SearchFilter,
 } from '../search.const';
 import { fetchSearchResults } from '../search.service';
 import {
@@ -73,9 +78,13 @@ import SearchResults from './SearchResults';
 const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> = ({
 	// Manual props
 	enabledFilters,
+	enabledTypeOptions,
 	bookmarks,
 	filterState,
 	setFilterState,
+	renderDetailLink,
+	renderSearchLink,
+
 	// Automatically injected props
 	searchResults,
 	searchResultsLoading,
@@ -89,9 +98,12 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const urlUpdateType: UrlUpdateType = 'push';
 
-	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
+
+	const [collectionLabels] = useCollectionQualityLabels(
+		!enabledFilters || enabledFilters?.includes('collectionLabel')
+	);
 
 	const navigateToUserRequestForm = () =>
 		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
@@ -127,7 +139,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
 	// elasticsearch can only handle 10000 results efficiently
 	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
-	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
+	const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
@@ -138,7 +150,17 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	useEffect(() => {
 		if (searchResults) {
 			// Update the checkbox items and counts
-			setMultiOptions(searchResults.aggregations);
+			if (enabledTypeOptions) {
+				// Limit the type options
+				searchResults.aggregations['type'] = searchResults.aggregations['type'].filter(
+					(typeOption) =>
+						enabledTypeOptions.includes(typeOption.option_name as Avo.Core.ContentType)
+				);
+				setMultiOptions(searchResults.aggregations);
+			} else {
+				// Show all type options
+				setMultiOptions(searchResults.aggregations);
+			}
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
@@ -157,15 +179,29 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			(filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
 			DEFAULT_SORT_ORDER.orderDirection;
 
+		// Limit media types in query
+		const copiedFilterState = cloneDeep(filterState);
+		if (enabledTypeOptions) {
+			if (!copiedFilterState.filters?.type) {
+				copiedFilterState.filters = copiedFilterState.filters || {};
+				copiedFilterState.filters.type = enabledTypeOptions;
+			} else {
+				copiedFilterState.filters.type = intersection(
+					copiedFilterState.filters?.type,
+					enabledTypeOptions
+				);
+			}
+		}
+
 		search(
 			orderProperty,
 			orderDirection,
-			currentPage * ITEMS_PER_PAGE,
+			(filterState.page || 0) * ITEMS_PER_PAGE,
 			ITEMS_PER_PAGE,
-			cleanupFilterState(filterState).filters,
+			cleanupFilterState(copiedFilterState).filters,
 			{}
 		);
-	}, [filterState, currentPage, search]);
+	}, [filterState, search]);
 
 	const updateSearchTerms = useCallback(() => {
 		const query = get(filterState, 'filters.query', '');
@@ -175,9 +211,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	}, [setSearchTerms, filterState]);
 
 	useEffect(() => {
-		if (!PermissionService.hasPerm(user, PermissionName.SEARCH)) {
-			return;
-		}
 		onFilterStateChanged();
 		updateSearchTerms();
 	}, [onFilterStateChanged, updateSearchTerms, user]);
@@ -231,12 +264,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				...filterState,
 				orderProperty: valueParts[0] as Avo.Search.OrderProperty,
 				orderDirection: valueParts[1] as Avo.Search.OrderDirection,
+				page: 0,
 			},
 			urlUpdateType
 		);
-
-		// Reset to page 1 when search is triggered
-		setCurrentPage(0);
 	};
 
 	const cleanupFilterState = (filterState: FilterState): FilterState => {
@@ -276,6 +307,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					[id]: value,
 					query: searchTerms,
 				},
+				page: 0,
 			};
 		} else {
 			newFilterState = {
@@ -285,12 +317,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					[id]: DEFAULT_FILTER_STATE[id],
 					query: searchTerms,
 				},
+				page: 0,
 			};
 		}
 		setFilterState(cleanupFilterState(newFilterState), urlUpdateType);
-
-		// Reset to page 1 when search is triggered
-		setCurrentPage(0);
 	};
 
 	const handleTagClicked = (tagId: string) => {
@@ -306,25 +336,9 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		);
 	};
 
-	const handleOriginalCpLinkClicked = async (_id: string, originalCp: string | undefined) => {
-		if (originalCp) {
-			setFilterState({
-				...filterState,
-				filters: {
-					...DEFAULT_FILTER_STATE,
-					provider: [originalCp],
-				},
-			});
-		}
-	};
-
 	const deleteAllFilters = () => {
 		setSearchTerms('');
 		setFilterState({}, urlUpdateType);
-	};
-
-	const setPage = async (pageIndex: number): Promise<void> => {
-		setCurrentPage(pageIndex);
 	};
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
@@ -380,14 +394,58 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					...filterState.filters,
 					query: searchTerms,
 				},
+				page: 0,
 			},
 			urlUpdateType
 		);
-
-		// Reset to page 1 when search is triggered
-		setCurrentPage(0);
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
+
+	const renderSearchResults = () => {
+		if (searchResultsLoading) {
+			return (
+				<Spacer margin="top-extra-large">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Spacer>
+			);
+		}
+		if (searchResultsError) {
+			return (
+				<ErrorView
+					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
+					actionButtons={['home']}
+				/>
+			);
+		}
+		return (
+			<SearchResults
+				currentPage={filterState.page || 0}
+				data={searchResults}
+				handleBookmarkToggle={handleBookmarkToggle}
+				handleTagClicked={
+					!enabledFilters || enabledFilters.includes(SearchFilter.keyword)
+						? handleTagClicked
+						: undefined
+				}
+				loading={searchResultsLoading}
+				pageCount={pageCount}
+				setPage={(page: number) =>
+					setFilterState({
+						...filterState,
+						page,
+					})
+				}
+				bookmarkStatuses={bookmarkStatuses}
+				collectionLabels={collectionLabels}
+				navigateUserRequestForm={navigateToUserRequestForm}
+				bookmarkButtons={bookmarks}
+				renderDetailLink={renderDetailLink}
+				renderSearchLink={renderSearchLink}
+			/>
+		);
+	};
 
 	const renderSearchPage = () => (
 		<div className="c-search-view">
@@ -445,6 +503,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 							multiOptions={multiOptions}
 							onSearch={onSearchInSearchFilter}
 							enabledFilters={enabledFilters}
+							collectionLabels={collectionLabels}
 						/>
 					</Spacer>
 				</Container>
@@ -476,26 +535,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					</ToolbarRight>
 				</Toolbar>
 			</Container>
-			{searchResultsError ? (
-				<ErrorView
-					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
-					actionButtons={['home']}
-				/>
-			) : (
-				<SearchResults
-					currentPage={currentPage}
-					data={searchResults}
-					handleBookmarkToggle={handleBookmarkToggle}
-					handleTagClicked={handleTagClicked}
-					handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
-					loading={searchResultsLoading}
-					pageCount={pageCount}
-					setPage={setPage}
-					bookmarkStatuses={bookmarkStatuses}
-					navigateUserRequestForm={navigateToUserRequestForm}
-					bookmarkButtons={bookmarks}
-				/>
-			)}
+			{renderSearchResults()}
 		</div>
 	);
 

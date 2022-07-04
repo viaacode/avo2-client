@@ -1,17 +1,3 @@
-import classnames from 'classnames';
-import { cloneDeep, compact, get, sortBy } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	KeyboardEvent,
-	ReactElement,
-	ReactNode,
-	useEffect,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { useQueryParams } from 'use-query-params';
-
 import {
 	Button,
 	ButtonType,
@@ -33,7 +19,21 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import classnames from 'classnames';
+import { cloneDeep, compact, get, sortBy } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	KeyboardEvent,
+	ReactElement,
+	ReactNode,
+	useEffect,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { useQueryParams } from 'use-query-params';
 
+import { SearchFilter } from '../../../../search/search.const';
 import {
 	BooleanCheckboxDropdown,
 	CheckboxDropdownModal,
@@ -47,8 +47,9 @@ import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-
 import { KeyCode } from '../../../../shared/types';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
-import './FilterTable.scss';
 import { cleanupObject } from './FilterTable.utils';
+
+import './FilterTable.scss';
 
 export interface FilterableTableState {
 	query?: string;
@@ -170,7 +171,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
-			handleTableStateChanged(searchTerm, 'query');
+			handleTableStateChanged(searchTerm, SearchFilter.query);
 		}
 	};
 
@@ -261,7 +262,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 									'admin/shared/components/filter-table/filter-table___zoeken'
 								)}
 								type="primary"
-								onClick={() => handleTableStateChanged(searchTerm, 'query')}
+								onClick={() =>
+									handleTableStateChanged(searchTerm, SearchFilter.query)
+								}
 							/>
 						</FormGroup>
 						<Spacer margin="left-small">
@@ -355,9 +358,8 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 										case 'MultiEducationalOrganisationSelectModal':
 											const orgs: string[] = (tableState as any)[col.id];
-											const orgObjs: ClientEducationOrganization[] = eduOrgToClientOrg(
-												orgs
-											);
+											const orgObjs: ClientEducationOrganization[] =
+												eduOrgToClientOrg(orgs);
 											return (
 												<MultiEducationalOrganisationSelectModal
 													{...(col.filterProps || {})}

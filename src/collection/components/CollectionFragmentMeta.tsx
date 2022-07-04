@@ -1,15 +1,14 @@
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { ItemSchema } from '@viaa/avo2-types/types/item';
-
 import { APP_PATH } from '../../constants';
-import { SEARCH_FILTER_STATE_SERIES_PROP } from '../../shared/constants';
+import { SearchFilter } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers';
 import { FragmentComponent } from '../collection.types';
 
-export interface CollectionFragmentMetaProps extends FragmentComponent {}
+export type CollectionFragmentMetaProps = FragmentComponent;
 
 const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ fragment }) => {
 	const [t] = useTranslation();
@@ -39,7 +38,7 @@ const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ fragment }) =
 						target="_blank"
 						to={buildLink(APP_PATH.SEARCH.route, undefined, {
 							filters: JSON.stringify({
-								[SEARCH_FILTER_STATE_SERIES_PROP]: [series],
+								[SearchFilter.serie]: [series],
 							}),
 						})}
 					>

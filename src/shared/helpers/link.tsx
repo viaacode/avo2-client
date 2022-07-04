@@ -1,13 +1,14 @@
-import { fromPairs, get, isArray, isEmpty, isNil, isString, map, noop } from 'lodash-es';
-import queryString from 'query-string';
-import React, { Fragment, ReactElement, ReactNode } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
-
 import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { fromPairs, get, isArray, isEmpty, isNil, isString, map } from 'lodash-es';
+import queryString from 'query-string';
+import React, { Fragment, ReactElement, ReactNode } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
+import { FilterState } from '../../search/search.types';
 import SmartLink from '../components/SmartLink/SmartLink';
 import { ToastService } from '../services';
 import i18n from '../translations/i18n';
@@ -56,7 +57,7 @@ export const navigate = (
 	params: RouteParams = {},
 	search?: string | { [paramName: string]: string },
 	action: 'push' | 'replace' = 'push'
-) => {
+): void => {
 	const missingParams = getMissingParams(route);
 
 	// Abort navigation when params were expected but none were given
@@ -91,7 +92,7 @@ export function navigateToAbsoluteOrRelativeUrl(
 	url: string,
 	history: RouteComponentProps['history'],
 	target: LinkTarget = LinkTarget.Self
-) {
+): void {
 	let fullUrl = url;
 	if (url.startsWith('www.')) {
 		fullUrl = `//${url}`;
@@ -136,7 +137,7 @@ export const generateSmartLink = (
 export const navigateToContentType = (
 	action: ButtonAction,
 	history: RouteComponentProps['history']
-) => {
+): void => {
 	if (action) {
 		const { type, value, target } = action;
 
@@ -153,36 +154,40 @@ export const navigateToContentType = (
 				navigateToAbsoluteOrRelativeUrl(String(value), history, resolvedTarget);
 				break;
 
-			case 'COLLECTION':
+			case 'COLLECTION': {
 				const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 					id: value as string,
 				});
 				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, resolvedTarget);
 				break;
+			}
 
-			case 'ITEM':
+			case 'ITEM': {
 				const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
 					id: value,
 				});
 				navigateToAbsoluteOrRelativeUrl(itemUrl, history, resolvedTarget);
 				break;
+			}
 
-			case 'BUNDLE':
+			case 'BUNDLE': {
 				const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
 					id: value,
 				});
 				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, resolvedTarget);
 				break;
+			}
 
-			case 'EXTERNAL_LINK':
+			case 'EXTERNAL_LINK': {
 				const externalUrl = ((value as string) || '').replace(
 					'{{PROXY_URL}}',
 					getEnv('PROXY_URL') || ''
 				);
 				navigateToAbsoluteOrRelativeUrl(externalUrl, history, resolvedTarget);
 				break;
+			}
 
-			case 'ANCHOR_LINK':
+			case 'ANCHOR_LINK': {
 				const urlWithoutQueryOrAnchor = window.location.href.split('?')[0].split('#')[0];
 				navigateToAbsoluteOrRelativeUrl(
 					`${urlWithoutQueryOrAnchor}#${value}`,
@@ -190,12 +195,13 @@ export const navigateToContentType = (
 					resolvedTarget
 				);
 				break;
+			}
 
 			case 'FILE':
 				navigateToAbsoluteOrRelativeUrl(value as string, history, LinkTarget.Blank);
 				break;
 
-			case 'SEARCH_QUERY':
+			case 'SEARCH_QUERY': {
 				const queryParams = JSON.parse(value as string);
 				navigateToAbsoluteOrRelativeUrl(
 					buildLink(
@@ -214,6 +220,7 @@ export const navigateToContentType = (
 					resolvedTarget
 				);
 				break;
+			}
 
 			default:
 				break;
@@ -221,53 +228,51 @@ export const navigateToContentType = (
 	}
 };
 
-export const generateSearchLinks = (
+export const renderSearchLinks = (
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode,
 	key: string,
 	filterProp: Avo.Search.FilterProp,
 	filterValue: string | string[] | undefined,
-	className: string = ''
-) => {
+	className = ''
+): ReactNode => {
 	if (isArray(filterValue)) {
 		return filterValue.map((value: string, index: number) => (
 			<Fragment key={`${key}:${filterProp}":${value}`}>
-				{generateSearchLink(filterProp, value, className)}
+				{renderSearchLink(
+					value,
+					{
+						filters: { [filterProp]: [value] },
+					},
+					className
+				)}
 				{index === filterValue.length - 1 ? '' : ', '}
 			</Fragment>
 		));
 	}
 
-	return generateSearchLink(filterProp, filterValue, className);
+	return renderSearchLink(
+		filterValue,
+		{
+			filters: { [filterProp]: [filterValue] },
+		},
+		className
+	);
 };
 
-export function generateSearchLink(
-	filterProp: Avo.Search.FilterProp,
-	filterValue: string | undefined,
-	className: string = '',
-	onClick: () => void = noop
-) {
-	return filterValue ? (
-		<Link
-			className={className}
-			to={generateSearchLinkString(filterProp, filterValue)}
-			onClick={onClick}
-		>
-			{filterValue}
-		</Link>
-	) : (
-		<Fragment />
-	);
-}
-
 export function generateSearchLinkString(
-	filterProp: Avo.Search.FilterProp,
-	filterValue: string,
+	filterProp?: Avo.Search.FilterProp,
+	filterValue?: string,
 	orderProperty?: Avo.Search.OrderProperty,
 	orderDirection?: Avo.Search.OrderDirection
-) {
+): string {
 	const queryParamObject: any = {};
-	if (String(filterProp) === 'query') {
+	if (String(filterProp) === SearchFilter.query) {
 		queryParamObject.filters = JSON.stringify({ query: filterValue });
-	} else {
+	} else if (!!filterProp && !!filterValue) {
 		queryParamObject.filters = `{"${filterProp}":["${filterValue}"]}`;
 	}
 	if (orderProperty) {
@@ -280,25 +285,11 @@ export function generateSearchLinkString(
 	return buildLink(APP_PATH.SEARCH.route, {}, queryString.stringify(queryParamObject));
 }
 
-export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
+export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string): string {
 	return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });
 }
 
-export function generateAssignmentCreateLink(
-	assignmentType: Avo.Assignment.Type,
-	contentId?: string,
-	contentLabel?: Avo.Assignment.ContentLabel
-) {
-	return buildLink(
-		APP_PATH.ASSIGNMENT_CREATE.route,
-		{},
-		`assignment_type=${assignmentType}
-		${contentId ? `&content_id=${contentId}` : ''}
-		${contentLabel ? `&content_label=${contentLabel}` : ''}`
-	);
-}
-
-export function openLinkInNewTab(link: string) {
+export function openLinkInNewTab(link: string): void {
 	const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
 	if (newWindow) {
 		newWindow.opener = null;

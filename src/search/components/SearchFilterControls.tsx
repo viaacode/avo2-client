@@ -2,14 +2,13 @@ import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CollectionService } from '../../collection/collection.service';
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import { isMobileWidth } from '../../shared/helpers';
+import { SearchFilter } from '../search.const';
 import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
 import './SearchFilterControls.scss';
@@ -24,27 +23,16 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	multiOptions,
 	onSearch,
 	enabledFilters,
+	collectionLabels,
 }) => {
 	const [t] = useTranslation();
 
-	const [collectionLabels, setCollectionLabels] = useState<{ [id: string]: string }>({});
-
-	useEffect(() => {
-		CollectionService.getCollectionLabels()
-			.then(setCollectionLabels)
-			.catch((err) => {
-				console.error(new CustomError('Failed to get collection labels', err));
-				ToastService.danger(
-					t(
-						'search/components/search-filter-controls___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
-					)
-				);
-			});
-	}, [setCollectionLabels, t]);
-
 	const getCombinedMultiOptions = () => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
-		const arrayFilters = omit(filterState, ['query', 'broadcastDate']) as {
+		const arrayFilters = omit(filterState, [
+			SearchFilter.query,
+			SearchFilter.broadcastDate,
+		]) as {
 			[filterName: string]: string[];
 		};
 		forEach(arrayFilters, (values: string[], filterName: string) => {
@@ -70,13 +58,13 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp,
 		disabled = false,
-		labelsMapping?: { [id: string]: string }
+		labelsMapping?: Record<string | number, string>
 	): ReactNode => {
 		const checkboxMultiOptions = (getCombinedMultiOptions()[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
 				let checkboxLabel = option_name;
 
-				if (propertyName === 'language') {
+				if (propertyName === SearchFilter.language) {
 					checkboxLabel = languageCodeToLabel(option_name);
 				}
 
@@ -114,7 +102,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
-		const range: Avo.Search.DateRange = get(filterState, 'broadcastDate') || {
+		const range: Avo.Search.DateRange = get(filterState, SearchFilter.broadcastDate) || {
 			gte: '',
 			lte: '',
 		};
@@ -143,56 +131,58 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				'c-filter-dropdown-list--mobile': isMobileWidth(),
 			})}
 		>
-			{isFilterEnabled('type') &&
+			{isFilterEnabled(SearchFilter.type) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___type'),
-					'type'
+					SearchFilter.type
 				)}
-			{isFilterEnabled('educationLevel') &&
+			{isFilterEnabled(SearchFilter.educationLevel) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___onderwijsniveau'),
-					'educationLevel'
+					SearchFilter.educationLevel
 				)}
-			{/*{isFilterEnabled('domain') && renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
+			{/*{isFilterEnabled(SearchFilter.domain) && renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
 			{/*	t('search/components/search-filter-controls___domein'),*/}
-			{/*	'domain',*/}
+			{/*SearchFilter.domain,*/}
 			{/*)}*/}
-			{isFilterEnabled('subject') &&
+			{isFilterEnabled(SearchFilter.subject) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___vak'),
-					'subject'
+					SearchFilter.subject
 				)}
-			{isFilterEnabled('keyword') &&
+			{isFilterEnabled(SearchFilter.keyword) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___trefwoord'),
-					'keyword'
+					SearchFilter.keyword
 				)}
-			{isFilterEnabled('serie') &&
+			{isFilterEnabled(SearchFilter.serie) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___serie'),
-					'serie'
+					SearchFilter.serie
 				)}
-			{isFilterEnabled('broadcastDate') &&
+			{isFilterEnabled(SearchFilter.broadcastDate) &&
 				renderDateRangeDropdown(
 					t('search/components/search-filter-controls___uitzenddatum'),
-					'broadcastDate'
+					SearchFilter.broadcastDate
 				)}
-			{isFilterEnabled('language') &&
+			{isFilterEnabled(SearchFilter.language) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___taal'),
-					'language'
+					SearchFilter.language
 				)}
-			{isFilterEnabled('provider') &&
+			{isFilterEnabled(SearchFilter.provider) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___aanbieder'),
-					'provider'
+					SearchFilter.provider
 				)}
-			{isFilterEnabled('collectionLabel') &&
+			{isFilterEnabled(SearchFilter.collectionLabel) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___label'),
-					'collectionLabel',
+					SearchFilter.collectionLabel,
 					false,
-					collectionLabels
+					Object.fromEntries(
+						collectionLabels.map((item) => [item.value, item.description])
+					)
 				)}
 		</ul>
 	);

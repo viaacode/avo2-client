@@ -83,5 +83,7 @@ export type AssignmentFormState = Pick<Avo.Assignment.Assignment_v2, 'title'> &
 export type AssignmentBlockTypeDict<T> = { [key in AssignmentBlockType]: T }; // eslint-disable-line
 
 export interface PupilSearchFilterState extends FilterState {
-	tab: string;
+	tab: string; // Which tab is active: assignment, search or my collection
+	selectedSearchResultId?: string; // Search result of which the detail page should be shown
+	focus?: string; // Search result that should be scrolled into view
 }

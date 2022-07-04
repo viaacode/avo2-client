@@ -8,9 +8,13 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 } from '@viaa/avo2-components';
-import React, { FunctionComponent, ReactText, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { Avo } from '@viaa/avo2-types';
+import queryString from 'query-string';
+import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import {
@@ -19,18 +23,20 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { copyToClipboard } from '../../shared/helpers';
+import { buildLink, copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { SearchFiltersAndResults } from '../components';
-import './Search.scss';
 import { FilterState } from '../search.types';
 
-const Search: FunctionComponent<UserProps> = ({ user }) => {
+import './Search.scss';
+
+const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
@@ -65,6 +71,29 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 		ToastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
 	};
 
+	const renderDetailLink = (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => {
+		return <Link to={generateContentLinkString(type, id)}>{linkText}</Link>;
+	};
+
+	const renderSearchLink = (
+		linkText: string | ReactNode,
+		newFilterState: FilterState,
+		className?: string
+	) => {
+		return (
+			<Link
+				to={buildLink(APP_PATH.SEARCH.route, {}, queryString.stringify(newFilterState))}
+				className={className}
+			>
+				{linkText}
+			</Link>
+		);
+	};
+
 	return (
 		<>
 			<MetaTags>
@@ -82,9 +111,7 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 								<ToolbarLeft>
 									<ToolbarItem>
 										<ToolbarTitle>
-											<Trans i18nKey="search/views/search___zoekresultaten">
-												Zoekresultaten
-											</Trans>
+											{t('search/views/search___zoekresultaten')}
 										</ToolbarTitle>
 									</ToolbarItem>
 								</ToolbarLeft>
@@ -111,11 +138,21 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 							</Toolbar>
 						</Container>
 					</Navbar>
-					<SearchFiltersAndResults
-						bookmarks
-						filterState={filterState}
-						setFilterState={setFilterState}
-					/>
+					{PermissionService.hasPerm(user, PermissionName.SEARCH) ? (
+						<SearchFiltersAndResults
+							bookmarks
+							filterState={filterState}
+							setFilterState={setFilterState}
+							renderDetailLink={renderDetailLink}
+							renderSearchLink={renderSearchLink}
+						/>
+					) : (
+						<ErrorView
+							message={t('search/views/search___je-hebt-geen-rechten-om-te-zoeken')}
+							actionButtons={['home', 'helpdesk']}
+							icon="lock"
+						/>
+					)}
 				</PermissionGuardPass>
 				<PermissionGuardFail>
 					<ErrorView
@@ -131,4 +168,4 @@ const Search: FunctionComponent<UserProps> = ({ user }) => {
 	);
 };
 
-export default withUser(Search) as FunctionComponent;
+export default compose(withRouter, withUser)(Search) as FunctionComponent;

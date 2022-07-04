@@ -1,7 +1,24 @@
+import {
+	BlockHeading,
+	Column,
+	EnglishContentType,
+	Grid,
+	MediaCard,
+	MediaCardMetaData,
+	MediaCardThumbnail,
+	MetaData,
+	MetaDataItem,
+	Spacer,
+	Thumbnail,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { compact, get, isNil, omit, sortBy } from 'lodash-es';
+import React, { ReactNode } from 'react';
+import { Trans } from 'react-i18next';
 
-import { stripHtml } from '../shared/helpers/formatters';
+import { SearchFilter } from '../search/search.const';
+import { FilterState } from '../search/search.types';
+import { formatDate, renderSearchLinks, stripHtml } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 
 import {
@@ -10,7 +27,7 @@ import {
 	MAX_SEARCH_DESCRIPTION_LENGTH,
 } from './collection.const';
 import { CollectionService } from './collection.service';
-import { ContentTypeNumber } from './collection.types';
+import { ContentTypeNumber, ContentTypeString, toEnglishContentType } from './collection.types';
 
 export const getValidationFeedbackForDescription = (
 	description: string | null,
@@ -377,5 +394,184 @@ export const getFragmentIdsFromCollection = (
 		getFragmentsFromCollection(collection).map(
 			(fragment: Avo.Collection.Fragment) => fragment.id
 		)
+	);
+};
+
+export const renderSubjects = (
+	id: string,
+	lom_classification: string[] | null,
+	enabledMetaData: SearchFilter[],
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode
+): ReactNode | null => {
+	if (!enabledMetaData.includes(SearchFilter.subject)) {
+		return null;
+	}
+	return (
+		<Spacer margin="top-large">
+			<p className="u-text-bold">{i18n.t('collection/views/collection-detail___vakken')}</p>
+			<p className="c-body-1">
+				{lom_classification?.length ? (
+					renderSearchLinks(
+						renderSearchLink,
+						id,
+						SearchFilter.subject,
+						lom_classification
+					)
+				) : (
+					<span className="u-d-block">-</span>
+				)}
+			</p>
+		</Spacer>
+	);
+};
+
+export const renderEducationLevels = (
+	id: string,
+	lom_context: string[] | null,
+	enabledMetaData: SearchFilter[],
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode
+): ReactNode | null => {
+	if (!enabledMetaData.includes(SearchFilter.educationLevel)) {
+		return null;
+	}
+	return (
+		<Spacer margin="top-large">
+			<p className="u-text-bold">
+				{i18n.t('collection/views/collection-detail___onderwijsniveau')}
+			</p>
+			<p className="c-body-1">
+				{lom_context && lom_context.length ? (
+					renderSearchLinks(
+						renderSearchLink,
+						id,
+						SearchFilter.educationLevel,
+						lom_context
+					)
+				) : (
+					<span className="u-d-block">-</span>
+				)}
+			</p>
+		</Spacer>
+	);
+};
+
+export const renderCommonMetadata = (
+	collectionOrBundle: Avo.Collection.Collection,
+	enabledMetaData: SearchFilter[],
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode
+): ReactNode => {
+	const { id, lom_context, lom_classification, created_at, updated_at } = collectionOrBundle;
+	return (
+		<>
+			{(!!renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink) ||
+				!!renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)) && (
+				<Column size="3-3">
+					{renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink)}
+					{renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)}
+				</Column>
+			)}
+			<Column size="3-3">
+				<Spacer margin="top-large">
+					<p className="u-text-bold">
+						{i18n.t('collection/views/collection-detail___aangemaakt-op')}
+					</p>
+					<p className="c-body-1">{formatDate(created_at)}</p>
+				</Spacer>
+			</Column>
+			<Column size="3-3">
+				<Spacer margin="top-large">
+					<p className="u-text-bold">
+						{i18n.t('collection/views/collection-detail___laatst-aangepast')}
+					</p>
+					<p className="c-body-1">{formatDate(updated_at)}</p>
+				</Spacer>
+			</Column>
+		</>
+	);
+};
+
+const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
+	const englishContentType: EnglishContentType =
+		toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+
+	return (
+		<MediaCard
+			category={englishContentType}
+			orientation="horizontal"
+			title={relatedItem.dc_title}
+		>
+			<MediaCardThumbnail>
+				<Thumbnail
+					category={englishContentType}
+					src={relatedItem.thumbnail_path}
+					showCategoryIcon
+				/>
+			</MediaCardThumbnail>
+			<MediaCardMetaData>
+				<MetaData category={englishContentType}>
+					<MetaDataItem label={relatedItem.original_cp || ''} />
+				</MetaData>
+			</MediaCardMetaData>
+		</MediaCard>
+	);
+};
+
+const renderRelatedContent = (
+	relatedItems: Avo.Search.ResultItem[],
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType,
+		className?: string
+	) => ReactNode
+) => {
+	return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+		return (
+			<Column size="2-6" key={`related-item-${relatedItem.id}`}>
+				{renderDetailLink(
+					renderRelatedItem(relatedItem),
+					relatedItem.id,
+					relatedItem.administrative_type,
+					'a-link__no-styles'
+				)}
+			</Column>
+		);
+	});
+};
+
+export const renderRelatedItems = (
+	relatedItems: Avo.Search.ResultItem[] | null,
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType,
+		className?: string
+	) => ReactNode
+): ReactNode | null => {
+	if (!relatedItems?.length) {
+		return null;
+	}
+	return (
+		<>
+			<hr className="c-hr" />
+			<BlockHeading type="h3">
+				<Trans i18nKey="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
+			</BlockHeading>
+			<Grid className="c-media-card-list">
+				{renderRelatedContent(relatedItems, renderDetailLink)}
+			</Grid>
+		</>
 	);
 };
