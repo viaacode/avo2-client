@@ -552,6 +552,8 @@ export class AssignmentService {
 				]);
 			}
 
+			await this.updateAssignmentBlocks(assignmentId, [], assignment.blocks || []);
+
 			return {
 				...(assignment as Avo.Assignment.Assignment_v2), // Do not copy the auto modified fields from the validation back into the input controls
 				id: assignmentId,

@@ -33,11 +33,9 @@ export const COLLECTIONS_OR_BUNDLES_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	owner_profile_id: (order: Avo.Search.OrderDirection) => ({
 		profile: { usersByuserId: { last_name: order } },
 	}),
@@ -81,11 +79,9 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	}),
 };
 
-export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in CollectionTableCols]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	...TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 	owner_profile_id: (order: Avo.Search.OrderDirection) => ({
 		owner: { profile: { usersByuserId: { last_name: order } } },

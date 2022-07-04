@@ -13,14 +13,14 @@ import {
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/dist/esm/components/Icon/Icon.types';
 
-import { EDIT_ASSIGNMENT_BLOCK_ICONS } from '../assignment.const';
+import { ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS } from '../assignment.const';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
 type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
 
-interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
+export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	assignment: AssignmentFormState;
 	onConfirm?: (type: AddBlockModalType) => void;
 }
@@ -43,7 +43,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 		() => [
 			{
 				type: AssignmentBlockType.ITEM,
-				icon: EDIT_ASSIGNMENT_BLOCK_ICONS()[AssignmentBlockType.ITEM],
+				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[AssignmentBlockType.ITEM],
 				title: t('assignment/modals/add-block___kijken-luisteren-fragment'),
 				description: t(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'
@@ -59,7 +59,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 			},
 			{
 				type: AssignmentBlockType.ZOEK,
-				icon: EDIT_ASSIGNMENT_BLOCK_ICONS()[AssignmentBlockType.ZOEK],
+				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[AssignmentBlockType.ZOEK],
 				title: t('assignment/modals/add-block___zoeken-bouwen'),
 				description: t(
 					'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
@@ -71,7 +71,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 			},
 			{
 				type: AssignmentBlockType.TEXT,
-				icon: EDIT_ASSIGNMENT_BLOCK_ICONS()[AssignmentBlockType.TEXT],
+				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[AssignmentBlockType.TEXT],
 				title: t('assignment/modals/add-block___instructies-tekst'),
 				description: t(
 					'assignment/modals/add-block___voeg-een-tekstblok-toe-met-instructies-of-wat-extra-informatie'

@@ -277,7 +277,8 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.Klaar]: INITIAL_KLAAR_COMPONENTS_STATE,
 	[ContentBlockType.MediaGrid]: INITIAL_MEDIA_GRID_COMPONENTS_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_COMPONENTS_STATE,
-	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]:
+		INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
 	[ContentBlockType.Spotlight]: INITIAL_SPOTLIGHT_COMPONENTS_STATE,
@@ -591,23 +592,22 @@ export type PageOverviewOrderOptions =
 	| 'title__asc'
 	| 'title__desc';
 
-export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<
-	PageOverviewOrderOptions
->[] = () => [
-	{
-		label: i18n.t('admin/content-block/content-block___publicatie-datum-nieuw-oud'),
-		value: 'published_at__desc',
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___publicatie-datum-oud-nieuw'),
-		value: 'published_at__asc',
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___titel-a-z'),
-		value: 'title__asc',
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___titel-z-a'),
-		value: 'title__desc',
-	},
-];
+export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<PageOverviewOrderOptions>[] =
+	() => [
+		{
+			label: i18n.t('admin/content-block/content-block___publicatie-datum-nieuw-oud'),
+			value: 'published_at__desc',
+		},
+		{
+			label: i18n.t('admin/content-block/content-block___publicatie-datum-oud-nieuw'),
+			value: 'published_at__asc',
+		},
+		{
+			label: i18n.t('admin/content-block/content-block___titel-a-z'),
+			value: 'title__asc',
+		},
+		{
+			label: i18n.t('admin/content-block/content-block___titel-z-a'),
+			value: 'title__desc',
+		},
+	];

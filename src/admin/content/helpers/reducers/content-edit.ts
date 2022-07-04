@@ -103,7 +103,7 @@ export interface ContentPageEditState {
 }
 
 export const CONTENT_PAGE_INITIAL_STATE = (): ContentPageInfo => {
-	return ({
+	return {
 		thumbnail_path: null,
 		title: '',
 		description_html: '',
@@ -123,7 +123,7 @@ export const CONTENT_PAGE_INITIAL_STATE = (): ContentPageInfo => {
 		user_group_ids: [],
 		labels: [],
 		contentBlockConfigs: [],
-	} as unknown) as ContentPageInfo;
+	} as unknown as ContentPageInfo;
 };
 
 // Helpers
@@ -224,7 +224,8 @@ export const contentEditReducer = produce(
 
 				if (!isNil(action.payload.stateIndex)) {
 					// Config component state is an array (repeatable)
-					const repeatableState = components.state as RepeatedContentBlockComponentState[];
+					const repeatableState =
+						components.state as RepeatedContentBlockComponentState[];
 					repeatableState[action.payload.stateIndex] = {
 						...repeatableState[action.payload.stateIndex],
 						...(action.payload.formGroupState as RepeatedContentBlockComponentState),
@@ -240,9 +241,8 @@ export const contentEditReducer = produce(
 
 			case ContentEditActionType.SET_BLOCK_STATE:
 				const setBlockState = action as SetBlockState;
-				const { block } = draft.currentContentPageInfo.contentBlockConfigs[
-					setBlockState.payload.index
-				];
+				const { block } =
+					draft.currentContentPageInfo.contentBlockConfigs[setBlockState.payload.index];
 				block.state = { ...block.state, ...setBlockState.payload.formGroupState };
 				return;
 
