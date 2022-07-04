@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -57,6 +58,7 @@ import { insertAtPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
 import AddBlockModal from '../modals/AddBlockModal';
+import AddBookmarkFragmentModal from '../modals/AddBookmarkFragmentModal';
 import ConfirmSliceModal from '../modals/ConfirmSliceModal';
 
 import './AssignmentEdit.scss';
@@ -122,6 +124,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		getAddBlockModalPosition,
 		setAddBlockModalPosition,
 	] = useSingleEntityModal<number>();
+	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
 
 	const pastDeadline = useMemo(
 		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
@@ -317,6 +320,32 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		original && setAssignment(original);
 		resetForm();
 	}, [resetForm, setAssignment, original]);
+
+	const onAddItem = async (itemExternalId: string) => {
+		if (getAddBlockModalPosition == null) {
+			return;
+		}
+
+		// fetch item details
+		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
+		const blocks = insertAtPosition(assignment.blocks, {
+			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+			item,
+			type: AssignmentBlockType.ITEM,
+			fragment_id: itemExternalId,
+			position: getAddBlockModalPosition,
+		} as AssignmentBlock); // TODO: avoid cast
+
+		setAssignment((prev) => ({
+			...prev,
+			blocks,
+		}));
+
+		setValue('blocks', blocks, {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
+	};
 
 	// Effects
 
@@ -586,10 +615,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t, setBlock, fragmentSwitchButtons, renderMeta]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
@@ -709,42 +735,54 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			)}
 
 			{assignment && (
-				<AddBlockModal
-					isOpen={!!isAddBlockModalOpen}
-					assignment={assignment}
-					onClose={() => setAddBlockModalOpen(false)}
-					onConfirm={(type) => {
-						if (getAddBlockModalPosition === undefined) {
-							return;
-						}
+				<>
+					<AddBlockModal
+						isOpen={!!isAddBlockModalOpen}
+						assignment={assignment}
+						onClose={() => setAddBlockModalOpen(false)}
+						onConfirm={(type) => {
+							if (getAddBlockModalPosition === undefined) {
+								return;
+							}
 
-						switch (type) {
-							case AssignmentBlockType.TEXT:
-							case AssignmentBlockType.ZOEK:
-								const blocks = insertAtPosition(assignment.blocks, {
-									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-									type,
-									position: getAddBlockModalPosition,
-								} as AssignmentBlock); // TODO: avoid cast
+							switch (type) {
+								case AssignmentBlockType.ITEM: {
+									setIsAddFragmentModalOpen(true);
+									break;
+								}
+								case AssignmentBlockType.TEXT:
+								case AssignmentBlockType.ZOEK: {
+									const blocks = insertAtPosition(assignment.blocks, {
+										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+										type,
+										position: getAddBlockModalPosition,
+									} as AssignmentBlock); // TODO: avoid cast
 
-								setAssignment((prev) => ({
-									...prev,
-									blocks,
-								}));
+									setAssignment((prev) => ({
+										...prev,
+										blocks,
+									}));
 
-								setValue('blocks', blocks, {
-									shouldDirty: true,
-									shouldTouch: true,
-								});
-								break;
+									setValue('blocks', blocks, {
+										shouldDirty: true,
+										shouldTouch: true,
+									});
+									break;
+								}
+								default:
+									break;
+							}
 
-							default:
-								break;
-						}
-
-						setAddBlockModalOpen(false);
-					}}
-				/>
+							setAddBlockModalOpen(false);
+						}}
+					/>
+					<AddBookmarkFragmentModal
+						user={user}
+						isOpen={isAddFragmentModalOpen}
+						onClose={() => setIsAddFragmentModalOpen(false)}
+						addFragmentCallback={onAddItem}
+					/>
+				</>
 			)}
 		</div>
 	);

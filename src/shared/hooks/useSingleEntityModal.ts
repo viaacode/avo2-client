@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type SingleEntityModalTuple<T> = [
 	boolean | undefined,
@@ -10,12 +10,6 @@ type SingleEntityModalTuple<T> = [
 export function useSingleEntityModal<T>(): SingleEntityModalTuple<T> {
 	const [entity, setEntity] = useState<T | undefined>(undefined);
 	const [isOpen, setOpen] = useState<boolean>();
-
-	useEffect(() => {
-		if (!isOpen && entity !== undefined) {
-			setEntity(undefined);
-		}
-	}, [isOpen, entity]);
 
 	return [isOpen, setOpen, entity, setEntity];
 }

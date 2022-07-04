@@ -1,7 +1,6 @@
-import { compact, fromPairs, get, groupBy } from 'lodash-es';
-
 import { EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
@@ -13,10 +12,11 @@ import { ToastService } from '../toast-service';
 
 import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
-	GET_BOOKMARKS_FOR_USER,
 	GET_BOOKMARK_STATUSES,
+	GET_BOOKMARKS_FOR_USER,
 	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
+	GET_ITEM_BOOKMARKS_FOR_USER,
 	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
 	GET_MULTIPLE_ITEM_VIEW_COUNTS,
 } from './bookmarks-views-plays-service.gql';
@@ -40,7 +40,7 @@ export class BookmarksViewsPlaysService {
 		contentType: EventContentType,
 		contentUuid: string,
 		user?: Avo.User.User,
-		silent: boolean = true
+		silent = true
 	): Promise<void> {
 		try {
 			if (action === 'play' || action === 'view') {
@@ -184,6 +184,50 @@ export class BookmarksViewsPlaysService {
 		}
 	}
 
+	public static async getItemBookmarksForUser(
+		user: Avo.User.User,
+		filterString: string,
+		orderObject: Record<string, string>[]
+	): Promise<BookmarkInfo[]> {
+		const response: GetBookmarksForUserResponse = await dataService.query({
+			query: GET_ITEM_BOOKMARKS_FOR_USER,
+			variables: {
+				profileId: get(user, 'profile.id'),
+				filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
+				order: orderObject,
+			},
+		});
+		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
+		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
+			(itemBookmark): BookmarkInfo | null => {
+				if (!itemBookmark.bookmarkedItem) {
+					return null;
+				}
+
+				const thumbnailPath =
+					itemBookmark.bookmarkedItem.item.item_meta.type.label === 'audio'
+						? DEFAULT_AUDIO_STILL
+						: itemBookmark.bookmarkedItem.thumbnail_path;
+
+				return {
+					contentId: itemBookmark.item_id,
+					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
+					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
+						.label as EnglishContentType,
+					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
+					contentTitle: itemBookmark.bookmarkedItem.title,
+					contentDuration: itemBookmark.bookmarkedItem.duration,
+					contentThumbnailPath: thumbnailPath,
+					contentCreatedAt: itemBookmark.bookmarkedItem.issued
+						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
+						: null,
+					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
+				};
+			}
+		);
+		return compact(itemBookmarkInfos);
+	}
+
 	/**
 	 * Gets all bookmarks for user without pagination
 	 * since we cannot order items across both tables: item_bookmarks and collection_bookmarks
@@ -218,6 +262,7 @@ export class BookmarksViewsPlaysService {
 						.label as EnglishContentType,
 					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
+					contentDuration: itemBookmark.bookmarkedItem.duration,
 					contentThumbnailPath: thumbnailPath,
 					contentCreatedAt: itemBookmark.bookmarkedItem.issued
 						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
@@ -269,7 +314,7 @@ export class BookmarksViewsPlaysService {
 		const getVariablesFunc = get(
 			EVENT_QUERIES,
 			[action, contentTypeSimplified, 'variables'],
-			() => {}
+			noop
 		);
 		const variables = getVariablesFunc(contentUuid, user);
 		if (!query || !variables) {
@@ -305,7 +350,7 @@ export class BookmarksViewsPlaysService {
 		contentType: EventContentType,
 		contentUuid: string,
 		user?: Avo.User.User,
-		silent: boolean = true
+		silent = true
 	) {
 		try {
 			const { query, variables } = this.getQueryAndVariables(

@@ -15,6 +15,7 @@ export interface BookmarkInfo {
 	contentLinkId: string;
 	contentType: EnglishContentType;
 	contentTitle: string;
+	contentDuration?: string;
 	contentThumbnailPath: string | null | undefined;
 	contentCreatedAt: number | null;
 	contentViews: number;
@@ -38,6 +39,7 @@ export interface AppItemBookmark {
 	bookmarkedItem?: {
 		title: string;
 		thumbnail_path: string;
+		duration: string;
 		issued: string;
 		item: {
 			external_id: string;
