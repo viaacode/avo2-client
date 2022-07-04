@@ -2,14 +2,12 @@ import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CollectionService } from '../../collection/collection.service';
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import { isMobileWidth } from '../../shared/helpers';
 import { SearchFilter } from '../search.const';
 import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
@@ -25,23 +23,9 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	multiOptions,
 	onSearch,
 	enabledFilters,
+	collectionLabels,
 }) => {
 	const [t] = useTranslation();
-
-	const [collectionLabels, setCollectionLabels] = useState<{ [id: string]: string }>({});
-
-	useEffect(() => {
-		CollectionService.getCollectionLabels()
-			.then(setCollectionLabels)
-			.catch((err) => {
-				console.error(new CustomError('Failed to get collection labels', err));
-				ToastService.danger(
-					t(
-						'search/components/search-filter-controls___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
-					)
-				);
-			});
-	}, [setCollectionLabels, t]);
 
 	const getCombinedMultiOptions = () => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
@@ -74,7 +58,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp,
 		disabled = false,
-		labelsMapping?: { [id: string]: string }
+		labelsMapping?: Record<string | number, string>
 	): ReactNode => {
 		const checkboxMultiOptions = (getCombinedMultiOptions()[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
@@ -196,7 +180,9 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					t('search/components/search-filter-controls___label'),
 					SearchFilter.collectionLabel,
 					false,
-					collectionLabels
+					Object.fromEntries(
+						collectionLabels.map((item) => [item.value, item.description])
+					)
 				)}
 		</ul>
 	);

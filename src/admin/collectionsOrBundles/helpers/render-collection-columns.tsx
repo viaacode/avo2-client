@@ -1,9 +1,8 @@
+import { TagList, TagOption } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';
-
-import { TagList, TagOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
@@ -35,21 +34,23 @@ export const renderCollectionOverviewColumns = (
 	collectionLabels: QualityLabel[]
 ) => {
 	switch (columnId) {
-		case 'owner_profile_id':
+		case 'owner_profile_id': {
 			const user: Avo.User.User | undefined =
 				get(rowData, 'profile.user') || get(rowData, 'owner');
 			return user ? truncateTableValue((user as any).full_name) : '-';
+		}
 
 		case 'author_user_group':
 			return getUserGroupLabel(get(rowData, 'profile') || get(rowData, 'owner')) || '-';
 
-		case 'last_updated_by_profile':
+		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			const lastEditUser: Avo.User.User | undefined =
 				get(rowData, 'updated_by.user') ||
 				get(rowData, 'last_editor') ||
 				get(rowData, 'last_editor_name');
 			return lastEditUser ? lastEditUser.full_name : '-';
+		}
 
 		case 'is_public':
 		case 'is_managed':
@@ -81,7 +82,7 @@ export const renderCollectionOverviewColumns = (
 		case 'updated_at':
 			return formatDate(rowData[columnId]) || '-';
 
-		case 'collection_labels':
+		case 'collection_labels': {
 			const labelObjects: { id: number; label: string }[] =
 				get(rowData, 'collection_labels') || [];
 
@@ -104,9 +105,10 @@ export const renderCollectionOverviewColumns = (
 			}
 
 			return '-';
+		}
 
 		case 'is_copy':
-			if (!!get(rowData, 'relations[0].object')) {
+			if (get(rowData, 'relations[0].object')) {
 				return (
 					<a
 						href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
@@ -120,9 +122,10 @@ export const renderCollectionOverviewColumns = (
 			return 'Nee';
 
 		case 'education_levels':
-		case 'subjects':
+		case 'subjects': {
 			const labels = get(rowData, columnId, []);
 			return stringsToTagList(labels, null) || '-';
+		}
 
 		case 'actualisation_status':
 			return getDisplayTextForManagementStatus(get(rowData, 'mgmt_current_status')) || '-';
@@ -130,7 +133,7 @@ export const renderCollectionOverviewColumns = (
 		case 'actualisation_last_actualised_at':
 			return formatDate(get(rowData, 'mgmt_updated_at')) || '-';
 
-		case 'actualisation_status_valid_until':
+		case 'actualisation_status_valid_until': {
 			const validDate = get(rowData, 'mgmt_status_expires_at');
 			const isValid = !validDate || !normalizeTimestamp(validDate).isBefore(moment());
 			return (
@@ -138,6 +141,7 @@ export const renderCollectionOverviewColumns = (
 					{formatDate(validDate) || '-'}
 				</span>
 			);
+		}
 
 		case 'actualisation_approved_at':
 			return formatDate(get(rowData, 'mgmt_last_eindcheck_date')) || '-';
@@ -154,7 +158,7 @@ export const renderCollectionOverviewColumns = (
 		case 'quality_check_approved_at':
 			return formatDate(get(rowData, 'mgmt_eind_check_date')) || '-';
 
-		case 'marcom_last_communication_channel_type':
+		case 'marcom_last_communication_channel_type': {
 			const channelTypeId = get(rowData, 'channel_type') || '';
 			return truncateTableValue(
 				get(
@@ -164,8 +168,9 @@ export const renderCollectionOverviewColumns = (
 					'label'
 				)
 			);
+		}
 
-		case 'marcom_last_communication_channel_name':
+		case 'marcom_last_communication_channel_name': {
 			const channelNameId = get(rowData, 'channel_name') || '';
 			return truncateTableValue(
 				get(
@@ -175,6 +180,7 @@ export const renderCollectionOverviewColumns = (
 					'label'
 				)
 			);
+		}
 
 		case 'marcom_last_communication_at':
 			return formatDate(get(rowData, 'last_marcom_date')) || '-';

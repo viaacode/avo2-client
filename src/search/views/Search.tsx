@@ -34,6 +34,7 @@ import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -139,13 +140,21 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 							</Toolbar>
 						</Container>
 					</Navbar>
-					<SearchFiltersAndResults
-						bookmarks
-						filterState={filterState}
-						setFilterState={setFilterState}
-						renderDetailLink={renderDetailLink}
-						renderSearchLink={renderSearchLink}
-					/>
+					{PermissionService.hasPerm(user, PermissionName.SEARCH) ? (
+						<SearchFiltersAndResults
+							bookmarks
+							filterState={filterState}
+							setFilterState={setFilterState}
+							renderDetailLink={renderDetailLink}
+							renderSearchLink={renderSearchLink}
+						/>
+					) : (
+						<ErrorView
+							message={t('Je hebt geen rechten om te zoeken.')}
+							actionButtons={['home', 'helpdesk']}
+							icon="lock"
+						/>
+					)}
 				</PermissionGuardPass>
 				<PermissionGuardFail>
 					<ErrorView

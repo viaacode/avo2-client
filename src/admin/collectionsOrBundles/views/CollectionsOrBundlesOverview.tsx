@@ -1,3 +1,5 @@
+import { Button, ButtonToolbar, TagInfo, TagList } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { compact, get, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -10,9 +12,6 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar, TagInfo, TagList } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -44,8 +43,8 @@ import { PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
-	GET_COLLECTIONS_COLUMNS,
 	GET_COLLECTION_BULK_ACTIONS,
+	GET_COLLECTIONS_COLUMNS,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -56,7 +55,7 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-interface CollectionsOrBundlesOverviewProps extends DefaultSecureRouteProps {}
+type CollectionsOrBundlesOverviewProps = DefaultSecureRouteProps;
 
 const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOverviewProps> = ({
 	history,
@@ -80,7 +79,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
-	const [collectionLabels] = useCollectionQualityLabels();
+	const [collectionLabels] = useCollectionQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
@@ -196,16 +195,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			);
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const [
-				collectionsTemp,
-				collectionsCountTemp,
-			] = await CollectionsOrBundlesService.getCollections(
-				tableState.page || 0,
-				(tableState.sort_column || 'created_at') as CollectionsOrBundlesOverviewTableCols,
-				tableState.sort_order || 'desc',
-				columnDataType,
-				generateWhereObject(getFilters(tableState))
-			);
+			const [collectionsTemp, collectionsCountTemp] =
+				await CollectionsOrBundlesService.getCollections(
+					tableState.page || 0,
+					(tableState.sort_column ||
+						'created_at') as CollectionsOrBundlesOverviewTableCols,
+					tableState.sort_order || 'desc',
+					columnDataType,
+					generateWhereObject(getFilters(tableState))
+				);
 
 			setCollections(collectionsTemp);
 			setCollectionCount(collectionsCountTemp);

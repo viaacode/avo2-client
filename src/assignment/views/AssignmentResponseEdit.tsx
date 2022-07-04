@@ -28,6 +28,7 @@ import { compose } from 'redux';
 import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import ItemDetail from '../../item/views/ItemDetail';
@@ -35,7 +36,7 @@ import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
-import withUser from '../../shared/hocs/withUser';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -50,9 +51,9 @@ import { useAssignmentPupilTabs } from '../hooks';
 import './AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
-	match,
-}) => {
+const AssignmentResponseEdit: FunctionComponent<
+	UserProps & DefaultSecureRouteProps<{ id: string }>
+> = ({ match, user }) => {
 	const [t] = useTranslation();
 
 	// Data
@@ -284,6 +285,15 @@ const AssignmentResponseEdit: FunctionComponent<DefaultSecureRouteProps<{ id: st
 			);
 		}
 		// This form receives its parent's state because we don't care about rerender performance here
+		if (!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)) {
+			return (
+				<ErrorView
+					message={t('Je hebt geen rechten om te zoeken binnen een opdracht.')}
+					actionButtons={['home', 'helpdesk']}
+					icon="lock"
+				/>
+			);
+		}
 		return (
 			<Spacer margin={['top-large', 'bottom-large']}>
 				<SearchFiltersAndResults

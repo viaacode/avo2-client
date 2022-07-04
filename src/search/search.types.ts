@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { UrlUpdateType } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../authentication/components/SecuredRoute';
-import { CollectionLabelLookup } from '../collection/collection.types';
+import { CollectionLabelLookup, QualityLabel } from '../collection/collection.types';
 import { BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
@@ -64,6 +64,7 @@ export interface SearchFilterControlsProps {
 	multiOptions: SearchFilterMultiOptions;
 	onSearch?: (aggId: string) => void;
 	enabledFilters?: (keyof Avo.Search.Filters)[];
+	collectionLabels: QualityLabel[];
 }
 
 interface SearchResultItemHandlers {
@@ -107,4 +108,5 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	bookmarkStatuses: BookmarkStatusLookup | null;
 	navigateUserRequestForm: () => void;
 	bookmarkButtons: boolean;
+	collectionLabels: QualityLabel[];
 }

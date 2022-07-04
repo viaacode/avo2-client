@@ -42,6 +42,7 @@ import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
+import { useCollectionQualityLabels } from '../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../shared/services';
 import {
 	BookmarksViewsPlaysService,
@@ -100,6 +101,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
+
+	const [collectionLabels] = useCollectionQualityLabels(
+		!enabledFilters || enabledFilters?.includes('collectionLabel')
+	);
 
 	const navigateToUserRequestForm = () =>
 		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
@@ -207,9 +212,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	}, [setSearchTerms, filterState]);
 
 	useEffect(() => {
-		if (!PermissionService.hasPerm(user, PermissionName.SEARCH)) {
-			return;
-		}
 		onFilterStateChanged();
 		updateSearchTerms();
 	}, [onFilterStateChanged, updateSearchTerms, user]);
@@ -441,6 +443,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				pageCount={pageCount}
 				setPage={setPage}
 				bookmarkStatuses={bookmarkStatuses}
+				collectionLabels={collectionLabels}
 				navigateUserRequestForm={navigateToUserRequestForm}
 				bookmarkButtons={bookmarks}
 				renderDetailLink={renderDetailLink}
@@ -505,6 +508,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 							multiOptions={multiOptions}
 							onSearch={onSearchInSearchFilter}
 							enabledFilters={enabledFilters}
+							collectionLabels={collectionLabels}
 						/>
 					</Spacer>
 				</Container>
