@@ -18,8 +18,9 @@ import { Avo } from '@viaa/avo2-types';
 import { clamp } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
 	formatDurationHoursMinutesSeconds,
 	isMobileWidth,
@@ -27,25 +28,23 @@ import {
 	toSeconds,
 } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToAssignmentModal.scss';
 
-interface AddToAssignmentModalProps extends DefaultSecureRouteProps {
+interface AddToAssignmentModalProps {
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
 	onAddToAssignmentCallback: (trimInfo: ItemTrimInfo) => void;
 }
 
-const AddToAssignmentModal: FunctionComponent<AddToAssignmentModalProps> = ({
-	itemMetaData,
-	isOpen,
-	onClose,
-	onAddToAssignmentCallback,
-}) => {
+const AddToAssignmentModal: FunctionComponent<
+	AddToAssignmentModalProps & RouteComponentProps & UserProps
+> = ({ itemMetaData, isOpen, onClose, onAddToAssignmentCallback }) => {
 	const [t] = useTranslation();
 
 	const [fragmentStartString, setFragmentStartString] = useState<string>(
@@ -263,4 +262,7 @@ const AddToAssignmentModal: FunctionComponent<AddToAssignmentModalProps> = ({
 	return renderAddToAssignmentModal();
 };
 
-export default AddToAssignmentModal;
+export default compose(
+	withRouter,
+	withUser
+)(AddToAssignmentModal) as FunctionComponent<AddToAssignmentModalProps>;

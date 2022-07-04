@@ -115,7 +115,7 @@ interface ItemDetailProps {
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
-	renderActionButtons?: () => ReactNode;
+	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 }
 
 export const ITEM_ACTIONS = {
@@ -180,7 +180,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
-			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
+			if (
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) &&
+				!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)
+			) {
 				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
 						state: 'error',
@@ -849,7 +852,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										{(renderActionButtons || defaultRenderActionButtons)()}
+										{(renderActionButtons || defaultRenderActionButtons)(item)}
 									</Flex>
 								</Spacer>
 							</Column>
@@ -902,10 +905,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				)}
 				{!isNil(match.params.id) && isAddToFragmentModalOpen && (
 					<AddToAssignmentModal
-						history={history}
-						location={location}
-						match={match}
-						user={user}
 						itemMetaData={item}
 						isOpen={isAddToFragmentModalOpen}
 						onClose={() => {
