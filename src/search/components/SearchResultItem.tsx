@@ -1,7 +1,3 @@
-import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { Link } from 'react-router-dom';
-
 import {
 	SearchResult,
 	SearchResultSubtitle,
@@ -11,6 +7,9 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { Link } from 'react-router-dom';
 
 import { toEnglishContentType } from '../../collection/collection.types';
 import { formatDate, generateContentLinkString, generateSearchLink } from '../../shared/helpers';
@@ -23,6 +22,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	result,
 	isBookmarked,
 	collectionLabelLookup,
+	bookmarkButton,
 }) => {
 	const contentLink: string = generateContentLinkString(result.administrative_type, result.id);
 
@@ -65,9 +65,9 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			date={formatDate(date)}
 			tags={getTags(result)}
 			viewCount={result.views_count || 0}
-			bookmarkCount={result.bookmarks_count || 0}
+			bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
 			description={stripMarkdownLinks(result.dcterms_abstract || '')}
-			isBookmarked={isBookmarked}
+			isBookmarked={bookmarkButton ? isBookmarked : null}
 			onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
 			onTagClicked={handleTagClicked}
 		>

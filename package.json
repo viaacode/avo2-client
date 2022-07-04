@@ -35,7 +35,7 @@
     "@storybook/addon-actions": "^6.3.12",
     "@viaa/avo2-components": "^1.89.4",
     "@viaa/avo2-types": "^2.39.5",
-    "apollo-boost": "^0.4.3",
+    "apollo-boost": "^0.4.9",
     "apollo-link": "^1.2.14",
     "braft-editor": "^2.3.9",
     "braft-extensions": "^0.1.0",
@@ -45,7 +45,7 @@
     "file-saver": "^2.0.2",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
-    "graphql": "^15.0.0",
+    "graphql": "^16.5.0",
     "history": "^4.10.1",
     "i18next": "^19.5.5",
     "i18next-xhr-backend": "^3.2.2",
@@ -59,7 +59,7 @@
     "oaf-side-effects": "^3.1.0",
     "query-string": "^6.8.3",
     "react": "16.14.0",
-    "react-apollo": "^2.5.8",
+    "react-apollo": "^3.1.5",
     "react-beforeunload-component": "^1.2.3",
     "react-copy-to-clipboard": "^5.0.2",
     "react-datepicker": "^2.9.6",
@@ -146,7 +146,8 @@
     "oaf-routing": "4.0.1",
     "react": "16.14.0",
     "isomorphic-fetch": "3.0.0",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "graphql": "16.5.0"
   },
   "browserslist": {
     "production": [

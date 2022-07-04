@@ -1,6 +1,6 @@
-import { Dispatch } from 'redux';
-
 import { Avo } from '@viaa/avo2-types';
+import { Dispatch } from 'redux';
+import { UrlUpdateType } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../authentication/components/SecuredRoute';
 import { CollectionLabelLookup } from '../collection/collection.types';
@@ -9,7 +9,9 @@ import { BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-s
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
 
-export interface SearchProps extends DefaultSecureRouteProps {
+export interface SearchFiltersAndResultsProps
+	extends DefaultSecureRouteProps,
+		SearchFiltersAndResultsPropsManual {
 	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
 	searchResultsError: boolean;
@@ -23,14 +25,16 @@ export interface SearchProps extends DefaultSecureRouteProps {
 	) => Dispatch;
 }
 
+export interface SearchFiltersAndResultsPropsManual {
+	enabledFilters?: (keyof Avo.Search.Filters)[];
+	bookmarks: boolean;
+	filterState: FilterState;
+	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
+}
+
 export interface SortOrder {
 	orderProperty: Avo.Search.OrderProperty;
 	orderDirection: Avo.Search.OrderDirection;
-}
-
-export interface SearchResults {
-	count: number;
-	items: Avo.Search.ResultItem[];
 }
 
 export interface FilterState {
@@ -47,6 +51,7 @@ export interface SearchFilterControlsProps {
 	) => void;
 	multiOptions: SearchFilterMultiOptions;
 	onSearch?: (aggId: string) => void;
+	enabledFilters?: (keyof Avo.Search.Filters)[];
 }
 
 interface SearchResultItemHandlers {
@@ -59,6 +64,7 @@ export interface SearchResultItemProps extends SearchResultItemHandlers {
 	result: Avo.Search.ResultItem;
 	collectionLabelLookup: CollectionLabelLookup;
 	isBookmarked: boolean | null;
+	bookmarkButton: boolean;
 }
 
 export interface SearchResultsProps extends SearchResultItemHandlers {
@@ -69,4 +75,5 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	setPage: (page: number) => void;
 	bookmarkStatuses: BookmarkStatusLookup | null;
 	navigateUserRequestForm: () => void;
+	bookmarkButtons: boolean;
 }
