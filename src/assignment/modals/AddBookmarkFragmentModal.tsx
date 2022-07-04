@@ -35,19 +35,19 @@ import { AssignmentOverviewTableColumns } from '../assignment.types';
 const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
 	{
 		id: 'contentTitle',
-		label: i18n.t('Titel'),
+		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___titel'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
 		id: 'contentDuration',
-		label: i18n.t('Speelduur'),
+		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___speelduur'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
 		id: 'contentCreatedAt',
-		label: i18n.t('Laatst toegevoegd'),
+		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___laatst-toegevoegd'),
 		sortable: true,
 		dataType: 'dateTime',
 	},
@@ -143,7 +143,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 
 	const handleImportToAssignment = () => {
 		if (!selectedBookmarkId) {
-			ToastService.danger(t('Gelieve een fragment te selecteren'));
+			ToastService.danger(t('assignment/modals/add-bookmark-fragment-modal___gelieve-een-fragment-te-selecteren'));
 			return;
 		}
 		addFragmentCallback(selectedBookmarkId);
@@ -160,10 +160,10 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
-							<Button type="secondary" label={t('Annuleer')} onClick={onClose} />
+							<Button type="secondary" label={t('assignment/modals/add-bookmark-fragment-modal___annuleer')} onClick={onClose} />
 							<Button
 								type="primary"
-								label={t('Voeg toe')}
+								label={t('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
 								onClick={handleImportToAssignment}
 							/>
 						</ButtonToolbar>
@@ -262,7 +262,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('Fragment toevoegen uit bladwijzers')}
+			title={t('assignment/modals/add-bookmark-fragment-modal___fragment-toevoegen-uit-bladwijzers')}
 			size="large"
 			onClose={onClose}
 			scrollable
