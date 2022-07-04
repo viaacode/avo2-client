@@ -53,6 +53,7 @@ export interface FilterState {
 	filters?: Partial<Avo.Search.Filters>;
 	orderProperty?: Avo.Search.OrderProperty;
 	orderDirection?: Avo.Search.OrderDirection;
+	page?: number;
 }
 
 export interface SearchFilterControlsProps {
@@ -83,6 +84,7 @@ interface SearchResultItemHandlers {
 }
 
 export interface SearchResultItemProps extends SearchResultItemHandlers {
+	id: string;
 	result: Avo.Search.ResultItem;
 	collectionLabelLookup: CollectionLabelLookup;
 	isBookmarked: boolean | null;

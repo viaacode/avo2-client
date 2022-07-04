@@ -17,6 +17,7 @@ import { SearchResultItemProps } from '../search.types';
 import './SearchResultItem.scss';
 
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
+	id,
 	handleBookmarkToggle,
 	handleTagClicked,
 	result,
@@ -70,34 +71,40 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		date = result.dcterms_issued;
 	}
 	return (
-		<SearchResult
-			key={`search-result-${result.id}`}
-			type={toEnglishContentType(result.administrative_type)}
-			date={formatDate(date)}
-			tags={getTags(result)}
-			viewCount={result.views_count || 0}
-			bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
-			description={stripMarkdownLinks(result.dcterms_abstract || '')}
-			isBookmarked={bookmarkButton ? isBookmarked : null}
-			onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
-			onTagClicked={handleTagClicked}
-		>
-			<SearchResultTitle>
-				{renderDetailLink(result.dc_title, result.id, result.administrative_type)}
-			</SearchResultTitle>
-			{!!result.original_cp && (
-				<SearchResultSubtitle>
-					{renderSearchLink(
-						result.original_cp,
-						{ filters: { provider: [result.original_cp] } },
-						'c-body-2'
+		<div id={id}>
+			<SearchResult
+				key={`search-result-${result.id}`}
+				type={toEnglishContentType(result.administrative_type)}
+				date={formatDate(date)}
+				tags={getTags(result)}
+				viewCount={result.views_count || 0}
+				bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
+				description={stripMarkdownLinks(result.dcterms_abstract || '')}
+				isBookmarked={bookmarkButton ? isBookmarked : null}
+				onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
+				onTagClicked={handleTagClicked}
+			>
+				<SearchResultTitle>
+					{renderDetailLink(result.dc_title, result.id, result.administrative_type)}
+				</SearchResultTitle>
+				{!!result.original_cp && (
+					<SearchResultSubtitle>
+						{renderSearchLink(
+							result.original_cp,
+							{ filters: { provider: [result.original_cp] } },
+							'c-body-2'
+						)}
+					</SearchResultSubtitle>
+				)}
+				<SearchResultThumbnail>
+					{renderDetailLink(
+						renderThumbnail(result),
+						result.id,
+						result.administrative_type
 					)}
-				</SearchResultSubtitle>
-			)}
-			<SearchResultThumbnail>
-				{renderDetailLink(renderThumbnail(result), result.id, result.administrative_type)}
-			</SearchResultThumbnail>
-		</SearchResult>
+				</SearchResultThumbnail>
+			</SearchResult>
+		</div>
 	);
 };
 

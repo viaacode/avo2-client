@@ -29,7 +29,13 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
+import {
+	JsonParam,
+	NumberParam,
+	StringParam,
+	UrlUpdateType,
+	useQueryParams,
+} from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -41,6 +47,7 @@ import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { useScrollToId } from '../../shared/hooks/scroll-to-id';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -70,13 +77,16 @@ const AssignmentResponseEdit: FunctionComponent<
 		filters: JsonParam,
 		orderProperty: StringParam,
 		orderDirection: StringParam,
-		tab: StringParam,
-		selectedSearchResultId: StringParam,
+		page: NumberParam,
+		tab: StringParam, // Which tab is active: assignment, search or my collection
+		selectedSearchResultId: StringParam, // Search result of which the detail page should be shown
+		focus: StringParam, // Search result that should be scrolled into view
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		PupilSearchFilterState,
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
+	useScrollToId(filterState.focus || null);
 	const [tabs, tab, , onTabClick] = useAssignmentPupilTabs(
 		assignment || undefined,
 		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -299,6 +309,7 @@ const AssignmentResponseEdit: FunctionComponent<
 								onClick={() => {
 									setFilterState({
 										...filterState,
+										focus: filterState.selectedSearchResultId,
 										selectedSearchResultId: undefined,
 									});
 								}}

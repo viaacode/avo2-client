@@ -43,10 +43,11 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		);
 	};
 
-	const renderSearchResultItem = (result: Avo.Search.ResultItem, index: number) => (
+	const renderSearchResultItem = (result: Avo.Search.ResultItem) => (
 		<SearchResultItem
 			{...resultProps}
-			key={`search-result-item-${index}`}
+			id={result.external_id}
+			key={`search-result-item-${result.external_id}`}
 			result={result}
 			collectionLabelLookup={Object.fromEntries(
 				collectionLabels.map((item) => [item.value, item.description])

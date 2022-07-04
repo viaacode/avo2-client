@@ -98,7 +98,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const urlUpdateType: UrlUpdateType = 'push';
 
-	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
@@ -140,7 +139,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
 	// elasticsearch can only handle 10000 results efficiently
 	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
-	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
+	const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
@@ -197,12 +196,12 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		search(
 			orderProperty,
 			orderDirection,
-			currentPage * ITEMS_PER_PAGE,
+			(filterState.page || 0) * ITEMS_PER_PAGE,
 			ITEMS_PER_PAGE,
 			cleanupFilterState(copiedFilterState).filters,
 			{}
 		);
-	}, [filterState, currentPage, search]);
+	}, [filterState, search]);
 
 	const updateSearchTerms = useCallback(() => {
 		const query = get(filterState, 'filters.query', '');
@@ -265,12 +264,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				...filterState,
 				orderProperty: valueParts[0] as Avo.Search.OrderProperty,
 				orderDirection: valueParts[1] as Avo.Search.OrderDirection,
+				page: 0,
 			},
 			urlUpdateType
 		);
-
-		// Reset to page 1 when search is triggered
-		setCurrentPage(0);
 	};
 
 	const cleanupFilterState = (filterState: FilterState): FilterState => {
@@ -310,6 +307,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					[id]: value,
 					query: searchTerms,
 				},
+				page: 0,
 			};
 		} else {
 			newFilterState = {
@@ -319,12 +317,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					[id]: DEFAULT_FILTER_STATE[id],
 					query: searchTerms,
 				},
+				page: 0,
 			};
 		}
 		setFilterState(cleanupFilterState(newFilterState), urlUpdateType);
-
-		// Reset to page 1 when search is triggered
-		setCurrentPage(0);
 	};
 
 	const handleTagClicked = (tagId: string) => {
@@ -343,10 +339,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const deleteAllFilters = () => {
 		setSearchTerms('');
 		setFilterState({}, urlUpdateType);
-	};
-
-	const setPage = async (pageIndex: number): Promise<void> => {
-		setCurrentPage(pageIndex);
 	};
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
@@ -402,12 +394,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					...filterState.filters,
 					query: searchTerms,
 				},
+				page: 0,
 			},
 			urlUpdateType
 		);
-
-		// Reset to page 1 when search is triggered
-		setCurrentPage(0);
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
@@ -431,7 +421,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		}
 		return (
 			<SearchResults
-				currentPage={currentPage}
+				currentPage={filterState.page || 0}
 				data={searchResults}
 				handleBookmarkToggle={handleBookmarkToggle}
 				handleTagClicked={
@@ -441,7 +431,12 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				}
 				loading={searchResultsLoading}
 				pageCount={pageCount}
-				setPage={setPage}
+				setPage={(page: number) =>
+					setFilterState({
+						...filterState,
+						page,
+					})
+				}
 				bookmarkStatuses={bookmarkStatuses}
 				collectionLabels={collectionLabels}
 				navigateUserRequestForm={navigateToUserRequestForm}
