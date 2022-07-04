@@ -115,6 +115,7 @@ interface ItemDetailProps {
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
+	renderActionButtons?: () => ReactNode;
 }
 
 export const ITEM_ACTIONS = {
@@ -133,6 +134,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	goToDetailLink = defaultGoToDetailLink(history),
 	goToSearchLink = defaultGoToSearchLink(history),
 	enabledMetaData = ALL_SEARCH_FILTERS,
+	renderActionButtons,
 }) => {
 	const [t] = useTranslation();
 
@@ -642,13 +644,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		);
 	};
 
-	const renderItem = () => {
-		if (!item) {
-			return null;
-		}
-		const englishContentType: EnglishContentType =
-			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
-
+	const defaultRenderActionButtons = () => {
 		const createAssignmentOptions = [
 			{
 				label: t('item/views/item-detail___nieuwe-opdracht'),
@@ -659,6 +655,104 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				id: ITEM_ACTIONS.importToAssignment,
 			},
 		];
+
+		return (
+			<Toolbar>
+				<ToolbarLeft>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								type="tertiary"
+								icon="scissors"
+								label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
+								title={t(
+									'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
+								)}
+								ariaLabel={t(
+									'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
+								)}
+								onClick={() => {
+									setIsAddToCollectionModalOpen(true);
+								}}
+							/>
+
+							{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+								<Dropdown
+									buttonType="tertiary"
+									icon="clipboard"
+									label={t('item/views/item-detail___voeg-toe-aan-opdracht')}
+									isOpen={isCreateAssignmentDropdownOpen}
+									onClose={() => setIsCreateAssignmentDropdownOpen(false)}
+									onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
+								>
+									<MenuContent
+										menuItems={createAssignmentOptions}
+										onClick={executeAction}
+									/>
+								</Dropdown>
+							)}
+
+							{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
+								<Button
+									type="tertiary"
+									icon="link-2"
+									label={t('item/views/item___delen-met-leerlingen')}
+									ariaLabel={t(
+										'item/views/item-detail___deel-dit-met-alle-leerlingen'
+									)}
+									title={t(
+										'item/views/item-detail___deel-dit-met-alle-leerlingen'
+									)}
+									onClick={() => {
+										setIsQuickLaneModalOpen(true);
+									}}
+								/>
+							)}
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarLeft>
+				<ToolbarRight>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<ToggleButton
+								type="tertiary"
+								icon="bookmark"
+								active={bookmarkViewPlayCounts.isBookmarked}
+								ariaLabel={t('item/views/item___toggle-bladwijzer')}
+								title={t('item/views/item___toggle-bladwijzer')}
+								onClick={toggleBookmark}
+							/>
+							<Button
+								type="tertiary"
+								icon="share-2"
+								ariaLabel={t('item/views/item___share-item')}
+								title={t('item/views/item___share-item')}
+								onClick={() => {
+									setIsShareThroughEmailModalOpen(true);
+								}}
+							/>
+							<Button
+								type="tertiary"
+								icon="flag"
+								ariaLabel={t('item/views/item___rapporteer-item')}
+								title={t('item/views/item___rapporteer-item')}
+								onClick={() => {
+									setIsReportItemModalOpen(true);
+								}}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarRight>
+			</Toolbar>
+		);
+	};
+
+	const renderItem = () => {
+		if (!item) {
+			return null;
+		}
+		const englishContentType: EnglishContentType =
+			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
 
 		return (
 			<>
@@ -755,134 +849,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										{/* <Spacer margin="right-small"> */}
-										<Toolbar>
-											<ToolbarLeft>
-												<ToolbarItem>
-													<ButtonToolbar>
-														<Button
-															type="tertiary"
-															icon="scissors"
-															label={t(
-																'item/views/item___voeg-fragment-toe-aan-collectie'
-															)}
-															title={t(
-																'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-															)}
-															ariaLabel={t(
-																'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-															)}
-															onClick={() => {
-																setIsAddToCollectionModalOpen(true);
-															}}
-														/>
-
-														{PermissionService.hasPerm(
-															user,
-															PermissionName.CREATE_ASSIGNMENTS
-														) && (
-															<Dropdown
-																buttonType="tertiary"
-																icon="clipboard"
-																label={t(
-																	'item/views/item-detail___voeg-toe-aan-opdracht'
-																)}
-																isOpen={
-																	isCreateAssignmentDropdownOpen
-																}
-																onClose={() =>
-																	setIsCreateAssignmentDropdownOpen(
-																		false
-																	)
-																}
-																onOpen={() =>
-																	setIsCreateAssignmentDropdownOpen(
-																		true
-																	)
-																}
-															>
-																<MenuContent
-																	menuItems={
-																		createAssignmentOptions
-																	}
-																	onClick={executeAction}
-																/>
-															</Dropdown>
-														)}
-
-														{PermissionService.hasPerm(
-															user,
-															PermissionName.CREATE_QUICK_LANE
-														) && (
-															<Button
-																type="tertiary"
-																icon="link-2"
-																label={t(
-																	'item/views/item___delen-met-leerlingen'
-																)}
-																ariaLabel={t(
-																	'item/views/item-detail___deel-dit-met-alle-leerlingen'
-																)}
-																title={t(
-																	'item/views/item-detail___deel-dit-met-alle-leerlingen'
-																)}
-																onClick={() => {
-																	setIsQuickLaneModalOpen(true);
-																}}
-															/>
-														)}
-													</ButtonToolbar>
-												</ToolbarItem>
-											</ToolbarLeft>
-											<ToolbarRight>
-												<ToolbarItem>
-													<ButtonToolbar>
-														<ToggleButton
-															type="tertiary"
-															icon="bookmark"
-															active={
-																bookmarkViewPlayCounts.isBookmarked
-															}
-															ariaLabel={t(
-																'item/views/item___toggle-bladwijzer'
-															)}
-															title={t(
-																'item/views/item___toggle-bladwijzer'
-															)}
-															onClick={toggleBookmark}
-														/>
-														<Button
-															type="tertiary"
-															icon="share-2"
-															ariaLabel={t(
-																'item/views/item___share-item'
-															)}
-															title={t(
-																'item/views/item___share-item'
-															)}
-															onClick={() => {
-																setIsShareThroughEmailModalOpen(
-																	true
-																);
-															}}
-														/>
-														<Button
-															type="tertiary"
-															icon="flag"
-															ariaLabel={t(
-																'item/views/item___rapporteer-item'
-															)}
-															title={t(
-																'item/views/item___rapporteer-item'
-															)}
-															onClick={() => {
-																setIsReportItemModalOpen(true);
-															}}
-														/>
-													</ButtonToolbar>
-												</ToolbarItem>
-											</ToolbarRight>
-										</Toolbar>
+										{(renderActionButtons || defaultRenderActionButtons)()}
 									</Flex>
 								</Spacer>
 							</Column>

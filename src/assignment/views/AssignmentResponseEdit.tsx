@@ -2,12 +2,16 @@ import {
 	Alert,
 	BlockHeading,
 	Button,
+	ButtonToolbar,
 	Container,
 	Flex,
 	Icon,
 	Spacer,
 	Spinner,
 	Tabs,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
@@ -245,6 +249,29 @@ const AssignmentResponseEdit: FunctionComponent<
 		[tabs, onTabClick]
 	);
 
+	const renderItemDetailActionButton = () => {
+		return (
+			<Toolbar>
+				<ToolbarLeft>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								type="tertiary"
+								icon="collection"
+								label={t('Voeg toe aan mijn collectie')}
+								title={t('Knip fragment bij en/of voeg toe aan mijn collectie')}
+								ariaLabel={t('Knip fragment bij en/of voeg toe aan mijn collectie')}
+								onClick={() => {
+									// TODO add fragment to collection
+								}}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarLeft>
+			</Toolbar>
+		);
+	};
+
 	const renderSearchResultDetailPage = () => {
 		// Render fragment detail page
 		return (
@@ -255,6 +282,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				goToDetailLink={goToDetailLink}
 				goToSearchLink={goToSearchLink}
 				enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
+				renderActionButtons={renderItemDetailActionButton}
 			/>
 		);
 	};
