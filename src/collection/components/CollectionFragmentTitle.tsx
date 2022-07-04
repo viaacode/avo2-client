@@ -1,19 +1,18 @@
+import { BlockHeading } from '@viaa/avo2-components';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-
-import { BlockHeading } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { FragmentComponent } from '../collection.types';
 
 export interface CollectionFragmentTitleProps extends FragmentComponent {
-	canViewAnyPublishedItems?: boolean;
+	enableTitleLink?: boolean;
 }
 
 const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({
 	fragment,
-	canViewAnyPublishedItems,
+	enableTitleLink,
 }) => {
 	const heading = (
 		<BlockHeading type="h2">
@@ -22,7 +21,7 @@ const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({
 	);
 
 	if (
-		canViewAnyPublishedItems &&
+		enableTitleLink &&
 		fragment.type === 'ITEM' &&
 		fragment.item_meta?.type?.label &&
 		['video', 'audio'].includes(fragment.item_meta?.type?.label)

@@ -8,12 +8,17 @@ import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './Collect
 interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
 	richText?: CollectionFragmentRichTextProps;
+	enableContentLinks: boolean;
 }
 
-const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, richText }) => {
+const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({
+	title,
+	richText,
+	enableContentLinks,
+}) => {
 	return (
 		<>
-			{title && <CollectionFragmentTitle {...title} />}
+			{title && <CollectionFragmentTitle {...title} enableTitleLink={enableContentLinks} />}
 			{richText && <CollectionFragmentRichText {...richText} />}
 		</>
 	);

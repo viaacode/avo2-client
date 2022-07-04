@@ -8,9 +8,12 @@ import { SearchFilter } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers';
 import { FragmentComponent } from '../collection.types';
 
-export type CollectionFragmentMetaProps = FragmentComponent;
+export type CollectionFragmentMetaProps = FragmentComponent & { enableContentLinks: boolean };
 
-const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ fragment }) => {
+const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({
+	fragment,
+	enableContentLinks,
+}) => {
 	const [t] = useTranslation();
 
 	const organisation = fragment.item_meta?.organisation?.name;
@@ -34,16 +37,20 @@ const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ fragment }) =
 			{series && (
 				<div>
 					{t('collection/views/collection-detail___reeks')}:{' '}
-					<Link
-						target="_blank"
-						to={buildLink(APP_PATH.SEARCH.route, undefined, {
-							filters: JSON.stringify({
-								[SearchFilter.serie]: [series],
-							}),
-						})}
-					>
+					{enableContentLinks ? (
+						<Link
+							target="_blank"
+							to={buildLink(APP_PATH.SEARCH.route, undefined, {
+								filters: JSON.stringify({
+									[SearchFilter.serie]: [series],
+								}),
+							})}
+						>
+							<b>{series}</b>
+						</Link>
+					) : (
 						<b>{series}</b>
-					</Link>
+					)}
 				</div>
 			)}
 		</section>

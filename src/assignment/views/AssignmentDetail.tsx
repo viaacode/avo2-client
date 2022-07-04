@@ -252,7 +252,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				return (
 					<li className="c-collection-list__item" key={`assignment-block-${block.id}`}>
 						<ItemVideoDescription
-							itemMetaData={block.item as Avo.Item.Item}
+							itemMetaData={block.item_meta as Avo.Item.Item}
 							showTitle={true}
 							showDescription={true}
 							title={AssignmentHelper.getDisplayTitle(block)}

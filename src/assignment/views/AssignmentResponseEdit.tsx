@@ -39,6 +39,7 @@ import {
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import CollectionOrAssignmentBlocks from '../../collection/components/CollectionOrAssignmentBlocks';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { AddToAssignmentModal } from '../../item/components';
@@ -438,20 +439,40 @@ const AssignmentResponseEdit: FunctionComponent<
 	};
 
 	const renderAssignmentBlocks = () => {
+		if (assignmentInfoLoading) {
+			return (
+				<Spacer margin="top-extra-large">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Spacer>
+			);
+		}
+		if (assignmentInfoError) {
+			return (
+				<ErrorView
+					message={t('Het ophalen van de opdracht is mislukt')}
+					icon="alert-triangle"
+				/>
+			);
+		}
+		if ((assignmentInfo?.assignmentBlocks?.length || 0) === 0) {
+			return <ErrorView message={t('Deze opdracht heeft nog geen inhoud.')} icon="search" />;
+		}
 		return (
 			<Container mode="horizontal">
-				{/* TODO Render the assignment blocks in readonly mode */}
-				{JSON.stringify(assignment, null, 2)}
+				<CollectionOrAssignmentBlocks
+					blocks={assignmentInfo?.assignmentBlocks || []}
+					enableContentLinks={false}
+					canPlay={true}
+				/>
 			</Container>
 		);
 	};
 
-	const renderedTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick} />,
-		[tabs, onTabClick]
-	);
+	const renderTabs = () => <Tabs tabs={tabs} onClick={onTabClick} />;
 
-	const renderedTabContent = useMemo(() => {
+	const renderTabContent = () => {
 		switch (tab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return renderAssignmentBlocks();
@@ -466,7 +487,7 @@ const AssignmentResponseEdit: FunctionComponent<
 			default:
 				return tab;
 		}
-	}, [tab, filterState, assignment, assignmentResponse]);
+	};
 
 	const renderPageContent = () => {
 		if (assignmentInfoLoading) {
@@ -503,7 +524,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderedTitle}
-					tabs={renderedTabs}
+					tabs={renderTabs()}
 					info={renderMeta()}
 					tour={<InteractiveTour showButton />}
 				/>
@@ -521,7 +542,7 @@ const AssignmentResponseEdit: FunctionComponent<
 						</Spacer>
 					)}
 				</Container>
-				<Spacer margin={['bottom-large']}>{renderedTabContent}</Spacer>
+				<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
 				{selectedItem && (
 					<AddToAssignmentModal
 						itemMetaData={selectedItem}

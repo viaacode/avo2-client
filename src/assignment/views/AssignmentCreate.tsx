@@ -1,10 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -16,6 +10,11 @@ import {
 	StickyEdgeBar,
 	Tabs,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -166,7 +165,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 								{error && <span className="c-floating-error">{error.message}</span>}
 							</>
 						)}
-					></Controller>
+					/>
 				</BlockHeading>
 			</Flex>
 		),
@@ -206,14 +205,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		[t]
 	);
 
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>, [
-		tabs,
-		onTabClick,
-	]);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
 				return 'Ter info; Het toevoegen van inhoud aan een opdracht is (tijdelijk) enkel mogelijk tijdens het editeren van bestaande opdrachten. Slaag eerst deze opdracht op.';
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:

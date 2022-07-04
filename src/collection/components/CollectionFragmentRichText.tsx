@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
-
 import { convertToHtml } from '@viaa/avo2-components';
+import React, { FC } from 'react';
 
 import Html, { HtmlProps } from '../../shared/components/Html/Html';
 import { FragmentComponent } from '../collection.types';

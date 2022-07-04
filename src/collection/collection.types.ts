@@ -1,7 +1,7 @@
-import { invert } from 'lodash-es';
-
 import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { CollectionFragment } from '@viaa/avo2-types/types/collection';
+import { invert } from 'lodash-es';
 
 export enum ContentTypeNumber {
 	audio = 1,
@@ -71,5 +71,5 @@ export interface MarcomEntry {
 }
 
 export interface FragmentComponent {
-	fragment: CollectionFragment;
+	fragment: CollectionFragment | AssignmentBlock;
 }

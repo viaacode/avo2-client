@@ -207,8 +207,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item?.title,
-						custom_description: block.original_description || block.item?.description,
+						custom_title: block.original_title || block.item_meta?.title,
+						custom_description:
+							block.original_description || block.item_meta?.description,
 					});
 				},
 			},
@@ -218,7 +219,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item?.title,
+						custom_title: block.original_title || block.item_meta?.title,
 						custom_description: '',
 					});
 				},
@@ -330,7 +331,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
 		const blocks = insertAtPosition(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item,
+			item_meta: item,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: getAddBlockModalPosition,
@@ -468,9 +469,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderMeta = useCallback(
 		(block: AssignmentBlock) => {
-			const organisation = block.item?.organisation?.name;
-			const publishedAt = block.item?.published_at;
-			const series = block.item?.series; // TODO: determine & configure corresponding meta field
+			const organisation = block.item_meta?.organisation?.name;
+			const publishedAt = block.item_meta?.published_at;
+			const series = block.item_meta?.series; // TODO: determine & configure corresponding meta field
 
 			return organisation || publishedAt || series ? (
 				<section className="u-spacer-bottom">
@@ -539,16 +540,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					);
 
 				case AssignmentBlockType.ITEM:
-					if (!block.item) {
+					if (!block.item_meta) {
 						return null;
 					}
 
 					return (
 						<CustomiseItemForm
 							className="u-padding-l"
-							id={block.item.id}
+							id={block.item_meta.id}
 							preview={() => {
-								const item = block.item as ItemSchema;
+								const item = block.item_meta as ItemSchema;
 
 								return (
 									<FlowPlayerWrapper
@@ -576,7 +577,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									'assignment/views/assignment-edit___instructies-of-omschrijving'
 								),
 								value: !block.use_custom_fields
-									? block.original_title || block.item?.title
+									? block.original_title || block.item_meta?.title
 									: block.custom_title,
 								disabled: !block.use_custom_fields,
 								onChange: (value) => setBlock(block, { custom_title: value }),
@@ -591,7 +592,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 											initialHtml: convertToHtml(
 												!block.use_custom_fields
 													? block.original_description ||
-															block.item?.description
+															block.item_meta?.description
 													: block.custom_description
 											),
 											controls: WYSIWYG_OPTIONS_AUTHOR,
