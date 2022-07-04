@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
+import { SearchFilter } from '../../../../search/search.const';
 import {
 	BooleanCheckboxDropdown,
 	CheckboxDropdownModal,
@@ -46,10 +47,9 @@ import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-
 import { KeyCode } from '../../../../shared/types';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
-import './FilterTable.scss';
 import { cleanupObject } from './FilterTable.utils';
 
-import { SearchFilter } from '../../../../search/search.const';
+import './FilterTable.scss';
 
 export interface FilterableTableState {
 	query?: string;
