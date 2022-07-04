@@ -41,6 +41,8 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { AddToAssignmentModal } from '../../item/components';
+import { ItemTrimInfo } from '../../item/item.types';
 import ItemDetail from '../../item/views/ItemDetail';
 import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
@@ -48,6 +50,7 @@ import { InteractiveTour } from '../../shared/components';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useScrollToId } from '../../shared/hooks/scroll-to-id';
+import { ToastService } from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -58,6 +61,7 @@ import { AssignmentService } from '../assignment.service';
 import { PupilSearchFilterState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../hooks';
+import { PupilCollectionService } from '../pupil-collection.service';
 
 import './AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
@@ -68,9 +72,21 @@ const AssignmentResponseEdit: FunctionComponent<
 	const [t] = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentError] = useState<any | null>(null);
+	const assignmentId = match.params.id;
+	const [assignmentInfo, setAssignmentInfo] = useState<{
+		assignmentBlocks: Avo.Assignment.Block[];
+		assignment: Avo.Assignment.Assignment_v2;
+	} | null>(null);
+	const [assignmentInfoLoading, setAssignmentInfoLoading] = useState<boolean>(false);
+	const [assignmentInfoError, setAssignmentInfoError] = useState<any | null>(null);
+	const assignment: Avo.Assignment.Assignment_v2 | null = assignmentInfo?.assignment || null;
+
+	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
+		null
+	);
+
+	const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] = useState<boolean>(false);
+	const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
 
 	// UI
 	const queryParamConfig = {
@@ -106,14 +122,38 @@ const AssignmentResponseEdit: FunctionComponent<
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssignmentLoading(true);
-			setAssignmentError(null);
-			setAssignment(await AssignmentService.fetchAssignmentById(match.params.id));
+			setAssignmentInfoLoading(true);
+
+			// Get assignment
+			setAssignmentInfoError(null);
+			if (!user.profile?.id) {
+				ToastService.danger(
+					t(
+						'Het ophalen van de opdracht is mislukt. De ingelogde gebruiker heeft geen profiel id'
+					)
+				);
+				return;
+			}
+
+			const tempAssignmentInfo = await AssignmentService.fetchAssignmentAndContent(
+				user.profile.id,
+				assignmentId
+			);
+
+			// Create an assignment response if needed
+			setAssignmentResponse(
+				await AssignmentService.createAssignmentResponseObject(
+					tempAssignmentInfo?.assignment,
+					user
+				)
+			);
+
+			setAssignmentInfo(tempAssignmentInfo);
 		} catch (err) {
-			setAssignmentError(err);
+			setAssignmentInfoError(err);
 		}
-		setAssignmentLoading(false);
-	}, [match.params.id]);
+		setAssignmentInfoLoading(false);
+	}, [assignmentId]);
 
 	// Effects
 	useEffect(() => {
@@ -131,6 +171,37 @@ const AssignmentResponseEdit: FunctionComponent<
 	const goToSearchLink = (newFilters: FilterState): void => {
 		setFilterState({ ...filterState, ...newFilters });
 	};
+
+	const handleAddToPupilCollection = async (item: Avo.Item.Item): Promise<void> => {
+		if (!assignment) {
+			ToastService.info(t('Het laden van de opdracht is mislukt'));
+			return;
+		}
+		if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
+			ToastService.info(t('Je kan geen antwoord indienen op je eigen opdracht'));
+			return;
+		}
+		setSelectedItem(item);
+		setIsAddToAssignmentModalOpen(true);
+	};
+
+	const handleAddToPupilCollectionConfirmed = async (
+		itemTrimInfo?: ItemTrimInfo
+	): Promise<void> => {
+		setIsAddToAssignmentModalOpen(false);
+		if (selectedItem && assignmentResponse?.id) {
+			await PupilCollectionService.importFragmentToPupilCollection(
+				selectedItem,
+				assignmentResponse.id,
+				itemTrimInfo
+			);
+			ToastService.success(t('Het fragment is toegevoegd aan je collectie'));
+		} else {
+			ToastService.danger(t('Het toevoegen van het fragment aan je collectie is mislukt'));
+		}
+	};
+
+	// Render
 
 	const renderDetailLink = (linkText: string | ReactNode, id: string) => {
 		return (
@@ -172,8 +243,6 @@ const AssignmentResponseEdit: FunctionComponent<
 			return linkText;
 		}
 	};
-
-	// Render
 
 	const renderBackButton = useMemo(
 		() => (
@@ -254,12 +323,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		);
 	}, [assignment, t]);
 
-	const renderedTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick} />,
-		[tabs, onTabClick]
-	);
-
-	const renderItemDetailActionButton = () => {
+	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
 		return (
 			<Toolbar>
 				<ToolbarLeft>
@@ -277,9 +341,7 @@ const AssignmentResponseEdit: FunctionComponent<
 								ariaLabel={t(
 									'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
 								)}
-								onClick={() => {
-									// TODO add fragment to collection
-								}}
+								onClick={() => handleAddToPupilCollection(item)}
 							/>
 						</ButtonToolbar>
 					</ToolbarItem>
@@ -361,25 +423,53 @@ const AssignmentResponseEdit: FunctionComponent<
 		);
 	};
 
+	const renderCollectionEdit = () => {
+		return (
+			<Container mode="horizontal">
+				{/* TODO Render the collection edit blocks */}
+				{/*<CollectionOrBundleEditContent*/}
+				{/*	type="collection"*/}
+				{/*	collection={assignmentResponse}*/}
+				{/*	changeCollectionState={() => {}}*/}
+				{/*/>*/}
+				{JSON.stringify(assignmentResponse, null, 2)}
+			</Container>
+		);
+	};
+
+	const renderAssignmentBlocks = () => {
+		return (
+			<Container mode="horizontal">
+				{/* TODO Render the assignment blocks in readonly mode */}
+				{JSON.stringify(assignment, null, 2)}
+			</Container>
+		);
+	};
+
+	const renderedTabs = useMemo(
+		() => <Tabs tabs={tabs} onClick={onTabClick} />,
+		[tabs, onTabClick]
+	);
+
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
-				return <Container mode="horizontal">assignment details</Container>;
+				return renderAssignmentBlocks();
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				return renderSearchContent();
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
 				// This form receives its parent's state because we don't care about rerender performance here
-				return <Container mode="horizontal">collection view</Container>;
+				return renderCollectionEdit();
 
 			default:
 				return tab;
 		}
-	}, [tab, filterState]);
+	}, [tab, filterState, assignment, assignmentResponse]);
 
 	const renderPageContent = () => {
-		if (assignmentLoading) {
+		if (assignmentInfoLoading) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -388,7 +478,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				</Spacer>
 			);
 		}
-		if (assignmentError) {
+		if (assignmentInfoError) {
 			return (
 				<ErrorView
 					message={t(
@@ -432,6 +522,14 @@ const AssignmentResponseEdit: FunctionComponent<
 					)}
 				</Container>
 				<Spacer margin={['bottom-large']}>{renderedTabContent}</Spacer>
+				{selectedItem && (
+					<AddToAssignmentModal
+						itemMetaData={selectedItem}
+						isOpen={isAddToAssignmentModalOpen}
+						onClose={() => setIsAddToAssignmentModalOpen(false)}
+						onAddToAssignmentCallback={handleAddToPupilCollectionConfirmed}
+					/>
+				)}
 			</div>
 		);
 	};
