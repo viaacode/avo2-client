@@ -25,6 +25,7 @@ import { Link } from 'react-router-dom';
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	AssignmentBlockListSorter,
@@ -57,11 +58,12 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { insertAtPosition } from '../helpers/insert-at-position';
+import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
 import AddBlockModal from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal from '../modals/AddBookmarkFragmentModal';
+import AddCollectionModal from '../modals/AddCollectionModal';
 import ConfirmSliceModal from '../modals/ConfirmSliceModal';
 
 import './AssignmentEdit.scss';
@@ -128,6 +130,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		setAddBlockModalPosition,
 	] = useSingleEntityModal<number>();
 	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
+	const [isAddCollectionModalOpen, setIsAddCollectionModalOpen] = useState<boolean>(false);
 
 	const pastDeadline = useMemo(
 		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
@@ -348,6 +351,55 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			shouldDirty: true,
 			shouldTouch: true,
 		});
+	};
+
+	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
+		if (getAddBlockModalPosition == null) {
+			return;
+		}
+
+		// fetch collection details
+		const collection = await CollectionService.fetchCollectionOrBundleById(
+			collectionId,
+			'collection',
+			undefined
+		);
+
+		if (!collection) {
+			ToastService.danger(t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald'));
+			return;
+		}
+
+		if (collection.collection_fragments) {
+			const blocks = collection.collection_fragments.map((collectionItem, index) => ({
+				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
+				item: collectionItem.item_meta,
+				type: collectionItem.type,
+				fragment_id: collectionItem.external_id,
+				position: getAddBlockModalPosition + index,
+				original_title: withDescription ? collectionItem.custom_title : null,
+				original_description: withDescription ? collectionItem.custom_description : null,
+				custom_title: collectionItem.use_custom_fields ? collectionItem.custom_title : null,
+				custom_description: collectionItem.use_custom_fields
+					? collectionItem.custom_description
+					: null,
+				use_custom_fields: collectionItem.use_custom_fields,
+			}));
+			const newAssignmentBlocks = insertMultipleAtPosition(
+				assignment.blocks,
+				blocks as unknown as AssignmentBlock[]
+			);
+
+			setAssignment((prev) => ({
+				...prev,
+				blocks: newAssignmentBlocks,
+			}));
+
+			setValue('blocks', newAssignmentBlocks, {
+				shouldDirty: true,
+				shouldTouch: true,
+			});
+		}
 	};
 
 	// Effects
@@ -753,6 +805,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									setIsAddFragmentModalOpen(true);
 									break;
 								}
+								case 'COLLECTIE': {
+									setIsAddCollectionModalOpen(true);
+									break;
+								}
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
 									const blocks = insertAtPosition(assignment.blocks, {
@@ -784,6 +840,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						isOpen={isAddFragmentModalOpen}
 						onClose={() => setIsAddFragmentModalOpen(false)}
 						addFragmentCallback={onAddItem}
+					/>
+					<AddCollectionModal
+						user={user}
+						isOpen={isAddCollectionModalOpen}
+						onClose={() => setIsAddCollectionModalOpen(false)}
+						addCollectionCallback={onAddCollection}
 					/>
 				</>
 			)}
