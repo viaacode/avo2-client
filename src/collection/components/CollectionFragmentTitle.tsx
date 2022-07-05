@@ -4,30 +4,27 @@ import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
-import { FragmentComponent } from '../collection.types';
+import { BlockItemComponent } from '../collection.types';
 
-export interface CollectionFragmentTitleProps extends FragmentComponent {
+export interface CollectionFragmentTitleProps extends BlockItemComponent {
 	enableTitleLink?: boolean;
 }
 
-const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({
-	fragment,
-	enableTitleLink,
-}) => {
+const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, enableTitleLink }) => {
 	const heading = (
 		<BlockHeading type="h2">
-			{fragment.use_custom_fields ? fragment.custom_title : fragment.item_meta?.title}
+			{block.use_custom_fields ? block.custom_title : block.item_meta?.title}
 		</BlockHeading>
 	);
 
 	if (
 		enableTitleLink &&
-		fragment.type === 'ITEM' &&
-		fragment.item_meta?.type?.label &&
-		['video', 'audio'].includes(fragment.item_meta?.type?.label)
+		block.type === 'ITEM' &&
+		block.item_meta?.type?.label &&
+		['video', 'audio'].includes(block.item_meta?.type?.label)
 	) {
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, {
-			id: fragment.item_meta.external_id || '',
+			id: block.item_meta.external_id || '',
 		});
 
 		return <Link to={link}>{heading}</Link>;

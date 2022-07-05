@@ -57,9 +57,9 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 								// Add timestamps
 								const formatted = formatTimestamps(
 									convertToHtml(
-										richText.fragment.use_custom_fields
-											? richText.fragment.custom_description
-											: richText.fragment.item_meta?.description
+										richText.block.use_custom_fields
+											? richText.block.custom_description
+											: richText.block.item_meta?.description
 									) || ''
 								);
 

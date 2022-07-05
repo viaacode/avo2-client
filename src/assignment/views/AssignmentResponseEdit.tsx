@@ -39,7 +39,6 @@ import {
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import CollectionOrAssignmentBlocks from '../../collection/components/CollectionOrAssignmentBlocks';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { AddToAssignmentModal } from '../../item/components';
@@ -48,6 +47,8 @@ import ItemDetail from '../../item/views/ItemDetail';
 import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
+import BlockList from '../../shared/components/BlockList/BlockList';
+import { BlockItemBase } from '../../shared/components/BlockList/BlockList.types';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useScrollToId } from '../../shared/hooks/scroll-to-id';
@@ -103,7 +104,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		PupilSearchFilterState,
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
-	useScrollToId(filterState.focus || null);
+	useScrollToId(filterState.focus ? `search-result-${filterState.focus}` : null);
 	const [tabs, tab, , onTabClick] = useAssignmentPupilTabs(
 		assignment || undefined,
 		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -129,7 +130,9 @@ const AssignmentResponseEdit: FunctionComponent<
 			setAssignmentInfoError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
-					t('assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id')
+					t(
+						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id'
+					)
 				);
 				return;
 			}
@@ -173,11 +176,19 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	const handleAddToPupilCollection = async (item: Avo.Item.Item): Promise<void> => {
 		if (!assignment) {
-			ToastService.info(t('assignment/views/assignment-response-edit___het-laden-van-de-opdracht-is-mislukt'));
+			ToastService.info(
+				t(
+					'assignment/views/assignment-response-edit___het-laden-van-de-opdracht-is-mislukt'
+				)
+			);
 			return;
 		}
 		if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
-			ToastService.info(t('assignment/views/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'));
+			ToastService.info(
+				t(
+					'assignment/views/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
+				)
+			);
 			return;
 		}
 		setSelectedItem(item);
@@ -194,9 +205,17 @@ const AssignmentResponseEdit: FunctionComponent<
 				assignmentResponse.id,
 				itemTrimInfo
 			);
-			ToastService.success(t('assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'));
+			ToastService.success(
+				t(
+					'assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'
+				)
+			);
 		} else {
-			ToastService.danger(t('assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt'));
+			ToastService.danger(
+				t(
+					'assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -449,18 +468,27 @@ const AssignmentResponseEdit: FunctionComponent<
 		if (assignmentInfoError) {
 			return (
 				<ErrorView
-					message={t('assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt')}
+					message={t(
+						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
+					)}
 					icon="alert-triangle"
 				/>
 			);
 		}
 		if ((assignmentInfo?.assignmentBlocks?.length || 0) === 0) {
-			return <ErrorView message={t('assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud')} icon="search" />;
+			return (
+				<ErrorView
+					message={t(
+						'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud'
+					)}
+					icon="search"
+				/>
+			);
 		}
 		return (
 			<Container mode="horizontal">
-				<CollectionOrAssignmentBlocks
-					blocks={assignmentInfo?.assignmentBlocks || []}
+				<BlockList
+					blocks={(assignmentInfo?.assignmentBlocks || []) as BlockItemBase[]}
 					enableContentLinks={false}
 					canPlay={true}
 				/>

@@ -6,19 +6,16 @@ import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers';
-import { FragmentComponent } from '../collection.types';
+import { BlockItemComponent } from '../collection.types';
 
-export type CollectionFragmentMetaProps = FragmentComponent & { enableContentLinks: boolean };
+export type CollectionFragmentMetaProps = BlockItemComponent & { enableContentLinks: boolean };
 
-const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({
-	fragment,
-	enableContentLinks,
-}) => {
+const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ block, enableContentLinks }) => {
 	const [t] = useTranslation();
 
-	const organisation = fragment.item_meta?.organisation?.name;
-	const publishedAt = fragment.item_meta?.published_at;
-	const series = (fragment.item_meta as ItemSchema)?.series;
+	const organisation = block.item_meta?.organisation?.name;
+	const publishedAt = block.item_meta?.published_at;
+	const series = (block.item_meta as ItemSchema)?.series;
 
 	return organisation || publishedAt || series ? (
 		<section className="u-spacer-bottom">

@@ -1,13 +1,7 @@
 import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import {
-	CollectionFragment,
-	CollectionFragmentType,
-	CollectionFragmentTypeDict,
-} from '@viaa/avo2-types/types/collection';
+import { CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
 import { TFunction } from 'i18next';
 
-import { AssignmentBlockType } from '../assignment/assignment.types';
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -106,24 +100,4 @@ export const EDIT_COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<Ic
 	ITEM: 'video', // TODO: add custom icon
 	TEXT: 'type',
 	COLLECTION: 'x',
-});
-
-export const COLLECTION_OR_ASSIGNMENT_BLOCK_ICONS: () => Record<
-	CollectionFragmentType | AssignmentBlockType,
-	(fragment?: CollectionFragment | AssignmentBlock) => IconName
-> = () => ({
-	ITEM: (fragment) => {
-		if ((fragment as CollectionFragment)?.item_meta) {
-			switch ((fragment as CollectionFragment)?.item_meta?.type?.label) {
-				case 'audio':
-					return 'headphone';
-				case 'video':
-					return 'video'; // TODO: add custom icon
-			}
-		} // TODO handle else for assignment items => need to fetch fragment type: audio or video
-		return 'x';
-	},
-	TEXT: () => 'type',
-	ZOEK: () => 'search',
-	COLLECTION: () => 'collection',
 });
