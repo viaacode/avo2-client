@@ -252,8 +252,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Set the loading state when the form is ready
 	useEffect(() => {
-		if (loadingInfo.state !== 'loaded') {
-			assignment && setLoadingInfo({ state: 'loaded' });
+		if (loadingInfo.state !== 'loaded' && assignment) {
+			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
