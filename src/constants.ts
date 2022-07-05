@@ -1,6 +1,5 @@
-import { compact } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { compact } from 'lodash-es';
 
 import { ROUTE_PARTS } from './shared/constants';
 import i18n from './shared/translations/i18n';
@@ -207,12 +206,12 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_RESPONSE_DETAIL: {
-		route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.response}/:responseId`,
+		route: `/${ROUTE_PARTS.assignments}/:id`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_RESPONSE_EDIT: {
-		route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.response}/:responseId/${ROUTE_PARTS.edit}`,
+		route: `/${ROUTE_PARTS.assignments}/:id`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
