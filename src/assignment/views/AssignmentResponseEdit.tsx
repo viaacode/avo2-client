@@ -129,9 +129,7 @@ const AssignmentResponseEdit: FunctionComponent<
 			setAssignmentInfoError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
-					t(
-						'Het ophalen van de opdracht is mislukt. De ingelogde gebruiker heeft geen profiel id'
-					)
+					t('assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id')
 				);
 				return;
 			}
@@ -175,11 +173,11 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	const handleAddToPupilCollection = async (item: Avo.Item.Item): Promise<void> => {
 		if (!assignment) {
-			ToastService.info(t('Het laden van de opdracht is mislukt'));
+			ToastService.info(t('assignment/views/assignment-response-edit___het-laden-van-de-opdracht-is-mislukt'));
 			return;
 		}
 		if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
-			ToastService.info(t('Je kan geen antwoord indienen op je eigen opdracht'));
+			ToastService.info(t('assignment/views/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'));
 			return;
 		}
 		setSelectedItem(item);
@@ -196,9 +194,9 @@ const AssignmentResponseEdit: FunctionComponent<
 				assignmentResponse.id,
 				itemTrimInfo
 			);
-			ToastService.success(t('Het fragment is toegevoegd aan je collectie'));
+			ToastService.success(t('assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'));
 		} else {
-			ToastService.danger(t('Het toevoegen van het fragment aan je collectie is mislukt'));
+			ToastService.danger(t('assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt'));
 		}
 	};
 
@@ -451,13 +449,13 @@ const AssignmentResponseEdit: FunctionComponent<
 		if (assignmentInfoError) {
 			return (
 				<ErrorView
-					message={t('Het ophalen van de opdracht is mislukt')}
+					message={t('assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt')}
 					icon="alert-triangle"
 				/>
 			);
 		}
 		if ((assignmentInfo?.assignmentBlocks?.length || 0) === 0) {
-			return <ErrorView message={t('Deze opdracht heeft nog geen inhoud.')} icon="search" />;
+			return <ErrorView message={t('assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud')} icon="search" />;
 		}
 		return (
 			<Container mode="horizontal">
