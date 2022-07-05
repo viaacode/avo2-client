@@ -24,7 +24,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
@@ -40,7 +40,6 @@ import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { FilterState } from '../../search/search.types';
 import {
 	DeleteObjectModal,
 	InteractiveTour,
@@ -76,35 +75,12 @@ import './BundleDetail.scss';
 
 type BundleDetailProps = {
 	id?: string;
-	renderDetailLink: (
-		linkText: string | ReactNode,
-		id: string,
-		type: Avo.Core.ContentType,
-		className?: string
-	) => ReactNode;
-	renderSearchLink: (
-		linkText: string | ReactNode,
-		newFilters: FilterState,
-		className?: string
-	) => ReactNode;
-	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
-	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
 };
 
 const BundleDetail: FunctionComponent<
 	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({
-	history,
-	location,
-	match,
-	user,
-	id,
-	renderDetailLink = defaultRenderDetailLink,
-	renderSearchLink = defaultRenderSearchLink,
-	goToDetailLink = defaultGoToDetailLink(history),
-	enabledMetaData = ALL_SEARCH_FILTERS,
-}) => {
+> = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -393,7 +369,7 @@ const BundleDetail: FunctionComponent<
 				user
 			);
 
-			goToDetailLink(duplicateBundle.id, 'bundel');
+			defaultGoToDetailLink(history)(duplicateBundle.id, 'bundel');
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
@@ -688,9 +664,11 @@ const BundleDetail: FunctionComponent<
 					<BlockHeading type="h3">
 						{t('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
-					<Grid>{renderCommonMetadata(bundle, enabledMetaData, renderSearchLink)}</Grid>
+					<Grid>
+						{renderCommonMetadata(bundle, enabledMetaData, defaultRenderSearchLink)}
+					</Grid>
 					<hr className="c-hr" />
-					{renderRelatedItems(relatedItems, renderDetailLink)}
+					{renderRelatedItems(relatedItems, defaultRenderDetailLink)}
 				</Container>
 			</Container>
 		);
