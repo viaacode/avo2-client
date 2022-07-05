@@ -12,7 +12,7 @@ import { isRichTextEmpty } from '../../shared/helpers';
 import { AssignmentBlockType } from '../assignment.types';
 
 import { useAssignmentBlockDescriptionButtons } from './assignment-block-description-buttons';
-import { useAssignmentBlockMeta } from './assignment-block-meta';
+import { AssignmentBlockMeta } from '../components/AssignmentBlockMeta';
 import { AssignmentBlockToggle } from '../components/AssignmentBlockToggle';
 
 export function useAssignmentTextBlock(
@@ -56,7 +56,6 @@ export function useAssignmentItemBlock(
 	const [t] = useTranslation();
 
 	const getButtons = useAssignmentBlockDescriptionButtons(setBlock);
-	const renderMeta = useAssignmentBlockMeta();
 
 	return useCallback(
 		(block: AssignmentBlock) => {
@@ -119,11 +118,11 @@ export function useAssignmentItemBlock(
 							: undefined
 					}
 				>
-					{renderMeta(block)}
+					<AssignmentBlockMeta block={block} />
 				</CustomiseItemForm>
 			);
 		},
-		[t, setBlock, getButtons, renderMeta]
+		[t, setBlock, getButtons]
 	);
 }
 

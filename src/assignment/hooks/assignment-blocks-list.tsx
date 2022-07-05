@@ -35,8 +35,6 @@ export function useAssignmentBlocksList(
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(assignment.blocks, item, delta);
 
-					console.info('event', switched);
-
 					setAssignment((prev) => ({
 						...prev,
 						blocks: switched,
