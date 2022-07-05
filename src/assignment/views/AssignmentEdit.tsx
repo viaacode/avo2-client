@@ -363,7 +363,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		);
 
 		if (!collection) {
-			ToastService.danger(t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald'));
+			ToastService.danger(
+				t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald')
+			);
 			return;
 		}
 
@@ -771,9 +773,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					block={getConfirmSliceModalBlock as AssignmentBlock}
 					onClose={() => setConfirmSliceModalOpen(false)}
 					onConfirm={() => {
-						const blocks = assignment.blocks.filter(
-							(item) => item.id !== getConfirmSliceModalBlock?.id
-						);
+						const blocks = assignment.blocks
+							.filter((item) => item.id !== getConfirmSliceModalBlock?.id)
+							.map((block, i) => ({
+								...block,
+								position: i,
+							}));
 
 						setAssignment((prev) => ({
 							...prev,
