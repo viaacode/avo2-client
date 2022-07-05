@@ -429,7 +429,7 @@ export class AssignmentService {
 		);
 
 		const cleanup = (block: AssignmentBlock) => {
-			delete block.item;
+			delete block.item_meta;
 			delete (block as any).icon;
 
 			block.updated_at = new Date().toISOString();
@@ -691,7 +691,9 @@ export class AssignmentService {
 			const assignmentBlocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
 					if (block.type === 'ITEM') {
-						block.item = await ItemsService.fetchItemByExternalId(block.fragment_id);
+						block.item_meta = await ItemsService.fetchItemByExternalId(
+							block.fragment_id
+						);
 					}
 					return block;
 				})
@@ -940,7 +942,7 @@ export class AssignmentService {
 			);
 			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 			const blocks = collection.collection_fragments.map((fragment: any, index: number) => {
-				const block = {
+				const block: Partial<AssignmentBlock> = {
 					assignment_id: assignmentId,
 					fragment_id: fragment.external_id,
 					custom_title: null,
@@ -952,16 +954,13 @@ export class AssignmentService {
 					end_oc: fragment.end_oc,
 					position: startPosition + index,
 					thumbnail_path: fragment.thumbnail_path,
-					type:
-						fragment.type === AssignmentBlockType.TEXT
-							? AssignmentBlockType.TEXT
-							: AssignmentBlockType.ITEM,
 				};
 				if (fragment.type === AssignmentBlockType.TEXT) {
 					// text: original text null, custom text set
 					block.custom_title = fragment.custom_title;
 					block.custom_description = fragment.custom_description;
 					block.use_custom_fields = true;
+					block.type = AssignmentBlockType.TEXT;
 				} else {
 					// ITEM
 					// custom_title and custom_description remain null
@@ -970,6 +969,7 @@ export class AssignmentService {
 						? fragment.custom_description
 						: null;
 					block.use_custom_fields = false;
+					block.type = AssignmentBlockType.ITEM;
 				}
 
 				return block;

@@ -9,12 +9,14 @@ import {
 	TextInput,
 	Toggle,
 } from '@viaa/avo2-components';
+import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React from 'react';
 import { Trans } from 'react-i18next';
 
 import { APP_PATH } from '../constants';
+import { CuePoints } from '../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import Html from '../shared/components/Html/Html';
 import WYSIWYGWrapper from '../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../shared/constants';
@@ -22,11 +24,11 @@ import { buildLink, openLinkInNewTab } from '../shared/helpers';
 import { ToastService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import i18n from '../shared/translations/i18n';
+import { Positioned } from '../shared/types';
 
 import { AssignmentService } from './assignment.service';
 import { AssignmentLayout, AssignmentSchemaLabel_v2, AssignmentType } from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
-import { Positioned } from '../shared/types';
 
 export class AssignmentHelper {
 	public static async attemptDuplicateAssignment(
@@ -86,8 +88,8 @@ export class AssignmentHelper {
 		return !!assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now());
 	}
 
-	public static getContentLayoutOptions() {
-		const options = [
+	public static getContentLayoutOptions(): RadioOption[] {
+		return [
 			{
 				label: i18n.t('assignment/views/assignment-edit___mediaspeler-met-beschrijving'),
 				value: AssignmentLayout.PlayerAndText.toString(),
@@ -97,7 +99,6 @@ export class AssignmentHelper {
 				value: AssignmentLayout.OnlyPlayer.toString(),
 			},
 		] as any[];
-		return options;
 	}
 
 	public static renderAssignmentForm(
@@ -287,7 +288,10 @@ export class AssignmentHelper {
 		);
 	}
 
-	public static getLabels(assignment: Avo.Assignment.Assignment_v2, type: string) {
+	public static getLabels(
+		assignment: Avo.Assignment.Assignment_v2,
+		type: string
+	): Avo.Assignment.Assignment_v2['labels'] {
 		return (
 			assignment?.labels?.filter((label: any) => label.assignment_label.type === type) || []
 		);
@@ -296,24 +300,24 @@ export class AssignmentHelper {
 	public static getDisplayTitle(block: Avo.Assignment.Block): string {
 		if (!block.use_custom_fields) {
 			if (block.original_title || block.original_description) {
-				return block.original_title;
+				return block.original_title || '';
 			}
-			return block.item?.title || '';
+			return block.item_meta?.title || '';
 		}
-		return block.custom_title;
+		return block.custom_title || '';
 	}
 
 	public static getDisplayDescription(block: Avo.Assignment.Block): string {
 		if (!block.use_custom_fields) {
 			if (block.original_title || block.original_description) {
-				return block.original_description;
+				return block.original_description || '';
 			}
-			return block.item?.description || '';
+			return block.item_meta?.description || '';
 		}
-		return block.custom_description;
+		return block.custom_description || '';
 	}
 
-	public static getCuePoints(block: Avo.Assignment.Block) {
+	public static getCuePoints(block: Avo.Assignment.Block): CuePoints | undefined {
 		if (block.start_oc || block.end_oc) {
 			return {
 				start: block.start_oc,
@@ -323,14 +327,14 @@ export class AssignmentHelper {
 		return undefined;
 	}
 
-	public static getThumbnail(block: Avo.Assignment.Block) {
+	public static getThumbnail(block: Avo.Assignment.Block): string | undefined {
 		return block.thumbnail_path || undefined;
 	}
 }
 
 // Zoek & bouw
 
-export function setPositionToIndex<T>(item: Positioned<T>, i: number) {
+export function setPositionToIndex<T>(item: Positioned<T>, i: number): Positioned<T> {
 	return {
 		...item,
 		position: i,

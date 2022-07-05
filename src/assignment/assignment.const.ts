@@ -1,5 +1,6 @@
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlockType } from '@viaa/avo2-types/types/assignment';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
@@ -249,7 +250,7 @@ export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => AssignmentBlockTypeDict
 
 export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
 	t: TFunction
-) => AssignmentBlockTypeDict<string> = (t) => ({
+) => Record<AssignmentBlockType, string> = (t) => ({
 	ITEM: t('assignment/assignment___fragment'),
 	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
 	ZOEK: t('assignment/assignment___zoekoefening'),
