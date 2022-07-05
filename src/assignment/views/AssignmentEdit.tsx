@@ -181,14 +181,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		// fetch item details
-		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = insertAtPosition(assignment.blocks, {
+		const item_meta = await ItemsService.fetchItemByExternalId(itemExternalId);
+		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item,
+			item_meta,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
-		} as AssignmentBlock); // TODO: avoid cast
+		} as AssignmentBlock);
 
 		setAssignment((prev) => ({
 			...prev,
@@ -296,10 +296,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {

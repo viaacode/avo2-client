@@ -34,7 +34,7 @@
     "@react-hook/resize-observer": "^1.2.5",
     "@storybook/addon-actions": "^6.3.12",
     "@viaa/avo2-components": "^1.89.5",
-    "@viaa/avo2-types": "2.39.5",
+    "@viaa/avo2-types": "2.39.9",
     "apollo-boost": "^0.4.9",
     "apollo-link": "^1.2.14",
     "braft-editor": "^2.3.9",

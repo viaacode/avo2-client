@@ -1,15 +1,17 @@
+import { ButtonProps } from '@viaa/avo2-components';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { isRichTextEmpty } from '../../shared/helpers';
 
 export function useAssignmentBlockDescriptionButtons(
 	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-) {
+): (block: AssignmentBlock) => { label: string; items: Partial<ButtonProps>[] } {
 	const [t] = useTranslation();
 
 	const buttons = useCallback(
-		(block: AssignmentBlock) => [
+		(block: AssignmentBlock): Partial<ButtonProps>[] => [
 			{
 				active: !block.use_custom_fields,
 				label: t('assignment/views/assignment-edit___origineel'),
@@ -25,8 +27,9 @@ export function useAssignmentBlockDescriptionButtons(
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item?.title,
-						custom_description: block.original_description || block.item?.description,
+						custom_title: block.original_title || block.item_meta?.title,
+						custom_description:
+							block.original_description || block.item_meta?.description,
 					});
 				},
 			},
@@ -36,7 +39,7 @@ export function useAssignmentBlockDescriptionButtons(
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item?.title,
+						custom_title: block.original_title || block.item_meta?.title,
 						custom_description: '',
 					});
 				},

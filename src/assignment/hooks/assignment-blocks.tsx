@@ -1,20 +1,22 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
-import { useCallback } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
 import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../shared/constants';
 import { isRichTextEmpty } from '../../shared/helpers';
 import { AssignmentBlockType } from '../assignment.types';
+
 import { useAssignmentBlockDescriptionButtons } from './assignment-block-description-buttons';
 import { useAssignmentBlockMeta } from './assignment-block-meta';
 
 export function useAssignmentTextBlock(
 	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-) {
+): (block: AssignmentBlock) => ReactNode {
 	const [t] = useTranslation();
 
 	return useCallback(
@@ -27,7 +29,7 @@ export function useAssignmentTextBlock(
 					placeholder: t(
 						'assignment/views/assignment-edit___instructies-of-omschrijving'
 					),
-					value: block.custom_title,
+					value: block.custom_title || '',
 					onChange: (value) => setBlock(block, { custom_title: value }),
 				}}
 				description={{
@@ -49,7 +51,7 @@ export function useAssignmentTextBlock(
 
 export function useAssignmentItemBlock(
 	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-) {
+): (block: AssignmentBlock) => ReactNode | null {
 	const [t] = useTranslation();
 
 	const getButtons = useAssignmentBlockDescriptionButtons(setBlock);
@@ -57,16 +59,16 @@ export function useAssignmentItemBlock(
 
 	return useCallback(
 		(block: AssignmentBlock) => {
-			if (!block.item) {
+			if (!block.item_meta) {
 				return null;
 			}
 
 			return (
 				<CustomiseItemForm
 					className="u-padding-l"
-					id={block.item.id}
+					id={block.item_meta.id}
 					preview={() => {
-						const item = block.item as ItemSchema;
+						const item = block.item_meta as ItemSchema;
 
 						return (
 							<FlowPlayerWrapper
@@ -88,9 +90,10 @@ export function useAssignmentItemBlock(
 						placeholder: t(
 							'assignment/views/assignment-edit___instructies-of-omschrijving'
 						),
-						value: !block.use_custom_fields
-							? block.original_title || block.item?.title
-							: block.custom_title,
+						value:
+							(!block.use_custom_fields
+								? block.original_title || block.item_meta?.title
+								: block.custom_title) || undefined,
 						disabled: !block.use_custom_fields,
 						onChange: (value) => setBlock(block, { custom_title: value }),
 					}}
@@ -102,7 +105,8 @@ export function useAssignmentItemBlock(
 									),
 									initialHtml: convertToHtml(
 										!block.use_custom_fields
-											? block.original_description || block.item?.description
+											? block.original_description ||
+													block.item_meta?.description
 											: block.custom_description
 									),
 									controls: WYSIWYG_OPTIONS_AUTHOR,
@@ -125,7 +129,7 @@ export function useAssignmentItemBlock(
 
 export function useAssignmentBlocks(
 	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-) {
+): (block: AssignmentBlock) => ReactNode | null {
 	const [t] = useTranslation();
 
 	const text = useAssignmentTextBlock(setBlock);
