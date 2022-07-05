@@ -265,7 +265,6 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	};
 
 	const renderModalBody = () => {
-		// buttongroup className="c-assignment-overview__archive-buttons"
 		return (
 			<>
 				<Toolbar>
