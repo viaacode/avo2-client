@@ -44,6 +44,7 @@ export enum AssignmentBlockType {
 	TEXT = 'TEXT',
 	ITEM = 'ITEM',
 	ZOEK = 'ZOEK',
+	BOUW = 'BOUW',
 }
 
 export enum AssignmentView {

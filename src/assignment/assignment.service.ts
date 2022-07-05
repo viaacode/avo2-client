@@ -277,6 +277,14 @@ export class AssignmentService {
 	): Avo.Assignment.Assignment_v2 {
 		const assignmentToSave = cloneDeep(assignment);
 
+		if (assignment.blocks?.some((block) => block.type === AssignmentBlockType.ZOEK)) {
+			assignmentToSave.assignment_type = 'ZOEK';
+		}
+
+		if (assignment.blocks?.some((block) => block.type === AssignmentBlockType.BOUW)) {
+			assignmentToSave.assignment_type = 'BOUW';
+		}
+
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
 		}

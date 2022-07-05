@@ -20,4 +20,5 @@ export const BLOCK_ITEM_ICONS: () => Record<
 	TEXT: () => 'type',
 	ZOEK: () => 'search',
 	COLLECTION: () => 'collection',
+	BOUW: () => 'search',
 });

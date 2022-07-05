@@ -13,6 +13,7 @@ import { AssignmentBlockType } from '../assignment.types';
 
 import { useAssignmentBlockDescriptionButtons } from './assignment-block-description-buttons';
 import { useAssignmentBlockMeta } from './assignment-block-meta';
+import { AssignmentBlockToggle } from '../components/AssignmentBlockToggle';
 
 export function useAssignmentTextBlock(
 	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
@@ -126,6 +127,53 @@ export function useAssignmentItemBlock(
 	);
 }
 
+export function useAssignmentSearchBlock(
+	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
+) {
+	const [t] = useTranslation();
+
+	return useCallback(
+		(block: AssignmentBlock) => (
+			<>
+				<TitleDescriptionForm
+					className="u-padding-l"
+					id={block.id}
+					title={undefined}
+					description={{
+						label: t('Omschrijving'),
+						placeholder: t(
+							'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
+						),
+						initialHtml: convertToHtml(block.custom_description),
+						controls: WYSIWYG_OPTIONS_AUTHOR,
+						onChange: (value) =>
+							setBlock(block, {
+								custom_description: value.toHTML(),
+							}),
+					}}
+				/>
+
+				<AssignmentBlockToggle
+					heading={t('Leerlingencollecties toevoegen')}
+					description={t(
+						'Met leerlingencollecties kunnen de leerlingen hun zoekresultaten verzamelen in een collectie die jij als leerkracht nadien kan inkijken en verbeteren.'
+					)}
+					checked={block.type === AssignmentBlockType.BOUW}
+					onChange={() => {
+						setBlock(block, {
+							type:
+								block.type === AssignmentBlockType.ZOEK
+									? AssignmentBlockType.BOUW
+									: AssignmentBlockType.ZOEK,
+						});
+					}}
+				/>
+			</>
+		),
+		[t, setBlock]
+	);
+}
+
 export function useAssignmentBlocks(
 	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
 ) {
@@ -133,6 +181,7 @@ export function useAssignmentBlocks(
 
 	const text = useAssignmentTextBlock(setBlock);
 	const item = useAssignmentItemBlock(setBlock);
+	const search = useAssignmentSearchBlock(setBlock);
 
 	return useCallback(
 		(block: AssignmentBlock) => {
@@ -142,6 +191,10 @@ export function useAssignmentBlocks(
 
 				case AssignmentBlockType.ITEM:
 					return item(block);
+
+				case AssignmentBlockType.ZOEK:
+				case AssignmentBlockType.BOUW:
+					return search(block);
 
 				default:
 					break;

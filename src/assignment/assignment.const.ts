@@ -245,6 +245,7 @@ export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => AssignmentBlockTypeDict
 		ITEM: 'video',
 		TEXT: 'type',
 		ZOEK: 'search',
+		BOUW: 'search',
 	});
 
 export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
@@ -253,6 +254,7 @@ export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
 	ITEM: t('assignment/assignment___fragment'),
 	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
 	ZOEK: t('assignment/assignment___zoekoefening'),
+	BOUW: t('assignment/assignment___zoekoefening'),
 });
 
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
