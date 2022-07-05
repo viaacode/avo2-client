@@ -1,17 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-	BlockHeading,
-	Button,
-	Container,
-	ContentInput,
-	Flex,
-	Icon,
-	Spacer,
-	StickyEdgeBar,
-	Tabs,
-} from '@viaa/avo2-components';
+import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -23,16 +13,20 @@ import { buildLink, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import {
-	ASSIGNMENT_CREATE_UPDATE_TABS,
-	ASSIGNMENT_FORM_FIELDS,
-	ASSIGNMENT_FORM_SCHEMA,
-} from '../assignment.const';
+import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
-import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
+import AssignmentTitle from '../components/AssignmentTitle';
+import {
+	useAssignmentBlocks,
+	useAssignmentBlocksList,
+	useAssignmentContentModals,
+	useAssignmentDetailsForm,
+	useAssignmentForm,
+	useAssignmentTeacherTabs,
+} from '../hooks';
+import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -47,32 +41,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
-
 	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
-	// UI
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
-	const fields = useMemo(() => ASSIGNMENT_FORM_FIELDS(t), [t]);
-
-	// Effects
-
-	// Synchronise the React state that triggers renders with the useForm hook
-	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
-			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
-		});
-
-		trigger();
-	}, [assignment, setValue, trigger]);
-
-	// Set the loading state when the form is ready
-	useEffect(() => {
-		if (loadingInfo.state !== 'loaded') {
-			assignment && setLoadingInfo({ state: 'loaded' });
-		}
-	}, [assignment, loadingInfo, setLoadingInfo]);
+	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
 
 	// Events
 
@@ -98,7 +69,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				);
 
 				ToastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
+					t(
+						'assignment/views/assignment-create___de-opdracht-is-succesvol-aangemaakt-je-vindt-deze-in-je-werkruimte'
+					)
 				);
 
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
@@ -106,7 +79,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
+				t(
+					'assignment/views/assignment-create___het-opslaan-van-de-opdracht-is-mislukt-contacteer-ons-via-de-feedback-knop-mocht-dit-probleem-zich-blijven-voordoen'
+				)
 			);
 		}
 	};
@@ -116,7 +91,45 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		resetForm();
 	}, [resetForm, setAssignment, defaultValues]);
 
+	// UI
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+
 	// Render
+
+	const renderBlockContent = useAssignmentBlocks(setBlock);
+
+	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
+		assignment,
+		setAssignment,
+		setValue
+	);
+
+	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
+		initial: defaultValues,
+	});
+
+	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
+		listSorter: {
+			content: (item) => item && renderBlockContent(item),
+			divider: (item) => (
+				<Button
+					icon="plus"
+					type="secondary"
+					onClick={() => {
+						addBlockModal.setEntity(item?.position);
+						addBlockModal.setOpen(true);
+					}}
+				/>
+			),
+		},
+		listSorterItem: {
+			onSlice: (item) => {
+				confirmSliceModal.setEntity(item);
+				confirmSliceModal.setOpen(true);
+			},
+		},
+	});
 
 	const renderBackButton = useMemo(
 		() => (
@@ -134,41 +147,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	);
 
 	const renderTitle = useMemo(
-		() => (
-			<Flex center className="u-spacer-top-l">
-				<Icon name="clipboard" size="large" />
-
-				<BlockHeading className="u-spacer-left" type="h2">
-					<Controller
-						name="title"
-						control={control}
-						render={({ field, fieldState: { error } }) => (
-							<>
-								<ContentInput
-									{...field}
-									placeholder={t(
-										'assignment/views/assignment-create___placeholder'
-									)}
-									nodeCancel={<Icon name="x" size="small" />}
-									nodeSubmit={<Icon name="check" size="small" />}
-									onChange={(title) => {
-										field.onChange(title);
-										setAssignment((previous) => {
-											return {
-												...previous,
-												title,
-											};
-										});
-									}}
-								/>
-
-								{error && <span className="c-floating-error">{error.message}</span>}
-							</>
-						)}
-					/>
-				</BlockHeading>
-			</Flex>
-		),
+		() => <AssignmentTitle control={control} setAssignment={setAssignment} />,
 		[t, control, setAssignment]
 	);
 
@@ -213,21 +192,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return 'Ter info; Het toevoegen van inhoud aan een opdracht is (tijdelijk) enkel mogelijk tijdens het editeren van bestaande opdrachten. Slaag eerst deze opdracht op.';
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
-				// This form receives its parent's state because we don't care about rerender performance here
-				return (
-					<div className="c-assignment-details-tab">
-						<AssignmentDetailsForm
-							state={[assignment, setAssignment]}
-							initial={defaultValues}
-							{...fields}
-						/>
-					</div>
-				);
+				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
 
 			default:
 				return tab;
 		}
-	}, [tab, defaultValues, assignment, setAssignment, fields]);
+	}, [tab, renderedDetailForm, renderedListSorter]);
 
 	const render = () => (
 		<div className="c-assignment-page c-assignment-page--create">
@@ -261,8 +231,29 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					/>
 				</StickyEdgeBar>
 			</Container>
+
+			{renderedModals}
 		</div>
 	);
+
+	// Effects
+
+	// Synchronise the React state that triggers renders with the useForm hook
+	useEffect(() => {
+		Object.keys(assignment).forEach((key) => {
+			const cast = key as keyof AssignmentFormState;
+			setValue(cast, assignment[cast]);
+		});
+
+		trigger();
+	}, [assignment, setValue, trigger]);
+
+	// Set the loading state when the form is ready
+	useEffect(() => {
+		if (loadingInfo.state !== 'loaded') {
+			assignment && setLoadingInfo({ state: 'loaded' });
+		}
+	}, [assignment, loadingInfo, setLoadingInfo]);
 
 	return (
 		<>

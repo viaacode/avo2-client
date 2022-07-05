@@ -90,15 +90,14 @@ export class CollectionService {
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
 			// insert collection
-			const insertResponse: void | FetchResult<
-				Avo.Collection.Collection
-			> = await dataService.mutate({
-				mutation: INSERT_COLLECTION,
-				variables: {
-					collection: cleanedCollection,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			const insertResponse: void | FetchResult<Avo.Collection.Collection> =
+				await dataService.mutate({
+					mutation: INSERT_COLLECTION,
+					variables: {
+						collection: cleanedCollection,
+					},
+					update: ApolloCacheManager.clearCollectionCache,
+				});
 
 			if (!insertResponse || insertResponse.errors) {
 				throw new CustomError('Failed to insert collection', null, {
@@ -232,13 +231,12 @@ export class CollectionService {
 			// update fragments
 			const updatePromises = compact(
 				updateFragmentIds.map((id: number) => {
-					let fragmentToUpdate:
-						| Avo.Collection.Fragment
-						| undefined = getFragmentsFromCollection(newCollection).find(
-						(fragment: Avo.Collection.Fragment) => {
-							return Number(id) === fragment.id;
-						}
-					);
+					let fragmentToUpdate: Avo.Collection.Fragment | undefined =
+						getFragmentsFromCollection(newCollection).find(
+							(fragment: Avo.Collection.Fragment) => {
+								return Number(id) === fragment.id;
+							}
+						);
 
 					if (!fragmentToUpdate) {
 						ToastService.info(
@@ -281,9 +279,8 @@ export class CollectionService {
 			}
 
 			// update collection
-			const cleanedCollection: Partial<Avo.Collection.Collection> = cleanCollectionBeforeSave(
-				newCollection
-			);
+			const cleanedCollection: Partial<Avo.Collection.Collection> =
+				cleanCollectionBeforeSave(newCollection);
 
 			// set updated_at date if collection has changes (without taking into account the management fields)
 			if (

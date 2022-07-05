@@ -12,7 +12,7 @@ export function formatDurationHoursMinutesSeconds(numSeconds: number | null | un
 	const mins = Math.floor((seconds - hours * 3600) / 60);
 	const secs = seconds % 60;
 
-	return `${hours.toString().padStart(2, '0')}:${mins
+	return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs
 		.toString()
-		.padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+		.padStart(2, '0')}`;
 }

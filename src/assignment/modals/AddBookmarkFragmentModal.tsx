@@ -73,18 +73,20 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	}),
 };
 
-interface AddBookmarkFragmentModal {
-	user: Avo.User.User;
+export interface AddBookmarkFragmentModalProps {
+	user?: Avo.User.User;
 	isOpen: boolean;
 	onClose?: () => void;
-	addFragmentCallback: (fragmentId: string) => void;
+	addFragmentCallback?: (fragmentId: string) => void;
 }
 
-const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
+const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps> = ({
 	user,
 	isOpen,
 	onClose,
-	addFragmentCallback,
+	addFragmentCallback = () => {
+		return;
+	},
 }) => {
 	const [t] = useTranslation();
 
@@ -99,6 +101,10 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 
 	const fetchBookmarks = useCallback(async () => {
 		try {
+			if (!user) {
+				throw new CustomError('Could not determine authenticated user.');
+			}
+
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
@@ -117,12 +123,10 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 			);
 			setBookmarks(bookmarkInfos);
 		} catch (err) {
-			console.error(new CustomError('Failed to get assignments', err));
+			console.error(new CustomError('Failed to get bookmarks', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
-					'assignment/modals/import-to-assignment-modal___het-ophalen-van-bestaande-opdrachten-is-mislukt'
-				),
+				message: t('assignment/modals/add-bookmark-fragment-modal___het-ophalen-van-bladwijzers-is-mislukt'),
 			});
 		}
 	}, [tableColumns, user, filterString, sortColumn, sortOrder, t]);
@@ -143,7 +147,11 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 
 	const handleImportToAssignment = () => {
 		if (!selectedBookmarkId) {
-			ToastService.danger(t('assignment/modals/add-bookmark-fragment-modal___gelieve-een-fragment-te-selecteren'));
+			ToastService.danger(
+				t(
+					'assignment/modals/add-bookmark-fragment-modal___gelieve-een-fragment-te-selecteren'
+				)
+			);
 			return;
 		}
 		addFragmentCallback(selectedBookmarkId);
@@ -160,10 +168,18 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
-							<Button type="secondary" label={t('assignment/modals/add-bookmark-fragment-modal___annuleer')} onClick={onClose} />
+							<Button
+								type="secondary"
+								label={t(
+									'assignment/modals/add-bookmark-fragment-modal___annuleer'
+								)}
+								onClick={onClose}
+							/>
 							<Button
 								type="primary"
-								label={t('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
+								label={t(
+									'assignment/modals/add-bookmark-fragment-modal___voeg-toe'
+								)}
 								onClick={handleImportToAssignment}
 							/>
 						</ButtonToolbar>
@@ -262,7 +278,9 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModal> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('assignment/modals/add-bookmark-fragment-modal___fragment-toevoegen-uit-bladwijzers')}
+			title={t(
+				'assignment/modals/add-bookmark-fragment-modal___fragment-toevoegen-uit-bladwijzers'
+			)}
 			size="large"
 			onClose={onClose}
 			scrollable

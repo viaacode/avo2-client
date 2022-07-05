@@ -14,14 +14,12 @@ export function getSubtitles(
 	if (!collaterals.length) {
 		return undefined;
 	}
-	return collaterals.map(
-		(collateral: Avo.Item.Subtitle, index: number): FlowplayerTrack => {
-			return {
-				id: collateral.external_id,
-				default: index === 0,
-				src: `${getEnv('PROXY_URL')}/subtitles/convert-srt-to-vtt${collateral.path}`,
-				label: i18n.t('shared/helpers/get-subtitles___nederlands') + (index + 1),
-			};
-		}
-	);
+	return collaterals.map((collateral: Avo.Item.Subtitle, index: number): FlowplayerTrack => {
+		return {
+			id: collateral.external_id,
+			default: index === 0,
+			src: `${getEnv('PROXY_URL')}/subtitles/convert-srt-to-vtt${collateral.path}`,
+			label: i18n.t('shared/helpers/get-subtitles___nederlands') + (index + 1),
+		};
+	});
 }

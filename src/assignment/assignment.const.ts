@@ -177,8 +177,8 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		),
 		blocks: array(),
 		answer_url: string().nullable().optional(),
-		available_at: string().optional(),
-		deadline_at: string().optional(),
+		available_at: string().nullable().optional(),
+		deadline_at: string().nullable().optional(),
 	});
 };
 
@@ -192,7 +192,7 @@ export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	deadline_at: undefined,
 });
 
-export const ASSIGNMENT_FORM_FIELDS = (
+export const ASSIGNMENT_DETAILS_FORM_FIELDS = (
 	t: TFunction
 ): Pick<
 	AssignmentDetailsFormProps,
@@ -240,15 +240,16 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 	MY_COLLECTION = 'MY_COLLECTION',
 }
 
-export const EDIT_ASSIGNMENT_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> = () => ({
-	ITEM: 'video',
-	TEXT: 'type',
-	ZOEK: 'search',
-});
+export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> =
+	() => ({
+		ITEM: 'video',
+		TEXT: 'type',
+		ZOEK: 'search',
+	});
 
-export const EDIT_ASSIGNMENT_BLOCK_LABELS: (t: TFunction) => AssignmentBlockTypeDict<string> = (
-	t
-) => ({
+export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
+	t: TFunction
+) => AssignmentBlockTypeDict<string> = (t) => ({
 	ITEM: t('assignment/assignment___fragment'),
 	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
 	ZOEK: t('assignment/assignment___zoekoefening'),

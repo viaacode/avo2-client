@@ -23,16 +23,17 @@ import {
 	TEXT_FIELD,
 } from './defaults';
 
-export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
-	mediaTitle: '',
-	mediaAutoplay: false,
-	headingTitle: '',
-	headingType: 'h2',
-	align: 'left',
-	content: '',
-	buttonType: 'secondary',
-	buttonLabel: '',
-});
+export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE =
+	(): MediaPlayerTitleTextButtonBlockComponentState => ({
+		mediaTitle: '',
+		mediaAutoplay: false,
+		headingTitle: '',
+		headingType: 'h2',
+		align: 'left',
+		content: '',
+		buttonType: 'secondary',
+		buttonLabel: '',
+	});
 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS();

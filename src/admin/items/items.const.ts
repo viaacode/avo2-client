@@ -16,11 +16,9 @@ export const ITEMS_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in ItemsOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in ItemsOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	organisation: (order: Avo.Search.OrderDirection) => ({ organisation: { name: order } }),
 	type: (order: Avo.Search.OrderDirection) => ({ type: { label: order } }),
 	views: (order: Avo.Search.OrderDirection) => ({
