@@ -1,6 +1,7 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
+
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
@@ -48,9 +49,12 @@ export function useAssignmentContentModals(
 				block={getConfirmSliceModalBlock as AssignmentBlock}
 				onClose={() => setConfirmSliceModalOpen(false)}
 				onConfirm={() => {
-					const blocks = assignment.blocks.filter(
-						(item) => item.id !== getConfirmSliceModalBlock?.id
-					);
+					const blocks = assignment.blocks
+						.filter((item) => item.id !== getConfirmSliceModalBlock?.id)
+						.map((block, i) => ({
+							...block,
+							position: i,
+						}));
 
 					setAssignment((prev) => ({
 						...prev,
@@ -86,7 +90,7 @@ export function useAssignmentContentModals(
 								}
 
 								case AssignmentBlockType.TEXT:
-								case AssignmentBlockType.ZOEK:
+								case AssignmentBlockType.ZOEK: {
 									const blocks = insertAtPosition(assignment.blocks, {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
@@ -103,7 +107,7 @@ export function useAssignmentContentModals(
 										shouldTouch: true,
 									});
 									break;
-
+								}
 								default:
 									break;
 							}
