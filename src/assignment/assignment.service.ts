@@ -940,13 +940,13 @@ export class AssignmentService {
 			);
 			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 			const blocks = collection.collection_fragments.map((fragment: any, index: number) => {
-				return {
+				const block = {
 					assignment_id: assignmentId,
 					fragment_id: fragment.external_id,
 					custom_title: null,
 					custom_description: null,
-					original_title: withDescription ? fragment.custom_title : null,
-					original_description: withDescription ? fragment.custom_description : null,
+					original_title: null,
+					original_description: null,
 					use_custom_fields: false,
 					start_oc: fragment.start_oc,
 					end_oc: fragment.end_oc,
@@ -957,6 +957,22 @@ export class AssignmentService {
 							? AssignmentBlockType.TEXT
 							: AssignmentBlockType.ITEM,
 				};
+				if (fragment.type === AssignmentBlockType.TEXT) {
+					// text: original text null, custom text set
+					block.custom_title = fragment.custom_title;
+					block.custom_description = fragment.custom_description;
+					block.use_custom_fields = true;
+				} else {
+					// ITEM
+					// custom_title and custom_description remain null
+					block.original_title = withDescription ? fragment.custom_title : null;
+					block.original_description = withDescription
+						? fragment.custom_description
+						: null;
+					block.use_custom_fields = false;
+				}
+
+				return block;
 			});
 			try {
 				await dataService.mutate({
