@@ -253,6 +253,25 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 			where: { owner_profile_id: { _eq: $profileId }, assignment_id: { _eq: $assignmentId } }
 		) {
 			id
+			created_at
+			owner_profile_id
+			assignment_id
+			collection_title
+			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				id
+				fragment_id
+				use_custom_fields
+				custom_title
+				custom_description
+				start_oc
+				end_oc
+				position
+				created_at
+				updated_at
+				type
+				thumbnail_path
+				assignment_response_id
+			}
 		}
 	}
 `;
@@ -284,6 +303,21 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 				owner_profile_id
 				assignment_id
 				collection_title
+				pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+					id
+					fragment_id
+					use_custom_fields
+					custom_title
+					custom_description
+					start_oc
+					end_oc
+					position
+					created_at
+					updated_at
+					type
+					thumbnail_path
+					assignment_response_id
+				}
 			}
 			assignment_type
 			deadline_at
@@ -418,7 +452,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 `;
 
 export const INSERT_ASSIGNMENT_BLOCKS = gql`
-	mutation insertBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
+	mutation insertAssignmentBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
 		insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
 			affected_rows
 		}

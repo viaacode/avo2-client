@@ -1,11 +1,3 @@
-import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
-import { StringParam, useQueryParam } from 'use-query-params';
-
 import {
 	BlockHeading,
 	Button,
@@ -38,6 +30,21 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
+import { get, isNil } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -53,6 +60,8 @@ import {
 	toEnglishContentType,
 } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import { FilterState } from '../../search/search.types';
 import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -64,14 +73,20 @@ import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
 	CustomError,
-	generateSearchLink,
-	generateSearchLinks,
-	generateSearchLinkString,
 	isMobileWidth,
+	renderSearchLinks,
 	reorderDate,
 } from '../../shared/helpers';
-import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
+import {
+	defaultGoToSearchLink,
+	defaultRenderSearchLink,
+} from '../../shared/helpers/default-render-search-link';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
+import withUser from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -84,15 +99,46 @@ import { ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
 
-interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+interface ItemDetailProps {
+	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType,
+		className?: string
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
+	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
+	goToSearchLink: (newFilters: FilterState) => void;
+	enabledMetaData: SearchFilter[];
+	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
+}
 
 export const ITEM_ACTIONS = {
 	createAssignment: 'createAssignment',
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user }) => {
+const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
+	history,
+	match,
+	location,
+	user,
+	id,
+	renderDetailLink = defaultRenderDetailLink,
+	renderSearchLink = defaultRenderSearchLink,
+	goToDetailLink = defaultGoToDetailLink(history),
+	goToSearchLink = defaultGoToSearchLink(history),
+	enabledMetaData = ALL_SEARCH_FILTERS,
+	renderActionButtons,
+}) => {
 	const [t] = useTranslation();
+
+	const itemId = id || match.params.id;
 
 	const [cuePoint] = useQueryParam('t', StringParam);
 
@@ -107,12 +153,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] = useState<boolean>(
-		false
-	);
-	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] = useState<boolean>(
-		false
-	);
+	const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
+		useState<boolean>(false);
+	const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
+		useState<boolean>(false);
 	const [
 		isConfirmImportToAssignmentWithResponsesModalOpen,
 		setIsConfirmImportToAssignmentWithResponsesModalOpen,
@@ -134,9 +178,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			});
 	};
 
-	const checkPermissionsAndGetItem = async () => {
+	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
-			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
+			if (
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) &&
+				!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)
+			) {
 				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
 						state: 'error',
@@ -157,9 +204,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				return;
 			}
 
-			const itemObj:
-				| (Avo.Item.Item & { replacement_for?: string })
-				| null = await ItemsService.fetchItemByExternalId(match.params.id);
+			const itemObj: (Avo.Item.Item & { replacement_for?: string }) | null =
+				await ItemsService.fetchItemByExternalId(itemId);
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',
@@ -184,13 +230,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			if (itemObj.replacement_for) {
 				// Item was replaced by another item
 				// We should reload the page, to update the url
-				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemObj.external_id }));
+				goToDetailLink(itemObj.external_id, 'video');
 				return;
 			}
 
 			trackEvents(
 				{
-					object: match.params.id,
+					object: itemId,
 					object_type: 'item',
 					action: 'view',
 				},
@@ -199,7 +245,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
 
-			retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 			try {
 				const counts = await BookmarksViewsPlaysService.getItemCounts(
 					(itemObj as any).uid,
@@ -224,7 +270,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 			console.error(
 				new CustomError('Failed to check permissions or get item from graphql', err, {
 					user,
-					itemId: match.params.id,
+					itemId,
 				})
 			);
 			setLoadingInfo({
@@ -232,7 +278,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 			});
 		}
-	};
+	}, [itemId, setItem, t, history, user]);
 
 	useEffect(() => {
 		if (item) {
@@ -247,7 +293,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	 */
 	useEffect(() => {
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, t, history, user]); // eslint-disable-line
+	}, [checkPermissionsAndGetItem]);
 
 	const toggleBookmark = async () => {
 		try {
@@ -284,10 +330,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		}
 	};
 
-	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
-		history.push(generateSearchLinkString(prop, value));
-	};
-
 	const trackOnPlay = () => {
 		trackEvents(
 			{
@@ -299,38 +341,43 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		);
 	};
 
+	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
+		const englishContentType: EnglishContentType =
+			toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+
+		return (
+			<MediaCard
+				category={englishContentType}
+				orientation="horizontal"
+				title={relatedItem.dc_title}
+			>
+				<MediaCardThumbnail>
+					<Thumbnail
+						category={englishContentType}
+						src={relatedItem.thumbnail_path}
+						showCategoryIcon
+					/>
+				</MediaCardThumbnail>
+				<MediaCardMetaData>
+					<MetaData category={englishContentType}>
+						<MetaDataItem label={relatedItem.original_cp || ''} />
+					</MetaData>
+				</MediaCardMetaData>
+			</MediaCard>
+		);
+	};
+
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map((relatedItem) => {
-				const englishContentType: EnglishContentType =
-					toEnglishContentType(relatedItem.administrative_type) ||
-					ContentTypeString.video;
-
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
-						<Link
-							to={generateRelatedItemLink(relatedItem)}
-							className="a-link__no-styles"
-						>
-							<MediaCard
-								category={englishContentType}
-								orientation="horizontal"
-								title={relatedItem.dc_title}
-							>
-								<MediaCardThumbnail>
-									<Thumbnail
-										category={englishContentType}
-										src={relatedItem.thumbnail_path}
-										showCategoryIcon
-									/>
-								</MediaCardThumbnail>
-								<MediaCardMetaData>
-									<MetaData category={englishContentType}>
-										<MetaDataItem label={relatedItem.original_cp || ''} />
-									</MetaData>
-								</MediaCardMetaData>
-							</MediaCard>
-						</Link>
+						{renderDetailLink(
+							renderRelatedItem(relatedItem),
+							relatedItem.id,
+							relatedItem.administrative_type,
+							'a-link__no-styles'
+						)}
 					</li>
 				);
 			});
@@ -402,13 +449,205 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		}
 	};
 
-	const renderItem = () => {
-		if (!item) {
+	const renderEducationLevels = (item: Avo.Item.Item) => {
+		if (
+			!item.external_id ||
+			!item.lom_context ||
+			!enabledMetaData.includes(SearchFilter.educationLevel)
+		) {
 			return null;
 		}
-		const englishContentType: EnglishContentType =
-			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
+						</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.educationLevel,
+								item.lom_context
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
 
+	const renderSubjects = (item: Avo.Item.Item) => {
+		if (
+			!item.external_id ||
+			!item.lom_classification ||
+			!enabledMetaData.includes(SearchFilter.subject)
+		) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
+						</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.subject,
+								item.lom_classification
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderKeywords = (item: Avo.Item.Item) => {
+		if (!item.lom_keywords?.length || !enabledMetaData.includes(SearchFilter.keyword)) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
+						</th>
+						<td>
+							{stringsToTagList(
+								item.lom_keywords || [],
+								null,
+								(tagId: string | number) =>
+									goToSearchLink({
+										filters: {
+											keyword: [tagId as string],
+										},
+									})
+							)}
+						</td>
+					</tr>
+					{/*<tr>*/}
+					{/*<th scope="row"><Trans i18nKey="item/views/item___klascement">Klascement</Trans></th>*/}
+					{/*<td>*/}
+					{/*<a href={'http://www.klascement.be/link_item'}>*/}
+					{/*www.klascement.be/link_item*/}
+					{/*</a>*/}
+					{/*</td>*/}
+					{/*</tr>*/}
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderGeneralMetaData = (item: Avo.Item.Item) => {
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<Grid tag="tbody">
+					{!!item.issued && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___publicatiedatum">
+									Publicatiedatum
+								</Trans>
+							</th>
+							<td>{reorderDate(item.issued, '/')}</td>
+						</Column>
+					)}
+					{!!item.published_at && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___toegevoegd-op">
+									Toegevoegd op
+								</Trans>
+							</th>
+							<td>{reorderDate(item.published_at, '/')}</td>
+						</Column>
+					)}
+				</Grid>
+				<Grid tag="tbody">
+					{!!get(item, 'organisation.name') && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
+							</th>
+							<td>
+								{renderSearchLink(item.organisation.name, {
+									filters: {
+										provider: [item.organisation.name],
+									},
+								})}
+							</td>
+						</Column>
+					)}
+					{!!item.duration && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
+							</th>
+							<td>{item.duration}</td>
+						</Column>
+					)}
+				</Grid>
+				<Grid tag="tbody">
+					{!!item.series && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
+							</th>
+							<td>
+								{renderSearchLink(item.series, {
+									filters: { serie: [item.series] },
+								})}
+							</td>
+						</Column>
+					)}
+					{!!item.lom_languages && !!item.lom_languages.length && (
+						<Column size="2-5" tag="tr">
+							<th scope="row">
+								<Trans i18nKey="item/views/item___taal">Taal</Trans>
+							</th>
+							<td>
+								{item.lom_languages
+									.map((languageCode) => LANGUAGES.nl[languageCode])
+									.join(', ')}
+							</td>
+						</Column>
+					)}
+				</Grid>
+			</Table>
+		);
+	};
+
+	const defaultRenderActionButtons = () => {
 		const createAssignmentOptions = [
 			{
 				label: t('item/views/item-detail___nieuwe-opdracht'),
@@ -419,6 +658,104 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				id: ITEM_ACTIONS.importToAssignment,
 			},
 		];
+
+		return (
+			<Toolbar>
+				<ToolbarLeft>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								type="tertiary"
+								icon="scissors"
+								label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
+								title={t(
+									'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
+								)}
+								ariaLabel={t(
+									'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
+								)}
+								onClick={() => {
+									setIsAddToCollectionModalOpen(true);
+								}}
+							/>
+
+							{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+								<Dropdown
+									buttonType="tertiary"
+									icon="clipboard"
+									label={t('item/views/item-detail___voeg-toe-aan-opdracht')}
+									isOpen={isCreateAssignmentDropdownOpen}
+									onClose={() => setIsCreateAssignmentDropdownOpen(false)}
+									onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
+								>
+									<MenuContent
+										menuItems={createAssignmentOptions}
+										onClick={executeAction}
+									/>
+								</Dropdown>
+							)}
+
+							{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
+								<Button
+									type="tertiary"
+									icon="link-2"
+									label={t('item/views/item___delen-met-leerlingen')}
+									ariaLabel={t(
+										'item/views/item-detail___deel-dit-met-alle-leerlingen'
+									)}
+									title={t(
+										'item/views/item-detail___deel-dit-met-alle-leerlingen'
+									)}
+									onClick={() => {
+										setIsQuickLaneModalOpen(true);
+									}}
+								/>
+							)}
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarLeft>
+				<ToolbarRight>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<ToggleButton
+								type="tertiary"
+								icon="bookmark"
+								active={bookmarkViewPlayCounts.isBookmarked}
+								ariaLabel={t('item/views/item___toggle-bladwijzer')}
+								title={t('item/views/item___toggle-bladwijzer')}
+								onClick={toggleBookmark}
+							/>
+							<Button
+								type="tertiary"
+								icon="share-2"
+								ariaLabel={t('item/views/item___share-item')}
+								title={t('item/views/item___share-item')}
+								onClick={() => {
+									setIsShareThroughEmailModalOpen(true);
+								}}
+							/>
+							<Button
+								type="tertiary"
+								icon="flag"
+								ariaLabel={t('item/views/item___rapporteer-item')}
+								title={t('item/views/item___rapporteer-item')}
+								onClick={() => {
+									setIsReportItemModalOpen(true);
+								}}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarRight>
+			</Toolbar>
+		);
+	};
+
+	const renderItem = () => {
+		if (!item) {
+			return null;
+		}
+		const englishContentType: EnglishContentType =
+			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
 
 		return (
 			<>
@@ -467,7 +804,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							{!!get(item, 'organisation.name') && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										{generateSearchLink('provider', item.organisation.name)}
+										{renderSearchLink(item.organisation.name, {
+											filters: { provider: [item.organisation.name] },
+										})}
 									</p>
 								</MetaDataItem>
 							)}
@@ -484,7 +823,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
 										<span>{`${t('item/views/item-detail___reeks')} `}</span>
-										{generateSearchLink('serie', item.series)}
+										{renderSearchLink(item.series, {
+											filters: { serie: [item.series] },
+										})}
 									</p>
 								</MetaDataItem>
 							)}
@@ -511,134 +852,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										{/* <Spacer margin="right-small"> */}
-										<Toolbar>
-											<ToolbarLeft>
-												<ToolbarItem>
-													<ButtonToolbar>
-														<Button
-															type="tertiary"
-															icon="scissors"
-															label={t(
-																'item/views/item___voeg-fragment-toe-aan-collectie'
-															)}
-															title={t(
-																'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-															)}
-															ariaLabel={t(
-																'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-															)}
-															onClick={() => {
-																setIsAddToCollectionModalOpen(true);
-															}}
-														/>
-
-														{PermissionService.hasPerm(
-															user,
-															PermissionName.CREATE_ASSIGNMENTS
-														) && (
-															<Dropdown
-																buttonType="tertiary"
-																icon="clipboard"
-																label={t(
-																	'item/views/item-detail___voeg-toe-aan-opdracht'
-																)}
-																isOpen={
-																	isCreateAssignmentDropdownOpen
-																}
-																onClose={() =>
-																	setIsCreateAssignmentDropdownOpen(
-																		false
-																	)
-																}
-																onOpen={() =>
-																	setIsCreateAssignmentDropdownOpen(
-																		true
-																	)
-																}
-															>
-																<MenuContent
-																	menuItems={
-																		createAssignmentOptions
-																	}
-																	onClick={executeAction}
-																/>
-															</Dropdown>
-														)}
-
-														{PermissionService.hasPerm(
-															user,
-															PermissionName.CREATE_QUICK_LANE
-														) && (
-															<Button
-																type="tertiary"
-																icon="link-2"
-																label={t(
-																	'item/views/item___delen-met-leerlingen'
-																)}
-																ariaLabel={t(
-																	'item/views/item-detail___deel-dit-met-alle-leerlingen'
-																)}
-																title={t(
-																	'item/views/item-detail___deel-dit-met-alle-leerlingen'
-																)}
-																onClick={() => {
-																	setIsQuickLaneModalOpen(true);
-																}}
-															/>
-														)}
-													</ButtonToolbar>
-												</ToolbarItem>
-											</ToolbarLeft>
-											<ToolbarRight>
-												<ToolbarItem>
-													<ButtonToolbar>
-														<ToggleButton
-															type="tertiary"
-															icon="bookmark"
-															active={
-																bookmarkViewPlayCounts.isBookmarked
-															}
-															ariaLabel={t(
-																'item/views/item___toggle-bladwijzer'
-															)}
-															title={t(
-																'item/views/item___toggle-bladwijzer'
-															)}
-															onClick={toggleBookmark}
-														/>
-														<Button
-															type="tertiary"
-															icon="share-2"
-															ariaLabel={t(
-																'item/views/item___share-item'
-															)}
-															title={t(
-																'item/views/item___share-item'
-															)}
-															onClick={() => {
-																setIsShareThroughEmailModalOpen(
-																	true
-																);
-															}}
-														/>
-														<Button
-															type="tertiary"
-															icon="flag"
-															ariaLabel={t(
-																'item/views/item___rapporteer-item'
-															)}
-															title={t(
-																'item/views/item___rapporteer-item'
-															)}
-															onClick={() => {
-																setIsReportItemModalOpen(true);
-															}}
-														/>
-													</ButtonToolbar>
-												</ToolbarItem>
-											</ToolbarRight>
-										</Toolbar>
+										{(renderActionButtons || defaultRenderActionButtons)(item)}
 									</Flex>
 								</Spacer>
 							</Column>
@@ -652,176 +866,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 									<BlockHeading type="h3">
 										<Trans i18nKey="item/views/item___metadata">Metadata</Trans>
 									</BlockHeading>
-									<Table
-										horizontal
-										untable
-										className={classnames('c-meta-data__table', {
-											'c-meta-data__table-mobile': isMobileWidth(),
-										})}
-									>
-										<Grid tag="tbody">
-											{!!item.issued && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___publicatiedatum">
-															Publicatiedatum
-														</Trans>
-													</th>
-													<td>{reorderDate(item.issued, '/')}</td>
-												</Column>
-											)}
-											{!!item.published_at && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___toegevoegd-op">
-															Toegevoegd op
-														</Trans>
-													</th>
-													<td>{reorderDate(item.published_at, '/')}</td>
-												</Column>
-											)}
-										</Grid>
-										<Grid tag="tbody">
-											{!!get(item, 'organisation.name') && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___aanbieder">
-															Aanbieder
-														</Trans>
-													</th>
-													<td>
-														{generateSearchLink(
-															'provider',
-															item.organisation.name
-														)}
-													</td>
-												</Column>
-											)}
-											{!!item.duration && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___speelduur">
-															Speelduur
-														</Trans>
-													</th>
-													<td>{item.duration}</td>
-												</Column>
-											)}
-										</Grid>
-										<Grid tag="tbody">
-											{!!item.series && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___reeks">
-															Reeks
-														</Trans>
-													</th>
-													<td>
-														{generateSearchLink('serie', item.series)}
-													</td>
-												</Column>
-											)}
-											{!!item.lom_languages && !!item.lom_languages.length && (
-												<Column size="2-5" tag="tr">
-													<th scope="row">
-														<Trans i18nKey="item/views/item___taal">
-															Taal
-														</Trans>
-													</th>
-													<td>
-														{item.lom_languages
-															.map(
-																(languageCode) =>
-																	LANGUAGES.nl[languageCode]
-															)
-															.join(', ')}
-													</td>
-												</Column>
-											)}
-										</Grid>
-									</Table>
-									<div className="c-hr" />
-									<Table
-										horizontal
-										untable
-										className={classnames('c-meta-data__table', {
-											'c-meta-data__table-mobile': isMobileWidth(),
-										})}
-									>
-										<tbody>
-											{!!item.external_id && !!item.lom_context && (
-												<tr>
-													<th scope="row">
-														<Trans i18nKey="item/views/item___geschikt-voor">
-															Geschikt voor
-														</Trans>
-													</th>
-													<td>
-														{generateSearchLinks(
-															item.external_id,
-															'educationLevel',
-															item.lom_context
-														)}
-													</td>
-												</tr>
-											)}
-											{!!item.external_id && !!item.lom_classification && (
-												<tr>
-													<th scope="row">
-														<Trans i18nKey="item/views/item___vakken">
-															Vakken
-														</Trans>
-													</th>
-													<td>
-														{generateSearchLinks(
-															item.external_id,
-															'subject',
-															item.lom_classification
-														)}
-													</td>
-												</tr>
-											)}
-										</tbody>
-									</Table>
-									<div className="c-hr" />
-									<Table
-										horizontal
-										untable
-										className={classnames('c-meta-data__table', {
-											'c-meta-data__table-mobile': isMobileWidth(),
-										})}
-									>
-										<tbody>
-											{!!item.lom_keywords && !!item.lom_keywords.length && (
-												<tr>
-													<th scope="row">
-														<Trans i18nKey="item/views/item___trefwoorden">
-															Trefwoorden
-														</Trans>
-													</th>
-													<td>
-														{stringsToTagList(
-															item.lom_keywords || [],
-															null,
-															(tagId: string | number) =>
-																goToSearchPage(
-																	'keyword',
-																	tagId as string
-																)
-														)}
-													</td>
-												</tr>
-											)}
-											{/*<tr>*/}
-											{/*<th scope="row"><Trans i18nKey="item/views/item___klascement">Klascement</Trans></th>*/}
-											{/*<td>*/}
-											{/*<a href={'http://www.klascement.be/link_item'}>*/}
-											{/*www.klascement.be/link_item*/}
-											{/*</a>*/}
-											{/*</td>*/}
-											{/*</tr>*/}
-										</tbody>
-									</Table>
+									{renderGeneralMetaData(item)}
+									{(!!renderEducationLevels(item) || renderSubjects(item)) && (
+										<div className="c-hr" />
+									)}
+									{renderEducationLevels(item)}
+									{renderSubjects(item)}
+									{!!renderKeywords(item) && <div className="c-hr" />}
+									{renderKeywords(item)}
 								</Container>
 							</Column>
 							<Column size="2-5">
@@ -853,10 +905,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				)}
 				{!isNil(match.params.id) && isAddToFragmentModalOpen && (
 					<AddToAssignmentModal
-						history={history}
-						location={location}
-						match={match}
-						user={user}
 						itemMetaData={item}
 						isOpen={isAddToFragmentModalOpen}
 						onClose={() => {
@@ -949,4 +997,4 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	);
 };
 
-export default ItemDetail;
+export default compose(withRouter, withUser)(ItemDetail) as FunctionComponent<ItemDetailProps>;

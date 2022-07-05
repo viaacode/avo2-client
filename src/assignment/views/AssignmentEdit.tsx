@@ -27,6 +27,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
 import {
 	AssignmentBlockListSorter,
 	FlowPlayerWrapper,
@@ -36,11 +37,7 @@ import {
 } from '../../shared/components';
 import { CustomiseItemForm } from '../../shared/components/CustomiseItemForm';
 import { TitleDescriptionForm } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
-import {
-	ROUTE_PARTS,
-	SEARCH_FILTER_STATE_SERIES_PROP,
-	WYSIWYG_OPTIONS_AUTHOR,
-} from '../../shared/constants';
+import { ROUTE_PARTS, WYSIWYG_OPTIONS_AUTHOR } from '../../shared/constants';
 import { buildLink, CustomError, formatDate, isRichTextEmpty } from '../../shared/helpers';
 import { useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
@@ -549,7 +546,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								target="_blank"
 								to={buildLink(APP_PATH.SEARCH.route, undefined, {
 									filters: JSON.stringify({
-										[SEARCH_FILTER_STATE_SERIES_PROP]: [series],
+										[SearchFilter.serie]: [series],
 									}),
 								})}
 							>

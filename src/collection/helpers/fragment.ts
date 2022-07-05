@@ -1,13 +1,12 @@
-import { get } from 'lodash-es';
-import moment from 'moment';
-
 import { Avo } from '@viaa/avo2-types';
 import { RelationEntry } from '@viaa/avo2-types/types/collection';
+import { get } from 'lodash-es';
+import moment from 'moment';
 
 export const getFragmentProperty = (
 	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,
 	fragment: Avo.Collection.Fragment,
-	useCustomFields: Boolean,
+	useCustomFields: boolean,
 	prop: 'title' | 'description'
 ) => {
 	return useCustomFields || !itemMetaData
@@ -27,13 +26,14 @@ export const getFragmentProperty = (
 export const showReplacementWarning = (
 	collection: Avo.Collection.Collection,
 	collectionFragment: Avo.Collection.Fragment,
-	user: Avo.User.User
+	user?: Avo.User.User
 ): boolean => {
 	const item = collectionFragment.item_meta as Avo.Item.Item;
 	const replacedRelation: RelationEntry<Avo.Item.Item> | undefined = get(item, 'relations[0]');
 	const ownsCollection: boolean = collection.owner_profile_id === get(user, 'profile.id');
 
 	return (
+		!!user &&
 		ownsCollection &&
 		!!replacedRelation &&
 		moment(replacedRelation.created_at) > moment(collection.updated_at) &&
