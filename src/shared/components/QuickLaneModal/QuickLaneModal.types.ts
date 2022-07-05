@@ -6,5 +6,5 @@ export interface QuickLaneModalProps {
 	content?: AssignmentContent;
 	content_label?: AssignmentContentLabel;
 	onClose?: () => void;
-	onUpdate?: (content: AssignmentContent) => void;
+	onUpdate?: (content: AssignmentContent) => void; // TODO investigate typing, since this is also used in collection detail
 }

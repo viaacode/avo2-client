@@ -39,7 +39,6 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { FilterState } from '../../search/search.types';
 import {
 	IconBar,
 	InteractiveTour,
@@ -122,40 +121,26 @@ type CollectionDetailPermissions = Partial<{
 
 type CollectionDetailProps = {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
-	renderDetailLink: (
-		linkText: string | ReactNode,
-		id: string,
-		type: Avo.Core.ContentType,
-		className?: string
-	) => ReactNode;
-	renderSearchLink: (
-		linkText: string | ReactNode,
-		newFilters: FilterState,
-		className?: string
-	) => ReactNode;
-	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
-	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
 };
 
 const CollectionDetail: FunctionComponent<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({
-	history,
-	location,
-	match,
-	user,
-	id,
-	renderDetailLink = defaultRenderDetailLink,
-	renderSearchLink = defaultRenderSearchLink,
-	goToDetailLink = defaultGoToDetailLink(history),
-	enabledMetaData = ALL_SEARCH_FILTERS,
-}) => {
+> = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const [t] = useTranslation();
 
 	// State
 	const [collectionId, setCollectionId] = useState(id || match.params.id);
-	const [collection, setCollection] = useState<Avo.Collection.Collection | null>(null);
+
+	const [collectionInfo, setCollectionInfo] = useState<{
+		collection: Avo.Collection.Collection | null;
+		permissions: CollectionDetailPermissions;
+		showLoginPopup: boolean;
+	} | null>(null);
+	const permissions = collectionInfo?.permissions;
+	const showLoginPopup = collectionInfo?.showLoginPopup;
+	const collection = collectionInfo?.collection;
+
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -179,18 +164,19 @@ const CollectionDetail: FunctionComponent<
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
-	const [permissions, setPermissions] = useState<CollectionDetailPermissions>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
+
 	const [assignmentId, setAssignmentId] = useState<string>();
 	const [importWithDescription, setImportWithDescription] = useState<boolean>(false);
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
-			setRelatedCollections(await getRelatedItems(collectionId, 'collections', 4));
+			if (isUuid(collectionId)) {
+				setRelatedCollections(await getRelatedItems(collectionId, 'collections', 4));
+			}
 		} catch (err) {
 			console.error('Failed to get related items', err, {
 				collectionId,
@@ -205,6 +191,59 @@ const CollectionDetail: FunctionComponent<
 			);
 		}
 	}, [setRelatedCollections, t, collectionId]);
+
+	/**
+	 * Get published bundles that contain this collection
+	 */
+	const getPublishedBundles = useCallback(async () => {
+		try {
+			if (isUuid(collectionId)) {
+				setPublishedBundles(
+					await CollectionService.getPublishedBundlesContainingCollection(collectionId)
+				);
+			}
+		} catch (err) {
+			console.error('Failed to get published bundles containing this collection', err, {
+				collectionId,
+			});
+
+			ToastService.danger(
+				t('Het ophalen van de gepubliceerde bundels die deze collectie bevatten is mislukt')
+			);
+		}
+	}, [setPublishedBundles, t, collectionId]);
+
+	const triggerEvents = useCallback(async () => {
+		// Do not trigger events when a search engine loads this page
+		if (collection?.id && user && !showLoginPopup) {
+			trackEvents(
+				{
+					object: collectionId,
+					object_type: 'collection',
+					action: 'view',
+				},
+				user
+			);
+
+			BookmarksViewsPlaysService.action('view', 'collection', collection.id, user);
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(collection.id, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts', err, {
+						uuid: collection.id,
+					})
+				);
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
+			}
+		}
+	}, [setPublishedBundles, t, collection?.id, user, showLoginPopup]);
 
 	useEffect(() => {
 		setCollectionId(id || match.params.id);
@@ -221,26 +260,27 @@ const CollectionDetail: FunctionComponent<
 			if (!user) {
 				return;
 			}
-			const uuid = isUuid(collectionId)
-				? collectionId
-				: await CollectionService.fetchUuidByAvo1Id(collectionId);
+			let uuid;
+			if (isUuid(collectionId)) {
+				uuid = collectionId;
+			} else {
+				uuid = await CollectionService.fetchUuidByAvo1Id(collectionId);
 
-			if (!uuid) {
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
-					),
-					icon: 'alert-triangle',
-				});
+				if (!uuid) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
+						icon: 'alert-triangle',
+					});
 
-				return;
-			}
+					return;
+				}
 
-			if (collectionId !== uuid) {
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
-				goToDetailLink(uuid, 'collectie');
+				defaultGoToDetailLink(history)(uuid, 'collectie');
 
 				return;
 			}
@@ -357,49 +397,11 @@ const CollectionDetail: FunctionComponent<
 				showPopup = true;
 			}
 
-			// Do not trigger events when a search engine loads this page
-			if (!showPopup) {
-				trackEvents(
-					{
-						object: collectionId,
-						object_type: 'collection',
-						action: 'view',
-					},
-					user
-				);
-
-				getRelatedCollections();
-
-				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
-				try {
-					setBookmarkViewPlayCounts(
-						await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
-					);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getCollectionCounts', err, {
-							uuid: collectionObj.id,
-						})
-					);
-					ToastService.danger(
-						t(
-							'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-						)
-					);
-				}
-
-				// Get published bundles that contain this collection
-				setPublishedBundles(
-					await CollectionService.getPublishedBundlesContainingCollection(
-						collectionObj.id
-					)
-				);
-			}
-
-			setShowLoginPopup(showPopup);
-			setCollectionId(uuid);
-			setPermissions(permissionObj);
-			setCollection(collectionObj || null);
+			setCollectionInfo({
+				showLoginPopup: showPopup,
+				permissions: permissionObj,
+				collection: collectionObj || null,
+			});
 		} catch (err) {
 			console.error(
 				new CustomError(
@@ -419,11 +421,23 @@ const CollectionDetail: FunctionComponent<
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, getRelatedCollections, setShowLoginPopup, t, user, goToDetailLink]);
+	}, [collectionId, setCollectionInfo, t, user, history, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
 	}, [checkPermissionsAndGetCollection]);
+
+	useEffect(() => {
+		getRelatedCollections();
+	}, [getRelatedCollections]);
+
+	useEffect(() => {
+		getPublishedBundles();
+	}, [getPublishedBundles]);
+
+	useEffect(() => {
+		triggerEvents();
+	}, [triggerEvents]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection && !isNil(showLoginPopup)) {
@@ -480,7 +494,7 @@ const CollectionDetail: FunctionComponent<
 						user
 					);
 
-					goToDetailLink(duplicateCollection.id, 'collectie');
+					defaultGoToDetailLink(history)(duplicateCollection.id, 'collectie');
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						t(
@@ -684,7 +698,7 @@ const CollectionDetail: FunctionComponent<
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			...(permissions.canCreateBundles
+			...(permissions?.canCreateBundles
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
@@ -693,7 +707,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canCreateQuickLane && permissions.canCreateAssignments
+			...(permissions?.canCreateQuickLane && permissions?.canCreateAssignments
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
@@ -702,7 +716,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canCreateCollections
+			...(permissions?.canCreateCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.duplicate,
@@ -711,7 +725,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canDeleteCollections
+			...(permissions?.canDeleteCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.delete,
@@ -736,7 +750,7 @@ const CollectionDetail: FunctionComponent<
 
 		return (
 			<ButtonToolbar>
-				{permissions.canAutoplayCollection && (
+				{permissions?.canAutoplayCollection && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___speel-de-collectie-af')}
@@ -748,7 +762,7 @@ const CollectionDetail: FunctionComponent<
 						}
 					/>
 				)}
-				{permissions.canCreateAssignments && (
+				{permissions?.canCreateAssignments && (
 					<Dropdown
 						label={t('collection/views/collection-detail___importeer-naar-opdracht')}
 						isOpen={isCreateAssignmentDropdownOpen}
@@ -758,7 +772,7 @@ const CollectionDetail: FunctionComponent<
 						<MenuContent menuItems={createAssignmentOptions} onClick={executeAction} />
 					</Dropdown>
 				)}
-				{permissions.canCreateQuickLane && !permissions.canCreateAssignments && (
+				{permissions?.canCreateQuickLane && !permissions?.canCreateAssignments && (
 					<Button
 						type="secondary"
 						icon="link-2"
@@ -768,7 +782,7 @@ const CollectionDetail: FunctionComponent<
 						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
 					/>
 				)}
-				{permissions.canPublishCollections && (
+				{permissions?.canPublishCollections && (
 					<Button
 						type="secondary"
 						title={
@@ -817,7 +831,7 @@ const CollectionDetail: FunctionComponent<
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>
-				{permissions.canEditCollections && (
+				{permissions?.canEditCollections && (
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
@@ -835,7 +849,7 @@ const CollectionDetail: FunctionComponent<
 
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
-			...(permissions.canEditCollections
+			...(permissions?.canEditCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.editCollection,
@@ -844,7 +858,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canCreateAssignments
+			...(permissions?.canCreateAssignments
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.createAssignment,
@@ -853,7 +867,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canPublishCollections
+			...(permissions?.canPublishCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openPublishCollectionModal,
@@ -878,7 +892,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canCreateBundles
+			...(permissions?.canCreateBundles
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
@@ -887,7 +901,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canCreateQuickLane
+			...(permissions?.canCreateQuickLane
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
@@ -896,7 +910,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canAutoplayCollection
+			...(permissions?.canAutoplayCollection
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openAutoplayCollectionModal,
@@ -905,7 +919,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canCreateCollections
+			...(permissions?.canCreateCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.duplicate,
@@ -914,7 +928,7 @@ const CollectionDetail: FunctionComponent<
 						),
 				  ]
 				: []),
-			...(permissions.canDeleteCollections
+			...(permissions?.canDeleteCollections
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.delete,
@@ -962,7 +976,7 @@ const CollectionDetail: FunctionComponent<
 						className="m-collection-detail__video-content"
 						title={{
 							fragment,
-							canViewAnyPublishedItems: permissions.canViewAnyPublishedItems,
+							canViewAnyPublishedItems: permissions?.canViewAnyPublishedItems,
 						}}
 						richText={{ fragment }}
 						flowPlayer={{
@@ -1068,7 +1082,7 @@ const CollectionDetail: FunctionComponent<
 
 					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
 						{!!collection_fragments &&
-							collection_fragments.map((fragment) =>
+							collection_fragments.map((fragment: CollectionFragment) =>
 								renderCollectionFragmentWrapper(fragment)
 							)}
 					</Container>
@@ -1085,7 +1099,7 @@ const CollectionDetail: FunctionComponent<
 								<FragmentList
 									collectionFragments={collection_fragments}
 									showDescription
-									linkToItems={permissions.canViewAnyPublishedItems || false}
+									linkToItems={permissions?.canViewAnyPublishedItems || false}
 									canPlay={
 										!isAddToBundleModalOpen &&
 										!isDeleteModalOpen &&
@@ -1112,7 +1126,7 @@ const CollectionDetail: FunctionComponent<
 									renderCommonMetadata(
 										collection,
 										enabledMetaData,
-										renderSearchLink
+										defaultRenderSearchLink
 									)}
 								{(hasCopies || hasParentBundles) && (
 									<Column size="3-6">
@@ -1175,7 +1189,7 @@ const CollectionDetail: FunctionComponent<
 									</Column>
 								)}
 							</Grid>
-							{renderRelatedItems(relatedCollections, renderDetailLink)}
+							{renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
 						</Container>
 					</Container>
 				</div>
@@ -1189,7 +1203,12 @@ const CollectionDetail: FunctionComponent<
 									setIsPublishModalOpen(false);
 
 									if (newCollection) {
-										setCollection(newCollection);
+										setCollectionInfo((oldCollectionInfo) => ({
+											showLoginPopup:
+												oldCollectionInfo?.showLoginPopup || false,
+											permissions: oldCollectionInfo?.permissions || {},
+											collection: newCollection || null,
+										}));
 									}
 								}}
 								history={history}
@@ -1244,9 +1263,16 @@ const CollectionDetail: FunctionComponent<
 								onClose={() => {
 									setIsQuickLaneModalOpen(false);
 								}}
-								onUpdate={(collection) => {
+								onUpdate={(newCollection) => {
 									if ((collection as CollectionSchema).collection_fragments) {
-										setCollection(collection as CollectionSchema);
+										setCollectionInfo((oldCollectionInfo) => ({
+											showLoginPopup:
+												oldCollectionInfo?.showLoginPopup || false,
+											permissions: oldCollectionInfo?.permissions || {},
+											collection:
+												(newCollection as Avo.Collection.Collection) ||
+												null,
+										}));
 									}
 								}}
 							/>
