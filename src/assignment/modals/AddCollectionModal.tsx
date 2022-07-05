@@ -142,7 +142,9 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 			console.error(new CustomError('Failed to get collections', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t('assignment/modals/add-collection-modal___het-ophalen-van-bestaande-collecties-is-mislukt'),
+				message: t(
+					'assignment/modals/add-collection-modal___het-ophalen-van-bestaande-collecties-is-mislukt'
+				),
 			});
 		}
 	}, [tableColumns, activeView, user, filterString, sortColumn, sortOrder, t]);
@@ -163,7 +165,9 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 
 	const handleImportToAssignment = () => {
 		if (!selectedCollectionId) {
-			ToastService.danger(t('assignment/modals/add-collection-modal___gelieve-een-collectie-te-selecteren'));
+			ToastService.danger(
+				t('assignment/modals/add-collection-modal___gelieve-een-collectie-te-selecteren')
+			);
 			return;
 		}
 		addCollectionCallback(selectedCollectionId, createWithDescription);
@@ -184,14 +188,22 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 							onChange={(checked) => setCreateWithDescription(checked)}
 						/>
 						<Spacer margin="left">
-							<FlexItem>{t('assignment/modals/add-collection-modal___importeer-fragmenten-met-beschrijving')}</FlexItem>
+							<FlexItem>
+								{t(
+									'assignment/modals/add-collection-modal___importeer-fragmenten-met-beschrijving'
+								)}
+							</FlexItem>
 						</Spacer>
 					</Flex>
 				</ToolbarLeft>
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
-							<Button type="secondary" label={t('assignment/modals/add-collection-modal___annuleer')} onClick={onClose} />
+							<Button
+								type="secondary"
+								label={t('assignment/modals/add-collection-modal___annuleer')}
+								onClick={onClose}
+							/>
 							<Button
 								type="primary"
 								label={t('assignment/modals/add-collection-modal___importeer')}
@@ -229,7 +241,13 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 
 			case 'is_public':
 				return (
-					<div title={collection.is_public ? t('assignment/modals/add-collection-modal___publiek') : t('assignment/modals/add-collection-modal___niet-publiek')}>
+					<div
+						title={
+							collection.is_public
+								? t('assignment/modals/add-collection-modal___publiek')
+								: t('assignment/modals/add-collection-modal___niet-publiek')
+						}
+					>
 						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
 					</div>
 				);
@@ -243,7 +261,6 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 	};
 
 	const renderModalBody = () => {
-		// buttongroup className="c-assignment-overview__archive-buttons"
 		return (
 			<>
 				<Toolbar>
@@ -253,15 +270,23 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 								<ButtonGroup>
 									<Button
 										type="secondary"
-										label={t('assignment/modals/add-collection-modal___mijn-collecties')}
-										title={t('assignment/modals/add-collection-modal___filter-op-mijn-collecties')}
+										label={t(
+											'assignment/modals/add-collection-modal___mijn-collecties'
+										)}
+										title={t(
+											'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
+										)}
 										active={activeView === 'mycollections'}
 										onClick={() => setActiveView('mycollections')}
 									/>
 									<Button
 										type="secondary"
-										label={t('assignment/modals/add-collection-modal___bladwijzer-collecties')}
-										title={t('assignment/modals/add-collection-modal___filter-op-mijn-collecties')}
+										label={t(
+											'assignment/modals/add-collection-modal___bladwijzer-collecties'
+										)}
+										title={t(
+											'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
+										)}
 										active={activeView === 'bookmarkedcollections'}
 										onClick={() => setActiveView('bookmarkedcollections')}
 									/>
@@ -291,8 +316,12 @@ const AddCollectionModal: FunctionComponent<AddCollectionModal> = ({
 					data={collections || undefined}
 					emptyStateMessage={
 						filterString
-							? t('assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht')
-							: t('assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt')
+							? t(
+									'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
+							  )
+							: t(
+									'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
+							  )
 					}
 					renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
 						renderCell(rowData, colKey as keyof Avo.Collection.Collection)
