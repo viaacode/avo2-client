@@ -6,3 +6,5 @@ export { useAssignmentBlockMeta } from './assignment-block-meta';
 export { useAssignmentBlocks } from './assignment-blocks';
 export { useAssignmentContentModals } from './assignment-content-modals';
 export { useAssignmentDetailsForm } from './assignment-details-form';
+export { useAssignmentBlockChangeHandler } from './assignment-block-change-handler';
+export { useAssignmentBlocksList } from './assignment-blocks-list';

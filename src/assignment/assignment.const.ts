@@ -12,7 +12,6 @@ import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
-	AssignmentBlockTypeDict,
 	AssignmentColumn,
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
@@ -241,12 +240,14 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 	MY_COLLECTION = 'MY_COLLECTION',
 }
 
-export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> =
-	() => ({
-		ITEM: 'video',
-		TEXT: 'type',
-		ZOEK: 'search',
-	});
+export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => Record<
+	AssignmentBlockType,
+	IconName
+> = () => ({
+	ITEM: 'video',
+	TEXT: 'type',
+	ZOEK: 'search',
+});
 
 export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
 	t: TFunction

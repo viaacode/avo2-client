@@ -8,24 +8,25 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS } from '../assignment.const';
-import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
 type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	assignment: AssignmentFormState;
+	blocks: AssignmentBlock[];
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 
 const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
-	assignment,
+	blocks,
 	isOpen,
 	onClose,
 	onConfirm,
@@ -63,10 +64,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				description: t(
 					'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
 				),
-				disabled:
-					assignment.blocks.findIndex(
-						(block) => block.type === AssignmentBlockType.ZOEK
-					) >= 0,
+				disabled: blocks.findIndex((block) => block.type === AssignmentBlockType.ZOEK) >= 0,
 			},
 			{
 				type: AssignmentBlockType.TEXT,
@@ -77,7 +75,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				),
 			},
 		],
-		[assignment.blocks, t]
+		[blocks, t]
 	);
 
 	return (

@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	BlockHeading,
@@ -5,18 +6,21 @@ import {
 	ButtonToolbar,
 	Container,
 	Flex,
+	FormGroup,
 	Icon,
 	Spacer,
 	Spinner,
 	Tabs,
+	TextInput,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { isPast } from 'date-fns/esm';
-import { intersection } from 'lodash-es';
+import { intersection, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -25,6 +29,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, withRouter } from 'react-router-dom';
@@ -53,14 +58,24 @@ import { useScrollToId } from '../../shared/hooks/scroll-to-id';
 import { ToastService } from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
+	ASSIGNMENT_FORM_SCHEMA,
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { PupilSearchFilterState } from '../assignment.types';
+import {
+	AssignmentResponseFormState,
+	PupilCollectionFragment,
+	PupilSearchFilterState,
+} from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentPupilTabs } from '../hooks';
+import {
+	useAssignmentBlockChangeHandler,
+	useAssignmentBlocks,
+	useAssignmentBlocksList,
+	useAssignmentPupilTabs,
+} from '../hooks';
 import { PupilCollectionService } from '../pupil-collection.service';
 
 import './AssignmentPage.scss';
@@ -87,6 +102,21 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] = useState<boolean>(false);
 	const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
+
+	const {
+		control,
+		formState: { isDirty },
+		handleSubmit,
+		reset: resetForm,
+		setValue,
+		trigger,
+	} = useForm<AssignmentResponseFormState>({
+		defaultValues: assignmentResponse || {
+			collection_title: '',
+			pupil_collection_blocks: [] as PupilCollectionFragment[],
+		},
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+	});
 
 	// UI
 	const queryParamConfig = {
@@ -156,6 +186,18 @@ const AssignmentResponseEdit: FunctionComponent<
 	}, [assignmentId]);
 
 	// Effects
+
+	// Synchronise the React state that triggers renders with the useForm hook
+	useEffect(() => {
+		if (!assignmentResponse) {
+			return;
+		}
+		setValue('collection_title', assignmentResponse.collection_title);
+		setValue('pupil_collection_blocks', (assignmentResponse as any).pupil_collection_blocks);
+
+		trigger();
+	}, [assignment, setValue, trigger]);
+
 	useEffect(() => {
 		fetchAssignment();
 	}, []);
@@ -216,6 +258,48 @@ const AssignmentResponseEdit: FunctionComponent<
 			);
 		}
 	};
+
+	const updateBlocksInAssignmentResponseState = (newBlocks: PupilCollectionFragment[]) => {
+		setAssignmentResponse((prev) => ({ ...prev, pupil_collection_blocks: newBlocks } as any)); // TODO remove cast once pupil_collection_blocks is in typings repo
+		setValue('pupil_collection_blocks', newBlocks, { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once BlockItemBase is in typings repo
+		updateBlocksInAssignmentResponseState
+	);
+	const renderBlockContent = useAssignmentBlocks(setBlock);
+	const [renderedListSorter] = useAssignmentBlocksList(
+		(assignmentResponse as any)?.pupil_collection_blocks,
+		(blocks) =>
+			setAssignmentResponse((prevState) => {
+				if (!prevState) {
+					return null;
+				}
+				return {
+					...prevState,
+					pupil_collection_blocks: blocks,
+				};
+			}),
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (_item) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							// TODO
+						}}
+					/>
+				),
+			},
+			listSorterItem: {
+				onSlice: (_item) => {
+					// TODO
+				},
+			},
+		}
+	);
 
 	// Render
 
@@ -442,13 +526,40 @@ const AssignmentResponseEdit: FunctionComponent<
 	const renderCollectionEdit = () => {
 		return (
 			<Container mode="horizontal">
-				{/* TODO Render the collection edit blocks */}
-				{/*<CollectionOrBundleEditContent*/}
-				{/*	type="collection"*/}
-				{/*	collection={assignmentResponse}*/}
-				{/*	changeCollectionState={() => {}}*/}
-				{/*/>*/}
-				{JSON.stringify(assignmentResponse, null, 2)}
+				<Container mode="vertical">
+					<Toolbar size="large">
+						<ToolbarLeft>
+							<FormGroup
+								label={t('Naam resultatenset')}
+								className="c-form-group--full-width"
+							>
+								<TextInput
+									type="text"
+									value={assignmentResponse?.collection_title || ''}
+									onChange={(newCollectionTitle: string) => {
+										setAssignmentResponse((prevState) => {
+											if (!prevState) {
+												return null;
+											}
+											return {
+												...prevState,
+												collection_title: newCollectionTitle || '',
+											};
+										});
+									}}
+								/>
+							</FormGroup>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<Button
+								type="primary"
+								label={t('Bekijk als lesgever')}
+								onClick={noop}
+							/>
+						</ToolbarRight>
+					</Toolbar>
+					{renderedListSorter}
+				</Container>
 			</Container>
 		);
 	};
@@ -476,7 +587,6 @@ const AssignmentResponseEdit: FunctionComponent<
 				return renderSearchContent();
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
-				// This form receives its parent's state because we don't care about rerender performance here
 				return renderCollectionEdit();
 
 			default:

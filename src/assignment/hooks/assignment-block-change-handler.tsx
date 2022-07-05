@@ -1,30 +1,26 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { cloneDeep } from 'lodash-es';
 import { useCallback } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
-import { AssignmentFormState } from '../assignment.types';
 
 export function useAssignmentBlockChangeHandler(
-	assignment: AssignmentFormState,
-	setAssignment: React.Dispatch<React.SetStateAction<AssignmentFormState>>,
-	setValue: UseFormSetValue<AssignmentFormState>
-) {
+	blocks: AssignmentBlock[],
+	setBlocks: (newBlocks: AssignmentBlock[]) => void
+): (existingBlock: AssignmentBlock, updatedBlock: Partial<AssignmentBlock>) => void {
 	return useCallback(
-		(block: AssignmentBlock, update: Partial<AssignmentBlock>) => {
-			const blocks = [
-				...assignment.blocks.filter((b) => b.id !== block.id),
-				{
-					...block,
-					...update,
-				},
-			];
+		(existingBlock: AssignmentBlock, updatedBlock: Partial<AssignmentBlock>) => {
+			const updatedBlocks = cloneDeep(blocks);
 
-			setAssignment((prev) => ({
-				...prev,
-				blocks,
-			}));
+			const existingBlockIndex = updatedBlocks.findIndex(
+				(block) => block.id === existingBlock.id
+			);
 
-			setValue('blocks', blocks, { shouldDirty: true });
+			updatedBlocks[existingBlockIndex] = {
+				...existingBlock,
+				...updatedBlock,
+			};
+
+			setBlocks(updatedBlocks);
 		},
-		[assignment, setAssignment, setValue]
+		[blocks, setBlocks]
 	);
 }

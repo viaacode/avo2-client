@@ -30,14 +30,14 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import {
+	useAssignmentBlockChangeHandler,
 	useAssignmentBlocks,
+	useAssignmentBlocksList,
 	useAssignmentContentModals,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 } from '../hooks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
-import { useAssignmentBlocksList } from '../hooks/assignment-blocks-list';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -53,10 +53,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | undefined>(undefined);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
-	const form = useForm<AssignmentFormState>({
-		defaultValues: useMemo(() => original, [original]),
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
-	});
 	const {
 		control,
 		formState: { isDirty },
@@ -64,9 +60,19 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		reset: resetForm,
 		setValue,
 		trigger,
-	} = form;
+	} = useForm<AssignmentFormState>({
+		defaultValues: useMemo(() => original, [original]),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+	});
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
+	const updateBlocksInAssignmentState = (newBlocks: AssignmentBlock[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks }));
+		setValue('blocks', newBlocks, { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		assignment.blocks,
+		updateBlocksInAssignmentState
+	);
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -182,17 +188,17 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		// fetch item details
 		const item_meta = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
+		const blocks = insertAtPosition<Partial<AssignmentBlock>>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 			item_meta,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
-		} as AssignmentBlock);
+		}) as AssignmentBlock[];
 
 		setAssignment((prev) => ({
 			...prev,
-			blocks,
+			blocks: blocks,
 		}));
 
 		setValue('blocks', blocks, {
@@ -220,27 +226,31 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
-		listSorter: {
-			content: (item) => item && renderBlockContent(item),
-			divider: (item) => (
-				<Button
-					icon="plus"
-					type="secondary"
-					onClick={() => {
-						addBlockModal.setEntity(item?.position);
-						addBlockModal.setOpen(true);
-					}}
-				/>
-			),
-		},
-		listSorterItem: {
-			onSlice: (item) => {
-				confirmSliceModal.setEntity(item);
-				confirmSliceModal.setOpen(true);
+	const [renderedListSorter] = useAssignmentBlocksList(
+		assignment?.blocks,
+		updateBlocksInAssignmentState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (item) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(item?.position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
 			},
-		},
-	});
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	const renderBackButton = useMemo(
 		() => (

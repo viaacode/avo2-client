@@ -1,12 +1,15 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
+
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
-import AddBookmarkFragmentModal, { AddBookmarkFragmentModalProps } from '../modals/AddBookmarkFragmentModal';
+import AddBookmarkFragmentModal, {
+	AddBookmarkFragmentModalProps,
+} from '../modals/AddBookmarkFragmentModal';
 import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useAssignmentContentModals(
@@ -16,7 +19,7 @@ export function useAssignmentContentModals(
 	config?: {
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;
-		addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>
+		addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>;
 	}
 ): [JSX.Element, SingleEntityModal<Pick<AssignmentBlock, 'id'>>, SingleEntityModal<number>] {
 	const slice = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
@@ -62,7 +65,7 @@ export function useAssignmentContentModals(
 					<AddBlockModal
 						{...config?.addBlockConfig}
 						isOpen={!!isAddBlockModalOpen}
-						assignment={assignment}
+						blocks={assignment.blocks}
 						onClose={() => setAddBlockModalOpen(false)}
 						onConfirm={(type) => {
 							if (getAddBlockModalPosition === undefined) {
@@ -76,7 +79,7 @@ export function useAssignmentContentModals(
 								}
 
 								case AssignmentBlockType.TEXT:
-								case AssignmentBlockType.ZOEK:
+								case AssignmentBlockType.ZOEK: {
 									const blocks = insertAtPosition(assignment.blocks, {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
@@ -93,6 +96,7 @@ export function useAssignmentContentModals(
 										shouldTouch: true,
 									});
 									break;
+								}
 
 								default:
 									break;

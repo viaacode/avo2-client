@@ -1,11 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -18,14 +17,16 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
-
-import { useAssignmentDetailsForm } from '../hooks/assignment-details-form';
-import { useAssignmentContentModals } from '../hooks/assignment-content-modals';
-import { useAssignmentBlocks } from '../hooks/assignment-blocks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { useAssignmentBlocksList } from '../hooks/assignment-blocks-list';
+import {
+	useAssignmentBlockChangeHandler,
+	useAssignmentBlocks,
+	useAssignmentBlocksList,
+	useAssignmentContentModals,
+	useAssignmentDetailsForm,
+	useAssignmentForm,
+	useAssignmentTeacherTabs,
+} from '../hooks';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -42,7 +43,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	});
 	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
+	const setBlock = useAssignmentBlockChangeHandler(assignment.blocks, (newBlocks) => {
+		setAssignment((prevState) => ({
+			...prevState,
+			blocks: newBlocks,
+		}));
+
+		setValue('blocks', newBlocks, { shouldDirty: true });
+	});
 
 	// Events
 
@@ -95,7 +103,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 
 	// Render
-	
+
 	const renderBlockContent = useAssignmentBlocks(setBlock);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
@@ -108,27 +116,34 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
-		listSorter: {
-			content: (item) => item && renderBlockContent(item),
-			divider: (item) => (
-				<Button
-					icon="plus"
-					type="secondary"
-					onClick={() => {
-						addBlockModal.setEntity(item?.position);
-						addBlockModal.setOpen(true);
-					}}
-				/>
-			),
+	const [renderedListSorter] = useAssignmentBlocksList(
+		assignment?.blocks,
+		(newBlocks) => {
+			setAssignment((prevState) => ({ ...prevState, blocks: newBlocks }));
+			setValue('blocks', newBlocks);
 		},
-		listSorterItem: {
-			onSlice: (item) => {
-				confirmSliceModal.setEntity(item);
-				confirmSliceModal.setOpen(true);
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (item) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(item?.position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
 			},
-		},
-	});
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	const renderBackButton = useMemo(
 		() => (
@@ -183,10 +198,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		[t]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
