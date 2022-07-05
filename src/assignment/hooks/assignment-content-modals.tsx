@@ -49,12 +49,9 @@ export function useAssignmentContentModals(
 				block={getConfirmSliceModalBlock as AssignmentBlock}
 				onClose={() => setConfirmSliceModalOpen(false)}
 				onConfirm={() => {
-					const blocks = assignment.blocks
-						.filter((item) => item.id !== getConfirmSliceModalBlock?.id)
-						.map((block, i) => ({
-							...block,
-							position: i,
-						}));
+					const blocks = assignment.blocks.filter(
+						(item) => item.id !== getConfirmSliceModalBlock?.id
+					);
 
 					setAssignment((prev) => ({
 						...prev,
