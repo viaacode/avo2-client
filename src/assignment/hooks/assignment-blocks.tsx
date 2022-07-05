@@ -139,7 +139,7 @@ export function useAssignmentSearchBlock(
 					id={block.id}
 					title={undefined}
 					description={{
-						label: t('Omschrijving'),
+						label: t('assignment/hooks/assignment-blocks___omschrijving'),
 						placeholder: t(
 							'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
 						),
@@ -153,10 +153,8 @@ export function useAssignmentSearchBlock(
 				/>
 
 				<AssignmentBlockToggle
-					heading={t('Leerlingencollecties toevoegen')}
-					description={t(
-						'Met leerlingencollecties kunnen de leerlingen hun zoekresultaten verzamelen in een collectie die jij als leerkracht nadien kan inkijken en verbeteren.'
-					)}
+					heading={t('assignment/hooks/assignment-blocks___leerlingencollecties-toevoegen')}
+					description={t('assignment/hooks/assignment-blocks___met-leerlingencollecties-kunnen-de-leerlingen-hun-zoekresultaten-verzamelen-in-een-collectie-die-jij-als-leerkracht-nadien-kan-inkijken-en-verbeteren')}
 					checked={block.type === AssignmentBlockType.BOUW}
 					onChange={() => {
 						setBlock(block, {

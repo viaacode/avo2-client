@@ -198,7 +198,7 @@ const CollectionDetail: FunctionComponent<
 			});
 
 			ToastService.danger(
-				t('Het ophalen van de gepubliceerde bundels die deze collectie bevatten is mislukt')
+				t('collection/views/collection-detail___het-ophalen-van-de-gepubliceerde-bundels-die-deze-collectie-bevatten-is-mislukt')
 			);
 		}
 	}, [setPublishedBundles, t, collectionId]);
@@ -1067,9 +1067,7 @@ const CollectionDetail: FunctionComponent<
 									<Column size="3-6">
 										<Spacer margin="top-large">
 											<p className="u-text-bold">
-												<Trans i18nKey="collection/views/collection-detail___ordering">
-													Ordering
-												</Trans>
+												<Trans i18nKey="collection/views/collection-detail___ordering">Ordering</Trans>
 											</p>
 											{hasCopies && (
 												<p className="c-body-1">
