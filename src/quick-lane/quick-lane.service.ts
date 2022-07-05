@@ -29,7 +29,7 @@ import {
 // Mappers
 
 const quickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
-	const mapped = ({ ...object } as unknown) as QuickLaneUrlRecord;
+	const mapped = { ...object } as unknown as QuickLaneUrlRecord;
 
 	switch (Number(object.view_mode)) {
 		case AssignmentLayout.PlayerAndText:

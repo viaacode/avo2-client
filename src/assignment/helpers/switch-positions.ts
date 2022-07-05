@@ -1,3 +1,5 @@
+import { sortByPositionAsc } from '../../shared/helpers';
+
 type Positioned = any & { id: string; position: number };
 
 export const switchAssignmentBlockPositions = (
@@ -9,9 +11,10 @@ export const switchAssignmentBlockPositions = (
 
 	if (!block) return list;
 
-	const target = list.find((b) => b.position === block.position + delta);
+	const sorted = list.sort(sortByPositionAsc);
+	const target = sorted[sorted.findIndex((b) => b.position === block.position) + delta];
 
-	if (!target) return list;
+	if (target === undefined) return list;
 
 	return [
 		...list.filter((b) => b.id !== block.id && b.id !== target.id),

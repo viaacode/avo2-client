@@ -23,7 +23,7 @@ export function getMockRouterProps(data: any) {
 			path: '',
 			url: '',
 		},
-		history: (createMemoryHistory() as unknown) as RouteComponentProps['history'],
+		history: createMemoryHistory() as unknown as RouteComponentProps['history'],
 		staticContext: {},
 		loginState: {} as any,
 		loginStateLoading: false,

@@ -27,7 +27,7 @@ describe('Link - buildLink', () => {
 });
 
 describe('Link - navigate', () => {
-	const history = (createMemoryHistory() as unknown) as RouteComponentProps['history'];
+	const history = createMemoryHistory() as unknown as RouteComponentProps['history'];
 	const pushSpy = jest.spyOn(history, 'push');
 
 	afterEach(() => {

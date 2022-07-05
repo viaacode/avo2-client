@@ -5,6 +5,7 @@ import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 
 import './ListSorter.scss';
 import { sortByPositionAsc } from '../../helpers';
+import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
 
 // Types
 
@@ -13,7 +14,7 @@ export interface ListSorterItem {
 	onSlice?: (item: ListSorterItem) => void;
 	onPositionChange?: (item: ListSorterItem, delta: number) => void;
 	position: number;
-	icon: IconName;
+	icon?: IconName;
 }
 
 export type ListSorterRenderer<T> = (item?: T & ListSorterItem, i?: number) => ReactNode;
@@ -65,9 +66,8 @@ export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
 type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>;
 export const ListSorter: ListSorterType = ({
 	items = [],
-	thumbnail = ((item) => item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<
-		unknown
-	>,
+	thumbnail = ((item) =>
+		item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<unknown>,
 	heading = () => 'heading',
 	divider = () => 'divider',
 	actions = (item, i) =>
@@ -79,30 +79,38 @@ export const ListSorter: ListSorterType = ({
 		),
 	content = () => 'content',
 }) => {
+	const emptyId = `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}empty`;
+
 	const renderItem: ListSorterRenderer<unknown> = (item?: ListSorterItem, i?: number) =>
 		item && (
 			<Fragment key={`${item.id}--${i}`}>
-				<li className="c-list-sorter__item">
-					<div className="c-list-sorter__item__header">
-						{thumbnail && (
-							<div className="c-list-sorter__item__thumbnail">
-								{thumbnail(item, i)}
-							</div>
-						)}
+				{item.id !== emptyId && (
+					<li className="c-list-sorter__item">
+						<div className="c-list-sorter__item__header">
+							{thumbnail && (
+								<div className="c-list-sorter__item__thumbnail">
+									{thumbnail(item, i)}
+								</div>
+							)}
 
-						{heading && (
-							<div className="c-list-sorter__item__heading">{heading(item, i)}</div>
-						)}
+							{heading && (
+								<div className="c-list-sorter__item__heading">
+									{heading(item, i)}
+								</div>
+							)}
 
-						{actions && (
-							<div className="c-list-sorter__item__actions">{actions(item, i)}</div>
-						)}
-					</div>
+							{actions && (
+								<div className="c-list-sorter__item__actions">
+									{actions(item, i)}
+								</div>
+							)}
+						</div>
 
-					{content && (
-						<div className="c-list-sorter__item__content">{content(item, i)}</div>
-					)}
-				</li>
+						{content && (
+							<div className="c-list-sorter__item__content">{content(item, i)}</div>
+						)}
+					</li>
+				)}
 
 				{divider && (
 					<div className="c-list-sorter__divider">
@@ -116,12 +124,12 @@ export const ListSorter: ListSorterType = ({
 
 	return (
 		<ul className="c-list-sorter">
-			{items
-				?.sort(sortByPositionAsc)
-				.map((item, i) => {
-					const j = items.length === i + 1 ? undefined : i;
-					return renderItem(item, j);
-				})}
+			{items?.sort(sortByPositionAsc).map((item, i) => {
+				const j = items.length === i + 1 ? undefined : i;
+				return renderItem(item, j);
+			})}
+
+			{(!items || items.length <= 0) && renderItem({ id: emptyId, position: -1 }, 0)}
 		</ul>
 	);
 };

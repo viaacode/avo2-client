@@ -59,9 +59,11 @@ export class SettingsService {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			const subjects = ((get(response, 'data.lookup_enum_lom_classification', []) || []) as {
-				description: string;
-			}[]).map((item: { description: string }) => item.description);
+			const subjects = (
+				(get(response, 'data.lookup_enum_lom_classification', []) || []) as {
+					description: string;
+				}[]
+			).map((item: { description: string }) => item.description);
 
 			return sortBy(subjects, (subject) => subject.toLowerCase());
 		} catch (err) {
@@ -81,9 +83,11 @@ export class SettingsService {
 				throw new CustomError('GraphQL response contains errors', null, { response });
 			}
 
-			return ((get(response, 'data.lookup_enum_lom_context') || []) as {
-				description: string;
-			}[]).map((item: { description: string }) => item.description);
+			return (
+				(get(response, 'data.lookup_enum_lom_context') || []) as {
+					description: string;
+				}[]
+			).map((item: { description: string }) => item.description);
 		} catch (err) {
 			throw new CustomError('Failed to get education levels from the database', err, {
 				query: 'GET_EDUCATION_LEVELS',

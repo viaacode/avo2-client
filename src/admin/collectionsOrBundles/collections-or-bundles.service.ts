@@ -181,8 +181,7 @@ export class CollectionsOrBundlesService {
 				{
 					variables,
 					editorialType,
-					query:
-						'GET_COLLECTION_ACTUALISATION | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
+					query: 'GET_COLLECTION_ACTUALISATION | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
 				}
 			);
 		}
@@ -322,8 +321,7 @@ export class CollectionsOrBundlesService {
 			throw new CustomError('Failed to bulk add labels to collections', err, {
 				labels,
 				collectionIds,
-				query:
-					'BULK_ADD_LABELS_TO_COLLECTIONS, BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS',
+				query: 'BULK_ADD_LABELS_TO_COLLECTIONS, BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS',
 			});
 		}
 	}
