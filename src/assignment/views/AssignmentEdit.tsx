@@ -13,9 +13,13 @@ import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import {
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -216,6 +220,27 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	);
 
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		modal: {
+			items: assignment.blocks,
+			onClose: (update?: AssignmentBlock[]) => {
+				if (update) {
+					const blocks = update.map((item, i) => ({
+						...item,
+						position: assignment.blocks[i].position,
+					}));
+
+					setAssignment((prev) => ({
+						...prev,
+						blocks,
+					}));
+
+					setValue('blocks', blocks, { shouldDirty: true });
+				}
+			},
+		},
+	});
+
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
 		initial: defaultValues,
 	});
@@ -331,7 +356,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					</Spacer>
 				)}
 
-				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+				<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
+
+				<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
 
 				{isDirty && (
 					<StickyEdgeBar>
@@ -356,6 +383,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			</Container>
 
 			{renderedModals}
+			{draggableListModal}
 		</div>
 	);
 
