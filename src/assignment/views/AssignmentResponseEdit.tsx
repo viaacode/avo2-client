@@ -270,16 +270,7 @@ const AssignmentResponseEdit: FunctionComponent<
 	const renderBlockContent = useAssignmentBlocks(setBlock);
 	const [renderedListSorter] = useAssignmentBlocksList(
 		(assignmentResponse as any)?.pupil_collection_blocks,
-		(blocks) =>
-			setAssignmentResponse((prevState) => {
-				if (!prevState) {
-					return null;
-				}
-				return {
-					...prevState,
-					pupil_collection_blocks: blocks,
-				};
-			}),
+		updateBlocksInAssignmentResponseState,
 		{
 			listSorter: {
 				content: (item) => item && renderBlockContent(item),
