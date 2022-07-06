@@ -1,4 +1,5 @@
 @import '../../../styles/settings/variables';
+@import '../../../styles/settings/colors';
 
 .c-draggable-block {
 	.o-flex__item:first-child > div {
@@ -9,5 +10,9 @@
 		background-position: center;
 		background-repeat: no-repeat;
 		border-radius: 3px;
+	}
+
+	&__placeholder {
+		opacity: 0.4;
 	}
 }

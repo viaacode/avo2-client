@@ -3,6 +3,7 @@ import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { BlockItemBase } from '../BlockList/BlockList.types';
 import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
@@ -14,6 +15,8 @@ export interface DraggableBlockProps extends DefaultProps {
 }
 
 const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
+	const [t] = useTranslation();
+
 	if (!block) {
 		return null;
 	}
@@ -24,11 +27,6 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 		(block.use_custom_fields
 			? block.custom_title
 			: (block as AssignmentBlock).original_title) || block.item_meta?.title;
-
-	const description =
-		(block.use_custom_fields
-			? block.custom_description
-			: (block as AssignmentBlock).original_description) || block.item_meta?.description;
 
 	return (
 		<Flex className={classNames('c-draggable-block', className)} center>
@@ -41,7 +39,13 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 			</FlexItem>
 			<FlexItem>
 				<BlockHeading type="h4">
-					{truncate(`${title || description}`, { length: 45 })}
+					{title ? (
+						truncate(title, { length: 45 })
+					) : (
+						<span className="c-draggable-block__placeholder">
+							{t('Instructies of omschrijving')}
+						</span>
+					)}
 				</BlockHeading>
 			</FlexItem>
 		</Flex>
