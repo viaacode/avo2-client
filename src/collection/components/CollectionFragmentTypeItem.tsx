@@ -13,12 +13,11 @@ import CollectionFragmentRichText, {
 } from './CollectionFragmentRichText';
 import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
 
-interface CollectionFragmentTypeItemProps extends DefaultProps {
+export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	title?: CollectionFragmentTitleProps;
 	richText?: CollectionFragmentRichTextProps;
 	meta?: CollectionFragmentMetaProps;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
-	enableContentLinks: boolean;
 }
 
 const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
@@ -27,14 +26,13 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	meta,
 	flowPlayer,
 	className,
-	enableContentLinks,
 }) => {
 	const richTextRef = useRef(null);
 	const [time, , formatTimestamps] = useVideoWithTimestamps(richTextRef);
 
 	return (
 		<>
-			{title && <CollectionFragmentTitle {...title} enableTitleLink={enableContentLinks} />}
+			{title && <CollectionFragmentTitle {...title} />}
 			<CollapsibleColumn
 				className={className}
 				grow={
@@ -46,20 +44,15 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				}
 				bound={
 					<>
-						{meta && (
-							<CollectionFragmentMeta
-								{...meta}
-								enableContentLinks={enableContentLinks}
-							/>
-						)}
+						{meta && <CollectionFragmentMeta {...meta} />}
 						{richText &&
 							(() => {
 								// Add timestamps
 								const formatted = formatTimestamps(
 									convertToHtml(
-										richText.block.use_custom_fields
-											? richText.block.custom_description
-											: richText.block.item_meta?.description
+										richText.block?.use_custom_fields
+											? richText.block?.custom_description
+											: richText.block?.item_meta?.description
 									) || ''
 								);
 

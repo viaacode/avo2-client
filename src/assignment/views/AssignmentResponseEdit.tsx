@@ -489,8 +489,21 @@ const AssignmentResponseEdit: FunctionComponent<
 			<Container mode="horizontal">
 				<BlockList
 					blocks={(assignmentInfo?.assignmentBlocks || []) as BlockItemBase[]}
-					enableContentLinks={false}
-					canPlay={true}
+					config={{
+						text: {
+							title: {
+								canClickHeading: false,
+							},
+						},
+						item: {
+							meta: {
+								canClickSeries: false,
+							},
+							flowPlayer: {
+								canPlay: true,
+							},
+						},
+					}}
 				/>
 			</Container>
 		);

@@ -68,7 +68,7 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation } from '../collection.types';
 import {
 	AutoplayCollectionModal,
-	CollectionOrAssignmentBlocks,
+	BlockList,
 	FragmentList,
 	PublishCollectionModal,
 } from '../components';
@@ -1009,16 +1009,28 @@ const CollectionDetail: FunctionComponent<
 					{/* Start */}
 
 					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
-						<CollectionOrAssignmentBlocks
+						<BlockList
 							blocks={collection.collection_fragments}
-							canPlay={
-								!isAddToBundleModalOpen &&
-								!isDeleteModalOpen &&
-								!isPublishModalOpen &&
-								!isShareThroughEmailModalOpen &&
-								!isAutoplayCollectionModalOpen
-							}
-							enableContentLinks={permissions?.canViewAnyPublishedItems || false}
+							config={{
+								text: {
+									title: {
+										canClickHeading: permissions?.canViewAnyPublishedItems,
+									},
+								},
+								item: {
+									meta: {
+										canClickSeries: permissions?.canViewAnyPublishedItems,
+									},
+									flowPlayer: {
+										canPlay:
+											!isAddToBundleModalOpen &&
+											!isDeleteModalOpen &&
+											!isPublishModalOpen &&
+											!isShareThroughEmailModalOpen &&
+											!isAutoplayCollectionModalOpen,
+									},
+								},
+							}}
 						/>
 					</Container>
 

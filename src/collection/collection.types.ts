@@ -71,5 +71,5 @@ export interface MarcomEntry {
 }
 
 export interface BlockItemComponent {
-	block: BlockItemBase;
+	block?: BlockItemBase;
 }

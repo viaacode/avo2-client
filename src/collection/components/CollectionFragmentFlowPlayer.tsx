@@ -10,7 +10,7 @@ export type CollectionFragmentFlowPlayerProps = BlockItemComponent & FlowPlayerW
 const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (props) => {
 	const { block, ...rest } = props;
 
-	const meta = block.item_meta as ItemSchema | undefined;
+	const meta = block?.item_meta as ItemSchema | undefined;
 
 	return (
 		<FlowPlayerWrapper
@@ -18,10 +18,14 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 			external_id={meta?.external_id}
 			duration={meta?.duration}
 			title={meta?.title}
-			cuePoints={{
-				start: block.start_oc,
-				end: block.end_oc,
-			}}
+			cuePoints={
+				block
+					? {
+							start: block.start_oc,
+							end: block.end_oc,
+					  }
+					: undefined
+			}
 			{...rest}
 		/>
 	);
