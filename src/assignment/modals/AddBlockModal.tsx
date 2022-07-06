@@ -9,7 +9,6 @@ import {
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +21,7 @@ import './AddBlockModal.scss';
 type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	blocks: AssignmentBlock[];
+	blocks: Avo.Core.BlockItemBase[];
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 

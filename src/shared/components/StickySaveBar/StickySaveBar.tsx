@@ -1,4 +1,4 @@
-import { Button, Container, StickyEdgeBar } from '@viaa/avo2-components';
+import { Button, StickyEdgeBar } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,23 +21,18 @@ export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
 		return null;
 	}
 	return (
-		<Container mode="horizontal" className="c-sticky-save-bar">
-			<StickyEdgeBar>
-				<p>
-					<strong>{t('assignment/views/assignment-edit___wijzigingen-opslaan')}</strong>
-				</p>
+		<StickyEdgeBar className="c-sticky-save-bar">
+			<p>
+				<strong>{t('assignment/views/assignment-edit___wijzigingen-opslaan')}</strong>
+			</p>
 
-				<Button
-					label={t('assignment/views/assignment-edit___annuleer')}
-					onClick={onCancel}
-				/>
+			<Button label={t('assignment/views/assignment-edit___annuleer')} onClick={onCancel} />
 
-				<Button
-					type="tertiary"
-					label={t('assignment/views/assignment-edit___opslaan')}
-					onClick={onSave}
-				/>
-			</StickyEdgeBar>
-		</Container>
+			<Button
+				type="tertiary"
+				label={t('assignment/views/assignment-edit___opslaan')}
+				onClick={onSave}
+			/>
+		</StickyEdgeBar>
 	);
 };

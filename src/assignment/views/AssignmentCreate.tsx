@@ -23,10 +23,10 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentContentModals,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlockListModals,
 	useBlocks,
 	useBlocksList,
 } from '../hooks';
@@ -109,10 +109,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderBlockContent = useBlocks(setBlock);
 
-	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
-		assignment,
-		setAssignment,
-		setValue
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignment.blocks,
+		updateBlocksInAssignmentState
 	);
 
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
@@ -218,16 +217,16 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				tabs={renderTabs}
 			/>
 
-			<Container mode="horizontal">
+			<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
 				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
-			</Container>
 
-			{/* Always show on create */}
-			<StickySaveBar
-				isVisible={true}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
+				{/* Always show on create */}
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
+				/>
+			</Container>
 
 			{renderedModals}
 		</div>

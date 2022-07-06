@@ -18,6 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classnames from 'classnames';
 import { isPast } from 'date-fns/esm';
 import { intersection, noop } from 'lodash-es';
@@ -42,6 +43,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -64,17 +66,21 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
+	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
+	AssignmentBlockType,
 	AssignmentResponseFormState,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
+import { insertAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentPupilTabs,
+	useBlockListModals,
 	useBlocks,
 	useBlocksList,
 } from '../hooks';
@@ -174,7 +180,7 @@ const AssignmentResponseEdit: FunctionComponent<
 
 			// Create an assignment response if needed
 			setAssignmentResponse(
-				await AssignmentService.createAssignmentResponseObject(
+				await AssignmentService.createOrFetchAssignmentResponseObject(
 					tempAssignmentInfo?.assignment,
 					user
 				)
@@ -198,7 +204,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		setValue('pupil_collection_blocks', (assignmentResponse as any).pupil_collection_blocks);
 
 		trigger();
-	}, [assignment, setValue, trigger]);
+	}, [assignmentResponse, setValue, trigger]);
 
 	useEffect(() => {
 		fetchAssignment();
@@ -269,10 +275,45 @@ const AssignmentResponseEdit: FunctionComponent<
 					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
 				} as any)
 		); // TODO remove cast once pupil_collection_blocks is in typings repo
+
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
 			shouldDirty: true,
+			shouldTouch: true,
 		});
 	};
+	const onAddItem = async (itemExternalId: string) => {
+		if (addBlockModal.entity == null) {
+			return;
+		}
+
+		// fetch item details
+		const item_meta = await ItemsService.fetchItemByExternalId(itemExternalId);
+		const newBlocks = insertAtPosition<Partial<Avo.Core.BlockItemBase>>(
+			assignmentResponse?.pupil_collection_blocks || [],
+			{
+				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+				item_meta: item_meta || undefined,
+				type: AssignmentBlockType.ITEM,
+				fragment_id: itemExternalId,
+				position: addBlockModal.entity,
+			} as AssignmentBlock
+		) as AssignmentBlock[];
+
+		updateBlocksInAssignmentResponseState(newBlocks);
+	};
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignmentResponse?.pupil_collection_blocks || [],
+		updateBlocksInAssignmentResponseState,
+		{
+			confirmSliceConfig: {
+				responses: [],
+			},
+			addBookmarkFragmentConfig: {
+				user,
+				addFragmentCallback: onAddItem,
+			},
+		}
+	);
 	const setBlock = useAssignmentBlockChangeHandler(
 		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once Avo.Core.BlockItemBase is in typings repo
 		updateBlocksInAssignmentResponseState
@@ -284,19 +325,21 @@ const AssignmentResponseEdit: FunctionComponent<
 		{
 			listSorter: {
 				content: (item) => item && renderBlockContent(item),
-				divider: (_item) => (
+				divider: (item) => (
 					<Button
 						icon="plus"
 						type="secondary"
 						onClick={() => {
-							// TODO
+							addBlockModal.setEntity(item?.position);
+							addBlockModal.setOpen(true);
 						}}
 					/>
 				),
 			},
 			listSorterItem: {
-				onSlice: (_item) => {
-					// TODO
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
 				},
 			},
 		}
@@ -580,18 +623,9 @@ const AssignmentResponseEdit: FunctionComponent<
 										<TextInput
 											type="text"
 											value={assignmentResponse?.collection_title || ''}
-											onChange={(newCollectionTitle: string) => {
-												setAssignmentResponse((prevState) => {
-													if (!prevState) {
-														return null;
-													}
-													return {
-														...prevState,
-														collection_title: newCollectionTitle || '',
-													};
-												});
-												field.onChange(newCollectionTitle);
-											}}
+											onChange={(newCollectionTitle: string) =>
+												field.onChange(newCollectionTitle)
+											}
 										/>
 
 										{error && (
@@ -715,7 +749,7 @@ const AssignmentResponseEdit: FunctionComponent<
 					info={renderMeta()}
 					tour={<InteractiveTour showButton />}
 				/>
-				<Container mode="horizontal">
+				<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
 					{pastDeadline && (
 						<Spacer margin={['top-large']}>
 							<Alert type="info">
@@ -728,21 +762,23 @@ const AssignmentResponseEdit: FunctionComponent<
 							</Alert>
 						</Spacer>
 					)}
-				</Container>
-				<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
-				{selectedItem && (
-					<AddToAssignmentModal
-						itemMetaData={selectedItem}
-						isOpen={isAddToAssignmentModalOpen}
-						onClose={() => setIsAddToAssignmentModalOpen(false)}
-						onAddToAssignmentCallback={handleAddToPupilCollectionConfirmed}
+
+					<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
+					{selectedItem && (
+						<AddToAssignmentModal
+							itemMetaData={selectedItem}
+							isOpen={isAddToAssignmentModalOpen}
+							onClose={() => setIsAddToAssignmentModalOpen(false)}
+							onAddToAssignmentCallback={handleAddToPupilCollectionConfirmed}
+						/>
+					)}
+					{renderedModals}
+					<StickySaveBar
+						isVisible={isDirty}
+						onCancel={() => reset()}
+						onSave={handleSubmit(submit, (...args) => console.error(args))}
 					/>
-				)}
-				<StickySaveBar
-					isVisible={isDirty}
-					onCancel={() => reset()}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
-				/>
+				</Container>
 			</div>
 		);
 	};

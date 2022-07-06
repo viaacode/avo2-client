@@ -32,10 +32,10 @@ import AssignmentTitle from '../components/AssignmentTitle';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentContentModals,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlockListModals,
 	useBlocks,
 	useBlocksList,
 } from '../hooks';
@@ -208,10 +208,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		});
 	};
 
-	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
-		assignment,
-		setAssignment,
-		setValue,
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignment.blocks,
+		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
 				responses: original?.responses || [],
@@ -327,7 +326,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				tabs={renderTabs}
 			/>
 
-			<Container mode="horizontal">
+			<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
 				{pastDeadline && (
 					<Spacer margin={['top-large']}>
 						<Alert type="info">
@@ -339,12 +338,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				)}
 
 				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+				<StickySaveBar
+					isVisible={isDirty}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
+				/>
 			</Container>
-			<StickySaveBar
-				isVisible={isDirty}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
 
 			{renderedModals}
 		</div>

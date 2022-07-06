@@ -1,10 +1,10 @@
+import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { useState } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
 
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
-import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import { AssignmentBlockType } from '../assignment.types';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
@@ -12,10 +12,9 @@ import AddBookmarkFragmentModal, {
 } from '../modals/AddBookmarkFragmentModal';
 import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
-export function useAssignmentContentModals(
-	assignment: AssignmentFormState,
-	setAssignment: React.Dispatch<React.SetStateAction<AssignmentFormState>>,
-	setValue: UseFormSetValue<AssignmentFormState>,
+export function useBlockListModals(
+	blocks: Avo.Core.BlockItemBase[],
+	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
 	config?: {
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;
@@ -46,26 +45,22 @@ export function useAssignmentContentModals(
 				block={getConfirmSliceModalBlock as AssignmentBlock}
 				onClose={() => setConfirmSliceModalOpen(false)}
 				onConfirm={() => {
-					const blocks = assignment.blocks.filter(
+					const newBlocks = blocks.filter(
 						(item) => item.id !== getConfirmSliceModalBlock?.id
 					);
 
-					setAssignment((prev) => ({
-						...prev,
-						blocks,
-					}));
+					setBlocks(newBlocks);
 
-					setValue('blocks', blocks, { shouldDirty: true, shouldTouch: true });
 					setConfirmSliceModalOpen(false);
 				}}
 			/>
 
-			{assignment && (
+			{blocks && (
 				<>
 					<AddBlockModal
 						{...config?.addBlockConfig}
 						isOpen={!!isAddBlockModalOpen}
-						blocks={assignment.blocks}
+						blocks={blocks}
 						onClose={() => setAddBlockModalOpen(false)}
 						onConfirm={(type) => {
 							if (getAddBlockModalPosition === undefined) {
@@ -80,21 +75,13 @@ export function useAssignmentContentModals(
 
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
-									const blocks = insertAtPosition(assignment.blocks, {
+									const newBlocks = insertAtPosition(blocks, {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
 										position: getAddBlockModalPosition,
 									} as AssignmentBlock); // TODO: avoid cast
 
-									setAssignment((prev) => ({
-										...prev,
-										blocks,
-									}));
-
-									setValue('blocks', blocks, {
-										shouldDirty: true,
-										shouldTouch: true,
-									});
+									setBlocks(newBlocks);
 									break;
 								}
 
