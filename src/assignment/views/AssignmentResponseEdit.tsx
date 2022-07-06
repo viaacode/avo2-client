@@ -53,7 +53,6 @@ import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
-import { BlockItemBase } from '../../shared/components/BlockList/BlockList.types';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useScrollToId } from '../../shared/hooks/scroll-to-id';
@@ -74,9 +73,9 @@ import {
 import AssignmentHeading from '../components/AssignmentHeading';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentBlocks,
-	useAssignmentBlocksList,
 	useAssignmentPupilTabs,
+	useBlocks,
+	useBlocksList,
 } from '../hooks';
 import { PupilCollectionService } from '../pupil-collection.service';
 
@@ -106,10 +105,10 @@ const AssignmentResponseEdit: FunctionComponent<
 	const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
 
 	const {
-		control,
-		formState: { isDirty },
-		handleSubmit,
-		reset: resetForm,
+		// control,
+		// formState: { isDirty },
+		// handleSubmit,
+		// reset: resetForm,
 		setValue,
 		trigger,
 	} = useForm<AssignmentResponseFormState>({
@@ -261,16 +260,24 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 	};
 
-	const updateBlocksInAssignmentResponseState = (newBlocks: PupilCollectionFragment[]) => {
-		setAssignmentResponse((prev) => ({ ...prev, pupil_collection_blocks: newBlocks } as any)); // TODO remove cast once pupil_collection_blocks is in typings repo
-		setValue('pupil_collection_blocks', newBlocks, { shouldDirty: true });
+	const updateBlocksInAssignmentResponseState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignmentResponse(
+			(prev) =>
+				({
+					...prev,
+					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
+				} as any)
+		); // TODO remove cast once pupil_collection_blocks is in typings repo
+		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
+			shouldDirty: true,
+		});
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
-		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once BlockItemBase is in typings repo
+		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once Avo.Core.BlockItemBase is in typings repo
 		updateBlocksInAssignmentResponseState
 	);
-	const renderBlockContent = useAssignmentBlocks(setBlock);
-	const [renderedListSorter] = useAssignmentBlocksList(
+	const renderBlockContent = useBlocks(setBlock);
+	const [renderedListSorter] = useBlocksList(
 		(assignmentResponse as any)?.pupil_collection_blocks,
 		updateBlocksInAssignmentResponseState,
 		{
@@ -590,7 +597,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		return (
 			<Container mode="horizontal">
 				<BlockList
-					blocks={(assignmentInfo?.assignmentBlocks || []) as BlockItemBase[]}
+					blocks={(assignmentInfo?.assignmentBlocks || []) as Avo.Core.BlockItemBase[]}
 					enableContentLinks={false}
 					canPlay={true}
 				/>

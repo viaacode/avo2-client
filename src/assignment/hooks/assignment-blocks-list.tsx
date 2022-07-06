@@ -1,34 +1,30 @@
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
 import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { BlockListSorter, ListSorterItem, ListSorterProps } from '../../shared/components';
 import {
-	AssignmentBlockListSorter,
-	ListSorterItem,
-	ListSorterProps,
-} from '../../shared/components';
-import {
-	ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS,
-	ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS,
-} from '../assignment.const';
+	BLOCK_ITEM_ICONS,
+	BLOCK_ITEM_LABELS,
+} from '../../shared/components/BlockList/BlockList.consts';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 
-export function useAssignmentBlocksList(
-	blocks: AssignmentBlock[],
-	setBlocks: (newBlocks: AssignmentBlock[]) => void,
+export function useBlocksList(
+	blocks: Avo.Core.BlockItemBase[],
+	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
 	config?: {
-		listSorter?: Partial<ListSorterProps<AssignmentBlock>>;
+		listSorter?: Partial<ListSorterProps<Avo.Core.BlockItemBase>>;
 		listSorterItem?: Partial<ListSorterItem>;
 	}
-): [ReactNode, (AssignmentBlock & ListSorterItem)[]] {
+): [ReactNode, (Avo.Core.BlockItemBase & ListSorterItem)[]] {
 	const [t] = useTranslation();
 
 	const items = useMemo(() => {
-		return blocks.map((block) => {
-			const mapped: AssignmentBlock & ListSorterItem = {
+		return (blocks || []).map((block) => {
+			const mapped: Avo.Core.BlockItemBase & ListSorterItem = {
 				...block,
 				...config?.listSorterItem,
-				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[block.type],
+				icon: BLOCK_ITEM_ICONS()[block.type](block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(blocks, item, delta);
 
@@ -44,9 +40,9 @@ export function useAssignmentBlocksList(
 
 	const ui = useMemo(
 		() => (
-			<AssignmentBlockListSorter
+			<BlockListSorter
 				{...config?.listSorter}
-				heading={(item) => item && ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS(t)[item.type]}
+				heading={(item) => item && BLOCK_ITEM_LABELS(t)[item.type]}
 				items={items}
 			/>
 		),

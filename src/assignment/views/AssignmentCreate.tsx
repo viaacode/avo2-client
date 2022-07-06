@@ -1,5 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -20,12 +22,12 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentBlocks,
-	useAssignmentBlocksList,
 	useAssignmentContentModals,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlocks,
+	useBlocksList,
 } from '../hooks';
 
 import './AssignmentCreate.scss';
@@ -43,14 +45,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	});
 	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment.blocks, (newBlocks) => {
-		setAssignment((prevState) => ({
-			...prevState,
-			blocks: newBlocks,
-		}));
-
-		setValue('blocks', newBlocks, { shouldDirty: true });
-	});
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
+		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		assignment.blocks,
+		updateBlocksInAssignmentState
+	);
 
 	// Events
 
@@ -104,7 +106,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useAssignmentBlocks(setBlock);
+	const renderBlockContent = useBlocks(setBlock);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
 		assignment,
@@ -116,34 +118,27 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(
-		assignment?.blocks,
-		(newBlocks) => {
-			setAssignment((prevState) => ({ ...prevState, blocks: newBlocks }));
-			setValue('blocks', newBlocks);
+	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
+		listSorter: {
+			content: (item) => item && renderBlockContent(item),
+			divider: (item) => (
+				<Button
+					icon="plus"
+					type="secondary"
+					onClick={() => {
+						addBlockModal.setEntity(item?.position);
+						addBlockModal.setOpen(true);
+					}}
+				/>
+			),
 		},
-		{
-			listSorter: {
-				content: (item) => item && renderBlockContent(item),
-				divider: (item) => (
-					<Button
-						icon="plus"
-						type="secondary"
-						onClick={() => {
-							addBlockModal.setEntity(item?.position);
-							addBlockModal.setOpen(true);
-						}}
-					/>
-				),
+		listSorterItem: {
+			onSlice: (item) => {
+				confirmSliceModal.setEntity(item);
+				confirmSliceModal.setOpen(true);
 			},
-			listSorterItem: {
-				onSlice: (item) => {
-					confirmSliceModal.setEntity(item);
-					confirmSliceModal.setOpen(true);
-				},
-			},
-		}
-	);
+		},
+	});
 
 	const renderBackButton = useMemo(
 		() => (

@@ -53,7 +53,6 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
-	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentSchemaLabel_v2,
 	AssignmentType,
@@ -691,9 +690,9 @@ export class AssignmentService {
 			const assignmentBlocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
 					if (block.type === 'ITEM') {
-						block.item_meta = await ItemsService.fetchItemByExternalId(
-							block.fragment_id
-						);
+						block.item_meta =
+							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+							undefined;
 					}
 					return block;
 				})

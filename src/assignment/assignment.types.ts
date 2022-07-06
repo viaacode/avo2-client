@@ -1,7 +1,6 @@
 import { TableColumn } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
-import { CollectionFragment } from '@viaa/avo2-types/types/collection';
 
 import { FilterState } from '../search/search.types';
 
@@ -73,16 +72,17 @@ export interface AssignmentLabelColor {
 // Omit avoids a typescript error here
 export type AssignmentSchemaLabel_v2 = { assignment_label: Omit<AssignmentLabel_v2, 'profile'> };
 
-export type AssignmentFormState = Pick<
-	Avo.Assignment.Assignment_v2,
-	'title' | 'id' | 'available_at' | 'deadline_at' | 'answer_url'
-> & {
-	labels: AssignmentSchemaLabel_v2[];
-	blocks: Omit<AssignmentBlock, 'item_meta'>[]; // avoid circular reference ts error
-};
+export type AssignmentFormState = Pick<Avo.Assignment.Assignment_v2, 'title'> &
+	Pick<
+		Partial<Avo.Assignment.Assignment_v2>,
+		'id' | 'available_at' | 'deadline_at' | 'answer_url'
+	> & {
+		labels: AssignmentSchemaLabel_v2[];
+		blocks: Omit<AssignmentBlock, 'item_meta'>[]; // avoid circular reference ts error
+	};
 
 export type AssignmentResponseFormState = Pick<
-	Avo.Assignment.Response_v2,
+	Partial<Avo.Assignment.Response_v2>,
 	'collection_title' | 'id'
 > & {
 	pupil_collection_blocks: Omit<PupilCollectionFragment, 'item_meta'>[]; // avoid circular reference ts error
@@ -94,7 +94,8 @@ export interface PupilSearchFilterState extends FilterState {
 	focus?: string; // Search result that should be scrolled into view
 }
 
-// TODO replace CollectionFragment with BlockItemBase
-export type PupilCollectionFragment = Omit<CollectionFragment, 'collection_uuid'> & {
+export interface PupilCollectionFragment extends Avo.Core.BlockItemBase {
 	assignment_response_id: string;
-};
+	fragment_id: string;
+	is_deleted: boolean;
+}

@@ -1,6 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlockType } from '@viaa/avo2-types/types/assignment';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
@@ -240,23 +238,6 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 	MY_COLLECTION = 'MY_COLLECTION',
 }
 
-export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => Record<
-	AssignmentBlockType,
-	IconName
-> = () => ({
-	ITEM: 'video',
-	TEXT: 'type',
-	ZOEK: 'search',
-});
-
-export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
-	t: TFunction
-) => Record<AssignmentBlockType, string> = (t) => ({
-	ITEM: t('assignment/assignment___fragment'),
-	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
-	ZOEK: t('assignment/assignment___zoekoefening'),
-});
-
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	assignmentType: AssignmentType
 ): AssignmentResponseColumn[] => [
@@ -327,6 +308,6 @@ export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] = 
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: { id: string }): boolean => {
-	return item.id.startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
+export const isNewAssignmentBlock = (item: Avo.Core.BlockItemBase): boolean => {
+	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };

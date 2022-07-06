@@ -1,7 +1,6 @@
 import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { invert } from 'lodash-es';
-
-import { BlockItemBase } from '../shared/components/BlockList/BlockList.types';
 
 export enum ContentTypeNumber {
 	audio = 1,
@@ -71,5 +70,5 @@ export interface MarcomEntry {
 }
 
 export interface BlockItemComponent {
-	block: BlockItemBase;
+	block: Avo.Core.BlockItemBase;
 }

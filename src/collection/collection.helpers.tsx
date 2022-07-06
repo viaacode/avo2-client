@@ -389,7 +389,7 @@ export const keepCoreCollectionProperties = (
 
 export const getFragmentIdsFromCollection = (
 	collection: Partial<Avo.Collection.Collection> | null
-): number[] => {
+): (number | string)[] => {
 	return compact(
 		getFragmentsFromCollection(collection).map(
 			(fragment: Avo.Collection.Fragment) => fragment.id

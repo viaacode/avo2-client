@@ -1,13 +1,13 @@
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
 import { cloneDeep } from 'lodash-es';
 import { useCallback } from 'react';
 
 export function useAssignmentBlockChangeHandler(
-	blocks: AssignmentBlock[],
-	setBlocks: (newBlocks: AssignmentBlock[]) => void
-): (existingBlock: AssignmentBlock, updatedBlock: Partial<AssignmentBlock>) => void {
+	blocks: Avo.Core.BlockItemBase[],
+	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void
+): (existingBlock: Avo.Core.BlockItemBase, updatedBlock: Partial<Avo.Core.BlockItemBase>) => void {
 	return useCallback(
-		(existingBlock: AssignmentBlock, updatedBlock: Partial<AssignmentBlock>) => {
+		(existingBlock: Avo.Core.BlockItemBase, updatedBlock: Partial<Avo.Core.BlockItemBase>) => {
 			const updatedBlocks = cloneDeep(blocks);
 
 			const existingBlockIndex = updatedBlocks.findIndex(

@@ -31,12 +31,12 @@ import AssignmentTitle from '../components/AssignmentTitle';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentBlocks,
-	useAssignmentBlocksList,
 	useAssignmentContentModals,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlocks,
+	useBlocksList,
 } from '../hooks';
 
 import './AssignmentEdit.scss';
@@ -65,9 +65,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
-	const updateBlocksInAssignmentState = (newBlocks: AssignmentBlock[]) => {
-		setAssignment((prev) => ({ ...prev, blocks: newBlocks }));
-		setValue('blocks', newBlocks, { shouldDirty: true });
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
+		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment.blocks,
@@ -179,7 +179,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useAssignmentBlocks(setBlock);
+	const renderBlockContent = useBlocks(setBlock);
 
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {
@@ -188,13 +188,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		// fetch item details
 		const item_meta = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = insertAtPosition<Partial<AssignmentBlock>>(assignment.blocks, {
+		const blocks = insertAtPosition<Partial<Avo.Core.BlockItemBase>>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item_meta,
+			item_meta: item_meta || undefined,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
-		}) as AssignmentBlock[];
+		} as AssignmentBlock) as AssignmentBlock[];
 
 		setAssignment((prev) => ({
 			...prev,
@@ -226,31 +226,27 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(
-		assignment?.blocks,
-		updateBlocksInAssignmentState,
-		{
-			listSorter: {
-				content: (item) => item && renderBlockContent(item),
-				divider: (item) => (
-					<Button
-						icon="plus"
-						type="secondary"
-						onClick={() => {
-							addBlockModal.setEntity(item?.position);
-							addBlockModal.setOpen(true);
-						}}
-					/>
-				),
+	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
+		listSorter: {
+			content: (item) => item && renderBlockContent(item),
+			divider: (item) => (
+				<Button
+					icon="plus"
+					type="secondary"
+					onClick={() => {
+						addBlockModal.setEntity(item?.position);
+						addBlockModal.setOpen(true);
+					}}
+				/>
+			),
+		},
+		listSorterItem: {
+			onSlice: (item) => {
+				confirmSliceModal.setEntity(item);
+				confirmSliceModal.setOpen(true);
 			},
-			listSorterItem: {
-				onSlice: (item) => {
-					confirmSliceModal.setEntity(item);
-					confirmSliceModal.setOpen(true);
-				},
-			},
-		}
-	);
+		},
+	});
 
 	const renderBackButton = useMemo(
 		() => (

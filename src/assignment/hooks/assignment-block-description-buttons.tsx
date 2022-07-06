@@ -1,17 +1,18 @@
 import { ButtonProps } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { isRichTextEmpty } from '../../shared/helpers';
 
-export function useAssignmentBlockDescriptionButtons(
-	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-): (block: AssignmentBlock) => { label: string; items: Partial<ButtonProps>[] } {
+export function useBlockDescriptionButtons(
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void
+): (block: Avo.Core.BlockItemBase) => { label: string; items: Partial<ButtonProps>[] } {
 	const [t] = useTranslation();
 
 	const buttons = useCallback(
-		(block: AssignmentBlock): Partial<ButtonProps>[] => [
+		(block: Avo.Core.BlockItemBase): Partial<ButtonProps>[] => [
 			{
 				active: !block.use_custom_fields,
 				label: t('assignment/views/assignment-edit___origineel'),
@@ -27,9 +28,11 @@ export function useAssignmentBlockDescriptionButtons(
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item_meta?.title,
+						custom_title:
+							(block as AssignmentBlock).original_title || block.item_meta?.title,
 						custom_description:
-							block.original_description || block.item_meta?.description,
+							(block as AssignmentBlock).original_description ||
+							block.item_meta?.description,
 					});
 				},
 			},
@@ -39,7 +42,8 @@ export function useAssignmentBlockDescriptionButtons(
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item_meta?.title,
+						custom_title:
+							(block as AssignmentBlock).original_title || block.item_meta?.title,
 						custom_description: '',
 					});
 				},
@@ -49,7 +53,7 @@ export function useAssignmentBlockDescriptionButtons(
 	);
 
 	return useCallback(
-		(block: AssignmentBlock) => ({
+		(block: Avo.Core.BlockItemBase) => ({
 			label: t('assignment/views/assignment-edit___titel-en-beschrijving'),
 			items: buttons(block),
 		}),

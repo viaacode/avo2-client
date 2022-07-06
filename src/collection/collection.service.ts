@@ -1,9 +1,8 @@
+import { Avo } from '@viaa/avo2-types';
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 import { FetchResult } from 'apollo-link';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
-
-import { Avo } from '@viaa/avo2-types';
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 
 import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -21,12 +20,12 @@ import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
 	DELETE_MARCOM_ENTRY,
-	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
 	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS_BY_FRAGMENT_ID,
+	GET_COLLECTIONS_BY_OWNER,
 	GET_MARCOM_ENTRIES,
 	GET_ORGANISATION_CONTENT,
 	GET_PUBLIC_COLLECTIONS,
@@ -197,8 +196,10 @@ export class CollectionService {
 			);
 
 			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
-			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
-			const currentFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
+			const initialFragmentIds: (number | string)[] =
+				getFragmentIdsFromCollection(initialCollection);
+			const currentFragmentIds: (number | string)[] =
+				getFragmentIdsFromCollection(newCollection);
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
@@ -209,7 +210,7 @@ export class CollectionService {
 			const deleteFragmentIds = without(initialFragmentIds, ...currentFragmentIds);
 
 			// update fragments that are neither inserted nor deleted
-			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number) =>
+			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number | string) =>
 				initialFragmentIds.includes(fragmentId)
 			);
 
@@ -220,7 +221,7 @@ export class CollectionService {
 			);
 
 			// delete fragments
-			const deletePromises = deleteFragmentIds.map((id: number) =>
+			const deletePromises = deleteFragmentIds.map((id: number | string) =>
 				dataService.mutate({
 					mutation: DELETE_COLLECTION_FRAGMENT,
 					variables: { id },
@@ -230,7 +231,7 @@ export class CollectionService {
 
 			// update fragments
 			const updatePromises = compact(
-				updateFragmentIds.map((id: number) => {
+				updateFragmentIds.map((id: number | string) => {
 					let fragmentToUpdate: Avo.Collection.Fragment | undefined =
 						getFragmentsFromCollection(newCollection).find(
 							(fragment: Avo.Collection.Fragment) => {
@@ -570,7 +571,7 @@ export class CollectionService {
 	static updateCollectionProperties = async (
 		id: string,
 		collection: Partial<Avo.Collection.Collection>
-	) => {
+	): Promise<void> => {
 		try {
 			await dataService.mutate({
 				mutation: UPDATE_COLLECTION,
@@ -594,7 +595,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique identifier of the collection.
 	 */
-	static deleteCollection = async (collectionId: string) => {
+	static deleteCollection = async (collectionId: string): Promise<void> => {
 		try {
 			// delete collection by id
 			await dataService.mutate({
@@ -725,7 +726,7 @@ export class CollectionService {
 	static async fetchOrganisationContent(
 		offset: number,
 		limit: number,
-		order: any,
+		order: Record<string, 'asc' | 'desc'>,
 		companyId: string
 	): Promise<OrganisationContentItem[]> {
 		try {
@@ -888,7 +889,7 @@ export class CollectionService {
 		collectionId: string,
 		type: 'collection' | 'bundle',
 		assignmentUuid: string | undefined,
-		includeFragments: boolean = true
+		includeFragments = true
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
@@ -1163,13 +1164,10 @@ export class CollectionService {
 				throw new CustomError('response contains graphql errors', null, { response });
 			}
 
-			const collectionWithSameTitleExists: boolean = !!get(
-				response,
-				'data.collectionByTitle',
-				[]
-			).length;
+			const collectionWithSameTitleExists = !!get(response, 'data.collectionByTitle', [])
+				.length;
 
-			const collectionWithSameDescriptionExists: boolean = !!get(
+			const collectionWithSameDescriptionExists = !!get(
 				response,
 				'data.collectionByDescription',
 				[]
@@ -1219,9 +1217,9 @@ export class CollectionService {
 		user: Avo.User.User,
 		offset: number,
 		limit: number,
-		order: any,
+		order: Record<string, 'asc' | 'desc'>,
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle
-	) {
+	): Promise<Avo.Collection.Collection[]> {
 		let variables: any;
 		try {
 			variables = {

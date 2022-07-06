@@ -8,13 +8,16 @@ import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { FlowPlayerWrapper } from '../../shared/components';
+import { FlowPlayerWrapper, ListSorter, ListSorterItem } from '../../shared/components';
+import {
+	BLOCK_ITEM_ICONS,
+	BLOCK_ITEM_LABELS,
+} from '../../shared/components/BlockList/BlockList.consts';
 import {
 	CustomiseItemForm,
 	CustomiseItemFormDescriptionField,
 	CustomiseItemFormTitleField,
 } from '../../shared/components/CustomiseItemForm';
-import { ListSorter, ListSorterItem } from '../../shared/components/ListSorter/ListSorter';
 import {
 	TitleDescriptionForm,
 	TitleDescriptionFormDescriptionField,
@@ -22,12 +25,7 @@ import {
 } from '../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../shared/constants';
 import { ToastService } from '../../shared/services';
-import {
-	COLLECTION_FRAGMENT_LABELS,
-	CollectionBlockType,
-	EDIT_COLLECTION_FRAGMENT_ICONS,
-	NEW_FRAGMENT,
-} from '../collection.const';
+import { CollectionBlockType, NEW_FRAGMENT } from '../collection.const';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
@@ -49,7 +47,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	const [t] = useTranslation();
 
 	// State
-	const [openOptionsId, setOpenOptionsId] = useState<number | null>(null);
+	const [openOptionsId, setOpenOptionsId] = useState<number | string | null>(null);
 	const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(null);
 
 	const isCollection = type === 'collection';
@@ -93,7 +91,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	const listSorterHeading = (item?: ListSorterItem) => {
 		const fragment = collectionFragments.find((f) => byId(f, item?.id));
 
-		return fragment && COLLECTION_FRAGMENT_LABELS(t)[fragment?.type];
+		return fragment && BLOCK_ITEM_LABELS(t)[fragment?.type];
 	};
 
 	// Decide what to show inside of each item in the list
@@ -259,7 +257,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 		const mapped: ListSorterItem = {
 			id: `${fragment.id}`,
 			position: fragment.position,
-			icon: EDIT_COLLECTION_FRAGMENT_ICONS()[fragment.type],
+			icon: BLOCK_ITEM_ICONS()[fragment.type](fragment),
 
 			onPositionChange: (_item, delta) => {
 				changeCollectionState({
