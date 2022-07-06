@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
+import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { isPast } from 'date-fns/esm';
@@ -14,6 +14,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
@@ -338,28 +339,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				)}
 
 				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
-
-				{isDirty && (
-					<StickyEdgeBar>
-						<p>
-							<strong>
-								{t('assignment/views/assignment-edit___wijzigingen-opslaan')}
-							</strong>
-						</p>
-
-						<Button
-							label={t('assignment/views/assignment-edit___annuleer')}
-							onClick={() => reset()}
-						/>
-
-						<Button
-							type="tertiary"
-							label={t('assignment/views/assignment-edit___opslaan')}
-							onClick={handleSubmit(submit, (...args) => console.error(args))}
-						/>
-					</StickyEdgeBar>
-				)}
 			</Container>
+			<StickySaveBar
+				isVisible={isDirty}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
 
 			{renderedModals}
 		</div>

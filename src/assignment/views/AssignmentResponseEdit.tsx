@@ -29,7 +29,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, withRouter } from 'react-router-dom';
@@ -53,6 +53,7 @@ import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useScrollToId } from '../../shared/hooks/scroll-to-id';
@@ -105,10 +106,10 @@ const AssignmentResponseEdit: FunctionComponent<
 	const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
 
 	const {
-		// control,
-		// formState: { isDirty },
-		// handleSubmit,
-		// reset: resetForm,
+		control,
+		formState: { isDirty },
+		handleSubmit,
+		reset,
 		setValue,
 		trigger,
 	} = useForm<AssignmentResponseFormState>({
@@ -300,6 +301,45 @@ const AssignmentResponseEdit: FunctionComponent<
 			},
 		}
 	);
+
+	const submit = async () => {
+		try {
+			if (!user.profile?.id || !assignmentResponse) {
+				return;
+			}
+
+			// TODO
+			// const updated = await AssignmentService.updateAssignmentResponse(
+			// 		{
+			// 			...original,
+			// 			owner_profile_id: user.profile?.id,
+			// 		},
+			// 		{
+			// 			...original,
+			// 			...assignment,
+			// 		}
+			// );
+
+			// if (updated) {
+			// 	trackEvents(
+			// 		{
+			// 			object: String(assignmentResponse.id),
+			// 			object_type: 'assignment_response',
+			// 			action: 'edit',
+			// 		},
+			// 		user
+			// 	);
+			//
+			// 	// Re-fetch
+			// 	await fetchAssignment();
+			//
+			// 	ToastService.success(t('De collectie is opgeslagen'));
+			// }
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(t('Het opslaan van de collectie is mislukt'));
+		}
+	};
 
 	// Render
 
@@ -529,26 +569,39 @@ const AssignmentResponseEdit: FunctionComponent<
 				<Container mode="vertical">
 					<Toolbar size="large">
 						<ToolbarLeft>
-							<FormGroup
-								label={t('Naam resultatenset')}
-								className="c-form-group--full-width"
-							>
-								<TextInput
-									type="text"
-									value={assignmentResponse?.collection_title || ''}
-									onChange={(newCollectionTitle: string) => {
-										setAssignmentResponse((prevState) => {
-											if (!prevState) {
-												return null;
-											}
-											return {
-												...prevState,
-												collection_title: newCollectionTitle || '',
-											};
-										});
-									}}
-								/>
-							</FormGroup>
+							<Controller
+								name="collection_title"
+								control={control}
+								render={({ field, fieldState: { error } }) => (
+									<FormGroup
+										label={t('Naam resultatenset')}
+										className="c-form-group--full-width"
+									>
+										<TextInput
+											type="text"
+											value={assignmentResponse?.collection_title || ''}
+											onChange={(newCollectionTitle: string) => {
+												setAssignmentResponse((prevState) => {
+													if (!prevState) {
+														return null;
+													}
+													return {
+														...prevState,
+														collection_title: newCollectionTitle || '',
+													};
+												});
+												field.onChange(newCollectionTitle);
+											}}
+										/>
+
+										{error && (
+											<span className="c-floating-error">
+												{error.message}
+											</span>
+										)}
+									</FormGroup>
+								)}
+							/>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<Button
@@ -558,8 +611,8 @@ const AssignmentResponseEdit: FunctionComponent<
 							/>
 						</ToolbarRight>
 					</Toolbar>
-					{renderedListSorter}
 				</Container>
+				<Container mode="vertical">{renderedListSorter}</Container>
 			</Container>
 		);
 	};
@@ -685,6 +738,11 @@ const AssignmentResponseEdit: FunctionComponent<
 						onAddToAssignmentCallback={handleAddToPupilCollectionConfirmed}
 					/>
 				)}
+				<StickySaveBar
+					isVisible={isDirty}
+					onCancel={() => reset()}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+				/>
 			</div>
 		);
 	};
