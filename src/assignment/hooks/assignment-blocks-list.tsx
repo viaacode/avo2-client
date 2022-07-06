@@ -1,5 +1,5 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -20,7 +20,7 @@ export function useAssignmentBlocksList(
 		listSorter?: Partial<ListSorterProps<AssignmentBlock>>;
 		listSorterItem?: Partial<ListSorterItem>;
 	}
-) {
+): [ReactNode, (AssignmentBlock & ListSorterItem)[]] {
 	const [t] = useTranslation();
 
 	const items = useMemo(() => {

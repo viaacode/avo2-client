@@ -202,8 +202,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
-				return <div className="c-assignment-contents-tab">{renderedListSorter}</div>;
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
+				return 'Ter info; Het toevoegen van inhoud aan een opdracht is (tijdelijk) enkel mogelijk tijdens het editeren van bestaande opdrachten. Slaag eerst deze opdracht op.';
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;

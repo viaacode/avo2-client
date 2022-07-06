@@ -11,6 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 import { isNil } from 'lodash-es';
 import React from 'react';
 import { Trans } from 'react-i18next';
@@ -291,7 +292,7 @@ export class AssignmentHelper {
 	public static getLabels(
 		assignment: Avo.Assignment.Assignment_v2,
 		type: string
-	): Avo.Assignment.Assignment_v2['labels'] {
+	): { assignment_label: AssignmentLabel_v2 }[] {
 		return (
 			assignment?.labels?.filter((label: any) => label.assignment_label.type === type) || []
 		);

@@ -1,5 +1,5 @@
 import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
-import { CollectionFragment, CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
+import { CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
 import { TFunction } from 'i18next';
 
 import i18n from '../shared/translations/i18n';
@@ -100,21 +100,4 @@ export const EDIT_COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<Ic
 	ITEM: 'video', // TODO: add custom icon
 	TEXT: 'type',
 	COLLECTION: 'x',
-});
-
-export const VIEW_COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<
-	(fragment?: CollectionFragment) => IconName
-> = () => ({
-	ITEM: (fragment) => {
-		switch (fragment?.item_meta?.type?.label) {
-			case 'audio':
-				return 'headphone';
-			case 'video':
-				return 'image'; // TODO: add custom icon
-		}
-
-		return 'x';
-	},
-	TEXT: () => 'align-left',
-	COLLECTION: () => 'x',
 });

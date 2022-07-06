@@ -1,6 +1,5 @@
-import React, { FC, useRef } from 'react';
-
 import { convertToHtml, DefaultProps } from '@viaa/avo2-components';
+import React, { FC, useRef } from 'react';
 
 import { CollapsibleColumn } from '../../shared/components';
 import { useVideoWithTimestamps } from '../../shared/hooks/useVideoWithTimestamps';
@@ -19,6 +18,7 @@ interface CollectionFragmentTypeItemProps extends DefaultProps {
 	richText?: CollectionFragmentRichTextProps;
 	meta?: CollectionFragmentMetaProps;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
+	enableContentLinks: boolean;
 }
 
 const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
@@ -27,13 +27,14 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	meta,
 	flowPlayer,
 	className,
+	enableContentLinks,
 }) => {
 	const richTextRef = useRef(null);
 	const [time, , formatTimestamps] = useVideoWithTimestamps(richTextRef);
 
 	return (
 		<>
-			{title && <CollectionFragmentTitle {...title} />}
+			{title && <CollectionFragmentTitle {...title} enableTitleLink={enableContentLinks} />}
 			<CollapsibleColumn
 				className={className}
 				grow={
@@ -45,15 +46,20 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				}
 				bound={
 					<>
-						{meta && <CollectionFragmentMeta {...meta} />}
+						{meta && (
+							<CollectionFragmentMeta
+								{...meta}
+								enableContentLinks={enableContentLinks}
+							/>
+						)}
 						{richText &&
 							(() => {
 								// Add timestamps
 								const formatted = formatTimestamps(
 									convertToHtml(
-										richText.fragment.use_custom_fields
-											? richText.fragment.custom_description
-											: richText.fragment.item_meta?.description
+										richText.block.use_custom_fields
+											? richText.block.custom_description
+											: richText.block.item_meta?.description
 									) || ''
 								);
 

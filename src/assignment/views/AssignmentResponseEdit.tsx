@@ -52,6 +52,8 @@ import ItemDetail from '../../item/views/ItemDetail';
 import { SearchFiltersAndResults } from '../../search/components';
 import { FilterState } from '../../search/search.types';
 import { InteractiveTour } from '../../shared/components';
+import BlockList from '../../shared/components/BlockList/BlockList';
+import { BlockItemBase } from '../../shared/components/BlockList/BlockList.types';
 import { buildLink, formatTimestamp } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useScrollToId } from '../../shared/hooks/scroll-to-id';
@@ -132,7 +134,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		PupilSearchFilterState,
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
-	useScrollToId(filterState.focus || null);
+	useScrollToId(filterState.focus ? `search-result-${filterState.focus}` : null);
 	const [tabs, tab, , onTabClick] = useAssignmentPupilTabs(
 		assignment || undefined,
 		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -556,20 +558,49 @@ const AssignmentResponseEdit: FunctionComponent<
 	};
 
 	const renderAssignmentBlocks = () => {
+		if (assignmentInfoLoading) {
+			return (
+				<Spacer margin="top-extra-large">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Spacer>
+			);
+		}
+		if (assignmentInfoError) {
+			return (
+				<ErrorView
+					message={t(
+						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
+					)}
+					icon="alert-triangle"
+				/>
+			);
+		}
+		if ((assignmentInfo?.assignmentBlocks?.length || 0) === 0) {
+			return (
+				<ErrorView
+					message={t(
+						'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud'
+					)}
+					icon="search"
+				/>
+			);
+		}
 		return (
 			<Container mode="horizontal">
-				{/* TODO Render the assignment blocks in readonly mode */}
-				{JSON.stringify(assignment, null, 2)}
+				<BlockList
+					blocks={(assignmentInfo?.assignmentBlocks || []) as BlockItemBase[]}
+					enableContentLinks={false}
+					canPlay={true}
+				/>
 			</Container>
 		);
 	};
 
-	const renderedTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick} />,
-		[tabs, onTabClick]
-	);
+	const renderTabs = () => <Tabs tabs={tabs} onClick={onTabClick} />;
 
-	const renderedTabContent = useMemo(() => {
+	const renderTabContent = () => {
 		switch (tab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return renderAssignmentBlocks();
@@ -583,7 +614,7 @@ const AssignmentResponseEdit: FunctionComponent<
 			default:
 				return tab;
 		}
-	}, [tab, filterState, assignment, assignmentResponse]);
+	};
 
 	const renderPageContent = () => {
 		if (assignmentInfoLoading) {
@@ -620,7 +651,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderedTitle}
-					tabs={renderedTabs}
+					tabs={renderTabs()}
 					info={renderMeta()}
 					tour={<InteractiveTour showButton />}
 				/>
@@ -638,7 +669,7 @@ const AssignmentResponseEdit: FunctionComponent<
 						</Spacer>
 					)}
 				</Container>
-				<Spacer margin={['bottom-large']}>{renderedTabContent}</Spacer>
+				<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
 				{selectedItem && (
 					<AddToAssignmentModal
 						itemMetaData={selectedItem}
