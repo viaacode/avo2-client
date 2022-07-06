@@ -153,8 +153,12 @@ export function useAssignmentSearchBlock(
 				/>
 
 				<AssignmentBlockToggle
-					heading={t('assignment/hooks/assignment-blocks___leerlingencollecties-toevoegen')}
-					description={t('assignment/hooks/assignment-blocks___met-leerlingencollecties-kunnen-de-leerlingen-hun-zoekresultaten-verzamelen-in-een-collectie-die-jij-als-leerkracht-nadien-kan-inkijken-en-verbeteren')}
+					heading={t(
+						'assignment/hooks/assignment-blocks___leerlingencollecties-toevoegen'
+					)}
+					description={t(
+						'assignment/hooks/assignment-blocks___met-leerlingencollecties-kunnen-de-leerlingen-hun-zoekresultaten-verzamelen-in-een-collectie-die-jij-als-leerkracht-nadien-kan-inkijken-en-verbeteren'
+					)}
 					checked={block.type === AssignmentBlockType.BOUW}
 					onChange={() => {
 						setBlock(block, {
