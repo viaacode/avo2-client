@@ -43,7 +43,7 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 						truncate(title, { length: 45 })
 					) : (
 						<span className="c-draggable-block__placeholder">
-							{t('Instructies of omschrijving')}
+							{t('shared/components/draggable-block/draggable-block___instructies-of-omschrijving')}
 						</span>
 					)}
 				</BlockHeading>

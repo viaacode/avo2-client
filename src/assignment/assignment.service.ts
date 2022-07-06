@@ -707,7 +707,7 @@ export class AssignmentService {
 
 			return {
 				...tempAssignment,
-				blocks
+				blocks,
 			};
 		} catch (err) {
 			const graphqlError = get(err, 'graphQLErrors[0].message');
