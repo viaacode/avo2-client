@@ -1,26 +1,7 @@
-import { cloneDeep, get, isEmpty, set, truncate } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useReducer,
-	useState,
-} from 'react';
-import BeforeUnloadComponent from 'react-beforeunload-component';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { matchPath, withRouter } from 'react-router';
-import { compose } from 'redux';
-
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
-	Flex,
-	FlexItem,
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
@@ -33,6 +14,20 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { cloneDeep, get, isEmpty, set } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
+import BeforeUnloadComponent from 'react-beforeunload-component';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { matchPath, withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -41,7 +36,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	DeleteObjectModal,
-	DraggableListModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -55,10 +49,10 @@ import {
 	isMobileWidth,
 	navigate,
 	renderAvatar,
-	stripHtml,
 } from '../../shared/helpers';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -71,7 +65,6 @@ import { getFragmentsFromCollection, reorderFragments } from '../collection.help
 import { CollectionService } from '../collection.service';
 import { EditCollectionTab } from '../collection.types';
 import { PublishCollectionModal } from '../components';
-import { getFragmentProperty } from '../helpers';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -148,7 +141,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
-	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
@@ -212,6 +204,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 			return collectionState;
 		}
 
+		// TODO: fix lexical declarations
+		/* eslint-disable */
 		switch (action.type) {
 			case 'UPDATE_FRAGMENT_PROP':
 				newCurrentCollection.collection_fragments[action.index] = {
@@ -268,6 +262,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				}
 				break;
 		}
+		/* eslint-enable */
 
 		updateHasUnsavedChanges(newInitialCollection, newCurrentCollection);
 
@@ -284,11 +279,30 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		button: {
+			icon: undefined,
+		},
+		modal: {
+			items: getFragmentsFromCollection(collectionState.currentCollection),
+			onClose: (fragments?: Avo.Collection.Fragment[]) => {
+				if (fragments) {
+					changeCollectionState({
+						type: 'UPDATE_COLLECTION_PROP',
+						updateInitialCollection: false,
+						collectionProp: 'collection_fragments',
+						collectionPropValue: reorderFragments(fragments),
+					});
+				}
+			},
+		},
+	});
+
 	const shouldBlockNavigation = useCallback(() => {
 		const editPath = isCollection
 			? APP_PATH.COLLECTION_EDIT_TAB.route
 			: APP_PATH.BUNDLE_EDIT_TAB.route;
-		const changingRoute: boolean = !matchPath(history.location.pathname, editPath);
+		const changingRoute = !matchPath(history.location.pathname, editPath);
 		return unsavedChanges && changingRoute;
 	}, [history, unsavedChanges, isCollection]);
 
@@ -873,18 +887,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		/>
 	);
 
-	const handleReorderModalClosed = (fragments?: Avo.Collection.Fragment[]) => {
-		if (fragments) {
-			changeCollectionState({
-				type: 'UPDATE_COLLECTION_PROP',
-				updateInitialCollection: false,
-				collectionProp: 'collection_fragments',
-				collectionPropValue: reorderFragments(fragments),
-			});
-		}
-		setIsReorderModalOpen(false);
-	};
-
 	const handleAddItemById = async (id: string) => {
 		try {
 			if (isCollection) {
@@ -925,12 +927,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 			} else {
 				// We're adding a collection to the bundle
-				const collection: Avo.Collection.Collection | null = await CollectionService.fetchCollectionOrBundleById(
-					id,
-					'collection',
-					undefined,
-					false
-				);
+				const collection: Avo.Collection.Collection | null =
+					await CollectionService.fetchCollectionOrBundleById(
+						id,
+						'collection',
+						undefined,
+						false
+					);
 				if (!collection) {
 					ToastService.danger(
 						t(
@@ -989,39 +992,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 					  )
 			);
 		}
-	};
-
-	const renderDraggableFragment = (fragment: Avo.Collection.Fragment): ReactNode => {
-		const thumbnail =
-			get(fragment, 'thumbnail_path') || get(fragment, 'item_meta.thumbnail_path');
-		return (
-			<Flex className="c-collection-or-bundle-edit__draggable-item" center>
-				<FlexItem shrink>
-					{<div style={{ backgroundImage: `url(${thumbnail})` }} />}
-				</FlexItem>
-				<FlexItem>
-					<BlockHeading type="h4">
-						{truncate(
-							getFragmentProperty(
-								fragment.item_meta,
-								fragment,
-								fragment.use_custom_fields,
-								'title'
-							) ||
-								stripHtml(
-									getFragmentProperty(
-										fragment.item_meta,
-										fragment,
-										fragment.use_custom_fields,
-										'description'
-									) || ''
-								),
-							{ length: 45 }
-						)}
-					</BlockHeading>
-				</FlexItem>
-			</Flex>
-		);
 	};
 
 	const renderTab = () => {
@@ -1168,16 +1138,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					}
 					onClick={() => executeAction('redirectToDetail')}
 				/>
-				<Button
-					type="secondary"
-					label={t(
-						'collection/components/collection-or-bundle-edit___herorden-fragmenten'
-					)}
-					title={t(
-						'collection/components/collection-or-bundle-edit___herorden-de-fragmenten-via-drag-and-drop'
-					)}
-					onClick={() => setIsReorderModalOpen(true)}
-				/>
+				{draggableListButton}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1371,12 +1332,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						onClose={() => setEnterItemIdModalOpen(false)}
 						inputCallback={handleAddItemById}
 					/>
-					<DraggableListModal
-						items={getFragmentsFromCollection(collectionState.currentCollection)}
-						renderItem={renderDraggableFragment}
-						isOpen={isReorderModalOpen}
-						onClose={handleReorderModalClosed}
-					/>
+					{draggableListModal}
 				</BeforeUnloadComponent>
 			</>
 		);
@@ -1414,6 +1370,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(CollectionOrBundleEdit) as FunctionComponent<
-	CollectionOrBundleEditProps
->;
+export default compose(
+	withRouter,
+	withUser
+)(CollectionOrBundleEdit) as FunctionComponent<CollectionOrBundleEditProps>;

@@ -1,14 +1,14 @@
+import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import DraggableList from './DraggableList';
+import './DraggableListModal.scss';
 
 export interface DraggableListModalProps {
-	items: any[];
+	items?: any[];
 	renderItem: (item: any) => ReactNode;
 	isOpen: boolean;
 	onClose: (elements?: any[]) => void;
@@ -16,7 +16,7 @@ export interface DraggableListModalProps {
 }
 
 const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
-	items,
+	items = [],
 	renderItem,
 	isOpen,
 	onClose,
@@ -40,6 +40,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 			size={size}
 			scrollable
 			onClose={onClose}
+			className="c-draggable-list-modal"
 		>
 			<ModalBody>
 				<DraggableList

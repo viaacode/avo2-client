@@ -7,25 +7,22 @@ import { ErrorView } from '../../../../error/views';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
 
 interface AssignmentResponseAssignmentTabProps {
-	assignmentInfo: {
-		assignmentBlocks: Avo.Assignment.Block[];
-		assignment: Avo.Assignment.Assignment_v2;
-	} | null;
-	assignmentInfoLoading: boolean;
-	assignmentInfoError: any | null;
+	assignment: Avo.Assignment.Assignment_v2 | null;
+	assignmentLoading: boolean;
+	assignmentError: any | null;
 }
 
 const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssignmentTabProps> = ({
-	assignmentInfo,
-	assignmentInfoError,
-	assignmentInfoLoading,
+	assignment,
+	assignmentError,
+	assignmentLoading,
 }) => {
 	const [t] = useTranslation();
 
 	// Render
 
 	const renderAssignmentBlocks = () => {
-		if (assignmentInfoLoading) {
+		if (assignmentLoading) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -34,7 +31,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 				</Spacer>
 			);
 		}
-		if (assignmentInfoError) {
+		if (assignmentError) {
 			return (
 				<ErrorView
 					message={t(
@@ -44,7 +41,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 				/>
 			);
 		}
-		if ((assignmentInfo?.assignmentBlocks?.length || 0) === 0) {
+		if ((assignment?.blocks?.length || 0) === 0) {
 			return (
 				<ErrorView
 					message={t(
@@ -57,7 +54,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 		return (
 			<Container mode="horizontal">
 				<BlockList
-					blocks={(assignmentInfo?.assignmentBlocks || []) as Avo.Core.BlockItemBase[]}
+					blocks={(assignment?.blocks || []) as Avo.Core.BlockItemBase[]}
 					config={{
 						text: {}, // TODO figure out what goes inside here @ian
 						item: {}, // TODO figure out what goes inside here @ian

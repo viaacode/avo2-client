@@ -206,10 +206,13 @@ export class AssignmentService {
 					assignmentResponse.blocks.map(async (block) =>
 						block.fragment_id
 							? await ItemsService.fetchItemByExternalId(block.fragment_id).then(
-									(item) => ({
-										...block,
-										item,
-									})
+									(item_meta) =>
+										item_meta
+											? {
+													...block,
+													item_meta,
+											  }
+											: block
 							  )
 							: block
 					)
@@ -279,6 +282,14 @@ export class AssignmentService {
 		assignment: Partial<Avo.Assignment.Assignment_v2>
 	): Avo.Assignment.Assignment_v2 {
 		const assignmentToSave = cloneDeep(assignment);
+
+		if (assignment.blocks?.some((block) => block.type === AssignmentBlockType.ZOEK)) {
+			assignmentToSave.assignment_type = 'ZOEK';
+		}
+
+		if (assignment.blocks?.some((block) => block.type === AssignmentBlockType.BOUW)) {
+			assignmentToSave.assignment_type = 'BOUW';
+		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
@@ -710,10 +721,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<{
-		assignmentBlocks: Avo.Assignment.Block[];
-		assignment: Avo.Assignment.Assignment_v2;
-	}> {
+	): Promise<Avo.Assignment.Assignment_v2> {
 		try {
 			// Load assignment
 			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> =
@@ -743,7 +751,8 @@ export class AssignmentService {
 			const initialAssignmentBlocks = await AssignmentService.fetchAssignmentBlocks(
 				assignmentId
 			);
-			const assignmentBlocks = await Promise.all(
+
+			const blocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
 					if (block.fragment_id) {
 						block.item_meta =
@@ -755,8 +764,8 @@ export class AssignmentService {
 			);
 
 			return {
-				assignmentBlocks,
-				assignment: tempAssignment,
+				...tempAssignment,
+				blocks,
 			};
 		} catch (err) {
 			const graphqlError = get(err, 'graphQLErrors[0].message');

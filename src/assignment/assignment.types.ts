@@ -44,6 +44,7 @@ export enum AssignmentBlockType {
 	TEXT = 'TEXT',
 	ITEM = 'ITEM',
 	ZOEK = 'ZOEK',
+	BOUW = 'BOUW',
 }
 
 export enum AssignmentView {
@@ -98,4 +99,9 @@ export interface PupilCollectionFragment extends Avo.Core.BlockItemBase {
 	assignment_response_id: string;
 	fragment_id: string;
 	is_deleted: boolean;
+}
+
+export interface EditBlockProps {
+	block: Avo.Core.BlockItemBase;
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void;
 }
