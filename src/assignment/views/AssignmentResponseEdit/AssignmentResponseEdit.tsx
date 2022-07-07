@@ -11,7 +11,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns/esm';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -67,7 +75,6 @@ const AssignmentResponseEdit: FunctionComponent<
 	const [assignmentInfoLoading, setAssignmentInfoLoading] = useState<boolean>(false);
 	const [assignmentInfoError, setAssignmentInfoError] = useState<any | null>(null);
 	const assignment: Avo.Assignment.Assignment_v2 | null = assignmentInfo?.assignment || null;
-	const [titleError, _setTitleError] = useState<boolean>(false); // TODO trigger on submit
 
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
 		null
@@ -325,14 +332,19 @@ const AssignmentResponseEdit: FunctionComponent<
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
+				if (!assignmentResponse) {
+					return <Spinner size="large" />;
+				}
 				return (
 					<AssignmentResponsePupilCollectionTab
-						titleError={titleError}
 						assignmentResponse={assignmentResponse}
-						setAssignmentResponse={setAssignmentResponse}
+						setAssignmentResponse={
+							setAssignmentResponse as Dispatch<
+								SetStateAction<Avo.Assignment.Response_v2>
+							>
+						}
 						setValue={setValue}
 						control={control}
-						trigger={trigger}
 					/>
 				);
 

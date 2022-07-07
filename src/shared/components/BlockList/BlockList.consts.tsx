@@ -20,6 +20,7 @@ export const BLOCK_ITEM_ICONS: () => Record<
 	},
 	TEXT: () => 'type',
 	ZOEK: () => 'search',
+	BOUW: () => 'search',
 	COLLECTION: () => 'collection',
 });
 
@@ -27,5 +28,6 @@ export const BLOCK_ITEM_LABELS = (): Record<Avo.Core.BlockItemType, string> => (
 	ITEM: i18n.t('shared/components/block-list/block-list___fragment'),
 	TEXT: i18n.t('shared/components/block-list/block-list___instructies-of-tekstblok'),
 	ZOEK: i18n.t('shared/components/block-list/block-list___zoekoefening'),
+	BOUW: i18n.t('shared/components/block-list/block-list___zoekoefening'),
 	COLLECTION: i18n.t('shared/components/block-list/block-list___collectie'),
 });
