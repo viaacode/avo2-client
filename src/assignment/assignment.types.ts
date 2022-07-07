@@ -100,3 +100,8 @@ export interface PupilCollectionFragment extends Avo.Core.BlockItemBase {
 	fragment_id: string;
 	is_deleted: boolean;
 }
+
+export interface EditBlockProps {
+	block: Avo.Core.BlockItemBase;
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void;
+}
