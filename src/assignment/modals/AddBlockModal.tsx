@@ -18,14 +18,33 @@ import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
-type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
+type AddBlockModalType =
+	| AssignmentBlockType.ITEM
+	| 'COLLECTIE'
+	| AssignmentBlockType.ZOEK
+	| AssignmentBlockType.TEXT;
+
+interface AddBlockModalOption {
+	type: AddBlockModalType;
+	icon: IconNameSchema;
+	title: ReactNode;
+	description: ReactNode;
+	disabled?: boolean;
+}
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
+	enabledOptions?: AddBlockModalType[];
 	blocks: Avo.Core.BlockItemBase[];
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 
 const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
+	enabledOptions = [
+		AssignmentBlockType.ITEM,
+		'COLLECTIE',
+		AssignmentBlockType.ZOEK,
+		AssignmentBlockType.TEXT,
+	],
 	blocks,
 	isOpen,
 	onClose,
@@ -33,15 +52,11 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const items: {
-		type: AddBlockModalType;
-		icon: IconNameSchema;
-		title: ReactNode;
-		description: ReactNode;
-		disabled?: boolean;
-	}[] = useMemo(
-		() => [
-			{
+	const items: AddBlockModalOption[] = useMemo(() => {
+		const options: AddBlockModalOption[] = [];
+
+		if (enabledOptions.includes(AssignmentBlockType.ITEM)) {
+			options.push({
 				type: AssignmentBlockType.ITEM,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ITEM]({
 					item_meta: { type: { label: 'video', id: 0 } },
@@ -50,16 +65,22 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				description: t(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'
 				),
-			},
-			{
+			});
+		}
+
+		if (enabledOptions.includes('COLLECTIE')) {
+			options.push({
 				type: 'COLLECTIE',
 				icon: 'collection',
 				title: t('assignment/modals/add-block___kijken-luisteren-collectie'),
 				description: t(
 					'assignment/modals/add-block___start-je-opdracht-vanaf-een-bestaande-collectie-fragmenten-uit-je-werkruimte'
 				),
-			},
-			{
+			});
+		}
+
+		if (enabledOptions.includes(AssignmentBlockType.ZOEK)) {
+			options.push({
 				type: AssignmentBlockType.ZOEK,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
 				title: t('assignment/modals/add-block___zoeken-bouwen'),
@@ -67,18 +88,22 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 					'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
 				),
 				disabled: blocks.findIndex((block) => block.type === AssignmentBlockType.ZOEK) >= 0,
-			},
-			{
+			});
+		}
+
+		if (enabledOptions.includes(AssignmentBlockType.TEXT)) {
+			options.push({
 				type: AssignmentBlockType.TEXT,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.TEXT](),
 				title: t('assignment/modals/add-block___instructies-tekst'),
 				description: t(
 					'assignment/modals/add-block___voeg-een-tekstblok-toe-met-instructies-of-wat-extra-informatie'
 				),
-			},
-		],
-		[blocks, t]
-	);
+			});
+		}
+
+		return options;
+	}, [blocks, t]);
 
 	return (
 		<Modal

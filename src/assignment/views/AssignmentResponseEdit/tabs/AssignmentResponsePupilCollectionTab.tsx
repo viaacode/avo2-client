@@ -83,6 +83,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		assignmentResponse?.pupil_collection_blocks || [],
 		updateBlocksInAssignmentResponseState,
 		{
+			addBlockConfig: {
+				enabledOptions: [AssignmentBlockType.ITEM, AssignmentBlockType.TEXT],
+			},
 			confirmSliceConfig: {
 				responses: [],
 			},
