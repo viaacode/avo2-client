@@ -1,6 +1,5 @@
-import React, { FC, useRef } from 'react';
-
 import { convertToHtml, DefaultProps } from '@viaa/avo2-components';
+import React, { FC, useRef } from 'react';
 
 import { CollapsibleColumn } from '../../shared/components';
 import { useVideoWithTimestamps } from '../../shared/hooks/useVideoWithTimestamps';
@@ -14,7 +13,7 @@ import CollectionFragmentRichText, {
 } from './CollectionFragmentRichText';
 import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
 
-interface CollectionFragmentTypeItemProps extends DefaultProps {
+export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	title?: CollectionFragmentTitleProps;
 	richText?: CollectionFragmentRichTextProps;
 	meta?: CollectionFragmentMetaProps;
@@ -51,9 +50,9 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 								// Add timestamps
 								const formatted = formatTimestamps(
 									convertToHtml(
-										richText.fragment.use_custom_fields
-											? richText.fragment.custom_description
-											: richText.fragment.item_meta?.description
+										richText.block?.use_custom_fields
+											? richText.block?.custom_description
+											: richText.block?.item_meta?.description
 									) || ''
 								);
 

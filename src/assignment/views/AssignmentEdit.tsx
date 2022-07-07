@@ -31,13 +31,13 @@ import AssignmentTitle from '../components/AssignmentTitle';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlocks,
+	useAssignmentBlocksList,
 	useAssignmentContentModals,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 } from '../hooks';
 import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
-import { useAssignmentBlocksList } from '../hooks/assignment-blocks-list';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -184,7 +184,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
 		const blocks = insertAtPosition(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item,
+			item_meta: item,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
@@ -296,10 +296,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {

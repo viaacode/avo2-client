@@ -1,7 +1,8 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+
 import { APP_PATH } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { buildLink, formatDate } from '../../shared/helpers';
@@ -11,9 +12,9 @@ export function useAssignmentBlockMeta() {
 
 	return useCallback(
 		(block: AssignmentBlock) => {
-			const organisation = block.item?.organisation?.name;
-			const publishedAt = block.item?.published_at;
-			const series = block.item?.series;
+			const organisation = block.item_meta?.organisation?.name;
+			const publishedAt = block.item_meta?.published_at;
+			const series = block.item_meta?.series;
 
 			return organisation || publishedAt || series ? (
 				<section className="u-spacer-bottom">

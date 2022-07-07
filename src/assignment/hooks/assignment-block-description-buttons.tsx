@@ -1,6 +1,7 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { isRichTextEmpty } from '../../shared/helpers';
 
 export function useAssignmentBlockDescriptionButtons(
@@ -25,8 +26,9 @@ export function useAssignmentBlockDescriptionButtons(
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item?.title,
-						custom_description: block.original_description || block.item?.description,
+						custom_title: block.original_title || block.item_meta?.title,
+						custom_description:
+							block.original_description || block.item_meta?.description,
 					});
 				},
 			},
@@ -36,7 +38,7 @@ export function useAssignmentBlockDescriptionButtons(
 				onClick: () => {
 					setBlock(block, {
 						use_custom_fields: true,
-						custom_title: block.original_title || block.item?.title,
+						custom_title: block.original_title || block.item_meta?.title,
 						custom_description: '',
 					});
 				},

@@ -1,11 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -18,14 +17,16 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
-
-import { useAssignmentDetailsForm } from '../hooks/assignment-details-form';
-import { useAssignmentContentModals } from '../hooks/assignment-content-modals';
-import { useAssignmentBlocks } from '../hooks/assignment-blocks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { useAssignmentBlocksList } from '../hooks/assignment-blocks-list';
+import {
+	useAssignmentBlocks,
+	useAssignmentBlocksList,
+	useAssignmentContentModals,
+	useAssignmentDetailsForm,
+	useAssignmentForm,
+	useAssignmentTeacherTabs,
+} from '../hooks';
+import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -95,7 +96,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 
 	// Render
-	
+
 	const renderBlockContent = useAssignmentBlocks(setBlock);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
@@ -183,15 +184,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		[t]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
-				return <div className="c-assignment-contents-tab">{renderedListSorter}</div>;
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
+				return 'Ter info; Het toevoegen van inhoud aan een opdracht is (tijdelijk) enkel mogelijk tijdens het editeren van bestaande opdrachten. Slaag eerst deze opdracht op.';
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
