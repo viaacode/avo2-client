@@ -90,10 +90,9 @@ export function useAssignmentItemBlock(
 						placeholder: t(
 							'assignment/views/assignment-edit___instructies-of-omschrijving'
 						),
-						value:
-							(!block.use_custom_fields
-								? block.original_title || block.item_meta?.title
-								: block.custom_title) || undefined,
+						value: !block.use_custom_fields
+							? block.original_title || block.item_meta?.title
+							: block.custom_title,
 						disabled: !block.use_custom_fields,
 						onChange: (value) => setBlock(block, { custom_title: value }),
 					}}

@@ -5,7 +5,7 @@ import CollectionFragmentRichText, {
 } from './CollectionFragmentRichText';
 import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
 
-interface CollectionFragmentTypeTextProps {
+export interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
 	richText?: CollectionFragmentRichTextProps;
 }

@@ -13,17 +13,10 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { CollectionFragment, CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
@@ -40,7 +33,6 @@ import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
-	IconBar,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -71,14 +63,12 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import { CollectionBlockType, VIEW_COLLECTION_FRAGMENT_ICONS } from '../collection.const';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation } from '../collection.types';
 import {
 	AutoplayCollectionModal,
-	CollectionFragmentTypeItem,
-	CollectionFragmentTypeText,
+	BlockList,
 	FragmentList,
 	PublishCollectionModal,
 } from '../components';
@@ -208,7 +198,9 @@ const CollectionDetail: FunctionComponent<
 			});
 
 			ToastService.danger(
-				t('Het ophalen van de gepubliceerde bundels die deze collectie bevatten is mislukt')
+				t(
+					'collection/views/collection-detail___het-ophalen-van-de-gepubliceerde-bundels-die-deze-collectie-bevatten-is-mislukt'
+				)
 			);
 		}
 	}, [setPublishedBundles, t, collectionId]);
@@ -950,68 +942,6 @@ const CollectionDetail: FunctionComponent<
 		);
 	};
 
-	// Start
-
-	const renderCollectionFragment = (fragment: CollectionFragment) => {
-		const layout = (children?: ReactNode) => (
-			<Container mode="horizontal" className="u-p-0">
-				<IconBar
-					icon={{
-						name: VIEW_COLLECTION_FRAGMENT_ICONS()[fragment.type](fragment),
-					}}
-				>
-					{children}
-				</IconBar>
-			</Container>
-		);
-
-		switch (fragment.type) {
-			case CollectionBlockType.TEXT:
-				return layout(
-					<CollectionFragmentTypeText title={{ fragment }} richText={{ fragment }} />
-				);
-			case CollectionBlockType.ITEM:
-				return layout(
-					<CollectionFragmentTypeItem
-						className="m-collection-detail__video-content"
-						title={{
-							fragment,
-							canViewAnyPublishedItems: permissions?.canViewAnyPublishedItems,
-						}}
-						richText={{ fragment }}
-						flowPlayer={{
-							fragment,
-							canPlay:
-								!isAddToBundleModalOpen &&
-								!isDeleteModalOpen &&
-								!isPublishModalOpen &&
-								!isShareThroughEmailModalOpen &&
-								!isAutoplayCollectionModalOpen,
-						}}
-						meta={{ fragment }}
-					/>
-				);
-
-			default:
-				return null;
-		}
-	};
-
-	const renderCollectionFragmentWrapper = (fragment: CollectionFragment) => {
-		// const hasBackground = fragment.type === CollectionBlockType.TEXT';
-
-		return (
-			<div
-				key={fragment.id}
-				// className={`u-padding-top-l u-padding-bottom-l ${hasBackground ? ' u-bg-gray-50' : ''}`.trim()}
-				className="u-padding-top-l u-padding-bottom-l"
-			>
-				{renderCollectionFragment(fragment)}
-			</div>
-		);
-	};
-	// End
-
 	const renderCollection = () => {
 		if (!collection) {
 			return null;
@@ -1081,10 +1011,29 @@ const CollectionDetail: FunctionComponent<
 					{/* Start */}
 
 					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
-						{!!collection_fragments &&
-							collection_fragments.map((fragment: CollectionFragment) =>
-								renderCollectionFragmentWrapper(fragment)
-							)}
+						<BlockList
+							blocks={collection.collection_fragments}
+							config={{
+								text: {
+									title: {
+										canClickHeading: permissions?.canViewAnyPublishedItems,
+									},
+								},
+								item: {
+									meta: {
+										canClickSeries: permissions?.canViewAnyPublishedItems,
+									},
+									flowPlayer: {
+										canPlay:
+											!isAddToBundleModalOpen &&
+											!isDeleteModalOpen &&
+											!isPublishModalOpen &&
+											!isShareThroughEmailModalOpen &&
+											!isAutoplayCollectionModalOpen,
+									},
+								},
+							}}
+						/>
 					</Container>
 
 					<br />
