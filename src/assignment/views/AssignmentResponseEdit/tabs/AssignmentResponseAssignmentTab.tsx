@@ -8,16 +8,18 @@ import BlockList from '../../../../shared/components/BlockList/BlockList';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
-	assignment: Avo.Assignment.Assignment_v2 | null;
-	assignmentLoading: boolean;
-	assignmentError: any | null;
+	blocks: Avo.Assignment.Assignment_v2['blocks'] | null;
+	pastDeadline: boolean;
+	isLoading: boolean;
+	loadingError: any | null;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 }
 
 const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssignmentTabProps> = ({
-	assignment,
-	assignmentError,
-	assignmentLoading,
+	blocks,
+	pastDeadline,
+	isLoading,
+	loadingError,
 	setTab,
 }) => {
 	const [t] = useTranslation();
@@ -25,7 +27,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 	// Render
 
 	const renderAssignmentBlocks = () => {
-		if (assignmentLoading) {
+		if (isLoading) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -34,7 +36,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 				</Spacer>
 			);
 		}
-		if (assignmentError) {
+		if (loadingError) {
 			return (
 				<ErrorView
 					message={t(
@@ -44,7 +46,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 				/>
 			);
 		}
-		if ((assignment?.blocks?.length || 0) === 0) {
+		if ((blocks?.length || 0) === 0) {
 			return (
 				<ErrorView
 					message={t(
@@ -56,7 +58,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 		}
 		return (
 			<BlockList
-				blocks={(assignment?.blocks || []) as Avo.Core.BlockItemBase[]}
+				blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
 				config={{
 					TEXT: {
 						title: {
@@ -72,6 +74,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 						},
 					},
 					ZOEK: {
+						pastDeadline,
 						onSearchButtonClicked: () =>
 							setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH),
 						onCollectionButtonClicked: () =>

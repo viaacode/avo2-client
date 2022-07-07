@@ -20,6 +20,7 @@ import './AssignmentBlockTypeSearch.scss';
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
 	showCollectionButton: boolean;
+	pastDeadline: boolean;
 	onSearchButtonClicked: () => void;
 	onCollectionButtonClicked: () => void;
 }
@@ -29,6 +30,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	showCollectionButton,
 	onCollectionButtonClicked,
 	onSearchButtonClicked,
+	pastDeadline,
 	className,
 }) => {
 	const [t] = useTranslation();
@@ -54,6 +56,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 								'shared/components/block-list/blocks/assignment-block-type-search___start-met-zoeken'
 							)}
 							onClick={onSearchButtonClicked}
+							disabled={pastDeadline}
 						/>
 						<Spacer margin="bottom-small" />
 						{showCollectionButton && (

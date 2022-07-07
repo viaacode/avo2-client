@@ -124,8 +124,8 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 	);
 
-	const pastDeadline = useMemo(
-		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
+	const pastDeadline: boolean = useMemo(
+		() => (assignment?.deadline_at && isPast(new Date(assignment.deadline_at))) || false,
 		[assignment]
 	);
 
@@ -345,9 +345,10 @@ const AssignmentResponseEdit: FunctionComponent<
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return (
 					<AssignmentResponseAssignmentTab
-						assignment={assignment}
-						assignmentLoading={assignmentLoading}
-						assignmentError={assignmentError}
+						blocks={assignment?.blocks || []}
+						pastDeadline={pastDeadline}
+						isLoading={assignmentLoading}
+						loadingError={assignmentError}
 						setTab={setTab}
 					/>
 				);

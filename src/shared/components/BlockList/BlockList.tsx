@@ -72,6 +72,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 					<AssignmentBlockTypeSearch
 						block={block}
 						showCollectionButton={block.type === AssignmentBlockType.BOUW}
+						pastDeadline={config?.ZOEK?.pastDeadline || false}
 						onSearchButtonClicked={config?.ZOEK?.onSearchButtonClicked || noop}
 						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
 					/>,
