@@ -10,7 +10,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { noop } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -31,13 +30,21 @@ import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '
 interface AssignmentResponsePupilCollectionTabProps {
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	onShowPreviewClicked: () => void;
 }
 
 const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'> &
 		UserProps
-> = ({ assignmentResponse, setAssignmentResponse, setValue, control, user }) => {
+> = ({
+	assignmentResponse,
+	setAssignmentResponse,
+	setValue,
+	control,
+	onShowPreviewClicked,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// UI
@@ -154,7 +161,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 							label={t(
 								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
 							)}
-							onClick={noop}
+							onClick={onShowPreviewClicked}
 						/>
 					</ToolbarRight>
 				</Toolbar>

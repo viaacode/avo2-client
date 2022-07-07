@@ -1,5 +1,3 @@
-import React, { FC, ReactNode } from 'react';
-
 import {
 	Container,
 	Navbar,
@@ -8,6 +6,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+import React, { FC, ReactNode } from 'react';
 
 import { InteractiveTour } from '../../shared/components';
 
@@ -38,7 +38,12 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 				className={[...(info ? ['u-p-b-0'] : [])].join(' ')}
 			>
 				<Container mode="horizontal">
-					<Toolbar autoHeight className="c-assignment-heading__top">
+					<Toolbar
+						autoHeight
+						className={classnames('c-assignment-heading__top', {
+							'c-assignment-heading__top-slim': !back,
+						})}
+					>
 						<ToolbarLeft>
 							<ToolbarItem className="c-assignment-heading__title" grow>
 								{back}
