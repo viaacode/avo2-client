@@ -15,7 +15,13 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { JsonParam, StringParam, UrlUpdateType, useQueryParams } from 'use-query-params';
+import {
+	JsonParam,
+	NumberParam,
+	StringParam,
+	UrlUpdateType,
+	useQueryParams,
+} from 'use-query-params';
 
 import {
 	PermissionGuard,
@@ -45,6 +51,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		orderProperty: StringParam,
 		orderDirection: StringParam,
 		tab: StringParam,
+		page: NumberParam,
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		FilterState,
