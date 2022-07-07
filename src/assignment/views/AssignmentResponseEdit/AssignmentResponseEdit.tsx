@@ -204,11 +204,19 @@ const AssignmentResponseEdit: FunctionComponent<
 				// Re-fetch
 				await fetchAssignment();
 
-				ToastService.success(t('De collectie is opgeslagen'));
+				ToastService.success(
+					t(
+						'assignment/views/assignment-response-edit/assignment-response-edit___de-collectie-is-opgeslagen'
+					)
+				);
 			}
 		} catch (err) {
 			console.error(err);
-			ToastService.danger(t('Het opslaan van de collectie is mislukt'));
+			ToastService.danger(
+				t(
+					'assignment/views/assignment-response-edit/assignment-response-edit___het-opslaan-van-de-collectie-is-mislukt'
+				)
+			);
 		}
 	};
 

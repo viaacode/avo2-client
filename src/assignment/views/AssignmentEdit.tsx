@@ -189,18 +189,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		// fetch item details
-		const item_meta = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = insertAtPosition<Partial<Avo.Core.BlockItemBase>>(assignment.blocks, {
+		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
+		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item_meta: item_meta || undefined,
+			item_meta,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
-		} as AssignmentBlock) as AssignmentBlock[];
+		} as AssignmentBlock);
 
 		setAssignment((prev) => ({
 			...prev,
-			blocks: blocks,
+			blocks,
 		}));
 
 		setValue('blocks', blocks, {

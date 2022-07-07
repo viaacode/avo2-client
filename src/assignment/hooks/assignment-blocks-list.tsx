@@ -24,9 +24,6 @@ export function useBlocksList(
 				icon: BLOCK_ITEM_ICONS()[block.type](block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(blocks, item, delta);
-
-					console.info('event', switched);
-
 					setBlocks(switched);
 				},
 			};

@@ -60,12 +60,12 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		}
 
 		// fetch item details
-		const item_meta = await ItemsService.fetchItemByExternalId(itemExternalId);
+		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
 		const newBlocks = insertAtPosition<Partial<Avo.Core.BlockItemBase>>(
 			assignmentResponse?.pupil_collection_blocks || [],
 			{
 				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-				item_meta: item_meta || undefined,
+				item_meta,
 				type: AssignmentBlockType.ITEM,
 				fragment_id: itemExternalId,
 				position: addBlockModal.entity,
@@ -101,7 +101,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				<Toolbar size="large">
 					<ToolbarLeft>
 						<FormGroup
-							label={t('Naam resultatenset')}
+							label={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
+							)}
 							className="c-form-group--full-width"
 						>
 							<Flex orientation="vertical">
@@ -124,13 +126,21 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 							{titleError && (
 								<span className="c-floating-error">
-									{t('Een titel is verplicht')}
+									{t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
+									)}
 								</span>
 							)}
 						</FormGroup>
 					</ToolbarLeft>
 					<ToolbarRight>
-						<Button type="primary" label={t('Bekijk als lesgever')} onClick={noop} />
+						<Button
+							type="primary"
+							label={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
+							)}
+							onClick={noop}
+						/>
 					</ToolbarRight>
 				</Toolbar>
 			</Container>

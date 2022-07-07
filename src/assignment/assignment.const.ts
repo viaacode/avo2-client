@@ -186,7 +186,7 @@ export const PUPIL_COLLECTION_FORM_SCHEMA = (
 ): SchemaOf<AssignmentResponseFormState> => {
 	return object({
 		id: string().optional(),
-		collection_title: string().required(t('Titel is verplicht')),
+		collection_title: string().required(t('assignment/assignment___titel-is-verplicht')),
 		pupil_collection_blocks: array(),
 	});
 };
@@ -319,6 +319,6 @@ export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] = 
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: Avo.Core.BlockItemBase): boolean => {
+export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
 	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };
