@@ -12,6 +12,7 @@ import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { AppCollectionBookmark } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
@@ -1235,7 +1236,7 @@ export class CollectionService {
 				order,
 				type_id: contentTypeId,
 				owner_profile_id: getProfileId(user),
-				filter: filterArray.length ? filterArray : {},
+				where: filterArray.length ? filterArray : {},
 			};
 			const response = await dataService.query({
 				variables,
@@ -1276,9 +1277,11 @@ export class CollectionService {
 				limit,
 				order,
 				owner_profile_id: getProfileId(user),
-				filter: filterArray.length ? filterArray : {},
+				where: filterArray.length ? filterArray : {},
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<{
+				app_collection_bookmarks: { bookmarkedCollection: AppCollectionBookmark }[];
+			}>({
 				variables,
 				query: GET_BOOKMARKED_COLLECTIONS_BY_OWNER,
 			});
@@ -1287,7 +1290,7 @@ export class CollectionService {
 				throw new CustomError('graphql response contains errors', null, { response });
 			}
 
-			const bookmarks = get(response, 'data.app_collection_bookmarks', []);
+			const bookmarks = response?.data?.app_collection_bookmarks || [];
 			return bookmarks.map((bookmark: any) => bookmark.bookmarkedCollection);
 		} catch (err) {
 			throw new CustomError('Fetch bookmarked collections by owner failed', err, {

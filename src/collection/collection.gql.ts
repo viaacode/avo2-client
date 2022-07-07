@@ -74,14 +74,14 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 		$offset: Int = 0
 		$limit: Int
 		$order: [app_collections_order_by!] = { updated_at: desc }
-		$filter: [app_collections_bool_exp] = []
+		$where: [app_collections_bool_exp] = []
 	) {
 		app_collections(
 			where: {
 				type_id: { _eq: $type_id }
 				owner_profile_id: { _eq: $owner_profile_id }
 				is_deleted: { _eq: false }
-				_and: $filter
+				_and: $where
 			}
 			offset: $offset
 			limit: $limit
@@ -148,10 +148,10 @@ export const GET_BOOKMARKED_COLLECTIONS_BY_OWNER = gql`
 		$offset: Int = 0
 		$limit: Int
 		$order: [app_collection_bookmarks_order_by!] = { updated_at: desc }
-		$filter: [app_collection_bookmarks_bool_exp] = []
+		$where: [app_collection_bookmarks_bool_exp] = []
 	) {
 		app_collection_bookmarks(
-			where: { profile_id: { _eq: $owner_profile_id }, _and: $filter }
+			where: { profile_id: { _eq: $owner_profile_id }, _and: $where }
 			offset: $offset
 			limit: $limit
 			order_by: $order

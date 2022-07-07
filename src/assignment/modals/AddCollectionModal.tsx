@@ -21,8 +21,9 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
 import { ContentTypeNumber } from '../../collection/collection.types';
@@ -30,6 +31,7 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/component
 import { CustomError, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
@@ -72,11 +74,15 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	}),
 };
 
-export interface AddCollectionModalProps {
-	user?: Avo.User.User;
+export type AddCollectionModalProps = Partial<UserProps> & {
 	isOpen: boolean;
 	onClose?: () => void;
 	addCollectionCallback?: (fragmentId: string, withDescription: boolean) => void;
+};
+
+enum AddCollectionTab {
+	myCollections = 'mycollections',
+	bookmarkedCollections = 'bookmarkedcollections',
 }
 
 const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
@@ -91,9 +97,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>();
-	const [activeView, setActiveView] = useState<'mycollections' | 'bookmarkedcollections'>(
-		'mycollections'
-	);
+	const [activeView, setActiveView] = useState<AddCollectionTab>(AddCollectionTab.myCollections);
 	const [sortColumn, sortOrder, handleColumnClick] =
 		useTableSort<AssignmentOverviewTableColumns>('updated_at');
 	const [filterString, setFilterString] = useState<string>('');
@@ -113,7 +117,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 				TableColumnDataType.string) as TableColumnDataType;
 
 			let collections: Avo.Collection.Collection[] = [];
-			if (activeView === 'mycollections') {
+			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwner(
 					user,
 					0,
@@ -280,8 +284,10 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 										title={t(
 											'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
 										)}
-										active={activeView === 'mycollections'}
-										onClick={() => setActiveView('mycollections')}
+										active={activeView === AddCollectionTab.myCollections}
+										onClick={() =>
+											setActiveView(AddCollectionTab.myCollections)
+										}
 									/>
 									<Button
 										type="secondary"
@@ -291,8 +297,12 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 										title={t(
 											'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
 										)}
-										active={activeView === 'bookmarkedcollections'}
-										onClick={() => setActiveView('bookmarkedcollections')}
+										active={
+											activeView === AddCollectionTab.bookmarkedCollections
+										}
+										onClick={() =>
+											setActiveView(AddCollectionTab.bookmarkedCollections)
+										}
 									/>
 								</ButtonGroup>
 							</ButtonToolbar>
@@ -365,4 +375,4 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	);
 };
 
-export default AddCollectionModal;
+export default compose(withUser)(AddCollectionModal) as FC<AddCollectionModalProps>;
