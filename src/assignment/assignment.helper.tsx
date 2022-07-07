@@ -99,7 +99,7 @@ export class AssignmentHelper {
 				label: i18n.t('assignment/views/assignment-edit___enkel-mediaspeler'),
 				value: AssignmentLayout.OnlyPlayer.toString(),
 			},
-		] as any[];
+		];
 	}
 
 	public static renderAssignmentForm(

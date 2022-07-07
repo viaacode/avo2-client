@@ -50,6 +50,7 @@ import {
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_BLOCK,
+	UPDATE_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
@@ -57,6 +58,7 @@ import {
 	AssignmentOverviewTableColumns,
 	AssignmentSchemaLabel_v2,
 	AssignmentType,
+	PupilCollectionFragment,
 } from './assignment.types';
 
 export class AssignmentService {
@@ -392,6 +394,51 @@ export class AssignmentService {
 		}
 	}
 
+	static async updateAssignmentResponse(
+		original: Avo.Assignment.Response_v2,
+		update: Partial<Avo.Assignment.Response_v2>
+	): Promise<Avo.Assignment.Response_v2 | null> {
+		try {
+			if (isNil(original.id)) {
+				throw new CustomError(
+					'Failed to update assignment response because its id is undefined',
+					null,
+					{ original, update }
+				);
+			}
+
+			const response = await dataService.mutate<{
+				data: { update_app_assignment_responses_v2: { affected_rows: number } };
+			}>({
+				mutation: UPDATE_ASSIGNMENT_RESPONSE,
+				variables: {
+					collectionTitle: update.collection_title,
+					updatedAt: new Date().toISOString(),
+					assignmentResponseId: original.id,
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (!response || !response.data || (response.errors && response.errors.length)) {
+				console.error('assignment update returned empty response', response);
+				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
+			}
+
+			return {
+				...original,
+				...update,
+			};
+		} catch (err) {
+			const error = new CustomError('Failed to update assignment', err, {
+				original,
+				update,
+			});
+
+			console.error(error);
+			throw error;
+		}
+	}
+
 	static async updateAssignmentLabels(
 		id: string,
 		original: AssignmentLabel_v2[],
@@ -691,9 +738,9 @@ export class AssignmentService {
 			const assignmentBlocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
 					if (block.type === 'ITEM') {
-						block.item_meta = await ItemsService.fetchItemByExternalId(
-							block.fragment_id
-						);
+						block.item_meta =
+							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+							undefined;
 					}
 					return block;
 				})
@@ -814,11 +861,37 @@ export class AssignmentService {
 		}
 	}
 
+	/**
+	 * Fetches the item for each block in the pupil collection of the response
+	 * If the item was replaced by another, the other item is used
+	 * The item_meta is filled in into the existing response (mutable)
+	 * @param assignmentResponse
+	 */
+	static async fillItemMetaForAssignmentResponse(
+		assignmentResponse: Avo.Assignment.Response_v2
+	): Promise<void> {
+		// Fetch item_meta for each pupil collection block
+		const items = await Promise.all(
+			(assignmentResponse.pupil_collection_blocks || [])?.map((block) =>
+				ItemsService.fetchItemByExternalId((block as PupilCollectionFragment).fragment_id)
+			)
+		);
+
+		assignmentResponse.pupil_collection_blocks?.forEach((block) => {
+			block.item_meta =
+				items.find(
+					(item) =>
+						!!item &&
+						item.external_id === (block as PupilCollectionFragment).fragment_id
+				) || undefined;
+		});
+	}
+
 	// Helper for create assignmentResponseObject method below
-	static async getAssignmentResponses(
+	static async getAssignmentResponse(
 		profileId: string,
 		assignmentId: string
-	): Promise<Avo.Assignment.Response_v2[]> {
+	): Promise<Avo.Assignment.Response_v2 | undefined> {
 		try {
 			const response: ApolloQueryResult<{
 				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
@@ -832,7 +905,16 @@ export class AssignmentService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			return response?.data?.app_assignment_responses_v2;
+			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				response?.data?.app_assignment_responses_v2?.[0];
+
+			if (!assignmentResponse) {
+				return undefined;
+			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+
+			return assignmentResponse;
 		} catch (err) {
 			throw new CustomError('Failed to get assignment responses from database', err, {
 				profileId,
@@ -848,7 +930,7 @@ export class AssignmentService {
 	 * this looks cleaner if everything loads at once instead of staggered
 	 * @param user
 	 */
-	static async createAssignmentResponseObject(
+	static async createOrFetchAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment_v2,
 		user: Avo.User.User | undefined
 	): Promise<Avo.Assignment.Response_v2 | null> {
@@ -859,23 +941,14 @@ export class AssignmentService {
 			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
-			const existingAssignmentResponses: Avo.Assignment.Response_v2[] =
-				await AssignmentService.getAssignmentResponses(
+			const existingAssignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				await AssignmentService.getAssignmentResponse(
 					get(user, 'profile.id'),
 					get(assignment, 'id') as unknown as string
 				);
 
-			if (existingAssignmentResponses.length) {
-				if (existingAssignmentResponses.length > 1) {
-					console.error(
-						new CustomError(
-							'Detected multiple assignment responses for the same user and the same assignment',
-							null,
-							{ existingAssignmentResponses }
-						)
-					);
-				}
-				return existingAssignmentResponses[0];
+			if (existingAssignmentResponse) {
+				return existingAssignmentResponse;
 			}
 
 			// Student has never viewed this assignment before, we should create a response object for him
@@ -910,6 +983,8 @@ export class AssignmentService {
 					{ response }
 				);
 			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(insertedAssignmentResponse);
 
 			return insertedAssignmentResponse;
 		} catch (err) {
@@ -1112,7 +1187,7 @@ export class AssignmentService {
 		const block = {
 			assignment_id: assignmentId,
 			fragment_id: item.external_id,
-			type: 'ITEM',
+			type: AssignmentBlockType.ITEM,
 			start_oc: trimInfo.hasCut ? trimInfo.fragmentStartTime : null,
 			end_oc: trimInfo.hasCut ? trimInfo.fragmentEndTime : null,
 			position: startPosition,

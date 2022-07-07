@@ -1,4 +1,5 @@
 import { Container } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import { CollectionBlockType } from '../../../collection/collection.const';
@@ -9,10 +10,10 @@ import {
 import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
-import { BlockItemBase, BlockListProps } from './BlockList.types';
+import { BlockListProps } from './BlockList.types';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
-	const renderCollectionFragment = (block: BlockItemBase) => {
+	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
 		const layout = (children?: ReactNode) => (
 			<Container mode="horizontal" className="u-p-0">
 				<IconBar
@@ -56,7 +57,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 		}
 	};
 
-	const renderBlockItemWrapper = (fragment: BlockItemBase) => {
+	const renderBlockItemWrapper = (fragment: Avo.Core.BlockItemBase) => {
 		return (
 			<div key={fragment.id} className="u-padding-top-l u-padding-bottom-l">
 				{renderCollectionFragment(fragment)}

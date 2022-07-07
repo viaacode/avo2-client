@@ -6,7 +6,7 @@ import { APP_PATH } from '../constants';
 import AssignmentCreate from './views/AssignmentCreate';
 import AssignmentDetail from './views/AssignmentDetail';
 import AssignmentEdit from './views/AssignmentEdit';
-import AssignmentResponseEdit from './views/AssignmentResponseEdit';
+import AssignmentResponseEdit from './views/AssignmentResponseEdit/AssignmentResponseEdit';
 import AssignmentResponses from './views/AssignmentResponses';
 
 export const renderAssignmentRoutes = (): ReactNode[] => [

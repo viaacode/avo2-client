@@ -397,11 +397,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		setAssignmentId(importToAssignmentId);
 
 		// check if assignment has responses. If so: show additional confirmation modal
-		const hasResponses = await AssignmentService.getAssignmentResponses(
+		const response = await AssignmentService.getAssignmentResponse(
 			getProfileId(user),
 			importToAssignmentId
 		);
-		if (hasResponses.length > 0) {
+		if (response) {
 			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
 		} else {
 			setIsAddToFragmentModalOpen(true);
