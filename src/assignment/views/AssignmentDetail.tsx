@@ -132,10 +132,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				// Currently we wait for this to complete
 				// so we can set the created assignment response on the tempAssignment object,
 				// so we don't need to do a refetch of the original assignment
-				const assignmentResponse = await AssignmentService.createOrFetchAssignmentResponseObject(
-					response,
-					user
-				);
+				const assignmentResponse =
+					await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
 
 				if (assignmentResponse) {
 					response.responses = [

@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from '@viaa/avo2-components';
 import React, { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import DraggableBlock from '../components/DraggableBlock/DraggableBlock';
 import DraggableListModal, {
 	DraggableListModalProps,

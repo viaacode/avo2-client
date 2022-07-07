@@ -1,18 +1,3 @@
-import { cloneDeep, get, isEmpty, set } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactText,
-	useCallback,
-	useEffect,
-	useReducer,
-	useState,
-} from 'react';
-import BeforeUnloadComponent from 'react-beforeunload-component';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { matchPath, withRouter } from 'react-router';
-import { compose } from 'redux';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -29,6 +14,20 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { cloneDeep, get, isEmpty, set } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactText,
+	useCallback,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
+import BeforeUnloadComponent from 'react-beforeunload-component';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { matchPath, withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -53,6 +52,7 @@ import {
 } from '../../shared/helpers';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -73,7 +73,6 @@ import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
-import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -205,6 +204,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 			return collectionState;
 		}
 
+		// TODO: fix lexical declarations
+		/* eslint-disable */
 		switch (action.type) {
 			case 'UPDATE_FRAGMENT_PROP':
 				newCurrentCollection.collection_fragments[action.index] = {
@@ -261,6 +262,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				}
 				break;
 		}
+		/* eslint-enable */
 
 		updateHasUnsavedChanges(newInitialCollection, newCurrentCollection);
 
@@ -279,7 +281,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		button: {
-			icon: undefined
+			icon: undefined,
 		},
 		modal: {
 			items: getFragmentsFromCollection(collectionState.currentCollection),
@@ -292,15 +294,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 						collectionPropValue: reorderFragments(fragments),
 					});
 				}
-			}
-		}
-	})
+			},
+		},
+	});
 
 	const shouldBlockNavigation = useCallback(() => {
 		const editPath = isCollection
 			? APP_PATH.COLLECTION_EDIT_TAB.route
 			: APP_PATH.BUNDLE_EDIT_TAB.route;
-		const changingRoute: boolean = !matchPath(history.location.pathname, editPath);
+		const changingRoute = !matchPath(history.location.pathname, editPath);
 		return unsavedChanges && changingRoute;
 	}, [history, unsavedChanges, isCollection]);
 
@@ -925,12 +927,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 			} else {
 				// We're adding a collection to the bundle
-				const collection: Avo.Collection.Collection | null = await CollectionService.fetchCollectionOrBundleById(
-					id,
-					'collection',
-					undefined,
-					false
-				);
+				const collection: Avo.Collection.Collection | null =
+					await CollectionService.fetchCollectionOrBundleById(
+						id,
+						'collection',
+						undefined,
+						false
+					);
 				if (!collection) {
 					ToastService.danger(
 						t(
@@ -1367,6 +1370,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(CollectionOrBundleEdit) as FunctionComponent<
-	CollectionOrBundleEditProps
->;
+export default compose(
+	withRouter,
+	withUser
+)(CollectionOrBundleEdit) as FunctionComponent<CollectionOrBundleEditProps>;
