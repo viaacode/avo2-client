@@ -8,14 +8,14 @@ import { SearchFilter } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers';
 import { BlockItemComponent } from '../collection.types';
 
-export type CollectionFragmentMetaProps = BlockItemComponent & { enableContentLinks: boolean };
+export type CollectionFragmentMetaProps = BlockItemComponent & { canClickSeries?: boolean };
 
-const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ block, enableContentLinks }) => {
+const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ block, canClickSeries }) => {
 	const [t] = useTranslation();
 
-	const organisation = block.item_meta?.organisation?.name;
-	const publishedAt = block.item_meta?.published_at;
-	const series = (block.item_meta as ItemSchema)?.series;
+	const organisation = block?.item_meta?.organisation?.name;
+	const publishedAt = block?.item_meta?.published_at;
+	const series = (block?.item_meta as ItemSchema)?.series;
 
 	return organisation || publishedAt || series ? (
 		<section className="u-spacer-bottom">
@@ -34,7 +34,7 @@ const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ block, enable
 			{series && (
 				<div>
 					{t('collection/views/collection-detail___reeks')}:{' '}
-					{enableContentLinks ? (
+					{canClickSeries ? (
 						<Link
 							target="_blank"
 							to={buildLink(APP_PATH.SEARCH.route, undefined, {

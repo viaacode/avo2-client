@@ -1,7 +1,6 @@
-import { cloneDeep, get, isEmpty, set, truncate } from 'lodash-es';
+import { cloneDeep, get, isEmpty, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
-	ReactNode,
 	ReactText,
 	useCallback,
 	useEffect,
@@ -15,12 +14,9 @@ import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
-	Flex,
-	FlexItem,
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
@@ -41,7 +37,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
 	DeleteObjectModal,
-	DraggableListModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -55,7 +50,6 @@ import {
 	isMobileWidth,
 	navigate,
 	renderAvatar,
-	stripHtml,
 } from '../../shared/helpers';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
@@ -71,7 +65,6 @@ import { getFragmentsFromCollection, reorderFragments } from '../collection.help
 import { CollectionService } from '../collection.service';
 import { EditCollectionTab } from '../collection.types';
 import { PublishCollectionModal } from '../components';
-import { getFragmentProperty } from '../helpers';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -80,6 +73,7 @@ import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -148,7 +142,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
-	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
@@ -283,6 +276,25 @@ const CollectionOrBundleEdit: FunctionComponent<
 		currentCollection: null,
 		initialCollection: null,
 	});
+
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		button: {
+			icon: undefined
+		},
+		modal: {
+			items: getFragmentsFromCollection(collectionState.currentCollection),
+			onClose: (fragments?: Avo.Collection.Fragment[]) => {
+				if (fragments) {
+					changeCollectionState({
+						type: 'UPDATE_COLLECTION_PROP',
+						updateInitialCollection: false,
+						collectionProp: 'collection_fragments',
+						collectionPropValue: reorderFragments(fragments),
+					});
+				}
+			}
+		}
+	})
 
 	const shouldBlockNavigation = useCallback(() => {
 		const editPath = isCollection
@@ -873,18 +885,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		/>
 	);
 
-	const handleReorderModalClosed = (fragments?: Avo.Collection.Fragment[]) => {
-		if (fragments) {
-			changeCollectionState({
-				type: 'UPDATE_COLLECTION_PROP',
-				updateInitialCollection: false,
-				collectionProp: 'collection_fragments',
-				collectionPropValue: reorderFragments(fragments),
-			});
-		}
-		setIsReorderModalOpen(false);
-	};
-
 	const handleAddItemById = async (id: string) => {
 		try {
 			if (isCollection) {
@@ -989,39 +989,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 					  )
 			);
 		}
-	};
-
-	const renderDraggableFragment = (fragment: Avo.Collection.Fragment): ReactNode => {
-		const thumbnail =
-			get(fragment, 'thumbnail_path') || get(fragment, 'item_meta.thumbnail_path');
-		return (
-			<Flex className="c-collection-or-bundle-edit__draggable-item" center>
-				<FlexItem shrink>
-					{<div style={{ backgroundImage: `url(${thumbnail})` }} />}
-				</FlexItem>
-				<FlexItem>
-					<BlockHeading type="h4">
-						{truncate(
-							getFragmentProperty(
-								fragment.item_meta,
-								fragment,
-								fragment.use_custom_fields,
-								'title'
-							) ||
-								stripHtml(
-									getFragmentProperty(
-										fragment.item_meta,
-										fragment,
-										fragment.use_custom_fields,
-										'description'
-									) || ''
-								),
-							{ length: 45 }
-						)}
-					</BlockHeading>
-				</FlexItem>
-			</Flex>
-		);
 	};
 
 	const renderTab = () => {
@@ -1168,16 +1135,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					}
 					onClick={() => executeAction('redirectToDetail')}
 				/>
-				<Button
-					type="secondary"
-					label={t(
-						'collection/components/collection-or-bundle-edit___herorden-fragmenten'
-					)}
-					title={t(
-						'collection/components/collection-or-bundle-edit___herorden-de-fragmenten-via-drag-and-drop'
-					)}
-					onClick={() => setIsReorderModalOpen(true)}
-				/>
+				{draggableListButton}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1371,12 +1329,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						onClose={() => setEnterItemIdModalOpen(false)}
 						inputCallback={handleAddItemById}
 					/>
-					<DraggableListModal
-						items={getFragmentsFromCollection(collectionState.currentCollection)}
-						renderItem={renderDraggableFragment}
-						isOpen={isReorderModalOpen}
-						onClose={handleReorderModalClosed}
-					/>
+					{draggableListModal}
 				</BeforeUnloadComponent>
 			</>
 		);

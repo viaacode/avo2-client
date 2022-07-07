@@ -1,6 +1,8 @@
 import { AssignmentBlockType } from '@viaa/avo2-types/types/assignment';
 import { CollectionFragmentType, CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { CollectionFragmentTypeItemProps } from '../../../collection/components/CollectionFragmentTypeItem';
+import { CollectionFragmentTypeTextProps } from '../../../collection/components/CollectionFragmentTypeText';
 
 export type BlockItemType = CollectionFragmentType | AssignmentBlockType;
 
@@ -22,8 +24,11 @@ export interface BlockItemBase {
 	item_meta?: ItemSchema | CollectionSchema;
 }
 
+// TODO: move subcomponents to shared to avoid bleed
 export interface BlockListProps {
 	blocks: BlockItemBase[];
-	canPlay: boolean;
-	enableContentLinks: boolean;
+	config?: {
+		text?: Partial<CollectionFragmentTypeTextProps>;
+		item?: Partial<CollectionFragmentTypeItemProps>;
+	};
 }

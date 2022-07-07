@@ -75,13 +75,9 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignmentInfo, setAssignmentInfo] = useState<{
-		assignmentBlocks: Avo.Assignment.Block[];
-		assignment: Avo.Assignment.Assignment_v2;
-	} | null>(null);
-	const [assignmentInfoLoading, setAssignmentInfoLoading] = useState<boolean>(false);
-	const [assignmentInfoError, setAssignmentInfoError] = useState<any | null>(null);
-	const assignment: Avo.Assignment.Assignment_v2 | null = assignmentInfo?.assignment || null;
+	const [assignment, setAssignmentInfo] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignmentLoading, setAssignmentInfoLoading] = useState<boolean>(false);
+	const [assignmentError, setAssignmentInfoError] = useState<any | null>(null);
 
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
 		null
@@ -145,7 +141,7 @@ const AssignmentResponseEdit: FunctionComponent<
 			// Create an assignment response if needed
 			setAssignmentResponse(
 				await AssignmentService.createAssignmentResponseObject(
-					tempAssignmentInfo?.assignment,
+					tempAssignmentInfo,
 					user
 				)
 			);
@@ -456,7 +452,7 @@ const AssignmentResponseEdit: FunctionComponent<
 	};
 
 	const renderAssignmentBlocks = () => {
-		if (assignmentInfoLoading) {
+		if (assignmentLoading) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -465,7 +461,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				</Spacer>
 			);
 		}
-		if (assignmentInfoError) {
+		if (assignmentError) {
 			return (
 				<ErrorView
 					message={t(
@@ -475,7 +471,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				/>
 			);
 		}
-		if ((assignmentInfo?.assignmentBlocks?.length || 0) === 0) {
+		if ((assignment?.blocks?.length || 0) === 0) {
 			return (
 				<ErrorView
 					message={t(
@@ -488,9 +484,22 @@ const AssignmentResponseEdit: FunctionComponent<
 		return (
 			<Container mode="horizontal">
 				<BlockList
-					blocks={(assignmentInfo?.assignmentBlocks || []) as BlockItemBase[]}
-					enableContentLinks={false}
-					canPlay={true}
+					blocks={(assignment?.blocks || []) as BlockItemBase[]}
+					config={{
+						text: {
+							title: {
+								canClickHeading: false,
+							},
+						},
+						item: {
+							meta: {
+								canClickSeries: false,
+							},
+							flowPlayer: {
+								canPlay: true,
+							},
+						},
+					}}
 				/>
 			</Container>
 		);
@@ -516,7 +525,7 @@ const AssignmentResponseEdit: FunctionComponent<
 	};
 
 	const renderPageContent = () => {
-		if (assignmentInfoLoading) {
+		if (assignmentLoading) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -525,7 +534,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				</Spacer>
 			);
 		}
-		if (assignmentInfoError) {
+		if (assignmentError) {
 			return (
 				<ErrorView
 					message={t(

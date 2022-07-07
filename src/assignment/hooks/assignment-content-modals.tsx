@@ -1,12 +1,16 @@
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
+
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import { insertAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
-import AddBookmarkFragmentModal, { AddBookmarkFragmentModalProps } from '../modals/AddBookmarkFragmentModal';
+import AddBookmarkFragmentModal, {
+	AddBookmarkFragmentModalProps,
+} from '../modals/AddBookmarkFragmentModal';
+import AddCollectionModal, { AddCollectionModalProps } from '../modals/AddCollectionModal';
 import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useAssignmentContentModals(
@@ -16,7 +20,8 @@ export function useAssignmentContentModals(
 	config?: {
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;
-		addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>
+		addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>;
+		addCollectionConfig?: Partial<AddCollectionModalProps>;
 	}
 ): [JSX.Element, SingleEntityModal<Pick<AssignmentBlock, 'id'>>, SingleEntityModal<number>] {
 	const slice = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
@@ -34,6 +39,7 @@ export function useAssignmentContentModals(
 	} = block;
 
 	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
+	const [isAddCollectionModalOpen, setIsAddCollectionModalOpen] = useState<boolean>(false);
 
 	const ui = (
 		<>
@@ -70,13 +76,18 @@ export function useAssignmentContentModals(
 							}
 
 							switch (type) {
+								case 'COLLECTIE': {
+									setIsAddCollectionModalOpen(true);
+									break;
+								}
+
 								case AssignmentBlockType.ITEM: {
 									setIsAddFragmentModalOpen(true);
 									break;
 								}
 
 								case AssignmentBlockType.TEXT:
-								case AssignmentBlockType.ZOEK:
+								case AssignmentBlockType.ZOEK: {
 									const blocks = insertAtPosition(assignment.blocks, {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
@@ -93,7 +104,7 @@ export function useAssignmentContentModals(
 										shouldTouch: true,
 									});
 									break;
-
+								}
 								default:
 									break;
 							}
@@ -106,6 +117,12 @@ export function useAssignmentContentModals(
 						{...config?.addBookmarkFragmentConfig}
 						isOpen={isAddFragmentModalOpen}
 						onClose={() => setIsAddFragmentModalOpen(false)}
+					/>
+
+					<AddCollectionModal
+						{...config?.addCollectionConfig}
+						isOpen={isAddCollectionModalOpen}
+						onClose={() => setIsAddCollectionModalOpen(false)}
 					/>
 				</>
 			)}

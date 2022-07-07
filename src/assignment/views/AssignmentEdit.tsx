@@ -12,10 +12,15 @@ import { Link } from 'react-router-dom';
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import {
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -28,7 +33,7 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { insertAtPosition } from '../helpers/insert-at-position';
+import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlocks,
 	useAssignmentBlocksList,
@@ -201,6 +206,57 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		});
 	};
 
+	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
+		if (addBlockModal.entity == null) {
+			return;
+		}
+
+		// fetch collection details
+		const collection = await CollectionService.fetchCollectionOrBundleById(
+			collectionId,
+			'collection',
+			undefined
+		);
+
+		if (!collection) {
+			ToastService.danger(
+				t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald')
+			);
+			return;
+		}
+
+		if (collection.collection_fragments) {
+			const blocks = collection.collection_fragments.map((collectionItem, index) => ({
+				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
+				item: collectionItem.item_meta,
+				type: collectionItem.type,
+				fragment_id: collectionItem.external_id,
+				position: (addBlockModal.entity || 0) + index,
+				original_title: withDescription ? collectionItem.custom_title : null,
+				original_description: withDescription ? collectionItem.custom_description : null,
+				custom_title: collectionItem.use_custom_fields ? collectionItem.custom_title : null,
+				custom_description: collectionItem.use_custom_fields
+					? collectionItem.custom_description
+					: null,
+				use_custom_fields: collectionItem.use_custom_fields,
+			}));
+			const newAssignmentBlocks = insertMultipleAtPosition(
+				assignment.blocks,
+				blocks as unknown as AssignmentBlock[]
+			);
+
+			setAssignment((prev) => ({
+				...prev,
+				blocks: newAssignmentBlocks,
+			}));
+
+			setValue('blocks', newAssignmentBlocks, {
+				shouldDirty: true,
+				shouldTouch: true,
+			});
+		}
+	};
+
 	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
 		assignment,
 		setAssignment,
@@ -213,8 +269,33 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				user,
 				addFragmentCallback: onAddItem,
 			},
+			addCollectionConfig: {
+				user,
+				addCollectionCallback: onAddCollection,
+			},
 		}
 	);
+
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		modal: {
+			items: assignment.blocks,
+			onClose: (update?: AssignmentBlock[]) => {
+				if (update) {
+					const blocks = update.map((item, i) => ({
+						...item,
+						position: assignment.blocks[i].position,
+					}));
+
+					setAssignment((prev) => ({
+						...prev,
+						blocks,
+					}));
+
+					setValue('blocks', blocks, { shouldDirty: true });
+				}
+			},
+		},
+	});
 
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
 		initial: defaultValues,
@@ -331,7 +412,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					</Spacer>
 				)}
 
-				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+				<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
+
+				<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
 
 				{isDirty && (
 					<StickyEdgeBar>
@@ -356,6 +439,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			</Container>
 
 			{renderedModals}
+			{draggableListModal}
 		</div>
 	);
 

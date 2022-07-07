@@ -1,8 +1,7 @@
-import { get } from 'lodash-es';
-import React, { ReactNode } from 'react';
-
 import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { ReactNode } from 'react';
 
 export const getProfile = (
 	obj: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
@@ -11,7 +10,7 @@ export const getProfile = (
 		return null;
 	}
 	if ((obj as Avo.User.Profile).user) {
-		return (obj as unknown) as Avo.User.Profile;
+		return obj as unknown as Avo.User.Profile;
 	}
 	return {
 		...((obj as Avo.User.User).profile || {}),
@@ -19,7 +18,7 @@ export const getProfile = (
 	} as Avo.User.Profile;
 };
 
-export const getInitialChar = (value: string | undefined | null) => (value ? value[0] : '');
+export const getInitialChar = (value: string | undefined | null): string => (value ? value[0] : '');
 
 export const getInitials = (profile: Avo.User.Profile | null) =>
 	getInitialChar(get(profile, 'user.first_name')) +

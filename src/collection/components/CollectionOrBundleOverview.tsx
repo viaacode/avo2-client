@@ -1,9 +1,4 @@
 import { useMutation } from '@apollo/react-hooks';
-import { fromPairs, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -19,6 +14,10 @@ import {
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { fromPairs, get, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -104,7 +103,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				page * ITEMS_PER_PAGE,
 				ITEMS_PER_PAGE,
 				{ [sortColumn]: sortOrder },
-				isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle
+				isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+				undefined
 			);
 
 			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
