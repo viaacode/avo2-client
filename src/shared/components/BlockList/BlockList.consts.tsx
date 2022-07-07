@@ -29,4 +29,5 @@ export const BLOCK_ITEM_LABELS = (): Record<Avo.Core.BlockItemType, string> => (
 	TEXT: i18n.t('shared/components/block-list/block-list___instructies-of-tekstblok'),
 	ZOEK: i18n.t('shared/components/block-list/block-list___zoekoefening'),
 	COLLECTION: i18n.t('shared/components/block-list/block-list___collectie'),
+	BOUW: i18n.t('shared/components/block-list/block-list___zoekoefening'),
 });

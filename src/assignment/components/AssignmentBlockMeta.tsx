@@ -1,4 +1,5 @@
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { Avo } from '@viaa/avo2-types';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -8,7 +9,7 @@ import { SearchFilter } from '../../search/search.const';
 import { buildLink, formatDate } from '../../shared/helpers';
 
 export type AssignmentBlockMetaProps = {
-	block: AssignmentBlock;
+	block: Avo.Core.BlockItemBase;
 };
 
 export const AssignmentBlockMeta: FC<AssignmentBlockMetaProps> = ({ block }) => {
@@ -17,7 +18,7 @@ export const AssignmentBlockMeta: FC<AssignmentBlockMetaProps> = ({ block }) => 
 	return useMemo(() => {
 		const organisation = block.item_meta?.organisation?.name;
 		const publishedAt = block.item_meta?.published_at;
-		const series = block.item_meta?.series;
+		const series = (block.item_meta as ItemSchema)?.series;
 
 		return organisation || publishedAt || series ? (
 			<section className="u-spacer-bottom">
