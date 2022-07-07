@@ -2223,6 +2223,7 @@
   "shared/components/date-range-dropdown/date-range-dropdown___van": "Van",
   "shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren": "Ben je zeker dat je deze actie wil uitvoeren?",
   "shared/components/delete-object-modal/delete-object-modal___deze-actie-kan-niet-ongedaan-gemaakt-worden": "Opgelet, deze actie kan niet meer ongedaan worden!",
+  "shared/components/draggable-block/draggable-block___instructies-of-omschrijving": "Instructies of omschrijving",
   "shared/components/draggable-list/draggable-list-modal___annuleer": "Annuleer",
   "shared/components/draggable-list/draggable-list-modal___herschik-items": "Herorden blokken",
   "shared/components/draggable-list/draggable-list-modal___opslaan": "Opslaan",
