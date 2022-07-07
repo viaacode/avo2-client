@@ -3,6 +3,7 @@ import {
 	Container,
 	Flex,
 	FormGroup,
+	Spacer,
 	TextInput,
 	Toolbar,
 	ToolbarLeft,
@@ -17,9 +18,13 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
+import emptyCollectionPlaceholder from '../../../../assets/images/empty-collection.jpg';
 import BlockListEdit from '../../../../shared/components/BlockListEdit/BlockListEdit';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment.const';
+import {
+	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
+} from '../../../assignment.const';
 import {
 	AssignmentBlockType,
 	AssignmentResponseFormState,
@@ -28,16 +33,19 @@ import {
 import { insertAtPosition } from '../../../helpers/insert-at-position';
 import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
 
+import './AssignmentResponsePupilCollectionTab.scss';
+
 interface AssignmentResponsePupilCollectionTabProps {
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 }
 
 const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'> &
 		UserProps
-> = ({ assignmentResponse, setAssignmentResponse, setValue, control, user }) => {
+> = ({ assignmentResponse, setAssignmentResponse, setValue, control, setTab, user }) => {
 	const [t] = useTranslation();
 
 	// UI
@@ -182,6 +190,30 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						},
 					}}
 				/>
+				<Container mode="vertical" className="c-empty-collection-placeholder">
+					<Flex orientation="vertical" center>
+						<img
+							alt={t('Lege collectie placeholder afbeelding')}
+							src={emptyCollectionPlaceholder}
+						/>
+						<Spacer margin={['top-large', 'bottom']}>
+							<h2>{t('Mijn collectie is nog leeg')}</h2>
+						</Spacer>
+						<p>
+							{t('Ga naar')}{' '}
+							<Button
+								type="inline-link"
+								label={t('zoeken')}
+								onClick={() =>
+									setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
+								}
+							/>{' '}
+							{t(
+								'om fragmenten toe te voegen of druk op de plus knop hierboven als je tekstblokken wil aanmaken.'
+							)}
+						</p>
+					</Flex>
+				</Container>
 			</Container>
 			{renderedModals}
 		</Container>
