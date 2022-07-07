@@ -141,7 +141,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 
 	const renderFooterActions = () => {
 		return (
-			<Toolbar spaced>
+			<Toolbar>
 				<ToolbarLeft>
 					{showToggle && (
 						<Flex>

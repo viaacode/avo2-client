@@ -12,7 +12,7 @@ import { IconBar } from '../index';
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
 import { BlockListProps } from './BlockList.types';
 
-const BlockList: FC<BlockListProps> = ({ blocks, canPlay, enableContentLinks }) => {
+const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
 		const layout = (children?: ReactNode) => (
 			<Container mode="horizontal" className="u-p-0">
@@ -30,25 +30,25 @@ const BlockList: FC<BlockListProps> = ({ blocks, canPlay, enableContentLinks }) 
 			case CollectionBlockType.TEXT:
 				return layout(
 					<CollectionFragmentTypeText
-						title={{ block: block }}
-						richText={{ block: block }}
-						enableContentLinks={enableContentLinks}
+						{...config?.text}
+						title={{ ...config?.text?.title, block }}
+						richText={{ ...config?.text?.richText, block }}
 					/>
 				);
 			case CollectionBlockType.ITEM:
 				return layout(
 					<CollectionFragmentTypeItem
-						className="m-collection-detail__video-content"
+						{...config?.item}
 						title={{
-							block: block,
+							...config?.item?.title,
+							block,
 						}}
-						richText={{ block: block }}
+						richText={{ ...config?.item?.richText, block }}
 						flowPlayer={{
-							block: block,
-							canPlay,
+							...config?.item?.flowPlayer,
+							block,
 						}}
-						meta={{ block: block, enableContentLinks }}
-						enableContentLinks={enableContentLinks}
+						meta={{ ...config?.item?.meta, block }}
 					/>
 				);
 

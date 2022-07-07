@@ -10,6 +10,7 @@ import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
 	AddBookmarkFragmentModalProps,
 } from '../modals/AddBookmarkFragmentModal';
+import AddCollectionModal, { AddCollectionModalProps } from '../modals/AddCollectionModal';
 import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
@@ -19,6 +20,7 @@ export function useBlockListModals(
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;
 		addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>;
+		addCollectionConfig?: Partial<AddCollectionModalProps>;
 	}
 ): [JSX.Element, SingleEntityModal<Pick<AssignmentBlock, 'id'>>, SingleEntityModal<number>] {
 	const slice = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
@@ -36,6 +38,7 @@ export function useBlockListModals(
 	} = block;
 
 	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
+	const [isAddCollectionModalOpen, setIsAddCollectionModalOpen] = useState<boolean>(false);
 
 	const ui = (
 		<>
@@ -68,6 +71,11 @@ export function useBlockListModals(
 							}
 
 							switch (type) {
+								case 'COLLECTIE': {
+									setIsAddCollectionModalOpen(true);
+									break;
+								}
+
 								case AssignmentBlockType.ITEM: {
 									setIsAddFragmentModalOpen(true);
 									break;
@@ -97,6 +105,12 @@ export function useBlockListModals(
 						{...config?.addBookmarkFragmentConfig}
 						isOpen={isAddFragmentModalOpen}
 						onClose={() => setIsAddFragmentModalOpen(false)}
+					/>
+
+					<AddCollectionModal
+						{...config?.addCollectionConfig}
+						isOpen={isAddCollectionModalOpen}
+						onClose={() => setIsAddCollectionModalOpen(false)}
 					/>
 				</>
 			)}

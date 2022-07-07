@@ -12,6 +12,7 @@ import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { AppCollectionBookmark } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
@@ -20,6 +21,7 @@ import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
 	DELETE_MARCOM_ENTRY,
+	GET_BOOKMARKED_COLLECTIONS_BY_OWNER,
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
@@ -1216,18 +1218,27 @@ export class CollectionService {
 	static async fetchCollectionsByOwner(
 		user: Avo.User.User,
 		offset: number,
-		limit: number,
-		order: Record<string, 'asc' | 'desc'>,
-		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle
+		limit: number | null,
+		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
+		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
+		filterString: string | undefined
 	): Promise<Avo.Collection.Collection[]> {
 		let variables: any;
 		try {
+			const trimmedFilterString = filterString && filterString.trim();
+			const filterArray: any[] = [];
+			if (trimmedFilterString) {
+				filterArray.push({
+					title: { _ilike: `%${trimmedFilterString}%` },
+				});
+			}
 			variables = {
 				offset,
 				limit,
 				order,
 				type_id: contentTypeId,
 				owner_profile_id: getProfileId(user),
+				where: filterArray.length ? filterArray : {},
 			};
 			const response = await dataService.query({
 				variables,
@@ -1243,6 +1254,50 @@ export class CollectionService {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
 				query: 'GET_COLLECTIONS_BY_OWNER',
+			});
+		}
+	}
+
+	static async fetchBookmarkedCollectionsByOwner(
+		user: Avo.User.User,
+		offset: number,
+		limit: number | null,
+		order: any,
+		filterString: string | undefined
+	): Promise<Avo.Collection.Collection[]> {
+		let variables: any;
+		try {
+			const trimmedFilterString = filterString?.trim();
+			const filterArray: any[] = [];
+			if (trimmedFilterString) {
+				filterArray.push({
+					bookmarkedCollection: { title: { _ilike: `%${trimmedFilterString}%` } },
+				});
+			}
+			variables = {
+				offset,
+				limit,
+				order,
+				owner_profile_id: getProfileId(user),
+				where: filterArray.length ? filterArray : {},
+			};
+			const response = await dataService.query<{
+				app_collection_bookmarks: { bookmarkedCollection: AppCollectionBookmark }[];
+			}>({
+				variables,
+				query: GET_BOOKMARKED_COLLECTIONS_BY_OWNER,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+
+			const bookmarks = response?.data?.app_collection_bookmarks || [];
+			return bookmarks.map((bookmark: any) => bookmark.bookmarkedCollection);
+		} catch (err) {
+			throw new CustomError('Fetch bookmarked collections by owner failed', err, {
+				variables,
+				query: 'GET_BOOKMARKED_COLLECTIONS_BY_OWNER',
 			});
 		}
 	}

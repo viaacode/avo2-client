@@ -5,20 +5,15 @@ import CollectionFragmentRichText, {
 } from './CollectionFragmentRichText';
 import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
 
-interface CollectionFragmentTypeTextProps {
+export interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
 	richText?: CollectionFragmentRichTextProps;
-	enableContentLinks: boolean;
 }
 
-const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({
-	title,
-	richText,
-	enableContentLinks,
-}) => {
+const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, richText }) => {
 	return (
 		<>
-			{title && <CollectionFragmentTitle {...title} enableTitleLink={enableContentLinks} />}
+			{title && <CollectionFragmentTitle {...title} />}
 			{richText && <CollectionFragmentRichText {...richText} />}
 		</>
 	);

@@ -58,8 +58,10 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 			<Container mode="horizontal">
 				<BlockList
 					blocks={(assignmentInfo?.assignmentBlocks || []) as Avo.Core.BlockItemBase[]}
-					enableContentLinks={false}
-					canPlay={true}
+					config={{
+						text: {}, // TODO figure out what goes inside here @ian
+						item: {}, // TODO figure out what goes inside here @ian
+					}}
 				/>
 			</Container>
 		);

@@ -70,5 +70,5 @@ export interface MarcomEntry {
 }
 
 export interface BlockItemComponent {
-	block: Avo.Core.BlockItemBase;
+	block?: Avo.Core.BlockItemBase;
 }
