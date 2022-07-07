@@ -1,5 +1,6 @@
 import { IconName, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isPast } from 'date-fns/esm';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +19,11 @@ export function useAssignmentPupilTabs(
 ] {
 	const [t] = useTranslation();
 
+	const pastDeadline = useMemo(
+		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
+		[assignment]
+	);
+
 	const tabs: TabProps[] = useMemo(
 		() =>
 			[
@@ -29,7 +35,8 @@ export function useAssignmentPupilTabs(
 				...(assignment?.assignment_type &&
 				[AssignmentType.ZOEK, AssignmentType.BOUW].includes(
 					assignment?.assignment_type as AssignmentType
-				)
+				) &&
+				!pastDeadline
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,

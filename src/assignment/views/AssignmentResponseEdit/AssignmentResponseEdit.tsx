@@ -124,8 +124,8 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 	);
 
-	const pastDeadline = useMemo(
-		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
+	const pastDeadline: boolean = useMemo(
+		() => (assignment?.deadline_at && isPast(new Date(assignment.deadline_at))) || false,
 		[assignment]
 	);
 
@@ -373,6 +373,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				}
 				return (
 					<AssignmentResponsePupilCollectionTab
+						pastDeadline={pastDeadline}
 						assignmentResponse={assignmentResponse}
 						setAssignmentResponse={
 							setAssignmentResponse as Dispatch<

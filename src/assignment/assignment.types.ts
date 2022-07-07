@@ -60,7 +60,6 @@ export enum AssignmentLayout {
 export enum AssignmentRetrieveError {
 	DELETED = 'DELETED',
 	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
-	PAST_DEADLINE = 'PAST_DEADLINE',
 }
 
 export interface AssignmentLabelColor {

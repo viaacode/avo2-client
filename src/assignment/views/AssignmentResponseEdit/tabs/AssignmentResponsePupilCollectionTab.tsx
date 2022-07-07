@@ -34,8 +34,10 @@ import { insertAtPosition } from '../../../helpers/insert-at-position';
 import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+import { BlockList } from '../../../../collection/components';
 
 interface AssignmentResponsePupilCollectionTabProps {
+	pastDeadline: boolean;
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
@@ -45,7 +47,15 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'> &
 		UserProps
-> = ({ assignmentResponse, setAssignmentResponse, setValue, control, setTab, user }) => {
+> = ({
+	pastDeadline,
+	assignmentResponse,
+	setAssignmentResponse,
+	setValue,
+	control,
+	setTab,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// UI
@@ -108,111 +118,151 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 	// Render
 
+	const renderEmptyCollectionPlaceholder = () => {
+		if (assignmentResponse?.pupil_collection_blocks?.length) {
+			return null;
+		}
+		return (
+			<Container mode="vertical" className="c-empty-collection-placeholder">
+				<Flex orientation="vertical" center>
+					<img
+						alt={t(
+							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding'
+						)}
+						src={emptyCollectionPlaceholder}
+					/>
+					<Spacer margin={['top-large', 'bottom']}>
+						<h2>
+							{t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+							)}
+						</h2>
+					</Spacer>
+					<p>
+						{t(
+							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
+						)}{' '}
+						<Button
+							type="inline-link"
+							label={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
+							)}
+							onClick={() => setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)}
+						/>{' '}
+						{t(
+							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
+						)}
+					</p>
+				</Flex>
+			</Container>
+		);
+	};
+
+	const renderPupilCollectionBlocks = () => {
+		return (
+			<>
+				<Container mode="vertical">
+					<Toolbar size="large">
+						<ToolbarLeft>
+							<Controller
+								name="collection_title"
+								control={control}
+								render={({ field, fieldState: { error, isTouched } }) => (
+									<FormGroup
+										label={t(
+											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
+										)}
+										className="c-form-group--full-width"
+									>
+										<Flex orientation="vertical">
+											<TextInput
+												type="text"
+												value={field.value || ''}
+												onChange={(newTitle: string) => {
+													setAssignmentResponse((prev) => {
+														return {
+															...prev,
+															collection_title: newTitle,
+														};
+													});
+													setValue('collection_title', newTitle, {
+														shouldDirty: true,
+														shouldTouch: true,
+													});
+												}}
+											/>
+										</Flex>
+
+										{error && isTouched && (
+											<span className="c-floating-error">
+												{t(
+													'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
+												)}
+											</span>
+										)}
+									</FormGroup>
+								)}
+							/>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<Button
+								type="primary"
+								label={t(
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
+								)}
+								onClick={noop}
+							/>
+						</ToolbarRight>
+					</Toolbar>
+				</Container>
+				<Container mode="vertical">
+					<BlockListEdit
+						blocks={assignmentResponse?.pupil_collection_blocks || []}
+						setBlocks={updateBlocksInAssignmentResponseState}
+						config={{
+							listSorter: {
+								content: (item) => item && renderBlockContent(item),
+								divider: (item) => (
+									<Button
+										icon="plus"
+										type="secondary"
+										onClick={() => {
+											addBlockModal.setEntity(item?.position);
+											addBlockModal.setOpen(true);
+										}}
+									/>
+								),
+							},
+							listSorterItem: {
+								onSlice: (item) => {
+									confirmSliceModal.setEntity(item);
+									confirmSliceModal.setOpen(true);
+								},
+							},
+						}}
+					/>
+				</Container>
+				{renderEmptyCollectionPlaceholder()}
+			</>
+		);
+	};
+
+	const renderReadOnlyPupilCollectionBlocks = () => {
+		return (
+			<Container mode="vertical">
+				<BlockList
+					blocks={
+						(assignmentResponse?.pupil_collection_blocks ||
+							[]) as Avo.Core.BlockItemBase[]
+					}
+				/>
+			</Container>
+		);
+	};
+
 	return (
 		<Container mode="horizontal">
-			<Container mode="vertical">
-				<Toolbar size="large">
-					<ToolbarLeft>
-						<Controller
-							name="collection_title"
-							control={control}
-							render={({ field, fieldState: { error, isTouched } }) => (
-								<FormGroup
-									label={t(
-										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
-									)}
-									className="c-form-group--full-width"
-								>
-									<Flex orientation="vertical">
-										<TextInput
-											type="text"
-											value={field.value || ''}
-											onChange={(newTitle: string) => {
-												setAssignmentResponse((prev) => {
-													return {
-														...prev,
-														collection_title: newTitle,
-													};
-												});
-												setValue('collection_title', newTitle, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
-											}}
-										/>
-									</Flex>
-
-									{error && isTouched && (
-										<span className="c-floating-error">
-											{t(
-												'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
-											)}
-										</span>
-									)}
-								</FormGroup>
-							)}
-						/>
-					</ToolbarLeft>
-					<ToolbarRight>
-						<Button
-							type="primary"
-							label={t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
-							)}
-							onClick={noop}
-						/>
-					</ToolbarRight>
-				</Toolbar>
-			</Container>
-			<Container mode="vertical">
-				<BlockListEdit
-					blocks={assignmentResponse?.pupil_collection_blocks || []}
-					setBlocks={updateBlocksInAssignmentResponseState}
-					config={{
-						listSorter: {
-							content: (item) => item && renderBlockContent(item),
-							divider: (item) => (
-								<Button
-									icon="plus"
-									type="secondary"
-									onClick={() => {
-										addBlockModal.setEntity(item?.position);
-										addBlockModal.setOpen(true);
-									}}
-								/>
-							),
-						},
-						listSorterItem: {
-							onSlice: (item) => {
-								confirmSliceModal.setEntity(item);
-								confirmSliceModal.setOpen(true);
-							},
-						},
-					}}
-				/>
-				<Container mode="vertical" className="c-empty-collection-placeholder">
-					<Flex orientation="vertical" center>
-						<img
-							alt={t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding')}
-							src={emptyCollectionPlaceholder}
-						/>
-						<Spacer margin={['top-large', 'bottom']}>
-							<h2>{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg')}</h2>
-						</Spacer>
-						<p>
-							{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar')}{' '}
-							<Button
-								type="inline-link"
-								label={t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken')}
-								onClick={() =>
-									setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
-								}
-							/>{' '}
-							{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken')}
-						</p>
-					</Flex>
-				</Container>
-			</Container>
+			{pastDeadline ? renderReadOnlyPupilCollectionBlocks() : renderPupilCollectionBlocks()}
 			{renderedModals}
 		</Container>
 	);
