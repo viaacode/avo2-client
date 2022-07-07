@@ -46,8 +46,8 @@ interface FragmentEditProps {
 	collectionId: string;
 	numberOfFragments: number;
 	changeCollectionState: (action: CollectionAction) => void;
-	openOptionsId: number | null;
-	setOpenOptionsId: (id: number | null) => void;
+	openOptionsId: number | string | null;
+	setOpenOptionsId: (id: number | string | null) => void;
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
 	renderWarning?: () => ReactNode | null;

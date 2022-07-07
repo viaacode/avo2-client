@@ -1,4 +1,3 @@
-import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
@@ -11,11 +10,11 @@ import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
-	AssignmentBlockTypeDict,
 	AssignmentColumn,
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseColumn,
+	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
 } from './assignment.types';
@@ -182,6 +181,16 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 	});
 };
 
+export const PUPIL_COLLECTION_FORM_SCHEMA = (
+	t: TFunction
+): SchemaOf<AssignmentResponseFormState> => {
+	return object({
+		id: string().optional(),
+		collection_title: string().required(t('assignment/assignment___titel-is-verplicht')),
+		pupil_collection_blocks: array(),
+	});
+};
+
 export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	id: undefined,
 	title: t('assignment/assignment___titel-opdracht'),
@@ -239,23 +248,6 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 	SEARCH = 'SEARCH',
 	MY_COLLECTION = 'MY_COLLECTION',
 }
-
-export const ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> =
-	() => ({
-		ITEM: 'video',
-		TEXT: 'type',
-		ZOEK: 'search',
-		BOUW: 'search',
-	});
-
-export const ASSIGNMENT_CREATE_UPDATE_BLOCK_LABELS: (
-	t: TFunction
-) => AssignmentBlockTypeDict<string> = (t) => ({
-	ITEM: t('assignment/assignment___fragment'),
-	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
-	ZOEK: t('assignment/assignment___zoekoefening'),
-	BOUW: t('assignment/assignment___zoekoefening'),
-});
 
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	assignmentType: AssignmentType
@@ -327,6 +319,6 @@ export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] = 
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: { id: string }): boolean => {
-	return item.id.startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
+export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
+	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };

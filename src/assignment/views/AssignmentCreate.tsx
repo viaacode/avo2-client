@@ -1,5 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
+import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { buildLink, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -19,14 +22,14 @@ import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
 import {
-	useAssignmentBlocks,
-	useAssignmentBlocksList,
-	useAssignmentContentModals,
+	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlockListModals,
+	useBlocks,
+	useBlocksList,
 } from '../hooks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -43,7 +46,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	});
 	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
+		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		assignment.blocks,
+		updateBlocksInAssignmentState
+	);
 
 	// Events
 
@@ -97,19 +107,18 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useAssignmentBlocks(setBlock);
+	const renderBlockContent = useBlocks(setBlock);
 
-	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
-		assignment,
-		setAssignment,
-		setValue
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignment.blocks,
+		updateBlocksInAssignmentState
 	);
 
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
+	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
 			divider: (item) => (
@@ -208,28 +217,15 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				tabs={renderTabs}
 			/>
 
-			<Container mode="horizontal">
+			<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
 				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
 
 				{/* Always show on create */}
-				<StickyEdgeBar>
-					<p>
-						<strong>
-							{t('assignment/views/assignment-create___opdracht-opslaan')}
-						</strong>
-					</p>
-
-					<Button
-						label={t('assignment/views/assignment-create___annuleer')}
-						onClick={() => reset()}
-					/>
-
-					<Button
-						type="tertiary"
-						label={t('assignment/views/assignment-create___opslaan')}
-						onClick={handleSubmit(submit, (...args) => console.error(args))}
-					/>
-				</StickyEdgeBar>
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
+				/>
 			</Container>
 
 			{renderedModals}

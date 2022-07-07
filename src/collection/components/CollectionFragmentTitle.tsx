@@ -7,18 +7,19 @@ import { buildLink } from '../../shared/helpers';
 import { BlockItemComponent } from '../collection.types';
 
 export interface CollectionFragmentTitleProps extends BlockItemComponent {
-	enableTitleLink?: boolean;
+	canClickHeading?: boolean;
 }
 
-const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, enableTitleLink }) => {
+const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canClickHeading }) => {
 	const heading = (
 		<BlockHeading type="h2">
-			{block.use_custom_fields ? block.custom_title : block.item_meta?.title}
+			{block?.use_custom_fields ? block.custom_title : block?.item_meta?.title}
 		</BlockHeading>
 	);
 
 	if (
-		enableTitleLink &&
+		canClickHeading &&
+		block &&
 		block.type === 'ITEM' &&
 		block.item_meta?.type?.label &&
 		['video', 'audio'].includes(block.item_meta?.type?.label)

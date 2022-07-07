@@ -1,12 +1,13 @@
 import { IconName } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
-import { BlockItemBase, BlockItemType } from './BlockList.types';
+import i18n from '../../translations/i18n';
 
 export const BLOCK_ITEM_ICONS: () => Record<
-	BlockItemType,
-	(block?: BlockItemBase) => IconName
+	Avo.Core.BlockItemType,
+	(block?: Avo.Core.BlockItemBase) => IconName
 > = () => ({
-	ITEM: (block: BlockItemBase | undefined): IconName => {
+	ITEM: (block: Avo.Core.BlockItemBase | undefined): IconName => {
 		if (block?.item_meta) {
 			switch (block?.item_meta?.type?.label) {
 				case 'audio':
@@ -21,4 +22,11 @@ export const BLOCK_ITEM_ICONS: () => Record<
 	ZOEK: () => 'search',
 	COLLECTION: () => 'collection',
 	BOUW: () => 'search',
+});
+
+export const BLOCK_ITEM_LABELS = (): Record<Avo.Core.BlockItemType, string> => ({
+	ITEM: i18n.t('shared/components/block-list/block-list___fragment'),
+	TEXT: i18n.t('shared/components/block-list/block-list___instructies-of-tekstblok'),
+	ZOEK: i18n.t('shared/components/block-list/block-list___zoekoefening'),
+	COLLECTION: i18n.t('shared/components/block-list/block-list___collectie'),
 });

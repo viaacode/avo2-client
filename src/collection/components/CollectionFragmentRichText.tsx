@@ -20,9 +20,9 @@ const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) 
 				className="c-collection-fragment-rich-text__parser c-content"
 				sanitizePreset="full"
 				content={convertToHtml(
-					block.use_custom_fields
+					block?.use_custom_fields
 						? block.custom_description
-						: block.item_meta?.description
+						: block?.item_meta?.description
 				)}
 				{...rest}
 			/>
