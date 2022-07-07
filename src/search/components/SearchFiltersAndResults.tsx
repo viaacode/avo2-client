@@ -331,6 +331,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					...DEFAULT_FILTER_STATE,
 					collectionLabel: [tagId],
 				},
+				page: 0,
 			},
 			urlUpdateType
 		);
