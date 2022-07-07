@@ -429,7 +429,7 @@ export class AssignmentService {
 		);
 
 		const cleanup = (block: AssignmentBlock) => {
-			delete block.item;
+			delete block.item_meta;
 			delete (block as any).icon;
 
 			block.updated_at = new Date().toISOString();
@@ -691,7 +691,9 @@ export class AssignmentService {
 			const assignmentBlocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
 					if (block.type === 'ITEM') {
-						block.item = await ItemsService.fetchItemByExternalId(block.fragment_id);
+						block.item_meta = await ItemsService.fetchItemByExternalId(
+							block.fragment_id
+						);
 					}
 					return block;
 				})
