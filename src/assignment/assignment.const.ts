@@ -14,6 +14,7 @@ import {
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseColumn,
+	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
 } from './assignment.types';
@@ -177,6 +178,16 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		answer_url: string().nullable().optional(),
 		available_at: string().nullable().optional(),
 		deadline_at: string().nullable().optional(),
+	});
+};
+
+export const PUPIL_COLLECTION_FORM_SCHEMA = (
+	t: TFunction
+): SchemaOf<AssignmentResponseFormState> => {
+	return object({
+		id: string().optional(),
+		collection_title: string().required(t('Titel is verplicht')),
+		pupil_collection_blocks: array(),
 	});
 };
 

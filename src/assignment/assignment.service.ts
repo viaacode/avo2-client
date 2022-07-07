@@ -50,6 +50,7 @@ import {
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_BLOCK,
+	UPDATE_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
@@ -377,6 +378,51 @@ export class AssignmentService {
 				original.labels.map(({ assignment_label }) => assignment_label),
 				(update.labels || []).map(({ assignment_label }) => assignment_label)
 			);
+
+			return {
+				...original,
+				...update,
+			};
+		} catch (err) {
+			const error = new CustomError('Failed to update assignment', err, {
+				original,
+				update,
+			});
+
+			console.error(error);
+			throw error;
+		}
+	}
+
+	static async updateAssignmentResponse(
+		original: Avo.Assignment.Response_v2,
+		update: Partial<Avo.Assignment.Response_v2>
+	): Promise<Avo.Assignment.Response_v2 | null> {
+		try {
+			if (isNil(original.id)) {
+				throw new CustomError(
+					'Failed to update assignment response because its id is undefined',
+					null,
+					{ original, update }
+				);
+			}
+
+			const response = await dataService.mutate<{
+				data: { update_app_assignment_responses_v2: { affected_rows: number } };
+			}>({
+				mutation: UPDATE_ASSIGNMENT_RESPONSE,
+				variables: {
+					collectionTitle: update.collection_title,
+					updatedAt: new Date().toISOString(),
+					assignmentResponseId: original.id,
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (!response || !response.data || (response.errors && response.errors.length)) {
+				console.error('assignment update returned empty response', response);
+				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
+			}
 
 			return {
 				...original,

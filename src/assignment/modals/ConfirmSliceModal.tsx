@@ -32,7 +32,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const label = { type: block ? BLOCK_ITEM_LABELS(t)[block.type] : '' };
+	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type] : '' };
 
 	const renderConfirmButtons = () => {
 		return (

@@ -91,7 +91,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	const listSorterHeading = (item?: ListSorterItem) => {
 		const fragment = collectionFragments.find((f) => byId(f, item?.id));
 
-		return fragment && BLOCK_ITEM_LABELS(t)[fragment?.type];
+		return fragment && BLOCK_ITEM_LABELS()[fragment?.type];
 	};
 
 	// Decide what to show inside of each item in the list

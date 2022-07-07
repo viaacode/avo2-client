@@ -1,6 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { TFunction } from 'i18next';
+
+import i18n from '../../translations/i18n';
 
 export const BLOCK_ITEM_ICONS: () => Record<
 	Avo.Core.BlockItemType,
@@ -22,9 +23,9 @@ export const BLOCK_ITEM_ICONS: () => Record<
 	COLLECTION: () => 'collection',
 });
 
-export const BLOCK_ITEM_LABELS: (t: TFunction) => Record<Avo.Core.BlockItemType, string> = (t) => ({
-	ITEM: t('Fragment'),
-	TEXT: t('Instructies of tekstblok'),
-	ZOEK: t('Zoekoefening'),
-	COLLECTION: t('collectie'),
+export const BLOCK_ITEM_LABELS = (): Record<Avo.Core.BlockItemType, string> => ({
+	ITEM: i18n.t('Fragment'),
+	TEXT: i18n.t('Instructies of tekstblok'),
+	ZOEK: i18n.t('Zoekoefening'),
+	COLLECTION: i18n.t('collectie'),
 });

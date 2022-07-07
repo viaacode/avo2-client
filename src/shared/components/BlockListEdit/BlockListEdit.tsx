@@ -1,21 +1,20 @@
 import { Avo } from '@viaa/avo2-types';
-import React, { ReactNode, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
-import { BlockListSorter, ListSorterItem, ListSorterProps } from '../../shared/components';
-import {
-	BLOCK_ITEM_ICONS,
-	BLOCK_ITEM_LABELS,
-} from '../../shared/components/BlockList/BlockList.consts';
-import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
+import { switchAssignmentBlockPositions } from '../../../assignment/helpers/switch-positions';
+import { BLOCK_ITEM_ICONS, BLOCK_ITEM_LABELS } from '../BlockList/BlockList.consts';
+import { BlockListSorter, ListSorterItem, ListSorterProps } from '../ListSorter';
 
-export function useBlocksList(
-	blocks: Avo.Core.BlockItemBase[],
-	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
+interface BlockListEditProps {
+	blocks: Avo.Core.BlockItemBase[];
+	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void;
 	config?: {
 		listSorter?: Partial<ListSorterProps<Avo.Core.BlockItemBase>>;
 		listSorterItem?: Partial<ListSorterItem>;
-	}
-): [ReactNode, (Avo.Core.BlockItemBase & ListSorterItem)[]] {
+	};
+}
+
+const BlockListEdit: FC<BlockListEditProps> = ({ blocks, setBlocks, config }) => {
 	const items = useMemo(() => {
 		return (blocks || []).map((block) => {
 			const mapped: Avo.Core.BlockItemBase & ListSorterItem = {
@@ -24,9 +23,6 @@ export function useBlocksList(
 				icon: BLOCK_ITEM_ICONS()[block.type](block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(blocks, item, delta);
-
-					console.info('event', switched);
-
 					setBlocks(switched);
 				},
 			};
@@ -35,7 +31,7 @@ export function useBlocksList(
 		});
 	}, [blocks, setBlocks, config]);
 
-	const ui = useMemo(
+	return useMemo(
 		() => (
 			<BlockListSorter
 				{...config?.listSorter}
@@ -45,6 +41,6 @@ export function useBlocksList(
 		),
 		[items, config]
 	);
+};
 
-	return [ui, items];
-}
+export default BlockListEdit;

@@ -399,6 +399,42 @@ export const UPDATE_ASSIGNMENT = gql`
 	}
 `;
 
+export const UPDATE_ASSIGNMENT_RESPONSE = gql`
+	mutation updateAssignmentResponse(
+		$assignmentResponseId: uuid
+		$collectionTitle: String!
+		$updatedAt: timestamptz!
+	) {
+		update_app_assignment_responses_v2(
+			where: { id: { _eq: $assignmentResponseId } }
+			_set: { collection_title: $collectionTitle, updated_at: $updatedAt }
+		) {
+			returning {
+				assignment_id
+				collection_title
+				created_at
+				id
+				owner_profile_id
+				pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+					assignment_response_id
+					created_at
+					custom_description
+					custom_title
+					end_oc
+					fragment_id
+					id
+					position
+					start_oc
+					thumbnail_path
+					type
+					updated_at
+					use_custom_fields
+				}
+			}
+		}
+	}
+`;
+
 export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
 	mutation toggleAssignmentResponseSubmitStatus($id: Int!, $submittedAt: timestamptz) {
 		update_app_assignment_responses(
