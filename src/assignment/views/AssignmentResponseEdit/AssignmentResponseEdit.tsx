@@ -76,6 +76,9 @@ const AssignmentResponseEdit: FunctionComponent<
 	const [assignmentInfoError, setAssignmentInfoError] = useState<any | null>(null);
 	const assignment: Avo.Assignment.Assignment_v2 | null = assignmentInfo?.assignment || null;
 
+	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
+		useState<Avo.Assignment.Response_v2 | null>(null);
+
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
 		null
 	);
@@ -88,7 +91,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		setValue,
 		trigger,
 	} = useForm<AssignmentResponseFormState>({
-		defaultValues: assignmentResponse || {
+		defaultValues: assignmentResponseOriginal || {
 			collection_title: '',
 			pupil_collection_blocks: [] as PupilCollectionFragment[],
 		},
@@ -148,12 +151,13 @@ const AssignmentResponseEdit: FunctionComponent<
 			);
 
 			// Create an assignment response if needed
-			setAssignmentResponse(
+			const newOrExistingAssignmentResponse =
 				await AssignmentService.createOrFetchAssignmentResponseObject(
 					tempAssignmentInfo?.assignment,
 					user
-				)
-			);
+				);
+			setAssignmentResponse(newOrExistingAssignmentResponse);
+			setAssignmentResponseOriginal(newOrExistingAssignmentResponse);
 
 			setAssignmentInfo(tempAssignmentInfo);
 		} catch (err) {
@@ -181,16 +185,23 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	// Events
 
+	const resetForm = () => {
+		reset({
+			collection_title: assignmentResponseOriginal?.collection_title || '',
+			pupil_collection_blocks: (assignmentResponseOriginal?.pupil_collection_blocks ||
+				[]) as PupilCollectionFragment[],
+		});
+		setAssignmentResponse(assignmentResponseOriginal);
+	};
+
 	const submit = async (formState: AssignmentResponseFormState) => {
 		try {
-			if (!user.profile?.id || !assignmentResponse) {
+			if (!user.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
 				return;
 			}
 
 			const updated = await AssignmentService.updateAssignmentResponse(
-				{
-					...assignmentResponse,
-				},
+				assignmentResponseOriginal,
 				{
 					collection_title: formState.collection_title,
 					pupil_collection_blocks: formState.pupil_collection_blocks,
@@ -207,6 +218,20 @@ const AssignmentResponseEdit: FunctionComponent<
 				// 	},
 				// 	user
 				// );
+
+				// Set new original
+				setAssignmentResponseOriginal((prev) => {
+					if (!prev) {
+						return null;
+					}
+					return {
+						...prev,
+						...updated,
+					};
+				});
+
+				// Reset form state to new original + reset dirty state on form:
+				resetForm();
 
 				// Re-fetch
 				await fetchAssignment();
@@ -409,7 +434,7 @@ const AssignmentResponseEdit: FunctionComponent<
 					<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
 					<StickySaveBar
 						isVisible={isDirty}
-						onCancel={() => reset()}
+						onCancel={() => resetForm()}
 						onSave={handleSubmit(submit, (...args) => console.error(args))}
 					/>
 				</Container>

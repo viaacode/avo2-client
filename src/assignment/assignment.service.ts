@@ -6,11 +6,12 @@ import {
 	AssignmentSchema_v2,
 } from '@viaa/avo2-types/types/assignment';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
+import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import {
@@ -424,6 +425,13 @@ export class AssignmentService {
 				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
 			}
 
+			// Update blocks
+			await PupilCollectionService.updatePupilCollectionBlocks(
+				original.id,
+				(original.pupil_collection_blocks || []) as PupilCollectionFragment[],
+				(update.pupil_collection_blocks || []) as PupilCollectionFragment[]
+			);
+
 			return {
 				...original,
 				...update,
@@ -737,7 +745,7 @@ export class AssignmentService {
 			);
 			const assignmentBlocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
-					if (block.type === 'ITEM') {
+					if (block.fragment_id) {
 						block.item_meta =
 							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
 							undefined;
@@ -871,9 +879,16 @@ export class AssignmentService {
 		assignmentResponse: Avo.Assignment.Response_v2
 	): Promise<void> {
 		// Fetch item_meta for each pupil collection block
-		const items = await Promise.all(
-			(assignmentResponse.pupil_collection_blocks || [])?.map((block) =>
-				ItemsService.fetchItemByExternalId((block as PupilCollectionFragment).fragment_id)
+		const items = compact(
+			await Promise.all(
+				(assignmentResponse.pupil_collection_blocks || [])?.map((block) => {
+					const fragmentId: string | undefined | null = (block as PupilCollectionFragment)
+						.fragment_id;
+					if (fragmentId) {
+						return ItemsService.fetchItemByExternalId(fragmentId);
+					}
+					return null;
+				})
 			)
 		);
 
