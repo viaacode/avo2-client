@@ -1264,7 +1264,7 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection[]> {
 		let variables: any;
 		try {
-			const trimmedFilterString = filterString && filterString.trim();
+			const trimmedFilterString = filterString?.trim();
 			const filterArray: any[] = [];
 			if (trimmedFilterString) {
 				filterArray.push({
