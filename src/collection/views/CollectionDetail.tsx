@@ -198,7 +198,9 @@ const CollectionDetail: FunctionComponent<
 			});
 
 			ToastService.danger(
-				t('Het ophalen van de gepubliceerde bundels die deze collectie bevatten is mislukt')
+				t(
+					'collection/views/collection-detail___het-ophalen-van-de-gepubliceerde-bundels-die-deze-collectie-bevatten-is-mislukt'
+				)
 			);
 		}
 	}, [setPublishedBundles, t, collectionId]);
