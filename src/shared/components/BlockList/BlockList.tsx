@@ -1,7 +1,10 @@
 import { Container } from '@viaa/avo2-components';
+import { ContainerPropsSchema } from '@viaa/avo2-components/dist/esm/components/Container/Container';
 import { Avo } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 
+import { AssignmentBlockType } from '../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../collection/collection.const';
 import {
 	CollectionFragmentTypeItem,
@@ -11,18 +14,28 @@ import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
 import { BlockListProps } from './BlockList.types';
+import AssignmentBlockTypeSearch from './blocks/AssignmentBlockTypeSearch';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
-		const layout = (children?: ReactNode) => (
-			<Container mode="horizontal" className="u-p-0">
-				<IconBar
-					icon={{
-						name: BLOCK_ITEM_ICONS()[block.type](block),
-					}}
-				>
-					{children}
-				</IconBar>
+		const layout = (children?: ReactNode, background?: ContainerPropsSchema['background']) => (
+			<Container
+				mode="horizontal"
+				size="full-width"
+				className="u-p-0"
+				background={background}
+			>
+				<Container mode="horizontal">
+					<div key={block.id} className="u-padding-top-l u-padding-bottom-l">
+						<IconBar
+							icon={{
+								name: BLOCK_ITEM_ICONS()[block.type](block),
+							}}
+						>
+							{children}
+						</IconBar>
+					</div>
+				</Container>
 			</Container>
 		);
 
@@ -30,26 +43,39 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 			case CollectionBlockType.TEXT:
 				return layout(
 					<CollectionFragmentTypeText
-						{...config?.text}
-						title={{ ...config?.text?.title, block }}
-						richText={{ ...config?.text?.richText, block }}
+						{...config?.TEXT}
+						title={{ ...config?.TEXT?.title, block }}
+						richText={{ ...config?.TEXT?.richText, block }}
 					/>
 				);
+
 			case CollectionBlockType.ITEM:
 				return layout(
 					<CollectionFragmentTypeItem
-						{...config?.item}
+						{...config?.ITEM}
 						title={{
-							...config?.item?.title,
+							...config?.ITEM?.title,
 							block,
 						}}
-						richText={{ ...config?.item?.richText, block }}
+						richText={{ ...config?.ITEM?.richText, block }}
 						flowPlayer={{
-							...config?.item?.flowPlayer,
+							...config?.ITEM?.flowPlayer,
 							block,
 						}}
-						meta={{ ...config?.item?.meta, block }}
+						meta={{ ...config?.ITEM?.meta, block }}
 					/>
+				);
+
+			case AssignmentBlockType.ZOEK:
+			case AssignmentBlockType.BOUW:
+				return layout(
+					<AssignmentBlockTypeSearch
+						block={block}
+						showCollectionButton={block.type === AssignmentBlockType.BOUW}
+						onSearchButtonClicked={config?.ZOEK?.onSearchButtonClicked || noop}
+						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
+					/>,
+					'alt'
 				);
 
 			default:
@@ -57,15 +83,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 		}
 	};
 
-	const renderBlockItemWrapper = (fragment: Avo.Core.BlockItemBase) => {
-		return (
-			<div key={fragment.id} className="u-padding-top-l u-padding-bottom-l">
-				{renderCollectionFragment(fragment)}
-			</div>
-		);
-	};
-
-	return <>{blocks.map(renderBlockItemWrapper)}</>;
+	return <>{blocks.map(renderCollectionFragment)}</>;
 };
 
 export default BlockList;

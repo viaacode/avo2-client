@@ -1,4 +1,10 @@
 .c-assignment-response-page {
+	.c-container--sticky-save-bar-wrapper {
+		.o-container--full-width {
+			width: 100%; // Search block needs to be full width with grey background
+		}
+	}
+
 	.c-item-detail__header {
 		background-color: transparent;
 		padding-bottom: 0;

@@ -1,18 +1,24 @@
 import useResizeObserver from '@react-hook/resize-observer';
+import { Button, DefaultProps } from '@viaa/avo2-components';
 import React, { FC, ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Scrollbar from 'react-scrollbars-custom';
-
-import { Button, DefaultProps } from '@viaa/avo2-components';
 
 import './CollapsibleColumn.scss';
 
 export interface CollapsibleColumnProps extends DefaultProps {
 	grow: ReactNode;
 	bound?: ReactNode;
+	enableScrollable: boolean;
 }
 
-const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow, bound }) => {
+const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
+	style,
+	className,
+	grow,
+	bound,
+	enableScrollable,
+}) => {
 	const [t] = useTranslation();
 	const el = useRef<HTMLDivElement>(null);
 
@@ -43,7 +49,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 	const content = (
 		<>
 			{bound}
-			{(overflowing || scrollable) && (
+			{(overflowing || scrollable) && enableScrollable && (
 				<div className="c-collapsible-column__bounded-toggle">
 					<Button
 						type="underlined-link"
@@ -70,7 +76,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 
 			<div className={boundedClassName} ref={el}>
 				<div className="c-collapsible-column__bounded-content">
-					{scrollable ? <Scrollbar>{content}</Scrollbar> : content}
+					{scrollable && enableScrollable ? <Scrollbar>{content}</Scrollbar> : content}
 				</div>
 			</div>
 		</div>

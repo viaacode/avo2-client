@@ -3,8 +3,8 @@ export { default as CollectionFragmentFlowPlayer } from './CollectionFragmentFlo
 export { default as CollectionFragmentMeta } from './CollectionFragmentMeta';
 export { default as CollectionFragmentRichText } from './CollectionFragmentRichText';
 export { default as CollectionFragmentTitle } from './CollectionFragmentTitle';
-export { default as CollectionFragmentTypeText } from './CollectionFragmentTypeText';
-export { default as CollectionFragmentTypeItem } from './CollectionFragmentTypeItem';
+export { default as CollectionFragmentTypeText } from '../../shared/components/BlockList/blocks/CollectionFragmentTypeText';
+export { default as CollectionFragmentTypeItem } from '../../shared/components/BlockList/blocks/CollectionFragmentTypeItem';
 export { default as CollectionStillsModal } from './modals/CollectionStillsModal';
 export { default as CutFragmentModal } from './modals/CutFragmentModal';
 export { default as FragmentAdd } from './fragment/FragmentAdd';
