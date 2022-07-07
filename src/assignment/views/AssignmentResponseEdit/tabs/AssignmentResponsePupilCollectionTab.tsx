@@ -176,8 +176,16 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 									icon="plus"
 									type="secondary"
 									onClick={() => {
-										addBlockModal.setEntity(item?.position);
-										addBlockModal.setOpen(true);
+										const newBlocks = insertAtPosition(
+											assignmentResponse.pupil_collection_blocks || [],
+											{
+												id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+												type: AssignmentBlockType.TEXT,
+												position: item?.position,
+											} as unknown as PupilCollectionFragment
+										);
+
+										updateBlocksInAssignmentResponseState(newBlocks);
 									}}
 								/>
 							),
