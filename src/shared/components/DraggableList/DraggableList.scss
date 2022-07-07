@@ -1,9 +1,20 @@
+@import '../../../styles/settings/colors';
+
 .c-draggable-list {
 	.o-grid-col-static {
 		width: 20px;
 	}
 
 	.c-table-view__item {
-		padding: 0 1.6rem;
+		cursor: move;
+		transition: background-color ease-in-out 0.3s;
+
+		&:hover {
+			background-color: $color-gray-50;
+		}
+
+		&:last-child {
+			border-bottom: none;
+		}
 	}
 }

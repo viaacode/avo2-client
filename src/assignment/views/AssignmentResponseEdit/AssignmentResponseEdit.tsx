@@ -60,13 +60,9 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignmentInfo, setAssignmentInfo] = useState<{
-		assignmentBlocks: Avo.Assignment.Block[];
-		assignment: Avo.Assignment.Assignment_v2;
-	} | null>(null);
-	const [assignmentInfoLoading, setAssignmentInfoLoading] = useState<boolean>(false);
-	const [assignmentInfoError, setAssignmentInfoError] = useState<any | null>(null);
-	const assignment: Avo.Assignment.Assignment_v2 | null = assignmentInfo?.assignment || null;
+	const [assignment, setAssignmentInfo] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignmentLoading, setAssignmentInfoLoading] = useState<boolean>(false);
+	const [assignmentError, setAssignmentInfoError] = useState<any | null>(null);
 	const [titleError, _setTitleError] = useState<boolean>(false); // TODO trigger on submit
 
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
@@ -143,7 +139,7 @@ const AssignmentResponseEdit: FunctionComponent<
 			// Create an assignment response if needed
 			setAssignmentResponse(
 				await AssignmentService.createOrFetchAssignmentResponseObject(
-					tempAssignmentInfo?.assignment,
+					tempAssignmentInfo,
 					user
 				)
 			);
@@ -308,9 +304,9 @@ const AssignmentResponseEdit: FunctionComponent<
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return (
 					<AssignmentResponseAssignmentTab
-						assignmentInfo={assignmentInfo}
-						assignmentInfoLoading={assignmentInfoLoading}
-						assignmentInfoError={assignmentInfoError}
+						assignment={assignment}
+						assignmentLoading={assignmentLoading}
+						assignmentError={assignmentError}
 					/>
 				);
 
@@ -342,7 +338,7 @@ const AssignmentResponseEdit: FunctionComponent<
 	};
 
 	const renderPageContent = () => {
-		if (assignmentInfoLoading) {
+		if (assignmentLoading) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -351,7 +347,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				</Spacer>
 			);
 		}
-		if (assignmentInfoError) {
+		if (assignmentError) {
 			return (
 				<ErrorView
 					message={t(

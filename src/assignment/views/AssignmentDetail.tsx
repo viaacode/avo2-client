@@ -48,7 +48,6 @@ type AssignmentProps = DefaultSecureRouteProps<{ id: string }>;
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2>();
-	const [assignmentBlocks, setAssignmentBlocks] = useState<Avo.Assignment.Block[]>([]);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canCreateAssignmentResponse: boolean;
@@ -120,8 +119,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				PermissionService.hasPermissions(
 					[
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response.assignment },
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response.assignment },
+						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response },
 					],
 					user
 				),
@@ -134,13 +133,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				// so we can set the created assignment response on the tempAssignment object,
 				// so we don't need to do a refetch of the original assignment
 				const assignmentResponse =
-					await AssignmentService.createOrFetchAssignmentResponseObject(
-						response.assignment,
-						user
-					);
+					await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
 
 				if (assignmentResponse) {
-					response.assignment.responses = [
+					response.responses = [
 						{
 							...assignmentResponse,
 							id: `${assignmentResponse.id}`,
@@ -152,7 +148,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 			trackEvents(
 				{
-					object: String(response.assignment.id),
+					object: String(response.id),
 					object_type: 'assignment',
 					action: 'view',
 				},
@@ -160,8 +156,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			);
 
 			setPermissions({ canEditAssignment, canCreateAssignmentResponse });
-			setAssignment(response.assignment);
-			setAssignmentBlocks(response.assignmentBlocks);
+			setAssignment(response);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment and content for detail page', err, {
@@ -176,7 +171,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				),
 			});
 		}
-	}, [setAssignment, setAssignmentBlocks, setLoadingInfo, match.params.id, t, user]);
+	}, [setAssignment, setLoadingInfo, match.params.id, t, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
@@ -296,7 +291,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	const renderContent = () => {
 		return (
 			<ul className="c-collection-list">
-				{assignmentBlocks.map((block: Avo.Assignment.Block) => renderBlock(block))}
+				{assignment?.blocks.map((block: Avo.Assignment.Block) => renderBlock(block))}
 			</ul>
 		);
 	};
