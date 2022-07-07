@@ -404,6 +404,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				/>
 			);
 		}
+		const deadline = formatTimestamp(assignment?.deadline_at, false);
 		return (
 			<div className="c-assignment-response-page c-assignment-response-page--edit">
 				<AssignmentHeading
@@ -420,7 +421,7 @@ const AssignmentResponseEdit: FunctionComponent<
 								{t(
 									'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
 									{
-										deadline: formatTimestamp(assignment?.deadline_at, false),
+										deadline,
 									}
 								)}
 							</Alert>
