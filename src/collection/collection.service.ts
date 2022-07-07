@@ -198,8 +198,10 @@ export class CollectionService {
 			);
 
 			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
-			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
-			const currentFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
+			const initialFragmentIds: (number | string)[] =
+				getFragmentIdsFromCollection(initialCollection);
+			const currentFragmentIds: (number | string)[] =
+				getFragmentIdsFromCollection(newCollection);
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
@@ -210,7 +212,7 @@ export class CollectionService {
 			const deleteFragmentIds = without(initialFragmentIds, ...currentFragmentIds);
 
 			// update fragments that are neither inserted nor deleted
-			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number) =>
+			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number | string) =>
 				initialFragmentIds.includes(fragmentId)
 			);
 
@@ -221,7 +223,7 @@ export class CollectionService {
 			);
 
 			// delete fragments
-			const deletePromises = deleteFragmentIds.map((id: number) =>
+			const deletePromises = deleteFragmentIds.map((id: number | string) =>
 				dataService.mutate({
 					mutation: DELETE_COLLECTION_FRAGMENT,
 					variables: { id },
@@ -231,7 +233,7 @@ export class CollectionService {
 
 			// update fragments
 			const updatePromises = compact(
-				updateFragmentIds.map((id: number) => {
+				updateFragmentIds.map((id: number | string) => {
 					let fragmentToUpdate: Avo.Collection.Fragment | undefined =
 						getFragmentsFromCollection(newCollection).find(
 							(fragment: Avo.Collection.Fragment) => {
@@ -571,7 +573,7 @@ export class CollectionService {
 	static updateCollectionProperties = async (
 		id: string,
 		collection: Partial<Avo.Collection.Collection>
-	) => {
+	): Promise<void> => {
 		try {
 			await dataService.mutate({
 				mutation: UPDATE_COLLECTION,
@@ -595,7 +597,7 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique identifier of the collection.
 	 */
-	static deleteCollection = async (collectionId: string) => {
+	static deleteCollection = async (collectionId: string): Promise<void> => {
 		try {
 			// delete collection by id
 			await dataService.mutate({
@@ -726,7 +728,7 @@ export class CollectionService {
 	static async fetchOrganisationContent(
 		offset: number,
 		limit: number,
-		order: any,
+		order: Record<string, 'asc' | 'desc'>,
 		companyId: string
 	): Promise<OrganisationContentItem[]> {
 		try {
@@ -1217,7 +1219,7 @@ export class CollectionService {
 		user: Avo.User.User,
 		offset: number,
 		limit: number | null,
-		order: any,
+		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined
 	): Promise<Avo.Collection.Collection[]> {

@@ -1,5 +1,5 @@
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { useCallback } from 'react';
+import { Avo } from '@viaa/avo2-types';
+import React, { ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -7,14 +7,14 @@ import { APP_PATH } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { buildLink, formatDate } from '../../shared/helpers';
 
-export function useAssignmentBlockMeta() {
+export function useBlockMeta(): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	const [t] = useTranslation();
 
 	return useCallback(
-		(block: AssignmentBlock) => {
+		(block: Avo.Core.BlockItemBase) => {
 			const organisation = block.item_meta?.organisation?.name;
 			const publishedAt = block.item_meta?.published_at;
-			const series = block.item_meta?.series;
+			const series = (block.item_meta as Avo.Item.Item)?.series;
 
 			return organisation || publishedAt || series ? (
 				<section className="u-spacer-bottom">

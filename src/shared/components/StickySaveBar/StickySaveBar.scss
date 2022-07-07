@@ -1,0 +1,46 @@
+@import '../../../styles/settings/variables';
+
+.c-container--sticky-save-bar-wrapper {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	justify-content: space-between; // Keep the save indicator at the bottom
+
+	> .c-sticky-edge-bar {
+		display: flex;
+		flex-direction: column;
+		align-items: baseline; // Better than center here
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: auto;
+		max-width: 100%;
+		width: 800px;
+		z-index: 999999;
+
+		@media screen and (max-width: ($g-bp1 - 1px)) {
+			text-align: center;
+
+			button,
+			p {
+				width: 100%;
+			}
+		}
+
+		@media screen and (min-width: $g-bp1) {
+			flex-direction: row;
+			justify-content: space-between;
+
+			button:first-of-type {
+				margin-left: auto; // Make the first button push away from other content
+
+				~ button {
+					margin-left: $g-spacer-unit;
+				}
+			}
+		}
+	}
+}
+
+.modal-open .o-container .c-sticky-edge-bar {
+	z-index: 40;
+}

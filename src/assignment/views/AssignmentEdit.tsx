@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
+import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { isPast } from 'date-fns/esm';
@@ -15,6 +15,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
@@ -31,14 +32,14 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
-	useAssignmentBlocks,
-	useAssignmentBlocksList,
-	useAssignmentContentModals,
+	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlockListModals,
+	useBlocks,
+	useBlocksList,
 } from '../hooks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -54,10 +55,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | undefined>(undefined);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
-	const form = useForm<AssignmentFormState>({
-		defaultValues: useMemo(() => original, [original]),
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
-	});
 	const {
 		control,
 		formState: { isDirty },
@@ -65,9 +62,19 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		reset: resetForm,
 		setValue,
 		trigger,
-	} = form;
+	} = useForm<AssignmentFormState>({
+		defaultValues: useMemo(() => original, [original]),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+	});
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
+		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		assignment.blocks,
+		updateBlocksInAssignmentState
+	);
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -174,7 +181,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useAssignmentBlocks(setBlock);
+	const renderBlockContent = useBlocks(setBlock);
 
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {
@@ -182,14 +189,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		// fetch item details
-		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = insertAtPosition(assignment.blocks, {
+		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
+		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item_meta: item,
+			item_meta,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
-		} as AssignmentBlock); // TODO: avoid cast
+		} as AssignmentBlock);
 
 		setAssignment((prev) => ({
 			...prev,
@@ -253,10 +260,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	};
 
-	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
-		assignment,
-		setAssignment,
-		setValue,
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignment.blocks,
+		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
 				responses: original?.responses || [],
@@ -276,7 +282,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
+	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
 			divider: (item) => (
@@ -376,7 +382,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				tabs={renderTabs}
 			/>
 
-			<Container mode="horizontal">
+			<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
 				{pastDeadline && (
 					<Spacer margin={['top-large']}>
 						<Alert type="info">
@@ -388,27 +394,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				)}
 
 				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
-
-				{isDirty && (
-					<StickyEdgeBar>
-						<p>
-							<strong>
-								{t('assignment/views/assignment-edit___wijzigingen-opslaan')}
-							</strong>
-						</p>
-
-						<Button
-							label={t('assignment/views/assignment-edit___annuleer')}
-							onClick={() => reset()}
-						/>
-
-						<Button
-							type="tertiary"
-							label={t('assignment/views/assignment-edit___opslaan')}
-							onClick={handleSubmit(submit, (...args) => console.error(args))}
-						/>
-					</StickyEdgeBar>
-				)}
+				<StickySaveBar
+					isVisible={isDirty}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
+				/>
 			</Container>
 
 			{renderedModals}

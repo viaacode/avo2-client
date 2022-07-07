@@ -1,4 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { ReactNode, useCallback } from 'react';
@@ -11,16 +12,16 @@ import { WYSIWYG_OPTIONS_AUTHOR } from '../../shared/constants';
 import { isRichTextEmpty } from '../../shared/helpers';
 import { AssignmentBlockType } from '../assignment.types';
 
-import { useAssignmentBlockDescriptionButtons } from './assignment-block-description-buttons';
-import { useAssignmentBlockMeta } from './assignment-block-meta';
+import { useBlockDescriptionButtons } from './assignment-block-description-buttons';
+import { useBlockMeta } from './assignment-block-meta';
 
-export function useAssignmentTextBlock(
-	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-): (block: AssignmentBlock) => ReactNode {
+export function useTextBlock(
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void
+): (block: Avo.Core.BlockItemBase) => ReactNode {
 	const [t] = useTranslation();
 
 	return useCallback(
-		(block: AssignmentBlock) => (
+		(block: Avo.Core.BlockItemBase) => (
 			<TitleDescriptionForm
 				className="u-padding-l"
 				id={block.id}
@@ -29,7 +30,7 @@ export function useAssignmentTextBlock(
 					placeholder: t(
 						'assignment/views/assignment-edit___instructies-of-omschrijving'
 					),
-					value: block.custom_title,
+					value: block.custom_title || '',
 					onChange: (value) => setBlock(block, { custom_title: value }),
 				}}
 				description={{
@@ -49,16 +50,16 @@ export function useAssignmentTextBlock(
 	);
 }
 
-export function useAssignmentItemBlock(
-	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-) {
+export function useItemBlock(
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void
+): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	const [t] = useTranslation();
 
-	const getButtons = useAssignmentBlockDescriptionButtons(setBlock);
-	const renderMeta = useAssignmentBlockMeta();
+	const getButtons = useBlockDescriptionButtons(setBlock);
+	const renderMeta = useBlockMeta();
 
 	return useCallback(
-		(block: AssignmentBlock) => {
+		(block: Avo.Core.BlockItemBase) => {
 			if (!block.item_meta) {
 				return null;
 			}
@@ -90,9 +91,11 @@ export function useAssignmentItemBlock(
 						placeholder: t(
 							'assignment/views/assignment-edit___instructies-of-omschrijving'
 						),
-						value: !block.use_custom_fields
-							? block.original_title || block.item_meta?.title
-							: block.custom_title,
+						value:
+							(!block.use_custom_fields
+								? (block as AssignmentBlock).original_title ||
+								  block.item_meta?.title
+								: block.custom_title) || undefined,
 						disabled: !block.use_custom_fields,
 						onChange: (value) => setBlock(block, { custom_title: value }),
 					}}
@@ -104,7 +107,7 @@ export function useAssignmentItemBlock(
 									),
 									initialHtml: convertToHtml(
 										!block.use_custom_fields
-											? block.original_description ||
+											? (block as AssignmentBlock).original_description ||
 													block.item_meta?.description
 											: block.custom_description
 									),
@@ -126,16 +129,16 @@ export function useAssignmentItemBlock(
 	);
 }
 
-export function useAssignmentBlocks(
-	setBlock: (block: AssignmentBlock, update: Partial<AssignmentBlock>) => void
-) {
+export function useBlocks(
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void
+): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	const [t] = useTranslation();
 
-	const text = useAssignmentTextBlock(setBlock);
-	const item = useAssignmentItemBlock(setBlock);
+	const text = useTextBlock(setBlock);
+	const item = useItemBlock(setBlock);
 
 	return useCallback(
-		(block: AssignmentBlock) => {
+		(block: Avo.Core.BlockItemBase) => {
 			switch (block.type) {
 				case AssignmentBlockType.TEXT:
 					return text(block);

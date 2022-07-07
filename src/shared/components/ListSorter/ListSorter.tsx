@@ -1,16 +1,16 @@
+import { Button, Icon, IconName } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
-import { Button, Icon, IconName } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
+import { sortByPositionAsc } from '../../helpers';
 
 import './ListSorter.scss';
-import { sortByPositionAsc } from '../../helpers';
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
 
 // Types
 
 export interface ListSorterItem {
-	id: string;
+	id: string | number; // Number is deprecated but still used in collection fragment blocks
 	onSlice?: (item: ListSorterItem) => void;
 	onPositionChange?: (item: ListSorterItem, delta: number) => void;
 	position: number;
@@ -45,21 +45,21 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 					type="secondary"
 					icon="chevron-up"
 					onClick={() => item.onPositionChange?.(item, -1)}
-				></Button>
+				/>
 			)}
 			{!isLast && (
 				<Button
 					type="secondary"
 					icon="chevron-down"
 					onClick={() => item.onPositionChange?.(item, 1)}
-				></Button>
+				/>
 			)}
 		</>
 	);
 };
 
 export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)}></Button>
+	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)} />
 );
 
 // Main renderer
@@ -135,4 +135,4 @@ export const ListSorter: ListSorterType = ({
 };
 
 // TODO: use this pattern for CollectionOrBundle to reduce overhead
-export const AssignmentBlockListSorter = ListSorter as ListSorterType<AssignmentBlock>;
+export const BlockListSorter = ListSorter as ListSorterType<Avo.Core.BlockItemBase>;

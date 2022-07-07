@@ -9,6 +9,7 @@ import {
 	TextInput,
 	Toggle,
 } from '@viaa/avo2-components';
+import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 import { isNil } from 'lodash-es';
@@ -88,8 +89,8 @@ export class AssignmentHelper {
 		return !!assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now());
 	}
 
-	public static getContentLayoutOptions() {
-		const options = [
+	public static getContentLayoutOptions(): RadioOption[] {
+		return [
 			{
 				label: i18n.t('assignment/views/assignment-edit___mediaspeler-met-beschrijving'),
 				value: AssignmentLayout.PlayerAndText.toString(),
@@ -98,8 +99,7 @@ export class AssignmentHelper {
 				label: i18n.t('assignment/views/assignment-edit___enkel-mediaspeler'),
 				value: AssignmentLayout.OnlyPlayer.toString(),
 			},
-		] as any[];
-		return options;
+		];
 	}
 
 	public static renderAssignmentForm(
@@ -301,21 +301,21 @@ export class AssignmentHelper {
 	public static getDisplayTitle(block: Avo.Assignment.Block): string {
 		if (!block.use_custom_fields) {
 			if (block.original_title || block.original_description) {
-				return block.original_title;
+				return block.original_title || '';
 			}
 			return block.item_meta?.title || '';
 		}
-		return block.custom_title;
+		return block.custom_title || '';
 	}
 
 	public static getDisplayDescription(block: Avo.Assignment.Block): string {
 		if (!block.use_custom_fields) {
 			if (block.original_title || block.original_description) {
-				return block.original_description;
+				return block.original_description || '';
 			}
 			return block.item_meta?.description || '';
 		}
-		return block.custom_description;
+		return block.custom_description || '';
 	}
 
 	public static getCuePoints(block: Avo.Assignment.Block): CuePoints | undefined {
@@ -335,10 +335,7 @@ export class AssignmentHelper {
 
 // Zoek & bouw
 
-export function setPositionToIndex<T>(
-	item: Positioned<T>,
-	i: number
-): Positioned<T> & { position: number } {
+export function setPositionToIndex<T>(item: Positioned<T>, i: number): Positioned<T> {
 	return {
 		...item,
 		position: i,
