@@ -91,7 +91,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 		if (!isNumber(selectedLabelIds[0])) {
 			// Old format where we save the whole label object
 			// TODO deprecated remove when all content pages with type overview have been resaved
-			selectedLabelIds = (((value.selectedLabels || []) as unknown) as LabelObj[]).map(
+			selectedLabelIds = ((value.selectedLabels || []) as unknown as LabelObj[]).map(
 				(labelObj) => labelObj.id
 			);
 		}

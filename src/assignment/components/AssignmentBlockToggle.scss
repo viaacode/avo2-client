@@ -3,13 +3,13 @@
 $component: 'c-assignment-block-toggle';
 
 .#{$component} {
-    border-top: 1px solid $color-gray-100;
+	border-top: 1px solid $color-gray-100;
 
-    &__description {
-        max-width: 640px;
-    }
+	&__description {
+		max-width: 640px;
+	}
 
-    .o-flex--center {
-        justify-content: initial;
-    }
+	.o-flex--center {
+		justify-content: initial;
+	}
 }

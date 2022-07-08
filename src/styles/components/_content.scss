@@ -133,7 +133,7 @@
 
 	dl {
 		border: 1px solid $color-gray-100;
-		border-radius: .3rem;
+		border-radius: 0.3rem;
 		overflow: hidden;
 		padding: 1.2rem;
 		margin: 1.5rem 0;
@@ -151,11 +151,13 @@
 		}
 	}
 
-	ul, ol {
+	ul,
+	ol {
 		padding: 0;
 		margin: 1.5rem 0 1.5rem 1.75rem;
 
-		ul, ol {
+		ul,
+		ol {
 			margin: 0;
 			padding-left: 2.25rem;
 		}
@@ -180,7 +182,7 @@
 	}
 
 	blockquote {
-		border-left: .4rem solid $color-night-blue;
+		border-left: 0.4rem solid $color-night-blue;
 		margin: 0 0 10px 0;
 		padding: 15px 20px;
 		background-color: #f1f2f3;
@@ -235,16 +237,17 @@
 		font-weight: normal;
 		line-height: 16px;
 		word-wrap: break-word;
-		white-space: pre-wrap
+		white-space: pre-wrap;
 	}
 
-	pre, code {
+	pre,
+	code {
 		font-family: $g-code-font-family;
 	}
 
 	pre pre {
 		margin: 0;
-		padding: 0
+		padding: 0;
 	}
 
 	code {
@@ -259,7 +262,7 @@
 	 * Braft editor output css
 	 */
 	p {
-		min-height: 1em
+		min-height: 1em;
 	}
 
 	.image-wrap {

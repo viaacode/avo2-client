@@ -283,7 +283,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 																path = generatePath(
 																	APP_PATH.ITEM_DETAIL.route,
 																	{
-																		id: (quickLane.content as ItemSchema).external_id.toString(),
+																		id: (
+																			quickLane.content as ItemSchema
+																		).external_id.toString(),
 																	}
 																);
 															} else if (isCollection(quickLane)) {

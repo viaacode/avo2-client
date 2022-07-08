@@ -48,9 +48,8 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 
 	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
 	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
-	const [selectedDeleteOption, setSelectedDeleteOption] = useState<Avo.User.UserDeleteOption>(
-		'DELETE_ALL'
-	);
+	const [selectedDeleteOption, setSelectedDeleteOption] =
+		useState<Avo.User.UserDeleteOption>('DELETE_ALL');
 	const [deleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState<boolean>(false);
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
 		null

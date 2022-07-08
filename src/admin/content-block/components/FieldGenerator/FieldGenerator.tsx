@@ -82,7 +82,8 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 	) => {
 		switch ((fieldOrFieldGroupInstance as ContentBlockFieldGroup).type) {
 			case 'fieldGroup':
-				const fieldGroup: ContentBlockFieldGroup = fieldOrFieldGroupInstance as ContentBlockFieldGroup;
+				const fieldGroup: ContentBlockFieldGroup =
+					fieldOrFieldGroupInstance as ContentBlockFieldGroup;
 
 				if (!fieldGroup) {
 					return null;

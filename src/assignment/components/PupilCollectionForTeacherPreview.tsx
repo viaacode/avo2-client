@@ -26,8 +26,16 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 	const closeButton = (
 		<Button
 			icon="close"
-			label={isMobileWidth() ? undefined : t('Sluit preview')}
-			ariaLabel={t('Sluit preview')}
+			label={
+				isMobileWidth()
+					? undefined
+					: t(
+							'assignment/components/pupil-collection-for-teacher-preview___sluit-preview'
+					  )
+			}
+			ariaLabel={t(
+				'assignment/components/pupil-collection-for-teacher-preview___sluit-preview'
+			)}
 			type="borderless-i"
 			onClick={onClose}
 		/>
@@ -41,7 +49,9 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 		<>
 			<AlertBar
 				icon="alert-circle"
-				textLeft={t('Je bent aan het kijken als lesgever')}
+				textLeft={t(
+					'assignment/components/pupil-collection-for-teacher-preview___je-bent-aan-het-kijken-als-lesgever'
+				)}
 				contentRight={closeButton}
 			/>
 			<AssignmentHeading

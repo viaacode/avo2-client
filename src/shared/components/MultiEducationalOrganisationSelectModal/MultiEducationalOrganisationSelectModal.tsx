@@ -33,21 +33,15 @@ export interface MultiEducationalOrganisationSelectModalProps {
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
-export const MultiEducationalOrganisationSelectModal: FunctionComponent<MultiEducationalOrganisationSelectModalProps> = ({
-	label,
-	id,
-	values,
-	disabled,
-	onChange,
-	showSelectedValuesOnCollapsed = true,
-}) => {
+export const MultiEducationalOrganisationSelectModal: FunctionComponent<
+	MultiEducationalOrganisationSelectModalProps
+> = ({ label, id, values, disabled, onChange, showSelectedValuesOnCollapsed = true }) => {
 	const [t] = useTranslation();
 
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [includeEmpty, setIncludeEmpty] = useState<boolean>(false);
-	const [selectedOrganisations, setSelectedOrganisations] = useState<
-		ClientEducationOrganization[]
-	>(values);
+	const [selectedOrganisations, setSelectedOrganisations] =
+		useState<ClientEducationOrganization[]>(values);
 
 	useEffect(() => {
 		setSelectedOrganisations(values.filter((org) => org.label !== NULL_FILTER));

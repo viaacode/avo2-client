@@ -1,33 +1,33 @@
 @import '../../../styles/settings/variables';
 
 .c-thumbnail.m-content-thumbnail {
-    width: $m-content-thumbnail-width;
+	width: $m-content-thumbnail-width;
 }
 
 .m-quick-lane-modal {
-    &__avatar {
-        .c-avatar--img {
-            border: 1px solid $color-night-blue;
-        }
+	&__avatar {
+		.c-avatar--img {
+			border: 1px solid $color-night-blue;
+		}
 
-        .c-avatar-and-text__text {
-            p {
-                font-weight: 500;
-            }
-        }
-    }
+		.c-avatar-and-text__text {
+			p {
+				font-weight: 500;
+			}
+		}
+	}
 
-    &__tabs {
-        &-wrapper {
-            // Equate to avo2-components/src/components/Modal/Modal.scss without importing
-            margin: 0 - ($g-spacer-unit * 3);
-            padding: 0 ($g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
-            background-color: $color-gray-50;
+	&__tabs {
+		&-wrapper {
+			// Equate to avo2-components/src/components/Modal/Modal.scss without importing
+			margin: 0 - ($g-spacer-unit * 3);
+			padding: 0 ($g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
+			background-color: $color-gray-50;
 
-            .c-tab-item.c-tab-item__active {
-                background-color: $g-base-background;
-                box-shadow: none;
-            }
-        }
-    }
+			.c-tab-item.c-tab-item__active {
+				background-color: $g-base-background;
+				box-shadow: none;
+			}
+		}
+	}
 }

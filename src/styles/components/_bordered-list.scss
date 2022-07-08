@@ -3,9 +3,10 @@
    ========================================================================== */
 
 .c-bordered-list {
-	a, span {
+	a,
+	span {
 		display: block;
-		padding: .8rem;
+		padding: 0.8rem;
 	}
 
 	a {
@@ -13,10 +14,10 @@
 	}
 
 	li {
-		border-bottom: .1rem solid mix($color-gray-100, $color-gray-150);
+		border-bottom: 0.1rem solid mix($color-gray-100, $color-gray-150);
 	}
 }
 
 .c-bordered-list--direct-padding li {
-	padding: .8rem;
+	padding: 0.8rem;
 }

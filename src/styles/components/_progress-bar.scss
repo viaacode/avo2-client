@@ -11,7 +11,7 @@
 }
 
 .c-progress-bar:before {
-	content: "";
+	content: '';
 	width: calc(var(--value) * 100%);
 	background-color: hsl(calc(var(--value) * 90), 50%, 50%);
 }

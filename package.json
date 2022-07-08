@@ -13,7 +13,7 @@
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --cache",
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --fix",
-    "format:fix": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "extract-translations": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format:fix",
     "whitelist-queries": "ts-node --transpile-only --require dotenv/config  --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts",
     "update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",

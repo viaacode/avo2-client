@@ -372,6 +372,6 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	);
 };
 
-export const ContentPicker = withUser(ContentPickerComponent) as FunctionComponent<
-	ContentPickerProps
->;
+export const ContentPicker = withUser(
+	ContentPickerComponent
+) as FunctionComponent<ContentPickerProps>;

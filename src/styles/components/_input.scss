@@ -55,15 +55,29 @@ textarea.c-input {
 }
 
 // Heights (for textareas)
-textarea.c-input--h-small { height: 12rem; }
-textarea.c-input--h-medium { height: 16rem; }
-textarea.c-input--h-large { height: 20rem; }
+textarea.c-input--h-small {
+	height: 12rem;
+}
+textarea.c-input--h-medium {
+	height: 16rem;
+}
+textarea.c-input--h-large {
+	height: 20rem;
+}
 
 // Widths
-.c-input--w-xsmall { width: 4rem; }
-.c-input--w-small { width: 9.6rem; }
-.c-input--w-medium { width: 16rem; }
-.c-input--w-large { width: 44rem; }
+.c-input--w-xsmall {
+	width: 4rem;
+}
+.c-input--w-small {
+	width: 9.6rem;
+}
+.c-input--w-medium {
+	width: 16rem;
+}
+.c-input--w-large {
+	width: 44rem;
+}
 
 .c-input[readonly] {
 	background-color: $c-input-readonly-border-color;
@@ -133,4 +147,3 @@ textarea.c-input--h-large { height: 20rem; }
 .c-input-group > .c-input:not(:first-child) {
 	border-radius: 0 0.3rem 0.3rem 0;
 }
-

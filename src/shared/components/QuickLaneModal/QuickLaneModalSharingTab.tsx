@@ -195,7 +195,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						onChange={(value: string) => {
 							setQuickLane({
 								...quickLane,
-								view_mode: (value as unknown) as AssignmentLayout, // TS2353
+								view_mode: value as unknown as AssignmentLayout, // TS2353
 							});
 						}}
 					/>

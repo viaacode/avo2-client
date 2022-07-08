@@ -227,6 +227,6 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 	);
 };
 
-export default withUser(CollectionOrBundleEditQualityCheck) as FunctionComponent<
-	CollectionOrBundleEditQualityCheckProps
->;
+export default withUser(
+	CollectionOrBundleEditQualityCheck
+) as FunctionComponent<CollectionOrBundleEditQualityCheckProps>;

@@ -26,11 +26,9 @@ export interface EducationalOrganisationsSelectProps {
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
-export const EducationalOrganisationsSelect: FunctionComponent<EducationalOrganisationsSelectProps> = ({
-	organisations,
-	onChange,
-	disabled = false,
-}) => {
+export const EducationalOrganisationsSelect: FunctionComponent<
+	EducationalOrganisationsSelectProps
+> = ({ organisations, onChange, disabled = false }) => {
 	const [t] = useTranslation();
 
 	const [cities, setCities] = useState<string[]>([]);

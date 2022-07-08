@@ -66,13 +66,13 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 
 	const initOrFetchPermissionGroup = useCallback(async () => {
 		if (isCreatePage) {
-			const permGroup = ({
+			const permGroup = {
 				label: '',
 				description: '',
 				created_at: new Date().toISOString(),
 				updated_at: new Date().toISOString(),
 				permissions: [],
-			} as unknown) as PermissionGroup;
+			} as unknown as PermissionGroup;
 			setInitialPermissionGroup(permGroup);
 			setPermissionGroup(permGroup);
 		} else {
@@ -262,11 +262,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	};
 
 	const getAllPermissions = () => {
-		const permissionIdsInGroup: number[] = (get(
-			permissionGroup,
-			'permissions',
-			[]
-		) as Permission[]).map((p) => p.id);
+		const permissionIdsInGroup: number[] = (
+			get(permissionGroup, 'permissions', []) as Permission[]
+		).map((p) => p.id);
 		return allPermissions
 			.filter((p) => {
 				// Don't show permissions that are already part of the permission group permissions

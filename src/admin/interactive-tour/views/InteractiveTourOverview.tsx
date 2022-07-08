@@ -65,16 +65,14 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 		};
 
 		try {
-			const [
-				interactiveToursTemp,
-				interactiveTourCountTemp,
-			] = await InteractiveTourService.fetchInteractiveTours(
-				tableState.page || 0,
-				// We need to substitute page with page_id, because the filter table state already contains a prop "page" for pagination
-				(tableState.sort_column || 'created_at').replace('page_id', 'page') as any,
-				tableState.sort_order || 'desc',
-				generateWhereObject(tableState)
-			);
+			const [interactiveToursTemp, interactiveTourCountTemp] =
+				await InteractiveTourService.fetchInteractiveTours(
+					tableState.page || 0,
+					// We need to substitute page with page_id, because the filter table state already contains a prop "page" for pagination
+					(tableState.sort_column || 'created_at').replace('page_id', 'page') as any,
+					tableState.sort_order || 'desc',
+					generateWhereObject(tableState)
+				);
 			setInteractiveTours(interactiveToursTemp);
 			setInteractiveTourCount(interactiveTourCountTemp);
 		} catch (err) {

@@ -191,7 +191,11 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				break;
 
 			default:
-				ToastService.danger(t('Knop actie niet gekend'));
+				ToastService.danger(
+					t(
+						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___knop-actie-niet-gekend'
+					)
+				);
 		}
 	};
 

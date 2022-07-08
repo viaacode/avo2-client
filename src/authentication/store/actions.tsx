@@ -29,12 +29,12 @@ function checkIfSessionExpires(expiresAt: string) {
 	const date = moment(expiresAt);
 
 	// Create fake location object
-	const location = ({
+	const location = {
 		pathname: window.location.pathname,
 		state: {
 			from: { pathname: window.location.pathname, search: window.location.search },
 		},
-	} as unknown) as RouteComponentProps['location'];
+	} as unknown as RouteComponentProps['location'];
 	if (date.subtract(5, 'minutes').valueOf() < new Date().getTime()) {
 		logoutAndRedirectToLogin(location);
 	} else if (date.subtract(10, 'minutes').valueOf() < new Date().getTime()) {

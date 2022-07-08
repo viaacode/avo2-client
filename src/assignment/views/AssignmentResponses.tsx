@@ -74,20 +74,16 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	>(null);
 	const [assignmentResponsesCount, setAssigmentResponsesCount] = useState<number>(0);
 	const [filterString, setFilterString] = useState<string>('');
-	const [isDeleteAssignmentResponseModalOpen, setDeleteAssignmentResponseModalOpen] = useState<
-		boolean
-	>(false);
-	const [
-		markedAssignmentResponse,
-		setMarkedAssignmentResponse,
-	] = useState<Avo.Assignment.Response_v2 | null>(null);
+	const [isDeleteAssignmentResponseModalOpen, setDeleteAssignmentResponseModalOpen] =
+		useState<boolean>(false);
+	const [markedAssignmentResponse, setMarkedAssignmentResponse] =
+		useState<Avo.Assignment.Response_v2 | null>(null);
 	const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<boolean | null>(
 		null
 	);
 
-	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] = useTableSort<
-		AssignmentOverviewTableColumns
-	>(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER);
+	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
+		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER);
 
 	const tableColumns = useMemo(
 		() =>
