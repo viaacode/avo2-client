@@ -28,8 +28,8 @@ import {
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 	useBlockListModals,
-	useBlocks,
 	useBlocksList,
+	useEditBlocks,
 } from '../hooks';
 
 import './AssignmentCreate.scss';
@@ -109,7 +109,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,

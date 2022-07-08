@@ -1,4 +1,5 @@
 @import '../../styles/settings/index';
+@import '../../styles/utilities';
 
 .p-my-workspace__action-placeholder {
 	display: inline-block;
@@ -9,7 +10,7 @@
 	width: 100%;
 }
 
-.m-workspace .c-select__single-value ,
+.m-workspace .c-select__single-value,
 .m-workspace .c-select__option {
 	display: grid;
 	gap: $g-spacer-unit;
@@ -17,5 +18,14 @@
 
 	.c-pill {
 		align-self: center;
+		margin-left: auto;
+	}
+}
+
+.m-workspace {
+	@media screen and (max-width: ($g-bp2 - 1)) {
+		.c-navbar .c-toolbar {
+			@include blockifyToolbar();
+		}
 	}
 }
