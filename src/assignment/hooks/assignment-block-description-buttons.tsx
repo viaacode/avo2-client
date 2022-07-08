@@ -14,7 +14,7 @@ export enum CustomFieldOption {
 
 export function useBlockDescriptionButtons(
 	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void,
-	override: CustomFieldOption[] = [
+	overrideFieldOptions: CustomFieldOption[] = [
 		CustomFieldOption.original,
 		CustomFieldOption.custom,
 		CustomFieldOption.none,
@@ -24,7 +24,7 @@ export function useBlockDescriptionButtons(
 
 	const buttons = useCallback(
 		(block: Avo.Core.BlockItemBase): Partial<ButtonProps>[] =>
-			override.map((type) => {
+			overrideFieldOptions.map((type) => {
 				switch (type) {
 					case CustomFieldOption.original:
 						return {
@@ -72,7 +72,7 @@ export function useBlockDescriptionButtons(
 						};
 				}
 			}),
-		[setBlock, override, t]
+		[setBlock, overrideFieldOptions, t]
 	);
 
 	return useCallback(
