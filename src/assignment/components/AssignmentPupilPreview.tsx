@@ -28,7 +28,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 			assignment_id: assignment.id as string,
 			assignment,
 			owner: {
-				full_name: t('naam leerling'),
+				full_name: t('assignment/components/assignment-pupil-preview___naam-leerling'),
 			},
 			owner_profile_id: user?.profile?.id,
 			id: '///fake-assignment-response-id',
@@ -40,8 +40,12 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	const renderClosePreviewButton = () => (
 		<Button
 			icon="close"
-			label={isMobileWidth() ? undefined : t('Sluit preview')}
-			ariaLabel={t('Sluit preview')}
+			label={
+				isMobileWidth()
+					? undefined
+					: t('assignment/components/assignment-pupil-preview___sluit-preview')
+			}
+			ariaLabel={t('assignment/components/assignment-pupil-preview___sluit-preview')}
 			type="borderless-i"
 			onClick={onClose}
 		/>
@@ -50,7 +54,9 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 		<>
 			<AlertBar
 				icon="info"
-				textLeft={t('Je bent aan het kijken als leerling.')}
+				textLeft={t(
+					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling'
+				)}
 				contentRight={renderClosePreviewButton()}
 			/>
 			<AssignmentResponseEdit

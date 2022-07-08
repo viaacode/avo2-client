@@ -100,8 +100,16 @@ const AssignmentResponseEditPage: FunctionComponent<
 		const closePreviewButton = (
 			<Button
 				icon="close"
-				label={isMobileWidth() ? undefined : t('Sluit preview')}
-				ariaLabel={t('Sluit preview')}
+				label={
+					isMobileWidth()
+						? undefined
+						: t(
+								'assignment/views/assignment-response-edit/assignment-response-edit-page___sluit-preview'
+						  )
+				}
+				ariaLabel={t(
+					'assignment/views/assignment-response-edit/assignment-response-edit-page___sluit-preview'
+				)}
 				type="borderless-i"
 				onClick={() => setIsTeacherPreviewEnabled(false)}
 			/>
@@ -115,7 +123,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 			<>
 				<AlertBar
 					icon="alert-circle"
-					textLeft={t('Je bent aan het kijken als lesgever')}
+					textLeft={t(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-bent-aan-het-kijken-als-lesgever'
+					)}
 					contentRight={closePreviewButton}
 				/>
 				<AssignmentHeading

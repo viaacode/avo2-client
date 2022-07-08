@@ -45,7 +45,8 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 
 				{pupilName && (
 					<Spacer margin="right">
-						{t('Leerling')}: <b>{pupilName}</b>
+						{t('assignment/components/assignment-metadata___leerling')}:{' '}
+						<b>{pupilName}</b>
 					</Spacer>
 				)}
 
