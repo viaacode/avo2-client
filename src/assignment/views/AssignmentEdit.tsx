@@ -426,7 +426,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create">
+		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
 			<AssignmentHeading
 				back={renderBackButton}
 				title={renderTitle}
@@ -434,7 +434,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				tabs={renderTabs}
 			/>
 
-			<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
+			<Container mode="horizontal">
 				{pastDeadline && (
 					<Spacer margin={['top-large']}>
 						<Alert type="info">
@@ -449,15 +449,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 				<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
 
-				<StickySaveBar
-					isVisible={isDirty}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
-					onCancel={() => reset()}
-				/>
+				{renderedModals}
+				{draggableListModal}
 			</Container>
 
-			{renderedModals}
-			{draggableListModal}
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar
+				isVisible={isDirty}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
 		</div>
 	);
 

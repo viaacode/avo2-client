@@ -294,23 +294,23 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderAssignmentResponseEditView = () => {
 		const deadline = formatTimestamp(assignment?.deadline_at, false);
 		return (
-			<div className="c-assignment-response-page c-assignment-response-page--edit">
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderedTitle}
-					tabs={renderTabs()}
-					info={
-						assignment ? (
-							<AssignmentMetadata
-								assignment={assignment}
-								assignmentResponse={assignmentResponse}
-								who={'teacher'}
-							/>
-						) : null
-					}
-					tour={<InteractiveTour showButton />}
-				/>
-				<div className="c-container--sticky-save-bar-wrapper">
+			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-save-bar__wrapper">
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderedTitle}
+						tabs={renderTabs()}
+						info={
+							assignment ? (
+								<AssignmentMetadata
+									assignment={assignment}
+									assignmentResponse={assignmentResponse}
+									who={'teacher'}
+								/>
+							) : null
+						}
+						tour={<InteractiveTour showButton />}
+					/>
 					<Container mode="horizontal">
 						{pastDeadline && (
 							<Spacer margin={['top-large']}>
@@ -329,14 +329,14 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					{renderTabContent()}
 
 					<Spacer margin={['bottom-large']} />
-					<Container mode="horizontal">
-						<StickySaveBar
-							isVisible={isDirty}
-							onCancel={() => resetForm()}
-							onSave={handleSubmit(submit, (...args) => console.error(args))}
-						/>
-					</Container>
 				</div>
+
+				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				<StickySaveBar
+					isVisible={isDirty}
+					onCancel={() => resetForm()}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+				/>
 			</div>
 		);
 	};

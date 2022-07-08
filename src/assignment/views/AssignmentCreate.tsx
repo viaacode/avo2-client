@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
@@ -232,26 +232,27 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create">
-			<AssignmentHeading
-				back={renderBackButton}
-				title={renderTitle}
-				actions={renderActions}
-				tabs={renderTabs}
-			/>
-
-			<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
-				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
-
-				{/* Always show on create */}
-				<StickySaveBar
-					isVisible={true}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
-					onCancel={() => reset()}
+		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+			<div>
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
 				/>
-			</Container>
 
-			{renderedModals}
+				{renderedModals}
+
+				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+			</div>
+
+			{/* Always show on create */}
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar
+				isVisible={true}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
 		</div>
 	);
 

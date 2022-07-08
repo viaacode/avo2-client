@@ -1,11 +1,10 @@
 @import '../../../styles/settings/variables';
 
-.c-container--sticky-save-bar-wrapper {
+.c-sticky-save-bar__wrapper {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
 	justify-content: space-between; // Keep the save indicator at the bottom
-	min-height: calc(100vh - 40rem); // Ensure save bar stays at the bottom when not enough content
 
 	> .c-sticky-save-bar {
 		display: flex;
