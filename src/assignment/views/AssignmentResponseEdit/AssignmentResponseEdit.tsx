@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	BlockHeading,
-	Button,
 	Container,
 	Flex,
 	Icon,
@@ -39,10 +38,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { InteractiveTour } from '../../../shared/components';
-import AlertBar from '../../../shared/components/AlertBar/AlertBar';
-import BlockList from '../../../shared/components/BlockList/BlockList';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, formatTimestamp, isMobileWidth } from '../../../shared/helpers';
+import { buildLink, formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { ASSIGNMENTS_ID } from '../../../workspace/workspace.const';
@@ -59,6 +56,7 @@ import {
 	PupilSearchFilterState,
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
+import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 import { useAssignmentPupilTabs } from '../../hooks';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
@@ -414,45 +412,6 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 	};
 
-	const renderPupilCollectionForTeacherPreview = () => {
-		const closeButton = (
-			<Button
-				icon="close"
-				label={isMobileWidth() ? undefined : t('Sluit preview')}
-				ariaLabel={t('Sluit preview')}
-				type="borderless-i"
-				onClick={() => setIsTeacherPreviewEnabled(false)}
-			/>
-		);
-		const collectionTitle = (
-			<BlockHeading className="u-spacer-left" type="h2">
-				{assignmentResponse?.collection_title || ''}
-			</BlockHeading>
-		);
-		return (
-			<>
-				<AlertBar
-					icon="alert-circle"
-					textLeft={t('Je bent aan het kijken als lesgever')}
-					contentRight={closeButton}
-				/>
-				<AssignmentHeading
-					title={collectionTitle}
-					info={renderMeta('pupil')}
-					tour={<InteractiveTour showButton />}
-				/>
-				<Container mode="horizontal">
-					<BlockList
-						blocks={
-							(assignmentResponse?.pupil_collection_blocks ||
-								[]) as Avo.Core.BlockItemBase[]
-						}
-					/>
-				</Container>
-			</>
-		);
-	};
-
 	const renderPageContent = () => {
 		if (assignmentLoading) {
 			return (
@@ -488,7 +447,22 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 
 		if (isTeacherPreviewEnabled) {
-			return renderPupilCollectionForTeacherPreview();
+			if (!assignmentResponse) {
+				return (
+					<Spacer margin="top-extra-large">
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					</Spacer>
+				);
+			}
+			return (
+				<PupilCollectionForTeacherPreview
+					onClose={() => setIsTeacherPreviewEnabled(false)}
+					assignmentResponse={assignmentResponse}
+					metadata={renderMeta('pupil')}
+				/>
+			);
 		}
 
 		const deadline = formatTimestamp(assignment?.deadline_at, false);

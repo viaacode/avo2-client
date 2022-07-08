@@ -41,7 +41,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 					<Toolbar
 						autoHeight
 						className={classnames('c-assignment-heading__top', {
-							'c-assignment-heading__top-slim': !back,
+							'c-assignment-heading__top__slim': !back,
 						})}
 					>
 						<ToolbarLeft>
