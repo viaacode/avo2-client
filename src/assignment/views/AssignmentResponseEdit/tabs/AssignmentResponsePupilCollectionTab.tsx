@@ -3,7 +3,6 @@ import {
 	Container,
 	Flex,
 	FormGroup,
-	Spacer,
 	TextInput,
 	Toolbar,
 	ToolbarLeft,
@@ -18,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
-import emptyCollectionPlaceholder from '../../../../assets/images/empty-collection.jpg';
+import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -200,40 +199,32 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 			</Container>
 			<Container mode="vertical">
 				{renderedListSorter}
-				<Container mode="vertical" className="c-empty-collection-placeholder">
-					<Flex orientation="vertical" center>
-						<img
-							alt={t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding'
-							)}
-							src={emptyCollectionPlaceholder}
-						/>
-						<Spacer margin={['top-large', 'bottom']}>
-							<h2>
+				{!assignmentResponse?.pupil_collection_blocks?.length && (
+					<EmptyStateMessage
+						title={t(
+							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+						)}
+						message={
+							<>
 								{t(
-									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
+								)}{' '}
+								<Button
+									type="inline-link"
+									label={t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
+									)}
+									onClick={() =>
+										setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
+									}
+								/>{' '}
+								{t(
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
 								)}
-							</h2>
-						</Spacer>
-						<p>
-							{t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
-							)}{' '}
-							<Button
-								type="inline-link"
-								label={t(
-									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
-								)}
-								onClick={() =>
-									setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
-								}
-							/>{' '}
-							{t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
-							)}
-						</p>
-					</Flex>
-				</Container>
+							</>
+						}
+					/>
+				)}
 			</Container>
 			{renderedModals}
 		</Container>

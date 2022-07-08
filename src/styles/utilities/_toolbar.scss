@@ -1,0 +1,8 @@
+@mixin blockifyToolbar() {
+	display: block;
+
+	.c-toolbar__left,
+	.c-toolbar__right {
+		display: block;
+	}
+}
