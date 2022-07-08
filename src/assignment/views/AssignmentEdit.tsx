@@ -30,6 +30,7 @@ import {
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
+import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
@@ -80,6 +81,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	const pastDeadline = useMemo(
 		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
@@ -355,12 +357,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					ariaLabel={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
-					disabled
 					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 					title={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
 					type="secondary"
+					onClick={() => setIsViewAsPupilEnabled(true)}
 				/>
 				<Button
 					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
@@ -395,7 +397,38 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 	}, [tab, renderedDetailForm, renderedListSorter]);
 
-	const render = () => (
+	// Effects
+
+	// Fetch initial data
+	useEffect(() => {
+		fetchAssignment();
+	}, [fetchAssignment]);
+
+	// Synchronise the React state that triggers renders with the useForm hook
+	useEffect(() => {
+		Object.keys(assignment).forEach((key) => {
+			const cast = key as keyof AssignmentFormState;
+			setValue(cast, assignment[cast]);
+		});
+
+		trigger();
+	}, [assignment, setValue, trigger]);
+
+	// Set the loading state when the form is ready
+	useEffect(() => {
+		if (loadingInfo.state !== 'loaded') {
+			assignment && setLoadingInfo({ state: 'loaded' });
+		}
+	}, [assignment, loadingInfo, setLoadingInfo]);
+
+	// Reset the form when the original changes
+	useEffect(() => {
+		original && reset();
+	}, [original, reset]);
+
+	// Render
+
+	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--create">
 			<AssignmentHeading
 				back={renderBackButton}
@@ -431,34 +464,17 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		</div>
 	);
 
-	// Effects
-
-	// Fetch initial data
-	useEffect(() => {
-		fetchAssignment();
-	}, [fetchAssignment]);
-
-	// Synchronise the React state that triggers renders with the useForm hook
-	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
-			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
-		});
-
-		trigger();
-	}, [assignment, setValue, trigger]);
-
-	// Set the loading state when the form is ready
-	useEffect(() => {
-		if (loadingInfo.state !== 'loaded') {
-			assignment && setLoadingInfo({ state: 'loaded' });
+	const renderPageContent = () => {
+		if (isViewAsPupilEnabled) {
+			return (
+				<AssignmentPupilPreview
+					assignment={assignment}
+					onClose={() => setIsViewAsPupilEnabled(false)}
+				/>
+			);
 		}
-	}, [assignment, loadingInfo, setLoadingInfo]);
-
-	// Reset the form when the original changes
-	useEffect(() => {
-		original && reset();
-	}, [original, reset]);
+		return renderEditAssignmentPage();
+	};
 
 	return (
 		<>
@@ -479,7 +495,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			<LoadingErrorLoadedComponent
 				dataObject={assignment}
-				render={render}
+				render={renderPageContent}
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>

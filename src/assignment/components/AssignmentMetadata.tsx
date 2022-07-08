@@ -21,11 +21,7 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 	if (!assignment) {
 		return null;
 	}
-	const teacherName =
-		who === 'teacher' &&
-		(
-			assignment?.profile?.user?.first_name + ' ' + assignment?.profile?.user?.last_name || ''
-		).trim();
+	const teacherName = who === 'teacher' && assignment?.owner?.full_name;
 	const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name;
 	const deadline = formatTimestamp(assignment?.deadline_at, false);
 	const labels = (assignment?.labels || [])

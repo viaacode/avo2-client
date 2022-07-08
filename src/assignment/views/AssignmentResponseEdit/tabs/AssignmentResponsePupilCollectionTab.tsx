@@ -51,7 +51,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	setValue,
 	control,
 	onShowPreviewClicked,
-    setTab,
+	setTab,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -201,22 +201,34 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				<Container mode="vertical" className="c-empty-collection-placeholder">
 					<Flex orientation="vertical" center>
 						<img
-							alt={t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding')}
+							alt={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding'
+							)}
 							src={emptyCollectionPlaceholder}
 						/>
 						<Spacer margin={['top-large', 'bottom']}>
-							<h2>{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg')}</h2>
+							<h2>
+								{t(
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+								)}
+							</h2>
 						</Spacer>
 						<p>
-							{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar')}{' '}
+							{t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
+							)}{' '}
 							<Button
 								type="inline-link"
-								label={t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken')}
+								label={t(
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
+								)}
 								onClick={() =>
 									setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
 								}
 							/>{' '}
-							{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken')}
+							{t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
+							)}
 						</p>
 					</Flex>
 				</Container>

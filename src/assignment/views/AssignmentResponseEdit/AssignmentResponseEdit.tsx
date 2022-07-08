@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	BlockHeading,
-	Button,
 	Container,
 	Flex,
 	Icon,
@@ -12,21 +11,17 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns/esm';
-import { isString } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
 	SetStateAction,
-	useCallback,
 	useEffect,
 	useMemo,
 	useState,
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import {
 	JsonParam,
 	NumberParam,
@@ -35,14 +30,10 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { APP_PATH } from '../../../constants';
 import { InteractiveTour } from '../../../shared/components';
-import AlertBar from '../../../shared/components/AlertBar/AlertBar';
-import BlockList from '../../../shared/components/BlockList/BlockList';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, formatTimestamp, isMobileWidth } from '../../../shared/helpers';
+import { buildLink, formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { ASSIGNMENTS_ID } from '../../../workspace/workspace.const';
@@ -50,15 +41,14 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
 } from '../../assignment.const';
-import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
-	AssignmentRetrieveError,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
+import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { useAssignmentPupilTabs } from '../../hooks';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
@@ -67,25 +57,28 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import AssignmentMetadata from '../../components/AssignmentMetadata';
 
-const AssignmentResponseEdit: FunctionComponent<
-	UserProps & DefaultSecureRouteProps<{ id: string }>
-> = ({ match, user }) => {
+interface AssignmentResponseEditProps {
+	assignment: Avo.Assignment.Assignment_v2;
+	assignmentResponse: Avo.Assignment.Response_v2 | null;
+	setAssignmentResponse: (newResponse: Avo.Assignment.Response_v2 | null) => void;
+	onAssignmentChanged: () => Promise<void>;
+	onShowPreviewClicked: () => void;
+}
+
+const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & UserProps> = ({
+	assignment,
+	assignmentResponse,
+	onAssignmentChanged,
+	setAssignmentResponse,
+	onShowPreviewClicked,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// Data
-	const assignmentId = match.params.id;
-	const [assignment, setAssignmentInfo] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentLoading, setAssignmentInfoLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentInfoError] = useState<any | null>(null);
-
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<Avo.Assignment.Response_v2 | null>(null);
-
-	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
-		null
-	);
+		useState<Avo.Assignment.Response_v2 | null>(assignmentResponse);
 
 	const {
 		control,
@@ -119,7 +112,8 @@ const AssignmentResponseEdit: FunctionComponent<
 	];
 	const [tabs, tab, setTab, onTabClick] = useAssignmentPupilTabs(
 		assignment || undefined,
-		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
+			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 		(newTab: string) => {
 			setFilterState({
 				...(filterState as PupilSearchFilterState),
@@ -128,54 +122,12 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 	);
 
-	const [isTeacherPreviewEnabled, setIsTeacherPreviewEnabled] = useState<boolean>(false);
-
 	const pastDeadline = useMemo(
 		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
 		[assignment]
 	);
 
 	// HTTP
-	const fetchAssignment = useCallback(async () => {
-		try {
-			setAssignmentInfoLoading(true);
-
-			// Get assignment
-			setAssignmentInfoError(null);
-			if (!user.profile?.id) {
-				ToastService.danger(
-					t(
-						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id'
-					)
-				);
-				return;
-			}
-
-			const response: Avo.Assignment.Assignment_v2 | string =
-				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
-
-			if (isString(response)) {
-				// error
-				setAssignmentInfoError({
-					state: 'error',
-					...getAssignmentErrorObj(response as AssignmentRetrieveError),
-				});
-				setAssignmentInfoLoading(false);
-				return;
-			}
-
-			// Create an assignment response if needed
-			const newOrExistingAssignmentResponse =
-				await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
-			setAssignmentResponse(newOrExistingAssignmentResponse);
-			setAssignmentResponseOriginal(newOrExistingAssignmentResponse);
-
-			setAssignmentInfo(response);
-		} catch (err) {
-			setAssignmentInfoError(err);
-		}
-		setAssignmentInfoLoading(false);
-	}, [assignmentId]);
 
 	// Effects
 
@@ -190,10 +142,6 @@ const AssignmentResponseEdit: FunctionComponent<
 		trigger();
 	}, [assignmentResponse, setValue, trigger]);
 
-	useEffect(() => {
-		fetchAssignment();
-	}, []);
-
 	// Events
 
 	const resetForm = () => {
@@ -207,7 +155,7 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	const submit = async (formState: AssignmentResponseFormState) => {
 		try {
-			if (!user.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
+			if (!user?.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
 				return;
 			}
 
@@ -245,7 +193,7 @@ const AssignmentResponseEdit: FunctionComponent<
 				resetForm();
 
 				// Re-fetch
-				await fetchAssignment();
+				await onAssignmentChanged();
 
 				ToastService.success(
 					t(
@@ -298,15 +246,6 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	const renderTabContent = () => {
 		switch (tab) {
-			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
-				return (
-					<AssignmentResponseAssignmentTab
-						assignment={assignment}
-						assignmentLoading={assignmentLoading}
-						assignmentError={assignmentError}
-					/>
-				);
-
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				return (
 					<AssignmentResponseSearchTab
@@ -337,105 +276,18 @@ const AssignmentResponseEdit: FunctionComponent<
 						}
 						setValue={setValue}
 						control={control}
-						onShowPreviewClicked={() => setIsTeacherPreviewEnabled(true)}
+						onShowPreviewClicked={onShowPreviewClicked}
 						setTab={setTab}
 					/>
 				);
 
+			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 			default:
-				return tab;
+				return <AssignmentResponseAssignmentTab assignment={assignment} />;
 		}
 	};
 
-	const renderPupilCollectionForTeacherPreview = () => {
-		const closeButton = (
-			<Button
-				icon="close"
-				label={isMobileWidth() ? undefined : t('Sluit preview')}
-				ariaLabel={t('Sluit preview')}
-				type="borderless-i"
-				onClick={() => setIsTeacherPreviewEnabled(false)}
-			/>
-		);
-		const collectionTitle = (
-			<BlockHeading className="u-spacer-left" type="h2">
-				{assignmentResponse?.collection_title || ''}
-			</BlockHeading>
-		);
-		return (
-			<>
-				<AlertBar
-					icon="alert-circle"
-					textLeft={t('Je bent aan het kijken als lesgever')}
-					contentRight={closeButton}
-				/>
-				<AssignmentHeading
-					title={collectionTitle}
-					info={
-						assignment ? (
-							<AssignmentMetadata
-								assignment={assignment}
-								assignmentResponse={assignmentResponse}
-								who={'pupil'}
-							/>
-						) : null
-					}
-					tour={<InteractiveTour showButton />}
-				/>
-				<Container mode="horizontal">
-					<BlockList
-						blocks={
-							(assignmentResponse?.pupil_collection_blocks ||
-								[]) as Avo.Core.BlockItemBase[]
-						}
-					/>
-				</Container>
-			</>
-		);
-	};
-
-	const renderPageContent = () => {
-		if (assignmentLoading) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
-		}
-		if (assignmentError) {
-			return (
-				<ErrorView
-					message={
-						assignmentError.message ||
-						t(
-							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
-						)
-					}
-					icon={assignmentError.icon || 'alert-triangle'}
-				/>
-			);
-		}
-		if (!assignment) {
-			return (
-				<ErrorView
-					message={t(
-						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
-					)}
-					icon={'search'}
-				/>
-			);
-		}
-
-		if (isTeacherPreviewEnabled) {
-			return (
-				<div className="c-assignment-response-page c-assignment-response-page--edit">
-					{renderPupilCollectionForTeacherPreview()}
-				</div>
-			);
-		}
-
+	const renderAssignmentResponseEditView = () => {
 		const deadline = formatTimestamp(assignment?.deadline_at, false);
 		return (
 			<div className="c-assignment-response-page c-assignment-response-page--edit">
@@ -479,28 +331,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		);
 	};
 
-	return (
-		<>
-			<MetaTags>
-				<title>
-					{GENERATE_SITE_TITLE(
-						t(
-							'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel'
-						)
-					)}
-				</title>
-
-				<meta
-					name="description"
-					content={t(
-						'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving'
-					)}
-				/>
-			</MetaTags>
-
-			{renderPageContent()}
-		</>
-	);
+	return renderAssignmentResponseEditView();
 };
 
-export default compose(withRouter, withUser)(AssignmentResponseEdit) as FunctionComponent;
+export default withUser(AssignmentResponseEdit) as FunctionComponent<AssignmentResponseEditProps>;
