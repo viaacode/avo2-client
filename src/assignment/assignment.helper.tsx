@@ -367,14 +367,6 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 				icon: 'clock',
 			};
 
-		case AssignmentRetrieveError.PAST_DEADLINE:
-			return {
-				message: i18n.t(
-					'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
-				),
-				icon: 'clock',
-			};
-
 		default:
 			return {
 				message: i18n.t(

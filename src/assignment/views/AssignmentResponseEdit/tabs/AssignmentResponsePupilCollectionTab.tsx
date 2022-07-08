@@ -18,9 +18,10 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
+import { BlockList } from '../../../../collection/components';
+import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import MoreOptionsDropdown from '../../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { isMobileWidth } from '../../../../shared/helpers';
-import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../../../shared/services';
@@ -50,6 +51,7 @@ enum MobileActionId {
 }
 
 interface AssignmentResponsePupilCollectionTabProps {
+	pastDeadline: boolean;
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
@@ -59,7 +61,15 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'> &
 		UserProps
-> = ({ assignmentResponse, setAssignmentResponse, setValue, control, setTab, user }) => {
+> = ({
+	pastDeadline,
+	assignmentResponse,
+	setAssignmentResponse,
+	setValue,
+	control,
+	setTab,
+	user,
+}) => {
 	const [t] = useTranslation();
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
 	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
@@ -227,83 +237,104 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		);
 	};
 
-	return (
-		<Container mode="horizontal" className="p-assignment-response-pupil-collection-tab">
-			<Container mode="vertical">
-				<Toolbar size="large" className="l-main-toolbar">
-					<ToolbarLeft>
-						<Controller
-							name="collection_title"
-							control={control}
-							render={({ field, fieldState: { error, isTouched } }) => (
-								<FormGroup
-									label={t(
-										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
-									)}
-									className="c-form-group--full-width"
-								>
-									<Flex orientation="vertical">
-										<TextInput
-											type="text"
-											value={field.value || ''}
-											onChange={(newTitle: string) => {
-												setAssignmentResponse((prev) => {
-													return {
-														...prev,
-														collection_title: newTitle,
-													};
-												});
-												setValue('collection_title', newTitle, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
-											}}
-										/>
-									</Flex>
+	const renderPupilCollectionBlocks = () => {
+		return (
+			<>
+				<Container mode="vertical">
+					<Toolbar size="large">
+						<ToolbarLeft>
+							<Controller
+								name="collection_title"
+								control={control}
+								render={({ field, fieldState: { error, isTouched } }) => (
+									<FormGroup
+										label={t(
+											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
+										)}
+										className="c-form-group--full-width"
+									>
+										<Flex orientation="vertical">
+											<TextInput
+												type="text"
+												value={field.value || ''}
+												onChange={(newTitle: string) => {
+													setAssignmentResponse((prev) => {
+														return {
+															...prev,
+															collection_title: newTitle,
+														};
+													});
+													setValue('collection_title', newTitle, {
+														shouldDirty: true,
+														shouldTouch: true,
+													});
+												}}
+											/>
+										</Flex>
 
-									{error && isTouched && (
-										<span className="c-floating-error">
-											{t(
-												'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
-											)}
-										</span>
-									)}
-								</FormGroup>
-							)}
-						/>
-					</ToolbarLeft>
-					<ToolbarRight>{renderActionButtons()}</ToolbarRight>
-				</Toolbar>
-			</Container>
-			<Container mode="vertical">
-				{renderedListSorter}
-				{!assignmentResponse?.pupil_collection_blocks?.length && (
-					<EmptyStateMessage
-						title={t(
-							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
-						)}
-						message={
-							<>
-								{t(
-									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
-								)}{' '}
-								<Button
-									type="inline-link"
-									label={t(
-										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
-									)}
-									onClick={() =>
-										setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
-									}
-								/>{' '}
-								{t(
-									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
+										{error && isTouched && (
+											<span className="c-floating-error">
+												{t(
+													'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
+												)}
+											</span>
+										)}
+									</FormGroup>
 								)}
-							</>
-						}
-					/>
-				)}
+							/>
+						</ToolbarLeft>
+						<ToolbarRight>{renderActionButtons()}</ToolbarRight>
+					</Toolbar>
+				</Container>
+				<Container mode="vertical">
+					{renderedListSorter}
+					{!assignmentResponse?.pupil_collection_blocks?.length && (
+						<EmptyStateMessage
+							title={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+							)}
+							message={
+								<>
+									{t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
+									)}{' '}
+									<Button
+										type="inline-link"
+										label={t(
+											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
+										)}
+										onClick={() =>
+											setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
+										}
+									/>{' '}
+									{t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
+									)}
+								</>
+							}
+						/>
+					)}
+				</Container>
+			</>
+		);
+	};
+
+	const renderReadOnlyPupilCollectionBlocks = () => {
+		return (
+			<Container mode="vertical">
+				<BlockList
+					blocks={
+						(assignmentResponse?.pupil_collection_blocks ||
+							[]) as Avo.Core.BlockItemBase[]
+					}
+				/>
 			</Container>
+		);
+	};
+
+	return (
+		<Container mode="horizontal">
+			{pastDeadline ? renderReadOnlyPupilCollectionBlocks() : renderPupilCollectionBlocks()}
 			{renderedModals}
 			{draggableListModal}
 		</Container>
