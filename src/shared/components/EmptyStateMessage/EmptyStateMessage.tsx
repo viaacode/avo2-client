@@ -22,7 +22,15 @@ const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
 	return (
 		<Container mode="vertical" className="c-empty-collection-placeholder">
 			<Flex orientation="vertical" center>
-				<img alt={imgAlt} src={imgSrc || i18n.t('Geen inhoud afbeelding alt tekst')} />
+				<img
+					alt={imgAlt}
+					src={
+						imgSrc ||
+						i18n.t(
+							'shared/components/empty-state-message/empty-state-message___geen-inhoud-afbeelding-alt-tekst'
+						)
+					}
+				/>
 				<Spacer margin={['top-large', 'bottom']}>
 					<h2>{title}</h2>
 				</Spacer>

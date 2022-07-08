@@ -483,14 +483,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderResponsesCell = (cellData: any, assignment: AssignmentSchema_v2) => {
 		if ((cellData || []).length === 0) {
-			return renderDataCell('0', t('Responses:'));
+			return renderDataCell('0', t('assignment/views/assignment-overview___responses'));
 		}
 
 		return renderDataCell(
 			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
 				{(cellData || []).length}
 			</Link>,
-			t('Responses:')
+			t('assignment/views/assignment-overview___responses')
 		);
 	};
 
@@ -566,7 +566,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'deadline_at':
 				return renderDataCell(
 					<AssignmentDeadline deadline={assignment.deadline_at} />,
-					t('Deadline:')
+					t('assignment/views/assignment-overview___deadline')
 				);
 
 			case 'updated_at':

@@ -1,4 +1,3 @@
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,16 +9,12 @@ import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.cons
 interface AssignmentResponseAssignmentTabProps {
 	blocks: Avo.Assignment.Assignment_v2['blocks'] | null;
 	pastDeadline: boolean;
-	isLoading: boolean;
-	loadingError: any | null;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 }
 
 const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssignmentTabProps> = ({
 	blocks,
 	pastDeadline,
-	isLoading,
-	loadingError,
 	setTab,
 }) => {
 	const [t] = useTranslation();
@@ -27,25 +22,6 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 	// Render
 
 	const renderAssignmentBlocks = () => {
-		if (isLoading) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
-		}
-		if (loadingError) {
-			return (
-				<ErrorView
-					message={t(
-						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
-					)}
-					icon="alert-triangle"
-				/>
-			);
-		}
 		if ((blocks?.length || 0) === 0) {
 			return (
 				<ErrorView

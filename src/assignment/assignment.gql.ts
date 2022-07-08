@@ -125,6 +125,9 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			owner_profile_id
 			updated_at
 			created_at
+			owner {
+				full_name
+			}
 		}
 		count: app_assignments_v2_aggregate(
 			where: {
@@ -195,6 +198,9 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 					or_id
 				}
 				id
+			}
+			owner {
+				full_name
 			}
 		}
 		count: app_assignments_v2_aggregate(
@@ -275,6 +281,9 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 				thumbnail_path
 				assignment_response_id
 			}
+			owner {
+				full_name
+			}
 		}
 	}
 `;
@@ -303,6 +312,9 @@ export const GET_ASSIGNMENT_RESPONSE = gql`
 				type
 				thumbnail_path
 				assignment_response_id
+			}
+			owner {
+				full_name
 			}
 		}
 	}
@@ -350,6 +362,9 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					thumbnail_path
 					assignment_response_id
 				}
+				owner {
+					full_name
+				}
 			}
 			assignment_type
 			deadline_at
@@ -379,6 +394,9 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					first_name
 					last_name
 				}
+			}
+			owner {
+				full_name
 			}
 		}
 	}
@@ -461,6 +479,9 @@ export const UPDATE_ASSIGNMENT_RESPONSE = gql`
 					type
 					updated_at
 					use_custom_fields
+				}
+				owner {
+					full_name
 				}
 			}
 		}

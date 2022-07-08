@@ -20,6 +20,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
+import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import {
 	useAssignmentBlockChangeHandler,
@@ -104,6 +105,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	// Render
 
@@ -165,7 +167,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		() => (
 			<>
 				<Button
-					disabled
 					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 					title={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
@@ -174,6 +175,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
 					type="secondary"
+					onClick={() => setIsViewAsPupilEnabled(true)}
 				/>
 				<Button
 					disabled
@@ -208,7 +210,28 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		}
 	}, [tab, renderedDetailForm, renderedListSorter]);
 
-	const render = () => (
+	// Effects
+
+	// Synchronise the React state that triggers renders with the useForm hook
+	useEffect(() => {
+		Object.keys(assignment).forEach((key) => {
+			const cast = key as keyof AssignmentFormState;
+			setValue(cast, assignment[cast]);
+		});
+
+		trigger();
+	}, [assignment, setValue, trigger]);
+
+	// Set the loading state when the form is ready
+	useEffect(() => {
+		if (loadingInfo.state !== 'loaded' && assignment) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [assignment, loadingInfo, setLoadingInfo]);
+
+	// Render
+
+	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--create">
 			<AssignmentHeading
 				back={renderBackButton}
@@ -232,24 +255,17 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		</div>
 	);
 
-	// Effects
-
-	// Synchronise the React state that triggers renders with the useForm hook
-	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
-			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
-		});
-
-		trigger();
-	}, [assignment, setValue, trigger]);
-
-	// Set the loading state when the form is ready
-	useEffect(() => {
-		if (loadingInfo.state !== 'loaded' && assignment) {
-			setLoadingInfo({ state: 'loaded' });
+	const renderPageContent = () => {
+		if (isViewAsPupilEnabled) {
+			return (
+				<AssignmentPupilPreview
+					assignment={assignment}
+					onClose={() => setIsViewAsPupilEnabled(false)}
+				/>
+			);
 		}
-	}, [assignment, loadingInfo, setLoadingInfo]);
+		return renderEditAssignmentPage();
+	};
 
 	return (
 		<>
@@ -270,7 +286,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 			<LoadingErrorLoadedComponent
 				dataObject={assignment}
-				render={render}
+				render={renderPageContent}
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>
