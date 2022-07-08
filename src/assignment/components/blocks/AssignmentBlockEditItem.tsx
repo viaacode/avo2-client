@@ -14,7 +14,7 @@ import { CustomFieldOption } from '../../hooks/assignment-block-description-butt
 import { AssignmentBlockMeta } from '../AssignmentBlockMeta';
 
 export const AssignmentBlockEditItem: FC<
-	EditBlockProps & { customFieldOptions: CustomFieldOption[] }
+	EditBlockProps & { customFieldOptions?: CustomFieldOption[] }
 > = ({ block, setBlock, customFieldOptions }) => {
 	const [t] = useTranslation();
 	const getButtons = useBlockDescriptionButtons(setBlock, customFieldOptions);

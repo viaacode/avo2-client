@@ -44,7 +44,6 @@ import {
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { CustomFieldOption } from '../hooks/assignment-block-description-buttons';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -183,11 +182,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock, [
-		CustomFieldOption.original,
-		CustomFieldOption.custom,
-		CustomFieldOption.none,
-	]);
+	const renderBlockContent = useEditBlocks(setBlock);
 
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {

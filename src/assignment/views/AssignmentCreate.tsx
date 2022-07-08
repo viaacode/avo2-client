@@ -33,7 +33,6 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
-import { CustomFieldOption } from '../hooks/assignment-block-description-buttons';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
@@ -108,11 +107,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock, [
-		CustomFieldOption.original,
-		CustomFieldOption.custom,
-		CustomFieldOption.none,
-	]);
+	const renderBlockContent = useEditBlocks(setBlock);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
