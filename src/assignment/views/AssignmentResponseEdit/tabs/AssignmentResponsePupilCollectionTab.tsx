@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
-import BlockListEdit from '../../../../shared/components/BlockListEdit/BlockListEdit';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import {
@@ -30,7 +29,13 @@ import {
 	PupilCollectionFragment,
 } from '../../../assignment.types';
 import { insertAtPosition } from '../../../helpers/insert-at-position';
-import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
+import {
+	useAssignmentBlockChangeHandler,
+	useBlockListModals,
+	useBlocksList,
+	useEditBlocks,
+} from '../../../hooks';
+import { CustomFieldOption } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
 
@@ -103,7 +108,36 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once Avo.Core.BlockItemBase is in typings repo
 		updateBlocksInAssignmentResponseState
 	);
-	const renderBlockContent = useBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, [
+		CustomFieldOption.original,
+		CustomFieldOption.custom,
+	]);
+	const [renderedListSorter] = useBlocksList(
+		// TODO rename to useEditBlockList and switch to component instead of hook
+		assignmentResponse.pupil_collection_blocks || [],
+		updateBlocksInAssignmentResponseState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (item) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(item?.position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
+			},
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	// Render
 
@@ -164,39 +198,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				</Toolbar>
 			</Container>
 			<Container mode="vertical">
-				<BlockListEdit
-					blocks={assignmentResponse?.pupil_collection_blocks || []}
-					setBlocks={updateBlocksInAssignmentResponseState}
-					config={{
-						listSorter: {
-							content: (item) => item && renderBlockContent(item),
-							divider: (item) => (
-								<Button
-									icon="plus"
-									type="secondary"
-									onClick={() => {
-										const newBlocks = insertAtPosition(
-											assignmentResponse.pupil_collection_blocks || [],
-											{
-												id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-												type: AssignmentBlockType.TEXT,
-												position: item?.position,
-											} as unknown as PupilCollectionFragment
-										);
-
-										updateBlocksInAssignmentResponseState(newBlocks);
-									}}
-								/>
-							),
-						},
-						listSorterItem: {
-							onSlice: (item) => {
-								confirmSliceModal.setEntity(item);
-								confirmSliceModal.setOpen(true);
-							},
-						},
-					}}
-				/>
+				{renderedListSorter}
 				{!assignmentResponse?.pupil_collection_blocks?.length && (
 					<EmptyStateMessage
 						title={t(

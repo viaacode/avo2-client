@@ -6,7 +6,7 @@ import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptio
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { EditBlockProps } from '../../assignment.types';
 
-export const AssignmentBlockText: FC<EditBlockProps> = ({ block, setBlock }) => {
+export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock }) => {
 	const [t] = useTranslation();
 
 	return (
