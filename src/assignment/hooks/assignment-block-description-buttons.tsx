@@ -6,50 +6,73 @@ import { useTranslation } from 'react-i18next';
 
 import { isRichTextEmpty } from '../../shared/helpers';
 
+export enum CustomFieldOption {
+	original = 'original',
+	custom = 'custom',
+	none = 'none',
+}
+
 export function useBlockDescriptionButtons(
-	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void,
+	overrideFieldOptions: CustomFieldOption[] = [
+		CustomFieldOption.original,
+		CustomFieldOption.custom,
+		CustomFieldOption.none,
+	]
 ): (block: Avo.Core.BlockItemBase) => { label: string; items: Partial<ButtonProps>[] } {
 	const [t] = useTranslation();
 
 	const buttons = useCallback(
-		(block: Avo.Core.BlockItemBase): Partial<ButtonProps>[] => [
-			{
-				active: !block.use_custom_fields,
-				label: t('assignment/views/assignment-edit___origineel'),
-				onClick: () => {
-					setBlock(block, {
-						use_custom_fields: false,
-					});
-				},
-			},
-			{
-				active: block.use_custom_fields && !isRichTextEmpty(block.custom_description),
-				label: t('assignment/views/assignment-edit___aangepast'),
-				onClick: () => {
-					setBlock(block, {
-						use_custom_fields: true,
-						custom_title:
-							(block as AssignmentBlock).original_title || block.item_meta?.title,
-						custom_description:
-							(block as AssignmentBlock).original_description ||
-							block.item_meta?.description,
-					});
-				},
-			},
-			{
-				active: block.use_custom_fields && isRichTextEmpty(block.custom_description),
-				label: t('assignment/views/assignment-edit___geen-beschrijving'),
-				onClick: () => {
-					setBlock(block, {
-						use_custom_fields: true,
-						custom_title:
-							(block as AssignmentBlock).original_title || block.item_meta?.title,
-						custom_description: '',
-					});
-				},
-			},
-		],
-		[setBlock, t]
+		(block: Avo.Core.BlockItemBase): Partial<ButtonProps>[] =>
+			overrideFieldOptions.map((type) => {
+				switch (type) {
+					case CustomFieldOption.original:
+						return {
+							active: !block.use_custom_fields,
+							label: t('assignment/views/assignment-edit___origineel'),
+							onClick: () => {
+								setBlock(block, {
+									use_custom_fields: false,
+								});
+							},
+						};
+					case CustomFieldOption.custom:
+						return {
+							active:
+								block.use_custom_fields &&
+								!isRichTextEmpty(block.custom_description),
+							label: t('assignment/views/assignment-edit___aangepast'),
+							onClick: () => {
+								setBlock(block, {
+									use_custom_fields: true,
+									custom_title:
+										(block as AssignmentBlock).original_title ||
+										block.item_meta?.title,
+									custom_description:
+										(block as AssignmentBlock).original_description ||
+										block.item_meta?.description,
+								});
+							},
+						};
+					case CustomFieldOption.none:
+						return {
+							active:
+								block.use_custom_fields &&
+								isRichTextEmpty(block.custom_description),
+							label: t('assignment/views/assignment-edit___geen-beschrijving'),
+							onClick: () => {
+								setBlock(block, {
+									use_custom_fields: true,
+									custom_title:
+										(block as AssignmentBlock).original_title ||
+										block.item_meta?.title,
+									custom_description: '',
+								});
+							},
+						};
+				}
+			}),
+		[setBlock, overrideFieldOptions, t]
 	);
 
 	return useCallback(

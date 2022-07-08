@@ -21,12 +21,13 @@ import {
 } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabelType, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
 import { cloneDeep, compact, get, isEqual, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
+	ReactNode,
 	ReactText,
 	useCallback,
 	useEffect,
@@ -470,6 +471,29 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		/>
 	);
 
+	const renderDataCell = (value: ReactNode, label?: ReactNode) =>
+		isMobileWidth() ? (
+			<div className="m-assignment-overview__table__data-cell">
+				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
+				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
+			</div>
+		) : (
+			value
+		);
+
+	const renderResponsesCell = (cellData: any, assignment: AssignmentSchema_v2) => {
+		if ((cellData || []).length === 0) {
+			return renderDataCell('0', t('assignment/views/assignment-overview___responses'));
+		}
+
+		return renderDataCell(
+			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
+				{(cellData || []).length}
+			</Link>,
+			t('assignment/views/assignment-overview___responses')
+		);
+	};
+
 	const renderCell = (
 		assignment: Avo.Assignment.Assignment_v2,
 		colKey: AssignmentOverviewTableColumns
@@ -514,14 +538,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return renderLabels(
 					(assignment.labels as any[]).filter(
 						({ assignment_label: item }) => item.type === 'LABEL'
-					) // TODO remove cast once assignment_v2 types are fixed
+					)
 				);
 
 			case 'class_room':
 				return renderLabels(
 					(assignment.labels as any[]).filter(
 						({ assignment_label: item }) => item.type === 'CLASS'
-					) // TODO remove cast once assignment_v2 types are fixed
+					)
 				);
 
 			case 'author': {
@@ -540,21 +564,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 
 			case 'deadline_at':
-				return <AssignmentDeadline deadline={assignment.deadline_at} />;
+				return renderDataCell(
+					<AssignmentDeadline deadline={assignment.deadline_at} />,
+					t('assignment/views/assignment-overview___deadline')
+				);
 
 			case 'updated_at':
 				return formatDate(cellData);
 
 			case 'responses':
-				return (cellData || []).length === 0 ? (
-					'0'
-				) : (
-					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}
-					>
-						{(cellData || []).length}
-					</Link>
-				);
+				return renderResponsesCell(cellData, assignment);
 
 			case 'actions':
 				if (isMobileWidth()) {
@@ -819,6 +838,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<>
 				{renderHeader()}
 				<Table
+					className={classnames('m-assignment-overview__table', {
+						'm-assignment-overview__table-mobile': isMobileWidth(),
+					})}
 					columns={tableColumns}
 					data={assignments}
 					emptyStateMessage={

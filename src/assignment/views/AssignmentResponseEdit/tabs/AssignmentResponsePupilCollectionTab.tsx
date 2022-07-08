@@ -3,7 +3,6 @@ import {
 	Container,
 	Flex,
 	FormGroup,
-	Spacer,
 	TextInput,
 	Toolbar,
 	ToolbarLeft,
@@ -17,8 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
-import emptyCollectionPlaceholder from '../../../../assets/images/empty-collection.jpg';
-import BlockListEdit from '../../../../shared/components/BlockListEdit/BlockListEdit';
+import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -30,7 +28,13 @@ import {
 	PupilCollectionFragment,
 } from '../../../assignment.types';
 import { insertAtPosition } from '../../../helpers/insert-at-position';
-import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
+import {
+	useAssignmentBlockChangeHandler,
+	useBlockListModals,
+	useBlocksList,
+	useEditBlocks,
+} from '../../../hooks';
+import { CustomFieldOption } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
 
@@ -51,7 +55,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	setValue,
 	control,
 	onShowPreviewClicked,
-    setTab,
+	setTab,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -112,7 +116,36 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once Avo.Core.BlockItemBase is in typings repo
 		updateBlocksInAssignmentResponseState
 	);
-	const renderBlockContent = useBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, [
+		CustomFieldOption.original,
+		CustomFieldOption.custom,
+	]);
+	const [renderedListSorter] = useBlocksList(
+		// TODO rename to useEditBlockList and switch to component instead of hook
+		assignmentResponse.pupil_collection_blocks || [],
+		updateBlocksInAssignmentResponseState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (item) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(item?.position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
+			},
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	// Render
 
@@ -173,53 +206,33 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				</Toolbar>
 			</Container>
 			<Container mode="vertical">
-				<BlockListEdit
-					blocks={assignmentResponse?.pupil_collection_blocks || []}
-					setBlocks={updateBlocksInAssignmentResponseState}
-					config={{
-						listSorter: {
-							content: (item) => item && renderBlockContent(item),
-							divider: (item) => (
+				{renderedListSorter}
+				{!assignmentResponse?.pupil_collection_blocks?.length && (
+					<EmptyStateMessage
+						title={t(
+							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+						)}
+						message={
+							<>
+								{t(
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
+								)}{' '}
 								<Button
-									icon="plus"
-									type="secondary"
-									onClick={() => {
-										addBlockModal.setEntity(item?.position);
-										addBlockModal.setOpen(true);
-									}}
-								/>
-							),
-						},
-						listSorterItem: {
-							onSlice: (item) => {
-								confirmSliceModal.setEntity(item);
-								confirmSliceModal.setOpen(true);
-							},
-						},
-					}}
-				/>
-				<Container mode="vertical" className="c-empty-collection-placeholder">
-					<Flex orientation="vertical" center>
-						<img
-							alt={t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding')}
-							src={emptyCollectionPlaceholder}
-						/>
-						<Spacer margin={['top-large', 'bottom']}>
-							<h2>{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg')}</h2>
-						</Spacer>
-						<p>
-							{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar')}{' '}
-							<Button
-								type="inline-link"
-								label={t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken')}
-								onClick={() =>
-									setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
-								}
-							/>{' '}
-							{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken')}
-						</p>
-					</Flex>
-				</Container>
+									type="inline-link"
+									label={t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
+									)}
+									onClick={() =>
+										setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
+									}
+								/>{' '}
+								{t(
+									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
+								)}
+							</>
+						}
+					/>
+				)}
 			</Container>
 			{renderedModals}
 		</Container>
