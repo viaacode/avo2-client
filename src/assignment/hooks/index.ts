@@ -1,6 +1,6 @@
 export { useAssignmentBlockChangeHandler } from './assignment-block-change-handler';
 export { useBlockDescriptionButtons } from './assignment-block-description-buttons';
-export { useBlocks } from './assignment-blocks';
+export { useEditBlocks } from './assignment-blocks';
 export { useBlocksList } from './assignment-blocks-list';
 export { useBlockListModals } from './assignment-content-modals';
 export { useAssignmentDetailsForm } from './assignment-details-form';
