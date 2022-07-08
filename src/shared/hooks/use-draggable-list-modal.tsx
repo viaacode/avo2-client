@@ -32,9 +32,9 @@ export function useDraggableListModal(config?: {
 
 	const modal = (
 		<DraggableListModal
+			isOpen={isOpen} // Allow external config to open modal, if not provided, internal isOpen state will be used
 			{...config?.modal}
 			renderItem={(item) => <DraggableBlock block={item} />}
-			isOpen={isOpen}
 			onClose={(update?: any[]) => {
 				setIsOpen(false);
 				config?.modal?.onClose?.(update);
