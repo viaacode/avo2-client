@@ -275,6 +275,9 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 				thumbnail_path
 				assignment_response_id
 			}
+			owner {
+				full_name
+			}
 		}
 	}
 `;
@@ -303,6 +306,9 @@ export const GET_ASSIGNMENT_RESPONSE = gql`
 				type
 				thumbnail_path
 				assignment_response_id
+			}
+			owner {
+				full_name
 			}
 		}
 	}
@@ -349,6 +355,9 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					type
 					thumbnail_path
 					assignment_response_id
+				}
+				owner {
+					full_name
 				}
 			}
 			assignment_type
@@ -461,6 +470,9 @@ export const UPDATE_ASSIGNMENT_RESPONSE = gql`
 					type
 					updated_at
 					use_custom_fields
+				}
+				owner {
+					full_name
 				}
 			}
 		}

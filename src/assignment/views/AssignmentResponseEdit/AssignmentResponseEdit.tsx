@@ -67,6 +67,7 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import AssignmentMetadata from '../../components/AssignmentMetadata';
 
 const AssignmentResponseEdit: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ id: string }>
@@ -293,72 +294,6 @@ const AssignmentResponseEdit: FunctionComponent<
 		[assignment]
 	);
 
-	const renderMeta = useCallback(
-		(who: 'teacher' | 'pupil') => {
-			if (!assignment) {
-				return null;
-			}
-			const teacherName =
-				who === 'teacher' &&
-				(
-					assignment?.profile?.user?.first_name +
-						' ' +
-						assignment?.profile?.user?.last_name || ''
-				).trim();
-			const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name;
-			const deadline = formatTimestamp(assignment?.deadline_at, false);
-			const labels = (assignment?.labels || [])
-				.filter((label) => label.assignment_label.type === 'LABEL')
-				.map((label) => label.assignment_label.label)
-				.join(', ');
-			const classes = (assignment?.labels || [])
-				.filter((label) => label.assignment_label.type === 'CLASS')
-				.map((label) => label.assignment_label.label)
-				.join(', ');
-
-			return (
-				<section className="u-spacer-bottom">
-					<Flex>
-						{teacherName && (
-							<div>
-								{t('assignment/views/assignment-response-edit___lesgever')}:{' '}
-								<b>{teacherName}</b>
-							</div>
-						)}
-
-						{pupilName && (
-							<div>
-								{t('Leerling')}: <b>{pupilName}</b>
-							</div>
-						)}
-
-						{deadline && (
-							<Spacer margin="left">
-								{t('assignment/views/assignment-response-edit___deadline')}:{' '}
-								<b>{deadline}</b>
-							</Spacer>
-						)}
-
-						{labels && (
-							<Spacer margin="left">
-								{t('assignment/views/assignment-response-edit___label')}:{' '}
-								<b>{labels}</b>
-							</Spacer>
-						)}
-
-						{classes && (
-							<Spacer margin="left">
-								{t('assignment/views/assignment-response-edit___klas')}:{' '}
-								<b>{classes}</b>
-							</Spacer>
-						)}
-					</Flex>
-				</section>
-			);
-		},
-		[assignment, t]
-	);
-
 	const renderTabs = () => <Tabs tabs={tabs} onClick={onTabClick} />;
 
 	const renderTabContent = () => {
@@ -436,7 +371,15 @@ const AssignmentResponseEdit: FunctionComponent<
 				/>
 				<AssignmentHeading
 					title={collectionTitle}
-					info={renderMeta('pupil')}
+					info={
+						assignment ? (
+							<AssignmentMetadata
+								assignment={assignment}
+								assignmentResponse={assignmentResponse}
+								who={'pupil'}
+							/>
+						) : null
+					}
 					tour={<InteractiveTour showButton />}
 				/>
 				<Container mode="horizontal">
@@ -486,7 +429,11 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 
 		if (isTeacherPreviewEnabled) {
-			return renderPupilCollectionForTeacherPreview();
+			return (
+				<div className="c-assignment-response-page c-assignment-response-page--edit">
+					{renderPupilCollectionForTeacherPreview()}
+				</div>
+			);
 		}
 
 		const deadline = formatTimestamp(assignment?.deadline_at, false);
@@ -496,7 +443,15 @@ const AssignmentResponseEdit: FunctionComponent<
 					back={renderBackButton}
 					title={renderedTitle}
 					tabs={renderTabs()}
-					info={renderMeta('teacher')}
+					info={
+						assignment ? (
+							<AssignmentMetadata
+								assignment={assignment}
+								assignmentResponse={assignmentResponse}
+								who={'teacher'}
+							/>
+						) : null
+					}
 					tour={<InteractiveTour showButton />}
 				/>
 				<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
