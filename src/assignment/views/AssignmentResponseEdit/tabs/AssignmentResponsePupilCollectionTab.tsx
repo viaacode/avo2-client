@@ -12,7 +12,7 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { noop } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
@@ -29,14 +29,15 @@ import { insertAtPosition } from '../../../helpers/insert-at-position';
 import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
 
 interface AssignmentResponsePupilCollectionTabProps {
-	titleError: boolean;
-	assignmentResponse: Avo.Assignment.Response_v2 | null;
-	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2 | null>>;
+	assignmentResponse: Avo.Assignment.Response_v2;
+	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 }
 
 const AssignmentResponsePupilCollectionTab: FunctionComponent<
-	AssignmentResponsePupilCollectionTabProps & UserProps
-> = ({ titleError, assignmentResponse, setAssignmentResponse, user }) => {
+	AssignmentResponsePupilCollectionTabProps &
+		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'> &
+		UserProps
+> = ({ assignmentResponse, setAssignmentResponse, setValue, control, user }) => {
 	const [t] = useTranslation();
 
 	// UI
@@ -53,6 +54,10 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
 				} as any)
 		); // TODO remove cast once pupil_collection_blocks is in typings repo
+		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
 	};
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {
@@ -100,38 +105,45 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 			<Container mode="vertical">
 				<Toolbar size="large">
 					<ToolbarLeft>
-						<FormGroup
-							label={t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
-							)}
-							className="c-form-group--full-width"
-						>
-							<Flex orientation="vertical">
-								<TextInput
-									type="text"
-									value={assignmentResponse?.collection_title || ''}
-									onChange={(newCollectionTitle: string) =>
-										setAssignmentResponse((prev) => {
-											if (!prev) {
-												return null;
-											}
-											return {
-												...prev,
-												collection_title: newCollectionTitle,
-											};
-										})
-									}
-								/>
-							</Flex>
-
-							{titleError && (
-								<span className="c-floating-error">
-									{t(
-										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
+						<Controller
+							name="collection_title"
+							control={control}
+							render={({ field, fieldState: { error, isTouched } }) => (
+								<FormGroup
+									label={t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
 									)}
-								</span>
+									className="c-form-group--full-width"
+								>
+									<Flex orientation="vertical">
+										<TextInput
+											type="text"
+											value={field.value || ''}
+											onChange={(newTitle: string) => {
+												setAssignmentResponse((prev) => {
+													return {
+														...prev,
+														collection_title: newTitle,
+													};
+												});
+												setValue('collection_title', newTitle, {
+													shouldDirty: true,
+													shouldTouch: true,
+												});
+											}}
+										/>
+									</Flex>
+
+									{error && isTouched && (
+										<span className="c-floating-error">
+											{t(
+												'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
+											)}
+										</span>
+									)}
+								</FormGroup>
 							)}
-						</FormGroup>
+						/>
 					</ToolbarLeft>
 					<ToolbarRight>
 						<Button
@@ -178,5 +190,5 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 export default compose(withUser)(AssignmentResponsePupilCollectionTab) as FunctionComponent<
 	AssignmentResponsePupilCollectionTabProps &
-		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'trigger' | 'control'>
+		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
 >;
