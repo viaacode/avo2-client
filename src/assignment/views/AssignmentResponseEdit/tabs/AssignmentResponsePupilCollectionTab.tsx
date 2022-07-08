@@ -173,7 +173,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					</ToolbarLeft>
 					<ToolbarRight>
 						<ButtonToolbar>
-							{draggableListButton}
+							{!!assignmentResponse?.pupil_collection_blocks?.length &&
+								draggableListButton}
 							<Button
 								type="primary"
 								label={t(
