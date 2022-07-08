@@ -1,6 +1,8 @@
 @import '../../../../styles/settings/variables';
 
 .c-assignment-block-type-search {
+	display: flex;
+
 	.c-collection-fragment-rich-text {
 		min-height: 16rem;
 
@@ -22,7 +24,13 @@
 		}
 	}
 
-	.c-collapsible-column__bounded {
+	> div:first-child {
+		flex-grow: 1;
+		grid-template-columns: 1fr 488px;
+	}
+
+	> div:last-child {
+		flex-grow: 1;
 		position: relative;
 		min-height: 30rem;
 		overflow: visible;

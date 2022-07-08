@@ -9,16 +9,9 @@ import './CollapsibleColumn.scss';
 export interface CollapsibleColumnProps extends DefaultProps {
 	grow: ReactNode;
 	bound?: ReactNode;
-	enableScrollable: boolean;
 }
 
-const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
-	style,
-	className,
-	grow,
-	bound,
-	enableScrollable,
-}) => {
+const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow, bound }) => {
 	const [t] = useTranslation();
 	const el = useRef<HTMLDivElement>(null);
 
@@ -49,7 +42,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
 	const content = (
 		<>
 			{bound}
-			{(overflowing || scrollable) && enableScrollable && (
+			{(overflowing || scrollable) && (
 				<div className="c-collapsible-column__bounded-toggle">
 					<Button
 						type="underlined-link"
@@ -76,7 +69,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
 
 			<div className={boundedClassName} ref={el}>
 				<div className="c-collapsible-column__bounded-content">
-					{scrollable && enableScrollable ? <Scrollbar>{content}</Scrollbar> : content}
+					{scrollable ? <Scrollbar>{content}</Scrollbar> : content}
 				</div>
 			</div>
 		</div>

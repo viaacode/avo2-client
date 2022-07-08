@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 
 import searchBlockImage from '../../../../assets/images/assignment-search-block.png';
 import CollectionFragmentRichText from '../../../../collection/components/CollectionFragmentRichText';
-import { CollapsibleColumn } from '../../index';
 
 import './AssignmentBlockTypeSearch.scss';
 
@@ -36,50 +35,44 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	const [t] = useTranslation();
 
 	return (
-		<>
-			<CollapsibleColumn
-				className={classnames(className, 'c-assignment-block-type-search')}
-				enableScrollable={false}
-				grow={
-					<Flex orientation="vertical">
-						<BlockHeading type="h2">
-							{t(
-								'shared/components/block-list/blocks/assignment-block-type-search___zoekoefening'
-							)}
-						</BlockHeading>
-						<CollectionFragmentRichText
-							content={convertToHtml(block.custom_description || '')}
-						/>
-						<Button
-							type="primary"
-							label={t(
-								'shared/components/block-list/blocks/assignment-block-type-search___start-met-zoeken'
-							)}
-							onClick={onSearchButtonClicked}
-							disabled={pastDeadline}
-						/>
-						<Spacer margin="bottom-small" />
-						{showCollectionButton && (
-							<Button
-								type="secondary"
-								label={t(
-									'shared/components/block-list/blocks/assignment-block-type-search___naar-mijn-collectie'
-								)}
-								onClick={onCollectionButtonClicked}
-							/>
+		<div className={classnames('c-assignment-block-type-search', className)}>
+			<Flex orientation="vertical">
+				<BlockHeading type="h2">
+					{t(
+						'shared/components/block-list/blocks/assignment-block-type-search___zoekoefening'
+					)}
+				</BlockHeading>
+				<CollectionFragmentRichText
+					content={convertToHtml(block.custom_description || '')}
+				/>
+				<Button
+					type="primary"
+					label={t(
+						'shared/components/block-list/blocks/assignment-block-type-search___start-met-zoeken'
+					)}
+					onClick={onSearchButtonClicked}
+					disabled={pastDeadline}
+				/>
+				<Spacer margin="bottom-small" />
+				{showCollectionButton && (
+					<Button
+						type="secondary"
+						label={t(
+							'shared/components/block-list/blocks/assignment-block-type-search___naar-mijn-collectie'
 						)}
-					</Flex>
-				}
-				bound={
-					<img
-						src={searchBlockImage}
-						alt={t(
-							'shared/components/block-list/blocks/assignment-block-type-search___user-typing-on-keyboard'
-						)}
+						onClick={onCollectionButtonClicked}
 					/>
-				}
-			/>
-		</>
+				)}
+			</Flex>
+			<div>
+				<img
+					src={searchBlockImage}
+					alt={t(
+						'shared/components/block-list/blocks/assignment-block-type-search___user-typing-on-keyboard'
+					)}
+				/>
+			</div>
+		</div>
 	);
 };
 
