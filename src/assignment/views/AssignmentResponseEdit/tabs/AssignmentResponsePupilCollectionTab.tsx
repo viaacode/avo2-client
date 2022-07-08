@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
-import emptyCollectionPlaceholder from '../../../../assets/images/empty-collection.jpg';
 import BlockListEdit from '../../../../shared/components/BlockListEdit/BlockListEdit';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
@@ -200,10 +199,6 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				/>
 				{!assignmentResponse?.pupil_collection_blocks?.length && (
 					<EmptyStateMessage
-						imgSrc={emptyCollectionPlaceholder}
-						imgAlt={t(
-							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding'
-						)}
 						title={t(
 							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
 						)}
