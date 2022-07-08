@@ -143,7 +143,7 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	status: (order: Avo.Search.OrderDirection) => ({
 		deadline_at: order,
 	}),
-	pupilCollections: (order: Avo.Search.OrderDirection) => ({
+	responses: (order: Avo.Search.OrderDirection) => ({
 		responses_aggregate: {
 			count: order,
 		},
