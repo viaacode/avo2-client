@@ -1,7 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
-
 import { DefaultProps, Form, FormGroup, TextInput, TextInputProps } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import React, { FC, useEffect, useState } from 'react';
 
 import WYSIWYGWrapper, { WYSIWYGWrapperProps } from '../WYSIWYGWrapper/WYSIWYGWrapper';
 
@@ -29,7 +28,7 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
 	const titleValue = props.title?.value;
 	const descriptionInitialHtml = props.description?.initialHtml;
 
-	const wrapperClasses = ['c-title-description-form', ...(!!className ? [className] : [])];
+	const wrapperClasses = ['c-title-description-form', ...(className ? [className] : [])];
 
 	const [description, setDescription] = useState<RichEditorState | undefined>();
 	const [title, setTitle] = useState<string | undefined>();
@@ -74,7 +73,7 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
 						onChange={setDescription}
 						onBlur={() => props.description?.onChange?.(description as RichEditorState)}
 						id={getId(TitleDescriptionFormIds.description)}
-					></WYSIWYGWrapper>
+					/>
 				</FormGroup>
 			)}
 		</Form>

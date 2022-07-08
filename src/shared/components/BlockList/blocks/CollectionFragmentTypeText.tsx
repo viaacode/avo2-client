@@ -2,8 +2,10 @@ import React, { FC } from 'react';
 
 import CollectionFragmentRichText, {
 	CollectionFragmentRichTextProps,
-} from './CollectionFragmentRichText';
-import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
+} from '../../../../collection/components/CollectionFragmentRichText';
+import CollectionFragmentTitle, {
+	CollectionFragmentTitleProps,
+} from '../../../../collection/components/CollectionFragmentTitle';
 
 export interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
