@@ -38,7 +38,6 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 			{title && <CollectionFragmentTitle {...title} />}
 			<CollapsibleColumn
 				className={className}
-				enableScrollable
 				grow={
 					flowPlayer ? (
 						<CollectionFragmentFlowPlayer {...flowPlayer} seekTime={time} />
