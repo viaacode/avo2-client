@@ -1,14 +1,15 @@
 import { IconName, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { isPast } from 'date-fns/esm';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentType } from '../assignment.types';
 
+import { useAssignmentPastDeadline } from './assignment-past-deadline';
+
 export function useAssignmentPupilTabs(
-	assignment: Avo.Assignment.Assignment_v2 | undefined,
+	assignment: Avo.Assignment.Assignment_v2 | null,
 	tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
 ): [
@@ -19,10 +20,7 @@ export function useAssignmentPupilTabs(
 ] {
 	const [t] = useTranslation();
 
-	const pastDeadline = useMemo(
-		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
-		[assignment]
-	);
+	const pastDeadline = useAssignmentPastDeadline(assignment);
 
 	const tabs: TabProps[] = useMemo(
 		() =>

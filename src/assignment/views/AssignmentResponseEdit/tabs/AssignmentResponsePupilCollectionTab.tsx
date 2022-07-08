@@ -19,6 +19,7 @@ import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
 import emptyCollectionPlaceholder from '../../../../assets/images/empty-collection.jpg';
+import { BlockList } from '../../../../collection/components';
 import BlockListEdit from '../../../../shared/components/BlockListEdit/BlockListEdit';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import {
@@ -34,7 +35,6 @@ import { insertAtPosition } from '../../../helpers/insert-at-position';
 import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
-import { BlockList } from '../../../../collection/components';
 
 interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;

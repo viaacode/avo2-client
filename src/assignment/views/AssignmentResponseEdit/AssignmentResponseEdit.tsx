@@ -10,7 +10,6 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { isPast } from 'date-fns/esm';
 import { isString } from 'lodash-es';
 import React, {
 	Dispatch,
@@ -57,6 +56,7 @@ import {
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../../hooks';
+import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
 import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
@@ -114,7 +114,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
 	const [tabs, tab, setTab, onTabClick] = useAssignmentPupilTabs(
-		assignment || undefined,
+		assignment,
 		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 		(newTab: string) => {
 			setFilterState({
@@ -124,10 +124,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		}
 	);
 
-	const pastDeadline: boolean = useMemo(
-		() => (assignment?.deadline_at && isPast(new Date(assignment.deadline_at))) || false,
-		[assignment]
-	);
+	const pastDeadline = useAssignmentPastDeadline(assignment);
 
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
