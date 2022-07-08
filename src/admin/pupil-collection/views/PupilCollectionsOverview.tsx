@@ -221,10 +221,10 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 		}
 	};
 
-	const deleteSelectedPupilCollections = async () => {
+	const deleteSelectedAssignmentResponses = async () => {
 		setIsLoading(true);
 		try {
-			await PupilCollectionService.deletePupilCollections(selectedPupilCollectionIds);
+			await PupilCollectionService.deleteAssignmentResponses(selectedPupilCollectionIds);
 			await fetchPupilCollections();
 			ToastService.success(
 				t(
@@ -402,7 +402,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					)}
 					isOpen={pupilCollectionsDeleteModalOpen}
 					onClose={() => setPupilCollectionsDeleteModalOpen(false)}
-					deleteObjectCallback={deleteSelectedPupilCollections}
+					deleteObjectCallback={deleteSelectedAssignmentResponses}
 				/>
 				<ChangeAuthorModal
 					isOpen={isChangeAuthorModalOpen}

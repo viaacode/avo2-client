@@ -22,6 +22,7 @@ import { ErrorView } from '../../../../error/views';
 import { AddToAssignmentModal } from '../../../../item/components';
 import { ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
+import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
 import { SearchFiltersAndResults } from '../../../../search/components';
 import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
@@ -33,7 +34,6 @@ import {
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
 import { PupilSearchFilterState } from '../../../assignment.types';
-import { PupilCollectionService } from '../../../pupil-collection.service';
 
 interface AssignmentResponseSearchTabProps {
 	assignment: Avo.Assignment.Assignment_v2 | null;

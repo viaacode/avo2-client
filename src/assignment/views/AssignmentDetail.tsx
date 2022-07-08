@@ -216,7 +216,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			await AssignmentService.toggleAssignmentResponseSubmitStatus(
 				assignmentResponse.id,
 				checked ? new Date().toISOString() : null
-			);
+			); // TODO remove this since it is no longer used after zoek and bouw track
 			fetchAssignmentAndContent();
 			ToastService.success(
 				checked

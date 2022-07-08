@@ -7,7 +7,7 @@ type DateLikeNullable = DateLike | undefined | null;
 /**
  * Converts a date from format 2000-12-31 to 31/12/2000
  */
-export function reorderDate(dateString: string | null, separator: string = '/'): string {
+export function reorderDate(dateString: string | null, separator = '/'): string {
 	return (dateString || '').substring(0, 10).split('-').reverse().join(separator);
 }
 
@@ -39,10 +39,7 @@ export function fromNow(timestamp: DateLikeNullable): string {
 	return normalizeTimestamp(timestamp).fromNow();
 }
 
-export function formatTimestamp(
-	timestamp: DateLikeNullable,
-	includeSeconds: boolean = true
-): string {
+export function formatTimestamp(timestamp: DateLikeNullable, includeSeconds = true): string {
 	if (!timestamp) {
 		return '';
 	}
