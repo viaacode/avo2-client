@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { stripHtml } from '../../helpers';
 
 import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
 
@@ -23,10 +24,14 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 
 	const thumbnail = block.thumbnail_path || block.item_meta?.thumbnail_path;
 
-	const title =
-		(block.use_custom_fields
-			? block.custom_title
-			: (block as AssignmentBlock).original_title) || block.item_meta?.title;
+	const label = [
+		block.custom_title,
+		(block as AssignmentBlock).original_title,
+		block.item_meta?.title,
+		block.custom_description,
+		(block as AssignmentBlock).original_description,
+		block.item_meta?.description,
+	].find((string) => string && string.length > 0);
 
 	return (
 		<Flex className={classNames('c-draggable-block', className)} center>
@@ -39,8 +44,8 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 			</FlexItem>
 			<FlexItem>
 				<BlockHeading type="h4">
-					{title ? (
-						truncate(title, { length: 45 })
+					{label ? (
+						truncate(stripHtml(label), { length: 45 })
 					) : (
 						<span className="c-draggable-block__placeholder">
 							{t(
