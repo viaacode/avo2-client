@@ -10,11 +10,14 @@ import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { EditBlockProps } from '../../assignment.types';
 import { useBlockDescriptionButtons } from '../../hooks';
+import { CustomFieldOption } from '../../hooks/assignment-block-description-buttons';
 import { AssignmentBlockMeta } from '../AssignmentBlockMeta';
 
-export const AssignmentBlockItem: FC<EditBlockProps> = ({ block, setBlock }) => {
+export const AssignmentBlockEditItem: FC<
+	EditBlockProps & { customFieldOptions: CustomFieldOption[] }
+> = ({ block, setBlock, customFieldOptions }) => {
 	const [t] = useTranslation();
-	const getButtons = useBlockDescriptionButtons(setBlock);
+	const getButtons = useBlockDescriptionButtons(setBlock, customFieldOptions);
 
 	if (!block.item_meta) {
 		return null;

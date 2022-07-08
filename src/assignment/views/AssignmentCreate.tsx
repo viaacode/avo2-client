@@ -27,12 +27,13 @@ import {
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 	useBlockListModals,
-	useBlocks,
 	useBlocksList,
+	useEditBlocks,
 } from '../hooks';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
+import { CustomFieldOption } from '../hooks/assignment-block-description-buttons';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
@@ -107,7 +108,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, [
+		CustomFieldOption.original,
+		CustomFieldOption.custom,
+		CustomFieldOption.none,
+	]);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,

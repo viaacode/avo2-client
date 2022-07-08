@@ -7,7 +7,7 @@ import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { AssignmentBlockType, EditBlockProps } from '../../assignment.types';
 import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
 
-export const AssignmentBlockSearch: FC<EditBlockProps> = ({ block, setBlock }) => {
+export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock }) => {
 	const [t] = useTranslation();
 
 	return (
