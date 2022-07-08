@@ -1,5 +1,4 @@
 import { Button, ButtonProps } from '@viaa/avo2-components';
-import { isNil } from 'lodash-es';
 import React, { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -33,9 +32,9 @@ export function useDraggableListModal(config?: {
 
 	const modal = (
 		<DraggableListModal
+			isOpen={isOpen} // Allow external config to open modal, if not provided, internal isOpen state will be used
 			{...config?.modal}
 			renderItem={(item) => <DraggableBlock block={item} />}
-			isOpen={!isNil(config?.modal?.isOpen) ? config?.modal?.isOpen || false : isOpen} // Allow external config to open modal, if not provided, internal isOpen state will be used
 			onClose={(update?: any[]) => {
 				setIsOpen(false);
 				config?.modal?.onClose?.(update);
