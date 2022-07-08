@@ -2,24 +2,33 @@ import { Avo } from '@viaa/avo2-types';
 import React, { ReactNode } from 'react';
 
 import { AssignmentBlockType } from '../assignment.types';
-import { AssignmentBlockItem } from '../components/blocks/AssignmentBlockItem';
-import { AssignmentBlockSearch } from '../components/blocks/AssignmentBlockSearch';
-import { AssignmentBlockText } from '../components/blocks/AssignmentBlockText';
+import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem';
+import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch';
+import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
 
-export function useBlocks(
-	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void
+import { CustomFieldOption } from './assignment-block-description-buttons';
+
+export function useEditBlocks(
+	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void,
+	customFieldOptions?: CustomFieldOption[]
 ): (block: Avo.Core.BlockItemBase) => ReactNode | null {
-	return function useBlocks(block: Avo.Core.BlockItemBase) {
+	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
 		switch (block.type) {
 			case AssignmentBlockType.TEXT:
-				return <AssignmentBlockText setBlock={setBlock} block={block} />;
+				return <AssignmentBlockEditText setBlock={setBlock} block={block} />;
 
 			case AssignmentBlockType.ITEM:
-				return <AssignmentBlockItem setBlock={setBlock} block={block} />;
+				return (
+					<AssignmentBlockEditItem
+						setBlock={setBlock}
+						block={block}
+						customFieldOptions={customFieldOptions}
+					/>
+				);
 
 			case AssignmentBlockType.ZOEK:
 			case AssignmentBlockType.BOUW:
-				return <AssignmentBlockSearch setBlock={setBlock} block={block} />;
+				return <AssignmentBlockEditSearch setBlock={setBlock} block={block} />;
 
 			default:
 				break;

@@ -1014,12 +1014,12 @@ const CollectionDetail: FunctionComponent<
 						<BlockList
 							blocks={collection.collection_fragments}
 							config={{
-								text: {
+								TEXT: {
 									title: {
 										canClickHeading: permissions?.canViewAnyPublishedItems,
 									},
 								},
-								item: {
+								ITEM: {
 									meta: {
 										canClickSeries: permissions?.canViewAnyPublishedItems,
 									},

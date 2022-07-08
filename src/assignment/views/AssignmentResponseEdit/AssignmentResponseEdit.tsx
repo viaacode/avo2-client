@@ -129,8 +129,8 @@ const AssignmentResponseEdit: FunctionComponent<
 
 	const [isTeacherPreviewEnabled, setIsTeacherPreviewEnabled] = useState<boolean>(false);
 
-	const pastDeadline = useMemo(
-		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
+	const pastDeadline: boolean = useMemo(
+		() => (assignment?.deadline_at && isPast(new Date(assignment.deadline_at))) || false,
 		[assignment]
 	);
 
@@ -366,9 +366,11 @@ const AssignmentResponseEdit: FunctionComponent<
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return (
 					<AssignmentResponseAssignmentTab
-						assignment={assignment}
-						assignmentLoading={assignmentLoading}
-						assignmentError={assignmentError}
+						blocks={assignment?.blocks || []}
+						pastDeadline={pastDeadline}
+						isLoading={assignmentLoading}
+						loadingError={assignmentError}
+						setTab={setTab}
 					/>
 				);
 
@@ -499,27 +501,33 @@ const AssignmentResponseEdit: FunctionComponent<
 					info={renderMeta('teacher')}
 					tour={<InteractiveTour showButton />}
 				/>
-				<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
-					{pastDeadline && (
-						<Spacer margin={['top-large']}>
-							<Alert type="info">
-								{t(
-									'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
-									{
-										deadline,
-									}
-								)}
-							</Alert>
-						</Spacer>
-					)}
+				<div className="c-container--sticky-save-bar-wrapper">
+					<Container mode="horizontal">
+						{pastDeadline && (
+							<Spacer margin={['top-large']}>
+								<Alert type="info">
+									{t(
+										'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
+										{
+											deadline,
+										}
+									)}
+								</Alert>
+							</Spacer>
+						)}
+					</Container>
 
-					<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
-					<StickySaveBar
-						isVisible={isDirty}
-						onCancel={() => resetForm()}
-						onSave={handleSubmit(submit, (...args) => console.error(args))}
-					/>
-				</Container>
+					{renderTabContent()}
+
+					<Spacer margin={['bottom-large']} />
+					<Container mode="horizontal">
+						<StickySaveBar
+							isVisible={isDirty}
+							onCancel={() => resetForm()}
+							onSave={handleSubmit(submit, (...args) => console.error(args))}
+						/>
+					</Container>
+				</div>
 			</div>
 		);
 	};
