@@ -55,6 +55,7 @@ import {
 	PupilSearchFilterState,
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
+import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
 
@@ -123,6 +124,8 @@ const AssignmentResponseEdit: FunctionComponent<
 			});
 		}
 	);
+
+	const [isTeacherPreviewEnabled, setIsTeacherPreviewEnabled] = useState<boolean>(false);
 
 	const pastDeadline = useAssignmentPastDeadline(assignment);
 
@@ -285,55 +288,71 @@ const AssignmentResponseEdit: FunctionComponent<
 		[assignment]
 	);
 
-	const renderMeta = useCallback(() => {
-		if (!assignment) {
-			return null;
-		}
-		const teacherName = assignment?.owner?.full_name;
-		const deadline = formatTimestamp(assignment?.deadline_at, false);
-		const labels = (assignment?.labels || [])
-			.filter((label) => label.assignment_label.type === 'LABEL')
-			.map((label) => label.assignment_label.label)
-			.join(', ');
-		const classes = (assignment?.labels || [])
-			.filter((label) => label.assignment_label.type === 'CLASS')
-			.map((label) => label.assignment_label.label)
-			.join(', ');
+	const renderMeta = useCallback(
+		(who: 'teacher' | 'pupil') => {
+			if (!assignment) {
+				return null;
+			}
+			const teacherName =
+				who === 'teacher' &&
+				(
+					assignment?.profile?.user?.first_name +
+						' ' +
+						assignment?.profile?.user?.last_name || ''
+				).trim();
+			const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name;
+			const deadline = formatTimestamp(assignment?.deadline_at, false);
+			const labels = (assignment?.labels || [])
+				.filter((label) => label.assignment_label.type === 'LABEL')
+				.map((label) => label.assignment_label.label)
+				.join(', ');
+			const classes = (assignment?.labels || [])
+				.filter((label) => label.assignment_label.type === 'CLASS')
+				.map((label) => label.assignment_label.label)
+				.join(', ');
 
-		return (
-			<section className="u-spacer-bottom">
-				<Flex>
-					{teacherName && (
-						<div>
-							{t('assignment/views/assignment-response-edit___lesgever')}:{' '}
-							<b>{teacherName}</b>
-						</div>
-					)}
+			return (
+				<section className="u-spacer-bottom">
+					<Flex>
+						{teacherName && (
+							<div>
+								{t('assignment/views/assignment-response-edit___lesgever')}:{' '}
+								<b>{teacherName}</b>
+							</div>
+						)}
 
-					{deadline && (
-						<Spacer margin="left">
-							{t('assignment/views/assignment-response-edit___deadline')}:{' '}
-							<b>{deadline}</b>
-						</Spacer>
-					)}
+						{pupilName && (
+							<div>
+								{t('Leerling')}: <b>{pupilName}</b>
+							</div>
+						)}
 
-					{labels && (
-						<Spacer margin="left">
-							{t('assignment/views/assignment-response-edit___label')}:{' '}
-							<b>{labels}</b>
-						</Spacer>
-					)}
+						{deadline && (
+							<Spacer margin="left">
+								{t('assignment/views/assignment-response-edit___deadline')}:{' '}
+								<b>{deadline}</b>
+							</Spacer>
+						)}
 
-					{classes && (
-						<Spacer margin="left">
-							{t('assignment/views/assignment-response-edit___klas')}:{' '}
-							<b>{classes}</b>
-						</Spacer>
-					)}
-				</Flex>
-			</section>
-		);
-	}, [assignment, t]);
+						{labels && (
+							<Spacer margin="left">
+								{t('assignment/views/assignment-response-edit___label')}:{' '}
+								<b>{labels}</b>
+							</Spacer>
+						)}
+
+						{classes && (
+							<Spacer margin="left">
+								{t('assignment/views/assignment-response-edit___klas')}:{' '}
+								<b>{classes}</b>
+							</Spacer>
+						)}
+					</Flex>
+				</section>
+			);
+		},
+		[assignment, t]
+	);
 
 	const renderTabs = () => <Tabs tabs={tabs} onClick={onTabClick} />;
 
@@ -381,6 +400,7 @@ const AssignmentResponseEdit: FunctionComponent<
 						}
 						setValue={setValue}
 						control={control}
+						onShowPreviewClicked={() => setIsTeacherPreviewEnabled(true)}
 						setTab={setTab}
 					/>
 				);
@@ -423,6 +443,26 @@ const AssignmentResponseEdit: FunctionComponent<
 				/>
 			);
 		}
+
+		if (isTeacherPreviewEnabled) {
+			if (!assignmentResponse) {
+				return (
+					<Spacer margin="top-extra-large">
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					</Spacer>
+				);
+			}
+			return (
+				<PupilCollectionForTeacherPreview
+					onClose={() => setIsTeacherPreviewEnabled(false)}
+					assignmentResponse={assignmentResponse}
+					metadata={renderMeta('pupil')}
+				/>
+			);
+		}
+
 		const deadline = formatTimestamp(assignment?.deadline_at, false);
 		return (
 			<div className="c-assignment-response-page c-assignment-response-page--edit">
@@ -430,7 +470,7 @@ const AssignmentResponseEdit: FunctionComponent<
 					back={renderBackButton}
 					title={renderedTitle}
 					tabs={renderTabs()}
-					info={renderMeta()}
+					info={renderMeta('teacher')}
 					tour={<InteractiveTour showButton />}
 				/>
 				<div className="c-container--sticky-save-bar-wrapper">

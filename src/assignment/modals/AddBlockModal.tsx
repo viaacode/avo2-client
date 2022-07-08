@@ -18,7 +18,19 @@ import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
-type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
+type AddBlockModalType =
+	| AssignmentBlockType.ITEM
+	| 'COLLECTIE'
+	| AssignmentBlockType.ZOEK
+	| AssignmentBlockType.TEXT;
+
+interface AddBlockModalOption {
+	type: AddBlockModalType;
+	icon: IconNameSchema;
+	title: ReactNode;
+	description: ReactNode;
+	disabled?: boolean;
+}
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	blocks: Avo.Core.BlockItemBase[];
@@ -33,13 +45,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const items: {
-		type: AddBlockModalType;
-		icon: IconNameSchema;
-		title: ReactNode;
-		description: ReactNode;
-		disabled?: boolean;
-	}[] = useMemo(
+	const items: AddBlockModalOption[] = useMemo(
 		() => [
 			{
 				type: AssignmentBlockType.ITEM,

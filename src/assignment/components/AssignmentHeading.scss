@@ -44,6 +44,10 @@
 			align-items: flex-start;
 		}
 
+		&__slim {
+			min-height: 0;
+		}
+
 		.c-toolbar {
 			&__left,
 			&__right {
@@ -54,7 +58,7 @@
 			&__left {
 				flex-grow: 1;
 				min-width: 0;
-	
+
 				@media (min-width: $g-bp2) {
 					margin-top: 0;
 				}

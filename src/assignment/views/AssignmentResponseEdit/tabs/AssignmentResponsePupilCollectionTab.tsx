@@ -11,7 +11,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { noop } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -54,6 +53,7 @@ interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	onShowPreviewClicked: () => void;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 }
 
@@ -67,6 +67,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	setAssignmentResponse,
 	setValue,
 	control,
+	onShowPreviewClicked,
 	setTab,
 	user,
 }) => {
@@ -186,7 +187,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				break;
 
 			case MobileActionId.viewAsTeacher:
-				noop(); // TODO link to view as teacher implementation in other PR
+				onShowPreviewClicked();
 				break;
 
 			default:
@@ -231,7 +232,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					label={t(
 						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
 					)}
-					onClick={noop}
+					onClick={onShowPreviewClicked}
 				/>
 			</ButtonToolbar>
 		);
