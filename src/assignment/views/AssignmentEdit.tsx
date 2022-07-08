@@ -38,8 +38,8 @@ import {
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 	useBlockListModals,
-	useBlocks,
 	useBlocksList,
+	useEditBlocks,
 } from '../hooks';
 
 import './AssignmentEdit.scss';
@@ -182,7 +182,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock);
 
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {
