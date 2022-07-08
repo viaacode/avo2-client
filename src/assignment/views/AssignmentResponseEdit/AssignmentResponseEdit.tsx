@@ -11,6 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns/esm';
+import { isString } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -46,20 +47,23 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
 } from '../../assignment.const';
+import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
+	AssignmentRetrieveError,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import { useAssignmentPupilTabs } from '../../hooks';
 
-import '../AssignmentPage.scss';
-import './AssignmentResponseEdit.scss';
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
 import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
 import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
+
+import '../AssignmentPage.scss';
+import './AssignmentResponseEdit.scss';
 
 const AssignmentResponseEdit: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ id: string }>
@@ -109,7 +113,7 @@ const AssignmentResponseEdit: FunctionComponent<
 		PupilSearchFilterState,
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
-	const [tabs, tab, , onTabClick] = useAssignmentPupilTabs(
+	const [tabs, tab, setTab, onTabClick] = useAssignmentPupilTabs(
 		assignment || undefined,
 		filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 		(newTab: string) => {
@@ -141,21 +145,26 @@ const AssignmentResponseEdit: FunctionComponent<
 				return;
 			}
 
-			const tempAssignmentInfo = await AssignmentService.fetchAssignmentAndContent(
-				user.profile.id,
-				assignmentId
-			);
+			const response: Avo.Assignment.Assignment_v2 | string =
+				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
+
+			if (isString(response)) {
+				// error
+				setAssignmentInfoError({
+					state: 'error',
+					...getAssignmentErrorObj(response as AssignmentRetrieveError),
+				});
+				setAssignmentInfoLoading(false);
+				return;
+			}
 
 			// Create an assignment response if needed
 			const newOrExistingAssignmentResponse =
-				await AssignmentService.createOrFetchAssignmentResponseObject(
-					tempAssignmentInfo,
-					user
-				);
+				await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
 			setAssignmentResponse(newOrExistingAssignmentResponse);
 			setAssignmentResponseOriginal(newOrExistingAssignmentResponse);
 
-			setAssignmentInfo(tempAssignmentInfo);
+			setAssignmentInfo(response);
 		} catch (err) {
 			setAssignmentInfoError(err);
 		}
@@ -354,7 +363,13 @@ const AssignmentResponseEdit: FunctionComponent<
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
 				if (!assignmentResponse) {
-					return <Spinner size="large" />;
+					return (
+						<Spacer margin="top-extra-large">
+							<Flex orientation="horizontal" center>
+								<Spinner size="large" />
+							</Flex>
+						</Spacer>
+					);
 				}
 				return (
 					<AssignmentResponsePupilCollectionTab
@@ -366,6 +381,7 @@ const AssignmentResponseEdit: FunctionComponent<
 						}
 						setValue={setValue}
 						control={control}
+						setTab={setTab}
 					/>
 				);
 
@@ -387,10 +403,13 @@ const AssignmentResponseEdit: FunctionComponent<
 		if (assignmentError) {
 			return (
 				<ErrorView
-					message={t(
-						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
-					)}
-					icon={'search'}
+					message={
+						assignmentError.message ||
+						t(
+							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
+						)
+					}
+					icon={assignmentError.icon || 'alert-triangle'}
 				/>
 			);
 		}

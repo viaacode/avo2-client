@@ -643,11 +643,11 @@ const CollectionDetail: FunctionComponent<
 		setImportWithDescription(withDescription);
 
 		// check if assignment has responses. If so: show additional confirmation modal
-		const response = await AssignmentService.getAssignmentResponse(
+		const responses = await AssignmentService.getAssignmentResponses(
 			getProfileId(user),
 			importToAssignmentId
 		);
-		if (response) {
+		if (responses.length > 0) {
 			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
 		} else {
 			await doImportToAssignment(importToAssignmentId, withDescription);
