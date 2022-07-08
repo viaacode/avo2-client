@@ -4,6 +4,8 @@ import React, { FC, ReactNode } from 'react';
 import noContentImageSource from '../../../assets/images/no-content.jpg';
 import i18n from '../../translations/i18n';
 
+import './EmptyStateMessage.scss';
+
 interface EmptyStateMessageProps {
 	imgSrc?: string;
 	imgAlt?: string;
