@@ -42,7 +42,7 @@ import { InteractiveTour } from '../../../shared/components';
 import AlertBar from '../../../shared/components/AlertBar/AlertBar';
 import BlockList from '../../../shared/components/BlockList/BlockList';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, formatTimestamp } from '../../../shared/helpers';
+import { buildLink, formatTimestamp, isMobileWidth } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { ASSIGNMENTS_ID } from '../../../workspace/workspace.const';
@@ -298,7 +298,13 @@ const AssignmentResponseEdit: FunctionComponent<
 			if (!assignment) {
 				return null;
 			}
-			const teacherName = who === 'teacher' && assignment?.owner?.full_name;
+			const teacherName =
+				who === 'teacher' &&
+				(
+					assignment?.profile?.user?.first_name +
+						' ' +
+						assignment?.profile?.user?.last_name || ''
+				).trim();
 			const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name;
 			const deadline = formatTimestamp(assignment?.deadline_at, false);
 			const labels = (assignment?.labels || [])
@@ -410,7 +416,8 @@ const AssignmentResponseEdit: FunctionComponent<
 		const closeButton = (
 			<Button
 				icon="close"
-				label={t('Sluit preview')}
+				label={isMobileWidth() ? undefined : t('Sluit preview')}
+				ariaLabel={t('Sluit preview')}
 				type="borderless-i"
 				onClick={() => setIsTeacherPreviewEnabled(false)}
 			/>
