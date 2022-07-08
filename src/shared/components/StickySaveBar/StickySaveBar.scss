@@ -17,6 +17,21 @@
 		width: 800px;
 		z-index: 999999;
 
+		.c-sticky-save-bar--description {
+			display: flex;
+			align-items: center;
+		}
+
+		.o-flex--vertical {
+			// TODO remove once @Bart N. figures out why Flex styles are not being loaded
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.o-flex {
+			width: 100%;
+		}
+
 		@media screen and (max-width: ($g-bp1 - 1px)) {
 			text-align: center;
 
