@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { isPast } from 'date-fns/esm';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +41,7 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
+import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -54,7 +54,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | undefined>(undefined);
+	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
 	const {
@@ -65,7 +65,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		setValue,
 		trigger,
 	} = useForm<AssignmentFormState>({
-		defaultValues: useMemo(() => original, [original]),
+		defaultValues: useMemo(() => original || undefined, [original]),
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
@@ -83,10 +83,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
-	const pastDeadline = useMemo(
-		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
-		[original]
-	);
+	const pastDeadline = useAssignmentPastDeadline(original);
 
 	// HTTP
 

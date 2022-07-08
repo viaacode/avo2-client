@@ -1,0 +1,49 @@
+@import '../../../../styles/settings/variables';
+
+.c-assignment-block-type-search {
+	display: flex;
+
+	.c-collection-fragment-rich-text {
+		min-height: 16rem;
+
+		@media screen and (max-width: $g-bp3) {
+			min-height: 0;
+		}
+	}
+
+	.c-button {
+		max-width: 40rem;
+
+		&.c-button--primary {
+			max-height: 5rem;
+
+			.c-button__label {
+				font-weight: bold;
+				line-height: 3.8rem;
+			}
+		}
+	}
+
+	> div:first-child {
+		flex-grow: 1;
+		grid-template-columns: 1fr 488px;
+	}
+
+	> div:last-child {
+		flex-grow: 1;
+		position: relative;
+		min-height: 30rem;
+		overflow: visible;
+
+		@media screen and (max-width: $g-bp3) {
+			min-height: 25rem;
+		}
+
+		img {
+			width: 80%;
+			position: absolute;
+			right: 0;
+			bottom: -2.3rem;
+		}
+	}
+}

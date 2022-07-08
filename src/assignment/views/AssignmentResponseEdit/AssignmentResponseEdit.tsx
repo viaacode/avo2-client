@@ -10,7 +10,6 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { isPast } from 'date-fns/esm';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -50,6 +49,7 @@ import {
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { useAssignmentPupilTabs } from '../../hooks';
+import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
 import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
@@ -111,7 +111,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
 	const [tabs, tab, setTab, onTabClick] = useAssignmentPupilTabs(
-		assignment || undefined,
+		assignment,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 		(newTab: string) => {
@@ -122,10 +122,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		}
 	);
 
-	const pastDeadline = useMemo(
-		() => assignment?.deadline_at && isPast(new Date(assignment.deadline_at)),
-		[assignment]
-	);
+	const pastDeadline = useAssignmentPastDeadline(assignment);
 
 	// HTTP
 
@@ -268,6 +265,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				}
 				return (
 					<AssignmentResponsePupilCollectionTab
+						pastDeadline={pastDeadline}
 						assignmentResponse={assignmentResponse}
 						setAssignmentResponse={
 							setAssignmentResponse as Dispatch<
@@ -283,7 +281,13 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 			default:
-				return <AssignmentResponseAssignmentTab assignment={assignment} />;
+				return (
+					<AssignmentResponseAssignmentTab
+						blocks={assignment?.blocks || []}
+						pastDeadline={pastDeadline}
+						setTab={setTab}
+					/>
+				);
 		}
 	};
 
@@ -306,27 +310,33 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					}
 					tour={<InteractiveTour showButton />}
 				/>
-				<Container mode="horizontal" className="c-container--sticky-save-bar-wrapper">
-					{pastDeadline && (
-						<Spacer margin={['top-large']}>
-							<Alert type="info">
-								{t(
-									'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
-									{
-										deadline,
-									}
-								)}
-							</Alert>
-						</Spacer>
-					)}
+				<div className="c-container--sticky-save-bar-wrapper">
+					<Container mode="horizontal">
+						{pastDeadline && (
+							<Spacer margin={['top-large']}>
+								<Alert type="info">
+									{t(
+										'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
+										{
+											deadline,
+										}
+									)}
+								</Alert>
+							</Spacer>
+						)}
+					</Container>
 
-					<Spacer margin={['bottom-large']}>{renderTabContent()}</Spacer>
-					<StickySaveBar
-						isVisible={isDirty}
-						onCancel={() => resetForm()}
-						onSave={handleSubmit(submit, (...args) => console.error(args))}
-					/>
-				</Container>
+					{renderTabContent()}
+
+					<Spacer margin={['bottom-large']} />
+					<Container mode="horizontal">
+						<StickySaveBar
+							isVisible={isDirty}
+							onCancel={() => resetForm()}
+							onSave={handleSubmit(submit, (...args) => console.error(args))}
+						/>
+					</Container>
+				</div>
 			</div>
 		);
 	};

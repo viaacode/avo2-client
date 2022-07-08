@@ -1,17 +1,20 @@
 import { convertToHtml, DefaultProps } from '@viaa/avo2-components';
 import React, { FC, useRef } from 'react';
 
-import { CollapsibleColumn } from '../../shared/components';
-import { useVideoWithTimestamps } from '../../shared/hooks/useVideoWithTimestamps';
-
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,
-} from './CollectionFragmentFlowPlayer';
-import CollectionFragmentMeta, { CollectionFragmentMetaProps } from './CollectionFragmentMeta';
+} from '../../../../collection/components/CollectionFragmentFlowPlayer';
+import CollectionFragmentMeta, {
+	CollectionFragmentMetaProps,
+} from '../../../../collection/components/CollectionFragmentMeta';
 import CollectionFragmentRichText, {
 	CollectionFragmentRichTextProps,
-} from './CollectionFragmentRichText';
-import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
+} from '../../../../collection/components/CollectionFragmentRichText';
+import CollectionFragmentTitle, {
+	CollectionFragmentTitleProps,
+} from '../../../../collection/components/CollectionFragmentTitle';
+import { useVideoWithTimestamps } from '../../../hooks/useVideoWithTimestamps';
+import { CollapsibleColumn } from '../../index';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	title?: CollectionFragmentTitleProps;

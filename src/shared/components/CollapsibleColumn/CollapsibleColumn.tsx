@@ -1,9 +1,8 @@
 import useResizeObserver from '@react-hook/resize-observer';
+import { Button, DefaultProps } from '@viaa/avo2-components';
 import React, { FC, ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Scrollbar from 'react-scrollbars-custom';
-
-import { Button, DefaultProps } from '@viaa/avo2-components';
 
 import './CollapsibleColumn.scss';
 
