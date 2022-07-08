@@ -1,9 +1,9 @@
 import {
 	Button,
+	ButtonToolbar,
 	Container,
 	Flex,
 	FormGroup,
-	Spacer,
 	TextInput,
 	Toolbar,
 	ToolbarLeft,
@@ -12,16 +12,19 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { noop } from 'lodash-es';
-import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
+import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
-import emptyCollectionPlaceholder from '../../../../assets/images/empty-collection.jpg';
 import { BlockList } from '../../../../collection/components';
-import BlockListEdit from '../../../../shared/components/BlockListEdit/BlockListEdit';
+import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import MoreOptionsDropdown from '../../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { isMobileWidth } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
+import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
+import { ToastService } from '../../../../shared/services';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
@@ -32,9 +35,20 @@ import {
 	PupilCollectionFragment,
 } from '../../../assignment.types';
 import { insertAtPosition } from '../../../helpers/insert-at-position';
-import { useAssignmentBlockChangeHandler, useBlockListModals, useBlocks } from '../../../hooks';
+import {
+	useAssignmentBlockChangeHandler,
+	useBlockListModals,
+	useBlocksList,
+	useEditBlocks,
+} from '../../../hooks';
+import { CustomFieldOption } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+
+enum MobileActionId {
+	reorderBlocks = 'reorderBlocks',
+	viewAsTeacher = 'viewAsTeacher',
+}
 
 interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;
@@ -57,12 +71,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	user,
 }) => {
 	const [t] = useTranslation();
-
-	// UI
-
-	// Effects
-
-	// Events
+	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
+	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
 
 	const updateBlocksInAssignmentResponseState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignmentResponse(
@@ -77,6 +87,30 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 			shouldTouch: true,
 		});
 	};
+
+	// UI
+
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		modal: {
+			items: assignmentResponse.pupil_collection_blocks,
+			isOpen: isDraggableListModalOpen,
+			onClose: (updatedBlocks?: PupilCollectionFragment[]) => {
+				setIsDraggableListModalOpen(false);
+				if (updatedBlocks) {
+					const newBlocks = updatedBlocks.map((item, i) => ({
+						...item,
+						position: assignmentResponse.pupil_collection_blocks?.[i]?.position || 0,
+					}));
+
+					updateBlocksInAssignmentResponseState(newBlocks);
+				}
+			},
+		},
+	});
+
+	// Effects
+
+	// Events
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {
 			return;
@@ -114,47 +148,92 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once Avo.Core.BlockItemBase is in typings repo
 		updateBlocksInAssignmentResponseState
 	);
-	const renderBlockContent = useBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, [
+		CustomFieldOption.original,
+		CustomFieldOption.custom,
+	]);
+	const [renderedListSorter] = useBlocksList(
+		// TODO rename to useEditBlockList and switch to component instead of hook
+		assignmentResponse.pupil_collection_blocks || [],
+		updateBlocksInAssignmentResponseState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (item) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(item?.position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
+			},
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
+
+	const executeMobileButtonAction = (action: MobileActionId) => {
+		switch (action) {
+			case MobileActionId.reorderBlocks:
+				setIsDraggableListModalOpen(true);
+				break;
+
+			case MobileActionId.viewAsTeacher:
+				noop(); // TODO link to view as teacher implementation in other PR
+				break;
+
+			default:
+				ToastService.danger(t('Knop actie niet gekend'));
+		}
+	};
 
 	// Render
 
-	const renderEmptyCollectionPlaceholder = () => {
-		if (assignmentResponse?.pupil_collection_blocks?.length) {
-			return null;
+	const renderActionButtons = () => {
+		if (isMobileWidth()) {
+			return (
+				<MoreOptionsDropdown
+					isOpen={isMobileOptionsMenuOpen}
+					onOpen={() => setIsMobileOptionsMenuOpen(true)}
+					onClose={() => setIsMobileOptionsMenuOpen(false)}
+					menuItems={[
+						{
+							label: t(
+								'collection/components/collection-or-bundle-edit___herorden-fragmenten'
+							),
+							id: MobileActionId.reorderBlocks,
+						},
+						{
+							label: t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
+							),
+							id: MobileActionId.viewAsTeacher,
+						},
+					]}
+					onOptionClicked={(action) =>
+						executeMobileButtonAction(action as MobileActionId)
+					}
+				/>
+			);
 		}
 		return (
-			<Container mode="vertical" className="c-empty-collection-placeholder">
-				<Flex orientation="vertical" center>
-					<img
-						alt={t(
-							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___lege-collectie-placeholder-afbeelding'
-						)}
-						src={emptyCollectionPlaceholder}
-					/>
-					<Spacer margin={['top-large', 'bottom']}>
-						<h2>
-							{t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
-							)}
-						</h2>
-					</Spacer>
-					<p>
-						{t(
-							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
-						)}{' '}
-						<Button
-							type="inline-link"
-							label={t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
-							)}
-							onClick={() => setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)}
-						/>{' '}
-						{t(
-							'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
-						)}
-					</p>
-				</Flex>
-			</Container>
+			<ButtonToolbar>
+				{!!assignmentResponse?.pupil_collection_blocks?.length && draggableListButton}
+				<Button
+					type="primary"
+					label={t(
+						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
+					)}
+					onClick={noop}
+				/>
+			</ButtonToolbar>
 		);
 	};
 
@@ -204,45 +283,38 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								)}
 							/>
 						</ToolbarLeft>
-						<ToolbarRight>
-							<Button
-								type="primary"
-								label={t(
-									'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
-								)}
-								onClick={noop}
-							/>
-						</ToolbarRight>
+						<ToolbarRight>{renderActionButtons()}</ToolbarRight>
 					</Toolbar>
 				</Container>
 				<Container mode="vertical">
-					<BlockListEdit
-						blocks={assignmentResponse?.pupil_collection_blocks || []}
-						setBlocks={updateBlocksInAssignmentResponseState}
-						config={{
-							listSorter: {
-								content: (item) => item && renderBlockContent(item),
-								divider: (item) => (
+					{renderedListSorter}
+					{!assignmentResponse?.pupil_collection_blocks?.length && (
+						<EmptyStateMessage
+							title={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+							)}
+							message={
+								<>
+									{t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
+									)}{' '}
 									<Button
-										icon="plus"
-										type="secondary"
-										onClick={() => {
-											addBlockModal.setEntity(item?.position);
-											addBlockModal.setOpen(true);
-										}}
-									/>
-								),
-							},
-							listSorterItem: {
-								onSlice: (item) => {
-									confirmSliceModal.setEntity(item);
-									confirmSliceModal.setOpen(true);
-								},
-							},
-						}}
-					/>
+										type="inline-link"
+										label={t(
+											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
+										)}
+										onClick={() =>
+											setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
+										}
+									/>{' '}
+									{t(
+										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
+									)}
+								</>
+							}
+						/>
+					)}
 				</Container>
-				{renderEmptyCollectionPlaceholder()}
 			</>
 		);
 	};
@@ -264,6 +336,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		<Container mode="horizontal">
 			{pastDeadline ? renderReadOnlyPupilCollectionBlocks() : renderPupilCollectionBlocks()}
 			{renderedModals}
+			{draggableListModal}
 		</Container>
 	);
 };
