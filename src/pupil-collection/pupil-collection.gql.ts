@@ -85,18 +85,62 @@ export const BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS = gql`
 	}
 `;
 
-export const DELETE_PUPIL_COLLECTIONS = gql`
-	mutation deletePupilCollections($pupilCollectionIds: [uuid!]!) {
-		update_app_assignment_responses_v2(
-			_set: { collection_title: null }
-			where: { id: { _in: $pupilCollectionIds } }
-		) {
+export const DELETE_ASSIGNMENT_RESPONSES = gql`
+	mutation deleteAssignmentResponses($assignmentResponseIds: [uuid!]!) {
+		delete_app_assignment_responses_v2(where: { id: { _in: $assignmentResponseIds } }) {
 			affected_rows
 		}
 		delete_app_pupil_collection_blocks(
-			where: { assignment_response_id: { _in: $pupilCollectionIds } }
+			where: { assignment_response_id: { _in: $assignmentResponseIds } }
 		) {
 			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_PUPIL_COLLECTION_BLOCK = gql`
+	mutation updatePupilCollectionBlock(
+		$blockId: uuid!
+		$update: app_pupil_collection_blocks_set_input!
+	) {
+		update_app_pupil_collection_blocks_by_pk(pk_columns: { id: $blockId }, _set: $update) {
+			id
+			created_at
+			custom_description
+			end_oc
+			custom_title
+			fragment_id
+			position
+			start_oc
+			thumbnail_path
+			type
+			updated_at
+			use_custom_fields
+			assignment_response_id
+		}
+	}
+`;
+
+export const INSERT_PUPIL_COLLECTION_BLOCKS = gql`
+	mutation insertPupilCollectionBlocks(
+		$pupilCollectionBlocks: [app_pupil_collection_blocks_insert_input!]!
+	) {
+		insert_app_pupil_collection_blocks(objects: $pupilCollectionBlocks) {
+			affected_rows
+		}
+	}
+`;
+
+export const GET_MAX_POSITION_PUPIL_COLLECTION_BLOCKS = gql`
+	query getMaxPositionPupilCollectionBlocks($assignmentResponseId: uuid!) {
+		app_assignment_responses_v2_by_pk(id: $assignmentResponseId) {
+			pupil_collection_blocks_aggregate {
+				aggregate {
+					max {
+						position
+					}
+				}
+			}
 		}
 	}
 `;

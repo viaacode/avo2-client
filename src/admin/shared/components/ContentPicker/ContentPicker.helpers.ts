@@ -6,8 +6,8 @@ import { ContentPickerType } from '@viaa/avo2-components';
 import { PickerItem, PickerItemControls, PickerSelectItem, PickerTypeOption } from '../../types';
 
 export const filterTypes = (
-		types: PickerTypeOption<ContentPickerType>[],
-		allowedTypes: ContentPickerType[]
+	types: PickerTypeOption<ContentPickerType>[],
+	allowedTypes: ContentPickerType[]
 ) => {
 	return types.filter((option: PickerTypeOption) => {
 		return allowedTypes.length ? allowedTypes.includes(option.value) : option.value;
@@ -15,8 +15,8 @@ export const filterTypes = (
 };
 
 export const setInitialInput = (
-		type?: PickerTypeOption<ContentPickerType>,
-		initialValue?: PickerItem
+	type?: PickerTypeOption<ContentPickerType>,
+	initialValue?: PickerItem
 ) => {
 	switch (get(type, 'picker') as PickerItemControls) {
 		case 'TEXT_INPUT':
@@ -29,11 +29,11 @@ export const setInitialInput = (
 };
 
 export const setInitialItem = (
-		options: PickerSelectItem[],
-		initialValue?: PickerItem
+	options: PickerSelectItem[],
+	initialValue?: PickerItem
 ): ValueType<PickerItem, any> => {
 	return options.find(
-			(option: PickerSelectItem) =>
-					option.value.value === get(initialValue, 'value', 'EMPTY_SELECTION')
+		(option: PickerSelectItem) =>
+			option.value.value === get(initialValue, 'value', 'EMPTY_SELECTION')
 	) as ValueType<PickerItem, any>;
 };

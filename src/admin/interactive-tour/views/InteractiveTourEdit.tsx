@@ -385,8 +385,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										}
 										onChange={(newName) =>
 											changeInteractiveTourState({
-												type:
-													InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
+												type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
 												interactiveTourProp: 'name',
 												interactiveTourPropValue: newName,
 											})

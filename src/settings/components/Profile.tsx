@@ -1,11 +1,3 @@
-import { compact, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { Dispatch } from 'redux';
-
 import {
 	Alert,
 	BlockHeading,
@@ -31,6 +23,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import { compact, get, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -653,11 +652,12 @@ const Profile: FunctionComponent<
 			case 'is_blocked':
 				return get(profile, 'user.is_blocked') || 'Nee';
 
-			case 'last_access_at':
+			case 'last_access_at': {
 				const lastAccessDate = get(profile, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+			}
 
-			case 'temp_access':
+			case 'temp_access': {
 				const tempAccess = get(user, 'temp_access.current.status');
 
 				return tempAccess === 1
@@ -667,6 +667,7 @@ const Profile: FunctionComponent<
 							get(tempAccess, 'until')
 					  )}`
 					: '-';
+			}
 		}
 	};
 

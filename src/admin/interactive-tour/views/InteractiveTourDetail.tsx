@@ -37,10 +37,8 @@ interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
 const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
 	// Hooks
-	const [
-		interactiveTour,
-		setInteractiveTour,
-	] = useState<Avo.InteractiveTour.InteractiveTour | null>(null);
+	const [interactiveTour, setInteractiveTour] =
+		useState<Avo.InteractiveTour.InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 

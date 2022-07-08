@@ -1,15 +1,18 @@
-import { Dispatch } from 'redux';
-
 import { Avo } from '@viaa/avo2-types';
+import { ReactNode } from 'react';
+import { Dispatch } from 'redux';
+import { UrlUpdateType } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../authentication/components/SecuredRoute';
-import { CollectionLabelLookup } from '../collection/collection.types';
+import { CollectionLabelLookup, QualityLabel } from '../collection/collection.types';
 import { BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
 
-export interface SearchProps extends DefaultSecureRouteProps {
+export interface SearchFiltersAndResultsProps
+	extends DefaultSecureRouteProps,
+		SearchFiltersAndResultsPropsManual {
 	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
 	searchResultsError: boolean;
@@ -23,20 +26,34 @@ export interface SearchProps extends DefaultSecureRouteProps {
 	) => Dispatch;
 }
 
+export interface SearchFiltersAndResultsPropsManual {
+	enabledFilters?: (keyof Avo.Search.Filters)[];
+	enabledTypeOptions?: Avo.Core.ContentType[];
+	bookmarks: boolean;
+	filterState: FilterState;
+	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
+}
+
 export interface SortOrder {
 	orderProperty: Avo.Search.OrderProperty;
 	orderDirection: Avo.Search.OrderDirection;
-}
-
-export interface SearchResults {
-	count: number;
-	items: Avo.Search.ResultItem[];
 }
 
 export interface FilterState {
 	filters?: Partial<Avo.Search.Filters>;
 	orderProperty?: Avo.Search.OrderProperty;
 	orderDirection?: Avo.Search.OrderDirection;
+	page?: number;
 }
 
 export interface SearchFilterControlsProps {
@@ -47,18 +64,41 @@ export interface SearchFilterControlsProps {
 	) => void;
 	multiOptions: SearchFilterMultiOptions;
 	onSearch?: (aggId: string) => void;
+	enabledFilters?: (keyof Avo.Search.Filters)[];
+	collectionLabels: QualityLabel[];
 }
 
 interface SearchResultItemHandlers {
 	handleBookmarkToggle: (uuid: string, active: boolean) => void;
-	handleTagClicked: (id: string) => void;
-	handleOriginalCpLinkClicked: (id: string, cp: string) => void;
+	handleTagClicked?: (id: string) => void;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
 }
 
 export interface SearchResultItemProps extends SearchResultItemHandlers {
+	id: string;
 	result: Avo.Search.ResultItem;
 	collectionLabelLookup: CollectionLabelLookup;
 	isBookmarked: boolean | null;
+	bookmarkButton: boolean;
+	renderDetailLink: (
+		linkText: string | ReactNode,
+		id: string,
+		type: Avo.Core.ContentType
+	) => ReactNode;
+	renderSearchLink: (
+		linkText: string | ReactNode,
+		newFilters: FilterState,
+		className?: string
+	) => ReactNode;
 }
 
 export interface SearchResultsProps extends SearchResultItemHandlers {
@@ -69,4 +109,6 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	setPage: (page: number) => void;
 	bookmarkStatuses: BookmarkStatusLookup | null;
 	navigateUserRequestForm: () => void;
+	bookmarkButtons: boolean;
+	collectionLabels: QualityLabel[];
 }

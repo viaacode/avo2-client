@@ -73,9 +73,8 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 	const [t] = useTranslation();
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [initialNewsletterPreferences, setInitialNewsletterPreferences] = useState<
-		Avo.Newsletter.Preferences
-	>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
+	const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
+		useState<Avo.Newsletter.Preferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
 	const [newsletterPreferences, changeNewsletterPreferences] = useReducer<
 		Reducer<Avo.Newsletter.Preferences, NewsletterPreferencesAction>
 	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
@@ -84,9 +83,8 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 
 	const fetchEmailPreferences = useCallback(async () => {
 		try {
-			const preferences: Avo.Newsletter.Preferences = await CampaignMonitorService.fetchNewsletterPreferences(
-				user.mail
-			);
+			const preferences: Avo.Newsletter.Preferences =
+				await CampaignMonitorService.fetchNewsletterPreferences(user.mail);
 			setInitialNewsletterPreferences(preferences);
 			changeNewsletterPreferences({
 				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
@@ -188,9 +186,8 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 										checked={newsletterPreferences[newsletterKey]}
 										onChange={() => {
 											onChangePreference({
-												[newsletterKey]: !newsletterPreferences[
-													newsletterKey
-												],
+												[newsletterKey]:
+													!newsletterPreferences[newsletterKey],
 											});
 										}}
 									/>

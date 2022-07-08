@@ -51,9 +51,8 @@ interface DeleteModalToggle {
 const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const [t] = useTranslation();
 
-	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] = useState<
-		boolean
-	>(false);
+	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =
+		useState<boolean>(false);
 	const [isDeleteSmartschoolModalOpen, setIsDeleteSmartschoolModalOpe] = useState<boolean>(false);
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
 	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);

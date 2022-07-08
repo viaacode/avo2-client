@@ -8,13 +8,16 @@ import { ToastService } from '../services';
 
 type UseCollectionQualityLabelsTuple = [QualityLabel[], boolean];
 
-export const useCollectionQualityLabels = (): UseCollectionQualityLabelsTuple => {
+export const useCollectionQualityLabels = (enabled: boolean): UseCollectionQualityLabelsTuple => {
 	const [t] = useTranslation();
 
 	const [collectionQualityLabels, setCollectionQualityLabels] = useState<QualityLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
+		if (!enabled) {
+			return;
+		}
 		setIsLoading(true);
 
 		CollectionService.fetchQualityLabels()

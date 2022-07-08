@@ -90,9 +90,8 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		Partial<Avo.Assignment.Assignment_v2>[] | undefined
 	>(undefined);
 	const [assignmentSortColumn, setAssignmentSortColumn] = useState<string>('title');
-	const [assignmentSortOrder, setAssignmentSortOrder] = useState<Avo.Search.OrderDirection>(
-		'asc'
-	);
+	const [assignmentSortOrder, setAssignmentSortOrder] =
+		useState<Avo.Search.OrderDirection>('asc');
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
@@ -713,6 +712,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	);
 };
 
-export default withUser(CollectionOrBundleEditAdmin) as FunctionComponent<
-	CollectionOrBundleEditAdminProps
->;
+export default withUser(
+	CollectionOrBundleEditAdmin
+) as FunctionComponent<CollectionOrBundleEditAdminProps>;

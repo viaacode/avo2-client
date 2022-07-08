@@ -6,11 +6,12 @@ import {
 	AssignmentSchema_v2,
 } from '@viaa/avo2-types/types/assignment';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
+import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import {
@@ -38,6 +39,7 @@ import {
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_IDS,
+	GET_ASSIGNMENT_RESPONSE,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -50,14 +52,15 @@ import {
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_BLOCK,
+	UPDATE_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 } from './assignment.gql';
 import {
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
-	AssignmentRetrieveError,
 	AssignmentSchemaLabel_v2,
 	AssignmentType,
+	PupilCollectionFragment,
 } from './assignment.types';
 
 export class AssignmentService {
@@ -204,10 +207,13 @@ export class AssignmentService {
 					assignmentResponse.blocks.map(async (block) =>
 						block.fragment_id
 							? await ItemsService.fetchItemByExternalId(block.fragment_id).then(
-									(item) => ({
-										...block,
-										item,
-									})
+									(item_meta) =>
+										item_meta
+											? {
+													...block,
+													item_meta,
+											  }
+											: block
 							  )
 							: block
 					)
@@ -277,6 +283,14 @@ export class AssignmentService {
 		assignment: Partial<Avo.Assignment.Assignment_v2>
 	): Avo.Assignment.Assignment_v2 {
 		const assignmentToSave = cloneDeep(assignment);
+
+		if (assignment.blocks?.some((block) => block.type === AssignmentBlockType.ZOEK)) {
+			assignmentToSave.assignment_type = 'ZOEK';
+		}
+
+		if (assignment.blocks?.some((block) => block.type === AssignmentBlockType.BOUW)) {
+			assignmentToSave.assignment_type = 'BOUW';
+		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
@@ -393,6 +407,58 @@ export class AssignmentService {
 		}
 	}
 
+	static async updateAssignmentResponse(
+		original: Avo.Assignment.Response_v2,
+		update: Partial<Avo.Assignment.Response_v2>
+	): Promise<Avo.Assignment.Response_v2 | null> {
+		try {
+			if (isNil(original.id)) {
+				throw new CustomError(
+					'Failed to update assignment response because its id is undefined',
+					null,
+					{ original, update }
+				);
+			}
+
+			const response = await dataService.mutate<{
+				data: { update_app_assignment_responses_v2: { affected_rows: number } };
+			}>({
+				mutation: UPDATE_ASSIGNMENT_RESPONSE,
+				variables: {
+					collectionTitle: update.collection_title,
+					updatedAt: new Date().toISOString(),
+					assignmentResponseId: original.id,
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (!response || !response.data || (response.errors && response.errors.length)) {
+				console.error('assignment update returned empty response', response);
+				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
+			}
+
+			// Update blocks
+			await PupilCollectionService.updatePupilCollectionBlocks(
+				original.id,
+				(original.pupil_collection_blocks || []) as PupilCollectionFragment[],
+				(update.pupil_collection_blocks || []) as PupilCollectionFragment[]
+			);
+
+			return {
+				...original,
+				...update,
+			};
+		} catch (err) {
+			const error = new CustomError('Failed to update assignment', err, {
+				original,
+				update,
+			});
+
+			console.error(error);
+			throw error;
+		}
+	}
+
 	static async updateAssignmentLabels(
 		id: string,
 		original: AssignmentLabel_v2[],
@@ -430,7 +496,7 @@ export class AssignmentService {
 		);
 
 		const cleanup = (block: AssignmentBlock) => {
-			delete block.item;
+			delete block.item_meta;
 			delete (block as any).icon;
 
 			block.updated_at = new Date().toISOString();
@@ -552,6 +618,8 @@ export class AssignmentService {
 				]);
 			}
 
+			await this.updateAssignmentBlocks(assignmentId, [], assignment.blocks || []);
+
 			return {
 				...(assignment as Avo.Assignment.Assignment_v2), // Do not copy the auto modified fields from the validation back into the input controls
 				id: assignmentId,
@@ -654,13 +722,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<
-		| {
-				assignmentBlocks: Avo.Assignment.Block[];
-				assignment: Avo.Assignment.Assignment_v2;
-		  }
-		| AssignmentRetrieveError
-	> {
+	): Promise<Avo.Assignment.Assignment_v2 | string> {
 		try {
 			// Load assignment
 			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> =
@@ -690,18 +752,21 @@ export class AssignmentService {
 			const initialAssignmentBlocks = await AssignmentService.fetchAssignmentBlocks(
 				assignmentId
 			);
-			const assignmentBlocks = await Promise.all(
+
+			const blocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
-					if (block.type === 'ITEM') {
-						block.item = await ItemsService.fetchItemByExternalId(block.fragment_id);
+					if (block.fragment_id) {
+						block.item_meta =
+							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+							undefined;
 					}
 					return block;
 				})
 			);
 
 			return {
-				assignmentBlocks,
-				assignment: tempAssignment,
+				...tempAssignment,
+				blocks,
 			};
 		} catch (err) {
 			const graphqlError = get(err, 'graphQLErrors[0].message');
@@ -814,13 +879,52 @@ export class AssignmentService {
 		}
 	}
 
-	// Helper for create assignmentResponseObject method below
+	/**
+	 * Fetches the item for each block in the pupil collection of the response
+	 * If the item was replaced by another, the other item is used
+	 * The item_meta is filled in into the existing response (mutable)
+	 * @param assignmentResponse
+	 */
+	static async fillItemMetaForAssignmentResponse(
+		assignmentResponse: Avo.Assignment.Response_v2
+	): Promise<void> {
+		// Fetch item_meta for each pupil collection block
+		const items = compact(
+			await Promise.all(
+				(assignmentResponse.pupil_collection_blocks || [])?.map((block) => {
+					const fragmentId: string | undefined | null = (block as PupilCollectionFragment)
+						.fragment_id;
+					if (fragmentId) {
+						return ItemsService.fetchItemByExternalId(fragmentId);
+					}
+					return null;
+				})
+			)
+		);
+
+		assignmentResponse.pupil_collection_blocks?.forEach((block) => {
+			block.item_meta =
+				items.find(
+					(item) =>
+						!!item &&
+						item.external_id === (block as PupilCollectionFragment).fragment_id
+				) || undefined;
+		});
+	}
+
+	/**
+	 * Get the assignment responses for the specified assignment id and owner of the assignment
+	 * @param profileId
+	 * @param assignmentId
+	 */
 	static async getAssignmentResponses(
 		profileId: string,
 		assignmentId: string
-	): Promise<string[]> {
+	): Promise<Avo.Assignment.Response_v2[]> {
 		try {
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSES,
 				variables: { profileId, assignmentId },
 				fetchPolicy: 'no-cache',
@@ -830,13 +934,50 @@ export class AssignmentService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			return (get(response, 'data.app_assignment_responses_v2') || []).map(
-				(response: { id: string }) => response.id
-			);
+			return response?.data?.app_assignment_responses_v2 || [];
 		} catch (err) {
 			throw new CustomError('Failed to get assignment responses from database', err, {
 				profileId,
 				query: 'GET_ASSIGNMENT_RESPONSES',
+			});
+		}
+	}
+
+	/**
+	 * Get One specific assignment response for the current user for the specified assignment
+	 * Helper for create assignmentResponseObject method below
+	 */
+	static async getAssignmentResponse(
+		profileId: string,
+		assignmentId: string
+	): Promise<Avo.Assignment.Response_v2 | undefined> {
+		try {
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
+				query: GET_ASSIGNMENT_RESPONSE,
+				variables: { profileId, assignmentId },
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				response?.data?.app_assignment_responses_v2?.[0];
+
+			if (!assignmentResponse) {
+				return undefined;
+			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+
+			return assignmentResponse;
+		} catch (err) {
+			throw new CustomError('Failed to get assignment response from database', err, {
+				profileId,
+				query: 'GET_ASSIGNMENT_RESPONSE',
 			});
 		}
 	}
@@ -848,7 +989,7 @@ export class AssignmentService {
 	 * this looks cleaner if everything loads at once instead of staggered
 	 * @param user
 	 */
-	static async createAssignmentResponseObject(
+	static async createOrFetchAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment_v2,
 		user: Avo.User.User | undefined
 	): Promise<Avo.Assignment.Response_v2 | null> {
@@ -856,33 +997,22 @@ export class AssignmentService {
 			if (!user) {
 				return null;
 			}
-			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
-				return null;
-			}
-			const existingAssignmentResponses: string[] =
-				await AssignmentService.getAssignmentResponses(
+			const existingAssignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				await AssignmentService.getAssignmentResponse(
 					get(user, 'profile.id'),
 					get(assignment, 'id') as unknown as string
 				);
 
-			if (existingAssignmentResponses.length) {
-				if (existingAssignmentResponses.length > 1) {
-					console.error(
-						new CustomError(
-							'Detected multiple assignment responses for the same user and the same assignment',
-							null,
-							{ existingAssignmentResponses }
-						)
-					);
-				}
-				return null;
+			if (existingAssignmentResponse) {
+				return existingAssignmentResponse;
 			}
 
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
-				collection_title: null,
+				collection_title:
+					assignment.assignment_type === AssignmentType.BOUW ? 'Nieuwe collectie' : null,
 			};
 			const response = await dataService.mutate({
 				mutation: INSERT_ASSIGNMENT_RESPONSE,
@@ -909,6 +1039,8 @@ export class AssignmentService {
 					{ response }
 				);
 			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(insertedAssignmentResponse);
 
 			return insertedAssignmentResponse;
 		} catch (err) {
@@ -941,23 +1073,37 @@ export class AssignmentService {
 			);
 			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 			const blocks = collection.collection_fragments.map((fragment: any, index: number) => {
-				return {
+				const block: Partial<AssignmentBlock> = {
 					assignment_id: assignmentId,
 					fragment_id: fragment.external_id,
 					custom_title: null,
 					custom_description: null,
-					original_title: withDescription ? fragment.custom_title : null,
-					original_description: withDescription ? fragment.custom_description : null,
+					original_title: null,
+					original_description: null,
 					use_custom_fields: false,
 					start_oc: fragment.start_oc,
 					end_oc: fragment.end_oc,
 					position: startPosition + index,
 					thumbnail_path: fragment.thumbnail_path,
-					type:
-						fragment.type === AssignmentBlockType.TEXT
-							? AssignmentBlockType.TEXT
-							: AssignmentBlockType.ITEM,
 				};
+				if (fragment.type === AssignmentBlockType.TEXT) {
+					// text: original text null, custom text set
+					block.custom_title = fragment.custom_title;
+					block.custom_description = fragment.custom_description;
+					block.use_custom_fields = true;
+					block.type = AssignmentBlockType.TEXT;
+				} else {
+					// ITEM
+					// custom_title and custom_description remain null
+					block.original_title = withDescription ? fragment.custom_title : null;
+					block.original_description = withDescription
+						? fragment.custom_description
+						: null;
+					block.use_custom_fields = false;
+					block.type = AssignmentBlockType.ITEM;
+				}
+
+				return block;
 			});
 			try {
 				await dataService.mutate({
@@ -1097,7 +1243,7 @@ export class AssignmentService {
 		const block = {
 			assignment_id: assignmentId,
 			fragment_id: item.external_id,
-			type: 'ITEM',
+			type: AssignmentBlockType.ITEM,
 			start_oc: trimInfo.hasCut ? trimInfo.fragmentStartTime : null,
 			end_oc: trimInfo.hasCut ? trimInfo.fragmentEndTime : null,
 			position: startPosition,

@@ -1,17 +1,16 @@
-import React, { FC } from 'react';
-
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import React, { FC } from 'react';
 
 import { FlowPlayerWrapper } from '../../shared/components';
 import { FlowPlayerWrapperProps } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { FragmentComponent } from '../collection.types';
+import { BlockItemComponent } from '../collection.types';
 
-export type CollectionFragmentFlowPlayerProps = FragmentComponent & FlowPlayerWrapperProps;
+export type CollectionFragmentFlowPlayerProps = BlockItemComponent & FlowPlayerWrapperProps;
 
 const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (props) => {
-	const { fragment, ...rest } = props;
+	const { block, ...rest } = props;
 
-	const meta = fragment.item_meta as ItemSchema | undefined;
+	const meta = block?.item_meta as ItemSchema | undefined;
 
 	return (
 		<FlowPlayerWrapper
@@ -19,10 +18,14 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 			external_id={meta?.external_id}
 			duration={meta?.duration}
 			title={meta?.title}
-			cuePoints={{
-				start: fragment.start_oc,
-				end: fragment.end_oc,
-			}}
+			cuePoints={
+				block
+					? {
+							start: block.start_oc,
+							end: block.end_oc,
+					  }
+					: undefined
+			}
 			{...rest}
 		/>
 	);

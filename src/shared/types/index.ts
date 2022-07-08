@@ -1,7 +1,6 @@
-import { ReactElement } from 'react';
-
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ReactElement } from 'react';
 
 export * from './quick-lane';
 
@@ -41,6 +40,4 @@ export interface LabeledFormField {
 	help?: string;
 }
 
-export type Positioned<T> =
-	| (T & { id: string; position: number })
-	| (T & { id: number; position: number });
+export type Positioned<T> = T & { id: string | number; position: number };

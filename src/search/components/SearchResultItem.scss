@@ -1,0 +1,12 @@
+@import '../../styles/settings/colors';
+
+.c-search-result-list .c-search-result__title {
+	> button {
+		color: $color-teal-bright;
+		cursor: pointer;
+
+		:hover {
+			text-decoration: underline;
+		}
+	}
+}

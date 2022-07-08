@@ -1,19 +1,20 @@
+import { Button, Icon, IconName } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
-import { Button, Icon, IconName } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
+import { sortByPositionAsc } from '../../helpers';
 
 import './ListSorter.scss';
-import { sortByPositionAsc } from '../../helpers';
 
 // Types
 
 export interface ListSorterItem {
-	id: string;
+	id: string | number; // Number is deprecated but still used in collection fragment blocks
 	onSlice?: (item: ListSorterItem) => void;
 	onPositionChange?: (item: ListSorterItem, delta: number) => void;
 	position: number;
-	icon: IconName;
+	icon?: IconName;
 }
 
 export type ListSorterRenderer<T> = (item?: T & ListSorterItem, i?: number) => ReactNode;
@@ -44,30 +45,29 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 					type="secondary"
 					icon="chevron-up"
 					onClick={() => item.onPositionChange?.(item, -1)}
-				></Button>
+				/>
 			)}
 			{!isLast && (
 				<Button
 					type="secondary"
 					icon="chevron-down"
 					onClick={() => item.onPositionChange?.(item, 1)}
-				></Button>
+				/>
 			)}
 		</>
 	);
 };
 
 export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)}></Button>
+	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)} />
 );
 
 // Main renderer
 type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>;
 export const ListSorter: ListSorterType = ({
 	items = [],
-	thumbnail = ((item) => item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<
-		unknown
-	>,
+	thumbnail = ((item) =>
+		item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<unknown>,
 	heading = () => 'heading',
 	divider = () => 'divider',
 	actions = (item, i) =>
@@ -79,30 +79,38 @@ export const ListSorter: ListSorterType = ({
 		),
 	content = () => 'content',
 }) => {
+	const emptyId = `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}empty`;
+
 	const renderItem: ListSorterRenderer<unknown> = (item?: ListSorterItem, i?: number) =>
 		item && (
 			<Fragment key={`${item.id}--${i}`}>
-				<li className="c-list-sorter__item">
-					<div className="c-list-sorter__item__header">
-						{thumbnail && (
-							<div className="c-list-sorter__item__thumbnail">
-								{thumbnail(item, i)}
-							</div>
-						)}
+				{item.id !== emptyId && (
+					<li className="c-list-sorter__item">
+						<div className="c-list-sorter__item__header">
+							{thumbnail && (
+								<div className="c-list-sorter__item__thumbnail">
+									{thumbnail(item, i)}
+								</div>
+							)}
 
-						{heading && (
-							<div className="c-list-sorter__item__heading">{heading(item, i)}</div>
-						)}
+							{heading && (
+								<div className="c-list-sorter__item__heading">
+									{heading(item, i)}
+								</div>
+							)}
 
-						{actions && (
-							<div className="c-list-sorter__item__actions">{actions(item, i)}</div>
-						)}
-					</div>
+							{actions && (
+								<div className="c-list-sorter__item__actions">
+									{actions(item, i)}
+								</div>
+							)}
+						</div>
 
-					{content && (
-						<div className="c-list-sorter__item__content">{content(item, i)}</div>
-					)}
-				</li>
+						{content && (
+							<div className="c-list-sorter__item__content">{content(item, i)}</div>
+						)}
+					</li>
+				)}
 
 				{divider && (
 					<div className="c-list-sorter__divider">
@@ -116,15 +124,15 @@ export const ListSorter: ListSorterType = ({
 
 	return (
 		<ul className="c-list-sorter">
-			{items
-				?.sort(sortByPositionAsc)
-				.map((item, i) => {
-					const j = items.length === i + 1 ? undefined : i;
-					return renderItem(item, j);
-				})}
+			{items?.sort(sortByPositionAsc).map((item, i) => {
+				const j = items.length === i + 1 ? undefined : i;
+				return renderItem(item, j);
+			})}
+
+			{(!items || items.length <= 0) && renderItem({ id: emptyId, position: -1 }, 0)}
 		</ul>
 	);
 };
 
 // TODO: use this pattern for CollectionOrBundle to reduce overhead
-export const AssignmentBlockListSorter = ListSorter as ListSorterType<AssignmentBlock>;
+export const BlockListSorter = ListSorter as ListSorterType<Avo.Core.BlockItemBase>;

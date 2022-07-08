@@ -78,9 +78,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		Avo.Collection.Collection[]
 	>([]);
 	const [collectionSortColumn, setCollectionSortColumn] = useState<string>('title');
-	const [collectionSortOrder, setCollectionSortOrder] = useState<Avo.Search.OrderDirection>(
-		'asc'
-	);
+	const [collectionSortOrder, setCollectionSortOrder] =
+		useState<Avo.Search.OrderDirection>('asc');
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(

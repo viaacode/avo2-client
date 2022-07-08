@@ -137,11 +137,9 @@ export const CONTENT_RESULT_PATH = {
 
 export const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
 
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	user_profile_id: (order: Avo.Search.OrderDirection) => ({
 		profile: { usersByuserId: { first_name: order } },
 	}),

@@ -14,17 +14,17 @@ import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { EDIT_ASSIGNMENT_BLOCK_LABELS } from '../assignment.const';
+import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import { AssignmentBlockType } from '../assignment.types';
 
-interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	assignment: Avo.Assignment.Assignment_v2;
+export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
+	responses?: Avo.Assignment.Response_v2[];
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }
 
 const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
-	assignment,
+	responses = [],
 	block,
 	isOpen,
 	onClose,
@@ -32,7 +32,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const label = { type: block ? EDIT_ASSIGNMENT_BLOCK_LABELS(t)[block.type] : '' };
+	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type] : '' };
 
 	const renderConfirmButtons = () => {
 		return (
@@ -68,7 +68,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
 				);
 			case AssignmentBlockType.ZOEK:
-				return assignment.responses.length > 0 ? (
+				return responses.length > 0 ? (
 					<>
 						<b>{t('assignment/modals/confirm-slice___opgelet')}: </b>
 						{t(

@@ -1,7 +1,7 @@
-@use "sass:math";
+@use 'sass:math';
 @import '../settings/variables';
 
-$component: "c-content-input";
+$component: 'c-content-input';
 
 @mixin hide-without-interaction-loss {
 	position: absolute;

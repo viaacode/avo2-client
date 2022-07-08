@@ -17,13 +17,12 @@
 .c-collection-list__item {
 	margin-bottom: 3.2rem;
 	padding-bottom: 3.2rem;
-	border-bottom: 1px solid #D6DEE3;
+	border-bottom: 1px solid #d6dee3;
 
 	&:last-child {
 		border: none;
 	}
 }
-
 
 @media (max-width: $g-bp2) {
 	.m-bundle-detail-header {

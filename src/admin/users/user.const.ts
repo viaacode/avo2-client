@@ -235,11 +235,9 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 ];
 
-export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in UserOverviewTableCol]: (order: Avo.Search.OrderDirection) => any;
-	}
-> = {
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in UserOverviewTableCol]: (order: Avo.Search.OrderDirection) => any;
+}> = {
 	first_name: (order: Avo.Search.OrderDirection) => ({
 		first_name_lower: order,
 	}),

@@ -78,15 +78,15 @@ $block-editor-border: 0.1rem solid $block-editor-border-color;
 	}
 
 	&__divider {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: $g-spacer-unit * 3;
-        align-items: center;
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		gap: $g-spacer-unit * 3;
+		align-items: center;
 
 		hr {
 			border-bottom-width: 0;
-            border-left-width: 0;
-            border-right-width: 0;
+			border-left-width: 0;
+			border-right-width: 0;
 			border-color: $block-editor-divider-color;
 			border-style: solid;
 			margin: 0;

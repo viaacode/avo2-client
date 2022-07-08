@@ -1,11 +1,3 @@
-import classnames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -30,16 +22,24 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
+import { get, isEmpty, isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import { renderCommonMetadata, renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
-import { toEnglishContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
 	DeleteObjectModal,
 	InteractiveTour,
@@ -55,13 +55,16 @@ import {
 	createDropdownMenuItem,
 	CustomError,
 	formatDate,
-	fromNow,
-	generateSearchLinks,
 	getFullName,
 	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
-import { generateRelatedItemLink } from '../../shared/helpers/handle-related-item-click';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -70,13 +73,18 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
 
-interface BundleDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+type BundleDetailProps = {
+	id?: string;
+	enabledMetaData: SearchFilter[];
+};
 
-const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location, match, user }) => {
+const BundleDetail: FunctionComponent<
+	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
+> = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const [t] = useTranslation();
 
 	// State
-	const [bundleId, setBundleId] = useState(match.params.id);
+	const [bundleId, setBundleId] = useState(id || match.params.id);
 	const [bundle, setBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -105,6 +113,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
+			if (!user) {
+				return;
+			}
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
 					[{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
@@ -334,6 +345,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				);
 				return;
 			}
+			if (!user) {
+				ToastService.danger(
+					t(
+						'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
+					)
+				);
+				return;
+			}
 			const duplicateBundle = await CollectionService.duplicateCollection(
 				bundle,
 				user,
@@ -350,10 +369,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				user
 			);
 
-			redirectToClientPage(
-				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateBundle.id }),
-				history
-			);
+			defaultGoToDetailLink(history)(duplicateBundle.id, 'bundel');
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
@@ -400,6 +416,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	const toggleBookmark = async () => {
+		if (!user) {
+			ToastService.danger(
+				t(
+					'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
+				)
+			);
+			return;
+		}
 		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				bundleId,
@@ -434,41 +458,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	// Render functions
-	const renderRelatedContent = () => {
-		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
-			const contentType = toEnglishContentType(relatedItem.administrative_type);
-			return (
-				<Column size="2-6" key={`related-bundle-${relatedItem.id}`}>
-					<Link to={generateRelatedItemLink(relatedItem)} className="a-link__no-styles">
-						<MediaCard
-							className="u-clickable"
-							category={contentType}
-							orientation="horizontal"
-							title={relatedItem.dc_title}
-						>
-							<MediaCardThumbnail>
-								<Thumbnail
-									category={contentType}
-									src={relatedItem.thumbnail_path}
-									showCategoryIcon
-								/>
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={contentType}>
-									<MetaDataItem
-										label={String(relatedItem.views_count || 0)}
-										icon="eye"
-									/>
-									<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</Link>
-				</Column>
-			);
-		});
-	};
-
 	function renderCollectionFragments() {
 		if (!bundle) {
 			return null;
@@ -669,13 +658,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		if (!bundle) {
 			return null;
 		}
-		const {
-			id,
-			lom_context,
-			created_at,
-			updated_at,
-			lom_classification,
-		} = bundle as Avo.Collection.Collection;
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
@@ -683,76 +665,18 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						{t('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
 					<Grid>
-						<Column size="3-3">
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
-										Onderwijsniveau
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									{lom_context && lom_context.length ? (
-										generateSearchLinks(id, 'educationLevel', lom_context)
-									) : (
-										<span className="u-d-block">-</span>
-									)}
-								</p>
-							</Spacer>
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___vakken">
-										Vakken
-									</Trans>
-								</p>
-								<p className="c-body-1">
-									{lom_classification && lom_classification.length ? (
-										generateSearchLinks(id, 'subject', lom_classification)
-									) : (
-										<span className="u-d-block">-</span>
-									)}
-								</p>
-							</Spacer>
-						</Column>
-						<Column size="3-3">
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									{t('bundle/views/bundle-detail___aangemaakt-op')}
-								</p>
-								<p className="c-body-1">{formatDate(created_at)}</p>
-							</Spacer>
-							<Spacer margin="top-large">
-								<p className="u-text-bold">
-									{t('collection/views/collection-detail___laatst-aangepast')}
-								</p>
-								<p className="c-body-1">{formatDate(updated_at)}</p>
-							</Spacer>
-						</Column>
+						{renderCommonMetadata(bundle, enabledMetaData, defaultRenderSearchLink)}
 					</Grid>
 					<hr className="c-hr" />
-					{!!relatedItems && !!relatedItems.length && (
-						<>
-							<BlockHeading type="h3">
-								<Trans i18nKey="bundle/views/bundle-detail___bekijk-ook">
-									Bekijk ook
-								</Trans>
-							</BlockHeading>
-							<div className="c-media-card-list">
-								<Grid>{renderRelatedContent()}</Grid>
-							</div>
-						</>
-					)}
+					{renderRelatedItems(relatedItems, defaultRenderDetailLink)}
 				</Container>
 			</Container>
 		);
 	};
 
 	const renderBundle = () => {
-		const {
-			is_public,
-			thumbnail_path,
-			title,
-			description_long,
-		} = bundle as Avo.Collection.Collection;
+		const { is_public, thumbnail_path, title, description_long } =
+			bundle as Avo.Collection.Collection;
 
 		if (!isFirstRender) {
 			setIsFirstRender(true);
@@ -874,7 +798,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							</Container>
 						</Container>
 						{renderMetaDataAndRelated()}
-						{!!bundle && (
+						{!!bundle && !!user && (
 							<PublishCollectionModal
 								collection={bundle}
 								isOpen={isPublishModalOpen}
@@ -932,4 +856,4 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	);
 };
 
-export default withRouter(BundleDetail);
+export default compose(withRouter, withUser)(BundleDetail) as FunctionComponent<BundleDetailProps>;

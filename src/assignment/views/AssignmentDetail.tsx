@@ -7,7 +7,6 @@ import {
 	Flex,
 	FlexItem,
 	Icon,
-	IconName,
 	Navbar,
 	Spacer,
 	TagList,
@@ -37,7 +36,7 @@ import { buildLink, CustomError, isMobileWidth, renderAvatar } from '../../share
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { AssignmentHelper } from '../assignment.helper';
+import { AssignmentHelper, getAssignmentErrorObj } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentRetrieveError } from '../assignment.types';
 
@@ -48,7 +47,6 @@ type AssignmentProps = DefaultSecureRouteProps<{ id: string }>;
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2>();
-	const [assignmentBlocks, setAssignmentBlocks] = useState<Avo.Assignment.Block[]>([]);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canCreateAssignmentResponse: boolean;
@@ -71,47 +69,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 			if (isString(response)) {
 				// error
-				let errorObj: { message: string; icon: IconName };
-				switch (response as AssignmentRetrieveError) {
-					case AssignmentRetrieveError.DELETED:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___de-opdracht-werd-verwijderd'
-							),
-							icon: 'delete',
-						};
-						break;
 
-					case AssignmentRetrieveError.NOT_YET_AVAILABLE:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
-							),
-							icon: 'clock',
-						};
-						break;
-
-					case AssignmentRetrieveError.PAST_DEADLINE:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
-							),
-							icon: 'clock',
-						};
-						break;
-
-					default:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
-							),
-							icon: 'alert-triangle',
-						};
-						break;
-				}
 				setLoadingInfo({
 					state: 'error',
-					...errorObj,
+					...getAssignmentErrorObj(response as AssignmentRetrieveError),
 				});
 				return;
 			}
@@ -120,8 +81,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				PermissionService.hasPermissions(
 					[
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response.assignment },
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response.assignment },
+						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: response },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: response },
 					],
 					user
 				),
@@ -133,13 +94,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				// Currently we wait for this to complete
 				// so we can set the created assignment response on the tempAssignment object,
 				// so we don't need to do a refetch of the original assignment
-				const assignmentResponse = await AssignmentService.createAssignmentResponseObject(
-					response.assignment,
-					user
-				);
+				const assignmentResponse =
+					await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
 
 				if (assignmentResponse) {
-					response.assignment.responses = [
+					response.responses = [
 						{
 							...assignmentResponse,
 							id: `${assignmentResponse.id}`,
@@ -151,7 +110,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 			trackEvents(
 				{
-					object: String(response.assignment.id),
+					object: String(response.id),
 					object_type: 'assignment',
 					action: 'view',
 				},
@@ -159,8 +118,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			);
 
 			setPermissions({ canEditAssignment, canCreateAssignmentResponse });
-			setAssignment(response.assignment);
-			setAssignmentBlocks(response.assignmentBlocks);
+			setAssignment(response);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment and content for detail page', err, {
@@ -175,7 +133,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				),
 			});
 		}
-	}, [setAssignment, setAssignmentBlocks, setLoadingInfo, match.params.id, t, user]);
+	}, [setAssignment, setLoadingInfo, match.params.id, t, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS)) {
@@ -220,7 +178,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			await AssignmentService.toggleAssignmentResponseSubmitStatus(
 				assignmentResponse.id,
 				checked ? new Date().toISOString() : null
-			);
+			); // TODO remove this since it is no longer used after zoek and bouw track
 			fetchAssignmentAndContent();
 			ToastService.success(
 				checked
@@ -252,7 +210,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				return (
 					<li className="c-collection-list__item" key={`assignment-block-${block.id}`}>
 						<ItemVideoDescription
-							itemMetaData={block.item as Avo.Item.Item}
+							itemMetaData={block.item_meta as Avo.Item.Item}
 							showTitle={true}
 							showDescription={true}
 							title={AssignmentHelper.getDisplayTitle(block)}
@@ -295,7 +253,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	const renderContent = () => {
 		return (
 			<ul className="c-collection-list">
-				{assignmentBlocks.map((block: Avo.Assignment.Block) => renderBlock(block))}
+				{assignment?.blocks.map((block: Avo.Assignment.Block) => renderBlock(block))}
 			</ul>
 		);
 	};

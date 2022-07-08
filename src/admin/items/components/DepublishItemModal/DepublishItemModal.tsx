@@ -93,9 +93,8 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			if (depublishType === 'depublish_with_reason') {
 				await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
 			} else if (depublishType === 'depublish_with_replacement' && replacementExternalId) {
-				const replacementItem: Avo.Item.Item | null = await ItemsService.fetchItemByExternalId(
-					replacementExternalId
-				);
+				const replacementItem: Avo.Item.Item | null =
+					await ItemsService.fetchItemByExternalId(replacementExternalId);
 				if (!replacementItem) {
 					ToastService.danger(
 						t(
@@ -128,11 +127,10 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// The final replacement should look like this:
 				// A => C
 				// B => C
-				const itemsReplacedByCurrentItem: RelationEntry<
-					Avo.Item.Item
-				>[] = (await RelationService.fetchRelationsByObject('item', 'IS_REPLACED_BY', [
-					item.uid,
-				])) as RelationEntry<Avo.Item.Item>[];
+				const itemsReplacedByCurrentItem: RelationEntry<Avo.Item.Item>[] =
+					(await RelationService.fetchRelationsByObject('item', 'IS_REPLACED_BY', [
+						item.uid,
+					])) as RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
 					itemsReplacedByCurrentItem.map(
 						async (relation: RelationEntry<Avo.Item.Item>) => {

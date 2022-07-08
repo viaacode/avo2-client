@@ -60,9 +60,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	const [allPermissionGroups, setAllPermissionGroups] = useState<PermissionGroup[]>([]);
 	const [selectedPermissionGroupId, setSelectedPermissionGroupId] = useState<string | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
-		'label'
-	);
+	const [sortColumn, sortOrder, handleSortClick] =
+		useTableSort<PermissionGroupTableCols>('label');
 	const [permissionGroupIdToDelete, setPermissionGroupIdToDelete] = useState<number | null>(null);
 	const [isConfirmDeleteModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
@@ -70,20 +69,19 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 
 	const initOrFetchUserGroup = useCallback(async () => {
 		if (isCreatePage) {
-			const permGroup = ({
+			const permGroup = {
 				label: '',
 				description: '',
 				created_at: new Date().toISOString(),
 				updated_at: new Date().toISOString(),
 				permissionGroups: [],
-			} as unknown) as UserGroup;
+			} as unknown as UserGroup;
 			setInitialUserGroup(permGroup);
 			setUserGroup(permGroup);
 		} else {
 			try {
-				const userGroupObj:
-					| UserGroup
-					| undefined = await UserGroupService.fetchUserGroupById(match.params.id);
+				const userGroupObj: UserGroup | undefined =
+					await UserGroupService.fetchUserGroupById(match.params.id);
 
 				if (!userGroupObj) {
 					setLoadingInfo({

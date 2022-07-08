@@ -1,24 +1,27 @@
 import { IconName, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentType } from '../assignment.types';
 
+import { useAssignmentPastDeadline } from './assignment-past-deadline';
+
 export function useAssignmentPupilTabs(
-	assignment?: Avo.Assignment.Assignment_v2
+	assignment: Avo.Assignment.Assignment_v2 | null,
+	tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+	setTab: (newTab: string) => void
 ): [
 	TabProps[],
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
-	React.Dispatch<React.SetStateAction<ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS>>,
+	(newTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void,
 	(id: string | number) => void
 ] {
 	const [t] = useTranslation();
 
-	const [tab, setTab] = useState<ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS>(
-		ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT
-	);
+	const pastDeadline = useAssignmentPastDeadline(assignment);
+
 	const tabs: TabProps[] = useMemo(
 		() =>
 			[
@@ -30,7 +33,8 @@ export function useAssignmentPupilTabs(
 				...(assignment?.assignment_type &&
 				[AssignmentType.ZOEK, AssignmentType.BOUW].includes(
 					assignment?.assignment_type as AssignmentType
-				)
+				) &&
+				!pastDeadline
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
@@ -63,5 +67,5 @@ export function useAssignmentPupilTabs(
 		[setTab]
 	);
 
-	return [tabs, tab, setTab, onTabClick];
+	return [tabs, tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined, setTab, onTabClick];
 }

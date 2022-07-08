@@ -1,0 +1,44 @@
+@import '../../../styles/settings/variables';
+
+.c-sticky-save-bar__wrapper {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	justify-content: space-between; // Keep the save indicator at the bottom
+
+	> .c-sticky-save-bar {
+		display: flex;
+		align-items: baseline; // Better than center here
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: auto;
+		max-width: 100%;
+		width: 800px;
+		z-index: 999999;
+
+		flex-direction: row;
+		justify-content: space-between;
+
+		strong {
+			flex-grow: 1;
+		}
+
+		@media screen and (max-width: $g-bp3) {
+			flex-wrap: wrap;
+
+			strong {
+				flex-basis: 100%;
+				margin-bottom: 2rem;
+				text-align: center;
+			}
+
+			.c-button {
+				flex-basis: 50%;
+			}
+		}
+	}
+}
+
+.modal-open .o-container .c-sticky-edge-bar {
+	z-index: 40;
+}

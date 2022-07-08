@@ -18,12 +18,10 @@ export const retrieveItems = async (
 
 // Parse raw content items to react-select options
 const parseItems = (raw: Avo.Item.Item[]): PickerSelectItem[] => {
-	return raw.map(
-		(item: Avo.Item.Item): PickerSelectItem => {
-			return {
-				label: item.title,
-				value: parsePickerItem('ITEM', item.external_id.toString()),
-			};
-		}
-	);
+	return raw.map((item: Avo.Item.Item): PickerSelectItem => {
+		return {
+			label: item.title,
+			value: parsePickerItem('ITEM', item.external_id.toString()),
+		};
+	});
 };

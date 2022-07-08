@@ -81,15 +81,13 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		};
 
 		try {
-			const [
-				contentPageLabelTemp,
-				contentPageLabelCountTemp,
-			] = await ContentPageLabelService.fetchContentPageLabels(
-				tableState.page || 0,
-				(tableState.sort_column || 'updated_at') as ContentPageLabelOverviewTableCols,
-				tableState.sort_order || 'desc',
-				generateWhereObject(getFilters(tableState))
-			);
+			const [contentPageLabelTemp, contentPageLabelCountTemp] =
+				await ContentPageLabelService.fetchContentPageLabels(
+					tableState.page || 0,
+					(tableState.sort_column || 'updated_at') as ContentPageLabelOverviewTableCols,
+					tableState.sort_order || 'desc',
+					generateWhereObject(getFilters(tableState))
+				);
 
 			setContentPageLabels(contentPageLabelTemp);
 			setContentPageLabelCount(contentPageLabelCountTemp);

@@ -180,12 +180,48 @@ export const GET_MULTIPLE_COLLECTION_VIEW_COUNTS = gql`
 	}
 `;
 
+export const GET_ITEM_BOOKMARKS_FOR_USER = gql`
+	query getItemBookmarksForUser(
+		$profileId: uuid!
+		$filter: [app_item_bookmarks_bool_exp]
+		$order: [app_item_bookmarks_order_by!]! = [{ created_at: desc }]
+	) {
+		app_item_bookmarks(
+			where: { profile_id: { _eq: $profileId }, _and: $filter }
+			order_by: $order
+		) {
+			bookmarkedItem {
+				title
+				thumbnail_path
+				duration
+				issued
+				item {
+					external_id
+					item_meta {
+						is_deleted
+						is_published
+						type {
+							label
+						}
+					}
+				}
+				view_counts {
+					count
+				}
+			}
+			item_id
+			created_at
+		}
+	}
+`;
+
 export const GET_BOOKMARKS_FOR_USER = gql`
 	query getBookmarksForUser($profileId: uuid!) {
 		app_item_bookmarks(where: { profile_id: { _eq: $profileId } }) {
 			bookmarkedItem {
 				title
 				thumbnail_path
+				duration
 				issued
 				item {
 					external_id

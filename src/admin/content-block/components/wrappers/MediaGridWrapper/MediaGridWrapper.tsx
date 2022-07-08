@@ -227,7 +227,7 @@ const MediaGridWrapper: FunctionComponent<
 				<ItemVideoDescription
 					src={(item as any).src} // TODO remove cast after update to components v1.47.0
 					poster={get(item, 'thumbnail.src')}
-					itemMetaData={(item as unknown) as Avo.Item.Item}
+					itemMetaData={item as unknown as Avo.Item.Item}
 					verticalLayout
 					showTitle
 					collapseDescription={false}
@@ -276,6 +276,7 @@ const MediaGridWrapper: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(MediaGridWrapper) as FunctionComponent<
-	MediaGridWrapperProps
->;
+export default compose(
+	withRouter,
+	withUser
+)(MediaGridWrapper) as FunctionComponent<MediaGridWrapperProps>;

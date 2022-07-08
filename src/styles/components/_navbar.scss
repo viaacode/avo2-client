@@ -14,7 +14,7 @@
 }
 
 .c-navbar--white {
-	background-color: #FFF;
+	background-color: #fff;
 }
 
 .c-navbar--bg-alt {
@@ -38,7 +38,7 @@
 	top: 0;
 	left: 0;
 	z-index: $g-c-global-navbar-z;
-	box-shadow: 0 0 .8rem 0 rgba($color-gray-500, .35);
+	box-shadow: 0 0 0.8rem 0 rgba($color-gray-500, 0.35);
 }
 
 .c-navbar--sticky {
@@ -46,7 +46,7 @@
 	top: 6.4rem;
 	left: 0;
 	z-index: $g-c-global-navbar-z;
-	box-shadow: 0 0 .8rem 0 rgba($color-gray-500, .35);
+	box-shadow: 0 0 0.8rem 0 rgba($color-gray-500, 0.35);
 	padding: 1.6rem 0;
 }
 

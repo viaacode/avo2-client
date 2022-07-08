@@ -22,20 +22,21 @@ import {
 	CONTENT_TYPE_AND_LABELS_INPUT,
 } from './defaults';
 
-export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockComponentStateFields => ({
-	tabs: [],
-	tabStyle: 'MENU_BAR',
-	allowMultiple: false,
-	centerHeader: false,
-	headerBackgroundColor: Color.Transparent,
-	contentType: 'PROJECT',
-	itemStyle: 'NEWS_LIST',
-	showTitle: true,
-	showDescription: true,
-	showDate: false,
-	buttonLabel: i18n.t('admin/content-block/helpers/generators/page-overview___lees-meer'),
-	itemsPerPage: 20,
-});
+export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE =
+	(): PageOverviewBlockComponentStateFields => ({
+		tabs: [],
+		tabStyle: 'MENU_BAR',
+		allowMultiple: false,
+		centerHeader: false,
+		headerBackgroundColor: Color.Transparent,
+		contentType: 'PROJECT',
+		itemStyle: 'NEWS_LIST',
+		showTitle: true,
+		showDescription: true,
+		showDate: false,
+		buttonLabel: i18n.t('admin/content-block/helpers/generators/page-overview___lees-meer'),
+		itemsPerPage: 20,
+	});
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (): DefaultContentBlockState => {
 	return {

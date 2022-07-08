@@ -241,9 +241,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				newCollection.is_managed = true;
 			}
 
-			const insertedCollection: Partial<Avo.Collection.Collection> = await CollectionService.insertCollection(
-				newCollection
-			);
+			const insertedCollection: Partial<Avo.Collection.Collection> =
+				await CollectionService.insertCollection(newCollection);
 
 			trackEvents(
 				{
@@ -458,9 +457,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 																},
 																...collections.map(
 																	(
-																		collection: Partial<
-																			Avo.Collection.Collection
-																		>
+																		collection: Partial<Avo.Collection.Collection>
 																	) => ({
 																		label:
 																			collection.title || '',

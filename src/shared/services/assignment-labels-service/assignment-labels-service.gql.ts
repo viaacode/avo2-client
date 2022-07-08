@@ -70,11 +70,11 @@ export const LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT = gql`
 `;
 
 export const UNLINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT = gql`
-	mutation unlinkAssignmentLabelsFromAssignment($assignmentUuid: uuid!, $labelIds: [Int!]!) {
-		delete_app_assignment_assignment_tags(
+	mutation unlinkAssignmentLabelsFromAssignment($assignmentUuid: uuid!, $labelIds: [uuid!]!) {
+		delete_app_assignments_v2_assignment_labels_v2(
 			where: {
-				assignment_uuid: { _eq: $assignmentUuid }
-				assignment_tag_id: { _in: $labelIds }
+				assignment_id: { _eq: $assignmentUuid }
+				assignment_label_id: { _in: $labelIds }
 			}
 		) {
 			affected_rows

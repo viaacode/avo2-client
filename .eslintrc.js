@@ -61,5 +61,7 @@ module.exports = {
 				ignoreDeclarationSort: true,
 			},
 		],
+
+		'react/prop-types': 'off'
 	},
 };

@@ -1,6 +1,5 @@
-import { stringify } from 'query-string';
-
 import { Avo } from '@viaa/avo2-types';
+import { stringify } from 'query-string';
 
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError, getEnv } from '../helpers';
@@ -9,7 +8,7 @@ import { fetchWithLogout } from '../helpers/fetch-with-logout';
 export async function getRelatedItems(
 	id: string | number,
 	type: 'items' | 'collections' | 'bundles',
-	limit: number = 5
+	limit = 5
 ): Promise<Avo.Search.ResultItem[]> {
 	let url: string | undefined;
 	let body: any | undefined;

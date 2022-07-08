@@ -4,7 +4,7 @@
 
 .c-usp-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(40rem, 1fr) ) ;
+	grid-template-columns: repeat(auto-fill, minmax(40rem, 1fr));
 	grid-gap: 3.2rem;
 	align-items: center;
 	justify-items: center;
@@ -17,7 +17,7 @@
 }
 
 .c-usp__icon {
-	background-color: #3A586F;
+	background-color: #3a586f;
 	border-radius: 100%;
 	margin: 0 auto 2.4rem;
 	display: flex;

@@ -125,6 +125,9 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			owner_profile_id
 			updated_at
 			created_at
+			owner {
+				full_name
+			}
 		}
 		count: app_assignments_v2_aggregate(
 			where: {
@@ -196,6 +199,9 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 				}
 				id
 			}
+			owner {
+				full_name
+			}
 		}
 		count: app_assignments_v2_aggregate(
 			where: {
@@ -250,9 +256,66 @@ export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
 export const GET_ASSIGNMENT_RESPONSES = gql`
 	query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
 		app_assignment_responses_v2(
+			where: {
+				assignment: { owner_profile_id: { _eq: $profileId } }
+				assignment_id: { _eq: $assignmentId }
+			}
+		) {
+			id
+			created_at
+			owner_profile_id
+			assignment_id
+			collection_title
+			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				id
+				fragment_id
+				use_custom_fields
+				custom_title
+				custom_description
+				start_oc
+				end_oc
+				position
+				created_at
+				updated_at
+				type
+				thumbnail_path
+				assignment_response_id
+			}
+			owner {
+				full_name
+			}
+		}
+	}
+`;
+
+export const GET_ASSIGNMENT_RESPONSE = gql`
+	query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
+		app_assignment_responses_v2(
 			where: { owner_profile_id: { _eq: $profileId }, assignment_id: { _eq: $assignmentId } }
 		) {
 			id
+			created_at
+			owner_profile_id
+			assignment_id
+			collection_title
+			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				id
+				fragment_id
+				use_custom_fields
+				custom_title
+				custom_description
+				start_oc
+				end_oc
+				position
+				created_at
+				updated_at
+				type
+				thumbnail_path
+				assignment_response_id
+			}
+			owner {
+				full_name
+			}
 		}
 	}
 `;
@@ -284,6 +347,24 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 				owner_profile_id
 				assignment_id
 				collection_title
+				pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+					id
+					fragment_id
+					use_custom_fields
+					custom_title
+					custom_description
+					start_oc
+					end_oc
+					position
+					created_at
+					updated_at
+					type
+					thumbnail_path
+					assignment_response_id
+				}
+				owner {
+					full_name
+				}
 			}
 			assignment_type
 			deadline_at
@@ -313,6 +394,9 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					first_name
 					last_name
 				}
+			}
+			owner {
+				full_name
 			}
 		}
 	}
@@ -361,6 +445,45 @@ export const UPDATE_ASSIGNMENT = gql`
 	) {
 		update_app_assignments_v2(where: { id: { _eq: $assignmentId } }, _set: $assignment) {
 			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_ASSIGNMENT_RESPONSE = gql`
+	mutation updateAssignmentResponse(
+		$assignmentResponseId: uuid
+		$collectionTitle: String!
+		$updatedAt: timestamptz!
+	) {
+		update_app_assignment_responses_v2(
+			where: { id: { _eq: $assignmentResponseId } }
+			_set: { collection_title: $collectionTitle, updated_at: $updatedAt }
+		) {
+			returning {
+				assignment_id
+				collection_title
+				created_at
+				id
+				owner_profile_id
+				pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+					assignment_response_id
+					created_at
+					custom_description
+					custom_title
+					end_oc
+					fragment_id
+					id
+					position
+					start_oc
+					thumbnail_path
+					type
+					updated_at
+					use_custom_fields
+				}
+				owner {
+					full_name
+				}
+			}
 		}
 	}
 `;
@@ -418,7 +541,7 @@ export const INSERT_ASSIGNMENT_RESPONSE = gql`
 `;
 
 export const INSERT_ASSIGNMENT_BLOCKS = gql`
-	mutation insertBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
+	mutation insertAssignmentBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
 		insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
 			affected_rows
 		}

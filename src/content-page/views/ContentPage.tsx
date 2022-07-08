@@ -98,7 +98,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 		// Add page title as header block for faq items
 		if (contentPageInfo.content_type === 'FAQ_ITEM') {
 			contentBlockBlockConfigs = [
-				({
+				{
 					position: 0,
 					name: 'Titel',
 					type: 'HEADING',
@@ -121,7 +121,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 							},
 						},
 					},
-				} as unknown) as ContentBlockConfig,
+				} as unknown as ContentBlockConfig,
 				...contentBlockBlockConfigs,
 			];
 		}

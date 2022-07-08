@@ -99,9 +99,8 @@ export class ContentBlockService {
 		contentBlockConfigs: Partial<ContentBlockConfig>[]
 	): Promise<Partial<ContentBlockConfig>[] | null> {
 		try {
-			const dbBlocks: Partial<Avo.ContentPage.Block>[] = convertBlocksToDatabaseFormat(
-				contentBlockConfigs
-			);
+			const dbBlocks: Partial<Avo.ContentPage.Block>[] =
+				convertBlocksToDatabaseFormat(contentBlockConfigs);
 			(dbBlocks || []).forEach((block) => (block.content_id = contentId));
 			const response = await dataService.mutate({
 				mutation: INSERT_CONTENT_BLOCKS,

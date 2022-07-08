@@ -1,19 +1,20 @@
-import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
+import { ContentTypeString } from '../collection/collection.types';
+import { SearchFilter } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
 import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
-	AssignmentBlockTypeDict,
 	AssignmentColumn,
 	AssignmentFormState,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseColumn,
+	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
 } from './assignment.types';
@@ -175,8 +176,18 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		),
 		blocks: array(),
 		answer_url: string().nullable().optional(),
-		available_at: string().optional(),
-		deadline_at: string().optional(),
+		available_at: string().nullable().optional(),
+		deadline_at: string().nullable().optional(),
+	});
+};
+
+export const PUPIL_COLLECTION_FORM_SCHEMA = (
+	t: TFunction
+): SchemaOf<AssignmentResponseFormState> => {
+	return object({
+		id: string().optional(),
+		collection_title: string().required(t('assignment/assignment___titel-is-verplicht')),
+		pupil_collection_blocks: array(),
 	});
 };
 
@@ -190,7 +201,7 @@ export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	deadline_at: undefined,
 });
 
-export const ASSIGNMENT_FORM_FIELDS = (
+export const ASSIGNMENT_DETAILS_FORM_FIELDS = (
 	t: TFunction
 ): Pick<
 	AssignmentDetailsFormProps,
@@ -237,20 +248,6 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 	SEARCH = 'SEARCH',
 	MY_COLLECTION = 'MY_COLLECTION',
 }
-
-export const EDIT_ASSIGNMENT_BLOCK_ICONS: () => AssignmentBlockTypeDict<IconName> = () => ({
-	ITEM: 'video',
-	TEXT: 'type',
-	ZOEK: 'search',
-});
-
-export const EDIT_ASSIGNMENT_BLOCK_LABELS: (t: TFunction) => AssignmentBlockTypeDict<string> = (
-	t
-) => ({
-	ITEM: t('assignment/assignment___fragment'),
-	TEXT: t('assignment/assignment___instructie-of-tekstblok'),
-	ZOEK: t('assignment/assignment___zoekoefening'),
-});
 
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	assignmentType: AssignmentType
@@ -308,8 +305,20 @@ export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	}),
 };
 
+export const ENABLED_FILTERS_PUPIL_SEARCH: SearchFilter[] = [
+	SearchFilter.type,
+	SearchFilter.serie,
+	SearchFilter.broadcastDate,
+	SearchFilter.provider,
+];
+
+export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] = [
+	ContentTypeString.video,
+	ContentTypeString.audio,
+];
+
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: {id: string}): boolean => {
-	return item.id.startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
-}
+export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
+	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
+};
