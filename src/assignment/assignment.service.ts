@@ -39,6 +39,7 @@ import {
 	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_IDS,
+	GET_ASSIGNMENT_RESPONSE,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -721,7 +722,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<Avo.Assignment.Assignment_v2> {
+	): Promise<Avo.Assignment.Assignment_v2 | string> {
 		try {
 			// Load assignment
 			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> =
@@ -911,7 +912,41 @@ export class AssignmentService {
 		});
 	}
 
-	// Helper for create assignmentResponseObject method below
+	/**
+	 * Get the assignment responses for the specified assignment id and owner of the assignment
+	 * @param profileId
+	 * @param assignmentId
+	 */
+	static async getAssignmentResponses(
+		profileId: string,
+		assignmentId: string
+	): Promise<Avo.Assignment.Response_v2[]> {
+		try {
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
+				query: GET_ASSIGNMENT_RESPONSES,
+				variables: { profileId, assignmentId },
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			return response?.data?.app_assignment_responses_v2 || [];
+		} catch (err) {
+			throw new CustomError('Failed to get assignment responses from database', err, {
+				profileId,
+				query: 'GET_ASSIGNMENT_RESPONSES',
+			});
+		}
+	}
+
+	/**
+	 * Get One specific assignment response for the current user for the specified assignment
+	 * Helper for create assignmentResponseObject method below
+	 */
 	static async getAssignmentResponse(
 		profileId: string,
 		assignmentId: string
@@ -920,7 +955,7 @@ export class AssignmentService {
 			const response: ApolloQueryResult<{
 				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
 			}> = await dataService.query({
-				query: GET_ASSIGNMENT_RESPONSES,
+				query: GET_ASSIGNMENT_RESPONSE,
 				variables: { profileId, assignmentId },
 				fetchPolicy: 'no-cache',
 			});
@@ -940,9 +975,9 @@ export class AssignmentService {
 
 			return assignmentResponse;
 		} catch (err) {
-			throw new CustomError('Failed to get assignment responses from database', err, {
+			throw new CustomError('Failed to get assignment response from database', err, {
 				profileId,
-				query: 'GET_ASSIGNMENT_RESPONSES',
+				query: 'GET_ASSIGNMENT_RESPONSE',
 			});
 		}
 	}
@@ -960,9 +995,6 @@ export class AssignmentService {
 	): Promise<Avo.Assignment.Response_v2 | null> {
 		try {
 			if (!user) {
-				return null;
-			}
-			if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 				return null;
 			}
 			const existingAssignmentResponse: Avo.Assignment.Response_v2 | undefined =

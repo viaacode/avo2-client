@@ -250,6 +250,38 @@ export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
 export const GET_ASSIGNMENT_RESPONSES = gql`
 	query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
 		app_assignment_responses_v2(
+			where: {
+				assignment: { owner_profile_id: { _eq: $profileId } }
+				assignment_id: { _eq: $assignmentId }
+			}
+		) {
+			id
+			created_at
+			owner_profile_id
+			assignment_id
+			collection_title
+			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				id
+				fragment_id
+				use_custom_fields
+				custom_title
+				custom_description
+				start_oc
+				end_oc
+				position
+				created_at
+				updated_at
+				type
+				thumbnail_path
+				assignment_response_id
+			}
+		}
+	}
+`;
+
+export const GET_ASSIGNMENT_RESPONSE = gql`
+	query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
+		app_assignment_responses_v2(
 			where: { owner_profile_id: { _eq: $profileId }, assignment_id: { _eq: $assignmentId } }
 		) {
 			id

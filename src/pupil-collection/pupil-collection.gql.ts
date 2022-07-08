@@ -85,16 +85,13 @@ export const BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS = gql`
 	}
 `;
 
-export const DELETE_PUPIL_COLLECTIONS = gql`
-	mutation deletePupilCollections($pupilCollectionIds: [uuid!]!) {
-		update_app_assignment_responses_v2(
-			_set: { collection_title: null }
-			where: { id: { _in: $pupilCollectionIds } }
-		) {
+export const DELETE_ASSIGNMENT_RESPONSES = gql`
+	mutation deleteAssignmentResponses($assignmentResponseIds: [uuid!]!) {
+		delete_app_assignment_responses_v2(where: { id: { _in: $assignmentResponseIds } }) {
 			affected_rows
 		}
 		delete_app_pupil_collection_blocks(
-			where: { assignment_response_id: { _in: $pupilCollectionIds } }
+			where: { assignment_response_id: { _in: $assignmentResponseIds } }
 		) {
 			affected_rows
 		}

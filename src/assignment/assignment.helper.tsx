@@ -5,6 +5,7 @@ import {
 	Flex,
 	Form,
 	FormGroup,
+	IconName,
 	Spacer,
 	TextInput,
 	Toggle,
@@ -28,7 +29,12 @@ import i18n from '../shared/translations/i18n';
 import { Positioned } from '../shared/types';
 
 import { AssignmentService } from './assignment.service';
-import { AssignmentLayout, AssignmentSchemaLabel_v2, AssignmentType } from './assignment.types';
+import {
+	AssignmentLayout,
+	AssignmentRetrieveError,
+	AssignmentSchemaLabel_v2,
+	AssignmentType,
+} from './assignment.types';
 import AssignmentLabels from './components/AssignmentLabels';
 
 export class AssignmentHelper {
@@ -340,4 +346,41 @@ export function setPositionToIndex<T>(item: Positioned<T>, i: number): Positione
 		...item,
 		position: i,
 	};
+}
+
+export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
+	message: string;
+	icon: IconName;
+} {
+	switch (errorType) {
+		case AssignmentRetrieveError.DELETED:
+			return {
+				message: i18n.t('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
+				icon: 'delete',
+			};
+
+		case AssignmentRetrieveError.NOT_YET_AVAILABLE:
+			return {
+				message: i18n.t(
+					'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
+				),
+				icon: 'clock',
+			};
+
+		case AssignmentRetrieveError.PAST_DEADLINE:
+			return {
+				message: i18n.t(
+					'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
+				),
+				icon: 'clock',
+			};
+
+		default:
+			return {
+				message: i18n.t(
+					'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
+				),
+				icon: 'alert-triangle',
+			};
+	}
 }

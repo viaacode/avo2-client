@@ -643,11 +643,11 @@ const CollectionDetail: FunctionComponent<
 		setImportWithDescription(withDescription);
 
 		// check if assignment has responses. If so: show additional confirmation modal
-		const response = await AssignmentService.getAssignmentResponse(
+		const responses = await AssignmentService.getAssignmentResponses(
 			getProfileId(user),
 			importToAssignmentId
 		);
-		if (response) {
+		if (responses.length > 0) {
 			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
 		} else {
 			await doImportToAssignment(importToAssignmentId, withDescription);
@@ -1081,7 +1081,9 @@ const CollectionDetail: FunctionComponent<
 									<Column size="3-6">
 										<Spacer margin="top-large">
 											<p className="u-text-bold">
-												<Trans i18nKey="collection/views/collection-detail___ordering">Ordering</Trans>
+												<Trans i18nKey="collection/views/collection-detail___ordering">
+													Ordering
+												</Trans>
 											</p>
 											{hasCopies && (
 												<p className="c-body-1">

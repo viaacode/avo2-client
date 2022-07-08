@@ -7,7 +7,6 @@ import {
 	Flex,
 	FlexItem,
 	Icon,
-	IconName,
 	Navbar,
 	Spacer,
 	TagList,
@@ -37,7 +36,7 @@ import { buildLink, CustomError, isMobileWidth, renderAvatar } from '../../share
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
-import { AssignmentHelper } from '../assignment.helper';
+import { AssignmentHelper, getAssignmentErrorObj } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentRetrieveError } from '../assignment.types';
 
@@ -70,47 +69,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 			if (isString(response)) {
 				// error
-				let errorObj: { message: string; icon: IconName };
-				switch (response as AssignmentRetrieveError) {
-					case AssignmentRetrieveError.DELETED:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___de-opdracht-werd-verwijderd'
-							),
-							icon: 'delete',
-						};
-						break;
 
-					case AssignmentRetrieveError.NOT_YET_AVAILABLE:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
-							),
-							icon: 'clock',
-						};
-						break;
-
-					case AssignmentRetrieveError.PAST_DEADLINE:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
-							),
-							icon: 'clock',
-						};
-						break;
-
-					default:
-						errorObj = {
-							message: t(
-								'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
-							),
-							icon: 'alert-triangle',
-						};
-						break;
-				}
 				setLoadingInfo({
 					state: 'error',
-					...errorObj,
+					...getAssignmentErrorObj(response as AssignmentRetrieveError),
 				});
 				return;
 			}

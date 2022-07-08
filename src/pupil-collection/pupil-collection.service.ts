@@ -16,7 +16,7 @@ import {
 } from './pupil-collection.const';
 import {
 	BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS,
-	DELETE_PUPIL_COLLECTIONS,
+	DELETE_ASSIGNMENT_RESPONSES,
 	GET_MAX_POSITION_PUPIL_COLLECTION_BLOCKS,
 	GET_PUPIL_COLLECTION_IDS,
 	GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
@@ -157,16 +157,16 @@ export class PupilCollectionService {
 		}
 	}
 
-	static async deletePupilCollections(pupilCollectionIds: string[]): Promise<void> {
+	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
 		try {
 			await dataService.mutate({
-				mutation: DELETE_PUPIL_COLLECTIONS,
-				variables: { pupilCollectionIds },
+				mutation: DELETE_ASSIGNMENT_RESPONSES,
+				variables: { assignmentResponseIds },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
-			const error = new CustomError('Failed to delete pupil collections', err, {
-				pupilCollectionIds,
+			const error = new CustomError('Failed to delete assignment responses', err, {
+				assignmentResponseIds,
 			});
 			console.error(error);
 			throw error;
