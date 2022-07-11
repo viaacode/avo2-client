@@ -126,7 +126,9 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 			console.error(new CustomError('Failed to get bookmarks', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t('assignment/modals/add-bookmark-fragment-modal___het-ophalen-van-bladwijzers-is-mislukt'),
+				message: t(
+					'assignment/modals/add-bookmark-fragment-modal___het-ophalen-van-bladwijzers-is-mislukt'
+				),
 			});
 		}
 	}, [tableColumns, user, filterString, sortColumn, sortOrder, t]);
@@ -164,7 +166,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 
 	const renderFooterActions = () => {
 		return (
-			<Toolbar spaced>
+			<Toolbar>
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
@@ -204,10 +206,12 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 								src={bookmark.contentThumbnailPath || undefined}
 								showCategoryIcon
 							/>
-							<Flex center>
+							<Spacer margin="small" />
+							<Flex orientation="vertical" center>
 								<h3 className="c-content-header__header u-m-0">
 									{truncateTableValue(bookmark.contentTitle)}
 								</h3>
+								<span>{bookmark.contentOrganisation || ''}</span>
 							</Flex>
 						</Flex>
 					</div>
