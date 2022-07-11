@@ -642,3 +642,13 @@ export const GET_ASSIGNMENT_IDS = gql`
 		}
 	}
 `;
+
+export const ASSIGNMENT_PUPIL_BLOCKS = gql`
+	query assignmentPupilBlocks($assignmentId: uuid!) {
+		app_pupil_collection_blocks(
+			where: { assignment_responses_v2: { assignment_id: { _eq: $assignmentId } } }
+		) {
+			id
+		}
+	}
+`;

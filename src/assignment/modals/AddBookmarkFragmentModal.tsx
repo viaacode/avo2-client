@@ -19,6 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ScrollBar from 'react-perfect-scrollbar';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, isMobileWidth } from '../../shared/helpers';
@@ -30,6 +31,8 @@ import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-servic
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
+
+import './AddItemsModals.scss';
 
 // Column definitions
 const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
@@ -249,31 +252,34 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 					</FormGroup>
 				</Form>
 
-				<Table
-					columns={tableColumns}
-					data={bookmarks || undefined}
-					emptyStateMessage={
-						filterString
-							? t(
-									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
-							  )
-							: t(
-									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
-							  )
-					}
-					renderCell={(rowData: BookmarkInfo, colKey: string) =>
-						renderCell(rowData, colKey as keyof BookmarkInfo)
-					}
-					rowKey="contentLinkId"
-					variant="styled"
-					onColumnClick={handleColumnClick as any}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-					useCards={isMobileWidth()}
-					showRadioButtons
-					selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
-					onSelectionChanged={handleSelectedBookmarkItemChanged}
-				/>
+				<ScrollBar>
+					<Table
+						columns={tableColumns}
+						data={bookmarks || undefined}
+						emptyStateMessage={
+							filterString
+								? t(
+										'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+								  )
+								: t(
+										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
+								  )
+						}
+						renderCell={(rowData: BookmarkInfo, colKey: string) =>
+							renderCell(rowData, colKey as keyof BookmarkInfo)
+						}
+						rowKey="contentLinkId"
+						variant="styled"
+						onColumnClick={handleColumnClick as any}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+						useCards={isMobileWidth()}
+						showRadioButtons
+						selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
+						onSelectionChanged={handleSelectedBookmarkItemChanged}
+					/>
+				</ScrollBar>
+
 				{renderFooterActions()}
 			</>
 		);
@@ -288,7 +294,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 			size="large"
 			onClose={onClose}
 			scrollable
-			className="c-content"
+			className="c-content c-add-fragment-modal"
 		>
 			<ModalBody>
 				<LoadingErrorLoadedComponent

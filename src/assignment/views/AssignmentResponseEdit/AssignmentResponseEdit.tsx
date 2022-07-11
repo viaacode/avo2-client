@@ -29,13 +29,11 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
-import { APP_PATH } from '../../../constants';
 import { InteractiveTour } from '../../../shared/components';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, formatTimestamp } from '../../../shared/helpers';
+import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
-import { ASSIGNMENTS_ID } from '../../../workspace/workspace.const';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
@@ -57,6 +55,7 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { backToOverview } from '../../helpers/back-to-overview';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
@@ -212,18 +211,12 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	const renderBackButton = useMemo(
 		() => (
-			<Link
-				className="c-return"
-				to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-					tabId: ASSIGNMENTS_ID,
-				})}
-			>
+			<Link className="c-return" to={backToOverview}>
 				<Icon name="chevron-left" size="small" type="arrows" />
-
 				{t('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t]
+		[t, backToOverview]
 	);
 
 	const renderedTitle = useMemo(

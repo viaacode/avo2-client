@@ -23,6 +23,7 @@ import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ScrollBar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
@@ -37,6 +38,8 @@ import { ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
+
+import './AddItemsModals.scss';
 
 // Column definitions
 const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
@@ -325,31 +328,34 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					</ToolbarRight>
 				</Toolbar>
 
-				<Table
-					columns={tableColumns}
-					data={collections || undefined}
-					emptyStateMessage={
-						filterString
-							? t(
-									'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
-							  )
-							: t(
-									'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
-							  )
-					}
-					renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
-						renderCell(rowData, colKey as keyof Avo.Collection.Collection)
-					}
-					rowKey="id"
-					variant="styled"
-					onColumnClick={handleColumnClick as any}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-					useCards={isMobileWidth()}
-					showRadioButtons
-					selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
-					onSelectionChanged={handleSelectedCollectionChanged}
-				/>
+				<ScrollBar>
+					<Table
+						columns={tableColumns}
+						data={collections || undefined}
+						emptyStateMessage={
+							filterString
+								? t(
+										'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
+								  )
+								: t(
+										'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
+								  )
+						}
+						renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
+							renderCell(rowData, colKey as keyof Avo.Collection.Collection)
+						}
+						rowKey="id"
+						variant="styled"
+						onColumnClick={handleColumnClick as any}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+						useCards={isMobileWidth()}
+						showRadioButtons
+						selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
+						onSelectionChanged={handleSelectedCollectionChanged}
+					/>
+				</ScrollBar>
+
 				{renderFooterActions()}
 			</>
 		);
@@ -362,7 +368,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			size="large"
 			onClose={onClose}
 			scrollable
-			className="c-content"
+			className="c-content c-add-collection-modal"
 		>
 			<ModalBody>
 				<LoadingErrorLoadedComponent

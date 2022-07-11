@@ -14,3 +14,6 @@ export const DEFAULT_AUDIO_STILL = defaultAudioStillPath;
 
 export const NOT_NOW_LOCAL_STORAGE_KEY = 'AVO.nudging_not_now';
 export const NOT_NOW_VAL = 'Yes';
+
+export const ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS =
+	'AVO.assignment_overview_back_button_filters';

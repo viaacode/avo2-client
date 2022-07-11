@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
+import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import MoreOptionsDropdown from '../../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
@@ -295,6 +296,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					{renderedListSorter}
 					{!assignmentResponse?.pupil_collection_blocks?.length && (
 						<EmptyStateMessage
+							img={<PupilSvg />}
 							title={t(
 								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
 							)}
@@ -314,7 +316,13 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 									/>{' '}
 									{t(
 										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
-									)}
+									)}{' '}
+									<a href="/hulp" target="_blank">
+										{t(
+											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___hier'
+										)}
+									</a>
+									{'.'}
 								</>
 							}
 						/>

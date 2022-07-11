@@ -51,6 +51,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
 import {
 	buildLink,
 	CustomError,
@@ -136,6 +137,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		sort_column: StringParam,
 		sort_order: StringParam,
 	});
+
+	useEffect(() => {
+		localStorage.setItem(ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, JSON.stringify(query));
+	}, [query]);
 
 	// Init values
 	const activeView = query.view || AssignmentView.ACTIVE;

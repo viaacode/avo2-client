@@ -3,6 +3,7 @@ import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-compone
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import BeforeUnloadComponent from 'react-beforeunload-component';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -12,15 +13,15 @@ import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CollectionService } from '../../collection/collection.service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, CustomError } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	ASSIGNMENT_FORM_SCHEMA,
@@ -31,6 +32,8 @@ import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
+import { backToOverview } from '../helpers/back-to-overview';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
@@ -56,6 +59,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
+	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
+		useState<boolean>(false);
+	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
+	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 
 	const {
 		control,
@@ -80,7 +87,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	const pastDeadline = useAssignmentPastDeadline(original);
@@ -117,8 +124,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return;
 			}
 
+			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
+
 			setOriginal(res);
 			setAssignment(res);
+			setAssignmentHasResponses(res.responses.length > 0);
+			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -131,6 +142,19 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
 	// Events
+
+	const handleOnSave = async () => {
+		if (!user.profile?.id || !original) {
+			return;
+		}
+
+		if (assignmentHasResponses) {
+			setIsConfirmSaveActionModalOpen(true);
+			return;
+		}
+
+		handleSubmit(submit, (...args) => console.error(args))();
+	};
 
 	const submit = async () => {
 		try {
@@ -218,7 +242,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		const collection = await CollectionService.fetchCollectionOrBundleById(
 			collectionId,
 			'collection',
-			undefined
+			undefined,
+			true
 		);
 
 		if (!collection) {
@@ -229,20 +254,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		if (collection.collection_fragments) {
-			const blocks = collection.collection_fragments.map((collectionItem, index) => ({
-				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
-				item: collectionItem.item_meta,
-				type: collectionItem.type,
-				fragment_id: collectionItem.external_id,
-				position: (addBlockModal.entity || 0) + index,
-				original_title: withDescription ? collectionItem.custom_title : null,
-				original_description: withDescription ? collectionItem.custom_description : null,
-				custom_title: collectionItem.use_custom_fields ? collectionItem.custom_title : null,
-				custom_description: collectionItem.use_custom_fields
-					? collectionItem.custom_description
-					: null,
-				use_custom_fields: collectionItem.use_custom_fields,
-			}));
+			const blocks = collection.collection_fragments.map(
+				(collectionItem, index): Partial<AssignmentBlock> => ({
+					id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
+					item_meta: collectionItem.item_meta,
+					type: collectionItem.type,
+					fragment_id: collectionItem.external_id,
+					position: (addBlockModal.entity || 0) + index,
+					original_title: withDescription ? collectionItem.custom_title : null,
+					original_description: withDescription
+						? collectionItem.custom_description
+						: null,
+					custom_title: collectionItem.use_custom_fields
+						? collectionItem.custom_title
+						: null,
+					custom_description: collectionItem.use_custom_fields
+						? collectionItem.custom_description
+						: null,
+					use_custom_fields: collectionItem.use_custom_fields,
+				})
+			);
 			const newAssignmentBlocks = insertMultipleAtPosition(
 				assignment.blocks,
 				blocks as unknown as AssignmentBlock[]
@@ -327,18 +358,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderBackButton = useMemo(
 		() => (
-			<Link
-				className="c-return"
-				to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-					tabId: ASSIGNMENTS_ID,
-				})}
-			>
+			<Link className="c-return" to={backToOverview()}>
 				<Icon name="chevron-left" size="small" type="arrows" />
-
 				{t('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t]
+		[t, backToOverview]
 	);
 
 	const renderTitle = useMemo(
@@ -368,15 +393,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					title={t('assignment/views/assignment-detail___meer-opties')}
 					type="secondary"
 				/>
-				<Button
-					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					disabled
-					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
-				/>
+				{original && (
+					<ShareAssignmentWithPupil
+						assignment={original} // Needs to be saved before you can share
+						onContentLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)}
+						onDetailLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)}
+					/>
+				)}
 			</>
 		),
-		[t]
+		[t, original, setTab, setIsViewAsPupilEnabled]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
@@ -426,40 +452,87 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-			<AssignmentHeading
-				back={renderBackButton}
-				title={renderTitle}
-				actions={renderActions}
-				tabs={renderTabs}
-			/>
+		<BeforeUnloadComponent
+			blockRoute={isDirty}
+			modalComponentHandler={({ handleModalLeave }: { handleModalLeave: () => void }) => {
+				let body = t(
+					'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+				);
 
-			<Container mode="horizontal">
-				{pastDeadline && (
-					<Spacer margin={['top-large']}>
-						<Alert type="info">
-							{t(
-								'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-							)}
-						</Alert>
-					</Spacer>
-				)}
+				if (assignmentHasPupilBlocks) {
+					body = t(
+						'assignment/views/assignment-edit___opgelet-er-bestaan-reeds-leerlingencollecties-binnen-deze-opdracht-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-en-de-leerlingencollecties-wil-verwijderen-voor-je-de-pagina-verlaat'
+					);
+				} else if (assignmentHasResponses) {
+					body = t(
+						'assignment/views/assignment-edit___opgelet-leerlingen-hebben-deze-opdracht-reeds-bekeken-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-voor-je-de-pagina-verlaat'
+					);
+				}
 
-				<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
+				return (
+					<ConfirmModal
+						isOpen={true}
+						body={body}
+						onClose={handleModalLeave}
+						deleteObjectCallback={() => {
+							handleSubmit(submit, console.error)();
+							handleModalLeave();
+						}}
+						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
+						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+						confirmButtonType="primary"
+					/>
+				);
+			}}
+		>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
+				/>
 
-				<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+				<Container mode="horizontal">
+					{pastDeadline && (
+						<Spacer margin={['top-large']}>
+							<Alert type="info">
+								{t(
+									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+								)}
+							</Alert>
+						</Spacer>
+					)}
 
-				{renderedModals}
-				{draggableListModal}
-			</Container>
+					<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
 
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar
-				isVisible={isDirty}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
-		</div>
+					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+
+					{renderedModals}
+					{draggableListModal}
+
+					<ConfirmModal
+						isOpen={isConfirmSaveActionModalOpen}
+						onClose={() => setIsConfirmSaveActionModalOpen(false)}
+						deleteObjectCallback={() => {
+							setIsConfirmSaveActionModalOpen(false);
+							handleSubmit(submit, (...args) => console.error(args))();
+						}}
+						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+						body={t(
+							'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
+						)}
+						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
+						confirmButtonType="primary"
+					/>
+				</Container>
+
+				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
+			</div>
+		</BeforeUnloadComponent>
 	);
 
 	const renderPageContent = () => {
