@@ -12,16 +12,15 @@ import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CollectionService } from '../../collection/collection.service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, CustomError } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	ASSIGNMENT_FORM_SCHEMA,
@@ -33,6 +32,7 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
+import { backToOverview } from '../helpers/back-to-overview';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
@@ -355,18 +355,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderBackButton = useMemo(
 		() => (
-			<Link
-				className="c-return"
-				to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-					tabId: ASSIGNMENTS_ID,
-				})}
-			>
+			<Link className="c-return" to={backToOverview()}>
 				<Icon name="chevron-left" size="small" type="arrows" />
-
 				{t('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t]
+		[t, backToOverview]
 	);
 
 	const renderTitle = useMemo(

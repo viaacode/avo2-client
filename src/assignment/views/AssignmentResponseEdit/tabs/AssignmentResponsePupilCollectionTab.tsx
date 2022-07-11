@@ -318,7 +318,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
 									)}{' '}
 									<a href="/hulp" target="_blank">
-										{t('assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___hier')}
+										{t(
+											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___hier'
+										)}
 									</a>
 									{'.'}
 								</>
