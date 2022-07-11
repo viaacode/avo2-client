@@ -9,6 +9,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +18,6 @@ import { buildLink, copyToClipboard } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
 import './ShareAssignmentWithPupil.scss';
-import classnames from 'classnames';
 
 export type ShareAssignmentWithPupilProps = {
 	assignment: Avo.Assignment.Assignment_v2;

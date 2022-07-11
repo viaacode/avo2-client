@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
@@ -34,7 +35,6 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
-import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
