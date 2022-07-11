@@ -480,8 +480,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						isOpen={true}
 						body={body}
 						onClose={handleModalLeave}
-						deleteObjectCallback={async () => {
-							handleSubmit(submit, (...args) => console.error(args))();
+						deleteObjectCallback={() => {
+							handleSubmit(submit, console.error)();
 							handleModalLeave();
 						}}
 						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
