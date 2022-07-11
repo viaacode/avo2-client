@@ -32,6 +32,7 @@ import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
@@ -83,7 +84,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	const pastDeadline = useAssignmentPastDeadline(original);
@@ -238,7 +239,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		const collection = await CollectionService.fetchCollectionOrBundleById(
 			collectionId,
 			'collection',
-			undefined
+			undefined,
+			true
 		);
 
 		if (!collection) {
@@ -249,20 +251,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		if (collection.collection_fragments) {
-			const blocks = collection.collection_fragments.map((collectionItem, index) => ({
-				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
-				item: collectionItem.item_meta,
-				type: collectionItem.type,
-				fragment_id: collectionItem.external_id,
-				position: (addBlockModal.entity || 0) + index,
-				original_title: withDescription ? collectionItem.custom_title : null,
-				original_description: withDescription ? collectionItem.custom_description : null,
-				custom_title: collectionItem.use_custom_fields ? collectionItem.custom_title : null,
-				custom_description: collectionItem.use_custom_fields
-					? collectionItem.custom_description
-					: null,
-				use_custom_fields: collectionItem.use_custom_fields,
-			}));
+			const blocks = collection.collection_fragments.map(
+				(collectionItem, index): Partial<AssignmentBlock> => ({
+					id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
+					item_meta: collectionItem.item_meta,
+					type: collectionItem.type,
+					fragment_id: collectionItem.external_id,
+					position: (addBlockModal.entity || 0) + index,
+					original_title: withDescription ? collectionItem.custom_title : null,
+					original_description: withDescription
+						? collectionItem.custom_description
+						: null,
+					custom_title: collectionItem.use_custom_fields
+						? collectionItem.custom_title
+						: null,
+					custom_description: collectionItem.use_custom_fields
+						? collectionItem.custom_description
+						: null,
+					use_custom_fields: collectionItem.use_custom_fields,
+				})
+			);
 			const newAssignmentBlocks = insertMultipleAtPosition(
 				assignment.blocks,
 				blocks as unknown as AssignmentBlock[]
@@ -388,15 +396,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					title={t('assignment/views/assignment-detail___meer-opties')}
 					type="secondary"
 				/>
-				<Button
-					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					disabled
-					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
-				/>
+				{original && (
+					<ShareAssignmentWithPupil
+						assignment={original} // Needs to be saved before you can share
+						onContentLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)}
+						onDetailLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)}
+					/>
+				)}
 			</>
 		),
-		[t]
+		[t, original, setTab, setIsViewAsPupilEnabled]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);

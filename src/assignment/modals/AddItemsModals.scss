@@ -1,0 +1,20 @@
+@import '../../styles/settings/variables';
+
+.c-add-fragment-modal,
+.c-add-collection-modal {
+	.c-thumbnail {
+		margin-right: 10px;
+		max-width: 125px;
+		height: 70px;
+	}
+
+	.scrollbar-container {
+		.scrollbar-container {
+			max-height: 100vh;
+
+			@media screen and (min-width: $g-bp1) {
+				max-height: 60vh;
+			}
+		}
+	}
+}

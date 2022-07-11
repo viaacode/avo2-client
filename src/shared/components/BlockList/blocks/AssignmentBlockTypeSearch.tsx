@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import searchBlockImage from '../../../../assets/images/assignment-search-block.png';
+import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
 import CollectionFragmentRichText from '../../../../collection/components/CollectionFragmentRichText';
 
 import './AssignmentBlockTypeSearch.scss';
@@ -65,12 +65,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 				)}
 			</Flex>
 			<div>
-				<img
-					src={searchBlockImage}
-					alt={t(
-						'shared/components/block-list/blocks/assignment-block-type-search___user-typing-on-keyboard'
-					)}
-				/>
+				<NewPartSvg />
 			</div>
 		</div>
 	);

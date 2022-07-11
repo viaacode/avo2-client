@@ -25,6 +25,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
+import { ADMIN_PATH } from '../../admin.const';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
 	FilterableColumn,
@@ -306,9 +307,21 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					? t('admin/assignments/views/assignments-overview-admin___afgelopen')
 					: t('admin/assignments/views/assignments-overview-admin___actief');
 
-			case 'pupilCollections':
-				if ((assignment.responses?.length || 0) >= 1) {
-					return <Link to="#">{assignment.responses?.length}</Link>; // TODO add link to responses page
+			case 'responses': {
+				const responsesLength =
+					(assignment as any)?.responses_aggregate?.aggregate?.count || 0;
+				if (responsesLength >= 1) {
+					return (
+						<Link
+							to={buildLink(
+								ADMIN_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
+								{},
+								{ query: assignment.title || '' }
+							)}
+						>
+							{responsesLength}
+						</Link>
+					); // TODO add link to responses page
 				}
 				if (assignment.assignment_type === 'BOUW') {
 					return t(
@@ -316,6 +329,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					);
 				}
 				return t('admin/assignments/views/assignments-overview-admin___nvt');
+			}
 
 			case 'views':
 				return assignment?.view_count?.count || '0';
