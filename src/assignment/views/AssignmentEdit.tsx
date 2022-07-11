@@ -14,6 +14,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
@@ -57,6 +58,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
+	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
+		useState<boolean>(false);
 
 	const {
 		control,
@@ -132,6 +135,23 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
 	// Events
+
+	const handleOnSave = async () => {
+		if (!user.profile?.id || !original) {
+			return;
+		}
+
+		const responses = await AssignmentService.getAssignmentResponses(
+			user.profile?.id,
+			original.id
+		);
+		if (responses.length > 0) {
+			setIsConfirmSaveActionModalOpen(true);
+			return;
+		}
+
+		handleSubmit(submit, (...args) => console.error(args))();
+	};
 
 	const submit = async () => {
 		try {
@@ -460,14 +480,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 				{renderedModals}
 				{draggableListModal}
+
+				<ConfirmModal
+					isOpen={isConfirmSaveActionModalOpen}
+					onClose={() => setIsConfirmSaveActionModalOpen(false)}
+					deleteObjectCallback={() => {
+						setIsConfirmSaveActionModalOpen(false);
+						handleSubmit(submit, (...args) => console.error(args))();
+					}}
+					title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+					body={t(
+						'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
+					)}
+					confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+					cancelLabel={t('assignment/views/assignment-edit___annuleer')}
+					confirmButtonType="primary"
+				/>
 			</Container>
 
 			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar
-				isVisible={isDirty}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
+			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
 		</div>
 	);
 
