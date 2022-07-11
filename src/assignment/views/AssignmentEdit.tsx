@@ -31,6 +31,7 @@ import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
@@ -80,7 +81,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	const pastDeadline = useAssignmentPastDeadline(original);
@@ -375,15 +376,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					title={t('assignment/views/assignment-detail___meer-opties')}
 					type="secondary"
 				/>
-				<Button
-					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					disabled
-					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
-				/>
+				{original && (
+					<ShareAssignmentWithPupil
+						assignment={original} // Needs to be saved before you can share
+						onContentLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)}
+						onDetailLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)}
+					/>
+				)}
 			</>
 		),
-		[t]
+		[t, original, setTab, setIsViewAsPupilEnabled]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
