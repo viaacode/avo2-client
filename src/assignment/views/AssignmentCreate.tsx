@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
@@ -14,6 +14,7 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/component
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { navigate } from '../../shared/helpers';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
@@ -117,6 +118,27 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		updateBlocksInAssignmentState
 	);
 
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		modal: {
+			items: assignment.blocks,
+			onClose: (update?: AssignmentBlock[]) => {
+				if (update) {
+					const blocks = update.map((item, i) => ({
+						...item,
+						position: assignment.blocks[i].position,
+					}));
+
+					setAssignment((prev) => ({
+						...prev,
+						blocks,
+					}));
+
+					setValue('blocks', blocks, { shouldDirty: true });
+				}
+			},
+		},
+	});
+
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
 		initial: defaultValues,
 	});
@@ -197,10 +219,21 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
 				return (
-					<>
+					<div className="c-assignment-contents-tab">
+						{assignment.blocks.length > 0 && (
+							<Spacer
+								margin={['bottom-large']}
+								className="c-assignment-page__reorder-container"
+							>
+								{draggableListButton}
+							</Spacer>
+						)}
+
+						{renderedListSorter}
+
 						<EmptyStateMessage
 							title={t(
-								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+								'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten'
 							)}
 							message={
 								<>
@@ -227,8 +260,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 								</>
 							}
 						/>
-						<div className="c-assignment-contents-tab">{renderedListSorter}</div>
-					</>
+					</div>
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
@@ -270,9 +302,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					tabs={renderTabs}
 				/>
 
-				{renderedModals}
+				<Container mode="horizontal">
+					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
 
-				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+					{renderedModals}
+					{draggableListModal}
+				</Container>
 			</div>
 
 			{/* Always show on create */}

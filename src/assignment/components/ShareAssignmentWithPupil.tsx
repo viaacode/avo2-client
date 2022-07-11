@@ -60,7 +60,11 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 	const handleCopyButtonClicked = () => {
 		copyToClipboard(assignmentShareLink);
 		setIsShareDropdownOpen(false);
-		ToastService.success(t('De link is naar je klembord gekopieerd'));
+		ToastService.success(
+			t(
+				'assignment/components/share-assignment-with-pupil___de-link-is-naar-je-klembord-gekopieerd'
+			)
+		);
 	};
 
 	const handleContentLinkClicked = () => {
@@ -97,7 +101,7 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 					<Flex>
 						<TextInput value={assignmentShareLink} />
 						<Button
-							label={t('Kopieer')}
+							label={t('assignment/components/share-assignment-with-pupil___kopieer')}
 							icon="copy"
 							onClick={handleCopyButtonClicked}
 							type="tertiary"
@@ -111,13 +115,21 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 								message={
 									<>
 										<h4>
-											<strong>{t('Link nog niet deelbaar')}</strong>
+											<strong>
+												{t(
+													'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
+												)}
+											</strong>
 										</h4>
 										{!hasAssignmentContent && (
 											<p>
-												{t('Deze opdracht bevat nog geen') + ' '}
+												{t(
+													'assignment/components/share-assignment-with-pupil___deze-opdracht-bevat-nog-geen'
+												) + ' '}
 												<Button
-													label={t('inhoud')}
+													label={t(
+														'assignment/components/share-assignment-with-pupil___inhoud'
+													)}
 													type="inline-link"
 													onClick={handleContentLinkClicked}
 												/>
@@ -126,13 +138,20 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 										)}
 										{!isAssignmentDetailsComplete && (
 											<p>
-												{t('Vul de ontbrekende informatie onder') + ' '}
+												{t(
+													'assignment/components/share-assignment-with-pupil___vul-de-ontbrekende-informatie-onder'
+												) + ' '}
 												<Button
-													label={t('details')}
+													label={t(
+														'assignment/components/share-assignment-with-pupil___details'
+													)}
 													type="inline-link"
 													onClick={handleDetailLinkClicked}
 												/>
-												{' ' + t('aan.')}
+												{' ' +
+													t(
+														'assignment/components/share-assignment-with-pupil___aan'
+													)}
 											</p>
 										)}
 									</>
