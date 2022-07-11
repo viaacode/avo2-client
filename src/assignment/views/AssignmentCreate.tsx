@@ -34,6 +34,7 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
+import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
@@ -200,7 +201,28 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
-				return 'Ter info; Het toevoegen van inhoud aan een opdracht is (tijdelijk) enkel mogelijk tijdens het editeren van bestaande opdrachten. Slaag eerst deze opdracht op.';
+				return (
+					<>
+						<EmptyStateMessage
+							title={t(
+								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
+							)}
+							message={
+								<>
+									<strong>{t('assignment/views/assignment-create___hulp-nodig-bij-jet-maken-van-opdrachten')}</strong>
+									{t('assignment/views/assignment-create___bekijk-ons')}{' '}
+									<Button
+										type="inline-link"
+										label={t('assignment/views/assignment-create___leerfilmpje')}
+										onClick={() => ToastService.info(t('assignment/views/assignment-create___nog-niet-beschikbaar'))}
+									/>{' '}
+									{t('assignment/views/assignment-create___en-wordt-een-pro')}
+								</>
+							}
+						/>
+						<div className="c-assignment-contents-tab">{renderedListSorter}</div>
+					</>
+				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
