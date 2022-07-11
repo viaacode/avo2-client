@@ -148,6 +148,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setIsConfirmSaveActionModalOpen(true);
 			return;
 		}
+
+		handleSubmit(submit, (...args) => console.error(args))();
 	};
 
 	const submit = async () => {
@@ -483,7 +485,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					)}
 					confirmLabel={t('assignment/views/assignment-edit___opslaan')}
 					cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-					confirmButtonType={'primary'}
+					confirmButtonType="primary"
 				/>
 			</Container>
 
