@@ -477,10 +477,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						setIsConfirmSaveActionModalOpen(false);
 						handleSubmit(submit, (...args) => console.error(args))();
 					}}
-					title={t('Nieuwe wijzigingen opslaan?')}
-					body={`<p><strong>Opgelet:</strong> leerlingen hebben deze opdracht reeds bekeken.</p><p>Ben je zeker dat je deze nieuwe wijzigingen wil opslaan?</p>`}
-					confirmLabel={t('Opslaan')}
-					cancelLabel={t('Annuleer')}
+					title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+					body={t(
+						'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
+					)}
+					confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+					cancelLabel={t('assignment/views/assignment-edit___annuleer')}
 					confirmButtonType={'primary'}
 				/>
 			</Container>
