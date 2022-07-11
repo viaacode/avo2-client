@@ -14,7 +14,7 @@
 		margin-top: auto;
 		max-width: 100%;
 		width: 800px;
-		z-index: 999999;
+		z-index: 40; // Behind modals (50) and above everything else
 
 		flex-direction: row;
 		justify-content: space-between;
