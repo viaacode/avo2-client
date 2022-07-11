@@ -12,16 +12,16 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, navigate } from '../../shared/helpers';
+import { navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { backToOverview } from '../helpers/back-to-overview';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -145,17 +145,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderBackButton = useMemo(
 		() => (
-			<Link
-				className="c-return"
-				to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-					tabId: ASSIGNMENTS_ID,
-				})}
-			>
+			<Link className="c-return" to={backToOverview()}>
 				<Icon name="chevron-left" size="small" type="arrows" />
 				{t('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t]
+		[t, backToOverview]
 	);
 
 	const renderTitle = useMemo(
@@ -209,12 +204,24 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 							)}
 							message={
 								<>
-									<strong>{t('assignment/views/assignment-create___hulp-nodig-bij-jet-maken-van-opdrachten')}</strong>
+									<strong>
+										{t(
+											'assignment/views/assignment-create___hulp-nodig-bij-jet-maken-van-opdrachten'
+										)}
+									</strong>
 									{t('assignment/views/assignment-create___bekijk-ons')}{' '}
 									<Button
 										type="inline-link"
-										label={t('assignment/views/assignment-create___leerfilmpje')}
-										onClick={() => ToastService.info(t('assignment/views/assignment-create___nog-niet-beschikbaar'))}
+										label={t(
+											'assignment/views/assignment-create___leerfilmpje'
+										)}
+										onClick={() =>
+											ToastService.info(
+												t(
+													'assignment/views/assignment-create___nog-niet-beschikbaar'
+												)
+											)
+										}
 									/>{' '}
 									{t('assignment/views/assignment-create___en-wordt-een-pro')}
 								</>
