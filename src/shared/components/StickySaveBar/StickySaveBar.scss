@@ -14,7 +14,7 @@
 		margin-top: auto;
 		max-width: 100%;
 		width: 800px;
-		z-index: 40; // Behind modals (50) and above everything else
+		z-index: 999999;
 
 		flex-direction: row;
 		justify-content: space-between;
@@ -37,8 +37,4 @@
 			}
 		}
 	}
-}
-
-.modal-open .o-container .c-sticky-edge-bar {
-	z-index: 40;
 }
