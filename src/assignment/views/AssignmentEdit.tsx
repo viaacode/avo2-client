@@ -3,6 +3,7 @@ import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-compone
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import BeforeUnloadComponent from 'react-beforeunload-component';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -60,6 +61,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
 		useState<boolean>(false);
+	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
+	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 
 	const {
 		control,
@@ -121,8 +124,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return;
 			}
 
+			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
+
 			setOriginal(res);
 			setAssignment(res);
+			setAssignmentHasResponses(res.responses.length > 0);
+			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -141,11 +148,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return;
 		}
 
-		const responses = await AssignmentService.getAssignmentResponses(
-			user.profile?.id,
-			original.id
-		);
-		if (responses.length > 0) {
+		if (assignmentHasResponses) {
 			setIsConfirmSaveActionModalOpen(true);
 			return;
 		}
@@ -455,52 +458,87 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-			<AssignmentHeading
-				back={renderBackButton}
-				title={renderTitle}
-				actions={renderActions}
-				tabs={renderTabs}
-			/>
+		<BeforeUnloadComponent
+			blockRoute={isDirty}
+			modalComponentHandler={({ handleModalLeave }: { handleModalLeave: () => void }) => {
+				let body = t(
+					'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+				);
 
-			<Container mode="horizontal">
-				{pastDeadline && (
-					<Spacer margin={['top-large']}>
-						<Alert type="info">
-							{t(
-								'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-							)}
-						</Alert>
-					</Spacer>
-				)}
+				if (assignmentHasPupilBlocks) {
+					body = t(
+						'assignment/views/assignment-edit___opgelet-er-bestaan-reeds-leerlingencollecties-binnen-deze-opdracht-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-en-de-leerlingencollecties-wil-verwijderen-voor-je-de-pagina-verlaat'
+					);
+				} else if (assignmentHasResponses) {
+					body = t(
+						'assignment/views/assignment-edit___opgelet-leerlingen-hebben-deze-opdracht-reeds-bekeken-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-voor-je-de-pagina-verlaat'
+					);
+				}
 
-				<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
-
-				<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-				{renderedModals}
-				{draggableListModal}
-
-				<ConfirmModal
-					isOpen={isConfirmSaveActionModalOpen}
-					onClose={() => setIsConfirmSaveActionModalOpen(false)}
-					deleteObjectCallback={() => {
-						setIsConfirmSaveActionModalOpen(false);
-						handleSubmit(submit, (...args) => console.error(args))();
-					}}
-					title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
-					body={t(
-						'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
-					)}
-					confirmLabel={t('assignment/views/assignment-edit___opslaan')}
-					cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-					confirmButtonType="primary"
+				return (
+					<ConfirmModal
+						isOpen={true}
+						body={body}
+						onClose={handleModalLeave}
+						deleteObjectCallback={async () => {
+							handleSubmit(submit, (...args) => console.error(args))();
+							handleModalLeave();
+						}}
+						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
+						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+						confirmButtonType="primary"
+					/>
+				);
+			}}
+		>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
 				/>
-			</Container>
 
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
-		</div>
+				<Container mode="horizontal">
+					{pastDeadline && (
+						<Spacer margin={['top-large']}>
+							<Alert type="info">
+								{t(
+									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+								)}
+							</Alert>
+						</Spacer>
+					)}
+
+					<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
+
+					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+
+					{renderedModals}
+					{draggableListModal}
+
+					<ConfirmModal
+						isOpen={isConfirmSaveActionModalOpen}
+						onClose={() => setIsConfirmSaveActionModalOpen(false)}
+						deleteObjectCallback={() => {
+							setIsConfirmSaveActionModalOpen(false);
+							handleSubmit(submit, (...args) => console.error(args))();
+						}}
+						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+						body={t(
+							'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
+						)}
+						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
+						confirmButtonType="primary"
+					/>
+				</Container>
+
+				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
+			</div>
+		</BeforeUnloadComponent>
 	);
 
 	const renderPageContent = () => {

@@ -31,6 +31,7 @@ import {
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
+	ASSIGNMENT_PUPIL_BLOCKS,
 	BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
 	DELETE_ASSIGNMENT,
 	DELETE_ASSIGNMENT_RESPONSE,
@@ -225,6 +226,14 @@ export class AssignmentService {
 				query: 'GET_ASSIGNMENT_BY_UUID',
 			});
 		}
+	}
+
+	static async hasPupilCollectionBlocks(assignmentId: string): Promise<boolean> {
+		const pupilBlocks = await dataService.query({
+			query: ASSIGNMENT_PUPIL_BLOCKS,
+			variables: { assignmentId },
+		});
+		return pupilBlocks.data.app_pupil_collection_blocks.length > 0;
 	}
 
 	static async fetchAssignmentBlocks(assignmentId: string): Promise<Avo.Assignment.Block[]> {
