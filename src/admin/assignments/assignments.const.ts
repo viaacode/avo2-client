@@ -112,7 +112,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 		dataType: TableColumnDataType.boolean,
 	},
 	{
-		id: 'pupilCollections',
+		id: 'responses',
 		label: i18n.t('admin/assignments/assignments___leerlingencollecties'),
 		sortable: true,
 		visibleByDefault: true,
