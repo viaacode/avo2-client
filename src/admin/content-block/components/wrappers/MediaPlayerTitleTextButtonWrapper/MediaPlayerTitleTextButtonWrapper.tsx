@@ -106,6 +106,6 @@ export const MediaPlayerTitleTextButtonWrapper: FC<
 	);
 };
 
-export default withUser(MediaPlayerTitleTextButtonWrapper) as FunctionComponent<
-	MediaPlayerTitleTextButtonWrapperProps
->;
+export default withUser(
+	MediaPlayerTitleTextButtonWrapper
+) as FunctionComponent<MediaPlayerTitleTextButtonWrapperProps>;

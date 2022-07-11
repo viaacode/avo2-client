@@ -1,15 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
-
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { buildLink, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -18,14 +20,17 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
-import { useAssignmentForm, useAssignmentTeacherTabs } from '../hooks';
-
-import { useAssignmentDetailsForm } from '../hooks/assignment-details-form';
-import { useAssignmentContentModals } from '../hooks/assignment-content-modals';
-import { useAssignmentBlocks } from '../hooks/assignment-blocks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
+import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { useAssignmentBlocksList } from '../hooks/assignment-blocks-list';
+import {
+	useAssignmentBlockChangeHandler,
+	useAssignmentDetailsForm,
+	useAssignmentForm,
+	useAssignmentTeacherTabs,
+	useBlockListModals,
+	useBlocksList,
+	useEditBlocks,
+} from '../hooks';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
@@ -42,7 +47,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	});
 	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
+		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		assignment.blocks,
+		updateBlocksInAssignmentState
+	);
 
 	// Events
 
@@ -93,22 +105,22 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	// Render
-	
-	const renderBlockContent = useAssignmentBlocks(setBlock);
 
-	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
-		assignment,
-		setAssignment,
-		setValue
+	const renderBlockContent = useEditBlocks(setBlock);
+
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignment.blocks,
+		updateBlocksInAssignmentState
 	);
 
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
+	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
 			divider: (item) => (
@@ -155,7 +167,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		() => (
 			<>
 				<Button
-					disabled
 					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 					title={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
@@ -164,6 +175,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
 					type="secondary"
+					onClick={() => setIsViewAsPupilEnabled(true)}
 				/>
 				<Button
 					disabled
@@ -183,15 +195,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		[t]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
-				return <div className="c-assignment-contents-tab">{renderedListSorter}</div>;
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
+				return 'Ter info; Het toevoegen van inhoud aan een opdracht is (tijdelijk) enkel mogelijk tijdens het editeren van bestaande opdrachten. Slaag eerst deze opdracht op.';
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
@@ -200,43 +209,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return tab;
 		}
 	}, [tab, renderedDetailForm, renderedListSorter]);
-
-	const render = () => (
-		<div className="c-assignment-page c-assignment-page--create">
-			<AssignmentHeading
-				back={renderBackButton}
-				title={renderTitle}
-				actions={renderActions}
-				tabs={renderTabs}
-			/>
-
-			<Container mode="horizontal">
-				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
-
-				{/* Always show on create */}
-				<StickyEdgeBar>
-					<p>
-						<strong>
-							{t('assignment/views/assignment-create___opdracht-opslaan')}
-						</strong>
-					</p>
-
-					<Button
-						label={t('assignment/views/assignment-create___annuleer')}
-						onClick={() => reset()}
-					/>
-
-					<Button
-						type="tertiary"
-						label={t('assignment/views/assignment-create___opslaan')}
-						onClick={handleSubmit(submit, (...args) => console.error(args))}
-					/>
-				</StickyEdgeBar>
-			</Container>
-
-			{renderedModals}
-		</div>
-	);
 
 	// Effects
 
@@ -257,6 +229,45 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
+	// Render
+
+	const renderEditAssignmentPage = () => (
+		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+			<div>
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
+				/>
+
+				{renderedModals}
+
+				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
+			</div>
+
+			{/* Always show on create */}
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar
+				isVisible={true}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
+		</div>
+	);
+
+	const renderPageContent = () => {
+		if (isViewAsPupilEnabled) {
+			return (
+				<AssignmentPupilPreview
+					assignment={assignment}
+					onClose={() => setIsViewAsPupilEnabled(false)}
+				/>
+			);
+		}
+		return renderEditAssignmentPage();
+	};
+
 	return (
 		<>
 			<MetaTags>
@@ -276,7 +287,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 			<LoadingErrorLoadedComponent
 				dataObject={assignment}
-				render={render}
+				render={renderPageContent}
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>

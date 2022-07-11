@@ -353,6 +353,6 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	);
 };
 
-export default withUser(CollectionOrBundleEditMarcom) as FunctionComponent<
-	CollectionOrBundleEditMarcomProps
->;
+export default withUser(
+	CollectionOrBundleEditMarcom
+) as FunctionComponent<CollectionOrBundleEditMarcomProps>;

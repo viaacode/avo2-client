@@ -139,7 +139,8 @@ const InteractiveTour: FunctionComponent<
 			}
 
 			// Get all routes that have an interactive tour
-			const routeIdsWithTour: string[] = await InteractiveTourService.fetchInteractiveTourRouteIds();
+			const routeIdsWithTour: string[] =
+				await InteractiveTourService.fetchInteractiveTourRouteIds();
 			if (!routeIdsWithTour.includes(routeId)) {
 				// No tour available for this page
 				return;

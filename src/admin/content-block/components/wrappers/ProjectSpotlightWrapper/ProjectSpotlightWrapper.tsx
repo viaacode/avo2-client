@@ -104,6 +104,7 @@ const ProjectSpotlightWrapper: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(ProjectSpotlightWrapper) as FunctionComponent<
-	ProjectSpotlightWrapperProps
->;
+export default compose(
+	withRouter,
+	withUser
+)(ProjectSpotlightWrapper) as FunctionComponent<ProjectSpotlightWrapperProps>;

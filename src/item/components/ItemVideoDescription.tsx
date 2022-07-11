@@ -213,6 +213,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	);
 };
 
-export default compose(withRouter, withUser)(ItemVideoDescription) as FunctionComponent<
-	ItemVideoDescriptionProps
->;
+export default compose(
+	withRouter,
+	withUser
+)(ItemVideoDescription) as FunctionComponent<ItemVideoDescriptionProps>;

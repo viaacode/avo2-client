@@ -72,4 +72,4 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 	);
 };
 
-export const TopBar = (withRouter(TopBarComponent) as unknown) as FunctionComponent<TopbarProps>;
+export const TopBar = withRouter(TopBarComponent) as unknown as FunctionComponent<TopbarProps>;

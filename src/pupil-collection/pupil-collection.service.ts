@@ -1,8 +1,13 @@
 import { Avo } from '@viaa/avo2-types';
+import { get, without } from 'lodash-es';
 
+import { isNewAssignmentBlock } from '../assignment/assignment.const';
+import { PupilCollectionFragment } from '../assignment/assignment.types';
+import { ItemTrimInfo } from '../item/item.types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../shared/services';
+import { VideoStillService } from '../shared/services/video-stills-service';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -11,9 +16,12 @@ import {
 } from './pupil-collection.const';
 import {
 	BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS,
-	DELETE_PUPIL_COLLECTIONS,
+	DELETE_ASSIGNMENT_RESPONSES,
+	GET_MAX_POSITION_PUPIL_COLLECTION_BLOCKS,
 	GET_PUPIL_COLLECTION_IDS,
 	GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
+	INSERT_PUPIL_COLLECTION_BLOCKS,
+	UPDATE_PUPIL_COLLECTION_BLOCK,
 } from './pupil-collection.gql';
 import { PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
@@ -149,19 +157,153 @@ export class PupilCollectionService {
 		}
 	}
 
-	static async deletePupilCollections(pupilCollectionIds: string[]) {
+	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
 		try {
 			await dataService.mutate({
-				mutation: DELETE_PUPIL_COLLECTIONS,
-				variables: { pupilCollectionIds },
+				mutation: DELETE_ASSIGNMENT_RESPONSES,
+				variables: { assignmentResponseIds },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
-			const error = new CustomError('Failed to delete pupil collections', err, {
-				pupilCollectionIds,
+			const error = new CustomError('Failed to delete assignment responses', err, {
+				assignmentResponseIds,
 			});
 			console.error(error);
 			throw error;
 		}
+	}
+
+	static async updatePupilCollectionBlocks(
+		assignmentResponseId: string,
+		original: PupilCollectionFragment[],
+		update: PupilCollectionFragment[]
+	): Promise<any> {
+		const deleted = original.filter((block) =>
+			without(
+				original.map((block) => block.id),
+				...update.map((block) => block.id)
+			).includes(block.id)
+		);
+
+		const created = update.filter(isNewAssignmentBlock);
+		const existing = update.filter(
+			(block) =>
+				!deleted.map((d) => d.id).includes(block.id) &&
+				!created.map((d) => d.id).includes(block.id)
+		);
+
+		const cleanup = (block: PupilCollectionFragment) => {
+			delete block.item_meta;
+			delete (block as any).icon;
+			delete (block as any).onSlice;
+			delete (block as any).onPositionChange;
+
+			block.updated_at = new Date().toISOString();
+
+			return block;
+		};
+
+		const promises = [
+			...existing
+				.map(cleanup)
+				.filter((block) => block.id)
+				.map((block) =>
+					dataService.mutate({
+						mutation: UPDATE_PUPIL_COLLECTION_BLOCK,
+						variables: { blockId: block.id, update: block },
+						update: ApolloCacheManager.clearAssignmentCache,
+					})
+				),
+			...deleted.map(cleanup).map((block) =>
+				dataService.mutate({
+					mutation: UPDATE_PUPIL_COLLECTION_BLOCK,
+					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
+					update: ApolloCacheManager.clearAssignmentCache,
+				})
+			),
+		];
+
+		if (created.length > 0) {
+			promises.push(
+				dataService.mutate({
+					mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
+					variables: {
+						pupilCollectionBlocks: created
+							.map(cleanup)
+							.map((block) => ({
+								...block,
+								assignment_response_id: assignmentResponseId,
+							}))
+							.map((block) => {
+								delete (block as any).id;
+								return block;
+							}),
+					},
+					update: ApolloCacheManager.clearAssignmentCache,
+				})
+			);
+		}
+
+		return await Promise.all(promises);
+	}
+
+	static async getPupilCollectionBlockMaxPosition(
+		assignmentResponseId: string
+	): Promise<number | null> {
+		const result = await dataService.query({
+			query: GET_MAX_POSITION_PUPIL_COLLECTION_BLOCKS,
+			variables: { assignmentResponseId },
+		});
+		return get(
+			result,
+			'data.app_assignment_responses_v2_by_pk.pupil_collection_blocks_aggregate.aggregate.max.position',
+			null
+		);
+	}
+
+	static async importFragmentToPupilCollection(
+		item: Avo.Item.Item,
+		assignmentResponseId: string,
+		itemTrimInfo?: ItemTrimInfo
+	): Promise<string> {
+		// Handle trim settings and thumbnail
+		const trimInfo: ItemTrimInfo = itemTrimInfo || {
+			hasCut: false,
+			fragmentStartTime: 0,
+			fragmentEndTime: 0,
+		};
+		const thumbnailPath = trimInfo.fragmentStartTime
+			? await VideoStillService.getVideoStill(
+					item.external_id,
+					trimInfo.fragmentStartTime * 1000
+			  )
+			: null;
+
+		// Determine block position
+		const currentMaxPosition = await PupilCollectionService.getPupilCollectionBlockMaxPosition(
+			assignmentResponseId
+		);
+		const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
+
+		// Add block with this fragment
+		const block = {
+			assignment_response_id: assignmentResponseId,
+			fragment_id: item.external_id,
+			type: 'ITEM',
+			start_oc: trimInfo.hasCut ? trimInfo.fragmentStartTime : null,
+			end_oc: trimInfo.hasCut ? trimInfo.fragmentEndTime : null,
+			position: startPosition,
+			thumbnail_path: thumbnailPath,
+		};
+
+		await dataService.mutate({
+			mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
+			variables: {
+				pupilCollectionBlocks: [block],
+			},
+			update: ApolloCacheManager.clearAssignmentCache,
+		});
+
+		return assignmentResponseId;
 	}
 }

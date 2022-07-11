@@ -27,18 +27,18 @@ export type AssignmentLabelsProps = Pick<Avo.Assignment.Assignment_v2, 'labels'>
 };
 
 const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
-																																			id,
-																																			labels,
-																																			user,
-																																			onChange,
-																																			type = 'LABEL',
-																																			...props
-																																		}) => {
+	id,
+	labels,
+	user,
+	onChange,
+	type = 'LABEL',
+	...props
+}) => {
 	const [t] = useTranslation();
 	const dictionary = {
 		placeholder: t('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
 		empty: t('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
-		...(props.dictionary ? props.dictionary : {})
+		...(props.dictionary ? props.dictionary : {}),
 	};
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
@@ -60,7 +60,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			id: labelObj.id,
 			// labelObj.enum_color.label contains hex code (graphql enum quirk)
 			// The value of the enum has to be uppercase text, so the value contains the color name
-			color: labelObj.color_override || get(labelObj, 'enum_color.label')
+			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
 		}));
 	};
 
@@ -71,35 +71,35 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 	const getColorOptions = (labels: Avo.Assignment.Label_v2[]): ColorOption[] => {
 		return labels
-				.filter((item) => !type || item.type === type)
-				.map((labelObj) => ({
-					label: labelObj.label || '',
-					value: String(labelObj.id),
-					// labelObj.enum_color.label contains hex code (graphql enum quirk)
-					// The value of the enum has to be uppercase text, so the value contains the color name
-					color: labelObj.color_override || get(labelObj, 'enum_color.label')
-				}));
+			.filter((item) => !type || item.type === type)
+			.map((labelObj) => ({
+				label: labelObj.label || '',
+				value: String(labelObj.id),
+				// labelObj.enum_color.label contains hex code (graphql enum quirk)
+				// The value of the enum has to be uppercase text, so the value contains the color name
+				color: labelObj.color_override || get(labelObj, 'enum_color.label'),
+			}));
 	};
 
 	const addAssignmentLabel = (labelOption: ValueType<ColorOption, any>) => {
 		if (!labelOption) {
 			ToastService.danger(
-					t(
-							'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
-					)
+				t(
+					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
+				)
 			);
 			return;
 		}
 
 		const assignmentLabel = allAssignmentLabels.find(
-				(labelObj) => String(labelObj.id) === (labelOption as ColorOption).value
+			(labelObj) => String(labelObj.id) === (labelOption as ColorOption).value
 		);
 
 		if (!assignmentLabel) {
 			ToastService.danger(
-					t(
-							'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
-					)
+				t(
+					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
+				)
 			);
 			return;
 		}
@@ -107,8 +107,8 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		onChange([
 			...labels,
 			{
-				assignment_label: assignmentLabel
-			}
+				assignment_label: assignmentLabel,
+			},
 		]);
 	};
 
@@ -119,49 +119,49 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 	const assignmentLabelIds = labels.map((item) => item.assignment_label.id);
 	const unselectedLabels = cloneDeep(
-			allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id))
+		allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id))
 	);
 
 	return (
-			<>
-				<TagList
-						closable={true}
-						tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
-						onTagClosed={deleteAssignmentLabel}
-				/>
-				<Flex>
-					<FlexItem>
-						<Spacer margin="right-small">
-							<ColorSelect
-									id={id}
-									options={getColorOptions(unselectedLabels)}
-									value={null}
-									onChange={addAssignmentLabel}
-									placeholder={dictionary.placeholder}
-									noOptionsMessage={() => dictionary.empty}
-							/>
-						</Spacer>
-					</FlexItem>
-					<FlexItem shrink>
-						<Button
-								icon="settings"
-								title="Beheer je vakken en projecten"
-								ariaLabel="Beheer je vakken en projecten"
-								type="borderless"
-								size="large"
-								className="c-button__labels"
-								onClick={() => setIsManageLabelsModalOpen(true)}
+		<>
+			<TagList
+				closable={true}
+				tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
+				onTagClosed={deleteAssignmentLabel}
+			/>
+			<Flex>
+				<FlexItem>
+					<Spacer margin="right-small">
+						<ColorSelect
+							id={id}
+							options={getColorOptions(unselectedLabels)}
+							value={null}
+							onChange={addAssignmentLabel}
+							placeholder={dictionary.placeholder}
+							noOptionsMessage={() => dictionary.empty}
 						/>
-					</FlexItem>
-				</Flex>
+					</Spacer>
+				</FlexItem>
+				<FlexItem shrink>
+					<Button
+						icon="settings"
+						title="Beheer je vakken en projecten"
+						ariaLabel="Beheer je vakken en projecten"
+						type="borderless"
+						size="large"
+						className="c-button__labels"
+						onClick={() => setIsManageLabelsModalOpen(true)}
+					/>
+				</FlexItem>
+			</Flex>
 
-				<ManageAssignmentLabels
-						onClose={handleManageAssignmentLabelsModalClosed}
-						isOpen={isManageLabelsModalOpen}
-						user={user}
-						type={type}
-				/>
-			</>
+			<ManageAssignmentLabels
+				onClose={handleManageAssignmentLabelsModalClosed}
+				isOpen={isManageLabelsModalOpen}
+				user={user}
+				type={type}
+			/>
+		</>
 	);
 };
 

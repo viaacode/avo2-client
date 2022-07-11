@@ -398,12 +398,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const path = ContentService.getPathOrDefault(contentPageState.currentContentPageInfo);
 
 		try {
-			const existingContentPageTitle:
-				| string
-				| null = await ContentPageService.doesContentPagePathExist(
-				path,
-				contentPageState.currentContentPageInfo.id
-			);
+			const existingContentPageTitle: string | null =
+				await ContentPageService.doesContentPagePathExist(
+					path,
+					contentPageState.currentContentPageInfo.id
+				);
 			if (existingContentPageTitle) {
 				errors.path = t(
 					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',

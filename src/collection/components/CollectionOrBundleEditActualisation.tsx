@@ -178,6 +178,6 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 	);
 };
 
-export default withUser(CollectionOrBundleEditActualisation) as FunctionComponent<
-	CollectionOrBundleEditActualisationProps
->;
+export default withUser(
+	CollectionOrBundleEditActualisation
+) as FunctionComponent<CollectionOrBundleEditActualisationProps>;

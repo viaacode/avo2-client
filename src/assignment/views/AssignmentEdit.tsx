@@ -1,8 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Icon, Spacer, StickyEdgeBar, Tabs } from '@viaa/avo2-components';
+import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { isPast } from 'date-fns/esm';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -12,10 +11,13 @@ import { Link } from 'react-router-dom';
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -27,17 +29,19 @@ import {
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
+import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { insertAtPosition } from '../helpers/insert-at-position';
+import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
-	useAssignmentBlocks,
-	useAssignmentContentModals,
+	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
+	useBlockListModals,
+	useBlocksList,
+	useEditBlocks,
 } from '../hooks';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
-import { useAssignmentBlocksList } from '../hooks/assignment-blocks-list';
+import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -50,13 +54,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | undefined>(undefined);
+	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
 
-	const form = useForm<AssignmentFormState>({
-		defaultValues: useMemo(() => original, [original]),
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
-	});
 	const {
 		control,
 		formState: { isDirty },
@@ -64,18 +64,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		reset: resetForm,
 		setValue,
 		trigger,
-	} = form;
+	} = useForm<AssignmentFormState>({
+		defaultValues: useMemo(() => original || undefined, [original]),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+	});
 
-	const setBlock = useAssignmentBlockChangeHandler(assignment, setAssignment, setValue);
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
+		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	};
+	const setBlock = useAssignmentBlockChangeHandler(
+		assignment.blocks,
+		updateBlocksInAssignmentState
+	);
 
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
-	const pastDeadline = useMemo(
-		() => original?.deadline_at && isPast(new Date(original.deadline_at)),
-		[original]
-	);
+	const pastDeadline = useAssignmentPastDeadline(original);
 
 	// HTTP
 
@@ -173,7 +181,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useAssignmentBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock);
 
 	const onAddItem = async (itemExternalId: string) => {
 		if (addBlockModal.entity == null) {
@@ -181,14 +189,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		// fetch item details
-		const item = await ItemsService.fetchItemByExternalId(itemExternalId);
-		const blocks = insertAtPosition(assignment.blocks, {
+		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
+		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item,
+			item_meta,
 			type: AssignmentBlockType.ITEM,
 			fragment_id: itemExternalId,
 			position: addBlockModal.entity,
-		} as AssignmentBlock); // TODO: avoid cast
+		} as AssignmentBlock);
 
 		setAssignment((prev) => ({
 			...prev,
@@ -201,10 +209,60 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		});
 	};
 
-	const [renderedModals, confirmSliceModal, addBlockModal] = useAssignmentContentModals(
-		assignment,
-		setAssignment,
-		setValue,
+	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
+		if (addBlockModal.entity == null) {
+			return;
+		}
+
+		// fetch collection details
+		const collection = await CollectionService.fetchCollectionOrBundleById(
+			collectionId,
+			'collection',
+			undefined
+		);
+
+		if (!collection) {
+			ToastService.danger(
+				t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald')
+			);
+			return;
+		}
+
+		if (collection.collection_fragments) {
+			const blocks = collection.collection_fragments.map((collectionItem, index) => ({
+				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
+				item: collectionItem.item_meta,
+				type: collectionItem.type,
+				fragment_id: collectionItem.external_id,
+				position: (addBlockModal.entity || 0) + index,
+				original_title: withDescription ? collectionItem.custom_title : null,
+				original_description: withDescription ? collectionItem.custom_description : null,
+				custom_title: collectionItem.use_custom_fields ? collectionItem.custom_title : null,
+				custom_description: collectionItem.use_custom_fields
+					? collectionItem.custom_description
+					: null,
+				use_custom_fields: collectionItem.use_custom_fields,
+			}));
+			const newAssignmentBlocks = insertMultipleAtPosition(
+				assignment.blocks,
+				blocks as unknown as AssignmentBlock[]
+			);
+
+			setAssignment((prev) => ({
+				...prev,
+				blocks: newAssignmentBlocks,
+			}));
+
+			setValue('blocks', newAssignmentBlocks, {
+				shouldDirty: true,
+				shouldTouch: true,
+			});
+		}
+	};
+
+	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+		assignment.blocks,
+		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
 				responses: original?.responses || [],
@@ -213,14 +271,39 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				user,
 				addFragmentCallback: onAddItem,
 			},
+			addCollectionConfig: {
+				user,
+				addCollectionCallback: onAddCollection,
+			},
 		}
 	);
+
+	const [draggableListButton, draggableListModal] = useDraggableListModal({
+		modal: {
+			items: assignment.blocks,
+			onClose: (update?: AssignmentBlock[]) => {
+				if (update) {
+					const blocks = update.map((item, i) => ({
+						...item,
+						position: assignment.blocks[i].position,
+					}));
+
+					setAssignment((prev) => ({
+						...prev,
+						blocks,
+					}));
+
+					setValue('blocks', blocks, { shouldDirty: true });
+				}
+			},
+		},
+	});
 
 	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
 		initial: defaultValues,
 	});
 
-	const [renderedListSorter] = useAssignmentBlocksList(assignment, setAssignment, setValue, {
+	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
 			divider: (item) => (
@@ -271,12 +354,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					ariaLabel={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
-					disabled
 					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 					title={t(
 						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 					)}
 					type="secondary"
+					onClick={() => setIsViewAsPupilEnabled(true)}
 				/>
 				<Button
 					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
@@ -296,10 +379,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t]
 	);
 
-	const renderTabs = useMemo(
-		() => <Tabs tabs={tabs} onClick={onTabClick}></Tabs>,
-		[tabs, onTabClick]
-	);
+	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
@@ -313,54 +393,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return tab;
 		}
 	}, [tab, renderedDetailForm, renderedListSorter]);
-
-	const render = () => (
-		<div className="c-assignment-page c-assignment-page--create">
-			<AssignmentHeading
-				back={renderBackButton}
-				title={renderTitle}
-				actions={renderActions}
-				tabs={renderTabs}
-			/>
-
-			<Container mode="horizontal">
-				{pastDeadline && (
-					<Spacer margin={['top-large']}>
-						<Alert type="info">
-							{t(
-								'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-							)}
-						</Alert>
-					</Spacer>
-				)}
-
-				<Spacer margin={['top-large', 'bottom-large']}>{renderTabContent}</Spacer>
-
-				{isDirty && (
-					<StickyEdgeBar>
-						<p>
-							<strong>
-								{t('assignment/views/assignment-edit___wijzigingen-opslaan')}
-							</strong>
-						</p>
-
-						<Button
-							label={t('assignment/views/assignment-edit___annuleer')}
-							onClick={() => reset()}
-						/>
-
-						<Button
-							type="tertiary"
-							label={t('assignment/views/assignment-edit___opslaan')}
-							onClick={handleSubmit(submit, (...args) => console.error(args))}
-						/>
-					</StickyEdgeBar>
-				)}
-			</Container>
-
-			{renderedModals}
-		</div>
-	);
 
 	// Effects
 
@@ -391,6 +423,57 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		original && reset();
 	}, [original, reset]);
 
+	// Render
+
+	const renderEditAssignmentPage = () => (
+		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+			<AssignmentHeading
+				back={renderBackButton}
+				title={renderTitle}
+				actions={renderActions}
+				tabs={renderTabs}
+			/>
+
+			<Container mode="horizontal">
+				{pastDeadline && (
+					<Spacer margin={['top-large']}>
+						<Alert type="info">
+							{t(
+								'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+							)}
+						</Alert>
+					</Spacer>
+				)}
+
+				<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
+
+				<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+
+				{renderedModals}
+				{draggableListModal}
+			</Container>
+
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar
+				isVisible={isDirty}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
+		</div>
+	);
+
+	const renderPageContent = () => {
+		if (isViewAsPupilEnabled) {
+			return (
+				<AssignmentPupilPreview
+					assignment={assignment}
+					onClose={() => setIsViewAsPupilEnabled(false)}
+				/>
+			);
+		}
+		return renderEditAssignmentPage();
+	};
+
 	return (
 		<>
 			<MetaTags>
@@ -410,7 +493,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			<LoadingErrorLoadedComponent
 				dataObject={assignment}
-				render={render}
+				render={renderPageContent}
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>

@@ -18,7 +18,9 @@ $multiRangeInputWidth: 87px;
 	}
 
 	.m-multi-range-wrapper {
-		width: calc(100% - #{$multiRangeInputWidth} - #{$multiRangeInputWidth} - #{$multiRangeMargin} - #{$multiRangeMargin});
+		width: calc(
+			100% - #{$multiRangeInputWidth} - #{$multiRangeInputWidth} - #{$multiRangeMargin} - #{$multiRangeMargin}
+		);
 		display: inline-block;
 		margin: 0 $multiRangeMargin;
 	}

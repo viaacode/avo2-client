@@ -15,7 +15,7 @@ import {
 	TextInput,
 	Toolbar,
 	ToolbarItem,
-	ToolbarRight
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
@@ -36,34 +36,36 @@ interface ManageAssignmentLabelsProps extends UserProps {
 }
 
 const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = ({
-																																									isOpen,
-																																									onClose,
-																																									type,
-																																									user
-																																								}) => {
+	isOpen,
+	onClose,
+	type,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
-	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
+	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<
+		Avo.Assignment.Label_v2[]
+	>([]);
 	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		try {
 			const labels = sortBy(
-					await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'), type),
-					'label'
+				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'), type),
+				'label'
 			);
 			setAssignmentLabels(labels);
 			setInitialAssignmentLabels(labels);
 		} catch (err) {
 			console.error(
-					new CustomError('Failed to fetch assignment labels for user', err, { user })
+				new CustomError('Failed to fetch assignment labels for user', err, { user })
 			);
 			ToastService.danger(
-					t(
-							'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-labels-is-mislukt'
-					)
+				t(
+					'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-labels-is-mislukt'
+				)
 			);
 		}
 	}, [user, setAssignmentLabels, t, type]);
@@ -74,9 +76,9 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch assignment label colors', err));
 			ToastService.danger(
-					t(
-							'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-label-kleuren-is-mislukt'
-					)
+				t(
+					'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-label-kleuren-is-mislukt'
+				)
 			);
 		}
 	}, [setAssignmentLabelColors, t]);
@@ -99,14 +101,14 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				owner_profile_id: get(user, 'profile.id'),
 				color_override: null,
 				enum_color: assignmentLabelColors[0],
-				type: type || 'LABEL'
-			}
+				type: type || 'LABEL',
+			},
 		]);
 	};
 
 	const handleRowColorChanged = (
-			assignmentLabel: Avo.Assignment.Label_v2,
-			newColor: ValueType<AssignmentLabelColor, any>
+		assignmentLabel: Avo.Assignment.Label_v2,
+		newColor: ValueType<AssignmentLabelColor, any>
 	) => {
 		if (!newColor) {
 			return;
@@ -135,51 +137,51 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			const updatedIds = intersection(initialAssignmentLabelIds, updatedAssignmentLabelIds);
 
 			const newLabels = compact(
-					newIds.map((newId) => assignmentLabels.find((l) => l.id === newId))
+				newIds.map((newId) => assignmentLabels.find((l) => l.id === newId))
 			);
 			const updatedLabels = compact(
-					updatedIds.map((updatedId) => assignmentLabels.find((l) => l.id === updatedId))
+				updatedIds.map((updatedId) => assignmentLabels.find((l) => l.id === updatedId))
 			);
 
 			const profileId = get(user, 'profile.id');
 			await Promise.all([
 				AssignmentLabelsService.insertLabels(
-						newLabels.map((item) =>
-								type
-										? {
-											...item,
-											type
-										}
-										: item
-						)
+					newLabels.map((item) =>
+						type
+							? {
+									...item,
+									type,
+							  }
+							: item
+					)
 				),
 				AssignmentLabelsService.deleteLabels(profileId, oldIds),
 				updatedLabels.map((l) =>
-						AssignmentLabelsService.updateLabel(
-								profileId,
-								l.id,
-								l.label || '',
-								l.color_enum_value
-						)
-				)
+					AssignmentLabelsService.updateLabel(
+						profileId,
+						l.id,
+						l.label || '',
+						l.color_enum_value
+					)
+				),
 			]);
 			onClose();
 			ToastService.success(
-					t(
-							'assignment/components/modals/manage-assignment-labels___de-labels-zijn-opgeslagen'
-					)
+				t(
+					'assignment/components/modals/manage-assignment-labels___de-labels-zijn-opgeslagen'
+				)
 			);
 		} catch (err) {
 			console.error(
-					new CustomError('Failed to save label changes', err, {
-						initialAssignmentLabels,
-						assignmentLabels
-					})
+				new CustomError('Failed to save label changes', err, {
+					initialAssignmentLabels,
+					assignmentLabels,
+				})
 			);
 			ToastService.danger(
-					t(
-							'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
-					)
+				t(
+					'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
+				)
 			);
 		}
 		setIsProcessing(false);
@@ -190,131 +192,131 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		const colorOptions = assignmentLabelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,
-			color: assignmentLabelColor.label
+			color: assignmentLabelColor.label,
 		}));
 		switch (columnId) {
 			case 'color':
 				return (
-						<Spacer margin="right-small">
-							<ColorSelect
-									options={colorOptions}
-									value={colorOptions.find(
-											(colorOption) =>
-													colorOption.value === assignmentLabel.color_enum_value
-									)}
-									onChange={(newColor) =>
-											handleRowColorChanged(assignmentLabel, newColor)
-									}
-							/>
-						</Spacer>
+					<Spacer margin="right-small">
+						<ColorSelect
+							options={colorOptions}
+							value={colorOptions.find(
+								(colorOption) =>
+									colorOption.value === assignmentLabel.color_enum_value
+							)}
+							onChange={(newColor) =>
+								handleRowColorChanged(assignmentLabel, newColor)
+							}
+						/>
+					</Spacer>
 				);
 
 			case 'label':
 				return (
-						<Spacer margin="right-small">
-							<TextInput
-									value={assignmentLabel.label || ''}
-									onChange={(newLabel) =>
-											handleRowLabelChanged(assignmentLabel, newLabel)
-									}
-							/>
-						</Spacer>
+					<Spacer margin="right-small">
+						<TextInput
+							value={assignmentLabel.label || ''}
+							onChange={(newLabel) =>
+								handleRowLabelChanged(assignmentLabel, newLabel)
+							}
+						/>
+					</Spacer>
 				);
 
 			case 'actions':
 				return (
-						<Button
-								ariaLabel={t(
-										'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
-								)}
-								title={t(
-										'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
-								)}
-								onClick={() => handleRowDelete(assignmentLabel.id)}
-								type="danger-hover"
-								icon="delete"
-						/>
+					<Button
+						ariaLabel={t(
+							'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
+						)}
+						title={t(
+							'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
+						)}
+						onClick={() => handleRowDelete(assignmentLabel.id)}
+						type="danger-hover"
+						icon="delete"
+					/>
 				);
 		}
 	};
 
 	return (
-			<Modal
-					className="m-manage-assignment-labels"
-					title={t(
-							'assignment/components/modals/manage-assignment-labels___beheer-vakken-en-projecten'
-					)}
-					size="large"
-					isOpen={isOpen}
-					onClose={onClose}
-					scrollable
-			>
-				<ModalBody>
-					<Spacer margin="bottom-large">
-						<Button
-								label={t(
-										'assignment/components/modals/manage-assignment-labels___label-toevoegen'
-								)}
-								icon="plus"
-								onClick={handleAddLabelClick}
-								type="secondary"
-						/>
-					</Spacer>
-					<Table
-							columns={[
-								{
-									label: t(
-											'assignment/components/modals/manage-assignment-labels___kleur'
-									),
-									id: 'color',
-									col: '2'
-								},
-								{
-									label: t(
-											'assignment/components/modals/manage-assignment-labels___label'
-									),
-									id: 'label'
-								},
-								{ label: '', id: 'actions' }
-							]}
-							emptyStateMessage={t(
-									'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
-							)}
-							data={assignmentLabels}
-							renderCell={renderCell}
-							rowKey="id"
+		<Modal
+			className="m-manage-assignment-labels"
+			title={t(
+				'assignment/components/modals/manage-assignment-labels___beheer-vakken-en-projecten'
+			)}
+			size="large"
+			isOpen={isOpen}
+			onClose={onClose}
+			scrollable
+		>
+			<ModalBody>
+				<Spacer margin="bottom-large">
+					<Button
+						label={t(
+							'assignment/components/modals/manage-assignment-labels___label-toevoegen'
+						)}
+						icon="plus"
+						onClick={handleAddLabelClick}
+						type="secondary"
 					/>
-				</ModalBody>
-				<ModalFooterRight>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									{isProcessing && <Spinner/>}
-									<Button
-											label={t(
-													'assignment/components/modals/manage-assignment-labels___annuleren'
-											)}
-											type="secondary"
-											block
-											onClick={onClose}
-											disabled={isProcessing}
-									/>
-									<Button
-											label={t(
-													'assignment/components/modals/manage-assignment-labels___opslaan'
-											)}
-											type="primary"
-											block
-											disabled={isProcessing}
-											onClick={handleSaveLabels}
-									/>
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</ModalFooterRight>
-			</Modal>
+				</Spacer>
+				<Table
+					columns={[
+						{
+							label: t(
+								'assignment/components/modals/manage-assignment-labels___kleur'
+							),
+							id: 'color',
+							col: '2',
+						},
+						{
+							label: t(
+								'assignment/components/modals/manage-assignment-labels___label'
+							),
+							id: 'label',
+						},
+						{ label: '', id: 'actions' },
+					]}
+					emptyStateMessage={t(
+						'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
+					)}
+					data={assignmentLabels}
+					renderCell={renderCell}
+					rowKey="id"
+				/>
+			</ModalBody>
+			<ModalFooterRight>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								{isProcessing && <Spinner />}
+								<Button
+									label={t(
+										'assignment/components/modals/manage-assignment-labels___annuleren'
+									)}
+									type="secondary"
+									block
+									onClick={onClose}
+									disabled={isProcessing}
+								/>
+								<Button
+									label={t(
+										'assignment/components/modals/manage-assignment-labels___opslaan'
+									)}
+									type="primary"
+									block
+									disabled={isProcessing}
+									onClick={handleSaveLabels}
+								/>
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
+			</ModalFooterRight>
+		</Modal>
 	);
 };
 

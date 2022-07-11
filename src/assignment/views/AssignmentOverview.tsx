@@ -21,12 +21,13 @@ import {
 } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabelType, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
-import { cloneDeep, compact, get, isEqual, isNil } from 'lodash-es';
+import { cloneDeep, compact, get, isEqual, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
+	ReactNode,
 	ReactText,
 	useCallback,
 	useEffect,
@@ -64,7 +65,10 @@ import { AssignmentLabelsService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
+import {
+	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	AssignmentOverviewTableColumns,
@@ -95,7 +99,7 @@ const defaultFiltersAndSort = {
 };
 
 const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
-	onUpdate = () => {},
+	onUpdate = noop,
 	history,
 	user,
 }) => {
@@ -146,7 +150,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		if (query.sort_order) {
 			setSortOrder(query.sort_order as SearchOrderDirection);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleQueryChanged = (value: any, id: string) => {
@@ -468,20 +471,47 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		/>
 	);
 
+	const renderDataCell = (value: ReactNode, label?: ReactNode) =>
+		isMobileWidth() ? (
+			<div className="m-assignment-overview__table__data-cell">
+				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
+				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
+			</div>
+		) : (
+			value
+		);
+
+	const renderResponsesCell = (cellData: any, assignment: AssignmentSchema_v2) => {
+		if ((cellData || []).length === 0) {
+			return renderDataCell('0', t('assignment/views/assignment-overview___responses'));
+		}
+
+		return renderDataCell(
+			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
+				{(cellData || []).length}
+			</Link>,
+			t('assignment/views/assignment-overview___responses')
+		);
+	};
+
 	const renderCell = (
 		assignment: Avo.Assignment.Assignment_v2,
 		colKey: AssignmentOverviewTableColumns
 	) => {
 		const cellData: any = (assignment as any)[colKey];
 		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
-		const detailLink = buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, {
-			id: assignment.id,
-		});
+		const detailLink = buildLink(
+			APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route,
+			{
+				id: assignment.id,
+			},
+			{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT }
+		);
 
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
 		) {
-			case 'title':
+			case 'title': {
 				const renderTitle = () => (
 					<Flex>
 						<Spacer margin="right">
@@ -502,22 +532,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				) : (
 					renderTitle()
 				);
+			}
 
 			case 'labels':
 				return renderLabels(
 					(assignment.labels as any[]).filter(
 						({ assignment_label: item }) => item.type === 'LABEL'
-					) // TODO remove cast once assignment_v2 types are fixed
+					)
 				);
 
 			case 'class_room':
 				return renderLabels(
 					(assignment.labels as any[]).filter(
 						({ assignment_label: item }) => item.type === 'CLASS'
-					) // TODO remove cast once assignment_v2 types are fixed
+					)
 				);
 
-			case 'author':
+			case 'author': {
 				const profile = get(assignment, 'profile', null);
 				const avatarOptions = {
 					dark: true,
@@ -530,23 +561,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				) : (
 					renderAvatar(profile, avatarOptions)
 				);
+			}
 
 			case 'deadline_at':
-				return <AssignmentDeadline deadline={assignment.deadline_at} />;
+				return renderDataCell(
+					<AssignmentDeadline deadline={assignment.deadline_at} />,
+					t('assignment/views/assignment-overview___deadline')
+				);
 
 			case 'updated_at':
 				return formatDate(cellData);
 
 			case 'responses':
-				return (cellData || []).length === 0 ? (
-					'0'
-				) : (
-					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}
-					>
-						{(cellData || []).length}
-					</Link>
-				);
+				return renderResponsesCell(cellData, assignment);
 
 			case 'actions':
 				if (isMobileWidth()) {
@@ -811,6 +838,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<>
 				{renderHeader()}
 				<Table
+					className={classnames('m-assignment-overview__table', {
+						'm-assignment-overview__table-mobile': isMobileWidth(),
+					})}
 					columns={tableColumns}
 					data={assignments}
 					emptyStateMessage={

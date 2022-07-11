@@ -71,9 +71,8 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		date = result.dcterms_issued;
 	}
 	return (
-		<div id={id}>
+		<div id={`search-result-${id}`} key={`search-result-${id}`}>
 			<SearchResult
-				key={`search-result-${result.id}`}
 				type={toEnglishContentType(result.administrative_type)}
 				date={formatDate(date)}
 				tags={getTags(result)}

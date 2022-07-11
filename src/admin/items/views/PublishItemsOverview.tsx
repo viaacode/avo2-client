@@ -76,15 +76,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const fetchItems = useCallback(async () => {
 		setIsLoading(true);
 		try {
-			const [
-				itemsTemp,
-				collectionsCountTemp,
-			] = await ItemsService.fetchUnpublishedItemsWithFilters(
-				tableState.page || 0,
-				(tableState.sort_column || 'updated_at') as UnpublishedItemsOverviewTableCols,
-				tableState.sort_order || 'desc',
-				generateWhereObject(getFilters(tableState))
-			);
+			const [itemsTemp, collectionsCountTemp] =
+				await ItemsService.fetchUnpublishedItemsWithFilters(
+					tableState.page || 0,
+					(tableState.sort_column || 'updated_at') as UnpublishedItemsOverviewTableCols,
+					tableState.sort_order || 'desc',
+					generateWhereObject(getFilters(tableState))
+				);
 			setItems(itemsTemp);
 			setItemCount(collectionsCountTemp);
 		} catch (err) {

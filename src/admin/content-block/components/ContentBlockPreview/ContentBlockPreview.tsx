@@ -149,6 +149,7 @@ const ContentBlockPreview: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(ContentBlockPreview) as FunctionComponent<
-	ContentBlockPreviewProps
->;
+export default compose(
+	withRouter,
+	withUser
+)(ContentBlockPreview) as FunctionComponent<ContentBlockPreviewProps>;

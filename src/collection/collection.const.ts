@@ -1,6 +1,4 @@
-import { IconName, SelectOption, TableColumn } from '@viaa/avo2-components';
-import { CollectionFragment, CollectionFragmentTypeDict } from '@viaa/avo2-types/types/collection';
-import { TFunction } from 'i18next';
+import { SelectOption, TableColumn } from '@viaa/avo2-components';
 
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -87,34 +85,3 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 		id: 'actions',
 	},
 ];
-
-export const COLLECTION_FRAGMENT_LABELS: (t: TFunction) => CollectionFragmentTypeDict<string> = (
-	t
-) => ({
-	COLLECTION: t('collection/collection___collectie'),
-	ITEM: t('collection/collection___fragment'),
-	TEXT: t('collection/collection___instructie-of-tekstblok'),
-});
-
-export const EDIT_COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<IconName> = () => ({
-	ITEM: 'video', // TODO: add custom icon
-	TEXT: 'type',
-	COLLECTION: 'x',
-});
-
-export const VIEW_COLLECTION_FRAGMENT_ICONS: () => CollectionFragmentTypeDict<
-	(fragment?: CollectionFragment) => IconName
-> = () => ({
-	ITEM: (fragment) => {
-		switch (fragment?.item_meta?.type?.label) {
-			case 'audio':
-				return 'headphone';
-			case 'video':
-				return 'image'; // TODO: add custom icon
-		}
-
-		return 'x';
-	},
-	TEXT: () => 'align-left',
-	COLLECTION: () => 'x',
-});

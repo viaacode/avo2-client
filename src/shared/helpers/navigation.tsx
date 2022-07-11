@@ -45,43 +45,41 @@ export function mapNavElementsToNavigationItems(
 	navItems: AppContentNavElement[],
 	t: TFunction
 ): NavigationItemInfo[] {
-	return sortBy(navItems, 'position').map(
-		(navItem: AppContentNavElement): NavigationItemInfo => {
-			const navLocation: string = getLocation(navItem, t);
+	return sortBy(navItems, 'position').map((navItem: AppContentNavElement): NavigationItemInfo => {
+		const navLocation: string = getLocation(navItem, t);
 
-			if (NAVIGATION_COMPONENTS[navLocation]) {
-				if (isMobileWidth()) {
-					return {
-						label: navItem.label,
-						icon: navItem.icon_name,
-						tooltip: navItem.tooltip,
-						location: APP_PATH.REGISTER_OR_LOGIN.route,
-						target: '_self',
-						key: `nav-item-${navItem.id}`,
-					};
-				}
-
-				// Show component when clicking this nav item
-				const Component = NAVIGATION_COMPONENTS[navLocation];
-
+		if (NAVIGATION_COMPONENTS[navLocation]) {
+			if (isMobileWidth()) {
 				return {
 					label: navItem.label,
 					icon: navItem.icon_name,
 					tooltip: navItem.tooltip,
-					component: <Component />,
+					location: APP_PATH.REGISTER_OR_LOGIN.route,
+					target: '_self',
 					key: `nav-item-${navItem.id}`,
 				};
 			}
 
-			// Navigate to link
+			// Show component when clicking this nav item
+			const Component = NAVIGATION_COMPONENTS[navLocation];
+
 			return {
 				label: navItem.label,
 				icon: navItem.icon_name,
 				tooltip: navItem.tooltip,
-				location: getLocation(navItem, t),
-				target: navItem.link_target,
+				component: <Component />,
 				key: `nav-item-${navItem.id}`,
 			};
 		}
-	);
+
+		// Navigate to link
+		return {
+			label: navItem.label,
+			icon: navItem.icon_name,
+			tooltip: navItem.tooltip,
+			location: getLocation(navItem, t),
+			target: navItem.link_target,
+			key: `nav-item-${navItem.id}`,
+		};
+	});
 }

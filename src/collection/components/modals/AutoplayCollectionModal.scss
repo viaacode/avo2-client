@@ -75,7 +75,7 @@
 			color: white;
 			font-size: 2.2rem;
 			background-color: rgba(0, 0, 0, 0.6);
-			text-align:center;
+			text-align: center;
 			> {
 				:first-child {
 					margin-top: 5rem;
@@ -92,27 +92,52 @@
 				position: relative;
 				margin: auto;
 				margin-top: 35px;
-				height: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
-				width: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+				height: calc(
+					2 *
+						(
+							#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}
+						)
+				);
+				width: calc(
+					2 *
+						(
+							#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}
+						)
+				);
 				text-align: center;
-			  }
+			}
 
-			  #countdown-inner {
+			#countdown-inner {
 				color: white;
 				display: inline-block;
-				line-height: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
-			  }
+				line-height: calc(
+					2 *
+						(
+							#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}
+						)
+				);
+			}
 
-			  svg.animation {
+			svg.animation {
 				position: absolute;
 				top: 0;
 				right: 0;
-				width: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
-				height: calc(2 * (#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}));
+				width: calc(
+					2 *
+						(
+							#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}
+						)
+				);
+				height: calc(
+					2 *
+						(
+							#{$autoPlay-animation-circle-radius} + #{$autoPlay-animation-circle-radius-stroke-width}
+						)
+				);
 				transform: rotateY(-180deg) rotateZ(-90deg);
-			  }
+			}
 
-			  svg circle {
+			svg circle {
 				stroke-dasharray: calc(2 * 3.14 * #{$autoPlay-animation-circle-radius});
 				stroke-dashoffset: 0px;
 				stroke-linecap: round;
@@ -120,17 +145,16 @@
 				stroke: white;
 				fill: none;
 				animation: countdown 7s linear infinite forwards;
-			  }
+			}
 
-			  @keyframes countdown {
+			@keyframes countdown {
 				from {
-				  stroke-dashoffset: 0px;
+					stroke-dashoffset: 0px;
 				}
 				to {
-				  stroke-dashoffset: calc(2 * 3.14 * #{$autoPlay-animation-circle-radius});
+					stroke-dashoffset: calc(2 * 3.14 * #{$autoPlay-animation-circle-radius});
 				}
-			  }
-
+			}
 		}
 	}
 

@@ -208,16 +208,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			);
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const [
-				contentPagesArray,
-				contentPageCountTemp,
-			] = await ContentService.fetchContentPages(
-				tableState.page || 0,
-				(tableState.sort_column as ContentOverviewTableCols) || 'updated_at',
-				tableState.sort_order || 'desc',
-				columnDataType,
-				generateWhereObject(getFilters(tableState))
-			);
+			const [contentPagesArray, contentPageCountTemp] =
+				await ContentService.fetchContentPages(
+					tableState.page || 0,
+					(tableState.sort_column as ContentOverviewTableCols) || 'updated_at',
+					tableState.sort_order || 'desc',
+					columnDataType,
+					generateWhereObject(getFilters(tableState))
+				);
 
 			setContentPages(contentPagesArray);
 			setContentPageCount(contentPageCountTemp);

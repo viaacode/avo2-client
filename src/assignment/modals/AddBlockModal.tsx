@@ -8,41 +8,50 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
+import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS } from '../assignment.const';
-import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
+import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
-type AddBlockModalType = AssignmentBlockType | 'COLLECTIE';
+type AddBlockModalType =
+	| AssignmentBlockType.ITEM
+	| 'COLLECTIE'
+	| AssignmentBlockType.ZOEK
+	| AssignmentBlockType.TEXT;
+
+interface AddBlockModalOption {
+	type: AddBlockModalType;
+	icon: IconNameSchema;
+	title: ReactNode;
+	description: ReactNode;
+	disabled?: boolean;
+}
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	assignment: AssignmentFormState;
+	blocks: Avo.Core.BlockItemBase[];
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 
 const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
-	assignment,
+	blocks,
 	isOpen,
 	onClose,
 	onConfirm,
 }) => {
 	const [t] = useTranslation();
 
-	const items: {
-		type: AddBlockModalType;
-		icon: IconNameSchema;
-		title: ReactNode;
-		description: ReactNode;
-		disabled?: boolean;
-	}[] = useMemo(
+	const items: AddBlockModalOption[] = useMemo(
 		() => [
 			{
 				type: AssignmentBlockType.ITEM,
-				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[AssignmentBlockType.ITEM],
+				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ITEM]({
+					item_meta: { type: { label: 'video', id: 0 } },
+				} as Avo.Core.BlockItemBase),
 				title: t('assignment/modals/add-block___kijken-luisteren-fragment'),
 				description: t(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'
@@ -58,26 +67,23 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 			},
 			{
 				type: AssignmentBlockType.ZOEK,
-				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[AssignmentBlockType.ZOEK],
+				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
 				title: t('assignment/modals/add-block___zoeken-bouwen'),
 				description: t(
 					'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
 				),
-				disabled:
-					assignment.blocks.findIndex(
-						(block) => block.type === AssignmentBlockType.ZOEK
-					) >= 0,
+				disabled: blocks.findIndex((block) => block.type === AssignmentBlockType.ZOEK) >= 0,
 			},
 			{
 				type: AssignmentBlockType.TEXT,
-				icon: ASSIGNMENT_CREATE_UPDATE_BLOCK_ICONS()[AssignmentBlockType.TEXT],
+				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.TEXT](),
 				title: t('assignment/modals/add-block___instructies-tekst'),
 				description: t(
 					'assignment/modals/add-block___voeg-een-tekstblok-toe-met-instructies-of-wat-extra-informatie'
 				),
 			},
 		],
-		[assignment.blocks, t]
+		[blocks, t]
 	);
 
 	return (

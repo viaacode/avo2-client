@@ -1,8 +1,9 @@
-export { useAssignmentTeacherTabs } from './assignment-teacher-tabs';
-export { useAssignmentPupilTabs } from './assignment-pupil-tabs';
-export { useAssignmentForm } from './assignment-form';
-export { useAssignmentBlockDescriptionButtons } from './assignment-block-description-buttons';
-export { useAssignmentBlockMeta } from './assignment-block-meta';
-export { useAssignmentBlocks } from './assignment-blocks';
-export { useAssignmentContentModals } from './assignment-content-modals';
+export { useAssignmentBlockChangeHandler } from './assignment-block-change-handler';
+export { useBlockDescriptionButtons } from './assignment-block-description-buttons';
+export { useEditBlocks } from './assignment-blocks';
+export { useBlocksList } from './assignment-blocks-list';
+export { useBlockListModals } from './assignment-content-modals';
 export { useAssignmentDetailsForm } from './assignment-details-form';
+export { useAssignmentForm } from './assignment-form';
+export { useAssignmentPupilTabs } from './assignment-pupil-tabs';
+export { useAssignmentTeacherTabs } from './assignment-teacher-tabs';

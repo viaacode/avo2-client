@@ -1,20 +1,22 @@
-import React, { FC, useRef } from 'react';
-
 import { convertToHtml, DefaultProps } from '@viaa/avo2-components';
-
-import { CollapsibleColumn } from '../../shared/components';
-import { useVideoWithTimestamps } from '../../shared/hooks/useVideoWithTimestamps';
+import React, { FC, useRef } from 'react';
 
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,
-} from './CollectionFragmentFlowPlayer';
-import CollectionFragmentMeta, { CollectionFragmentMetaProps } from './CollectionFragmentMeta';
+} from '../../../../collection/components/CollectionFragmentFlowPlayer';
+import CollectionFragmentMeta, {
+	CollectionFragmentMetaProps,
+} from '../../../../collection/components/CollectionFragmentMeta';
 import CollectionFragmentRichText, {
 	CollectionFragmentRichTextProps,
-} from './CollectionFragmentRichText';
-import CollectionFragmentTitle, { CollectionFragmentTitleProps } from './CollectionFragmentTitle';
+} from '../../../../collection/components/CollectionFragmentRichText';
+import CollectionFragmentTitle, {
+	CollectionFragmentTitleProps,
+} from '../../../../collection/components/CollectionFragmentTitle';
+import { useVideoWithTimestamps } from '../../../hooks/useVideoWithTimestamps';
+import { CollapsibleColumn } from '../../index';
 
-interface CollectionFragmentTypeItemProps extends DefaultProps {
+export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	title?: CollectionFragmentTitleProps;
 	richText?: CollectionFragmentRichTextProps;
 	meta?: CollectionFragmentMetaProps;
@@ -51,9 +53,9 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 								// Add timestamps
 								const formatted = formatTimestamps(
 									convertToHtml(
-										richText.fragment.use_custom_fields
-											? richText.fragment.custom_description
-											: richText.fragment.item_meta?.description
+										richText.block?.use_custom_fields
+											? richText.block?.custom_description
+											: richText.block?.item_meta?.description
 									) || ''
 								);
 

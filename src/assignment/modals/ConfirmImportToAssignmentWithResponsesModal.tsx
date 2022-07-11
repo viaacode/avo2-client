@@ -24,12 +24,9 @@ interface ConfirmImportToAssignmentWithResponsesModalProps {
 	};
 }
 
-const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<ConfirmImportToAssignmentWithResponsesModalProps> = ({
-	isOpen,
-	onClose,
-	confirmCallback,
-	translations,
-}) => {
+const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<
+	ConfirmImportToAssignmentWithResponsesModalProps
+> = ({ isOpen, onClose, confirmCallback, translations }) => {
 	const renderConfirmButtons = () => {
 		return (
 			<Toolbar spaced>

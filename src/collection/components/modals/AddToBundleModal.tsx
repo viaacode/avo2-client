@@ -266,9 +266,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 												options={[
 													...bundles.map(
 														(
-															bundle: Partial<
-																Avo.Collection.Collection
-															>
+															bundle: Partial<Avo.Collection.Collection>
 														) => ({
 															label: bundle.title || '',
 															value: String(bundle.id),

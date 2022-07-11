@@ -54,13 +54,13 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 
 	const initOrFetchContentPageLabel = useCallback(async () => {
 		if (isCreatePage) {
-			const contentLabel = ({
+			const contentLabel = {
 				label: '',
 				content_type: 'PAGINA',
 				created_at: new Date().toISOString(),
 				updated_at: new Date().toISOString(),
 				permissions: [],
-			} as unknown) as ContentPageLabel;
+			} as unknown as ContentPageLabel;
 			setInitialContentPageLabel(contentLabel);
 			setContentPageLabelInfo(contentLabel);
 		} else {
@@ -218,7 +218,8 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 										onChange={(newContentType) =>
 											setContentPageLabelInfo({
 												...contentPageLabelInfo,
-												content_type: newContentType as Avo.ContentPage.Type,
+												content_type:
+													newContentType as Avo.ContentPage.Type,
 											})
 										}
 									/>
