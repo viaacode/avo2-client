@@ -42,6 +42,7 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
+import ConfirmImportToAssignmentWithResponsesModal from '../modals/ConfirmImportToAssignmentWithResponsesModal';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -56,6 +57,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
+	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
+		useState<boolean>(false);
 
 	const {
 		control,
@@ -131,6 +134,21 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
 
 	// Events
+
+	const handleOnSave = async () => {
+		if (!user.profile?.id || !original) {
+			return;
+		}
+
+		const responses = await AssignmentService.getAssignmentResponses(
+			user.profile?.id,
+			original.id
+		);
+		if (responses.length > 0) {
+			setIsConfirmSaveActionModalOpen(true);
+			return;
+		}
+	};
 
 	const submit = async () => {
 		try {
@@ -451,14 +469,27 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 				{renderedModals}
 				{draggableListModal}
+
+				<ConfirmImportToAssignmentWithResponsesModal
+					isOpen={isConfirmSaveActionModalOpen}
+					onClose={() => setIsConfirmSaveActionModalOpen(false)}
+					confirmCallback={() => {
+						setIsConfirmSaveActionModalOpen(false);
+						handleSubmit(submit, (...args) => console.error(args))();
+					}}
+					translations={{
+						title: t('Nieuwe wijzigingen opslaan?'),
+						warningCallout: t('Opgelet'),
+						warningMessage: t('leerlingen hebben deze opdracht reeds bekeken.'),
+						warningBody: t('Ben je zeker dat je deze nieuwe wijzigingen wil opslaan?'),
+						primaryButton: t('Opslaan'),
+						secondaryButton: t('Annuleer'),
+					}}
+				/>
 			</Container>
 
 			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar
-				isVisible={isDirty}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
+			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
 		</div>
 	);
 
