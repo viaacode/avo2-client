@@ -14,6 +14,7 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, CustomError } from '../../shared/helpers';
@@ -42,7 +43,6 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
-import ConfirmImportToAssignmentWithResponsesModal from '../modals/ConfirmImportToAssignmentWithResponsesModal';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -470,21 +470,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{renderedModals}
 				{draggableListModal}
 
-				<ConfirmImportToAssignmentWithResponsesModal
+				<ConfirmModal
 					isOpen={isConfirmSaveActionModalOpen}
 					onClose={() => setIsConfirmSaveActionModalOpen(false)}
-					confirmCallback={() => {
+					deleteObjectCallback={() => {
 						setIsConfirmSaveActionModalOpen(false);
 						handleSubmit(submit, (...args) => console.error(args))();
 					}}
-					translations={{
-						title: t('Nieuwe wijzigingen opslaan?'),
-						warningCallout: t('Opgelet'),
-						warningMessage: t('leerlingen hebben deze opdracht reeds bekeken.'),
-						warningBody: t('Ben je zeker dat je deze nieuwe wijzigingen wil opslaan?'),
-						primaryButton: t('Opslaan'),
-						secondaryButton: t('Annuleer'),
-					}}
+					title={t('Nieuwe wijzigingen opslaan?')}
+					body={`<p><strong>Opgelet:</strong> leerlingen hebben deze opdracht reeds bekeken.</p><p>Ben je zeker dat je deze nieuwe wijzigingen wil opslaan?</p>`}
+					confirmLabel={t('Opslaan')}
+					cancelLabel={t('Annuleer')}
+					confirmButtonType={'primary'}
 				/>
 			</Container>
 
