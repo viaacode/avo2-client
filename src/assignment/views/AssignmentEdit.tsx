@@ -410,7 +410,20 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
-				return <div className="c-assignment-contents-tab">{renderedListSorter}</div>;
+				return (
+					<div className="c-assignment-contents-tab">
+						{assignment.blocks.length > 0 && (
+							<Spacer
+								margin={['bottom-large']}
+								className="c-assignment-page__reorder-container"
+							>
+								{draggableListButton}
+							</Spacer>
+						)}
+
+						{renderedListSorter}
+					</div>
+				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
@@ -487,47 +500,51 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			}}
 		>
 			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={renderActions}
-					tabs={renderTabs}
-				/>
-
-				<Container mode="horizontal">
-					{pastDeadline && (
-						<Spacer margin={['top-large']}>
-							<Alert type="info">
-								{t(
-									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-								)}
-							</Alert>
-						</Spacer>
-					)}
-
-					<Spacer margin={['top-large']}>{draggableListButton}</Spacer>
-
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-
-					<ConfirmModal
-						isOpen={isConfirmSaveActionModalOpen}
-						onClose={() => setIsConfirmSaveActionModalOpen(false)}
-						deleteObjectCallback={() => {
-							setIsConfirmSaveActionModalOpen(false);
-							handleSubmit(submit, (...args) => console.error(args))();
-						}}
-						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
-						body={t(
-							'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
-						)}
-						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
-						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-						confirmButtonType="primary"
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderTitle}
+						actions={renderActions}
+						tabs={renderTabs}
 					/>
-				</Container>
+
+					<Container mode="horizontal">
+						{pastDeadline && (
+							<Spacer margin={['top-large']}>
+								<Alert type="info">
+									{t(
+										'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+									)}
+								</Alert>
+							</Spacer>
+						)}
+
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+
+						<ConfirmModal
+							isOpen={isConfirmSaveActionModalOpen}
+							onClose={() => setIsConfirmSaveActionModalOpen(false)}
+							deleteObjectCallback={() => {
+								setIsConfirmSaveActionModalOpen(false);
+								handleSubmit(submit, (...args) => console.error(args))();
+							}}
+							title={t(
+								'assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan'
+							)}
+							body={t(
+								'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
+							)}
+							confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+							cancelLabel={t('assignment/views/assignment-edit___annuleer')}
+							confirmButtonType="primary"
+						/>
+					</Container>
+				</div>
 
 				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
 				<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />

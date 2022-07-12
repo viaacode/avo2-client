@@ -658,6 +658,7 @@ export class AssignmentService {
 		};
 
 		delete newAssignment.id;
+		delete newAssignment.owner;
 		newAssignment.updated_at = new Date().toISOString();
 
 		const duplicatedAssignment = await AssignmentService.insertAssignment(newAssignment);
