@@ -18,6 +18,7 @@ import { compose } from 'redux';
 
 import { ItemsService } from '../../../../admin/items/items.service';
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
+import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import MoreOptionsDropdown from '../../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
@@ -166,8 +167,17 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						icon="plus"
 						type="secondary"
 						onClick={() => {
-							addBlockModal.setEntity(item?.position);
-							addBlockModal.setOpen(true);
+							const newBlocks = insertAtPosition(
+								assignmentResponse.pupil_collection_blocks || [],
+								{
+									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+									assignment_response_id: assignmentResponse.id,
+									type: CollectionBlockType.TEXT,
+									position: item?.position || 0,
+								} as PupilCollectionFragment
+							);
+
+							updateBlocksInAssignmentResponseState(newBlocks);
 						}}
 					/>
 				),
