@@ -209,7 +209,6 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 								src={bookmark.contentThumbnailPath || undefined}
 								showCategoryIcon
 							/>
-							<Spacer margin="small" />
 							<Flex orientation="vertical" center>
 								<h3 className="c-content-header__header u-m-0">
 									{truncateTableValue(bookmark.contentTitle)}
