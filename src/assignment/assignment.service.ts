@@ -20,6 +20,7 @@ import {
 	dataService,
 	ToastService,
 } from '../shared/services';
+import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -1171,6 +1172,21 @@ export class AssignmentService {
 			collection,
 			assignmentId,
 			withDescription
+		);
+
+		// Success
+		// Track import collection into assigment event
+		trackEvents(
+			{
+				object: assignmentId,
+				object_type: 'avo_assignment',
+				action: 'add',
+				resource: {
+					type: 'collection',
+					id: collection.id,
+				},
+			},
+			user
 		);
 
 		return assignmentId;

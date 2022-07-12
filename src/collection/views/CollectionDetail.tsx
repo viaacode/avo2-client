@@ -672,6 +672,21 @@ const CollectionDetail: FunctionComponent<
 				importToAssignmentId,
 				withDescription
 			);
+
+			// Track import collection into assigment event
+			trackEvents(
+				{
+					object: importToAssignmentId,
+					object_type: 'avo_assignment',
+					action: 'add',
+					resource: {
+						type: 'collection',
+						id: collection.id,
+					},
+				},
+				user
+			);
+
 			ToastService.success(
 				t(
 					'collection/views/collection-detail___de-collectie-is-geimporteerd-naar-de-opdracht'
