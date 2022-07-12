@@ -2,6 +2,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Modal,
@@ -210,10 +211,12 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 								showCategoryIcon
 							/>
 							<Flex orientation="vertical" center>
-								<h3 className="c-content-header__header u-m-0">
-									{truncateTableValue(bookmark.contentTitle)}
-								</h3>
-								<span>{bookmark.contentOrganisation || ''}</span>
+								<FlexItem>
+									<h3 className="c-content-header__header u-m-0">
+										{truncateTableValue(bookmark.contentTitle)}
+									</h3>
+									<span>{bookmark.contentOrganisation || ''}</span>
+								</FlexItem>
 							</Flex>
 						</Flex>
 					</div>
