@@ -148,6 +148,11 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			count: order,
 		},
 	}),
+	views: (order: Avo.Search.OrderDirection) => ({
+		view_count: {
+			count: order,
+		},
+	}),
 };
 
 /// Zoek & bouw
