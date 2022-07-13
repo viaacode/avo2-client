@@ -147,33 +147,32 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	// TODO: Add check if owner or write-rights.
 ];
 
-const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<Avo.Collection.Fragment>[] =
-	() => [
-		{
-			error: i18n.t(
-				'collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'
-			),
-			isValid: (collectionFragment: Avo.Collection.Fragment) => {
-				return !isNil(collectionFragment.start_oc);
-			},
+const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<
+	Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>
+>[] = () => [
+	{
+		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
+		isValid: (collectionFragment) => {
+			return !isNil(collectionFragment.start_oc);
 		},
-		{
-			error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
-			isValid: (collectionFragment: Avo.Collection.Fragment) => {
-				return !isNil(collectionFragment.end_oc);
-			},
+	},
+	{
+		error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
+		isValid: (collectionFragment) => {
+			return !isNil(collectionFragment.end_oc);
 		},
-		{
-			error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
-			isValid: (collectionFragment: Avo.Collection.Fragment) => {
-				return (
-					!collectionFragment.start_oc ||
-					!collectionFragment.end_oc ||
-					collectionFragment.start_oc < collectionFragment.end_oc
-				);
-			},
+	},
+	{
+		error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
+		isValid: (collectionFragment) => {
+			return (
+				!collectionFragment.start_oc ||
+				!collectionFragment.end_oc ||
+				collectionFragment.start_oc < collectionFragment.end_oc
+			);
 		},
-	];
+	},
+];
 
 const validateFragments = (
 	fragments: Avo.Collection.Fragment[],
@@ -232,7 +231,7 @@ const validateFragments = (
 };
 
 export const getValidationErrorsForStartAndEnd = (
-	collectionFragment: Avo.Collection.Fragment
+	collectionFragment: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>
 ): string[] => {
 	return compact(
 		GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT().map((rule) =>

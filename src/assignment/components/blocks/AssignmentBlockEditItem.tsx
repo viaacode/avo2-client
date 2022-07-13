@@ -8,6 +8,7 @@ import { FlowPlayerWrapper } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
+import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import { EditBlockProps } from '../../assignment.types';
 import { useBlockDescriptionButtons } from '../../hooks';
 import { CustomFieldOption } from '../../hooks/assignment-block-description-buttons';
@@ -18,6 +19,7 @@ export const AssignmentBlockEditItem: FC<
 > = ({ block, setBlock, customFieldOptions }) => {
 	const [t] = useTranslation();
 	const getButtons = useBlockDescriptionButtons(setBlock, customFieldOptions);
+	const [cutButton, cutModal] = useCutModal();
 
 	if (!block.item_meta) {
 		return null;
@@ -31,17 +33,31 @@ export const AssignmentBlockEditItem: FC<
 				const item = block.item_meta as ItemSchema;
 
 				return (
-					<FlowPlayerWrapper
-						item={item}
-						poster={item.thumbnail_path}
-						external_id={item.external_id}
-						duration={item.duration}
-						title={item.title}
-						cuePoints={{
-							start: block.start_oc,
-							end: block.end_oc,
-						}}
-					/>
+					<>
+						<FlowPlayerWrapper
+							item={item}
+							poster={item.thumbnail_path}
+							external_id={item.external_id}
+							duration={item.duration}
+							title={item.title}
+							cuePoints={{
+								start: block.start_oc,
+								end: block.end_oc,
+							}}
+						/>
+
+						{cutButton({
+							className: 'u-spacer-top',
+						})}
+						{cutModal({
+							itemMetaData: item,
+							fragment: {
+								...block,
+								external_id: `${block.id}`,
+							},
+							onConfirm: (update) => setBlock(block, update),
+						})}
+					</>
 				);
 			}}
 			buttons={getButtons(block)}
