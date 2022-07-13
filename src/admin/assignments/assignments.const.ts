@@ -126,7 +126,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 		id: 'views',
 		icon: 'eye',
 		tooltip: 'views',
-		sortable: false,
+		sortable: true,
 		visibleByDefault: true,
 	},
 	{

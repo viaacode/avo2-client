@@ -19,6 +19,7 @@ export interface BookmarkInfo {
 	contentThumbnailPath: string | null | undefined;
 	contentCreatedAt: number | null;
 	contentViews: number;
+	contentOrganisation?: string | null | undefined;
 }
 
 export interface BookmarkViewPlayCounts {
@@ -44,6 +45,9 @@ export interface AppItemBookmark {
 		item: {
 			external_id: string;
 			item_meta: {
+				organisation: {
+					name: string;
+				};
 				type: {
 					label: string;
 				};

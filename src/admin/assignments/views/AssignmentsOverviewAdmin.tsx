@@ -321,7 +321,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						>
 							{responsesLength}
 						</Link>
-					); // TODO add link to responses page
+					);
 				}
 				if (assignment.assignment_type === 'BOUW') {
 					return t(

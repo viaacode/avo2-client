@@ -48,6 +48,7 @@ import {
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
+	INCREMENT_ASSIGNMENT_VIEW_COUNT,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -1398,6 +1399,28 @@ export class AssignmentService {
 				profileId,
 				assignmentIds,
 				query: 'BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS',
+			});
+		}
+	}
+
+	static async increaseViewCount(assignmentId: string): Promise<number> {
+		try {
+			const response = await dataService.mutate({
+				mutation: INCREMENT_ASSIGNMENT_VIEW_COUNT,
+				variables: {
+					assignmentId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return response?.data?.update_app_assignment_v2_views?.affected_rows || 0;
+		} catch (err) {
+			throw new CustomError('Failed to increase assignment view count in the database', err, {
+				assignmentId,
+				query: 'INCREMENT_ASSIGNMENT_VIEW_COUNT',
 			});
 		}
 	}

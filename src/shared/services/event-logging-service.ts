@@ -1,6 +1,5 @@
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
 
 import { getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
@@ -10,13 +9,13 @@ interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
 	object: string; // entity being modified
 	object_type: Avo.EventLogging.ObjectType;
-	resource?: Record<string, string | boolean | number>;
+	resource?: Record<string, string | string[] | boolean | number | Avo.Search.DateRange>;
 }
 
 export function trackEvents(
 	events: MinimalClientEvent[] | MinimalClientEvent,
 	user: Avo.User.User | null | undefined
-) {
+): void {
 	try {
 		let eventsArray: MinimalClientEvent[];
 
