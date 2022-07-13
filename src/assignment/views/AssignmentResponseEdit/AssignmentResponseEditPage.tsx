@@ -36,8 +36,8 @@ const AssignmentResponseEditPage: FunctionComponent<
 	// Data
 	const assignmentId = match.params.id;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentLoading, setAssignmentInfoLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentInfoError] = useState<any | null>(null);
+	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
+	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
 		null
 	);
@@ -49,10 +49,10 @@ const AssignmentResponseEditPage: FunctionComponent<
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssignmentInfoLoading(true);
+			setAssignmentLoading(true);
 
 			// Get assignment
-			setAssignmentInfoError(null);
+			setAssignmentError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
 					t(
@@ -67,11 +67,11 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			if (isString(assignmentOrError)) {
 				// error
-				setAssignmentInfoError({
+				setAssignmentError({
 					state: 'error',
 					...getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
 				});
-				setAssignmentInfoLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
@@ -96,9 +96,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			setAssignment(assignmentOrError);
 		} catch (err) {
-			setAssignmentInfoError(err);
+			setAssignmentError(err);
 		}
-		setAssignmentInfoLoading(false);
+		setAssignmentLoading(false);
 	}, [assignmentId]);
 
 	// Effects
