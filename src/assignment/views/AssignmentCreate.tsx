@@ -2,7 +2,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -26,6 +34,7 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
@@ -33,7 +42,6 @@ import { backToOverview } from '../helpers/back-to-overview';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 	useBlockListModals,
@@ -257,10 +265,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		},
 	});
 
-	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
-		initial: defaultValues,
-	});
-
 	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
@@ -382,12 +386,25 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
-				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentDetailsForm
+							assignment={assignment as Avo.Assignment.Assignment_v2}
+							setAssignment={
+								setAssignment as Dispatch<
+									SetStateAction<Avo.Assignment.Assignment_v2>
+								>
+							}
+							setValue={setValue}
+							editable
+						/>
+					</div>
+				);
 
 			default:
 				return tab;
 		}
-	}, [tab, renderedDetailForm, renderedListSorter]);
+	}, [tab, renderedListSorter]);
 
 	// Effects
 

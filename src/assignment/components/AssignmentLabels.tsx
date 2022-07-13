@@ -1,11 +1,10 @@
+import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
-
-import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
@@ -23,6 +22,7 @@ export type AssignmentLabelsProps = Pick<Avo.Assignment.Assignment_v2, 'labels'>
 		placeholder: string;
 		empty: string;
 	};
+	editable?: boolean;
 	type?: AssignmentLabelType;
 };
 
@@ -32,6 +32,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	user,
 	onChange,
 	type = 'LABEL',
+	editable,
 	...props
 }) => {
 	const [t] = useTranslation();
@@ -125,42 +126,47 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	return (
 		<>
 			<TagList
-				closable={true}
+				closable={editable}
 				tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
 				onTagClosed={deleteAssignmentLabel}
 			/>
-			<Flex>
-				<FlexItem>
-					<Spacer margin="right-small">
-						<ColorSelect
-							id={id}
-							options={getColorOptions(unselectedLabels)}
-							value={null}
-							onChange={addAssignmentLabel}
-							placeholder={dictionary.placeholder}
-							noOptionsMessage={() => dictionary.empty}
-						/>
-					</Spacer>
-				</FlexItem>
-				<FlexItem shrink>
-					<Button
-						icon="settings"
-						title="Beheer je vakken en projecten"
-						ariaLabel="Beheer je vakken en projecten"
-						type="borderless"
-						size="large"
-						className="c-button__labels"
-						onClick={() => setIsManageLabelsModalOpen(true)}
-					/>
-				</FlexItem>
-			</Flex>
+			{!editable && labels.length === 0 && <p>{t('-')}</p>}
+			{editable && (
+				<>
+					<Flex>
+						<FlexItem>
+							<Spacer margin="right-small">
+								<ColorSelect
+									id={id}
+									options={getColorOptions(unselectedLabels)}
+									value={null}
+									onChange={addAssignmentLabel}
+									placeholder={dictionary.placeholder}
+									noOptionsMessage={() => dictionary.empty}
+								/>
+							</Spacer>
+						</FlexItem>
+						<FlexItem shrink>
+							<Button
+								icon="settings"
+								title="Beheer je vakken en projecten"
+								ariaLabel="Beheer je vakken en projecten"
+								type="borderless"
+								size="large"
+								className="c-button__labels"
+								onClick={() => setIsManageLabelsModalOpen(true)}
+							/>
+						</FlexItem>
+					</Flex>
 
-			<ManageAssignmentLabels
-				onClose={handleManageAssignmentLabelsModalClosed}
-				isOpen={isManageLabelsModalOpen}
-				user={user}
-				type={type}
-			/>
+					<ManageAssignmentLabels
+						onClose={handleManageAssignmentLabelsModalClosed}
+						isOpen={isManageLabelsModalOpen}
+						user={user}
+						type={type}
+					/>
+				</>
+			)}
 		</>
 	);
 };
