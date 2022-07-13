@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
-import { buildLink } from '../../shared/helpers';
+import { buildLink, formatDate } from '../../shared/helpers';
 import { BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentMetaProps = BlockItemComponent & {
@@ -29,7 +29,8 @@ const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ block, canCli
 
 			{publishedAt && (
 				<div>
-					{t('collection/views/collection-detail___uitzenddatum')}:<b> {publishedAt}</b>
+					{t('collection/views/collection-detail___uitzenddatum')}:
+					<b> {formatDate(publishedAt)}</b>
 				</div>
 			)}
 
