@@ -198,6 +198,9 @@ export const GET_ITEM_BOOKMARKS_FOR_USER = gql`
 				item {
 					external_id
 					item_meta {
+						organisation {
+							name
+						}
 						is_deleted
 						is_published
 						type {
@@ -226,6 +229,9 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 				item {
 					external_id
 					item_meta {
+						organisation {
+							name
+						}
 						is_deleted
 						is_published
 						type {

@@ -66,12 +66,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation } from '../collection.types';
-import {
-	AutoplayCollectionModal,
-	BlockList,
-	FragmentList,
-	PublishCollectionModal,
-} from '../components';
+import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
@@ -672,6 +667,21 @@ const CollectionDetail: FunctionComponent<
 				importToAssignmentId,
 				withDescription
 			);
+
+			// Track import collection into assigment event
+			trackEvents(
+				{
+					object: importToAssignmentId,
+					object_type: 'avo_assignment',
+					action: 'add',
+					resource: {
+						type: 'collection',
+						id: collection.id,
+					},
+				},
+				user
+			);
+
 			ToastService.success(
 				t(
 					'collection/views/collection-detail___de-collectie-is-geimporteerd-naar-de-opdracht'
@@ -1008,39 +1018,39 @@ const CollectionDetail: FunctionComponent<
 						</HeaderRow>
 					</Header>
 
-					{/* Start */}
+					{/*/!* Start *!/*/}
 
-					<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">
-						<BlockList
-							blocks={collection.collection_fragments}
-							config={{
-								TEXT: {
-									title: {
-										canClickHeading: permissions?.canViewAnyPublishedItems,
-									},
-								},
-								ITEM: {
-									meta: {
-										canClickSeries: permissions?.canViewAnyPublishedItems,
-									},
-									flowPlayer: {
-										canPlay:
-											!isAddToBundleModalOpen &&
-											!isDeleteModalOpen &&
-											!isPublishModalOpen &&
-											!isShareThroughEmailModalOpen &&
-											!isAutoplayCollectionModalOpen,
-									},
-								},
-							}}
-						/>
-					</Container>
+					{/*<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">*/}
+					{/*	<BlockList*/}
+					{/*		blocks={collection.collection_fragments}*/}
+					{/*		config={{*/}
+					{/*			TEXT: {*/}
+					{/*				title: {*/}
+					{/*					canClickHeading: permissions?.canViewAnyPublishedItems,*/}
+					{/*				},*/}
+					{/*			},*/}
+					{/*			ITEM: {*/}
+					{/*				meta: {*/}
+					{/*					canClickSeries: permissions?.canViewAnyPublishedItems,*/}
+					{/*				},*/}
+					{/*				flowPlayer: {*/}
+					{/*					canPlay:*/}
+					{/*						!isAddToBundleModalOpen &&*/}
+					{/*						!isDeleteModalOpen &&*/}
+					{/*						!isPublishModalOpen &&*/}
+					{/*						!isShareThroughEmailModalOpen &&*/}
+					{/*						!isAutoplayCollectionModalOpen,*/}
+					{/*				},*/}
+					{/*			},*/}
+					{/*		}}*/}
+					{/*	/>*/}
+					{/*</Container>*/}
 
-					<br />
-					<hr />
-					<br />
+					{/*<br />*/}
+					{/*<hr />*/}
+					{/*<br />*/}
 
-					{/* End */}
+					{/*/!* End *!/*/}
 
 					<Container mode="vertical">
 						<Container mode="horizontal">

@@ -26,6 +26,7 @@ import AssignmentResponseEdit from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 
 const AssignmentResponseEditPage: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ id: string }>
@@ -34,9 +35,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignment, setAssignmentInfo] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentLoading, setAssignmentInfoLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentInfoError] = useState<any | null>(null);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
+	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
 		null
 	);
@@ -48,10 +49,10 @@ const AssignmentResponseEditPage: FunctionComponent<
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssignmentInfoLoading(true);
+			setAssignmentLoading(true);
 
 			// Get assignment
-			setAssignmentInfoError(null);
+			setAssignmentError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
 					t(
@@ -61,29 +62,43 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			const response: Avo.Assignment.Assignment_v2 | string =
+			const assignmentOrError: Avo.Assignment.Assignment_v2 | string =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
-			if (isString(response)) {
+			if (isString(assignmentOrError)) {
 				// error
-				setAssignmentInfoError({
+				setAssignmentError({
 					state: 'error',
-					...getAssignmentErrorObj(response as AssignmentRetrieveError),
+					...getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
 				});
-				setAssignmentInfoLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
+			// Track assignment view
+			AssignmentService.increaseViewCount(assignmentOrError.id); // Not waiting for view events increment
+			trackEvents(
+				{
+					object: assignmentOrError.id,
+					object_type: 'avo_assignment',
+					action: 'view',
+				},
+				user
+			);
+
 			// Create an assignment response if needed
 			const newOrExistingAssignmentResponse =
-				await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
+				await AssignmentService.createOrFetchAssignmentResponseObject(
+					assignmentOrError,
+					user
+				);
 			setAssignmentResponse(newOrExistingAssignmentResponse);
 
-			setAssignmentInfo(response);
+			setAssignment(assignmentOrError);
 		} catch (err) {
-			setAssignmentInfoError(err);
+			setAssignmentError(err);
 		}
-		setAssignmentInfoLoading(false);
+		setAssignmentLoading(false);
 	}, [assignmentId]);
 
 	// Effects

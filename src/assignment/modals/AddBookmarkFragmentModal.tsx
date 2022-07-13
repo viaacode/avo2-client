@@ -2,6 +2,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Modal,
@@ -17,14 +18,16 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollBar from 'react-perfect-scrollbar';
+import { compose } from 'redux';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, isMobileWidth } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -169,7 +172,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 
 	const renderFooterActions = () => {
 		return (
-			<Toolbar spaced>
+			<Toolbar>
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
@@ -209,10 +212,13 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 								src={bookmark.contentThumbnailPath || undefined}
 								showCategoryIcon
 							/>
-							<Flex center>
-								<h3 className="c-content-header__header u-m-0">
-									{truncateTableValue(bookmark.contentTitle)}
-								</h3>
+							<Flex orientation="vertical" center>
+								<FlexItem>
+									<h3 className="c-content-header__header u-m-0">
+										{truncateTableValue(bookmark.contentTitle)}
+									</h3>
+									<span>{bookmark.contentOrganisation || ''}</span>
+								</FlexItem>
 							</Flex>
 						</Flex>
 					</div>
@@ -305,4 +311,4 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	);
 };
 
-export default AddBookmarkFragmentModal;
+export default compose(withUser)(AddBookmarkFragmentModal) as FC<AddBookmarkFragmentModalProps>;
