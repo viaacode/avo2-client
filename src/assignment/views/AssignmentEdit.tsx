@@ -290,18 +290,20 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			});
 
 			// Track import collection into assignment event
-			trackEvents(
-				{
-					object: assignment.id || '', // Create assignment => does not have an id yet => AVO-1999
-					object_type: 'avo_assignment',
-					action: 'add',
-					resource: {
-						type: 'collection',
-						id: collection.id,
+			if (assignment.id) {
+				trackEvents(
+					{
+						object: assignment.id,
+						object_type: 'avo_assignment',
+						action: 'add',
+						resource: {
+							type: 'collection',
+							id: collection.id,
+						},
 					},
-				},
-				user
-			);
+					user
+				);
+			}
 		}
 	};
 

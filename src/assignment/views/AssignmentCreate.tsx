@@ -201,6 +201,20 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				shouldDirty: true,
 				shouldTouch: true,
 			});
+
+			// Track import collection into assignment event
+			trackEvents(
+				{
+					object: '', // Create assignment => does not have an id yet, but this event is still valuable, since we know which the collection was used to build an assignment
+					object_type: 'avo_assignment',
+					action: 'add',
+					resource: {
+						type: 'collection',
+						id: collection.id,
+					},
+				},
+				user
+			);
 		}
 	};
 
