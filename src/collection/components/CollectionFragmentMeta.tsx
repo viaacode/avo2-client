@@ -8,7 +8,9 @@ import { SearchFilter } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers';
 import { BlockItemComponent } from '../collection.types';
 
-export type CollectionFragmentMetaProps = BlockItemComponent & { canClickSeries?: boolean };
+export type CollectionFragmentMetaProps = BlockItemComponent & {
+	canClickSeries?: boolean;
+};
 
 const CollectionFragmentMeta: FC<CollectionFragmentMetaProps> = ({ block, canClickSeries }) => {
 	const [t] = useTranslation();
