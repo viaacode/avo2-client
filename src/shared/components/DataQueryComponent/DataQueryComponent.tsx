@@ -1,9 +1,8 @@
-import { useQuery } from '@apollo/react-hooks';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import type { DocumentNode } from 'graphql';
 import { get, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -13,6 +12,7 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
+import { dataService } from '../../services';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;
@@ -43,7 +43,35 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const { data: result } = useQuery(query, { variables: variables });
+	const [result, setResult] = useState<{ loading: boolean; error: any; data: any }>({
+		loading: true,
+		error: null,
+		data: null,
+	});
+
+	const fetchQuery = useCallback(async () => {
+		try {
+			const response = await dataService.query({
+				query,
+				variables,
+			});
+			setResult({
+				loading: false,
+				error: null,
+				data: response.data,
+			});
+		} catch (err) {
+			setResult({
+				loading: false,
+				error: err,
+				data: null,
+			});
+		}
+	}, [query, variables]);
+
+	useEffect(() => {
+		fetchQuery();
+	}, []);
 
 	const renderSpinner = () =>
 		showSpinner ? (
@@ -93,7 +121,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 		const data = get(result, resultPath ? `data.${resultPath}` : 'data');
 		if (data || ignoreNotFound) {
 			// We always want to wait until the current database operation finishes, before we refetch the changed data
-			return renderData(data, () => setTimeout(result.refetch, 0));
+			return renderData(data, () => setTimeout(fetchQuery, 0));
 		}
 
 		return (
