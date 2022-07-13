@@ -9,7 +9,6 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
@@ -18,18 +17,13 @@ import { navigate } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-	ASSIGNMENT_CREATE_UPDATE_TABS,
-	ASSIGNMENT_FORM_SCHEMA,
-	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
-} from '../assignment.const';
+import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { backToOverview } from '../helpers/back-to-overview';
-import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -119,78 +113,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderBlockContent = useEditBlocks(setBlock);
 
-	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch collection details
-		const collection = await CollectionService.fetchCollectionOrBundleById(
-			collectionId,
-			'collection',
-			undefined,
-			true
-		);
-
-		if (!collection) {
-			ToastService.danger(
-				t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald')
-			);
-			return;
-		}
-
-		if (collection.collection_fragments) {
-			const blocks = collection.collection_fragments.map(
-				(collectionItem, index): Partial<AssignmentBlock> => ({
-					id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
-					item_meta: collectionItem.item_meta,
-					type: collectionItem.type,
-					fragment_id: collectionItem.external_id,
-					position: (addBlockModal.entity || 0) + index,
-					original_title: withDescription ? collectionItem.custom_title : null,
-					original_description: withDescription
-						? collectionItem.custom_description
-						: null,
-					custom_title: collectionItem.use_custom_fields
-						? collectionItem.custom_title
-						: null,
-					custom_description: collectionItem.use_custom_fields
-						? collectionItem.custom_description
-						: null,
-					use_custom_fields: collectionItem.use_custom_fields,
-				})
-			);
-			const newAssignmentBlocks = insertMultipleAtPosition(
-				assignment.blocks,
-				blocks as unknown as AssignmentBlock[]
-			);
-
-			setAssignment((prev) => ({
-				...prev,
-				blocks: newAssignmentBlocks,
-			}));
-
-			setValue('blocks', newAssignmentBlocks, {
-				shouldDirty: true,
-				shouldTouch: true,
-			});
-
-			// Track import collection into assignment event
-			trackEvents(
-				{
-					object: '', // Create assignment => does not have an id yet, but this event is still valuable, since we know which the collection was used to build an assignment
-					object_type: 'avo_assignment',
-					action: 'add',
-					resource: {
-						type: 'collection',
-						id: collection.id,
-					},
-				},
-				user
-			);
-		}
-	};
-
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
 		updateBlocksInAssignmentState,
@@ -199,8 +121,21 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				responses: [],
 			},
 			addCollectionConfig: {
-				user,
-				addCollectionCallback: onAddCollection,
+				addCollectionCallback: (id) => {
+					// Track import collection into assignment event
+					trackEvents(
+						{
+							object: '', // Create assignment => does not have an id yet, but this event is still valuable, since we know which the collection was used to build an assignment
+							object_type: 'avo_assignment',
+							action: 'add',
+							resource: {
+								id,
+								type: 'collection',
+							},
+						},
+						user
+					);
+				},
 			},
 		}
 	);
