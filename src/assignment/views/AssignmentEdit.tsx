@@ -288,6 +288,22 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				shouldDirty: true,
 				shouldTouch: true,
 			});
+
+			// Track import collection into assignment event
+			if (assignment.id) {
+				trackEvents(
+					{
+						object: assignment.id,
+						object_type: 'avo_assignment',
+						action: 'add',
+						resource: {
+							type: 'collection',
+							id: collection.id,
+						},
+					},
+					user
+				);
+			}
 		}
 	};
 

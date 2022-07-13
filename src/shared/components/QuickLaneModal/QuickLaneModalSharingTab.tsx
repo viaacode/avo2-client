@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Avatar,
 	Box,
@@ -13,6 +10,8 @@ import {
 } from '@viaa/avo2-components';
 import { AssignmentLayout } from '@viaa/avo2-types/types/assignment';
 import { UserProfile } from '@viaa/avo2-types/types/user';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
@@ -24,7 +23,7 @@ import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
-import { defaultQuickLaneState, getContentId, isShareable } from './QuickLaneModal.helpers';
+import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneModal.helpers';
 import { QuickLaneModalProps } from './QuickLaneModal.types';
 
 const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProps> = ({
@@ -51,7 +50,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 			if (isOpen && content && content_label) {
 				if (user && user.profile !== null) {
 					let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
-						getContentId(content, content_label),
+						getContentUuid(content, content_label),
 						content_label,
 						(user.profile as UserProfile).id
 					);
@@ -65,7 +64,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 									title: content.title,
 								},
 								content_label,
-								content_id: getContentId(content, content_label),
+								content_id: getContentUuid(content, content_label),
 								owner_profile_id: (user.profile as UserProfile).id,
 							},
 						]);
@@ -88,7 +87,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 				}
 			}
 		})();
-	}, [content, exists]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [content, exists]);
 
 	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
@@ -107,7 +106,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 					const updated = await QuickLaneService.updateQuickLaneById(object.id, {
 						...object,
 						content_label,
-						content_id: getContentId(content, content_label),
+						content_id: getContentUuid(content, content_label),
 						owner_profile_id: (user.profile as UserProfile).id,
 					});
 
@@ -127,7 +126,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 				}
 			}
 		})();
-	}, [debounced]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [debounced]);
 
 	const avatar = {
 		name: user?.profile?.organisation?.name,
@@ -174,7 +173,8 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						<ContentLink
 							parent={{
 								content_label,
-								content_id: getContentId(content, content_label),
+								// ITEM || COLLECTIE
+								content_id: `${content.external_id || content.id}`,
 							}}
 							content={content}
 							user={user}

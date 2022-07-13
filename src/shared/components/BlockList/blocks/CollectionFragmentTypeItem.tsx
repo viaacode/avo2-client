@@ -34,7 +34,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	const [time, , formatTimestamps] = useVideoWithTimestamps(richTextRef);
 
 	return (
-		<>
+		<div className="c-collection-fragment--type-item">
 			{title && <CollectionFragmentTitle {...title} />}
 			<CollapsibleColumn
 				className={className}
@@ -70,7 +70,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 					</>
 				}
 			/>
-		</>
+		</div>
 	);
 };
 

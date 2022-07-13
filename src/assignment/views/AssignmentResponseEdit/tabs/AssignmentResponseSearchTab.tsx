@@ -28,6 +28,7 @@ import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useScrollToId } from '../../../../shared/hooks/scroll-to-id';
 import { ToastService } from '../../../../shared/services';
+import { trackEvents } from '../../../../shared/services/event-logging-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
@@ -111,6 +112,27 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				t(
 					'assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt'
 				)
+			);
+		}
+	};
+
+	const handleNewFilterState = (newFilterState: FilterState) => {
+		// Update state
+		setFilterState({
+			...filterState,
+			...newFilterState,
+		});
+
+		// Trigger search event
+		if (assignment?.id) {
+			trackEvents(
+				{
+					object: assignment.id,
+					object_type: 'avo_assignment',
+					action: 'search',
+					resource: newFilterState.filters,
+				},
+				user
 			);
 		}
 	};
@@ -245,12 +267,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 					enabledTypeOptions={ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH}
 					bookmarks={false}
 					filterState={filterState}
-					setFilterState={(newFilterState: FilterState) => {
-						setFilterState({
-							...filterState,
-							...newFilterState,
-						});
-					}}
+					setFilterState={handleNewFilterState}
 					renderDetailLink={renderDetailLink}
 					renderSearchLink={renderSearchLink}
 				/>
