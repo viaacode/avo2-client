@@ -1,8 +1,8 @@
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { useState } from 'react';
-import { ItemsService } from '../../admin/items/items.service';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType } from '../assignment.types';
