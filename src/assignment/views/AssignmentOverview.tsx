@@ -737,10 +737,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
 
 	const getEmptyFallbackTitle = () => {
+		const hasFilters: boolean =
+			!!query.filter?.length ||
+			!!query.selectedAssignmentLabelIds?.length ||
+			!!query.selectedClassLabelIds?.length;
 		if (canEditAssignments) {
 			// Teacher
 			if (activeView === AssignmentView.ACTIVE) {
-				if (filterString?.length) {
+				if (hasFilters) {
 					return t(
 						'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
 					);
@@ -749,7 +753,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
 				);
 			}
-			if (filterString?.length) {
+			if (hasFilters) {
 				return t(
 					'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm'
 				);
