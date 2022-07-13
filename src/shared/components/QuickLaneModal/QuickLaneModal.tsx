@@ -1,9 +1,9 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
+import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { UserSchema } from '@viaa/avo2-types/types/user';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	PermissionName,
@@ -52,7 +52,9 @@ const isAllowedToPublish = async (user: UserSchema, collection?: CollectionSchem
 // Component
 
 const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
-	const { modalTitle, isOpen, content, content_label, onClose, user } = props;
+	const { modalTitle, isOpen, content_label, onClose, user } = props;
+
+	const [content, setContent] = useState<AssignmentContent | undefined>(props.content);
 
 	const [t] = useTranslation();
 
@@ -72,6 +74,11 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		],
 		QuickLaneModalTabs.publication
 	);
+
+	// Sync prop with state
+	useEffect(() => {
+		setContent(props.content);
+	}, [props.content, setContent]);
 
 	// Check permissions
 	useEffect(() => {
@@ -144,11 +151,15 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 				return (
 					<QuickLaneModalPublicationTab
 						{...props}
+						content={content}
+						onUpdate={setContent}
 						onComplete={() => setActiveTab(QuickLaneModalTabs.sharing)}
 					/>
 				);
 			case 'sharing':
-				return <QuickLaneModalSharingTab {...props} />;
+				return (
+					<QuickLaneModalSharingTab {...props} content={content} onUpdate={setContent} />
+				);
 
 			default:
 				return undefined;
@@ -192,7 +203,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 											break;
 									}
 								}}
-							></Tabs>
+							/>
 						</Spacer>
 					)}
 
