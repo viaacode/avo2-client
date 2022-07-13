@@ -55,8 +55,8 @@ const AssignmentUnload: FC<AssignmentUnloadProps> = ({
 
 							confirm();
 						}}
-						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
+						cancelLabel={t('assignment/components/assignment-unload___blijven')}
+						confirmLabel={t('assignment/components/assignment-unload___verlaten')}
 						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
 						confirmButtonType="primary"
 					/>

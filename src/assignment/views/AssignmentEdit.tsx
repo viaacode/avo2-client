@@ -485,7 +485,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			blockRoute={isDirty}
 			hasBlocks={assignmentHasPupilBlocks}
 			hasResponses={assignmentHasResponses}
-			modal={{ deleteObjectCallback: () => handleSubmit(submit, console.error)() }}
 		>
 			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
 				<div>

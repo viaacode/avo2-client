@@ -419,10 +419,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<AssignmentUnload
-			blockRoute={isDirty}
-			modal={{ deleteObjectCallback: () => handleSubmit(submit, console.error)() }}
-		>
+		<AssignmentUnload blockRoute={isDirty}>
 			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
 				<div>
 					<AssignmentHeading
