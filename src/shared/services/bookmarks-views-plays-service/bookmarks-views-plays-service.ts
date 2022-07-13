@@ -222,6 +222,8 @@ export class BookmarksViewsPlaysService {
 						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
 						: null,
 					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
+					contentOrganisation:
+						itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
 				};
 			}
 		);
@@ -268,6 +270,8 @@ export class BookmarksViewsPlaysService {
 						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
 						: null,
 					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
+					contentOrganisation:
+						itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
 				};
 			}
 		);

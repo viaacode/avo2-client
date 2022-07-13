@@ -2,6 +2,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Modal,
@@ -169,7 +170,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 
 	const renderFooterActions = () => {
 		return (
-			<Toolbar spaced>
+			<Toolbar>
 				<ToolbarRight>
 					<ToolbarItem>
 						<ButtonToolbar>
@@ -209,10 +210,13 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 								src={bookmark.contentThumbnailPath || undefined}
 								showCategoryIcon
 							/>
-							<Flex center>
-								<h3 className="c-content-header__header u-m-0">
-									{truncateTableValue(bookmark.contentTitle)}
-								</h3>
+							<Flex orientation="vertical" center>
+								<FlexItem>
+									<h3 className="c-content-header__header u-m-0">
+										{truncateTableValue(bookmark.contentTitle)}
+									</h3>
+									<span>{bookmark.contentOrganisation || ''}</span>
+								</FlexItem>
 							</Flex>
 						</Flex>
 					</div>
