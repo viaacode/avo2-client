@@ -29,6 +29,7 @@ import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import AssignmentUnload from '../components/AssignmentUnload';
 import { backToOverview } from '../helpers/back-to-overview';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
@@ -54,7 +55,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
-	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
+	const {
+		control,
+		handleSubmit,
+		reset: resetForm,
+		setValue,
+		trigger,
+		formState: { isDirty },
+	} = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
@@ -411,31 +419,38 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-			<div>
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={renderActions}
-					tabs={renderTabs}
+		<AssignmentUnload
+			blockRoute={isDirty}
+			modal={{ deleteObjectCallback: () => handleSubmit(submit, console.error)() }}
+		>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderTitle}
+						actions={renderActions}
+						tabs={renderTabs}
+					/>
+
+					<Container mode="horizontal">
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+					</Container>
+				</div>
+
+				{/* Always show on create */}
+				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
 				/>
-
-				<Container mode="horizontal">
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-				</Container>
 			</div>
-
-			{/* Always show on create */}
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar
-				isVisible={true}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
-		</div>
+		</AssignmentUnload>
 	);
 
 	const renderPageContent = () => {
