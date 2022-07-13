@@ -177,7 +177,6 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 								content_id: `${content.external_id || content.id}`,
 							}}
 							content={content}
-							user={user}
 						/>
 					)}
 				</FormGroup>
