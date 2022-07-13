@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { useState } from 'react';
+import { ItemsService } from '../../admin/items/items.service';
 
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
@@ -105,6 +106,28 @@ export function useBlockListModals(
 						{...config?.addBookmarkFragmentConfig}
 						isOpen={isAddFragmentModalOpen}
 						onClose={() => setIsAddFragmentModalOpen(false)}
+						addFragmentCallback={async (id) => {
+							if (getAddBlockModalPosition === undefined) {
+								return;
+							}
+
+							// fetch item details
+							const item_meta =
+								(await ItemsService.fetchItemByExternalId(id)) || undefined;
+							const newBlocks = insertAtPosition(blocks, {
+								id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+								item_meta,
+								type: AssignmentBlockType.ITEM,
+								fragment_id: id,
+								position: getAddBlockModalPosition,
+							} as AssignmentBlock);
+
+							setBlocks(newBlocks);
+
+							// Finish by triggering any configured callback
+							const callback = config?.addBookmarkFragmentConfig?.addFragmentCallback;
+							callback && callback(id);
+						}}
 					/>
 
 					<AddCollectionModal

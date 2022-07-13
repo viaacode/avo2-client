@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -25,12 +24,12 @@ import {
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { backToOverview } from '../helpers/back-to-overview';
-import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -120,32 +119,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderBlockContent = useEditBlocks(setBlock);
 
-	const onAddItem = async (itemExternalId: string) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch item details
-		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
-		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
-			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item_meta,
-			type: AssignmentBlockType.ITEM,
-			fragment_id: itemExternalId,
-			position: addBlockModal.entity,
-		} as AssignmentBlock);
-
-		setAssignment((prev) => ({
-			...prev,
-			blocks,
-		}));
-
-		setValue('blocks', blocks, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-	};
-
 	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
 		if (addBlockModal.entity == null) {
 			return;
@@ -224,10 +197,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		{
 			confirmSliceConfig: {
 				responses: [],
-			},
-			addBookmarkFragmentConfig: {
-				user,
-				addFragmentCallback: onAddItem,
 			},
 			addCollectionConfig: {
 				user,
