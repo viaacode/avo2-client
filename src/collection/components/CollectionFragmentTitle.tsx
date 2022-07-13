@@ -2,6 +2,7 @@ import { BlockHeading } from '@viaa/avo2-components';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
+import { AssignmentBlockType } from '../../assignment/assignment.types';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { BlockItemComponent } from '../collection.types';
@@ -13,7 +14,9 @@ export interface CollectionFragmentTitleProps extends BlockItemComponent {
 const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canClickHeading }) => {
 	const heading = (
 		<BlockHeading type="h2">
-			{block?.use_custom_fields ? block.custom_title : block?.item_meta?.title}
+			{block?.use_custom_fields || block?.type === AssignmentBlockType.TEXT
+				? block.custom_title
+				: block?.item_meta?.title}
 		</BlockHeading>
 	);
 

@@ -27,7 +27,7 @@ import {
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
 import { AssignmentResponseFormState, PupilCollectionFragment } from '../../../assignment.types';
-import { insertAtPosition } from '../../../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useBlockListModals,
@@ -133,7 +133,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						icon="plus"
 						type="secondary"
 						onClick={() => {
-							const newBlocks = insertAtPosition(
+							const newBlocks = insertMultipleAtPosition(
 								assignmentResponse.pupil_collection_blocks || [],
 								{
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
