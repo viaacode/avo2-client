@@ -96,8 +96,9 @@ export class AssignmentService {
 								assignment_label: { label: { _ilike: `%${trimmedFilterString}%` } },
 							},
 						},
-						{ assignment_type: { _ilike: `%${trimmedFilterString}%` } },
-						{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } },
+						...(!canEditAssignments // Only search by teacher if user is not a teacher
+							? [{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } }]
+							: []),
 					],
 				});
 			}
