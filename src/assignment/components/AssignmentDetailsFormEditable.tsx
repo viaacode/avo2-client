@@ -9,14 +9,15 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
-import React, { Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
+import classnames from 'classnames';
+import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { AssignmentFormState, AssignmentSchemaLabel_v2 } from '../assignment.types';
+import { AssignmentFormState } from '../assignment.types';
+import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
 import AssignmentLabels from './AssignmentLabels';
 
@@ -30,45 +31,16 @@ export const AssignmentDetailsFormIds = {
 	answer_url: 'c-assignment-details-form__answer_url',
 };
 
-const addTypeToLabel = (item: AssignmentSchemaLabel_v2, type: AssignmentLabelType) => ({
-	...item,
-	assignment_label: {
-		...item.assignment_label,
-		type,
-	},
-});
-
-const mergeWithOtherLabels = (
-	prev: AssignmentSchemaLabel_v2[],
-	changed: AssignmentSchemaLabel_v2[],
-	type: AssignmentLabelType
-) => [
-	...prev.filter((item) => item.assignment_label.type !== type),
-	...changed.map((item) => addTypeToLabel(item, type)),
-];
-
-export interface AssignmentDetailsFormProps {
+export interface AssignmentDetailsFormEditableProps {
 	assignment: Avo.Assignment.Assignment_v2;
 	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment_v2>>;
 	setValue: UseFormSetValue<AssignmentFormState>;
-	editable: boolean;
 }
 
-const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & DefaultProps> = ({
-	assignment,
-	setAssignment,
-	setValue,
-	editable,
-	className,
-	style,
-	user,
-}) => {
+const AssignmentDetailsFormEditable: FC<
+	AssignmentDetailsFormEditableProps & UserProps & DefaultProps
+> = ({ assignment, setAssignment, setValue, className, style, user }) => {
 	const [t] = useTranslation();
-
-	const wrapperClasses = useMemo(
-		() => ['c-assignment-details-form', ...(className ? [className] : [])],
-		[className]
-	);
 
 	const getId = useCallback(
 		(key: string | number) => `${assignment.id}--${key}`,
@@ -86,7 +58,7 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 	}
 
 	return (
-		<div className={wrapperClasses.join(' ')} style={style}>
+		<div className={classnames('c-assignment-details-form', className)} style={style}>
 			<Form>
 				<FormGroup
 					label={t('assignment/assignment___klas')}
@@ -100,7 +72,6 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 							(item) => item.assignment_label.type === 'CLASS'
 						)}
 						user={user}
-						editable={editable}
 						dictionary={{
 							placeholder: t('Voeg een klas toe'),
 							empty: t('Geen klassen beschikbaar'),
@@ -134,7 +105,6 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 						labels={assignment.labels.filter(
 							(item) => item.assignment_label.type === 'LABEL'
 						)}
-						editable={editable}
 						user={user}
 						dictionary={{
 							placeholder: t('Voeg een label toe'),
@@ -162,7 +132,6 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 						value={
 							assignment.available_at ? new Date(assignment.available_at) : new Date()
 						}
-						disabled={!editable}
 						showTimeInput
 						onChange={(value: Date | null) => {
 							setValue('available_at', value?.toISOString(), {
@@ -185,7 +154,6 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 					<DatePicker
 						value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
 						showTimeInput
-						disabled={!editable}
 						onChange={(value) => {
 							setValue('deadline_at', value?.toISOString(), {
 								shouldDirty: true,
@@ -212,7 +180,6 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 				>
 					<TextInput
 						id={getId(AssignmentDetailsFormIds.answer_url)}
-						disabled={!editable}
 						onChange={(answerUrl) => {
 							setValue('answer_url', answerUrl, {
 								shouldDirty: true,
@@ -233,4 +200,6 @@ const AssignmentDetailsForm: FC<AssignmentDetailsFormProps & UserProps & Default
 	);
 };
 
-export default compose(withUser)(AssignmentDetailsForm) as FC<AssignmentDetailsFormProps>;
+export default compose(withUser)(
+	AssignmentDetailsFormEditable
+) as FC<AssignmentDetailsFormEditableProps>;

@@ -34,7 +34,7 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
-import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
+import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
@@ -388,7 +388,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
 				return (
 					<div className="c-assignment-details-tab">
-						<AssignmentDetailsForm
+						<AssignmentDetailsFormEditable
 							assignment={assignment as Avo.Assignment.Assignment_v2}
 							setAssignment={
 								setAssignment as Dispatch<
@@ -396,7 +396,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 								>
 							}
 							setValue={setValue}
-							editable
 						/>
 					</div>
 				);

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, {
@@ -38,7 +38,8 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
-import AssignmentDetailsForm from '../components/AssignmentDetailsForm';
+import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
+import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
@@ -449,9 +450,29 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
+				if (pastDeadline) {
+					if (!assignment) {
+						if (!assignment) {
+							return (
+								<Spacer margin="top-extra-large">
+									<Flex orientation="horizontal" center>
+										<Spinner size="large" />
+									</Flex>
+								</Spacer>
+							);
+						}
+					}
+					return (
+						<div className="c-assignment-details-tab">
+							<AssignmentDetailsFormReadonly
+								assignment={assignment as Avo.Assignment.Assignment_v2}
+							/>
+						</div>
+					);
+				}
 				return (
 					<div className="c-assignment-details-tab">
-						<AssignmentDetailsForm
+						<AssignmentDetailsFormEditable
 							assignment={assignment as Avo.Assignment.Assignment_v2}
 							setAssignment={
 								setAssignment as Dispatch<
@@ -459,7 +480,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								>
 							}
 							setValue={setValue}
-							editable={!pastDeadline}
 						/>
 					</div>
 				);

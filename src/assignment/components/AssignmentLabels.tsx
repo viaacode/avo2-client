@@ -22,7 +22,6 @@ export type AssignmentLabelsProps = Pick<Avo.Assignment.Assignment_v2, 'labels'>
 		placeholder: string;
 		empty: string;
 	};
-	editable?: boolean;
 	type?: AssignmentLabelType;
 };
 
@@ -32,7 +31,6 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	user,
 	onChange,
 	type = 'LABEL',
-	editable,
 	...props
 }) => {
 	const [t] = useTranslation();
@@ -126,47 +124,42 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	return (
 		<>
 			<TagList
-				closable={editable}
 				tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
 				onTagClosed={deleteAssignmentLabel}
 			/>
-			{!editable && labels.length === 0 && <p>{t('-')}</p>}
-			{editable && (
-				<>
-					<Flex>
-						<FlexItem>
-							<Spacer margin="right-small">
-								<ColorSelect
-									id={id}
-									options={getColorOptions(unselectedLabels)}
-									value={null}
-									onChange={addAssignmentLabel}
-									placeholder={dictionary.placeholder}
-									noOptionsMessage={() => dictionary.empty}
-								/>
-							</Spacer>
-						</FlexItem>
-						<FlexItem shrink>
-							<Button
-								icon="settings"
-								title="Beheer je vakken en projecten"
-								ariaLabel="Beheer je vakken en projecten"
-								type="borderless"
-								size="large"
-								className="c-button__labels"
-								onClick={() => setIsManageLabelsModalOpen(true)}
-							/>
-						</FlexItem>
-					</Flex>
 
-					<ManageAssignmentLabels
-						onClose={handleManageAssignmentLabelsModalClosed}
-						isOpen={isManageLabelsModalOpen}
-						user={user}
-						type={type}
+			<Flex>
+				<FlexItem>
+					<Spacer margin="right-small">
+						<ColorSelect
+							id={id}
+							options={getColorOptions(unselectedLabels)}
+							value={null}
+							onChange={addAssignmentLabel}
+							placeholder={dictionary.placeholder}
+							noOptionsMessage={() => dictionary.empty}
+						/>
+					</Spacer>
+				</FlexItem>
+				<FlexItem shrink>
+					<Button
+						icon="settings"
+						title="Beheer je vakken en projecten"
+						ariaLabel="Beheer je vakken en projecten"
+						type="borderless"
+						size="large"
+						className="c-button__labels"
+						onClick={() => setIsManageLabelsModalOpen(true)}
 					/>
-				</>
-			)}
+				</FlexItem>
+			</Flex>
+
+			<ManageAssignmentLabels
+				onClose={handleManageAssignmentLabelsModalClosed}
+				isOpen={isManageLabelsModalOpen}
+				user={user}
+				type={type}
+			/>
 		</>
 	);
 };
