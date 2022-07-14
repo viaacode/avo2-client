@@ -97,6 +97,7 @@ export class AssignmentService {
 							},
 						},
 						{ assignment_type: { _ilike: `%${trimmedFilterString}%` } },
+						{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } },
 					],
 				});
 			}
