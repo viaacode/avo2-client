@@ -34,7 +34,7 @@ import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
 import { backToOverview } from '../helpers/back-to-overview';
-import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -214,7 +214,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		// fetch item details
 		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
-		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
+		const blocks = insertMultipleAtPosition<AssignmentBlock>(assignment.blocks, {
 			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 			item_meta,
 			type: AssignmentBlockType.ITEM,
@@ -276,7 +276,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			);
 			const newAssignmentBlocks = insertMultipleAtPosition(
 				assignment.blocks,
-				blocks as unknown as AssignmentBlock[]
+				...(blocks as unknown as AssignmentBlock[])
 			);
 
 			setAssignment((prev) => ({
