@@ -111,6 +111,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	];
 	const [tabs, tab, setTab, onTabClick] = useAssignmentPupilTabs(
 		assignment,
+		assignmentResponse,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 		(newTab: string) => {

@@ -1,4 +1,4 @@
-import { IconName, TabProps } from '@viaa/avo2-components';
+import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import { useAssignmentPastDeadline } from './assignment-past-deadline';
 
 export function useAssignmentPupilTabs(
 	assignment: Avo.Assignment.Assignment_v2 | null,
+	response: Avo.Assignment.Response_v2 | null,
 	tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
 ): [
@@ -48,7 +49,20 @@ export function useAssignmentPupilTabs(
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,
-								label: t('assignment/hooks/assignment-pupil-tabs___mijn-collectie'),
+								label: (
+									<>
+										{t('assignment/hooks/assignment-pupil-tabs___mijn-collectie')}
+										<Pill
+											variants={
+												ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION === tab
+													? [PillVariants.active]
+													: []
+											}
+										>
+											{response?.pupil_collection_blocks?.length || 0}
+										</Pill>
+									</>
+								),
 								icon: 'briefcase' as IconName,
 							},
 					  ]
