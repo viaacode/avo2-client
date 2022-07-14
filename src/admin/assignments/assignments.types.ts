@@ -2,7 +2,7 @@ import { FilterableTableState } from '../shared/components/FilterTable/FilterTab
 
 export type AssignmentsOverviewTableCols =
 	| 'title'
-	| 'owner'
+	| 'author'
 	| 'created_at'
 	| 'updated_at'
 	| 'deadline_at'
@@ -13,7 +13,7 @@ export type AssignmentsOverviewTableCols =
 
 export interface AssignmentsOverviewTableState extends FilterableTableState {
 	title: string;
-	owner: string;
+	author: string;
 	created_at: string;
 	updated_at: string;
 	deadline_at: string;
