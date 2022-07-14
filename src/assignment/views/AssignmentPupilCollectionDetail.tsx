@@ -9,6 +9,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import { AssignmentService } from '../assignment.service';
@@ -30,18 +31,14 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	const [assignmentResponse, setAssignmentResponse] =
 		useState<Avo.Assignment.Response_v2 | null>();
 
-	const fetchAssignmentAndResponse = useCallback(async () => {
-		try {
-			const assignmentId = match.params.assignmentId;
+	const fetchAssignmentResponse = useCallback(
+		async (tempAssignment: Avo.Assignment.Assignment_v2) => {
 			const assignmentResponseId = match.params.id;
-
-			const theAssignment = await AssignmentService.fetchAssignmentById(assignmentId);
-
 			const canViewAssignmentResponses = await PermissionService.hasPermissions(
 				[
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
-					{ name: PermissionName.EDIT_ASSIGNMENTS, obj: theAssignment },
-					{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: theAssignment },
+					{ name: PermissionName.EDIT_ASSIGNMENTS, obj: tempAssignment },
+					{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
 				],
 				user
 			);
@@ -55,12 +52,20 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 				return;
 			}
 
-			const theAssignmentResponse = await AssignmentService.getAssignmentResponseById(
-				assignmentResponseId
-			);
+			return AssignmentService.getAssignmentResponseById(assignmentResponseId);
+		},
+		[setAssignmentResponse, match.params.id]
+	);
 
-			setAssignment(theAssignment);
-			setAssignmentResponse(theAssignmentResponse);
+	const fetchAssignment = useCallback(async () => {
+		try {
+			const assignmentId = match.params.assignmentId;
+
+			const tempAssignment = await AssignmentService.fetchAssignmentById(assignmentId);
+
+			setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
+
+			setAssignment(tempAssignment);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment and response', err, {
@@ -75,13 +80,13 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 				),
 			});
 		}
-	}, [setAssignmentResponse, setAssignment, setLoadingInfo, match.params.id, t, user]);
+	}, [setAssignment, setLoadingInfo, match.params.assignmentId, t, user]);
 
 	// Effects
 
 	useEffect(() => {
-		fetchAssignmentAndResponse();
-	}, [fetchAssignmentAndResponse, user, t]);
+		fetchAssignment();
+	}, [fetchAssignment, user, t]);
 
 	useEffect(() => {
 		if (assignment && assignmentResponse) {
@@ -95,9 +100,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 
 	const renderReadOnlyPupilCollectionBlocks = () => {
 		const collectionTitle = (
-			<BlockHeading className="u-spacer-left" type="h2">
-				{assignmentResponse?.collection_title || ''}
-			</BlockHeading>
+			<BlockHeading type="h2">{assignmentResponse?.collection_title || ''}</BlockHeading>
 		);
 		return (
 			<>
@@ -113,14 +116,23 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						) : null
 					}
 				/>
-				<Container mode="horizontal">
-					<BlockList
-						blocks={
-							(assignmentResponse?.pupil_collection_blocks ||
-								[]) as Avo.Core.BlockItemBase[]
-						}
+				{assignmentResponse?.pupil_collection_blocks?.length ? (
+					<Container mode="horizontal">
+						<BlockList
+							blocks={
+								(assignmentResponse?.pupil_collection_blocks ||
+									[]) as Avo.Core.BlockItemBase[]
+							}
+						/>
+					</Container>
+				) : (
+					<ErrorView
+						message={t(
+							'assignment/views/assignment-pupil-collection-detail___deze-leerlingencollectie-bevat-geen-fragmenten'
+						)}
+						icon={'search'}
 					/>
-				</Container>
+				)}
 			</>
 		);
 	};

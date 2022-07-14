@@ -1487,6 +1487,7 @@
   "assignment/views/assignment-overview___verwijder": "Verwijder",
   "assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht": "Zoek een fragment of collectie en maak je eerste opdracht",
   "assignment/views/assignment-pupil-collection-detail___de-leerlingencollectie-werd-niet-gevonden": "De leerlingencollectie werd niet gevonden",
+  "assignment/views/assignment-pupil-collection-detail___deze-leerlingencollectie-bevat-geen-fragmenten": "Deze leerlingencollectie bevat geen fragmenten",
   "assignment/views/assignment-pupil-collection-detail___het-ophalen-van-de-leerlingencollectie-is-mislukt": "Het ophalen van de leerlingencollectie is mislukt",
   "assignment/views/assignment-pupil-collection-detail___je-hebt-geen-toegang-om-deze-leerlingencollectie-te-bekijken": "Je hebt geen toegang om deze leerlingencollectie te bekijken",
   "assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail": "Leerlingencollectie detail",
