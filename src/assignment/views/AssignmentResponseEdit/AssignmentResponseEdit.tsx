@@ -38,6 +38,7 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
 } from '../../assignment.const';
+import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
@@ -59,8 +60,8 @@ import './AssignmentResponseEdit.scss';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
-	assignmentResponse: Avo.Assignment.Response_v2 | null;
-	setAssignmentResponse: (newResponse: Avo.Assignment.Response_v2 | null) => void;
+	assignmentResponse: Avo.Assignment.Response_v2;
+	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 	onAssignmentChanged: () => Promise<void>;
 	onShowPreviewClicked: () => void;
 }
@@ -77,7 +78,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<Avo.Assignment.Response_v2 | null>(assignmentResponse);
+		useState<Avo.Assignment.Response_v2>(assignmentResponse);
 
 	const {
 		control,
@@ -176,9 +177,6 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 				// Set new original
 				setAssignmentResponseOriginal((prev) => {
-					if (!prev) {
-						return null;
-					}
 					return {
 						...prev,
 						...updated,
@@ -205,6 +203,18 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				)
 			);
 		}
+	};
+
+	const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
+		const newBlocks = setPositionToIndex([
+			...(assignmentResponse.pupil_collection_blocks || []),
+			newBlock,
+		]);
+		setAssignmentResponse({
+			...assignmentResponse,
+			pupil_collection_blocks: newBlocks,
+		});
+		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[]);
 	};
 
 	// Render
@@ -243,6 +253,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						assignmentResponse={assignmentResponse}
 						filterState={filterState}
 						setFilterState={setFilterState}
+						appendBlockToPupilCollection={appendBlockToPupilCollection}
 					/>
 				);
 

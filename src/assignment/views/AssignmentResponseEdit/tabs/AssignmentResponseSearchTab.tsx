@@ -41,11 +41,19 @@ interface AssignmentResponseSearchTabProps {
 	assignmentResponse: Avo.Assignment.Response_v2 | null;
 	filterState: any;
 	setFilterState: any;
+	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & UserProps
-> = ({ filterState, setFilterState, assignment, assignmentResponse, user }) => {
+> = ({
+	filterState,
+	setFilterState,
+	assignment,
+	assignmentResponse,
+	appendBlockToPupilCollection,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// Data
@@ -97,11 +105,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	): Promise<void> => {
 		setIsAddToAssignmentModalOpen(false);
 		if (selectedItem && assignmentResponse?.id) {
-			await PupilCollectionService.importFragmentToPupilCollection(
+			const block = await PupilCollectionService.importFragmentToPupilCollection(
 				selectedItem,
 				assignmentResponse.id,
 				itemTrimInfo
 			);
+			appendBlockToPupilCollection(block);
+
 			ToastService.success(
 				t(
 					'assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'

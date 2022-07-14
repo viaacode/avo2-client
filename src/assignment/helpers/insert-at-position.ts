@@ -66,5 +66,5 @@ export function spliceByPosition<T>(list: Positioned<T>[], item: Positioned<T>):
 
 	sorted.splice(item.position, 0, item);
 
-	return sorted.map(setPositionToIndex);
+	return setPositionToIndex(sorted);
 }
