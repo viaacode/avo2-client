@@ -1,8 +1,8 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { FC } from 'react';
 
-import { AssignmentBlockType } from '../../assignment/assignment.types';
 import Html, { HtmlProps } from '../../shared/components/Html/Html';
+import { CollectionBlockType } from '../collection.const';
 import { BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentRichTextProps = BlockItemComponent &
@@ -21,7 +21,7 @@ const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) 
 				className="c-collection-fragment-rich-text__parser c-content"
 				sanitizePreset="full"
 				content={convertToHtml(
-					block?.use_custom_fields || block?.type === AssignmentBlockType.TEXT
+					block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
 						? block.custom_description
 						: block?.item_meta?.description
 				)}
