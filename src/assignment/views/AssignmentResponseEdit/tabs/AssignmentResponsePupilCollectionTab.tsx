@@ -10,6 +10,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -139,7 +140,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									assignment_response_id: assignmentResponse.id,
 									type: CollectionBlockType.TEXT,
-									position: item?.position || 0,
+									position:
+										!item || isNil(item?.position) ? 0 : item.position + 1,
 								} as PupilCollectionFragment
 							);
 
