@@ -1,9 +1,8 @@
+import { Alert, Spacer } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Alert, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { showReplacementWarning } from '../../helpers/fragment';

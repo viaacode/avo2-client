@@ -9,7 +9,7 @@ import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType } from '../assignment.types';
-import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
 	AddBookmarkFragmentModalProps,
@@ -89,7 +89,7 @@ export function useBlockListModals(
 
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
-									const newBlocks = insertAtPosition(blocks, {
+									const newBlocks = insertMultipleAtPosition(blocks, {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
 										position: getAddBlockModalPosition,
@@ -119,7 +119,7 @@ export function useBlockListModals(
 							// fetch item details
 							const item_meta =
 								(await ItemsService.fetchItemByExternalId(id)) || undefined;
-							const newBlocks = insertAtPosition(blocks, {
+							const newBlocks = insertMultipleAtPosition(blocks, {
 								id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 								item_meta,
 								type: AssignmentBlockType.ITEM,
@@ -189,7 +189,7 @@ export function useBlockListModals(
 
 								const newBlocks = insertMultipleAtPosition(
 									blocks,
-									mapped as AssignmentBlock[]
+									...(mapped as AssignmentBlock[])
 								);
 
 								setBlocks(newBlocks);

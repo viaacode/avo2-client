@@ -11,8 +11,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { UrlUpdateType } from 'use-query-params';
 
 import {
 	PermissionName,
@@ -116,12 +117,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		}
 	};
 
-	const handleNewFilterState = (newFilterState: FilterState) => {
-		// Update state
-		setFilterState({
-			...filterState,
-			...newFilterState,
-		});
+	const handleNewFilterState = (newFilterState: FilterState, urlPushType?: UrlUpdateType) => {
+		setFilterState(
+			{
+				...newFilterState,
+			},
+			urlPushType
+		);
 
 		// Trigger search event
 		if (assignment?.id) {
@@ -181,6 +183,9 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	};
 
 	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
+		if (assignment?.assignment_type !== 'BOUW') {
+			return null;
+		}
 		return (
 			<Toolbar>
 				<ToolbarLeft>
@@ -222,7 +227,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		);
 	};
 
-	const renderSearchContent = () => {
+	const renderSearchContent = useCallback(() => {
 		if (filterState.selectedSearchResultId) {
 			return (
 				<>
@@ -273,7 +278,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				/>
 			</Spacer>
 		);
-	};
+	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, user]);
 
 	return (
 		<>
