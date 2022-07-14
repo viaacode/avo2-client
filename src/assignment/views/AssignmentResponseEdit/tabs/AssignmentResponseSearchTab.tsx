@@ -181,6 +181,9 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	};
 
 	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
+		if (assignment?.assignment_type !== 'BOUW') {
+			return null;
+		}
 		return (
 			<Toolbar>
 				<ToolbarLeft>
