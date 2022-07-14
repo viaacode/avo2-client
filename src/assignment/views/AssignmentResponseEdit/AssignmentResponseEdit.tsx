@@ -61,6 +61,7 @@ interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
 	assignmentResponse: Avo.Assignment.Response_v2 | null;
 	setAssignmentResponse: (newResponse: Avo.Assignment.Response_v2 | null) => void;
+	showBackButton: boolean;
 	onAssignmentChanged: () => Promise<void>;
 	onShowPreviewClicked: () => void;
 }
@@ -70,6 +71,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	assignmentResponse,
 	onAssignmentChanged,
 	setAssignmentResponse,
+	showBackButton,
 	onShowPreviewClicked,
 	user,
 }) => {
@@ -290,7 +292,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-save-bar__wrapper">
 				<div>
 					<AssignmentHeading
-						back={renderBackButton}
+						back={showBackButton ? renderBackButton : undefined}
 						title={renderedTitle}
 						tabs={renderTabs()}
 						info={

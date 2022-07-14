@@ -63,6 +63,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 				assignment={assignment as Avo.Assignment.Assignment_v2}
 				assignmentResponse={assignmentResponse}
 				setAssignmentResponse={setAssignmentResponse}
+				showBackButton={false}
 				onAssignmentChanged={async () => {
 					// Ignore changes to assignment during preview
 				}}
