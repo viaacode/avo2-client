@@ -35,7 +35,7 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../../../hooks';
-import { CustomFieldOption } from '../../../hooks/assignment-block-description-buttons';
+import { AssignmentBlockItemDescriptionType } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
 
@@ -119,8 +119,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		updateBlocksInAssignmentResponseState
 	);
 	const renderBlockContent = useEditBlocks(setBlock, [
-		CustomFieldOption.original,
-		CustomFieldOption.custom,
+		AssignmentBlockItemDescriptionType.original,
+		AssignmentBlockItemDescriptionType.custom,
 	]);
 	const [renderedListSorter] = useBlocksList(
 		// TODO rename to useEditBlockList and switch to component instead of hook

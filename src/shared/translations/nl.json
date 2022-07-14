@@ -1284,6 +1284,8 @@
   "assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling": "Je bent aan het kijken als leerling.",
   "assignment/components/assignment-pupil-preview___naam-leerling": "naam leerling",
   "assignment/components/assignment-pupil-preview___sluit-preview": "Sluit leerlingenview",
+  "assignment/components/assignment-unload___blijven": "Blijven",
+  "assignment/components/assignment-unload___verlaten": "Verlaten",
   "assignment/components/modals/manage-assignment-labels___annuleren": "Annuleren",
   "assignment/components/modals/manage-assignment-labels___beheer-vakken-en-projecten": "Beheer vakken en projecten",
   "assignment/components/modals/manage-assignment-labels___de-labels-zijn-opgeslagen": "De labels zijn opgeslagen.",
