@@ -215,6 +215,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
 				setAssignmentResponse={setAssignmentResponse}
+				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);
 				}}
