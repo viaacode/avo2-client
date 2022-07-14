@@ -35,6 +35,23 @@
 				transform: none;
 			}
 		}
+
+		> button {
+			height: 100%;
+		}
+	}
+
+	&__dropdown-wrapper {
+		height: 100%;
+		position: relative;
+
+		.c-dropdown__trigger {
+			height: 100%;
+
+			button {
+				height: 100%;
+			}
+		}
 	}
 
 	&__top {

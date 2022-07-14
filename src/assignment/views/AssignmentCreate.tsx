@@ -29,8 +29,8 @@ import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { backToOverview } from '../helpers/back-to-overview';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,

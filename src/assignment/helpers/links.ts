@@ -1,3 +1,5 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { APP_PATH } from '../../constants';
 import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers';
@@ -11,4 +13,8 @@ export function backToOverview(): string {
 		},
 		JSON.parse(localStorage.getItem(ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS) || '{}')
 	);
+}
+
+export function toAssignmentDetail(assignment: Pick<Avo.Assignment.Assignment_v2, 'id'>): string {
+	return buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id });
 }

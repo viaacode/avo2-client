@@ -1,5 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import {
+	Alert,
+	Button,
+	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
+	Icon,
+	Spacer,
+	Tabs,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CollectionService } from '../../collection/collection.service';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
@@ -32,9 +43,11 @@ import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
+import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
-import { backToOverview } from '../helpers/back-to-overview';
 import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -59,8 +72,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
-	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
-		useState<boolean>(false);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 
@@ -88,7 +99,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
-	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
+	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
+	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
+	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
+		useState<boolean>(false);
 
 	const pastDeadline = useAssignmentPastDeadline(original);
 
@@ -402,23 +416,68 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					type="secondary"
 					onClick={() => setIsViewAsPupilEnabled(true)}
 				/>
-				<Button
-					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
-					disabled
-					icon="more-horizontal"
-					title={t('assignment/views/assignment-detail___meer-opties')}
-					type="secondary"
-				/>
 				{original && (
-					<ShareAssignmentWithPupil
-						assignment={original} // Needs to be saved before you can share
-						onContentLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)}
-						onDetailLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)}
-					/>
+					<>
+						<div className="c-assignment-heading__dropdown-wrapper">
+							<Dropdown
+								isOpen={isOverflowDropdownOpen}
+								icon="more-horizontal"
+								buttonType="secondary"
+								placement="bottom-end"
+							>
+								<DropdownButton>
+									<Button
+										ariaLabel={t(
+											'assignment/views/assignment-detail___meer-opties'
+										)}
+										icon="more-horizontal"
+										title={t(
+											'assignment/views/assignment-detail___meer-opties'
+										)}
+										type="secondary"
+										onClick={() =>
+											setOverflowDropdownOpen(!isOverflowDropdownOpen)
+										}
+									/>
+								</DropdownButton>
+								<DropdownContent>
+									<DeleteAssignmentButton
+										assignment={original}
+										modal={{
+											deleteObjectCallback: () =>
+												redirectToClientPage(backToOverview(), history),
+										}}
+									/>
+									<DuplicateAssignmentButton
+										assignment={original}
+										onClick={(_e, duplicated) =>
+											duplicated &&
+											redirectToClientPage(
+												toAssignmentDetail(duplicated),
+												history
+											)
+										}
+									/>
+								</DropdownContent>
+							</Dropdown>
+						</div>
+
+						<div className="c-assignment-heading__dropdown-wrapper">
+							<ShareAssignmentWithPupil
+								assignment={original} // Needs to be saved before you can share
+								onContentLinkClicked={() =>
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)
+								}
+								onDetailLinkClicked={() =>
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)
+								}
+							/>
+						</div>
+					</>
 				)}
 			</>
 		),
-		[t, original, setTab, setIsViewAsPupilEnabled]
+		[t, original, setTab, setIsViewAsPupilEnabled, isOverflowDropdownOpen]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);

@@ -1,0 +1,38 @@
+import { Avo } from '@viaa/avo2-types';
+import { TFunction } from 'i18next';
+
+import { CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
+import { AssignmentService } from '../assignment.service';
+
+export function duplicateAssignment(
+	t: TFunction,
+	assignment?: Avo.Assignment.Assignment_v2
+): Promise<Avo.Assignment.Assignment_v2 | undefined> {
+	try {
+		if (!assignment) {
+			throw new CustomError(
+				'Failed to duplicate the assignment because the assignment is null'
+			);
+		}
+
+		const newTitle = `${t('assignment/views/assignment-overview___kopie')} ${assignment.title}`;
+
+		return AssignmentService.duplicateAssignment(newTitle, assignment).then((res) => {
+			ToastService.success(
+				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
+			);
+
+			return res;
+		});
+	} catch (err) {
+		const reason = 'Failed to copy the assignment';
+
+		console.error(reason, err, { assignment });
+		ToastService.danger(
+			t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
+		);
+
+		return Promise.reject(reason);
+	}
+}
