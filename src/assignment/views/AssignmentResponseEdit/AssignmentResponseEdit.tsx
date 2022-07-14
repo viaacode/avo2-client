@@ -110,8 +110,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		PupilSearchFilterState,
 		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
 	];
-	const [tabs, tab, setTab, onTabClick] = useAssignmentPupilTabs(
+	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,
+		assignmentResponse?.pupil_collection_blocks?.length || 0,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 		(newTab: string) => {
@@ -215,6 +216,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			pupil_collection_blocks: newBlocks,
 		});
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[]);
+		animatePill();
 	};
 
 	// Render
@@ -245,7 +247,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderTabs = () => <Tabs tabs={tabs} onClick={onTabClick} />;
 
 	const renderTabContent = () => {
-		switch (tab) {
+		switch (activeTab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				return (
 					<AssignmentResponseSearchTab
