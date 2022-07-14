@@ -1,5 +1,3 @@
-import React, { FC, ReactNode, useEffect, useState } from 'react';
-
 import {
 	Button,
 	ButtonGroup,
@@ -13,6 +11,7 @@ import {
 	ToggleProps,
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import React, { FC, ReactNode, useEffect, useState } from 'react';
 
 import { LabeledFormField } from '../../types';
 import WYSIWYGWrapper, { WYSIWYGWrapperProps } from '../WYSIWYGWrapper/WYSIWYGWrapper';
@@ -48,8 +47,8 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 
 	const wrapperClasses = [
 		'c-customise-item-form',
-		...(!!preview ? ['c-customise-item-form--has-preview'] : []),
-		...(!!className ? [className] : []),
+		...(preview ? ['c-customise-item-form--has-preview'] : []),
+		...(className ? [className] : []),
 	];
 
 	const [description, setDescription] = useState<RichEditorState | undefined>();
@@ -78,7 +77,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 							label={toggle.label}
 							labelFor={getId(CustomiseItemFormIds.toggle)}
 						>
-							<Toggle {...toggle} id={getId(CustomiseItemFormIds.toggle)}></Toggle>
+							<Toggle {...toggle} id={getId(CustomiseItemFormIds.toggle)} />
 
 							{toggle.help && <p className="c-form-help-text">{toggle.help}</p>}
 						</FormGroup>
@@ -91,7 +90,13 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 						>
 							<ButtonGroup>
 								{buttons.items.map((button) => {
-									return <Button type="secondary" {...button} />;
+									return (
+										<Button
+											type="secondary"
+											{...button}
+											key={'customize-item-button-' + id + '-' + button.label}
+										/>
+									);
 								})}
 							</ButtonGroup>
 
@@ -134,7 +139,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 									props.description?.onChange?.(description as RichEditorState)
 								}
 								id={getId(CustomiseItemFormIds.description)}
-							></WYSIWYGWrapper>
+							/>
 
 							{props.description.help && (
 								<p className="c-form-help-text">{props.description.help}</p>

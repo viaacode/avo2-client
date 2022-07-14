@@ -24,6 +24,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 				size="full-width"
 				className="u-p-0"
 				background={background}
+				key={'block-item-' + block.id}
 			>
 				<Container mode="horizontal">
 					<div key={block.id} className="u-padding-top-l u-padding-bottom-l">
