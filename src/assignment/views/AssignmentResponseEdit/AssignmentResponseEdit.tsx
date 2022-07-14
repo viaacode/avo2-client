@@ -29,6 +29,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
@@ -242,7 +243,18 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						assignment={assignment}
 						assignmentResponse={assignmentResponse}
 						filterState={filterState}
-						setFilterState={setFilterState}
+						setFilterState={(
+							newFilterState: FilterState,
+							urlPushType?: UrlUpdateType
+						) => {
+							setFilterState(
+								{
+									...newFilterState,
+									tab,
+								},
+								urlPushType
+							);
+						}}
 					/>
 				);
 
