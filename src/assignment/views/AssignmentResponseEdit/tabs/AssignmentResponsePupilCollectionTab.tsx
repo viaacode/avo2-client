@@ -10,6 +10,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,7 @@ import {
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
 import { AssignmentResponseFormState, PupilCollectionFragment } from '../../../assignment.types';
-import { insertAtPosition } from '../../../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useBlockListModals,
@@ -133,13 +134,14 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						icon="plus"
 						type="secondary"
 						onClick={() => {
-							const newBlocks = insertAtPosition(
+							const newBlocks = insertMultipleAtPosition(
 								assignmentResponse.pupil_collection_blocks || [],
 								{
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									assignment_response_id: assignmentResponse.id,
 									type: CollectionBlockType.TEXT,
-									position: item?.position || 0,
+									position:
+										!item || isNil(item?.position) ? 0 : item.position + 1,
 								} as PupilCollectionFragment
 							);
 

@@ -1,30 +1,34 @@
-import { sortByPositionAsc } from '../../shared/helpers';
+import { Avo } from '@viaa/avo2-types';
+import { sortBy } from 'lodash-es';
 
-type Positioned = any & { id: string; position: number };
+import { setPositionToIndex } from '../assignment.helper';
 
-export const switchAssignmentBlockPositions = (
-	list: Positioned[],
-	item: Positioned,
+type Positioned = { id: string | number; position: number };
+
+export function switchAssignmentBlockPositions<T extends Positioned = Avo.Core.BlockItemBase>(
+	list: T[],
+	block: T,
 	delta: number
-) => {
-	const block = item;
+): T[] {
+	if (!block) {
+		return list;
+	}
 
-	if (!block) return list;
+	// Temp store the positions of the 2 blocks that need to be swapped
+	const firstBlock = list.find((b) => b.position === block.position);
+	const firstBlockPosition = block.position;
+	const secondBlock = list.find((b) => b.position === firstBlockPosition + delta);
+	const secondBlockPosition = firstBlockPosition + delta;
 
-	const sorted = list.sort(sortByPositionAsc);
-	const target = sorted[sorted.findIndex((b) => b.position === block.position) + delta];
+	if (!firstBlock || !secondBlock) {
+		return list;
+	}
 
-	if (target === undefined) return list;
+	// Swap the 2 positions
+	firstBlock.position = secondBlockPosition;
+	secondBlock.position = firstBlockPosition;
 
-	return [
-		...list.filter((b) => b.id !== block.id && b.id !== target.id),
-		{
-			...block,
-			position: target.position,
-		},
-		{
-			...target,
-			position: block.position,
-		},
-	];
-};
+	// Sort array by position
+	const newList = sortBy(list, (block) => block.position);
+	return newList.map(setPositionToIndex); // Recover from blocks with the same position set in the database
+}

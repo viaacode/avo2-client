@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType } from '../assignment.types';
-import { insertAtPosition } from '../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
 	AddBookmarkFragmentModalProps,
@@ -83,7 +83,7 @@ export function useBlockListModals(
 
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
-									const newBlocks = insertAtPosition(blocks, {
+									const newBlocks = insertMultipleAtPosition(blocks, {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
 										position: getAddBlockModalPosition,
