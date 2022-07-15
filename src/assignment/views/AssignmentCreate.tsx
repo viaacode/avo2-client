@@ -23,7 +23,8 @@ import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { backToOverview } from '../helpers/back-to-overview';
+import { backToOverview } from '../helpers/links';
+import AssignmentUnload from '../components/AssignmentUnload';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -47,7 +48,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
-	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
+	const {
+		control,
+		handleSubmit,
+		reset: resetForm,
+		setValue,
+		trigger,
+		formState: { isDirty },
+	} = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
@@ -115,7 +123,29 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
-		updateBlocksInAssignmentState
+		updateBlocksInAssignmentState,
+		{
+			confirmSliceConfig: {
+				responses: [],
+			},
+			addCollectionConfig: {
+				addCollectionCallback: (id) => {
+					// Track import collection into assignment event
+					trackEvents(
+						{
+							object: '', // Create assignment => does not have an id yet, but this event is still valuable, since we know which the collection was used to build an assignment
+							object_type: 'avo_assignment',
+							action: 'add',
+							resource: {
+								id,
+								type: 'collection',
+							},
+						},
+						user
+					);
+				},
+			},
+		}
 	);
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
@@ -293,31 +323,35 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-			<div>
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={renderActions}
-					tabs={renderTabs}
+		<AssignmentUnload blockRoute={isDirty}>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderTitle}
+						actions={renderActions}
+						tabs={renderTabs}
+					/>
+
+					<Container mode="horizontal">
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+					</Container>
+				</div>
+
+				{/* Always show on create */}
+				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
 				/>
-
-				<Container mode="horizontal">
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-				</Container>
 			</div>
-
-			{/* Always show on create */}
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar
-				isVisible={true}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
-		</div>
+		</AssignmentUnload>
 	);
 
 	const renderPageContent = () => {

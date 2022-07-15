@@ -10,38 +10,32 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { isNil } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { compose } from 'redux';
 
-import { ItemsService } from '../../../../admin/items/items.service';
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
+import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import MoreOptionsDropdown from '../../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { isMobileWidth } from '../../../../shared/helpers';
-import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../../../shared/services';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
-import {
-	AssignmentBlockType,
-	AssignmentResponseFormState,
-	PupilCollectionFragment,
-} from '../../../assignment.types';
-import { insertAtPosition } from '../../../helpers/insert-at-position';
+import { AssignmentResponseFormState, PupilCollectionFragment } from '../../../assignment.types';
+import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useBlockListModals,
 	useBlocksList,
 	useEditBlocks,
 } from '../../../hooks';
-import { CustomFieldOption } from '../../../hooks/assignment-block-description-buttons';
+import { AssignmentBlockItemDescriptionType } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
 
@@ -60,8 +54,7 @@ interface AssignmentResponsePupilCollectionTabProps {
 
 const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	AssignmentResponsePupilCollectionTabProps &
-		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'> &
-		UserProps
+		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
 > = ({
 	pastDeadline,
 	assignmentResponse,
@@ -70,7 +63,6 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	control,
 	onShowPreviewClicked,
 	setTab,
-	user,
 }) => {
 	const [t] = useTranslation();
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
@@ -113,36 +105,12 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	// Effects
 
 	// Events
-	const onAddItem = async (itemExternalId: string) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch item details
-		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
-		const newBlocks = insertAtPosition<Partial<Avo.Core.BlockItemBase>>(
-			assignmentResponse?.pupil_collection_blocks || [],
-			{
-				id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-				item_meta,
-				type: AssignmentBlockType.ITEM,
-				fragment_id: itemExternalId,
-				position: addBlockModal.entity,
-			} as AssignmentBlock
-		) as AssignmentBlock[];
-
-		updateBlocksInAssignmentResponseState(newBlocks);
-	};
-	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
+	const [renderedModals, confirmSliceModal] = useBlockListModals(
 		assignmentResponse?.pupil_collection_blocks || [],
 		updateBlocksInAssignmentResponseState,
 		{
 			confirmSliceConfig: {
 				responses: [],
-			},
-			addBookmarkFragmentConfig: {
-				user,
-				addFragmentCallback: onAddItem,
 			},
 		}
 	);
@@ -151,8 +119,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		updateBlocksInAssignmentResponseState
 	);
 	const renderBlockContent = useEditBlocks(setBlock, [
-		CustomFieldOption.original,
-		CustomFieldOption.custom,
+		AssignmentBlockItemDescriptionType.original,
+		AssignmentBlockItemDescriptionType.custom,
 	]);
 	const [renderedListSorter] = useBlocksList(
 		// TODO rename to useEditBlockList and switch to component instead of hook
@@ -166,8 +134,18 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						icon="plus"
 						type="secondary"
 						onClick={() => {
-							addBlockModal.setEntity(item?.position);
-							addBlockModal.setOpen(true);
+							const newBlocks = insertMultipleAtPosition(
+								assignmentResponse.pupil_collection_blocks || [],
+								{
+									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+									assignment_response_id: assignmentResponse.id,
+									type: CollectionBlockType.TEXT,
+									position:
+										!item || isNil(item?.position) ? 0 : item.position + 1,
+								} as PupilCollectionFragment
+							);
+
+							updateBlocksInAssignmentResponseState(newBlocks);
 						}}
 					/>
 				),
@@ -354,7 +332,4 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	);
 };
 
-export default compose(withUser)(AssignmentResponsePupilCollectionTab) as FunctionComponent<
-	AssignmentResponsePupilCollectionTabProps &
-		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
->;
+export default AssignmentResponsePupilCollectionTab;

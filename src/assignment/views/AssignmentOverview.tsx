@@ -52,18 +52,10 @@ import {
 } from '../../shared/components';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
-import {
-	buildLink,
-	CustomError,
-	formatDate,
-	isMobileWidth,
-	navigate,
-	renderAvatar,
-} from '../../shared/helpers';
+import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
-import { trackEvents } from '../../shared/services/event-logging-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
@@ -71,12 +63,10 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import {
-	AssignmentOverviewTableColumns,
-	AssignmentType,
-	AssignmentView,
-} from '../assignment.types';
+import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
+import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
+import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
 
@@ -198,6 +188,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setQuery(defaultFiltersAndSort, 'pushIn');
 	};
 
+	const updateAndRefetch = async () => {
+		onUpdate();
+
+		if (!isEqual(defaultFiltersAndSort, query)) {
+			resetFiltersAndSort();
+		}
+
+		await fetchAssignments();
+	};
+
 	const checkPermissions = useCallback(async () => {
 		try {
 			if (user) {
@@ -301,74 +301,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	}, [assignments, assignmentCount]);
 
-	const duplicateAssignment = async (
-		assignment: Partial<Avo.Assignment.Assignment_v2> | null
-	) => {
-		try {
-			if (!assignment) {
-				throw new CustomError(
-					'Failed to duplicate the assignment because the marked assignment is null'
-				);
-			}
-			const newTitle = `${t('assignment/views/assignment-overview___kopie')} ${
-				assignment.title
-			}`;
-			await AssignmentService.duplicateAssignment(newTitle, assignment);
-
-			onUpdate();
-			if (isEqual(defaultFiltersAndSort, query)) {
-				fetchAssignments();
-			} else {
-				resetFiltersAndSort(); // This will trigger the fetchAssignments
-			}
-
-			ToastService.success(
-				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
-			);
-		} catch (err) {
-			console.error('Failed to copy the assignment', err, { assignment });
-			ToastService.danger(
-				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
-			);
-		}
-	};
-
-	const deleteCurrentAssignment = async (assignmentId: string | null) => {
-		try {
-			if (isNil(assignmentId)) {
-				ToastService.danger(
-					t(
-						'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
-					)
-				);
-				return;
-			}
-			await AssignmentService.deleteAssignment(assignmentId);
-
-			trackEvents(
-				{
-					object: assignmentId,
-					object_type: 'assignment',
-					action: 'delete',
-				},
-				user
-			);
-
-			await fetchAssignments();
-			onUpdate();
-			ToastService.success(
-				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')
-			);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t(
-					'assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt'
-				)
-			);
-		}
-	};
-
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
 		dataRow: Avo.Assignment.Assignment_v2
@@ -388,12 +320,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 			case 'duplicate':
 				try {
-					const assignment: Avo.Assignment.Assignment_v2 =
+					const latest: Avo.Assignment.Assignment_v2 =
 						await AssignmentService.fetchAssignmentById(
 							dataRow.id as unknown as string
 						);
 
-					await duplicateAssignment(assignment);
+					await duplicateAssignment(t, latest);
+					updateAndRefetch();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
@@ -404,6 +337,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						)
 					);
 				}
+
 				break;
 
 			case 'delete':
@@ -737,16 +671,28 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
 
 	const getEmptyFallbackTitle = () => {
+		const hasFilters: boolean =
+			!!query.filter?.length ||
+			!!query.selectedAssignmentLabelIds?.length ||
+			!!query.selectedClassLabelIds?.length;
 		if (canEditAssignments) {
 			// Teacher
 			if (activeView === AssignmentView.ACTIVE) {
+				if (hasFilters) {
+					return t(
+						'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
+					);
+				}
 				return t(
 					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
 				);
 			}
-			return t(
-				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-gearchiveerd'
-			);
+			if (hasFilters) {
+				return t(
+					'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm'
+				);
+			}
+			return t('assignment/views/assignment-overview___je-hebt-nog-geen-verlopen-opdrachten');
 		}
 		// Pupil
 		if (activeView === AssignmentView.ACTIVE) {
@@ -766,7 +712,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 			}
 			return t(
-				'assignment/views/assignment-overview___beschrijving-gearchiveerde-opdrachten-in-werkruimte'
+				'assignment/views/assignment-overview___beschrijving-verlopen-opdrachten-in-werkruimte'
 			);
 		}
 		// Pupil
@@ -815,22 +761,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			</ErrorView>
 		</>
 	);
-
-	const getDeleteModalBody = () => {
-		if (markedAssignment?.assignment_type === AssignmentType.BOUW) {
-			return t(
-				'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
-			);
-		}
-		if (markedAssignment?.responses?.length) {
-			return t(
-				'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
-			);
-		}
-		return t(
-			'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-		);
-	};
 
 	const renderAssignmentsView = () => {
 		if (!assignments) {
@@ -883,12 +813,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					title={t(
 						'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 					)}
-					body={getDeleteModalBody()}
+					body={deleteAssignmentWarning(t, markedAssignment || undefined)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					deleteObjectCallback={() =>
-						deleteCurrentAssignment(get(markedAssignment, 'id', null))
-					}
+					deleteObjectCallback={async () => {
+						await deleteAssignment(t, markedAssignment?.id, user);
+						updateAndRefetch();
+					}}
 				/>
 			</>
 		);

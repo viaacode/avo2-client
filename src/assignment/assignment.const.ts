@@ -135,7 +135,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
 }> = {
-	owner: (order: Avo.Search.OrderDirection) => ({
+	author: (order: Avo.Search.OrderDirection) => ({
 		owner: {
 			full_name: order,
 		},
@@ -145,6 +145,11 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	}),
 	responses: (order: Avo.Search.OrderDirection) => ({
 		responses_aggregate: {
+			count: order,
+		},
+	}),
+	views: (order: Avo.Search.OrderDirection) => ({
+		view_count: {
 			count: order,
 		},
 	}),

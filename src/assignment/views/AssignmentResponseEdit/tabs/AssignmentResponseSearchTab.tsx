@@ -11,8 +11,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { UrlUpdateType } from 'use-query-params';
 
 import {
 	PermissionName,
@@ -28,6 +29,7 @@ import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useScrollToId } from '../../../../shared/hooks/scroll-to-id';
 import { ToastService } from '../../../../shared/services';
+import { trackEvents } from '../../../../shared/services/event-logging-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
@@ -40,11 +42,19 @@ interface AssignmentResponseSearchTabProps {
 	assignmentResponse: Avo.Assignment.Response_v2 | null;
 	filterState: any;
 	setFilterState: any;
+	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & UserProps
-> = ({ filterState, setFilterState, assignment, assignmentResponse, user }) => {
+> = ({
+	filterState,
+	setFilterState,
+	assignment,
+	assignmentResponse,
+	appendBlockToPupilCollection,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// Data
@@ -96,11 +106,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	): Promise<void> => {
 		setIsAddToAssignmentModalOpen(false);
 		if (selectedItem && assignmentResponse?.id) {
-			await PupilCollectionService.importFragmentToPupilCollection(
+			const block = await PupilCollectionService.importFragmentToPupilCollection(
 				selectedItem,
 				assignmentResponse.id,
 				itemTrimInfo
 			);
+			appendBlockToPupilCollection(block);
+
 			ToastService.success(
 				t(
 					'assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'
@@ -111,6 +123,28 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				t(
 					'assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt'
 				)
+			);
+		}
+	};
+
+	const handleNewFilterState = (newFilterState: FilterState, urlPushType?: UrlUpdateType) => {
+		setFilterState(
+			{
+				...newFilterState,
+			},
+			urlPushType
+		);
+
+		// Trigger search event
+		if (assignment?.id) {
+			trackEvents(
+				{
+					object: assignment.id,
+					object_type: 'avo_assignment',
+					action: 'search',
+					resource: newFilterState.filters,
+				},
+				user
 			);
 		}
 	};
@@ -159,6 +193,9 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	};
 
 	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
+		if (assignment?.assignment_type !== 'BOUW') {
+			return null;
+		}
 		return (
 			<Toolbar>
 				<ToolbarLeft>
@@ -200,7 +237,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		);
 	};
 
-	const renderSearchContent = () => {
+	const renderSearchContent = useCallback(() => {
 		if (filterState.selectedSearchResultId) {
 			return (
 				<>
@@ -245,18 +282,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 					enabledTypeOptions={ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH}
 					bookmarks={false}
 					filterState={filterState}
-					setFilterState={(newFilterState: FilterState) => {
-						setFilterState({
-							...filterState,
-							...newFilterState,
-						});
-					}}
+					setFilterState={handleNewFilterState}
 					renderDetailLink={renderDetailLink}
 					renderSearchLink={renderSearchLink}
 				/>
 			</Spacer>
 		);
-	};
+	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, user]);
 
 	return (
 		<>

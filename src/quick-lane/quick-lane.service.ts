@@ -1,9 +1,8 @@
-import { ApolloQueryResult } from 'apollo-boost';
-import { get } from 'lodash-es';
-
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { ApolloQueryResult } from 'apollo-boost';
+import { get } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
@@ -184,6 +183,7 @@ export class QuickLaneService {
 			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
 				query: GET_QUICK_LANE_BY_CONTENT_AND_OWNER,
 				variables: { contentId, contentLabel, profileId },
+				fetchPolicy: 'no-cache',
 			});
 
 			if (response.errors) {

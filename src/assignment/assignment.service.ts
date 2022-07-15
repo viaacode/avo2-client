@@ -20,6 +20,7 @@ import {
 	dataService,
 	ToastService,
 } from '../shared/services';
+import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -41,6 +42,7 @@ import {
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_IDS,
 	GET_ASSIGNMENT_RESPONSE,
+	GET_ASSIGNMENT_RESPONSE_BY_ID,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -48,6 +50,7 @@ import {
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
+	INCREMENT_ASSIGNMENT_VIEW_COUNT,
 	INSERT_ASSIGNMENT,
 	INSERT_ASSIGNMENT_BLOCKS,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -651,10 +654,12 @@ export class AssignmentService {
 		}
 
 		// clone the assignment
-		const newAssignment = {
+		const newAssignment: Partial<Avo.Assignment.Assignment_v2> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
+			available_at: new Date().toISOString(),
 			deadline_at: null,
+			answer_url: null,
 		};
 
 		delete newAssignment.id;
@@ -993,6 +998,43 @@ export class AssignmentService {
 	}
 
 	/**
+	 * Get a response (and pupil collection) by assignmentResponseId
+	 */
+	static async getAssignmentResponseById(
+		assignmentResponseId: string
+	): Promise<Avo.Assignment.Response_v2 | undefined> {
+		try {
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
+				query: GET_ASSIGNMENT_RESPONSE_BY_ID,
+				variables: { assignmentResponseId },
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				response?.data?.app_assignment_responses_v2?.[0];
+
+			if (!assignmentResponse) {
+				return undefined;
+			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+
+			return assignmentResponse;
+		} catch (err) {
+			throw new CustomError('Failed to get assignment response from database', err, {
+				assignmentResponseId,
+				query: 'GET_ASSIGNMENT_RESPONSE',
+			});
+		}
+	}
+
+	/**
 	 * If the creation of the assignment response fails, we'll still continue with getting the assignment content
 	 * @param assignment assignment is passed since the tempAssignment has not been set into the state yet,
 	 * since we might need to get the assignment content as well and
@@ -1171,6 +1213,21 @@ export class AssignmentService {
 			collection,
 			assignmentId,
 			withDescription
+		);
+
+		// Success
+		// Track import collection into assigment event
+		trackEvents(
+			{
+				object: assignmentId,
+				object_type: 'avo_assignment',
+				action: 'add',
+				resource: {
+					type: 'collection',
+					id: collection.id,
+				},
+			},
+			user
 		);
 
 		return assignmentId;
@@ -1398,6 +1455,28 @@ export class AssignmentService {
 				profileId,
 				assignmentIds,
 				query: 'BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS',
+			});
+		}
+	}
+
+	static async increaseViewCount(assignmentId: string): Promise<number> {
+		try {
+			const response = await dataService.mutate({
+				mutation: INCREMENT_ASSIGNMENT_VIEW_COUNT,
+				variables: {
+					assignmentId,
+				},
+			});
+
+			if (response.errors) {
+				throw new CustomError('GraphQL query has errors', null, { response });
+			}
+
+			return response?.data?.update_app_assignment_v2_views?.affected_rows || 0;
+		} catch (err) {
+			throw new CustomError('Failed to increase assignment view count in the database', err, {
+				assignmentId,
+				query: 'INCREMENT_ASSIGNMENT_VIEW_COUNT',
 			});
 		}
 	}

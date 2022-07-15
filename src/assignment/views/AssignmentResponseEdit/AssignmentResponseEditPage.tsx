@@ -1,7 +1,14 @@
 import { BlockHeading, Button, Container, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
@@ -16,6 +23,7 @@ import BlockList from '../../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import { AssignmentRetrieveError } from '../../assignment.types';
@@ -34,9 +42,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignment, setAssignmentInfo] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentLoading, setAssignmentInfoLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentInfoError] = useState<any | null>(null);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
+	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
 		null
 	);
@@ -48,10 +56,10 @@ const AssignmentResponseEditPage: FunctionComponent<
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssignmentInfoLoading(true);
+			setAssignmentLoading(true);
 
 			// Get assignment
-			setAssignmentInfoError(null);
+			setAssignmentError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
 					t(
@@ -61,29 +69,43 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			const response: Avo.Assignment.Assignment_v2 | string =
+			const assignmentOrError: Avo.Assignment.Assignment_v2 | string =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
-			if (isString(response)) {
+			if (isString(assignmentOrError)) {
 				// error
-				setAssignmentInfoError({
+				setAssignmentError({
 					state: 'error',
-					...getAssignmentErrorObj(response as AssignmentRetrieveError),
+					...getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
 				});
-				setAssignmentInfoLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
+			// Track assignment view
+			AssignmentService.increaseViewCount(assignmentOrError.id); // Not waiting for view events increment
+			trackEvents(
+				{
+					object: assignmentOrError.id,
+					object_type: 'avo_assignment',
+					action: 'view',
+				},
+				user
+			);
+
 			// Create an assignment response if needed
 			const newOrExistingAssignmentResponse =
-				await AssignmentService.createOrFetchAssignmentResponseObject(response, user);
+				await AssignmentService.createOrFetchAssignmentResponseObject(
+					assignmentOrError,
+					user
+				);
 			setAssignmentResponse(newOrExistingAssignmentResponse);
 
-			setAssignmentInfo(response);
+			setAssignment(assignmentOrError);
 		} catch (err) {
-			setAssignmentInfoError(err);
+			setAssignmentError(err);
 		}
-		setAssignmentInfoLoading(false);
+		setAssignmentLoading(false);
 	}, [assignmentId]);
 
 	// Effects
@@ -195,11 +217,25 @@ const AssignmentResponseEditPage: FunctionComponent<
 			);
 		}
 
+		if (!assignmentResponse) {
+			return (
+				<ErrorView
+					message={t(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
+					)}
+					icon="alert-triangle"
+				/>
+			);
+		}
+
 		return (
 			<AssignmentResponseEdit
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
-				setAssignmentResponse={setAssignmentResponse}
+				setAssignmentResponse={
+					setAssignmentResponse as Dispatch<SetStateAction<Avo.Assignment.Response_v2>>
+				}
+				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);
 				}}

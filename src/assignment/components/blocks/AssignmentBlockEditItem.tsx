@@ -11,15 +11,16 @@ import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import { EditBlockProps } from '../../assignment.types';
 import { useBlockDescriptionButtons } from '../../hooks';
-import { CustomFieldOption } from '../../hooks/assignment-block-description-buttons';
+import { AssignmentBlockItemDescriptionType } from '../../hooks/assignment-block-description-buttons';
 import { AssignmentBlockMeta } from '../AssignmentBlockMeta';
 
 export const AssignmentBlockEditItem: FC<
-	EditBlockProps & { customFieldOptions?: CustomFieldOption[] }
-> = ({ block, setBlock, customFieldOptions }) => {
+	EditBlockProps & { AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[] }
+> = ({ block, setBlock, AssignmentBlockItemDescriptionTypes }) => {
 	const [t] = useTranslation();
-	const getButtons = useBlockDescriptionButtons(setBlock, customFieldOptions);
+
 	const [cutButton, cutModal] = useCutModal();
+	const getButtons = useBlockDescriptionButtons(setBlock, AssignmentBlockItemDescriptionTypes);
 
 	if (!block.item_meta) {
 		return null;
