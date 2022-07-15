@@ -84,13 +84,8 @@ export class PupilCollectionService {
 	static async getPupilCollectionIds(where: any = {}): Promise<string[]> {
 		let variables;
 		try {
-			const whereWithoutDeleted = {
-				...where,
-				is_deleted: { _eq: false },
-			};
-
 			variables = {
-				where: whereWithoutDeleted,
+				where,
 			};
 
 			const response = await dataService.query({
