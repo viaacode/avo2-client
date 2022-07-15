@@ -245,7 +245,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	const renderModalBody = () => {
 		return (
 			<>
-				<Container mode={'horizontal'}>
+				<Container mode="horizontal">
 					<Form type="inline">
 						<FormGroup inlineMode="grow">
 							<TextInput
@@ -284,10 +284,13 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						showRadioButtons
 						selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
 						onSelectionChanged={handleSelectedBookmarkItemChanged}
+						onRowClick={(bookmark) => {
+							setSelectedBookmarkId(bookmark.contentLinkId);
+						}}
 					/>
 				</ScrollBar>
 
-				{renderFooterActions()}
+				<Container mode="horizontal">{renderFooterActions()}</Container>
 			</>
 		);
 	};
