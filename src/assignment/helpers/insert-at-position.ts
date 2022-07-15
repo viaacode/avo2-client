@@ -11,5 +11,5 @@ export function insertMultipleAtPosition<T>(
 
 	sortedList.splice(items[0].position, 0, ...items);
 
-	return sortedList.map(setPositionToIndex);
+	return setPositionToIndex(sortedList);
 }
