@@ -8,9 +8,7 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
@@ -19,18 +17,14 @@ import { navigate } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-	ASSIGNMENT_CREATE_UPDATE_TABS,
-	ASSIGNMENT_FORM_SCHEMA,
-	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
-} from '../assignment.const';
+import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { backToOverview } from '../helpers/back-to-overview';
-import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { backToOverview } from '../helpers/links';
+import AssignmentUnload from '../components/AssignmentUnload';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
@@ -54,7 +48,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
-	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
+	const {
+		control,
+		handleSubmit,
+		reset: resetForm,
+		setValue,
+		trigger,
+		formState: { isDirty },
+	} = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
@@ -120,104 +121,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderBlockContent = useEditBlocks(setBlock);
 
-	const onAddItem = async (itemExternalId: string) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch item details
-		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
-		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
-			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item_meta,
-			type: AssignmentBlockType.ITEM,
-			fragment_id: itemExternalId,
-			position: addBlockModal.entity,
-		} as AssignmentBlock);
-
-		setAssignment((prev) => ({
-			...prev,
-			blocks,
-		}));
-
-		setValue('blocks', blocks, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-	};
-
-	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch collection details
-		const collection = await CollectionService.fetchCollectionOrBundleById(
-			collectionId,
-			'collection',
-			undefined,
-			true
-		);
-
-		if (!collection) {
-			ToastService.danger(
-				t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald')
-			);
-			return;
-		}
-
-		if (collection.collection_fragments) {
-			const blocks = collection.collection_fragments.map(
-				(collectionItem, index): Partial<AssignmentBlock> => ({
-					id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
-					item_meta: collectionItem.item_meta,
-					type: collectionItem.type,
-					fragment_id: collectionItem.external_id,
-					position: (addBlockModal.entity || 0) + index,
-					original_title: withDescription ? collectionItem.custom_title : null,
-					original_description: withDescription
-						? collectionItem.custom_description
-						: null,
-					custom_title: collectionItem.use_custom_fields
-						? collectionItem.custom_title
-						: null,
-					custom_description: collectionItem.use_custom_fields
-						? collectionItem.custom_description
-						: null,
-					use_custom_fields: collectionItem.use_custom_fields,
-				})
-			);
-			const newAssignmentBlocks = insertMultipleAtPosition(
-				assignment.blocks,
-				blocks as unknown as AssignmentBlock[]
-			);
-
-			setAssignment((prev) => ({
-				...prev,
-				blocks: newAssignmentBlocks,
-			}));
-
-			setValue('blocks', newAssignmentBlocks, {
-				shouldDirty: true,
-				shouldTouch: true,
-			});
-
-			// Track import collection into assignment event
-			trackEvents(
-				{
-					object: '', // Create assignment => does not have an id yet, but this event is still valuable, since we know which the collection was used to build an assignment
-					object_type: 'avo_assignment',
-					action: 'add',
-					resource: {
-						type: 'collection',
-						id: collection.id,
-					},
-				},
-				user
-			);
-		}
-	};
-
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
 		updateBlocksInAssignmentState,
@@ -225,13 +128,22 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			confirmSliceConfig: {
 				responses: [],
 			},
-			addBookmarkFragmentConfig: {
-				user,
-				addFragmentCallback: onAddItem,
-			},
 			addCollectionConfig: {
-				user,
-				addCollectionCallback: onAddCollection,
+				addCollectionCallback: (id) => {
+					// Track import collection into assignment event
+					trackEvents(
+						{
+							object: '', // Create assignment => does not have an id yet, but this event is still valuable, since we know which the collection was used to build an assignment
+							object_type: 'avo_assignment',
+							action: 'add',
+							resource: {
+								id,
+								type: 'collection',
+							},
+						},
+						user
+					);
+				},
 			},
 		}
 	);
@@ -411,31 +323,35 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-			<div>
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={renderActions}
-					tabs={renderTabs}
+		<AssignmentUnload blockRoute={isDirty}>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderTitle}
+						actions={renderActions}
+						tabs={renderTabs}
+					/>
+
+					<Container mode="horizontal">
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+					</Container>
+				</div>
+
+				{/* Always show on create */}
+				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
 				/>
-
-				<Container mode="horizontal">
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-				</Container>
 			</div>
-
-			{/* Always show on create */}
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-			<StickySaveBar
-				isVisible={true}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
-		</div>
+		</AssignmentUnload>
 	);
 
 	const renderPageContent = () => {

@@ -35,6 +35,23 @@
 				transform: none;
 			}
 		}
+
+		> button {
+			height: 100%;
+		}
+	}
+
+	&__dropdown-wrapper {
+		height: 100%;
+		position: relative;
+
+		.c-dropdown__trigger {
+			height: 100%;
+
+			button {
+				height: 100%;
+			}
+		}
 	}
 
 	&__top {
@@ -44,8 +61,12 @@
 			align-items: flex-start;
 		}
 
-		&__slim {
+		&.c-assignment-heading__top__slim {
 			min-height: 0;
+
+			.c-toolbar__left {
+				margin-bottom: 0;
+			}
 		}
 
 		.c-toolbar {

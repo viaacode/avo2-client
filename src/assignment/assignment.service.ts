@@ -42,6 +42,7 @@ import {
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_IDS,
 	GET_ASSIGNMENT_RESPONSE,
+	GET_ASSIGNMENT_RESPONSE_BY_ID,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -655,10 +656,12 @@ export class AssignmentService {
 		}
 
 		// clone the assignment
-		const newAssignment = {
+		const newAssignment: Partial<Avo.Assignment.Assignment_v2> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
+			available_at: new Date().toISOString(),
 			deadline_at: null,
+			answer_url: null,
 		};
 
 		delete newAssignment.id;
@@ -991,6 +994,43 @@ export class AssignmentService {
 		} catch (err) {
 			throw new CustomError('Failed to get assignment response from database', err, {
 				profileId,
+				query: 'GET_ASSIGNMENT_RESPONSE',
+			});
+		}
+	}
+
+	/**
+	 * Get a response (and pupil collection) by assignmentResponseId
+	 */
+	static async getAssignmentResponseById(
+		assignmentResponseId: string
+	): Promise<Avo.Assignment.Response_v2 | undefined> {
+		try {
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
+				query: GET_ASSIGNMENT_RESPONSE_BY_ID,
+				variables: { assignmentResponseId },
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				response?.data?.app_assignment_responses_v2?.[0];
+
+			if (!assignmentResponse) {
+				return undefined;
+			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+
+			return assignmentResponse;
+		} catch (err) {
+			throw new CustomError('Failed to get assignment response from database', err, {
+				assignmentResponseId,
 				query: 'GET_ASSIGNMENT_RESPONSE',
 			});
 		}

@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -16,10 +15,10 @@ export const AssignmentBlockMeta: FC<AssignmentBlockMetaProps> = ({ block }) => 
 	const [t] = useTranslation();
 
 	const organisation = block.item_meta?.organisation?.name;
-	const publishedAt = block.item_meta?.published_at;
-	const series = (block.item_meta as ItemSchema)?.series;
+	const broadcastDate = (block.item_meta as Avo.Item.Item)?.issued;
+	const series = (block.item_meta as Avo.Item.Item)?.series;
 
-	return organisation || publishedAt || series ? (
+	return organisation || broadcastDate || series ? (
 		<section className="u-spacer-bottom">
 			{organisation && (
 				<div>
@@ -27,10 +26,10 @@ export const AssignmentBlockMeta: FC<AssignmentBlockMetaProps> = ({ block }) => 
 				</div>
 			)}
 
-			{publishedAt && (
+			{broadcastDate && (
 				<div>
 					{t('assignment/views/assignment-edit___uitgezonden')}:
-					{` ${formatDate(publishedAt)}`}
+					{` ${formatDate(broadcastDate)}`}
 				</div>
 			)}
 

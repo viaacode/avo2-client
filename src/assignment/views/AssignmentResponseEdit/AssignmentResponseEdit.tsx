@@ -29,6 +29,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
@@ -38,6 +39,7 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
 } from '../../assignment.const';
+import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
@@ -46,7 +48,7 @@ import {
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
-import { backToOverview } from '../../helpers/back-to-overview';
+import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
 
@@ -59,8 +61,9 @@ import './AssignmentResponseEdit.scss';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
-	assignmentResponse: Avo.Assignment.Response_v2 | null;
-	setAssignmentResponse: (newResponse: Avo.Assignment.Response_v2 | null) => void;
+	assignmentResponse: Avo.Assignment.Response_v2;
+	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	showBackButton: boolean;
 	onAssignmentChanged: () => Promise<void>;
 	onShowPreviewClicked: () => void;
 }
@@ -70,6 +73,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	assignmentResponse,
 	onAssignmentChanged,
 	setAssignmentResponse,
+	showBackButton,
 	onShowPreviewClicked,
 	user,
 }) => {
@@ -77,7 +81,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<Avo.Assignment.Response_v2 | null>(assignmentResponse);
+		useState<Avo.Assignment.Response_v2>(assignmentResponse);
 
 	const {
 		control,
@@ -176,9 +180,6 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 				// Set new original
 				setAssignmentResponseOriginal((prev) => {
-					if (!prev) {
-						return null;
-					}
 					return {
 						...prev,
 						...updated,
@@ -205,6 +206,21 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				)
 			);
 		}
+	};
+
+	const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
+		const newBlocks = setPositionToIndex([
+			...(assignmentResponse.pupil_collection_blocks || []),
+			newBlock,
+		]);
+		setAssignmentResponse({
+			...assignmentResponse,
+			pupil_collection_blocks: newBlocks,
+		});
+		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
 	};
 
 	// Render
@@ -242,7 +258,19 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						assignment={assignment}
 						assignmentResponse={assignmentResponse}
 						filterState={filterState}
-						setFilterState={setFilterState}
+						setFilterState={(
+							newFilterState: FilterState,
+							urlPushType?: UrlUpdateType
+						) => {
+							setFilterState(
+								{
+									...newFilterState,
+									tab,
+								},
+								urlPushType
+							);
+						}}
+						appendBlockToPupilCollection={appendBlockToPupilCollection}
 					/>
 				);
 
@@ -290,7 +318,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-save-bar__wrapper">
 				<div>
 					<AssignmentHeading
-						back={renderBackButton}
+						back={showBackButton ? renderBackButton : undefined}
 						title={renderedTitle}
 						tabs={renderTabs()}
 						info={
