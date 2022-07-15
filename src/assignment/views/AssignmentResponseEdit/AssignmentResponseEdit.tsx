@@ -48,7 +48,7 @@ import {
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
-import { backToOverview } from '../../helpers/back-to-overview';
+import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
 

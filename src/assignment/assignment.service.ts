@@ -654,10 +654,12 @@ export class AssignmentService {
 		}
 
 		// clone the assignment
-		const newAssignment = {
+		const newAssignment: Partial<Avo.Assignment.Assignment_v2> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
+			available_at: new Date().toISOString(),
 			deadline_at: null,
+			answer_url: null,
 		};
 
 		delete newAssignment.id;
