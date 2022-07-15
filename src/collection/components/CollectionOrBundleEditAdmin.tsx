@@ -1,7 +1,3 @@
-import { get, isNil, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -20,6 +16,10 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get, isNil, orderBy } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
@@ -42,7 +42,6 @@ import { CollectionService } from '../collection.service';
 import { QualityLabel } from '../collection.types';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
-import { RouteComponentProps } from 'react-router-dom';
 
 type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 type AssignmentColumnId = 'title' | 'author' | 'is_archived' | 'actions';
@@ -337,17 +336,18 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		columnId: AssignmentColumnId
 	): ReactNode => {
 		switch (columnId) {
-			case 'author':
+			case 'author': {
 				const user = get(rowData, 'profile.user');
 				if (!user) {
 					return '-';
 				}
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+			}
 
 			case 'is_archived':
 				return rowData.deadline_at &&
 					new Date(rowData.deadline_at).getTime() < new Date().getTime()
-					? t('collection/components/collection-or-bundle-edit-admin___gearchiveerd')
+					? t('collection/components/collection-or-bundle-edit-admin___verlopen')
 					: t('collection/components/collection-or-bundle-edit-admin___actief');
 
 			case 'actions':

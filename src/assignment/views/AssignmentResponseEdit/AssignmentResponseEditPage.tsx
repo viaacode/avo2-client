@@ -233,6 +233,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				setAssignmentResponse={
 					setAssignmentResponse as Dispatch<SetStateAction<Avo.Assignment.Response_v2>>
 				}
+				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);
 				}}

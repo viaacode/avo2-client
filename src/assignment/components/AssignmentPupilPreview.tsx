@@ -60,19 +60,16 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 				contentRight={renderClosePreviewButton()}
 			/>
 			{assignmentResponse && (
-				<AssignmentResponseEdit
-					assignment={assignment as Avo.Assignment.Assignment_v2}
-					assignmentResponse={assignmentResponse}
-					setAssignmentResponse={
-						setAssignmentResponse as Dispatch<
-							SetStateAction<Avo.Assignment.Response_v2>
-						>
-					}
-					onAssignmentChanged={async () => {
-						// Ignore changes to assignment during preview
-					}}
-					onShowPreviewClicked={noop}
-				/>
+			<AssignmentResponseEdit
+				assignment={assignment as Avo.Assignment.Assignment_v2}
+				assignmentResponse={assignmentResponse}
+				setAssignmentResponse={setAssignmentResponse}
+				showBackButton={false}
+				onAssignmentChanged={async () => {
+					// Ignore changes to assignment during preview
+				}}
+				onShowPreviewClicked={noop}
+			/>
 			)}
 		</>
 	);

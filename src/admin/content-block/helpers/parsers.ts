@@ -1,8 +1,7 @@
-import { compact, get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { compact, get, sortBy } from 'lodash-es';
 
-import { CustomError, sortByPositionAsc } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ContentBlockConfig, ContentBlockType } from '../../shared/types';
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
@@ -35,7 +34,7 @@ export const convertBlocksToDatabaseFormat = (
 export const parseContentBlocks = (
 	contentBlocks: Avo.ContentPage.Block[]
 ): ContentBlockConfig[] => {
-	const sortedContentBlocks = contentBlocks.sort(sortByPositionAsc);
+	const sortedContentBlocks = sortBy(contentBlocks, (block) => block.position);
 
 	return compact(
 		(sortedContentBlocks || []).map((contentBlock) => {

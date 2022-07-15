@@ -320,6 +320,36 @@ export const GET_ASSIGNMENT_RESPONSE = gql`
 	}
 `;
 
+export const GET_ASSIGNMENT_RESPONSE_BY_ID = gql`
+	query getAssignmentResponseById($assignmentResponseId: uuid!) {
+		app_assignment_responses_v2(where: { id: { _eq: $assignmentResponseId } }) {
+			id
+			created_at
+			owner_profile_id
+			assignment_id
+			collection_title
+			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				id
+				fragment_id
+				use_custom_fields
+				custom_title
+				custom_description
+				start_oc
+				end_oc
+				position
+				created_at
+				updated_at
+				type
+				thumbnail_path
+				assignment_response_id
+			}
+			owner {
+				full_name
+			}
+		}
+	}
+`;
+
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 	query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 		assignments: app_assignments_v2(
