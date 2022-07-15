@@ -23,7 +23,7 @@ export interface ConfirmModalProps {
 	confirmButtonType?: ButtonType;
 	isOpen: boolean;
 	onClose?: () => void;
-	deleteObjectCallback: () => void;
+	deleteObjectCallback?: () => void;
 }
 
 const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
@@ -38,7 +38,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	confirmButtonType = 'danger',
 	onClose = noop,
 	isOpen,
-	deleteObjectCallback,
+	deleteObjectCallback = noop,
 }) => {
 	const handleDelete = () => {
 		onClose();

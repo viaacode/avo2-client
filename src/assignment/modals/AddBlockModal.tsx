@@ -66,13 +66,17 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				),
 			},
 			{
-				type: AssignmentBlockType.ZOEK,
+				type: AssignmentBlockType.ZOEK as AddBlockModalType,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
 				title: t('assignment/modals/add-block___zoeken-bouwen'),
 				description: t(
 					'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
 				),
-				disabled: blocks.findIndex((block) => block.type === AssignmentBlockType.ZOEK) >= 0,
+				disabled: !!blocks.find(
+					(block) =>
+						block.type === AssignmentBlockType.ZOEK ||
+						block.type === AssignmentBlockType.BOUW
+				),
 			},
 			{
 				type: AssignmentBlockType.TEXT,
