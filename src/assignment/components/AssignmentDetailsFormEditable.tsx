@@ -73,8 +73,12 @@ const AssignmentDetailsFormEditable: FC<
 						)}
 						user={user}
 						dictionary={{
-							placeholder: t('Voeg een klas toe'),
-							empty: t('Geen klassen beschikbaar'),
+							placeholder: t(
+								'assignment/components/assignment-details-form-editable___voeg-een-klas-toe'
+							),
+							empty: t(
+								'assignment/components/assignment-details-form-editable___geen-klassen-beschikbaar'
+							),
 						}}
 						onChange={(changed) => {
 							const newLabels = mergeWithOtherLabels(
@@ -107,8 +111,12 @@ const AssignmentDetailsFormEditable: FC<
 						)}
 						user={user}
 						dictionary={{
-							placeholder: t('Voeg een label toe'),
-							empty: t('Geen labels beschikbaar'),
+							placeholder: t(
+								'assignment/components/assignment-details-form-editable___voeg-een-label-toe'
+							),
+							empty: t(
+								'assignment/components/assignment-details-form-editable___geen-labels-beschikbaar'
+							),
 						}}
 						onChange={(changed) => {
 							setValue('labels', changed, {
