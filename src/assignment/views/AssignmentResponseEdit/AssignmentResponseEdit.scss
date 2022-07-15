@@ -1,4 +1,5 @@
 @import '../../../styles/settings/variables';
+@import '../../../styles/settings/colors';
 
 .c-assignment-response-page {
 	.o-container--full-width {
@@ -53,6 +54,26 @@
 		width: 100%;
 	}
 
-	.c-assignment-heading__title {
+	@keyframes flash-pill {
+		from {
+			opacity: 1;
+		}
+		to {
+			opacity: 0.3;
+		}
+	}
+
+	.c-tabs {
+		.c-pill.animated {
+			background-color: $color-yellow;
+			color: white;
+			border-color: transparent;
+			box-shadow: 0 0 10px 2px darken($color-yellow, 10%);
+			animation-name: flash-pill;
+			animation-duration: 0.3s;
+			animation-iteration-count: 8;
+			animation-timing-function: ease-in;
+			animation-direction: alternate;
+		}
 	}
 }

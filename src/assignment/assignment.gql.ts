@@ -479,6 +479,17 @@ export const UPDATE_ASSIGNMENT = gql`
 	}
 `;
 
+export const UPDATE_ASSIGNMENT_UPDATED_AT_DATE = gql`
+	mutation updateAssignmentUpdatedAtDate($assignmentId: uuid!, $updatedAt: timestamptz!) {
+		update_app_assignments_v2(
+			where: { id: { _eq: $assignmentId } }
+			_set: { updated_at: $updatedAt }
+		) {
+			affected_rows
+		}
+	}
+`;
+
 export const UPDATE_ASSIGNMENT_RESPONSE = gql`
 	mutation updateAssignmentResponse(
 		$assignmentResponseId: uuid

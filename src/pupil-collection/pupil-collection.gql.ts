@@ -22,6 +22,7 @@ export const GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW = gql`
 			}
 		) {
 			id
+			assignment_id
 			collection_title
 			created_at
 			updated_at
@@ -30,6 +31,7 @@ export const GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW = gql`
 			}
 			owner_profile_id
 			assignment {
+				id
 				title
 				deadline_at
 				owner {

@@ -64,7 +64,7 @@ const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
 	},
 ];
 
-const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+const OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in keyof Avo.Collection.Collection]: (order: Avo.Search.OrderDirection) => any;
 }> = {
 	title: (order: Avo.Search.OrderDirection) => ({
@@ -75,6 +75,20 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	}),
 	is_public: (order: Avo.Search.OrderDirection) => ({
 		is_public: order,
+	}),
+};
+
+const BOOKMARKED_COLLECTION_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
+	[columnId in keyof Avo.Collection.Collection]: (order: Avo.Search.OrderDirection) => any;
+}> = {
+	title: (order: Avo.Search.OrderDirection) => ({
+		bookmarkedCollection: { title: order },
+	}),
+	updated_at: (order: Avo.Search.OrderDirection) => ({
+		bookmarkedCollection: { updated_at: order },
+	}),
+	is_public: (order: Avo.Search.OrderDirection) => ({
+		bookmarkedCollection: { is_public: order },
 	}),
 };
 
@@ -92,7 +106,7 @@ enum AddCollectionTab {
 const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	user,
 	isOpen,
-	onClose,
+	onClose = noop,
 	addCollectionCallback,
 }) => {
 	const [t] = useTranslation();
@@ -100,9 +114,9 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
-	const [selectedCollectionId, setSelectedCollectionId] = useState<string>();
+	const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
 	const [activeView, setActiveView] = useState<AddCollectionTab>(AddCollectionTab.myCollections);
-	const [sortColumn, sortOrder, handleColumnClick] =
+	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>('updated_at');
 	const [filterString, setFilterString] = useState<string>('');
 
@@ -120,7 +134,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			const columnDataType: TableColumnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 
-			let collections: Avo.Collection.Collection[] = [];
+			let collections: Avo.Collection.Collection[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwner(
 					user,
@@ -130,7 +144,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 						sortColumn,
 						sortOrder,
 						columnDataType,
-						TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+						OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 					),
 					ContentTypeNumber.collection,
 					filterString
@@ -144,7 +158,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 						sortColumn,
 						sortOrder,
 						columnDataType,
-						TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+						BOOKMARKED_COLLECTION_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 					),
 					filterString
 				);
@@ -175,6 +189,19 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 		}
 	}, [isOpen, fetchCollections]);
 
+	const resetStateAndCallOnClose = () => {
+		setLoadingInfo({ state: 'loading' });
+		setCreateWithDescription(false);
+		setCollections(null);
+		setSelectedCollectionId(null);
+		setActiveView(AddCollectionTab.myCollections);
+		setSortColumn('updated_at');
+		setSortOrder('desc');
+		setFilterString('');
+
+		onClose();
+	};
+
 	const handleImportToAssignment = () => {
 		if (!selectedCollectionId) {
 			ToastService.danger(
@@ -183,11 +210,11 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			return;
 		}
 		addCollectionCallback && addCollectionCallback(selectedCollectionId, createWithDescription);
-		(onClose || noop)();
+		resetStateAndCallOnClose();
 	};
 
 	const handleSelectedCollectionChanged = (selectedIds: (string | number)[]) => {
-		setSelectedCollectionId((selectedIds[0] as string) || undefined);
+		setSelectedCollectionId((selectedIds[0] as string) || null);
 	};
 
 	const renderFooterActions = () => {
@@ -214,7 +241,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 							<Button
 								type="secondary"
 								label={t('assignment/modals/add-collection-modal___annuleer')}
-								onClick={onClose}
+								onClick={resetStateAndCallOnClose}
 							/>
 							<Button
 								type="primary"
@@ -373,7 +400,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			isOpen={isOpen}
 			title={t('assignment/modals/add-collection-modal___importeer-collectie')}
 			size="large"
-			onClose={onClose}
+			onClose={resetStateAndCallOnClose}
 			scrollable
 			className="c-content c-add-collection-modal"
 		>
