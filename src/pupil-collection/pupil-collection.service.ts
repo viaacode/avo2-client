@@ -100,9 +100,9 @@ export class PupilCollectionService {
 				});
 			}
 
-			const pupilCollectionIds: string[] = (response?.data?.app_assignments_v2 || []).map(
-				(assignment: Avo.Assignment.Assignment_v2) => assignment.id
-			);
+			const pupilCollectionIds: string[] = (
+				response?.data?.app_assignment_responses_v2 || []
+			).map((assignmentResponse: Avo.Assignment.Response_v2) => assignmentResponse.id);
 
 			if (!pupilCollectionIds) {
 				throw new CustomError('Response does not contain any pupil collection ids', null, {
