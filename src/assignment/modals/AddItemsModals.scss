@@ -2,6 +2,20 @@
 
 .c-add-fragment-modal,
 .c-add-collection-modal {
+	.c-modal__body {
+		padding-left: 0;
+		padding-right: 0;
+
+		table td {
+			border-left: none;
+			border-right: none;
+		}
+
+		.c-table__checkbox-column {
+			padding-left: 3.2rem;
+		}
+	}
+
 	.c-thumbnail {
 		margin-right: 10px;
 		max-width: 125px;

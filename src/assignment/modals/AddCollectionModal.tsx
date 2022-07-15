@@ -2,6 +2,7 @@ import {
 	Button,
 	ButtonGroup,
 	ButtonToolbar,
+	Container,
 	Flex,
 	FlexItem,
 	Form,
@@ -274,59 +275,64 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	const renderModalBody = () => {
 		return (
 			<>
-				<Toolbar>
-					<ToolbarLeft>
-						<ToolbarItem>
-							<ButtonToolbar>
-								<ButtonGroup>
-									<Button
-										type="secondary"
-										label={t(
-											'assignment/modals/add-collection-modal___mijn-collecties'
-										)}
-										title={t(
-											'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
-										)}
-										active={activeView === AddCollectionTab.myCollections}
-										onClick={() =>
-											setActiveView(AddCollectionTab.myCollections)
-										}
-									/>
-									<Button
-										type="secondary"
-										label={t(
-											'assignment/modals/add-collection-modal___bladwijzer-collecties'
-										)}
-										title={t(
-											'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
-										)}
-										active={
-											activeView === AddCollectionTab.bookmarkedCollections
-										}
-										onClick={() =>
-											setActiveView(AddCollectionTab.bookmarkedCollections)
-										}
-									/>
-								</ButtonGroup>
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarLeft>
-					<ToolbarRight>
-						<ToolbarItem>
-							<Form type="inline">
-								<FormGroup inlineMode="grow">
-									<TextInput
-										className="c-assignment-overview__search-input"
-										icon="filter"
-										value={filterString}
-										onChange={setFilterString}
-										disabled={!collections}
-									/>
-								</FormGroup>
-							</Form>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
+				<Container mode="horizontal">
+					<Toolbar>
+						<ToolbarLeft>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<ButtonGroup>
+										<Button
+											type="secondary"
+											label={t(
+												'assignment/modals/add-collection-modal___mijn-collecties'
+											)}
+											title={t(
+												'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
+											)}
+											active={activeView === AddCollectionTab.myCollections}
+											onClick={() =>
+												setActiveView(AddCollectionTab.myCollections)
+											}
+										/>
+										<Button
+											type="secondary"
+											label={t(
+												'assignment/modals/add-collection-modal___bladwijzer-collecties'
+											)}
+											title={t(
+												'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
+											)}
+											active={
+												activeView ===
+												AddCollectionTab.bookmarkedCollections
+											}
+											onClick={() =>
+												setActiveView(
+													AddCollectionTab.bookmarkedCollections
+												)
+											}
+										/>
+									</ButtonGroup>
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<ToolbarItem>
+								<Form type="inline">
+									<FormGroup inlineMode="grow">
+										<TextInput
+											className="c-assignment-overview__search-input"
+											icon="filter"
+											value={filterString}
+											onChange={setFilterString}
+											disabled={!collections}
+										/>
+									</FormGroup>
+								</Form>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</Container>
 
 				<ScrollBar>
 					<Table
@@ -353,10 +359,11 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 						showRadioButtons
 						selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
 						onSelectionChanged={handleSelectedCollectionChanged}
+						onRowClick={(collection) => setSelectedCollectionId(collection.id)}
 					/>
 				</ScrollBar>
 
-				{renderFooterActions()}
+				<Container mode="horizontal">{renderFooterActions()}</Container>
 			</>
 		);
 	};
