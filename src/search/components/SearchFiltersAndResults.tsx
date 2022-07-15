@@ -489,7 +489,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 												ariaLabel={t(
 													'search/views/search___verwijder-alle-filters'
 												)}
-												icon={isMobileWidth() ? 'trash-2' : undefined}
+												icon={isMobileWidth() ? 'delete' : undefined}
 												type={isMobileWidth() ? 'borderless' : 'link'}
 												onClick={deleteAllFilters}
 											/>

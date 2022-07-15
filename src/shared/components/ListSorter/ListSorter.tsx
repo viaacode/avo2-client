@@ -59,7 +59,7 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 };
 
 export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)} />
+	<Button type="secondary" icon="delete" onClick={() => item.onSlice?.(item)} />
 );
 
 // Main renderer
