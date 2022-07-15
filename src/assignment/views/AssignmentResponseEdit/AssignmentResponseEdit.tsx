@@ -217,7 +217,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			...assignmentResponse,
 			pupil_collection_blocks: newBlocks,
 		});
-		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[]);
+		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
 	};
 
 	// Render
