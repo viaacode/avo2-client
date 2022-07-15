@@ -220,7 +220,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 		if (!assignmentResponse) {
 			return (
 				<ErrorView
-					message={t('De opdracht antwoord entry kon niet worden aangemaakt')}
+					message={t(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
+					)}
 					icon="alert-triangle"
 				/>
 			);
@@ -233,6 +235,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				setAssignmentResponse={
 					setAssignmentResponse as Dispatch<SetStateAction<Avo.Assignment.Response_v2>>
 				}
+				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);
 				}}

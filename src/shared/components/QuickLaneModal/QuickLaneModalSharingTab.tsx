@@ -173,11 +173,11 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						<ContentLink
 							parent={{
 								content_label,
-								// ITEM || COLLECTIE
-								content_id: `${content.external_id || content.id}`,
+								content_id: `${
+									content_label === 'ITEM' ? content.external_id : content.id
+								}`,
 							}}
 							content={content}
-							user={user}
 						/>
 					)}
 				</FormGroup>
