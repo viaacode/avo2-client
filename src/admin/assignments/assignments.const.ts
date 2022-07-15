@@ -19,7 +19,7 @@ export const ITEMS_PER_PAGE = 20;
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in AssignmentsOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
 }> = {
-	owner: (order: Avo.Search.OrderDirection) => ({
+	author: (order: Avo.Search.OrderDirection) => ({
 		owner: { full_name: order },
 	}),
 	views: (order: Avo.Search.OrderDirection) => ({
@@ -68,7 +68,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () =
 		visibleByDefault: true,
 	},
 	{
-		id: 'owner',
+		id: 'author',
 		label: i18n.t('admin/assignments/assignments___auteur'),
 		sortable: true,
 		visibleByDefault: true,
