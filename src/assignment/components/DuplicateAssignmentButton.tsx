@@ -30,10 +30,9 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps> = ({
 			type="borderless"
 			icon="copy"
 			{...props}
-			onClick={(e) => {
-				duplicateAssignment(t, assignment).then((res) => {
-					props?.onClick && props?.onClick(e, res);
-				});
+			onClick={async (e) => {
+				const res = await duplicateAssignment(t, assignment);
+				props?.onClick && props?.onClick(e, res);
 			}}
 		/>
 	);

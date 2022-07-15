@@ -5,7 +5,7 @@ import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { AssignmentService } from '../assignment.service';
 
-export function duplicateAssignment(
+export async function duplicateAssignment(
 	t: TFunction,
 	assignment?: Avo.Assignment.Assignment_v2
 ): Promise<Avo.Assignment.Assignment_v2 | undefined> {
@@ -18,21 +18,18 @@ export function duplicateAssignment(
 
 		const newTitle = `${t('assignment/views/assignment-overview___kopie')} ${assignment.title}`;
 
-		return AssignmentService.duplicateAssignment(newTitle, assignment).then((res) => {
-			ToastService.success(
-				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
-			);
+		const response = await AssignmentService.duplicateAssignment(newTitle, assignment);
 
-			return res;
-		});
+		ToastService.success(
+			t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
+		);
+
+		return response;
 	} catch (err) {
-		const reason = 'Failed to copy the assignment';
+		console.error('Failed to copy the assignment', err, { assignment });
 
-		console.error(reason, err, { assignment });
 		ToastService.danger(
 			t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 		);
-
-		return Promise.reject(reason);
 	}
 }

@@ -441,22 +441,25 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									/>
 								</DropdownButton>
 								<DropdownContent>
+									<DuplicateAssignmentButton
+										assignment={original}
+										onClick={(_e, duplicated) => {
+											duplicated &&
+												redirectToClientPage(
+													toAssignmentDetail(duplicated),
+													history
+												);
+
+											setOverflowDropdownOpen(false);
+										}}
+									/>
 									<DeleteAssignmentButton
 										assignment={original}
 										modal={{
-											deleteObjectCallback: () =>
-												redirectToClientPage(backToOverview(), history),
+											deleteObjectCallback: () => {
+												redirectToClientPage(backToOverview(), history);
+											},
 										}}
-									/>
-									<DuplicateAssignmentButton
-										assignment={original}
-										onClick={(_e, duplicated) =>
-											duplicated &&
-											redirectToClientPage(
-												toAssignmentDetail(duplicated),
-												history
-											)
-										}
 									/>
 								</DropdownContent>
 							</Dropdown>

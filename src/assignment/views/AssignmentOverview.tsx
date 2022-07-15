@@ -67,7 +67,6 @@ import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.ty
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
-import { toAssignmentDetail } from '../helpers/links';
 
 import './AssignmentOverview.scss';
 
@@ -187,6 +186,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setSortOrder(DEFAULT_SORT_ORDER);
 
 		setQuery(defaultFiltersAndSort, 'pushIn');
+	};
+
+	const updateAndRefetch = () => {
+		onUpdate();
+
+		if (isEqual(defaultFiltersAndSort, query)) {
+			fetchAssignments();
+		} else {
+			resetFiltersAndSort(); // This will trigger the fetchAssignments
+		}
 	};
 
 	const checkPermissions = useCallback(async () => {
@@ -316,15 +325,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							dataRow.id as unknown as string
 						);
 
-					await duplicateAssignment(t, latest).then(() => {
-						onUpdate();
-
-						if (isEqual(defaultFiltersAndSort, query)) {
-							fetchAssignments();
-						} else {
-							resetFiltersAndSort(); // This will trigger the fetchAssignments
-						}
-					});
+					await duplicateAssignment(t, latest);
+					updateAndRefetch();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
@@ -424,7 +426,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 
 		return renderDataCell(
-			<Link to={toAssignmentDetail(assignment)}>{(cellData || []).length}</Link>,
+			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
+				{(cellData || []).length}
+			</Link>,
 			t('assignment/views/assignment-overview___responses')
 		);
 	};
@@ -800,8 +804,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					body={deleteAssignmentWarning(t, markedAssignment || undefined)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					deleteObjectCallback={() => {
-						deleteAssignment(t, markedAssignment?.id, user);
+					deleteObjectCallback={async () => {
+						await deleteAssignment(t, markedAssignment?.id, user);
+						updateAndRefetch();
 					}}
 				/>
 			</>

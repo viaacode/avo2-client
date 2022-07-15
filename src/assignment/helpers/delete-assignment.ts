@@ -8,7 +8,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentType } from '../assignment.types';
 
-export function deleteAssignment(
+export async function deleteAssignment(
 	t: TFunction,
 	id?: string | null,
 	user?: UserSchema | null
@@ -20,33 +20,27 @@ export function deleteAssignment(
 			);
 
 			ToastService.danger(reason);
-			return Promise.reject(reason);
+			return;
 		}
 
-		return AssignmentService.deleteAssignment(id).then((res) => {
-			trackEvents(
-				{
-					object: id,
-					object_type: 'assignment',
-					action: 'delete',
-				},
-				user
-			);
+		await AssignmentService.deleteAssignment(id);
 
-			ToastService.success(
-				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')
-			);
+		trackEvents(
+			{
+				object: id,
+				object_type: 'assignment',
+				action: 'delete',
+			},
+			user
+		);
 
-			return res;
-		});
+		ToastService.success(t('assignment/views/assignment-overview___de-opdracht-is-verwijdert'));
 	} catch (err) {
 		console.error(err);
 
 		ToastService.danger(
 			t('assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt')
 		);
-
-		return Promise.reject(err);
 	}
 }
 
