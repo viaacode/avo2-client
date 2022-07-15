@@ -12,8 +12,15 @@
 			border-right: none;
 		}
 
-		.c-table__checkbox-column {
-			padding-left: 3.2rem;
+		th,
+		td {
+			&:first-child {
+				padding-left: 3.2rem;
+			}
+
+			&:last-child {
+				padding-right: 3.2rem;
+			}
 		}
 	}
 
