@@ -298,7 +298,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
 							assignmentId: assignment?.id,
-							id: id,
+							responseId: id,
 						})}
 					>
 						{truncateTableValue(pupilCollection?.collection_title || '-')}
