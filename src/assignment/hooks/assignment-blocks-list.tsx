@@ -23,7 +23,11 @@ export function useBlocksList(
 				...config?.listSorterItem,
 				icon: BLOCK_ITEM_ICONS()[block.type](block),
 				onPositionChange: (item, delta) => {
-					const switched = switchAssignmentBlockPositions(blocks, item, delta);
+					const switched = switchAssignmentBlockPositions(
+						blocks,
+						item as Avo.Core.BlockItemBase,
+						delta
+					);
 					setBlocks(switched);
 				},
 			};

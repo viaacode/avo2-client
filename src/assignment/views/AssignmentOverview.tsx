@@ -671,16 +671,28 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
 
 	const getEmptyFallbackTitle = () => {
+		const hasFilters: boolean =
+			!!query.filter?.length ||
+			!!query.selectedAssignmentLabelIds?.length ||
+			!!query.selectedClassLabelIds?.length;
 		if (canEditAssignments) {
 			// Teacher
 			if (activeView === AssignmentView.ACTIVE) {
+				if (hasFilters) {
+					return t(
+						'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
+					);
+				}
 				return t(
 					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
 				);
 			}
-			return t(
-				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-gearchiveerd'
-			);
+			if (hasFilters) {
+				return t(
+					'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm'
+				);
+			}
+			return t('assignment/views/assignment-overview___je-hebt-nog-geen-verlopen-opdrachten');
 		}
 		// Pupil
 		if (activeView === AssignmentView.ACTIVE) {
@@ -700,7 +712,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 			}
 			return t(
-				'assignment/views/assignment-overview___beschrijving-gearchiveerde-opdrachten-in-werkruimte'
+				'assignment/views/assignment-overview___beschrijving-verlopen-opdrachten-in-werkruimte'
 			);
 		}
 		// Pupil

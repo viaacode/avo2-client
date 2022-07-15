@@ -6,11 +6,11 @@ import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEdi
 import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch';
 import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
 
-import { CustomFieldOption } from './assignment-block-description-buttons';
+import { AssignmentBlockItemDescriptionType } from './assignment-block-description-buttons';
 
 export function useEditBlocks(
 	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void,
-	customFieldOptions?: CustomFieldOption[]
+	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
 ): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
 		switch (block.type) {
@@ -22,7 +22,7 @@ export function useEditBlocks(
 					<AssignmentBlockEditItem
 						setBlock={setBlock}
 						block={block}
-						customFieldOptions={customFieldOptions}
+						AssignmentBlockItemDescriptionTypes={AssignmentBlockItemDescriptionTypes}
 					/>
 				);
 

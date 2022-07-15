@@ -61,8 +61,12 @@
 			align-items: flex-start;
 		}
 
-		&__slim {
+		&.c-assignment-heading__top__slim {
 			min-height: 0;
+
+			.c-toolbar__left {
+				margin-bottom: 0;
+			}
 		}
 
 		.c-toolbar {
