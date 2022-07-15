@@ -30,5 +30,5 @@ export function switchAssignmentBlockPositions<T extends Positioned = Avo.Core.B
 
 	// Sort array by position
 	const newList = sortBy(list, (block) => block.position);
-	return newList.map(setPositionToIndex); // Recover from blocks with the same position set in the database
+	return setPositionToIndex(newList); // Recover from blocks with the same position set in the database
 }

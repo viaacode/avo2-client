@@ -340,11 +340,13 @@ export class AssignmentHelper {
 
 // Zoek & bouw
 
-export function setPositionToIndex<T>(item: Positioned<T>, i: number): Positioned<T> {
-	return {
-		...item,
-		position: i,
-	};
+export function setPositionToIndex<T>(items: Positioned<T>[]): Positioned<T>[] {
+	return items.map((item, i) => {
+		return {
+			...item,
+			position: i,
+		};
+	});
 }
 
 export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
