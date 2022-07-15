@@ -94,7 +94,12 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 										<Button
 											type="secondary"
 											{...button}
-											key={'customize-item-button-' + id + '-' + button.label}
+											key={
+												'customise-item-form__button--' +
+												id +
+												'--' +
+												button.label
+											}
 										/>
 									);
 								})}
