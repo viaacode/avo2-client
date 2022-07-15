@@ -267,7 +267,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 							setFilterState(
 								{
 									...newFilterState,
-									tab,
+									tab: activeTab,
 								},
 								urlPushType
 							);
