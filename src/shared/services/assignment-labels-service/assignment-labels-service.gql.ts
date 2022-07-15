@@ -47,13 +47,10 @@ export const UPDATE_ASSIGNMENT_LABEL = gql`
 `;
 
 export const DELETE_ASSIGNMENT_LABELS = gql`
-	mutation deleteAssignmentLabel($profileId: uuid!, $labelIds: [Int!]!) {
-		delete_app_assignment_labels(
+	mutation deleteAssignmentLabel($profileId: uuid!, $labelIds: [uuid!]!) {
+		delete_app_assignment_labels_v2(
 			where: { owner_profile_id: { _eq: $profileId }, id: { _in: $labelIds } }
 		) {
-			affected_rows
-		}
-		delete_app_assignment_assignment_tags(where: { assignment_tag_id: { _in: $labelIds } }) {
 			affected_rows
 		}
 	}

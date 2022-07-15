@@ -1,7 +1,14 @@
 import { BlockHeading, Button, Container, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
@@ -16,6 +23,7 @@ import BlockList from '../../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import { AssignmentRetrieveError } from '../../assignment.types';
@@ -26,7 +34,6 @@ import AssignmentResponseEdit from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { trackEvents } from '../../../shared/services/event-logging-service';
 
 const AssignmentResponseEditPage: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ id: string }>
@@ -210,11 +217,25 @@ const AssignmentResponseEditPage: FunctionComponent<
 			);
 		}
 
+		if (!assignmentResponse) {
+			return (
+				<ErrorView
+					message={t(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
+					)}
+					icon="alert-triangle"
+				/>
+			);
+		}
+
 		return (
 			<AssignmentResponseEdit
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
-				setAssignmentResponse={setAssignmentResponse}
+				setAssignmentResponse={
+					setAssignmentResponse as Dispatch<SetStateAction<Avo.Assignment.Response_v2>>
+				}
+				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);
 				}}
