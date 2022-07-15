@@ -316,7 +316,10 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							to={buildLink(
 								ADMIN_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
 								{},
-								{ query: assignment.title || '' }
+								{
+									query: assignment.title || '',
+									teacher: (assignment?.owner as any)?.profile_id as string,
+								}
 							)}
 						>
 							{responsesLength}
