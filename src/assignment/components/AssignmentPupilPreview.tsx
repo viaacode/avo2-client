@@ -1,7 +1,7 @@
 import { Button } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FC, FunctionComponent, useState } from 'react';
+import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
@@ -59,16 +59,22 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 				)}
 				contentRight={renderClosePreviewButton()}
 			/>
-			<AssignmentResponseEdit
-				assignment={assignment as Avo.Assignment.Assignment_v2}
-				assignmentResponse={assignmentResponse}
-				setAssignmentResponse={setAssignmentResponse}
-				showBackButton={false}
-				onAssignmentChanged={async () => {
-					// Ignore changes to assignment during preview
-				}}
-				onShowPreviewClicked={noop}
-			/>
+			{assignmentResponse && (
+				<AssignmentResponseEdit
+					assignment={assignment as Avo.Assignment.Assignment_v2}
+					assignmentResponse={assignmentResponse}
+					setAssignmentResponse={
+						setAssignmentResponse as Dispatch<
+							SetStateAction<Avo.Assignment.Response_v2>
+						>
+					}
+					showBackButton={false}
+					onAssignmentChanged={async () => {
+						// Ignore changes to assignment during preview
+					}}
+					onShowPreviewClicked={noop}
+				/>
+			)}
 		</>
 	);
 };
