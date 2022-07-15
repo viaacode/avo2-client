@@ -23,8 +23,8 @@ import { AssignmentFormState } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { backToOverview } from '../helpers/links';
 import AssignmentUnload from '../components/AssignmentUnload';
-import { backToOverview } from '../helpers/back-to-overview';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentDetailsForm,
