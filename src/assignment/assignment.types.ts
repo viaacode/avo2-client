@@ -6,7 +6,7 @@ import { FilterState } from '../search/search.types';
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
-	| 'owner'
+	| 'author'
 	| 'created_at'
 	| 'updated_at'
 	| 'deadline_at'
