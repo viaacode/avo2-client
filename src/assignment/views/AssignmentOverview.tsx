@@ -188,14 +188,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setQuery(defaultFiltersAndSort, 'pushIn');
 	};
 
-	const updateAndRefetch = () => {
+	const updateAndRefetch = async () => {
 		onUpdate();
 
-		if (isEqual(defaultFiltersAndSort, query)) {
-			fetchAssignments();
-		} else {
-			resetFiltersAndSort(); // This will trigger the fetchAssignments
+		if (!isEqual(defaultFiltersAndSort, query)) {
+			resetFiltersAndSort();
 		}
+
+		await fetchAssignments();
 	};
 
 	const checkPermissions = useCallback(async () => {
