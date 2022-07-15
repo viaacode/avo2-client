@@ -71,7 +71,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 
 		// Author multi option filter
-		andFilters.push(...getMultiOptionFilters(filters, ['owner'], ['owner.profile_id']));
+		andFilters.push(...getMultiOptionFilters(filters, ['author'], ['owner.profile_id']));
 
 		// Date filters
 		andFilters.push(
@@ -289,7 +289,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					</Link>
 				);
 
-			case 'owner':
+			case 'author':
 				return truncateTableValue((assignment as any)?.owner?.full_name);
 
 			case 'created_at':

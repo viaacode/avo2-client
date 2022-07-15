@@ -1,12 +1,12 @@
 import { ButtonProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { isRichTextEmpty } from '../../shared/helpers';
 
-export enum CustomFieldOption {
+export enum AssignmentBlockItemDescriptionType {
 	original = 'original',
 	custom = 'custom',
 	none = 'none',
@@ -14,19 +14,34 @@ export enum CustomFieldOption {
 
 export function useBlockDescriptionButtons(
 	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void,
-	overrideFieldOptions: CustomFieldOption[] = [
-		CustomFieldOption.original,
-		CustomFieldOption.custom,
-		CustomFieldOption.none,
+	types: AssignmentBlockItemDescriptionType[] = [
+		AssignmentBlockItemDescriptionType.original,
+		AssignmentBlockItemDescriptionType.custom,
+		AssignmentBlockItemDescriptionType.none,
 	]
 ): (block: Avo.Core.BlockItemBase) => { label: string; items: Partial<ButtonProps>[] } {
 	const [t] = useTranslation();
 
+	const [edited, setEdited] =
+		useState<Pick<Avo.Core.BlockItemBase, 'custom_title' | 'custom_description'>>();
+
+	const editedTitle = (block: Avo.Core.BlockItemBase) =>
+		edited?.custom_title || // Grab any transient state
+		block.custom_title || // Fall back to any previous custom entry
+		(block as AssignmentBlock).original_title || // Fall back to the original block
+		block.item_meta?.title; // Fall back to the underlying item
+
+	const editedDescription = (block: Avo.Core.BlockItemBase) =>
+		edited?.custom_description || // Grab any transient state
+		// block.custom_description || // Do NOT fall back to any previous custom entry
+		(block as AssignmentBlock).original_description || // Fall back to the original block
+		block.item_meta?.description; // Fall back to the underlying item
+
 	const buttons = useCallback(
 		(block: Avo.Core.BlockItemBase): Partial<ButtonProps>[] =>
-			overrideFieldOptions.map((type) => {
+			types.map((type) => {
 				switch (type) {
-					case CustomFieldOption.original:
+					case AssignmentBlockItemDescriptionType.original:
 						return {
 							active: !block.use_custom_fields,
 							label: t('assignment/views/assignment-edit___origineel'),
@@ -34,9 +49,14 @@ export function useBlockDescriptionButtons(
 								setBlock(block, {
 									use_custom_fields: false,
 								});
+
+								// Remember edits
+								const { custom_title, custom_description } = block;
+								(custom_title || custom_description) &&
+									setEdited({ custom_title, custom_description });
 							},
 						};
-					case CustomFieldOption.custom:
+					case AssignmentBlockItemDescriptionType.custom:
 						return {
 							active:
 								block.use_custom_fields &&
@@ -45,16 +65,15 @@ export function useBlockDescriptionButtons(
 							onClick: () => {
 								setBlock(block, {
 									use_custom_fields: true,
-									custom_title:
-										(block as AssignmentBlock).original_title ||
-										block.item_meta?.title,
-									custom_description:
-										(block as AssignmentBlock).original_description ||
-										block.item_meta?.description,
+									custom_title: editedTitle(block),
+									custom_description: editedDescription(block),
 								});
+
+								// Wipe edits
+								setEdited(undefined);
 							},
 						};
-					case CustomFieldOption.none:
+					case AssignmentBlockItemDescriptionType.none:
 						return {
 							active:
 								block.use_custom_fields &&
@@ -63,16 +82,17 @@ export function useBlockDescriptionButtons(
 							onClick: () => {
 								setBlock(block, {
 									use_custom_fields: true,
-									custom_title:
-										(block as AssignmentBlock).original_title ||
-										block.item_meta?.title,
-									custom_description: '',
+									custom_title: editedTitle(block),
+									custom_description: '', // Force to empty
 								});
+
+								// Wipe edits
+								setEdited(undefined);
 							},
 						};
 				}
 			}),
-		[setBlock, overrideFieldOptions, t]
+		[setBlock, setEdited, types, t]
 	);
 
 	return useCallback(

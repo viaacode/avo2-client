@@ -1,10 +1,3 @@
-import classnames from 'classnames';
-import { cloneDeep, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
-
 import {
 	BlockHeading,
 	Button,
@@ -25,6 +18,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import classnames from 'classnames';
+import { cloneDeep, get, isNil } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -110,7 +109,6 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		if (query.sort_order) {
 			setSortOrder(query.sort_order as SearchOrderDirection);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleQueryChanged = (value: any, id: string) => {
@@ -313,7 +311,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		const cellData: any = (assignmentResponse as any)[colKey];
 
 		switch (colKey) {
-			case 'pupil':
+			case 'pupil': {
 				const renderTitle = () => (
 					<Flex>
 						<div className="c-content-header c-content-header--small">
@@ -329,7 +327,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				) : (
 					renderTitle()
 				);
-
+			}
 			case 'pupil_collection_block_count':
 				return get(
 					assignmentResponse,
@@ -345,7 +343,8 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					''
 				) : (
 					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, {
+						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
+							assignmentId: match.params.id,
 							id: assignmentResponse.id,
 						})}
 					>

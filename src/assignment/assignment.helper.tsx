@@ -14,7 +14,7 @@ import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButt
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 import { isNil } from 'lodash-es';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Trans } from 'react-i18next';
 
 import { APP_PATH } from '../constants';
@@ -42,7 +42,7 @@ export class AssignmentHelper {
 		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment_v2>,
 		user: Avo.User.User | undefined
-	) {
+	): Promise<void> {
 		try {
 			if (isNil(assignment.id)) {
 				ToastService.danger(
@@ -118,7 +118,7 @@ export class AssignmentHelper {
 			value: any
 		) => void,
 		setAssignmentLabels: (labels: AssignmentSchemaLabel_v2[]) => void
-	) {
+	): ReactNode {
 		const now = new Date(Date.now());
 
 		return (
@@ -154,7 +154,6 @@ export class AssignmentHelper {
 							<ContentLink
 								parent={assignment}
 								content={assignmentContent}
-								user={user}
 							/>
 						</FormGroup>
 						<FormGroup label={i18n.t('assignment/views/assignment-edit___weergave')}>
@@ -341,11 +340,13 @@ export class AssignmentHelper {
 
 // Zoek & bouw
 
-export function setPositionToIndex<T>(item: Positioned<T>, i: number): Positioned<T> {
-	return {
-		...item,
-		position: i,
-	};
+export function setPositionToIndex<T>(items: Positioned<T>[]): Positioned<T>[] {
+	return items.map((item, i) => {
+		return {
+			...item,
+			position: i,
+		};
+	});
 }
 
 export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {

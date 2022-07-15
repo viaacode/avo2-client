@@ -1,3 +1,16 @@
-.DraftEditor-editorContainer .public-DraftEditor-content > div > div:first-child {
-	margin-top: 0;
+@import '../../../styles/settings/colors';
+
+.DraftEditor-editorContainer {
+	.public-DraftEditor-content > div > div:first-child {
+		margin-top: 0;
+	}
+}
+
+.c-rich-text-editor {
+	.control-item,
+	.dropdown-handler {
+		&:focus {
+			outline: 2px solid $color-teal-bright;
+		}
+	}
 }

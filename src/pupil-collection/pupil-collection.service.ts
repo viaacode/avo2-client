@@ -265,7 +265,7 @@ export class PupilCollectionService {
 		item: Avo.Item.Item,
 		assignmentResponseId: string,
 		itemTrimInfo?: ItemTrimInfo
-	): Promise<string> {
+	): Promise<Avo.Core.BlockItemBase> {
 		// Handle trim settings and thumbnail
 		const trimInfo: ItemTrimInfo = itemTrimInfo || {
 			hasCut: false,
@@ -296,7 +296,7 @@ export class PupilCollectionService {
 			thumbnail_path: thumbnailPath,
 		};
 
-		await dataService.mutate({
+		const response = await dataService.mutate({
 			mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
 			variables: {
 				pupilCollectionBlocks: [block],
@@ -304,6 +304,22 @@ export class PupilCollectionService {
 			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
-		return assignmentResponseId;
+		const insertedBlock = response?.data?.insert_app_pupil_collection_blocks?.returning?.[0];
+
+		if (!insertedBlock) {
+			throw new Error(
+				JSON.stringify({
+					message: 'Failed to insert block into pupil collection',
+					additionalInfo: {
+						block,
+						assignmentResponseId,
+					},
+				})
+			);
+		}
+
+		insertedBlock.item_meta = item;
+
+		return insertedBlock;
 	}
 }
