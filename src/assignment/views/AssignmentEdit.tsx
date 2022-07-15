@@ -6,13 +6,23 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	Spacer,
+	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -21,6 +31,7 @@ import { Link } from 'react-router-dom';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
@@ -33,17 +44,18 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
+import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
+import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import AssignmentUnload from '../components/AssignmentUnload';
 import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
 import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
-import AssignmentUnload from '../components/AssignmentUnload';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 	useBlockListModals,
@@ -64,7 +76,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
+	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 
@@ -262,10 +274,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		},
 	});
 
-	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
-		initial: defaultValues,
-	});
-
 	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
@@ -390,9 +398,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+				if (pastDeadline) {
+					return <BlockList blocks={assignment.blocks} />;
+				}
 				return (
 					<div className="c-assignment-contents-tab">
-						{assignment.blocks.length > 0 && (
+						{assignment.blocks.length > 0 && !pastDeadline && (
 							<Spacer
 								margin={['bottom-large']}
 								className="c-assignment-page__reorder-container"
@@ -400,18 +411,49 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								{draggableListButton}
 							</Spacer>
 						)}
-
 						{renderedListSorter}
 					</div>
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
-				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
+				if (pastDeadline) {
+					if (!assignment) {
+						if (!assignment) {
+							return (
+								<Spacer margin="top-extra-large">
+									<Flex orientation="horizontal" center>
+										<Spinner size="large" />
+									</Flex>
+								</Spacer>
+							);
+						}
+					}
+					return (
+						<div className="c-assignment-details-tab">
+							<AssignmentDetailsFormReadonly
+								assignment={assignment as Avo.Assignment.Assignment_v2}
+							/>
+						</div>
+					);
+				}
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentDetailsFormEditable
+							assignment={assignment as Avo.Assignment.Assignment_v2}
+							setAssignment={
+								setAssignment as Dispatch<
+									SetStateAction<Avo.Assignment.Assignment_v2>
+								>
+							}
+							setValue={setValue}
+						/>
+					</div>
+				);
 
 			default:
 				return tab;
 		}
-	}, [tab, renderedDetailForm, renderedListSorter]);
+	}, [tab, renderedListSorter]);
 
 	// Effects
 
@@ -445,12 +487,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<AssignmentUnload
-			blockRoute={isDirty}
-			hasBlocks={assignmentHasPupilBlocks}
-			hasResponses={assignmentHasResponses}
-		>
-			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+		<div className="c-assignment-page c-assignment-page--edit c-sticky-save-bar__wrapper">
+			<AssignmentUnload
+				blockRoute={isDirty}
+				hasBlocks={assignmentHasPupilBlocks}
+				hasResponses={assignmentHasResponses}
+			>
 				<div>
 					<AssignmentHeading
 						back={renderBackButton}
@@ -496,11 +538,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						/>
 					</Container>
 				</div>
+			</AssignmentUnload>
 
-				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-				<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
-			</div>
-		</AssignmentUnload>
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
+		</div>
 	);
 
 	const renderPageContent = () => {

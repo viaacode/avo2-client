@@ -3,7 +3,6 @@ export { useBlockDescriptionButtons } from './assignment-block-description-butto
 export { useEditBlocks } from './assignment-blocks';
 export { useBlocksList } from './assignment-blocks-list';
 export { useBlockListModals } from './assignment-content-modals';
-export { useAssignmentDetailsForm } from './assignment-details-form';
 export { useAssignmentForm } from './assignment-form';
 export { useAssignmentPupilTabs } from './assignment-pupil-tabs';
 export { useAssignmentTeacherTabs } from './assignment-teacher-tabs';
