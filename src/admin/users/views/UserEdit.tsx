@@ -1,8 +1,3 @@
-import { compact, get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -19,6 +14,10 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { compact, get } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -37,7 +36,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { USER_PATH } from '../user.const';
 import { UserService } from '../user.service';
 
-interface UserEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type UserEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	// Hooks
@@ -269,7 +268,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 											ariaLabel={t(
 												'admin/users/views/user-edit___verbreek-de-link-tussen-deze-gebruiker-en-dit-bedrijf'
 											)}
-											icon="trash-2"
+											icon="delete"
 											onClick={() => setCompanyId(undefined)}
 										/>
 									</Spacer>

@@ -1,6 +1,6 @@
-import { IconName, TabProps } from '@viaa/avo2-components';
+import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
@@ -10,16 +10,19 @@ import { useAssignmentPastDeadline } from './assignment-past-deadline';
 
 export function useAssignmentPupilTabs(
 	assignment: Avo.Assignment.Assignment_v2 | null,
-	tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+	numOfPupilCollectionBlocks: number,
+	activeTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
 ): [
 	TabProps[],
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
 	(newTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void,
-	(id: string | number) => void
+	(id: string | number) => void,
+	() => void // Start pill animation
 ] {
 	const [t] = useTranslation();
 
+	const [animatePill, setAnimatePill] = useState(false);
 	const pastDeadline = useAssignmentPastDeadline(assignment);
 
 	const tabs: TabProps[] = useMemo(
@@ -48,16 +51,33 @@ export function useAssignmentPupilTabs(
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,
-								label: t('assignment/hooks/assignment-pupil-tabs___mijn-collectie'),
+								label: (
+									<>
+										{t(
+											'assignment/hooks/assignment-pupil-tabs___mijn-collectie'
+										)}
+										<Pill
+											variants={
+												activeTab ===
+												ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION
+													? [PillVariants.active]
+													: []
+											}
+											className={animatePill ? 'animated' : undefined}
+										>
+											{numOfPupilCollectionBlocks}
+										</Pill>
+									</>
+								),
 								icon: 'briefcase' as IconName,
 							},
 					  ]
 					: []),
 			].map((item) => ({
 				...item,
-				active: item.id === tab,
+				active: item.id === activeTab,
 			})),
-		[assignment, t, tab]
+		[assignment, t, activeTab, numOfPupilCollectionBlocks, animatePill]
 	);
 
 	const onTabClick = useCallback(
@@ -67,5 +87,19 @@ export function useAssignmentPupilTabs(
 		[setTab]
 	);
 
-	return [tabs, tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined, setTab, onTabClick];
+	const startPillAnimation = () => {
+		setAnimatePill(true);
+
+		setTimeout(() => {
+			setAnimatePill(false);
+		}, 5000);
+	};
+
+	return [
+		tabs,
+		activeTab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
+		setTab,
+		onTabClick,
+		startPillAnimation,
+	];
 }

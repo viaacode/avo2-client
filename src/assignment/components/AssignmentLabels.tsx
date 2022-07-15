@@ -1,11 +1,10 @@
+import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
-
-import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
@@ -125,10 +124,10 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	return (
 		<>
 			<TagList
-				closable={true}
 				tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
 				onTagClosed={deleteAssignmentLabel}
 			/>
+
 			<Flex>
 				<FlexItem>
 					<Spacer margin="right-small">

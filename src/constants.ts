@@ -202,7 +202,7 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showForInteractiveTour: false,
 	},
 	ASSIGNMENT_PUPIL_COLLECTION_DETAIL: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:id`,
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},

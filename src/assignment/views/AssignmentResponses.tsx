@@ -345,7 +345,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
 							assignmentId: match.params.id,
-							id: assignmentResponse.id,
+							responseId: assignmentResponse.id,
 						})}
 					>
 						{cellData}

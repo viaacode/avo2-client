@@ -1,8 +1,3 @@
-import { compact, isString } from 'lodash-es';
-import queryString from 'query-string';
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Blankslate,
 	Button,
@@ -14,6 +9,10 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { compact, isString } from 'lodash-es';
+import queryString from 'query-string';
+import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../helpers';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
@@ -157,7 +156,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			<Button
 				className="a-delete-button"
 				type="danger-hover"
-				icon="trash-2"
+				icon="delete"
 				ariaLabel={t('shared/components/file-upload/file-upload___verwijder-bestand')}
 				title={t('shared/components/file-upload/file-upload___verwijder-bestand')}
 				autoHeight

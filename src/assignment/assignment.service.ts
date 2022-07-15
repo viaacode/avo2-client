@@ -58,6 +58,7 @@ import {
 	UPDATE_ASSIGNMENT_BLOCK,
 	UPDATE_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
+	UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
 } from './assignment.gql';
 import {
 	AssignmentBlockType,
@@ -414,6 +415,38 @@ export class AssignmentService {
 			const error = new CustomError('Failed to update assignment', err, {
 				original,
 				update,
+			});
+
+			console.error(error);
+			throw error;
+		}
+	}
+
+	static async updateAssignmentUpdatedAtDate(assignmentId: string): Promise<void> {
+		try {
+			const response = await dataService.mutate<{
+				data: { update_app_assignments_v2: { affected_rows: number } };
+			}>({
+				mutation: UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
+				variables: {
+					assignmentId,
+					updatedAt: new Date().toISOString(),
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (!response || !response.data || (response.errors && response.errors.length)) {
+				console.error('update assignment update_at date returned empty response', response);
+				throw new CustomError(
+					'Het aanpassen van de laatst aangepast datum van de opdracht is mislukt',
+					null,
+					{ response }
+				);
+			}
+		} catch (err) {
+			const error = new CustomError('Failed to update assignment updated_at date', err, {
+				assignmentId,
+				query: 'UPDATE_ASSIGNMENT_UPDATED_AT_DATE',
 			});
 
 			console.error(error);
@@ -1160,13 +1193,17 @@ export class AssignmentService {
 				return block;
 			});
 			try {
-				await dataService.mutate({
-					mutation: INSERT_ASSIGNMENT_BLOCKS,
-					variables: {
-						assignmentBlocks: blocks,
-					},
-					update: ApolloCacheManager.clearAssignmentCache,
-				});
+				// Insert fragments into assignment and update the updated_at date in parallel
+				await Promise.all([
+					dataService.mutate({
+						mutation: INSERT_ASSIGNMENT_BLOCKS,
+						variables: {
+							assignmentBlocks: blocks,
+						},
+						update: ApolloCacheManager.clearAssignmentCache,
+					}),
+					this.updateAssignmentUpdatedAtDate(assignmentId),
+				]);
 			} catch (err) {
 				const error = new CustomError('Failed to import collection to assignment', err, {
 					assignmentId,
@@ -1319,13 +1356,17 @@ export class AssignmentService {
 			thumbnail_path: thumbnailPath,
 		};
 
-		await dataService.mutate({
-			mutation: INSERT_ASSIGNMENT_BLOCKS,
-			variables: {
-				assignmentBlocks: [block],
-			},
-			update: ApolloCacheManager.clearAssignmentCache,
-		});
+		// Insert fragment into assignment and update the updated_at date in parallel
+		await Promise.all([
+			dataService.mutate({
+				mutation: INSERT_ASSIGNMENT_BLOCKS,
+				variables: {
+					assignmentBlocks: [block],
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			}),
+			this.updateAssignmentUpdatedAtDate(assignmentId),
+		]);
 
 		return assignmentId;
 	}
