@@ -266,7 +266,10 @@ export const GET_ASSIGNMENT_RESPONSES = gql`
 			owner_profile_id
 			assignment_id
 			collection_title
-			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+			pupil_collection_blocks(
+				where: { is_deleted: { _eq: false } }
+				order_by: { position: asc }
+			) {
 				id
 				fragment_id
 				use_custom_fields
@@ -298,7 +301,10 @@ export const GET_ASSIGNMENT_RESPONSE = gql`
 			owner_profile_id
 			assignment_id
 			collection_title
-			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+			pupil_collection_blocks(
+				where: { is_deleted: { _eq: false } }
+				order_by: { position: asc }
+			) {
 				id
 				fragment_id
 				use_custom_fields
@@ -328,7 +334,10 @@ export const GET_ASSIGNMENT_RESPONSE_BY_ID = gql`
 			owner_profile_id
 			assignment_id
 			collection_title
-			pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+			pupil_collection_blocks(
+				where: { is_deleted: { _eq: false } }
+				order_by: { position: asc }
+			) {
 				id
 				fragment_id
 				use_custom_fields
@@ -377,7 +386,10 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 				owner_profile_id
 				assignment_id
 				collection_title
-				pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				pupil_collection_blocks(
+					where: { is_deleted: { _eq: false } }
+					order_by: { position: asc }
+				) {
 					id
 					fragment_id
 					use_custom_fields
@@ -506,7 +518,10 @@ export const UPDATE_ASSIGNMENT_RESPONSE = gql`
 				created_at
 				id
 				owner_profile_id
-				pupil_collection_blocks(where: { is_deleted: { _eq: false } }) {
+				pupil_collection_blocks(
+					where: { is_deleted: { _eq: false } }
+					order_by: { position: asc }
+				) {
 					assignment_response_id
 					created_at
 					custom_description

@@ -100,6 +100,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				}
 			},
 		},
+		setIsOpen: setIsDraggableListModalOpen,
 	});
 
 	// Effects
