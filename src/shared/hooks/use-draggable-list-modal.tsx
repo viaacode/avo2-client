@@ -1,4 +1,5 @@
 import { Button, ButtonProps } from '@viaa/avo2-components';
+import { isNil } from 'lodash-es';
 import React, { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +11,7 @@ import DraggableListModal, {
 export function useDraggableListModal(config?: {
 	button?: Partial<ButtonProps>;
 	modal?: Partial<DraggableListModalProps>;
+	setIsOpen?: (isOpen: boolean) => void; // Optional, if not passed, the hook will keep track of the open state
 }): [ReactNode, ReactNode] {
 	const [t] = useTranslation();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -24,7 +26,7 @@ export function useDraggableListModal(config?: {
 				'collection/components/collection-or-bundle-edit___herorden-de-fragmenten-via-drag-and-drop'
 			)}
 			onClick={(e) => {
-				setIsOpen(true);
+				(config?.setIsOpen || setIsOpen)(true);
 				config?.button?.onClick?.(e);
 			}}
 		/>
@@ -32,11 +34,11 @@ export function useDraggableListModal(config?: {
 
 	const modal = (
 		<DraggableListModal
-			isOpen={isOpen} // Allow external config to open modal, if not provided, internal isOpen state will be used
 			{...config?.modal}
 			renderItem={(item) => <DraggableBlock block={item} />}
+			isOpen={isNil(config?.modal?.isOpen) ? isOpen : config?.modal?.isOpen || false} // Allow external config to open modal, if not provided, internal isOpen state will be used
 			onClose={(update?: any[]) => {
-				setIsOpen(false);
+				(config?.setIsOpen || setIsOpen)(false);
 				config?.modal?.onClose?.(update);
 			}}
 		/>

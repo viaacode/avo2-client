@@ -1,18 +1,37 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import {
+	Alert,
+	Button,
+	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
+	Flex,
+	Icon,
+	Spacer,
+	Spinner,
+	Tabs,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import BeforeUnloadComponent from 'react-beforeunload-component';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
-import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { CollectionService } from '../../collection/collection.service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
@@ -22,22 +41,21 @@ import { CustomError } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-	ASSIGNMENT_CREATE_UPDATE_TABS,
-	ASSIGNMENT_FORM_SCHEMA,
-	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
-} from '../assignment.const';
+import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentBlockType, AssignmentFormState } from '../assignment.types';
+import { AssignmentFormState } from '../assignment.types';
+import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
+import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import AssignmentUnload from '../components/AssignmentUnload';
+import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
+import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
-import { backToOverview } from '../helpers/back-to-overview';
-import { insertAtPosition, insertMultipleAtPosition } from '../helpers/insert-at-position';
+import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
-	useAssignmentDetailsForm,
 	useAssignmentForm,
 	useAssignmentTeacherTabs,
 	useBlockListModals,
@@ -58,9 +76,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignment, setAssignment, defaultValues] = useAssignmentForm(undefined);
-	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
-		useState<boolean>(false);
+	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 
@@ -88,7 +104,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// UI
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
-	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
+	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
+	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
+	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
+		useState<boolean>(false);
 
 	const pastDeadline = useAssignmentPastDeadline(original);
 
@@ -207,106 +226,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderBlockContent = useEditBlocks(setBlock);
 
-	const onAddItem = async (itemExternalId: string) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch item details
-		const item_meta = (await ItemsService.fetchItemByExternalId(itemExternalId)) || undefined;
-		const blocks = insertAtPosition<AssignmentBlock>(assignment.blocks, {
-			id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-			item_meta,
-			type: AssignmentBlockType.ITEM,
-			fragment_id: itemExternalId,
-			position: addBlockModal.entity,
-		} as AssignmentBlock);
-
-		setAssignment((prev) => ({
-			...prev,
-			blocks,
-		}));
-
-		setValue('blocks', blocks, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-	};
-
-	const onAddCollection = async (collectionId: string, withDescription: boolean) => {
-		if (addBlockModal.entity == null) {
-			return;
-		}
-
-		// fetch collection details
-		const collection = await CollectionService.fetchCollectionOrBundleById(
-			collectionId,
-			'collection',
-			undefined,
-			true
-		);
-
-		if (!collection) {
-			ToastService.danger(
-				t('assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald')
-			);
-			return;
-		}
-
-		if (collection.collection_fragments) {
-			const blocks = collection.collection_fragments.map(
-				(collectionItem, index): Partial<AssignmentBlock> => ({
-					id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf() + index}`,
-					item_meta: collectionItem.item_meta,
-					type: collectionItem.type,
-					fragment_id: collectionItem.external_id,
-					position: (addBlockModal.entity || 0) + index,
-					original_title: withDescription ? collectionItem.custom_title : null,
-					original_description: withDescription
-						? collectionItem.custom_description
-						: null,
-					custom_title: collectionItem.use_custom_fields
-						? collectionItem.custom_title
-						: null,
-					custom_description: collectionItem.use_custom_fields
-						? collectionItem.custom_description
-						: null,
-					use_custom_fields: collectionItem.use_custom_fields,
-				})
-			);
-			const newAssignmentBlocks = insertMultipleAtPosition(
-				assignment.blocks,
-				blocks as unknown as AssignmentBlock[]
-			);
-
-			setAssignment((prev) => ({
-				...prev,
-				blocks: newAssignmentBlocks,
-			}));
-
-			setValue('blocks', newAssignmentBlocks, {
-				shouldDirty: true,
-				shouldTouch: true,
-			});
-
-			// Track import collection into assignment event
-			if (assignment.id) {
-				trackEvents(
-					{
-						object: assignment.id,
-						object_type: 'avo_assignment',
-						action: 'add',
-						resource: {
-							type: 'collection',
-							id: collection.id,
-						},
-					},
-					user
-				);
-			}
-		}
-	};
-
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
 		updateBlocksInAssignmentState,
@@ -314,13 +233,22 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			confirmSliceConfig: {
 				responses: original?.responses || [],
 			},
-			addBookmarkFragmentConfig: {
-				user,
-				addFragmentCallback: onAddItem,
-			},
 			addCollectionConfig: {
-				user,
-				addCollectionCallback: onAddCollection,
+				addCollectionCallback: (id) => {
+					// Track import collection into assignment event
+					trackEvents(
+						{
+							object: `${assignment.id}`,
+							object_type: 'avo_assignment',
+							action: 'add',
+							resource: {
+								id,
+								type: 'collection',
+							},
+						},
+						user
+					);
+				},
 			},
 		}
 	);
@@ -344,10 +272,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				}
 			},
 		},
-	});
-
-	const [renderedDetailForm] = useAssignmentDetailsForm(assignment, setAssignment, setValue, {
-		initial: defaultValues,
 	});
 
 	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
@@ -402,23 +326,71 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					type="secondary"
 					onClick={() => setIsViewAsPupilEnabled(true)}
 				/>
-				<Button
-					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
-					disabled
-					icon="more-horizontal"
-					title={t('assignment/views/assignment-detail___meer-opties')}
-					type="secondary"
-				/>
 				{original && (
-					<ShareAssignmentWithPupil
-						assignment={original} // Needs to be saved before you can share
-						onContentLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)}
-						onDetailLinkClicked={() => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)}
-					/>
+					<>
+						<div className="c-assignment-heading__dropdown-wrapper">
+							<Dropdown
+								isOpen={isOverflowDropdownOpen}
+								icon="more-horizontal"
+								buttonType="secondary"
+								placement="bottom-end"
+							>
+								<DropdownButton>
+									<Button
+										ariaLabel={t(
+											'assignment/views/assignment-detail___meer-opties'
+										)}
+										icon="more-horizontal"
+										title={t(
+											'assignment/views/assignment-detail___meer-opties'
+										)}
+										type="secondary"
+										onClick={() =>
+											setOverflowDropdownOpen(!isOverflowDropdownOpen)
+										}
+									/>
+								</DropdownButton>
+								<DropdownContent>
+									<DuplicateAssignmentButton
+										assignment={original}
+										onClick={(_e, duplicated) => {
+											duplicated &&
+												redirectToClientPage(
+													toAssignmentDetail(duplicated),
+													history
+												);
+
+											setOverflowDropdownOpen(false);
+										}}
+									/>
+									<DeleteAssignmentButton
+										assignment={original}
+										modal={{
+											deleteObjectCallback: () => {
+												redirectToClientPage(backToOverview(), history);
+											},
+										}}
+									/>
+								</DropdownContent>
+							</Dropdown>
+						</div>
+
+						<div className="c-assignment-heading__dropdown-wrapper">
+							<ShareAssignmentWithPupil
+								assignment={original} // Needs to be saved before you can share
+								onContentLinkClicked={() =>
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)
+								}
+								onDetailLinkClicked={() =>
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)
+								}
+							/>
+						</div>
+					</>
 				)}
 			</>
 		),
-		[t, original, setTab, setIsViewAsPupilEnabled]
+		[t, original, setTab, setIsViewAsPupilEnabled, isOverflowDropdownOpen]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
@@ -426,9 +398,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+				if (pastDeadline) {
+					return <BlockList blocks={assignment.blocks} />;
+				}
 				return (
 					<div className="c-assignment-contents-tab">
-						{assignment.blocks.length > 0 && (
+						{assignment.blocks.length > 0 && !pastDeadline && (
 							<Spacer
 								margin={['bottom-large']}
 								className="c-assignment-page__reorder-container"
@@ -436,18 +411,49 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								{draggableListButton}
 							</Spacer>
 						)}
-
 						{renderedListSorter}
 					</div>
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
-				return <div className="c-assignment-details-tab">{renderedDetailForm}</div>;
+				if (pastDeadline) {
+					if (!assignment) {
+						if (!assignment) {
+							return (
+								<Spacer margin="top-extra-large">
+									<Flex orientation="horizontal" center>
+										<Spinner size="large" />
+									</Flex>
+								</Spacer>
+							);
+						}
+					}
+					return (
+						<div className="c-assignment-details-tab">
+							<AssignmentDetailsFormReadonly
+								assignment={assignment as Avo.Assignment.Assignment_v2}
+							/>
+						</div>
+					);
+				}
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentDetailsFormEditable
+							assignment={assignment as Avo.Assignment.Assignment_v2}
+							setAssignment={
+								setAssignment as Dispatch<
+									SetStateAction<Avo.Assignment.Assignment_v2>
+								>
+							}
+							setValue={setValue}
+						/>
+					</div>
+				);
 
 			default:
 				return tab;
 		}
-	}, [tab, renderedDetailForm, renderedListSorter]);
+	}, [tab, renderedListSorter]);
 
 	// Effects
 
@@ -481,41 +487,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<BeforeUnloadComponent
-			blockRoute={isDirty}
-			modalComponentHandler={({ handleModalLeave }: { handleModalLeave: () => void }) => {
-				let body = t(
-					'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-				);
-
-				if (assignmentHasPupilBlocks) {
-					body = t(
-						'assignment/views/assignment-edit___opgelet-er-bestaan-reeds-leerlingencollecties-binnen-deze-opdracht-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-en-de-leerlingencollecties-wil-verwijderen-voor-je-de-pagina-verlaat'
-					);
-				} else if (assignmentHasResponses) {
-					body = t(
-						'assignment/views/assignment-edit___opgelet-leerlingen-hebben-deze-opdracht-reeds-bekeken-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-voor-je-de-pagina-verlaat'
-					);
-				}
-
-				return (
-					<ConfirmModal
-						isOpen={true}
-						body={body}
-						onClose={handleModalLeave}
-						deleteObjectCallback={() => {
-							handleSubmit(submit, console.error)();
-							handleModalLeave();
-						}}
-						cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-						confirmLabel={t('assignment/views/assignment-edit___opslaan')}
-						title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
-						confirmButtonType="primary"
-					/>
-				);
-			}}
-		>
-			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+		<div className="c-assignment-page c-assignment-page--edit c-sticky-save-bar__wrapper">
+			<AssignmentUnload
+				blockRoute={isDirty}
+				hasBlocks={assignmentHasPupilBlocks}
+				hasResponses={assignmentHasResponses}
+			>
 				<div>
 					<AssignmentHeading
 						back={renderBackButton}
@@ -561,11 +538,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						/>
 					</Container>
 				</div>
+			</AssignmentUnload>
 
-				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-				<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
-			</div>
-		</BeforeUnloadComponent>
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
+		</div>
 	);
 
 	const renderPageContent = () => {

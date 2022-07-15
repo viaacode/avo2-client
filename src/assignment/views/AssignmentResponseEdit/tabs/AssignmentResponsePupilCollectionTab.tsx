@@ -10,6 +10,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -27,14 +28,14 @@ import {
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
 import { AssignmentResponseFormState, PupilCollectionFragment } from '../../../assignment.types';
-import { insertAtPosition } from '../../../helpers/insert-at-position';
+import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
 	useBlockListModals,
 	useBlocksList,
 	useEditBlocks,
 } from '../../../hooks';
-import { CustomFieldOption } from '../../../hooks/assignment-block-description-buttons';
+import { AssignmentBlockItemDescriptionType } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
 
@@ -99,6 +100,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				}
 			},
 		},
+		setIsOpen: setIsDraggableListModalOpen,
 	});
 
 	// Effects
@@ -118,8 +120,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		updateBlocksInAssignmentResponseState
 	);
 	const renderBlockContent = useEditBlocks(setBlock, [
-		CustomFieldOption.original,
-		CustomFieldOption.custom,
+		AssignmentBlockItemDescriptionType.original,
+		AssignmentBlockItemDescriptionType.custom,
 	]);
 	const [renderedListSorter] = useBlocksList(
 		// TODO rename to useEditBlockList and switch to component instead of hook
@@ -133,13 +135,14 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						icon="plus"
 						type="secondary"
 						onClick={() => {
-							const newBlocks = insertAtPosition(
+							const newBlocks = insertMultipleAtPosition(
 								assignmentResponse.pupil_collection_blocks || [],
 								{
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									assignment_response_id: assignmentResponse.id,
 									type: CollectionBlockType.TEXT,
-									position: item?.position || 0,
+									position:
+										!item || isNil(item?.position) ? 0 : item.position + 1,
 								} as PupilCollectionFragment
 							);
 

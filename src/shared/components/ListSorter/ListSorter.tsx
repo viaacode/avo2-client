@@ -1,9 +1,9 @@
 import { Button, Icon, IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { sortBy } from 'lodash-es';
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
-import { sortByPositionAsc } from '../../helpers';
 
 import './ListSorter.scss';
 
@@ -59,7 +59,7 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 };
 
 export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Button type="secondary" icon="trash-2" onClick={() => item.onSlice?.(item)} />
+	<Button type="secondary" icon="delete" onClick={() => item.onSlice?.(item)} />
 );
 
 // Main renderer
@@ -124,7 +124,7 @@ export const ListSorter: ListSorterType = ({
 
 	return (
 		<ul className="c-list-sorter">
-			{items?.sort(sortByPositionAsc).map((item, i) => {
+			{sortBy(items, (block) => block.position).map((item, i) => {
 				const j = items.length === i + 1 ? undefined : i;
 				return renderItem(item, j);
 			})}

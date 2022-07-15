@@ -18,7 +18,6 @@ import {
 	AssignmentResponseTableColumns,
 	AssignmentType,
 } from './assignment.types';
-import { AssignmentDetailsFormProps } from './components/AssignmentDetailsForm';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -135,7 +134,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
 }> = {
-	owner: (order: Avo.Search.OrderDirection) => ({
+	author: (order: Avo.Search.OrderDirection) => ({
 		owner: {
 			full_name: order,
 		},
@@ -204,43 +203,6 @@ export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
 	available_at: new Date().toISOString(),
 	answer_url: undefined,
 	deadline_at: undefined,
-});
-
-export const ASSIGNMENT_DETAILS_FORM_FIELDS = (
-	t: TFunction
-): Pick<
-	AssignmentDetailsFormProps,
-	'classrooms' | 'labels' | 'available_at' | 'deadline_at' | 'answer_url'
-> => ({
-	classrooms: {
-		label: t('assignment/assignment___klas'),
-		dictionary: {
-			placeholder: t('assignment/assignment___1-moderne-talen'),
-			empty: t('assignment/assignment___geen-klassen-gevonden'),
-		},
-	},
-	labels: {
-		label: t('assignment/assignment___label'),
-		dictionary: {
-			placeholder: t('assignment/assignment___geschiedenis'),
-			empty: t('assignment/assignment___geen-labels-gevonden'),
-		},
-	},
-	available_at: {
-		label: t('assignment/assignment___beschikbaar-vanaf'),
-	},
-	deadline_at: {
-		label: t('assignment/assignment___deadline'),
-		help: t(
-			'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
-		),
-	},
-	answer_url: {
-		label: `${t('assignment/assignment___link')} (${t('assignment/assignment___optioneel')})`,
-		help: t(
-			'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
-		),
-	},
 });
 
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {

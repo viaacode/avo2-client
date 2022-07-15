@@ -42,6 +42,7 @@ import {
 	GET_ASSIGNMENT_BY_UUID,
 	GET_ASSIGNMENT_IDS,
 	GET_ASSIGNMENT_RESPONSE,
+	GET_ASSIGNMENT_RESPONSE_BY_ID,
 	GET_ASSIGNMENT_RESPONSES,
 	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -57,6 +58,7 @@ import {
 	UPDATE_ASSIGNMENT_BLOCK,
 	UPDATE_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
+	UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
 } from './assignment.gql';
 import {
 	AssignmentBlockType,
@@ -96,7 +98,9 @@ export class AssignmentService {
 								assignment_label: { label: { _ilike: `%${trimmedFilterString}%` } },
 							},
 						},
-						{ assignment_type: { _ilike: `%${trimmedFilterString}%` } },
+						...(!canEditAssignments // Only search by teacher if user is not a teacher
+							? [{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } }]
+							: []),
 					],
 				});
 			}
@@ -418,6 +422,38 @@ export class AssignmentService {
 		}
 	}
 
+	static async updateAssignmentUpdatedAtDate(assignmentId: string): Promise<void> {
+		try {
+			const response = await dataService.mutate<{
+				data: { update_app_assignments_v2: { affected_rows: number } };
+			}>({
+				mutation: UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
+				variables: {
+					assignmentId,
+					updatedAt: new Date().toISOString(),
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			});
+
+			if (!response || !response.data || (response.errors && response.errors.length)) {
+				console.error('update assignment update_at date returned empty response', response);
+				throw new CustomError(
+					'Het aanpassen van de laatst aangepast datum van de opdracht is mislukt',
+					null,
+					{ response }
+				);
+			}
+		} catch (err) {
+			const error = new CustomError('Failed to update assignment updated_at date', err, {
+				assignmentId,
+				query: 'UPDATE_ASSIGNMENT_UPDATED_AT_DATE',
+			});
+
+			console.error(error);
+			throw error;
+		}
+	}
+
 	static async updateAssignmentResponse(
 		original: Avo.Assignment.Response_v2,
 		update: Partial<Avo.Assignment.Response_v2>
@@ -653,10 +689,12 @@ export class AssignmentService {
 		}
 
 		// clone the assignment
-		const newAssignment = {
+		const newAssignment: Partial<Avo.Assignment.Assignment_v2> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
+			available_at: new Date().toISOString(),
 			deadline_at: null,
+			answer_url: null,
 		};
 
 		delete newAssignment.id;
@@ -995,6 +1033,43 @@ export class AssignmentService {
 	}
 
 	/**
+	 * Get a response (and pupil collection) by assignmentResponseId
+	 */
+	static async getAssignmentResponseById(
+		assignmentResponseId: string
+	): Promise<Avo.Assignment.Response_v2 | undefined> {
+		try {
+			const response: ApolloQueryResult<{
+				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
+			}> = await dataService.query({
+				query: GET_ASSIGNMENT_RESPONSE_BY_ID,
+				variables: { assignmentResponseId },
+				fetchPolicy: 'no-cache',
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
+				response?.data?.app_assignment_responses_v2?.[0];
+
+			if (!assignmentResponse) {
+				return undefined;
+			}
+
+			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+
+			return assignmentResponse;
+		} catch (err) {
+			throw new CustomError('Failed to get assignment response from database', err, {
+				assignmentResponseId,
+				query: 'GET_ASSIGNMENT_RESPONSE',
+			});
+		}
+	}
+
+	/**
 	 * If the creation of the assignment response fails, we'll still continue with getting the assignment content
 	 * @param assignment assignment is passed since the tempAssignment has not been set into the state yet,
 	 * since we might need to get the assignment content as well and
@@ -1118,13 +1193,17 @@ export class AssignmentService {
 				return block;
 			});
 			try {
-				await dataService.mutate({
-					mutation: INSERT_ASSIGNMENT_BLOCKS,
-					variables: {
-						assignmentBlocks: blocks,
-					},
-					update: ApolloCacheManager.clearAssignmentCache,
-				});
+				// Insert fragments into assignment and update the updated_at date in parallel
+				await Promise.all([
+					dataService.mutate({
+						mutation: INSERT_ASSIGNMENT_BLOCKS,
+						variables: {
+							assignmentBlocks: blocks,
+						},
+						update: ApolloCacheManager.clearAssignmentCache,
+					}),
+					this.updateAssignmentUpdatedAtDate(assignmentId),
+				]);
 			} catch (err) {
 				const error = new CustomError('Failed to import collection to assignment', err, {
 					assignmentId,
@@ -1277,13 +1356,17 @@ export class AssignmentService {
 			thumbnail_path: thumbnailPath,
 		};
 
-		await dataService.mutate({
-			mutation: INSERT_ASSIGNMENT_BLOCKS,
-			variables: {
-				assignmentBlocks: [block],
-			},
-			update: ApolloCacheManager.clearAssignmentCache,
-		});
+		// Insert fragment into assignment and update the updated_at date in parallel
+		await Promise.all([
+			dataService.mutate({
+				mutation: INSERT_ASSIGNMENT_BLOCKS,
+				variables: {
+					assignmentBlocks: [block],
+				},
+				update: ApolloCacheManager.clearAssignmentCache,
+			}),
+			this.updateAssignmentUpdatedAtDate(assignmentId),
+		]);
 
 		return assignmentId;
 	}

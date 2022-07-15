@@ -84,13 +84,8 @@ export class PupilCollectionService {
 	static async getPupilCollectionIds(where: any = {}): Promise<string[]> {
 		let variables;
 		try {
-			const whereWithoutDeleted = {
-				...where,
-				is_deleted: { _eq: false },
-			};
-
 			variables = {
-				where: whereWithoutDeleted,
+				where,
 			};
 
 			const response = await dataService.query({
@@ -105,9 +100,9 @@ export class PupilCollectionService {
 				});
 			}
 
-			const pupilCollectionIds: string[] = (response?.data?.app_assignments_v2 || []).map(
-				(assignment: Avo.Assignment.Assignment_v2) => assignment.id
-			);
+			const pupilCollectionIds: string[] = (
+				response?.data?.app_assignment_responses_v2 || []
+			).map((assignmentResponse: Avo.Assignment.Response_v2) => assignmentResponse.id);
 
 			if (!pupilCollectionIds) {
 				throw new CustomError('Response does not contain any pupil collection ids', null, {
@@ -265,7 +260,7 @@ export class PupilCollectionService {
 		item: Avo.Item.Item,
 		assignmentResponseId: string,
 		itemTrimInfo?: ItemTrimInfo
-	): Promise<string> {
+	): Promise<Avo.Core.BlockItemBase> {
 		// Handle trim settings and thumbnail
 		const trimInfo: ItemTrimInfo = itemTrimInfo || {
 			hasCut: false,
@@ -296,7 +291,7 @@ export class PupilCollectionService {
 			thumbnail_path: thumbnailPath,
 		};
 
-		await dataService.mutate({
+		const response = await dataService.mutate({
 			mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
 			variables: {
 				pupilCollectionBlocks: [block],
@@ -304,6 +299,22 @@ export class PupilCollectionService {
 			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
-		return assignmentResponseId;
+		const insertedBlock = response?.data?.insert_app_pupil_collection_blocks?.returning?.[0];
+
+		if (!insertedBlock) {
+			throw new Error(
+				JSON.stringify({
+					message: 'Failed to insert block into pupil collection',
+					additionalInfo: {
+						block,
+						assignmentResponseId,
+					},
+				})
+			);
+		}
+
+		insertedBlock.item_meta = item;
+
+		return insertedBlock;
 	}
 }

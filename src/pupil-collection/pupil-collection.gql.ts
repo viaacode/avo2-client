@@ -22,6 +22,7 @@ export const GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW = gql`
 			}
 		) {
 			id
+			assignment_id
 			collection_title
 			created_at
 			updated_at
@@ -30,6 +31,7 @@ export const GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW = gql`
 			}
 			owner_profile_id
 			assignment {
+				id
 				title
 				deadline_at
 				owner {
@@ -127,6 +129,21 @@ export const INSERT_PUPIL_COLLECTION_BLOCKS = gql`
 	) {
 		insert_app_pupil_collection_blocks(objects: $pupilCollectionBlocks) {
 			affected_rows
+			returning {
+				id
+				created_at
+				custom_description
+				end_oc
+				custom_title
+				fragment_id
+				position
+				start_oc
+				thumbnail_path
+				type
+				updated_at
+				use_custom_fields
+				assignment_response_id
+			}
 		}
 	}
 `;
