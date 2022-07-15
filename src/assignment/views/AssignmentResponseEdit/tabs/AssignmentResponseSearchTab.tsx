@@ -11,8 +11,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { UrlUpdateType } from 'use-query-params';
 
 import {
 	PermissionName,
@@ -41,11 +42,19 @@ interface AssignmentResponseSearchTabProps {
 	assignmentResponse: Avo.Assignment.Response_v2 | null;
 	filterState: any;
 	setFilterState: any;
+	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & UserProps
-> = ({ filterState, setFilterState, assignment, assignmentResponse, user }) => {
+> = ({
+	filterState,
+	setFilterState,
+	assignment,
+	assignmentResponse,
+	appendBlockToPupilCollection,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	// Data
@@ -97,11 +106,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	): Promise<void> => {
 		setIsAddToAssignmentModalOpen(false);
 		if (selectedItem && assignmentResponse?.id) {
-			await PupilCollectionService.importFragmentToPupilCollection(
+			const block = await PupilCollectionService.importFragmentToPupilCollection(
 				selectedItem,
 				assignmentResponse.id,
 				itemTrimInfo
 			);
+			appendBlockToPupilCollection(block);
+
 			ToastService.success(
 				t(
 					'assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'
@@ -116,12 +127,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		}
 	};
 
-	const handleNewFilterState = (newFilterState: FilterState) => {
-		// Update state
-		setFilterState({
-			...filterState,
-			...newFilterState,
-		});
+	const handleNewFilterState = (newFilterState: FilterState, urlPushType?: UrlUpdateType) => {
+		setFilterState(
+			{
+				...newFilterState,
+			},
+			urlPushType
+		);
 
 		// Trigger search event
 		if (assignment?.id) {
@@ -181,6 +193,9 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	};
 
 	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
+		if (assignment?.assignment_type !== 'BOUW') {
+			return null;
+		}
 		return (
 			<Toolbar>
 				<ToolbarLeft>
@@ -222,7 +237,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		);
 	};
 
-	const renderSearchContent = () => {
+	const renderSearchContent = useCallback(() => {
 		if (filterState.selectedSearchResultId) {
 			return (
 				<>
@@ -273,7 +288,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				/>
 			</Spacer>
 		);
-	};
+	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, user]);
 
 	return (
 		<>

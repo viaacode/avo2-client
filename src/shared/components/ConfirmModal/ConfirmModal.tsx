@@ -1,5 +1,3 @@
-import React, { FunctionComponent } from 'react';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -10,12 +8,14 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash';
+import React, { FunctionComponent } from 'react';
 
 import { sanitizeHtml } from '../../helpers';
 import i18n from '../../translations/i18n';
 import Html from '../Html/Html';
 
-interface ConfirmModalProps {
+export interface ConfirmModalProps {
 	title?: string;
 	body?: string;
 	cancelLabel?: string;
@@ -36,7 +36,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',
 	confirmButtonType = 'danger',
-	onClose = () => {},
+	onClose = noop,
 	isOpen,
 	deleteObjectCallback,
 }) => {
