@@ -551,6 +551,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				<AssignmentPupilPreview
 					assignment={assignment}
 					onClose={() => setIsViewAsPupilEnabled(false)}
+					isPreview
 				/>
 			);
 		}

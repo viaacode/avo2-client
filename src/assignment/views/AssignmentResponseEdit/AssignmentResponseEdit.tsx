@@ -64,6 +64,7 @@ interface AssignmentResponseEditProps {
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 	showBackButton: boolean;
+	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;
 	onShowPreviewClicked: () => void;
 }
@@ -74,6 +75,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	onAssignmentChanged,
 	setAssignmentResponse,
 	showBackButton,
+	isPreview = false,
 	onShowPreviewClicked,
 	user,
 }) => {
@@ -154,8 +156,19 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		setAssignmentResponse(assignmentResponseOriginal);
 	};
 
+	const handleFormErrors = (...args: any[]) => {
+		if (isPreview) {
+			ToastService.info('Je kan geen antwoord indienen op je eigen opdracht');
+		}
+		console.error(args);
+	};
+
 	const submit = async (formState: AssignmentResponseFormState) => {
 		try {
+			if (isPreview) {
+				ToastService.info('Je kan geen antwoord indienen op je eigen opdracht');
+				return;
+			}
 			if (!user?.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
 				return;
 			}
@@ -358,7 +371,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				<StickySaveBar
 					isVisible={isDirty}
 					onCancel={() => resetForm()}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onSave={handleSubmit(submit, handleFormErrors)}
 				/>
 			</div>
 		);
