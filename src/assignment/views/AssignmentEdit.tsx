@@ -53,6 +53,7 @@ import AssignmentUnload from '../components/AssignmentUnload';
 import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
 import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -66,7 +67,6 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { buildGlobalSearchLink } from '../helpers/build-search-link';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
