@@ -27,7 +27,7 @@ export const NO_RIGHTS_ERROR_MESSAGE = 'You are not allowed to run this query';
 type ApolloCache = { [key: string]: any };
 
 export class ApolloCacheManager {
-	public static clearBookmarksViewsPlays(cache: ApolloCache) {
+	public static clearBookmarksViewsPlays(cache: ApolloCache): void {
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_bookmarks');
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_views');
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_plays');
@@ -36,11 +36,11 @@ export class ApolloCacheManager {
 		ApolloCacheManager.deleteFromCache(cache, 'app_collection_plays');
 	}
 
-	public static clearItemCache(cache: ApolloCache) {
+	public static clearItemCache(cache: ApolloCache): void {
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_meta');
 	}
 
-	public static clearSharedItemsCache(cache: ApolloCache) {
+	public static clearSharedItemsCache(cache: ApolloCache): void {
 		ApolloCacheManager.deleteFromCache(cache, 'shared_items');
 	}
 
@@ -49,7 +49,7 @@ export class ApolloCacheManager {
 	 * eg: app_collections, app_collection_fragments, app_collections_aggregate
 	 * @param cache
 	 */
-	public static clearCollectionCache(cache: ApolloCache) {
+	public static clearCollectionCache(cache: ApolloCache): void {
 		ApolloCacheManager.deleteFromCache(cache, 'app_collection');
 	}
 
@@ -58,7 +58,7 @@ export class ApolloCacheManager {
 	 * eg: app_assignment, app_assignments_aggregate
 	 * @param cache
 	 */
-	public static clearAssignmentCache(cache: ApolloCache) {
+	public static clearAssignmentCache(cache: ApolloCache): void {
 		ApolloCacheManager.deleteFromCache(cache, 'app_assignment');
 		ApolloCacheManager.deleteFromCache(cache, 'app_assignment_blocks_v2');
 		ApolloCacheManager.deleteFromCache(cache, 'app_assignment_responses_v2');
@@ -70,7 +70,7 @@ export class ApolloCacheManager {
 	 * eg: content_nav_elements
 	 * @param cache
 	 */
-	public static clearNavElementsCache = (cache: ApolloCache) =>
+	public static clearNavElementsCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content_nav_elements');
 
 	/**
@@ -78,13 +78,13 @@ export class ApolloCacheManager {
 	 * eg: content
 	 * @param cache
 	 */
-	public static clearContentCache = (cache: ApolloCache) =>
+	public static clearContentCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content');
 
-	public static clearPermissionCache = (cache: ApolloCache) =>
+	public static clearPermissionCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'users_permission');
 
-	public static clearNotificationCache = (cache: ApolloCache) =>
+	public static clearNotificationCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'users_notifications');
 
 	/**
@@ -92,24 +92,24 @@ export class ApolloCacheManager {
 	 * eg: content
 	 * @param cache
 	 */
-	public static clearContentBlocksCache = (cache: ApolloCache) =>
+	public static clearContentBlocksCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content_blocks');
 
-	public static clearUserGroupCache = (cache: ApolloCache) =>
+	public static clearUserGroupCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'users_groups');
 
-	public static clearContentLabels = (cache: ApolloCache) =>
+	public static clearContentLabels = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content_labels');
 
-	public static clearInteractiveTourCache = (cache: ApolloCache) =>
+	public static clearInteractiveTourCache = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_interactive_tour');
 
-	public static clearUserCache = (cache: ApolloCache) => {
+	public static clearUserCache = (cache: ApolloCache): void => {
 		ApolloCacheManager.deleteFromCache(cache, 'shared_users');
 		ApolloCacheManager.deleteFromCache(cache, 'users_profile');
 	};
 
-	public static clearTranslations = (cache: ApolloCache) =>
+	public static clearTranslations = (cache: ApolloCache): void =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_site_variables');
 
 	private static deleteFromCache(cache: ApolloCache, substring: string) {

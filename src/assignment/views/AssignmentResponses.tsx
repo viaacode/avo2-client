@@ -19,7 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
-import { cloneDeep, get, isNil } from 'lodash-es';
+import { cloneDeep, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -39,6 +39,7 @@ import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ASSIGNMENTS_ID, ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
@@ -50,7 +51,6 @@ import {
 } from '../assignment.types';
 
 import './AssignmentOverview.scss';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 
 interface AssignmentResponsesProps extends DefaultSecureRouteProps<{ id: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -60,7 +60,7 @@ const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = 'desc';
 
 const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
-	onUpdate = () => {},
+	onUpdate = noop,
 	// history,
 	match,
 	user,

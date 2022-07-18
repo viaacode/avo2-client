@@ -39,6 +39,7 @@ import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -65,7 +66,6 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -133,6 +133,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 						),
 						icon: 'lock',
+						actionButtons: ['home'],
 					});
 					setAssigmentLoading(false);
 					return;
@@ -142,6 +143,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: 'alert-triangle',
+					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
 				return;
@@ -153,6 +155,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: 'alert-triangle',
+					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
 				return;
@@ -173,6 +176,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 					),
 					icon: 'lock',
+					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
 				return;
