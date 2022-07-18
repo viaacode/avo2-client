@@ -24,7 +24,8 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 					initialHtml: convertToHtml(block.custom_description),
 					controls: WYSIWYG_OPTIONS_AUTHOR,
 					onChange: (value) =>
-						setBlock(block, {
+						setBlock({
+							...block,
 							custom_description: value.toHTML(),
 						}),
 				}}
@@ -37,7 +38,8 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 				)}
 				checked={block.type === AssignmentBlockType.BOUW}
 				onChange={() => {
-					setBlock(block, {
+					setBlock({
+						...block,
 						type:
 							block.type === AssignmentBlockType.ZOEK
 								? AssignmentBlockType.BOUW

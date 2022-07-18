@@ -17,7 +17,7 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock })
 				label: t('assignment/views/assignment-edit___titel'),
 				placeholder: t('assignment/views/assignment-edit___instructies-of-omschrijving'),
 				value: block.custom_title || '',
-				onChange: (value) => setBlock(block, { custom_title: value }),
+				onChange: (value) => setBlock({ ...block, custom_title: value }),
 			}}
 			description={{
 				placeholder: t(
@@ -26,7 +26,8 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock })
 				initialHtml: convertToHtml(block.custom_description),
 				controls: WYSIWYG_OPTIONS_AUTHOR,
 				onChange: (value) =>
-					setBlock(block, {
+					setBlock({
+						...block,
 						custom_description: value.toHTML(),
 					}),
 			}}

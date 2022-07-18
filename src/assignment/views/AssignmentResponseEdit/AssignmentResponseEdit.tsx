@@ -58,6 +58,7 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
@@ -164,7 +165,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				assignmentResponseOriginal,
 				{
 					collection_title: formState.collection_title,
-					pupil_collection_blocks: formState.pupil_collection_blocks,
+					pupil_collection_blocks: cleanupTitleAndDescriptions(
+						formState.pupil_collection_blocks
+					),
 				}
 			);
 

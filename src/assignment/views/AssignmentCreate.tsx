@@ -32,8 +32,8 @@ import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEd
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { backToOverview } from '../helpers/links';
 import AssignmentUnload from '../components/AssignmentUnload';
+import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
@@ -45,6 +45,7 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
@@ -81,6 +82,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			const created = await AssignmentService.insertAssignment(
 				{
 					...assignment,
+					blocks: cleanupTitleAndDescriptions(assignment.blocks) as AssignmentBlock[],
 					owner_profile_id: user.profile?.id,
 					labels: [],
 				},

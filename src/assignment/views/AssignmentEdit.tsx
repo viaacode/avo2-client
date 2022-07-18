@@ -66,6 +66,7 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -189,6 +190,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					...original,
 					...assignment,
+					blocks: cleanupTitleAndDescriptions(assignment.blocks) as AssignmentBlock[],
 				}
 			);
 
