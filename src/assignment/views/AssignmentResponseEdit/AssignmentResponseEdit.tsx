@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	BlockHeading,
+	Button,
 	Container,
 	Flex,
 	Icon,
@@ -299,6 +300,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						control={control}
 						onShowPreviewClicked={onShowPreviewClicked}
 						setTab={setTab}
+						setFilterState={(newState: PupilSearchFilterState) =>
+							setFilterState(newState)
+						}
 					/>
 				);
 
@@ -309,6 +313,20 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						blocks={assignment?.blocks || []}
 						pastDeadline={pastDeadline}
 						setTab={setTab}
+						buildSearchLink={(filters: Partial<Avo.Search.Filters>) => {
+							return (
+								<Button
+									type="inline-link"
+									label={filters.serie?.[0]}
+									onClick={() => {
+										setFilterState({
+											filters,
+											tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
+										});
+									}}
+								/>
+							);
+						}}
 					/>
 				);
 		}

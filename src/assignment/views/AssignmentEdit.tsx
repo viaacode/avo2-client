@@ -66,6 +66,7 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -224,7 +225,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,

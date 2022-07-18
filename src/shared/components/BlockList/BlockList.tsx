@@ -54,6 +54,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 				return layout(
 					<CollectionFragmentTypeItem
 						{...config?.ITEM}
+						block={block}
 						title={{
 							...config?.ITEM?.title,
 							block,
@@ -63,7 +64,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 							...config?.ITEM?.flowPlayer,
 							block,
 						}}
-						meta={{ ...config?.ITEM?.meta, block }}
+						meta={{ ...config?.ITEM?.meta }}
 					/>
 				);
 

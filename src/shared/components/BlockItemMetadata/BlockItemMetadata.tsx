@@ -1,17 +1,18 @@
 import { Avo } from '@viaa/avo2-types';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
-import { APP_PATH } from '../../constants';
-import { SearchFilter } from '../../search/search.const';
-import { buildLink, formatDate } from '../../shared/helpers';
+import { formatDate } from '../../helpers';
 
-export type AssignmentBlockMetaProps = {
+export type BlockItemMetadataProps = {
 	block: Avo.Core.BlockItemBase;
+	buildSeriesLink?: (series: string) => ReactNode | string;
 };
 
-export const AssignmentBlockMeta: FC<AssignmentBlockMetaProps> = ({ block }) => {
+export const BlockItemMetadata: FC<BlockItemMetadataProps> = ({
+	block,
+	buildSeriesLink = (series: string) => series,
+}) => {
 	const [t] = useTranslation();
 
 	const organisation = block.item_meta?.organisation?.name;
@@ -35,17 +36,7 @@ export const AssignmentBlockMeta: FC<AssignmentBlockMetaProps> = ({ block }) => 
 
 			{series && (
 				<div>
-					{t('assignment/views/assignment-edit___reeks')}:{' '}
-					<Link
-						target="_blank"
-						to={buildLink(APP_PATH.SEARCH.route, undefined, {
-							filters: JSON.stringify({
-								[SearchFilter.serie]: [series],
-							}),
-						})}
-					>
-						{series}
-					</Link>
+					{t('assignment/views/assignment-edit___reeks')}: {buildSeriesLink(series)}
 				</div>
 			)}
 		</section>

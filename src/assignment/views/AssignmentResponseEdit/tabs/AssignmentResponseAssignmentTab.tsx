@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorView } from '../../../../error/views';
@@ -10,6 +10,7 @@ interface AssignmentResponseAssignmentTabProps {
 	blocks: Avo.Assignment.Assignment_v2['blocks'] | null;
 	pastDeadline: boolean;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
+	buildSearchLink: (props: Partial<Avo.Search.Filters>) => ReactNode | string;
 }
 
 const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssignmentTabProps> = ({
@@ -42,9 +43,6 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 						},
 					},
 					ITEM: {
-						meta: {
-							canClickSeries: false,
-						},
 						flowPlayer: {
 							canPlay: true,
 						},
