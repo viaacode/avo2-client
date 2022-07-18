@@ -158,7 +158,11 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	const handleFormErrors = (...args: any[]) => {
 		if (isPreview) {
-			ToastService.info('Je kan geen antwoord indienen op je eigen opdracht');
+			ToastService.info(
+				t(
+					'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
+				)
+			);
 		}
 		console.error(args);
 	};
@@ -166,7 +170,11 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const submit = async (formState: AssignmentResponseFormState) => {
 		try {
 			if (isPreview) {
-				ToastService.info('Je kan geen antwoord indienen op je eigen opdracht');
+				ToastService.info(
+					t(
+						'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
+					)
+				);
 				return;
 			}
 			if (!user?.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
