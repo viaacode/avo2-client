@@ -1186,7 +1186,7 @@ export class AssignmentService {
 					block.original_description = withDescription
 						? fragment.custom_description
 						: null;
-					block.use_custom_fields = false;
+					block.use_custom_fields = !withDescription;
 					block.type = AssignmentBlockType.ITEM;
 				}
 
