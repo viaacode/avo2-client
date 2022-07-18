@@ -1320,6 +1320,7 @@
   "assignment/hooks/assignment-pupil-tabs___zoeken": "Zoeken",
   "assignment/hooks/assignment-tabs___details": "Details",
   "assignment/hooks/assignment-tabs___inhoud": "Inhoud",
+  "assignment/modals/add-block-modal___het-is-niet-mogelijk-om-meer-dan-een-zoekoefening-per-opdracht-te-gebruiken": "Het is niet mogelijk om meer dan één zoekoefening per opdracht te gebruiken",
   "assignment/modals/add-block___instructies-tekst": "Instructies & tekst",
   "assignment/modals/add-block___kijken-luisteren-collectie": "Kijken & luisteren: collectie",
   "assignment/modals/add-block___kijken-luisteren-fragment": "Kijken & luisteren: fragment",
