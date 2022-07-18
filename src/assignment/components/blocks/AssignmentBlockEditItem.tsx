@@ -50,6 +50,7 @@ export const AssignmentBlockEditItem: FC<
 			undefined,
 		noTitle:
 			block.noTitle ||
+			block.custom_title ||
 			(block as unknown as AssignmentBlock).original_title ||
 			block.item_meta?.title ||
 			undefined,
