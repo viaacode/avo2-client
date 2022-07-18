@@ -50,6 +50,7 @@ import {
 } from '../assignment.types';
 
 import './AssignmentOverview.scss';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 
 interface AssignmentResponsesProps extends DefaultSecureRouteProps<{ id: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -175,12 +176,36 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (
+				PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS) ||
+				PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENTS) ||
+				PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES) ||
+				PermissionService.hasPerm(user, PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES)
+			) {
+				setLoadingInfo({
+					message: t(
+						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+					),
+					icon: 'lock',
+					state: 'error',
+				});
+			}
 			const assignmentId = match.params.id;
 
 			const assignment = await AssignmentService.fetchAssignmentById(assignmentId);
 
 			setAssignment(assignment);
 		} catch (err) {
+			if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
+				setLoadingInfo({
+					message: t(
+						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+					),
+					icon: 'lock',
+					state: 'error',
+				});
+				return;
+			}
 			setLoadingInfo({
 				state: 'error',
 				message: t(
@@ -245,8 +270,17 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	}, [fetchAssignment, match]);
 
 	useEffect(() => {
-		if (!isNil(canViewAssignmentResponses)) {
+		if (canViewAssignmentResponses) {
 			fetchAssignmentResponses();
+		} else if (!isNil(canViewAssignmentResponses)) {
+			// canViewAssignmentResponses: false
+			setLoadingInfo({
+				message: t(
+					'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+				),
+				icon: 'lock',
+				state: 'error',
+			});
 		}
 	}, [canViewAssignmentResponses, fetchAssignmentResponses]);
 

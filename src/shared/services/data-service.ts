@@ -22,6 +22,8 @@ export const dataService = new ApolloClient({
 	link: logoutMiddleware.concat(httpLink),
 });
 
+export const NO_RIGHTS_ERROR_MESSAGE = 'You are not allowed to run this query';
+
 type ApolloCache = { [key: string]: any };
 
 export class ApolloCacheManager {

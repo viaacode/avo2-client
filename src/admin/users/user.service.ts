@@ -1,11 +1,10 @@
+import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
-
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
-import { UserSchema } from '@viaa/avo2-types/types/user';
 
 import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
@@ -22,10 +21,10 @@ import {
 	GET_IDPS,
 	GET_PROFILE_IDS,
 	GET_PROFILE_NAMES,
-	GET_USERS,
-	GET_USERS_IN_SAME_COMPANY,
 	GET_USER_BY_ID,
 	GET_USER_TEMP_ACCESS_BY_ID,
+	GET_USERS,
+	GET_USERS_IN_SAME_COMPANY,
 	UPDATE_USER_TEMP_ACCESS_BY_ID,
 } from './user.gql';
 import {
@@ -97,7 +96,7 @@ export class UserService {
 		userId: string,
 		tempAccess: UserTempAccess,
 		profileId: string
-	) => {
+	): Promise<void> => {
 		try {
 			// Update a users's temp access
 			await dataService.mutate({
