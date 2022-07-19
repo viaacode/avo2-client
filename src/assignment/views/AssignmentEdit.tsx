@@ -322,7 +322,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					icon="plus"
 					type="secondary"
 					onClick={() => {
-						addBlockModal.setEntity(item?.position);
+						addBlockModal.setEntity((item?.position || 0) + 1);
 						addBlockModal.setOpen(true);
 					}}
 				/>
