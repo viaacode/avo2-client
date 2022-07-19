@@ -1274,7 +1274,7 @@ export class AssignmentService {
 
 	static async createAssignmentFromFragment(
 		user: Avo.User.User,
-		item: Avo.Item.Item
+		item: Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }
 	): Promise<string> {
 		const assignmentToSave = {
 			title: item.title,
@@ -1308,6 +1308,8 @@ export class AssignmentService {
 			fragment_id: item.external_id,
 			type: 'ITEM',
 			position: 0,
+			start_oc: item.start_oc,
+			end_oc: item.end_oc,
 		};
 
 		await dataService.mutate({
