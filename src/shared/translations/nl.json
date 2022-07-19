@@ -1498,6 +1498,7 @@
   "assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail": "Leerlingencollectie detail",
   "assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt": "De opdracht antwoord entry kon niet worden aangemaakt",
   "assignment/views/assignment-response-edit/assignment-response-edit-page___je-bent-aan-het-kijken-als-lesgever": "Je bent aan het kijken als lesgever",
+  "assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien": "Je kan geen antwoorden indienen op deze opdracht aangezien je geen leerling bent. Gebruikt de \"Bekijk als leerling\" knop om te zien we je leerlingen zien.",
   "assignment/views/assignment-response-edit/assignment-response-edit-page___sluit-preview": "Sluit preview",
   "assignment/views/assignment-response-edit/assignment-response-edit___de-collectie-is-opgeslagen": "De collectie is opgeslagen",
   "assignment/views/assignment-response-edit/assignment-response-edit___het-opslaan-van-de-collectie-is-mislukt": "Het opslaan van de collectie is mislukt",

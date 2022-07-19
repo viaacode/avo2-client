@@ -15,6 +15,10 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { InteractiveTour } from '../../../shared/components';
@@ -57,6 +61,18 @@ const AssignmentResponseEditPage: FunctionComponent<
 	const fetchAssignment = useCallback(async () => {
 		try {
 			setAssignmentLoading(true);
+
+			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
+			if (!PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE)) {
+				setAssignmentError({
+					message: t(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien'
+					),
+					icon: 'user-student',
+				});
+				setAssignmentLoading(false);
+				return;
+			}
 
 			// Get assignment
 			setAssignmentError(null);
