@@ -17,7 +17,7 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetadata from '../components/AssignmentMetadata';
 
 type AssignmentPupilCollectionDetailProps = DefaultSecureRouteProps<{
-	id: string;
+	responseId: string;
 	assignmentId: string;
 }>;
 
@@ -30,10 +30,11 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignmentResponse, setAssignmentResponse] =
 		useState<Avo.Assignment.Response_v2 | null>();
+	const assignmentId = match.params.assignmentId;
+	const assignmentResponseId = match.params.responseId;
 
 	const fetchAssignmentResponse = useCallback(
 		async (tempAssignment: Avo.Assignment.Assignment_v2) => {
-			const assignmentResponseId = match.params.id;
 			const canViewAssignmentResponses = await PermissionService.hasPermissions(
 				[
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
@@ -54,13 +55,11 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 
 			return AssignmentService.getAssignmentResponseById(assignmentResponseId);
 		},
-		[setAssignmentResponse, match.params.id]
+		[setAssignmentResponse, assignmentResponseId]
 	);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			const assignmentId = match.params.assignmentId;
-
 			const tempAssignment = await AssignmentService.fetchAssignmentById(assignmentId);
 
 			setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
@@ -70,7 +69,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			console.error(
 				new CustomError('Failed to fetch assignment and response', err, {
 					user,
-					id: match.params.id,
+					id: assignmentResponseId,
 				})
 			);
 			setLoadingInfo({
@@ -80,7 +79,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 				),
 			});
 		}
-	}, [setAssignment, setLoadingInfo, match.params.assignmentId, t, user]);
+	}, [setAssignment, setLoadingInfo, assignmentResponseId, t, user]);
 
 	// Effects
 

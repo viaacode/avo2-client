@@ -2,19 +2,19 @@ import { convertToHtml } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { FlowPlayerWrapper } from '../../../shared/components';
+import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
+import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import { EditableBlockItem, EditBlockProps } from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,
 } from '../AssignmentBlockDescriptionButtons';
-import { AssignmentBlockMeta } from '../AssignmentBlockMeta';
 
 function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableBlockItem) {
 	if ((block as EditableBlockItem).editMode) {
@@ -30,9 +30,14 @@ function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableBlockItem) {
 }
 
 export const AssignmentBlockEditItem: FC<
-	EditBlockProps & { AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[] }
-> = ({ block, setBlock, AssignmentBlockItemDescriptionTypes }) => {
+	EditBlockProps & {
+		AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[];
+		buildSearchLink?: (props: Partial<Avo.Search.Filters>) => ReactNode | string;
+	}
+> = ({ block, setBlock, AssignmentBlockItemDescriptionTypes, buildSearchLink }) => {
 	const [t] = useTranslation();
+
+	const [cutButton, cutModal] = useCutModal();
 	const editableBlock = {
 		...block,
 		editMode: block.editMode || getBlockEditMode(block),
@@ -88,17 +93,31 @@ export const AssignmentBlockEditItem: FC<
 				const item = editableBlock.item_meta as ItemSchema;
 
 				return (
-					<FlowPlayerWrapper
-						item={item}
-						poster={item.thumbnail_path}
-						external_id={item.external_id}
-						duration={item.duration}
-						title={item.title}
-						cuePoints={{
-							start: editableBlock.start_oc,
-							end: editableBlock.end_oc,
-						}}
-					/>
+					<>
+						<FlowPlayerWrapper
+							item={item}
+							poster={item.thumbnail_path}
+							external_id={item.external_id}
+							duration={item.duration}
+							title={item.title}
+							cuePoints={{
+								start: editableBlock.start_oc,
+								end: editableBlock.end_oc,
+							}}
+						/>
+
+						{cutButton({
+							className: 'u-spacer-top',
+						})}
+						{cutModal({
+							itemMetaData: item,
+							fragment: {
+								...block,
+								external_id: `${editableBlock.id}`,
+							},
+							onConfirm: (update) => setBlock({ ...editableBlock, ...update }),
+						})}
+					</>
 				);
 			}}
 			buttons={
@@ -140,7 +159,12 @@ export const AssignmentBlockEditItem: FC<
 					: undefined
 			}
 		>
-			<AssignmentBlockMeta block={editableBlock} />
+			<BlockItemMetadata
+				block={editableBlock}
+				buildSeriesLink={
+					buildSearchLink ? (series) => buildSearchLink({ serie: [series] }) : undefined
+				}
+			/>
 		</CustomiseItemForm>
 	);
 };

@@ -33,6 +33,7 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import AssignmentUnload from '../components/AssignmentUnload';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -129,7 +130,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
@@ -187,7 +188,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					icon="plus"
 					type="secondary"
 					onClick={() => {
-						addBlockModal.setEntity(item?.position);
+						addBlockModal.setEntity((item?.position || 0) + 1);
 						addBlockModal.setOpen(true);
 					}}
 				/>

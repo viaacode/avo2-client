@@ -9,6 +9,7 @@ import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEdi
 
 export function useEditBlocks(
 	setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
+	buildSearchLink?: (props: Partial<Avo.Search.Filters>) => ReactNode | string,
 	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
 ): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
@@ -22,6 +23,7 @@ export function useEditBlocks(
 						setBlock={setBlock}
 						block={block}
 						AssignmentBlockItemDescriptionTypes={AssignmentBlockItemDescriptionTypes}
+						buildSearchLink={buildSearchLink}
 					/>
 				);
 

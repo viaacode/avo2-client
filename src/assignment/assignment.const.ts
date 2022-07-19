@@ -120,13 +120,13 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 		sortable: true,
 		dataType: TableColumnDataType.dateTime,
 	},
-	...getLastEditColumn(canEditAssignments),
 ];
 
 export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	canEditAssignments: boolean | null
 ): AssignmentColumn[] => [
 	...GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(canEditAssignments),
+	...getLastEditColumn(canEditAssignments),
 	...getResponseColumn(canEditAssignments),
 	...getActionsColumn(canEditAssignments),
 ];

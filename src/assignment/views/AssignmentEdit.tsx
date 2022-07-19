@@ -33,13 +33,13 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { ErrorView } from '../../error/views';
+import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { ROUTE_PARTS } from '../../shared/constants';
-import { CustomError } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../shared/services';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -53,6 +53,7 @@ import AssignmentUnload from '../components/AssignmentUnload';
 import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
 import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -77,6 +78,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignmentLoading, setAssigmentLoading] = useState(false);
+	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
+		null
+	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
@@ -103,7 +108,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	);
 
 	// UI
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -117,49 +121,85 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Get query string variables and fetch the existing object
 	const fetchAssignment = useCallback(async () => {
 		try {
+			setAssigmentLoading(true);
+			setAssigmentError(null);
 			const id = match.params.id;
-			const res = await AssignmentService.fetchAssignmentById(id);
+			let tempAssignment;
 
-			if (!res) {
-				// Something went wrong during init/fetch
-				throw new CustomError('Failed to load resource.');
+			try {
+				tempAssignment = await AssignmentService.fetchAssignmentById(id);
+			} catch (err) {
+				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
+					setAssigmentError({
+						message: t(
+							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+						),
+						icon: 'lock',
+						actionButtons: ['home'],
+					});
+					setAssigmentLoading(false);
+					return;
+				}
+				setAssigmentError({
+					message: t(
+						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
+					),
+					icon: 'alert-triangle',
+					actionButtons: ['home'],
+				});
+				setAssigmentLoading(false);
+				return;
+			}
+
+			if (!tempAssignment) {
+				setAssigmentError({
+					message: t(
+						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
+					),
+					icon: 'alert-triangle',
+					actionButtons: ['home'],
+				});
+				setAssigmentLoading(false);
+				return;
 			}
 
 			if (
 				!(await PermissionService.hasPermissions(
 					[
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: res },
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: res },
+						{ name: PermissionName.EDIT_ASSIGNMENTS, obj: tempAssignment },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
 					],
 					user
 				))
 			) {
-				history.push(`/${ROUTE_PARTS.assignments}/${id}`);
-				ToastService.info(
-					t(
-						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken-maar-je-kan-ze-wel-bekijken'
-					)
-				);
+				setAssigmentError({
+					message: t(
+						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+					),
+					icon: 'lock',
+					actionButtons: ['home'],
+				});
+				setAssigmentLoading(false);
 				return;
 			}
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
-			setOriginal(res);
-			setAssignment(res);
-			setAssignmentHasResponses(res.responses.length > 0);
+			setOriginal(tempAssignment);
+			setAssignment(tempAssignment);
+			setAssignmentHasResponses(tempAssignment.responses.length > 0);
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
-			setLoadingInfo({
-				state: 'error',
+			setAssigmentError({
 				message: t(
 					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
 				),
 				icon: 'alert-triangle',
 			});
 		}
-	}, [user, match.params, setLoadingInfo, t, history, setOriginal, setAssignment]);
+		setAssigmentLoading(false);
+	}, [user, match.params, t, history, setOriginal, setAssignment]);
 
 	// Events
 
@@ -226,7 +266,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
@@ -284,7 +324,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					icon="plus"
 					type="secondary"
 					onClick={() => {
-						addBlockModal.setEntity(item?.position);
+						addBlockModal.setEntity((item?.position || 0) + 1);
 						addBlockModal.setOpen(true);
 					}}
 				/>
@@ -474,13 +514,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		trigger();
 	}, [assignment, setValue, trigger]);
 
-	// Set the loading state when the form is ready
-	useEffect(() => {
-		if (loadingInfo.state !== 'loaded') {
-			assignment && setLoadingInfo({ state: 'loaded' });
-		}
-	}, [assignment, loadingInfo, setLoadingInfo]);
-
 	// Reset the form when the original changes
 	useEffect(() => {
 		original && reset();
@@ -548,11 +581,26 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	);
 
 	const renderPageContent = () => {
+		if (assignmentLoading) {
+			if (!assignment) {
+				return (
+					<Spacer margin="top-extra-large">
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					</Spacer>
+				);
+			}
+		}
+		if (assignmentError) {
+			return <ErrorView {...assignmentError} />;
+		}
 		if (isViewAsPupilEnabled) {
 			return (
 				<AssignmentPupilPreview
 					assignment={assignment}
 					onClose={() => setIsViewAsPupilEnabled(false)}
+					isPreview
 				/>
 			);
 		}
@@ -576,12 +624,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				/>
 			</MetaTags>
 
-			<LoadingErrorLoadedComponent
-				dataObject={assignment}
-				render={renderPageContent}
-				loadingInfo={loadingInfo}
-				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
-			/>
+			{renderPageContent()}
 		</>
 	);
 };

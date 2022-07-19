@@ -5,6 +5,7 @@ import {
 	Column,
 	Container,
 	Dropdown,
+	DropdownContent,
 	EnglishContentType,
 	Flex,
 	Grid,
@@ -17,7 +18,6 @@ import {
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
-	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -30,6 +30,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, {
@@ -87,6 +88,7 @@ import {
 } from '../../shared/helpers/default-render-search-link';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser from '../../shared/hocs/withUser';
+import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -141,6 +143,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	const itemId = id || match.params.id;
 
 	const [cuePoint] = useQueryParam('t', StringParam);
+	const [cutButton, cutModal] = useCutModal();
 
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -385,11 +388,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		return null;
 	};
 
-	const createNewAssignment = async () => {
-		if (!item) {
+	const createNewAssignment = async (
+		source: (ItemSchema & { start_oc?: number | null; end_oc?: number | null }) | null = item
+	) => {
+		if (!source) {
 			return;
 		}
-		const assignmentId = await AssignmentService.createAssignmentFromFragment(user, item);
+
+		const assignmentId = await AssignmentService.createAssignmentFromFragment(user, source);
+
 		history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
 	};
 
@@ -648,17 +655,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	};
 
 	const defaultRenderActionButtons = () => {
-		const createAssignmentOptions = [
-			{
-				label: t('item/views/item-detail___nieuwe-opdracht'),
-				id: ITEM_ACTIONS.createAssignment,
-			},
-			{
-				label: t('item/views/item-detail___bestaande-opdracht'),
-				id: ITEM_ACTIONS.importToAssignment,
-			},
-		];
-
 		return (
 			<Toolbar>
 				<ToolbarLeft>
@@ -688,10 +684,30 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 									onClose={() => setIsCreateAssignmentDropdownOpen(false)}
 									onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
 								>
-									<MenuContent
-										menuItems={createAssignmentOptions}
-										onClick={executeAction}
-									/>
+									<DropdownContent>
+										<Flex orientation="vertical">
+											{cutButton({
+												className: 'u-m-0',
+												icon: undefined,
+												id: ITEM_ACTIONS.createAssignment,
+												label: t(
+													'item/views/item-detail___nieuwe-opdracht'
+												),
+												type: 'borderless',
+											})}
+											<Button
+												className="u-m-0"
+												id={ITEM_ACTIONS.importToAssignment}
+												label={t(
+													'item/views/item-detail___bestaande-opdracht'
+												)}
+												onClick={() =>
+													executeAction(ITEM_ACTIONS.importToAssignment)
+												}
+												type="borderless"
+											/>
+										</Flex>
+									</DropdownContent>
 								</Dropdown>
 							)}
 
@@ -969,6 +985,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						secondaryButton: t('item/views/item-detail___annuleer'),
 					}}
 				/>
+				{item &&
+					cutModal({
+						itemMetaData: item,
+						fragment: {
+							...item,
+							start_oc: null,
+							end_oc: null,
+						},
+						onConfirm: (update) => createNewAssignment({ ...item, ...update }),
+					})}
 			</>
 		);
 	};
