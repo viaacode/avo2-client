@@ -1,6 +1,7 @@
 import {
 	Button,
 	ButtonToolbar,
+	Container,
 	Flex,
 	FlexItem,
 	Form,
@@ -40,6 +41,8 @@ import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
+
+import './AddItemsModals.scss';
 
 interface ImportToAssignmentModalProps {
 	user: Avo.User.User;
@@ -253,17 +256,19 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	const renderModalBody = () => {
 		return (
 			<>
-				<Form type="inline">
-					<FormGroup inlineMode="grow">
-						<TextInput
-							className="c-assignment-overview__search-input"
-							icon="filter"
-							value={filterString}
-							onChange={setFilterString}
-							disabled={!assignments}
-						/>
-					</FormGroup>
-				</Form>
+				<Container mode="horizontal">
+					<Form type="inline">
+						<FormGroup inlineMode="grow">
+							<TextInput
+								className="c-assignment-overview__search-input"
+								icon="filter"
+								value={filterString}
+								onChange={setFilterString}
+								disabled={!assignments}
+							/>
+						</FormGroup>
+					</Form>
+				</Container>
 
 				<Table
 					columns={tableColumns}
@@ -289,8 +294,10 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					showRadioButtons
 					selectedItemIds={selectedAssignmentId ? [selectedAssignmentId] : []}
 					onSelectionChanged={handleSelectedAssignmentChanged}
+					onRowClick={(assignment) => setSelectedAssignmentId(assignment.id)}
 				/>
-				{renderFooterActions()}
+
+				<Container mode="horizontal">{renderFooterActions()}</Container>
 			</>
 		);
 	};
@@ -302,7 +309,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 			size="large"
 			onClose={onClose}
 			scrollable
-			className="c-content"
+			className="c-content c-import-to-assignment-modal"
 		>
 			<ModalBody>
 				<LoadingErrorLoadedComponent

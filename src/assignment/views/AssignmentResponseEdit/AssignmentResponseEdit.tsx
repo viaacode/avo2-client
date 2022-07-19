@@ -29,6 +29,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { CollectionBlockType } from '../../../collection/collection.const';
 import { FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
@@ -48,6 +49,7 @@ import {
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
@@ -64,6 +66,7 @@ interface AssignmentResponseEditProps {
 	assignmentResponse: Avo.Assignment.Response_v2;
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 	showBackButton: boolean;
+	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;
 	onShowPreviewClicked: () => void;
 }
@@ -74,6 +77,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	onAssignmentChanged,
 	setAssignmentResponse,
 	showBackButton,
+	isPreview = false,
 	onShowPreviewClicked,
 	user,
 }) => {
@@ -115,7 +119,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	];
 	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,
-		assignmentResponse?.pupil_collection_blocks?.length || 0,
+		assignmentResponse?.pupil_collection_blocks?.filter(
+			(b) => b.type === CollectionBlockType.ITEM
+		)?.length || 0,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 		(newTab: string) => {
@@ -154,8 +160,27 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		setAssignmentResponse(assignmentResponseOriginal);
 	};
 
+	const handleFormErrors = (...args: any[]) => {
+		if (isPreview) {
+			ToastService.info(
+				t(
+					'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
+				)
+			);
+		}
+		console.error(args);
+	};
+
 	const submit = async (formState: AssignmentResponseFormState) => {
 		try {
+			if (isPreview) {
+				ToastService.info(
+					t(
+						'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
+					)
+				);
+				return;
+			}
 			if (!user?.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
 				return;
 			}
@@ -299,6 +324,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						control={control}
 						onShowPreviewClicked={onShowPreviewClicked}
 						setTab={setTab}
+						setFilterState={(newState: PupilSearchFilterState) =>
+							setFilterState(newState)
+						}
 					/>
 				);
 
@@ -309,6 +337,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						blocks={assignment?.blocks || []}
 						pastDeadline={pastDeadline}
 						setTab={setTab}
+						buildSearchLink={buildAssignmentSearchLink(setFilterState)}
 					/>
 				);
 		}
@@ -358,7 +387,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				<StickySaveBar
 					isVisible={isDirty}
 					onCancel={() => resetForm()}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onSave={handleSubmit(submit, handleFormErrors)}
 				/>
 			</div>
 		);

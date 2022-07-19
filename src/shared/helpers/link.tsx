@@ -207,13 +207,11 @@ export const navigateToContentType = (
 					buildLink(
 						APP_PATH.SEARCH.route,
 						{},
-						queryString.stringify(
-							fromPairs(
-								map(queryParams, (queryParamValue, queryParam) => [
-									queryParam,
-									JSON.stringify(queryParamValue),
-								])
-							)
+						fromPairs(
+							map(queryParams, (queryParamValue, queryParam) => [
+								queryParam,
+								JSON.stringify(queryParamValue),
+							])
 						)
 					),
 					history,

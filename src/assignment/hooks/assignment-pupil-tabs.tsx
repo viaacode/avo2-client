@@ -10,7 +10,7 @@ import { useAssignmentPastDeadline } from './assignment-past-deadline';
 
 export function useAssignmentPupilTabs(
 	assignment: Avo.Assignment.Assignment_v2 | null,
-	numOfPupilCollectionBlocks: number,
+	numOfPupilCollectionFragments: number,
 	activeTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
 ): [
@@ -65,7 +65,7 @@ export function useAssignmentPupilTabs(
 											}
 											className={animatePill ? 'animated' : undefined}
 										>
-											{numOfPupilCollectionBlocks}
+											{numOfPupilCollectionFragments}
 										</Pill>
 									</>
 								),
@@ -77,7 +77,7 @@ export function useAssignmentPupilTabs(
 				...item,
 				active: item.id === activeTab,
 			})),
-		[assignment, t, activeTab, numOfPupilCollectionBlocks, animatePill]
+		[assignment, t, activeTab, numOfPupilCollectionFragments, animatePill]
 	);
 
 	const onTabClick = useCallback(

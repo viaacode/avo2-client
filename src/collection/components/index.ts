@@ -1,6 +1,5 @@
 export { default as AutoplayCollectionModal } from './modals/AutoplayCollectionModal';
 export { default as CollectionFragmentFlowPlayer } from './CollectionFragmentFlowPlayer';
-export { default as CollectionFragmentMeta } from './CollectionFragmentMeta';
 export { default as CollectionFragmentRichText } from './CollectionFragmentRichText';
 export { default as CollectionFragmentTitle } from './CollectionFragmentTitle';
 export { default as CollectionFragmentTypeText } from '../../shared/components/BlockList/blocks/CollectionFragmentTypeText';
