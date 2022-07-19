@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
+import { AddToAssignmentModal } from '../../item/components';
+import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
@@ -45,6 +47,8 @@ export function useBlockListModals(
 
 	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
 	const [isAddCollectionModalOpen, setIsAddCollectionModalOpen] = useState<boolean>(false);
+	const [isTrimItemModalOpen, setIsTrimItemModalOpen] = useState<boolean>(false);
+	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 
 	const ui = (
 		<>
@@ -118,22 +122,44 @@ export function useBlockListModals(
 
 							// fetch item details
 							const item_meta =
-								(await ItemsService.fetchItemByExternalId(id)) || undefined;
-							const newBlocks = insertMultipleAtPosition(blocks, {
-								id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
-								item_meta,
-								type: AssignmentBlockType.ITEM,
-								fragment_id: id,
-								position: getAddBlockModalPosition,
-							} as AssignmentBlock);
-
-							setBlocks(newBlocks);
-
-							// Finish by triggering any configured callback
-							const callback = config?.addBookmarkFragmentConfig?.addFragmentCallback;
-							callback && callback(id);
+								(await ItemsService.fetchItemByExternalId(id)) || null;
+							setItem(item_meta);
+							setIsTrimItemModalOpen(true);
 						}}
 					/>
+
+					{item && (
+						<AddToAssignmentModal // re-use Trim modal
+							itemMetaData={item}
+							isOpen={isTrimItemModalOpen}
+							onClose={() => {
+								setIsTrimItemModalOpen(false);
+							}}
+							onAddToAssignmentCallback={async (itemTrimInfo: ItemTrimInfo) => {
+								const newBlocks = insertMultipleAtPosition(blocks, {
+									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
+									item_meta: item,
+									type: AssignmentBlockType.ITEM,
+									fragment_id: item.external_id,
+									position: getAddBlockModalPosition,
+									start_oc: itemTrimInfo.hasCut
+										? itemTrimInfo.fragmentStartTime
+										: null,
+									end_oc: itemTrimInfo.hasCut
+										? itemTrimInfo.fragmentEndTime
+										: null,
+								} as AssignmentBlock);
+
+								setBlocks(newBlocks);
+
+								// Finish by triggering any configured callback
+								const callback =
+									config?.addBookmarkFragmentConfig?.addFragmentCallback;
+								callback && callback(item.external_id);
+								setIsTrimItemModalOpen(false);
+							}}
+						/>
+					)}
 
 					<AddCollectionModal
 						{...config?.addCollectionConfig}
