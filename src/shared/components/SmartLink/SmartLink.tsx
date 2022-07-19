@@ -1,10 +1,9 @@
+import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { fromPairs, map } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-
-import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { BUNDLE_PATH } from '../../../bundle/bundle.const';
@@ -124,41 +123,46 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 				case 'PROJECTS':
 					return renderLink(String(value), resolvedTarget);
 
-				case 'COLLECTION':
+				case 'COLLECTION': {
 					const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 						id: value as string,
 					});
 					return renderLink(collectionUrl, resolvedTarget);
+				}
 
-				case 'ITEM':
+				case 'ITEM': {
 					const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
 						id: value,
 					});
 					return renderLink(itemUrl, resolvedTarget);
+				}
 
-				case 'BUNDLE':
+				case 'BUNDLE': {
 					const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
 						id: value,
 					});
 					return renderLink(bundleUrl, resolvedTarget);
+				}
 
-				case 'EXTERNAL_LINK':
+				case 'EXTERNAL_LINK': {
 					const externalUrl = ((value as string) || '').replace(
 						'{{PROXY_URL}}',
 						getEnv('PROXY_URL') || ''
 					);
 					return renderLink(externalUrl, resolvedTarget);
+				}
 
-				case 'ANCHOR_LINK':
+				case 'ANCHOR_LINK': {
 					const urlWithoutQueryOrAnchor = window.location.href
 						.split('?')[0]
 						.split('#')[0];
 					return renderLink(`${urlWithoutQueryOrAnchor}#${value}`, resolvedTarget);
+				}
 
 				case 'FILE':
 					return renderLink(value as string, LinkTarget.Blank);
 
-				case 'SEARCH_QUERY':
+				case 'SEARCH_QUERY': {
 					const queryParams = JSON.parse(value as string);
 					return renderLink(
 						buildLink(
@@ -175,6 +179,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						),
 						resolvedTarget
 					);
+				}
 
 				default:
 					break;

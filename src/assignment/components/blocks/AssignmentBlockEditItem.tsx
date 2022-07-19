@@ -1,10 +1,11 @@
 import { convertToHtml } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { FlowPlayerWrapper } from '../../../shared/components';
+import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
@@ -12,11 +13,13 @@ import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import { EditBlockProps } from '../../assignment.types';
 import { useBlockDescriptionButtons } from '../../hooks';
 import { AssignmentBlockItemDescriptionType } from '../../hooks/assignment-block-description-buttons';
-import { AssignmentBlockMeta } from '../AssignmentBlockMeta';
 
 export const AssignmentBlockEditItem: FC<
-	EditBlockProps & { AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[] }
-> = ({ block, setBlock, AssignmentBlockItemDescriptionTypes }) => {
+	EditBlockProps & {
+		AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[];
+		buildSearchLink?: (props: Partial<Avo.Search.Filters>) => ReactNode | string;
+	}
+> = ({ block, setBlock, AssignmentBlockItemDescriptionTypes, buildSearchLink }) => {
 	const [t] = useTranslation();
 
 	const [cutButton, cutModal] = useCutModal();
@@ -92,7 +95,12 @@ export const AssignmentBlockEditItem: FC<
 					: undefined
 			}
 		>
-			<AssignmentBlockMeta block={block} />
+			<BlockItemMetadata
+				block={block}
+				buildSeriesLink={
+					buildSearchLink ? (series) => buildSearchLink({ serie: [series] }) : undefined
+				}
+			/>
 		</CustomiseItemForm>
 	);
 };

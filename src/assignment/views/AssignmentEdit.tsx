@@ -53,6 +53,7 @@ import AssignmentUnload from '../components/AssignmentUnload';
 import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
 import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -263,7 +264,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,

@@ -48,6 +48,7 @@ import {
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
@@ -320,6 +321,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						control={control}
 						onShowPreviewClicked={onShowPreviewClicked}
 						setTab={setTab}
+						setFilterState={(newState: PupilSearchFilterState) =>
+							setFilterState(newState)
+						}
 					/>
 				);
 
@@ -330,6 +334,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						blocks={assignment?.blocks || []}
 						pastDeadline={pastDeadline}
 						setTab={setTab}
+						buildSearchLink={buildAssignmentSearchLink(setFilterState)}
 					/>
 				);
 		}

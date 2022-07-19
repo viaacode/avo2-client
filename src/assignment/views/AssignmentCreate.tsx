@@ -32,8 +32,9 @@ import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEd
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import { backToOverview } from '../helpers/links';
 import AssignmentUnload from '../components/AssignmentUnload';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
@@ -127,7 +128,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment.blocks,
