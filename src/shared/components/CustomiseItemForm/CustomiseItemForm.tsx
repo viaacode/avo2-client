@@ -1,7 +1,4 @@
 import {
-	Button,
-	ButtonGroup,
-	ButtonProps,
 	DefaultProps,
 	Form,
 	FormGroup,
@@ -21,14 +18,14 @@ import './CustomiseItemForm.scss';
 export type CustomiseItemFormToggleField = LabeledFormField & ToggleProps;
 export type CustomiseItemFormTitleField = LabeledFormField & TextInputProps;
 export type CustomiseItemFormDescriptionField = LabeledFormField & WYSIWYGWrapperProps;
-export type CustomiseItemFormButtonsField = LabeledFormField & { items: ButtonProps[] };
 
 export interface CustomiseItemFormProps extends DefaultProps {
 	id: string | number;
 	toggle?: CustomiseItemFormToggleField;
 	title?: CustomiseItemFormTitleField;
 	description?: CustomiseItemFormDescriptionField;
-	buttons?: CustomiseItemFormButtonsField;
+	buttons?: ReactNode;
+	buttonsLabel?: string;
 	preview?: () => ReactNode;
 }
 
@@ -39,32 +36,36 @@ export const CustomiseItemFormIds = {
 	buttons: 'c-customise-item-form__switch',
 };
 
-export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
-	const { id, toggle, buttons, preview, style, className, children } = props;
-
-	const titleValue = props.title?.value;
-	const descriptionInitialHtml = props.description?.initialHtml;
-
+export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
+	title,
+	description,
+	id,
+	toggle,
+	buttons,
+	buttonsLabel,
+	preview,
+	style,
+	className,
+	children,
+}) => {
 	const wrapperClasses = [
 		'c-customise-item-form',
 		...(preview ? ['c-customise-item-form--has-preview'] : []),
 		...(className ? [className] : []),
 	];
 
-	const [description, setDescription] = useState<RichEditorState | undefined>();
-	const [title, setTitle] = useState<string | undefined>();
+	/**
+	 * We keep track of a tempDescription here so we can trigger onChange events onBlur, which improved typing performance
+	 * Ideally we would like to move away from the braft rich text editor and use something like: https://github.com/ianstormtaylor/slate
+	 */
+	const [tempDescription, setTempDescription] = useState<RichEditorState | undefined>();
 
 	const getId = (key: string | number) => `${id}--${key}`;
 
-	// Reflect changes to local state
-	useEffect(() => {
-		setTitle(titleValue);
-	}, [titleValue]);
-
 	// See WYSIWYGInternal.tsx:162
 	useEffect(() => {
-		setDescription(undefined);
-	}, [descriptionInitialHtml]);
+		setTempDescription(undefined);
+	}, [description?.initialHtml]);
 
 	return (
 		<div className={wrapperClasses.join(' ')} style={style}>
@@ -85,69 +86,46 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = (props) => {
 
 					{buttons && (
 						<FormGroup
-							label={buttons.label}
+							label={buttonsLabel}
 							labelFor={getId(CustomiseItemFormIds.buttons)}
 						>
-							<ButtonGroup>
-								{buttons.items.map((button) => {
-									return (
-										<Button
-											type="secondary"
-											{...button}
-											key={
-												'customise-item-form__button--' +
-												id +
-												'--' +
-												button.label
-											}
-										/>
-									);
-								})}
-							</ButtonGroup>
-
-							{buttons.help && <p className="c-form-help-text">{buttons.help}</p>}
+							{buttons}
 						</FormGroup>
 					)}
 
-					{props.title && (
-						<FormGroup
-							label={props.title.label}
-							labelFor={getId(CustomiseItemFormIds.title)}
-						>
+					{title && (
+						<FormGroup label={title.label} labelFor={getId(CustomiseItemFormIds.title)}>
 							<TextInput
-								{...props.title}
-								value={title}
-								onChange={setTitle}
-								onBlur={() => props.title?.onChange?.(title as string)}
+								{...title}
+								value={title?.value}
+								onChange={title?.onChange}
 								id={getId(CustomiseItemFormIds.title)}
 							/>
 
-							{props.title.help && (
-								<p className="c-form-help-text">{props.title.help}</p>
-							)}
+							{title.help && <p className="c-form-help-text">{title.help}</p>}
 						</FormGroup>
 					)}
 
-					{/* Arbitrary position, allows rendering of meta data in https://www.figma.com/file/CLxhzRtPtdHVIlY11TicxF/Zoek-%26-Bouw?node-id=5%3A162 */}
+					{/* Arbitrary position, allows rendering of metadata in https://www.figma.com/file/CLxhzRtPtdHVIlY11TicxF/Zoek-%26-Bouw?node-id=5%3A162 */}
 					{children}
 
-					{props.description && (
+					{description && (
 						<FormGroup
-							label={props.description.label}
+							label={description.label}
 							labelFor={getId(CustomiseItemFormIds.description)}
 						>
 							<WYSIWYGWrapper
-								{...props.description}
-								state={description}
-								onChange={setDescription}
+								{...description}
+								state={tempDescription}
+								onChange={setTempDescription}
 								onBlur={() =>
-									props.description?.onChange?.(description as RichEditorState)
+									description?.onChange?.(tempDescription as RichEditorState)
 								}
 								id={getId(CustomiseItemFormIds.description)}
 							/>
 
-							{props.description.help && (
-								<p className="c-form-help-text">{props.description.help}</p>
+							{description.help && (
+								<p className="c-form-help-text">{description.help}</p>
 							)}
 						</FormGroup>
 					)}

@@ -41,9 +41,9 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../../../hooks';
-import { AssignmentBlockItemDescriptionType } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',

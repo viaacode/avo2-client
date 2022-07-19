@@ -10,9 +10,24 @@ import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm'
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import { EditBlockProps } from '../../assignment.types';
-import { useBlockDescriptionButtons } from '../../hooks';
-import { AssignmentBlockItemDescriptionType } from '../../hooks/assignment-block-description-buttons';
+import { EditableBlockItem, EditBlockProps } from '../../assignment.types';
+import {
+	AssignmentBlockDescriptionButtons,
+	AssignmentBlockItemDescriptionType,
+} from '../AssignmentBlockDescriptionButtons';
+
+function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableBlockItem) {
+	if ((block as EditableBlockItem).editMode) {
+		return (block as EditableBlockItem).editMode;
+	}
+	if (!block.use_custom_fields) {
+		return AssignmentBlockItemDescriptionType.original;
+	}
+	if (block.use_custom_fields && isRichTextEmpty(block.custom_description)) {
+		return AssignmentBlockItemDescriptionType.none;
+	}
+	return AssignmentBlockItemDescriptionType.custom;
+}
 
 export const AssignmentBlockEditItem: FC<
 	EditBlockProps & {
@@ -23,18 +38,59 @@ export const AssignmentBlockEditItem: FC<
 	const [t] = useTranslation();
 
 	const [cutButton, cutModal] = useCutModal();
-	const getButtons = useBlockDescriptionButtons(setBlock, AssignmentBlockItemDescriptionTypes);
+	const editableBlock = {
+		...block,
+		editMode: block.editMode || getBlockEditMode(block),
+		ownTitle:
+			block.ownTitle ||
+			block.custom_title ||
+			(block as unknown as AssignmentBlock).original_title ||
+			block.item_meta?.title ||
+			undefined,
+		ownDescription:
+			block.ownDescription ||
+			block.custom_description ||
+			(block as AssignmentBlock).original_description ||
+			block.item_meta?.description ||
+			undefined,
+		noTitle:
+			block.noTitle ||
+			block.custom_title ||
+			(block as unknown as AssignmentBlock).original_title ||
+			block.item_meta?.title ||
+			undefined,
+	};
 
-	if (!block.item_meta) {
+	if (!editableBlock.item_meta) {
 		return null;
 	}
 
+	let title: string | undefined = undefined;
+	if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
+		title =
+			(editableBlock as unknown as AssignmentBlock).original_title ||
+			editableBlock.item_meta?.title;
+	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.custom) {
+		title = editableBlock.ownTitle;
+	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.none) {
+		title = editableBlock.noTitle;
+	}
+
+	let description: string | undefined = undefined;
+	if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
+		description =
+			(block as AssignmentBlock).original_description ||
+			block.item_meta?.description ||
+			undefined;
+	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.custom) {
+		description = editableBlock.ownDescription;
+	}
 	return (
 		<CustomiseItemForm
 			className="u-padding-l"
-			id={block.item_meta.id}
+			id={editableBlock.item_meta.id}
 			preview={() => {
-				const item = block.item_meta as ItemSchema;
+				const item = editableBlock.item_meta as ItemSchema;
 
 				return (
 					<>
@@ -45,8 +101,8 @@ export const AssignmentBlockEditItem: FC<
 							duration={item.duration}
 							title={item.title}
 							cuePoints={{
-								start: block.start_oc,
-								end: block.end_oc,
+								start: editableBlock.start_oc,
+								end: editableBlock.end_oc,
 							}}
 						/>
 
@@ -57,46 +113,54 @@ export const AssignmentBlockEditItem: FC<
 							itemMetaData: item,
 							fragment: {
 								...block,
-								external_id: `${block.id}`,
+								external_id: `${editableBlock.id}`,
 							},
-							onConfirm: (update) => setBlock(block, update),
+							onConfirm: (update) => setBlock({ ...editableBlock, ...update }),
 						})}
 					</>
 				);
 			}}
-			buttons={getButtons(block)}
+			buttons={
+				<AssignmentBlockDescriptionButtons
+					block={editableBlock}
+					setBlock={setBlock}
+					types={AssignmentBlockItemDescriptionTypes}
+				/>
+			}
 			title={{
 				label: t('assignment/views/assignment-edit___titel-fragment'),
 				placeholder: t('assignment/views/assignment-edit___instructies-of-omschrijving'),
-				value:
-					(!block.use_custom_fields
-						? (block as AssignmentBlock).original_title || block.item_meta?.title
-						: block.custom_title) || undefined,
-				disabled: !block.use_custom_fields,
-				onChange: (value) => setBlock(block, { custom_title: value }),
+				value: title,
+				disabled: editableBlock.editMode === AssignmentBlockItemDescriptionType.original,
+				onChange: (value) => {
+					if (editableBlock.editMode === AssignmentBlockItemDescriptionType.custom) {
+						setBlock({ ...editableBlock, ownTitle: value });
+					}
+					if (editableBlock.editMode === AssignmentBlockItemDescriptionType.none) {
+						setBlock({ ...editableBlock, noTitle: value });
+					}
+				},
 			}}
 			description={
-				!isRichTextEmpty(block.custom_description) || !block.use_custom_fields
+				editableBlock.editMode !== AssignmentBlockItemDescriptionType.none
 					? {
 							label: t('assignment/views/assignment-edit___beschrijving-fragment'),
-							initialHtml: convertToHtml(
-								!block.use_custom_fields
-									? (block as AssignmentBlock).original_description ||
-											block.item_meta?.description
-									: block.custom_description
-							),
+							initialHtml: convertToHtml(description),
 							controls: WYSIWYG_OPTIONS_AUTHOR,
-							disabled: !block.use_custom_fields,
+							disabled:
+								editableBlock.editMode ===
+								AssignmentBlockItemDescriptionType.original,
 							onChange: (value) =>
-								setBlock(block, {
-									custom_description: value.toHTML(),
+								setBlock({
+									...editableBlock,
+									ownDescription: value.toHTML(),
 								}),
 					  }
 					: undefined
 			}
 		>
 			<BlockItemMetadata
-				block={block}
+				block={editableBlock}
 				buildSeriesLink={
 					buildSearchLink ? (series) => buildSearchLink({ serie: [series] }) : undefined
 				}
