@@ -27,6 +27,7 @@ import classnames from 'classnames';
 import { cloneDeep, compact, get, isEqual, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
+	KeyboardEvent,
 	ReactNode,
 	ReactText,
 	useCallback,
@@ -69,6 +70,7 @@ import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-ass
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
+import { KeyCode } from '../../shared/types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -301,6 +303,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	}, [assignments, assignmentCount]);
 
+	const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
+		if (evt.keyCode === KeyCode.Enter) {
+			copySearchTermsToQueryState();
+		}
+	};
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
 		dataRow: Avo.Assignment.Assignment_v2
@@ -639,31 +646,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarLeft>
-				{canEditAssignments && (
-					<ToolbarRight>
-						<ToolbarItem>
-							<Form type="inline">
-								<FormGroup inlineMode="grow">
-									<TextInput
-										className="c-assignment-overview__search-input"
-										icon="filter"
-										value={filterString}
-										onChange={setFilterString}
-										disabled={!assignments}
-									/>
-								</FormGroup>
-								<FormGroup inlineMode="grow">
-									<Button
-										label={t('search/views/search___zoeken')}
-										type="primary"
-										className="c-assignment-overview__search-input"
-										onClick={copySearchTermsToQueryState}
-									/>
-								</FormGroup>
-							</Form>
-						</ToolbarItem>
-					</ToolbarRight>
-				)}
+				<ToolbarRight>
+					<ToolbarItem>
+						<Form type="inline">
+							<FormGroup inlineMode="grow">
+								<TextInput
+									className="c-assignment-overview__search-input"
+									icon="filter"
+									value={filterString}
+									onChange={setFilterString}
+									onKeyUp={handleSearchFieldKeyUp}
+									disabled={!assignments}
+								/>
+							</FormGroup>
+						</Form>
+					</ToolbarItem>
+				</ToolbarRight>
 			</Toolbar>
 		);
 	};

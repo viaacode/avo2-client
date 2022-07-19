@@ -1,7 +1,6 @@
+import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
-
-import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 
 import MoreOptionsDropdown from './MoreOptionsDropdown';
 
@@ -14,7 +13,7 @@ const menuItems: MenuItemInfoSchema[] = [
 	{
 		label: 'Delete',
 		id: 'delete',
-		icon: 'trash-2',
+		icon: 'delete',
 	},
 	{
 		label: 'Archive',

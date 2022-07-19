@@ -294,9 +294,13 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 		switch (columnId) {
 			case 'title':
-				// TODO link to correct edit page for pupil collection
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id })}>
+					<Link
+						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
+							assignmentId: assignment?.id,
+							responseId: id,
+						})}
+					>
 						{truncateTableValue(pupilCollection?.collection_title || '-')}
 					</Link>
 				);

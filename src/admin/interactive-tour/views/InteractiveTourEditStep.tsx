@@ -1,7 +1,3 @@
-import { get, isEqual } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Form,
@@ -21,6 +17,9 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
+import { get, isEqual } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Html from '../../../shared/components/Html/Html';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
@@ -92,7 +91,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 					<ToolbarRight>
 						<ToolbarItem>
 							<Button
-								icon="trash-2"
+								icon="delete"
 								type="danger"
 								onClick={() => {
 									changeInteractiveTourState({
