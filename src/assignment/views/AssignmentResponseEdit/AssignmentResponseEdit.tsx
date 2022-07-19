@@ -29,6 +29,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { CollectionBlockType } from '../../../collection/collection.const';
 import { FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
@@ -118,7 +119,9 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	];
 	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,
-		assignmentResponse?.pupil_collection_blocks?.length || 0,
+		assignmentResponse?.pupil_collection_blocks?.filter(
+			(b) => b.type === CollectionBlockType.ITEM
+		)?.length || 0,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 		(newTab: string) => {
