@@ -20,7 +20,7 @@ import React, {
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, Prompt } from 'react-router-dom';
 import {
 	JsonParam,
 	NumberParam,
@@ -61,6 +61,7 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
+import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
@@ -105,6 +106,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	});
 
 	// UI
+	useWarningBeforeUnload({
+		when: isDirty,
+	});
+
 	const queryParamConfig = {
 		filters: JsonParam,
 		orderProperty: StringParam,
@@ -384,6 +389,13 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					{renderTabContent()}
 
 					<Spacer margin={['bottom-large']} />
+
+					<Prompt
+						when={isDirty}
+						message={t(
+							'assignment/views/assignment-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+						)}
+					/>
 				</div>
 
 				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
