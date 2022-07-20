@@ -32,6 +32,12 @@
 			width: 130px;
 		}
 	}
+
+	.c-dropdown__menu {
+		.c-button__content {
+			justify-content: start;
+		}
+	}
 }
 
 .c-item-detail__header {

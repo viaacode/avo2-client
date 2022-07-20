@@ -1,6 +1,7 @@
 import {
 	Button,
 	ButtonToolbar,
+	Container,
 	Flex,
 	FlexItem,
 	Form,
@@ -244,17 +245,19 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	const renderModalBody = () => {
 		return (
 			<>
-				<Form type="inline">
-					<FormGroup inlineMode="grow">
-						<TextInput
-							className="c-assignment-overview__search-input"
-							icon="filter"
-							value={filterString}
-							onChange={setFilterString}
-							disabled={!bookmarks}
-						/>
-					</FormGroup>
-				</Form>
+				<Container mode="horizontal">
+					<Form type="inline">
+						<FormGroup inlineMode="grow">
+							<TextInput
+								className="c-assignment-overview__search-input"
+								icon="filter"
+								value={filterString}
+								onChange={setFilterString}
+								disabled={!bookmarks}
+							/>
+						</FormGroup>
+					</Form>
+				</Container>
 
 				<ScrollBar>
 					<Table
@@ -281,10 +284,13 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						showRadioButtons
 						selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
 						onSelectionChanged={handleSelectedBookmarkItemChanged}
+						onRowClick={(bookmark) => {
+							setSelectedBookmarkId(bookmark.contentLinkId);
+						}}
 					/>
 				</ScrollBar>
 
-				{renderFooterActions()}
+				<Container mode="horizontal">{renderFooterActions()}</Container>
 			</>
 		);
 	};

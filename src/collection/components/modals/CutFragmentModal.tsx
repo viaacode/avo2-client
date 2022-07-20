@@ -1,4 +1,4 @@
-import { clamp } from 'lodash-es';
+import { clamp, noop } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,13 +27,17 @@ import { CollectionAction } from '../CollectionOrBundleEdit';
 
 import './CutFragmentModal.scss';
 
-interface CutFragmentModalProps {
+export interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
 	index: number;
-	fragment: Avo.Collection.Fragment;
+	fragment: Pick<
+		Avo.Collection.Fragment,
+		'start_oc' | 'end_oc' | 'item_meta' | 'thumbnail_path' | 'external_id'
+	>;
 	changeCollectionState: (action: CollectionAction) => void;
 	onClose: () => void;
+	onConfirm?: (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => void;
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
@@ -41,8 +45,9 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	itemMetaData,
 	index,
 	fragment,
-	changeCollectionState,
+	changeCollectionState = noop,
 	onClose,
+	onConfirm,
 }) => {
 	const [t] = useTranslation();
 
@@ -91,10 +96,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 		const hasNoCut = startTime === 0 && endTime === fragmentDuration;
 
-		const videoStill: string = hasNoCut
-			? itemMetaData.thumbnail_path
-			: await VideoStillService.getVideoStill(fragment.external_id, (startTime || 0) * 1000);
-
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
@@ -109,13 +110,24 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragmentPropValue: hasNoCut ? null : endTime,
 		});
 
-		if (videoStill) {
-			changeCollectionState({
-				index,
-				type: 'UPDATE_FRAGMENT_PROP',
-				fragmentProp: 'thumbnail_path',
-				fragmentPropValue: videoStill,
-			});
+		try {
+			const videoStill: string = hasNoCut
+				? itemMetaData.thumbnail_path
+				: await VideoStillService.getVideoStill(
+						fragment.external_id,
+						(startTime || 0) * 1000
+				  );
+
+			if (videoStill) {
+				changeCollectionState({
+					index,
+					type: 'UPDATE_FRAGMENT_PROP',
+					fragmentProp: 'thumbnail_path',
+					fragmentPropValue: videoStill,
+				});
+			}
+		} catch (error) {
+			console.warn('Failed to update video still.', error);
 		}
 
 		changeCollectionState({
@@ -131,6 +143,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragmentProp: 'end_oc',
 			fragmentPropValue: endTime,
 		});
+
+		onConfirm &&
+			onConfirm({
+				start_oc: hasNoCut ? null : startTime,
+				end_oc: hasNoCut ? null : endTime,
+			});
+
 		onClose();
 	};
 

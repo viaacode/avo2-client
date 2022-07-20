@@ -5,19 +5,14 @@ import { useCallback } from 'react';
 export function useAssignmentBlockChangeHandler(
 	blocks: Avo.Core.BlockItemBase[],
 	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void
-): (existingBlock: Avo.Core.BlockItemBase, updatedBlock: Partial<Avo.Core.BlockItemBase>) => void {
+): (updatedBlock: Avo.Core.BlockItemBase) => void {
 	return useCallback(
-		(existingBlock: Avo.Core.BlockItemBase, updatedBlock: Partial<Avo.Core.BlockItemBase>) => {
+		(block: Avo.Core.BlockItemBase) => {
 			const updatedBlocks = cloneDeep(blocks);
 
-			const existingBlockIndex = updatedBlocks.findIndex(
-				(block) => block.id === existingBlock.id
-			);
+			const existingBlockIndex = updatedBlocks.findIndex((b) => b.id === block.id);
 
-			updatedBlocks[existingBlockIndex] = {
-				...existingBlock,
-				...updatedBlock,
-			};
+			updatedBlocks[existingBlockIndex] = block;
 
 			setBlocks(updatedBlocks);
 		},
