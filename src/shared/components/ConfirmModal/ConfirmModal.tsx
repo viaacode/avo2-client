@@ -40,11 +40,6 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	isOpen,
 	confirmCallback = noop,
 }) => {
-	const handleConfirm = () => {
-		onClose();
-		confirmCallback();
-	};
-
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -63,7 +58,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 								<Button
 									type={confirmButtonType}
 									label={confirmLabel}
-									onClick={handleConfirm}
+									onClick={confirmCallback}
 								/>
 							</ButtonToolbar>
 						</ToolbarItem>

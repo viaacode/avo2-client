@@ -1,10 +1,12 @@
 import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
-// import { createBrowserHistory } from 'history';
-// import { wrapHistory } from 'oaf-react-router';
+import { createBrowserHistory } from 'history';
+import { noop } from 'lodash-es';
+import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import { useTranslation } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { Route, RouteComponentProps, BrowserRouter as Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -18,6 +20,7 @@ import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
+import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
@@ -29,20 +32,20 @@ import store from './store';
 
 import './styles/main.scss';
 
-// const history = createBrowserHistory();
-// wrapHistory(history, {
-// 	smoothScroll: false,
-// 	shouldHandleAction: (
-// 		previousLocation: RouteComponentProps['location'],
-// 		nextLocation: RouteComponentProps['location']
-// 	) => {
-// 		// We don't want to set focus when only the hash changes
-// 		return (
-// 			previousLocation.pathname !== nextLocation.pathname ||
-// 			previousLocation.search !== nextLocation.search
-// 		);
-// 	},
-// });
+const history = createBrowserHistory();
+wrapHistory(history, {
+	smoothScroll: false,
+	shouldHandleAction: (
+		previousLocation: RouteComponentProps['location'],
+		nextLocation: RouteComponentProps['location']
+	) => {
+		// We don't want to set focus when only the hash changes
+		return (
+			previousLocation.pathname !== nextLocation.pathname ||
+			previousLocation.search !== nextLocation.search
+		);
+	},
+});
 
 const App: FunctionComponent<RouteComponentProps> = (props) => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
@@ -107,23 +110,49 @@ const App: FunctionComponent<RouteComponentProps> = (props) => {
 
 const AppWithRouter = compose(withRouter, withUser)(App) as FunctionComponent;
 
-const Root: FunctionComponent = () => (
-	<ApolloProvider client={dataService}>
-		<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
-			<Provider store={store}>
-				<Router
-					getUserConfirmation={(message, callback) => {
-						const allowTransition = window.confirm(message);
-						callback(allowTransition);
-					}}
-				>
-					<QueryParamProvider ReactRouterRoute={Route}>
-						<AppWithRouter />
-					</QueryParamProvider>
-				</Router>
-			</Provider>
-		</ApolloHooksProvider>
-	</ApolloProvider>
-);
+let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
+
+const Root: FunctionComponent = () => {
+	const [t] = useTranslation();
+	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
+
+	return (
+		<ApolloProvider client={dataService}>
+			<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
+				<Provider store={store}>
+					<Router
+						getUserConfirmation={(_message, callback) => {
+							setIsUnsavedChangesModalOpen(true);
+							confirmUnsavedChangesCallback = callback;
+						}}
+					>
+						<QueryParamProvider ReactRouterRoute={Route}>
+							<AppWithRouter />
+							<ConfirmModal
+								isOpen={isUnsavedChangesModalOpen}
+								confirmCallback={() => {
+									setIsUnsavedChangesModalOpen(false);
+									(confirmUnsavedChangesCallback || noop)(true);
+									confirmUnsavedChangesCallback = null;
+								}}
+								onClose={() => {
+									setIsUnsavedChangesModalOpen(false);
+									(confirmUnsavedChangesCallback || noop)(false);
+									confirmUnsavedChangesCallback = null;
+								}}
+								cancelLabel={t('Blijven')}
+								confirmLabel={t('Verlaten')}
+								title={t('Wijzigingen opslaan')}
+								body={t(
+									'Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?'
+								)}
+							/>
+						</QueryParamProvider>
+					</Router>
+				</Provider>
+			</ApolloHooksProvider>
+		</ApolloProvider>
+	);
+};
 
 export default Root;

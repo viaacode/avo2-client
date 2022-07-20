@@ -223,6 +223,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 	const deleteSelectedAssignmentResponses = async () => {
 		setIsLoading(true);
+		setPupilCollectionsDeleteModalOpen(false);
 		try {
 			await PupilCollectionService.deleteAssignmentResponses(selectedPupilCollectionIds);
 			await fetchPupilCollections();
