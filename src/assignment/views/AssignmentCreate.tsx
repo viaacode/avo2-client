@@ -106,7 +106,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					)
 				);
 
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
+				resetForm();
+
+				// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
+				setTimeout(() => {
+					navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
+				}, 100);
 			}
 		} catch (err) {
 			console.error(err);
