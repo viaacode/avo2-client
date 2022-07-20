@@ -582,15 +582,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderPageContent = () => {
 		if (assignmentLoading) {
-			if (!assignment) {
-				return (
-					<Spacer margin="top-extra-large">
-						<Flex orientation="horizontal" center>
-							<Spinner size="large" />
-						</Flex>
-					</Spacer>
-				);
-			}
+			return (
+				<Spacer margin="top-extra-large">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Spacer>
+			);
 		}
 		if (assignmentError) {
 			return <ErrorView {...assignmentError} />;
