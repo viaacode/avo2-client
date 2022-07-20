@@ -1,8 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import {
 	Alert,
 	Button,
@@ -17,6 +12,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
@@ -33,6 +32,7 @@ interface UserDeleteModalProps {
 	onClose: () => void;
 	deleteCallback: () => void;
 }
+
 /**
  * Adds two modals:
  * - select delete option
@@ -201,7 +201,17 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 		}
 		if (!isTransferAll && assignments) {
 			countOutputs.push(
-				`${assignments} ${t('admin/users/views/user-overview___opdrachten')}`
+				<Link
+					to={buildLink(
+						ADMIN_PATH.ASSIGNMENTS_OVERVIEW,
+						{},
+						{
+							author: selectedProfileIds.join('~'),
+						}
+					)}
+				>
+					{`${assignments} ${t('admin/users/views/user-overview___opdrachten')}`}
+				</Link>
 			);
 		}
 		if (!isTransferAll && bookmarks) {
@@ -220,7 +230,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 
 				{!!countOutputs.length && (
 					<Spacer margin="top" className="c-content">
-						<strong>Deze inhoud zal verwijderd worden:</strong>
+						<strong>{t('Deze inhoud zal verwijderd worden:')}</strong>
 						<ul>
 							{countOutputs.map((count, index) => (
 								<li key={`content-count-${index}`}>{count}</li>
