@@ -417,7 +417,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
-				deleteObjectCallback={() => onDeleteFragment()}
+				confirmCallback={() => onDeleteFragment()}
 			/>
 
 			{itemMetaData && !isCollection && (

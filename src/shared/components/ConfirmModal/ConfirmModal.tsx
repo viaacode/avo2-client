@@ -23,7 +23,7 @@ export interface ConfirmModalProps {
 	confirmButtonType?: ButtonType;
 	isOpen: boolean;
 	onClose?: () => void;
-	deleteObjectCallback?: () => void;
+	confirmCallback?: () => void;
 }
 
 const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
@@ -38,11 +38,11 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	confirmButtonType = 'danger',
 	onClose = noop,
 	isOpen,
-	deleteObjectCallback = noop,
+	confirmCallback = noop,
 }) => {
-	const handleDelete = () => {
+	const handleConfirm = () => {
 		onClose();
-		deleteObjectCallback();
+		confirmCallback();
 	};
 
 	return (
@@ -63,7 +63,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 								<Button
 									type={confirmButtonType}
 									label={confirmLabel}
-									onClick={handleDelete}
+									onClick={handleConfirm}
 								/>
 							</ButtonToolbar>
 						</ToolbarItem>

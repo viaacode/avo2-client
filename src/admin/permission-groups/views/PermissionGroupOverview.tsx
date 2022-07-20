@@ -221,7 +221,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

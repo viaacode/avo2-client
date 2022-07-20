@@ -14,7 +14,7 @@ import React, {
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
+import { Link, Prompt } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -32,8 +32,8 @@ import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEd
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import AssignmentUnload from '../components/AssignmentUnload';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -46,7 +46,7 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
+import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
@@ -124,6 +124,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	}, [resetForm, setAssignment, defaultValues]);
 
 	// UI
+	useWarningBeforeUnload({
+		when: isDirty,
+	});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
@@ -342,35 +345,38 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<AssignmentUnload blockRoute={isDirty}>
-			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-				<div>
-					<AssignmentHeading
-						back={renderBackButton}
-						title={renderTitle}
-						actions={renderActions}
-						tabs={renderTabs}
-					/>
-
-					<Container mode="horizontal">
-						<Spacer margin={['top-large', 'bottom-extra-large']}>
-							{renderTabContent}
-						</Spacer>
-
-						{renderedModals}
-						{draggableListModal}
-					</Container>
-				</div>
-
-				{/* Always show on create */}
-				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-				<StickySaveBar
-					isVisible={true}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
-					onCancel={() => reset()}
+		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+			<div>
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
 				/>
+
+				<Container mode="horizontal">
+					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+
+					{renderedModals}
+					{draggableListModal}
+
+					<Prompt
+						when={isDirty}
+						message={t(
+							'Er zijn nog niet opgeslagen wijzigingen. Weet u zeker dat u de pagina wil verlaten?'
+						)}
+					/>
+				</Container>
 			</div>
-		</AssignmentUnload>
+
+			{/* Always show on create */}
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar
+				isVisible={true}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
+		</div>
 	);
 
 	const renderPageContent = () => {

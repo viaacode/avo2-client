@@ -1,12 +1,12 @@
 import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
-import { createBrowserHistory } from 'history';
-import { wrapHistory } from 'oaf-react-router';
+// import { createBrowserHistory } from 'history';
+// import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import { Provider } from 'react-redux';
-import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
+import { Route, RouteComponentProps, BrowserRouter as Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { compose } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
@@ -29,20 +29,20 @@ import store from './store';
 
 import './styles/main.scss';
 
-const history = createBrowserHistory();
-wrapHistory(history, {
-	smoothScroll: false,
-	shouldHandleAction: (
-		previousLocation: RouteComponentProps['location'],
-		nextLocation: RouteComponentProps['location']
-	) => {
-		// We don't want to set focus when only the hash changes
-		return (
-			previousLocation.pathname !== nextLocation.pathname ||
-			previousLocation.search !== nextLocation.search
-		);
-	},
-});
+// const history = createBrowserHistory();
+// wrapHistory(history, {
+// 	smoothScroll: false,
+// 	shouldHandleAction: (
+// 		previousLocation: RouteComponentProps['location'],
+// 		nextLocation: RouteComponentProps['location']
+// 	) => {
+// 		// We don't want to set focus when only the hash changes
+// 		return (
+// 			previousLocation.pathname !== nextLocation.pathname ||
+// 			previousLocation.search !== nextLocation.search
+// 		);
+// 	},
+// });
 
 const App: FunctionComponent<RouteComponentProps> = (props) => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
@@ -111,7 +111,12 @@ const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>
 		<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
 			<Provider store={store}>
-				<Router history={history as any}>
+				<Router
+					getUserConfirmation={(message, callback) => {
+						const allowTransition = window.confirm(message);
+						callback(allowTransition);
+					}}
+				>
 					<QueryParamProvider ReactRouterRoute={Route}>
 						<AppWithRouter />
 					</QueryParamProvider>

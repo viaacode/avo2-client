@@ -1,4 +1,14 @@
 import { useMutation } from '@apollo/react-hooks';
+import {
+	Blankslate,
+	Button,
+	ButtonToolbar,
+	Container,
+	LinkTarget,
+	MenuItemInfo,
+	Navbar,
+	Tabs,
+} from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -11,17 +21,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import {
-	Blankslate,
-	Button,
-	ButtonToolbar,
-	Container,
-	LinkTarget,
-	MenuItemInfo,
-	Navbar,
-	Tabs,
-} from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
@@ -67,7 +66,7 @@ import { ContentDetailMetaData } from './ContentDetailMetaData';
 export const CONTENT_PAGE_COPY = 'Kopie %index%: ';
 export const CONTENT_PAGE_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
-interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
+type ContentDetailProps = DefaultSecureRouteProps<ContentDetailParams>;
 
 const {
 	EDIT_ANY_CONTENT_PAGES,
@@ -440,7 +439,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					render={() => renderContentDetail(contentPageInfo)}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={

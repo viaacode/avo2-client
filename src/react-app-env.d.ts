@@ -8,4 +8,3 @@ declare module 'unique-selector';
 declare module 'sanitize-html';
 declare module 'fs-extra';
 declare module 'react-to-string';
-declare module 'react-beforeunload-component';

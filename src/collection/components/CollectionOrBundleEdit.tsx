@@ -23,10 +23,10 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
-import BeforeUnloadComponent from 'react-beforeunload-component';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { matchPath, withRouter } from 'react-router';
+import { Prompt } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
@@ -35,7 +35,6 @@ import { PermissionName, PermissionService } from '../../authentication/helpers/
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
-	DeleteObjectModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -53,6 +52,7 @@ import {
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -157,6 +157,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
+	useWarningBeforeUnload({
+		when: unsavedChanges,
+	});
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -305,26 +308,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const changingRoute = !matchPath(history.location.pathname, editPath);
 		return unsavedChanges && changingRoute;
 	}, [history, unsavedChanges, isCollection]);
-
-	const onUnload = useCallback(
-		(event: any) => {
-			if (shouldBlockNavigation()) {
-				event.preventDefault();
-
-				// Chrome requires returnValue to be set
-				event.returnValue = '';
-			}
-		},
-		[shouldBlockNavigation]
-	);
-
-	useEffect(() => {
-		// Register listener once when the component loads
-		window.addEventListener('beforeunload', onUnload);
-
-		// Remove listener when the component unloads
-		return () => window.removeEventListener('beforeunload', onUnload);
-	}, [onUnload]);
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
@@ -1196,144 +1179,114 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 		return (
 			<>
-				<BeforeUnloadComponent
-					blockRoute={unsavedChanges}
-					modalComponentHandler={({
-						handleModalLeave,
-						handleModalCancel,
-					}: {
-						handleModalLeave: () => void;
-						handleModalCancel: () => void;
-					}) => {
-						return (
-							<DeleteObjectModal
-								isOpen={true}
-								body={t(
-									'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-								)}
-								onClose={handleModalCancel}
-								deleteObjectCallback={handleModalLeave}
-								cancelLabel={t(
-									'collection/components/collection-or-bundle-edit___blijven'
-								)}
-								confirmLabel={t(
-									'collection/components/collection-or-bundle-edit___verlaten'
-								)}
-								title={t(
-									'collection/components/collection-or-bundle-edit___niet-opgeslagen-wijzigingen'
-								)}
-								confirmButtonType="primary"
-							/>
-						);
-					}}
+				<Header
+					title={title}
+					onClickTitle={() => setIsRenameModalOpen(true)}
+					category={type}
+					showMetaData
+					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
-					<Header
-						title={title}
-						onClickTitle={() => setIsRenameModalOpen(true)}
-						category={type}
-						showMetaData
-						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-						views={String(bookmarkViewPlayCounts.viewCount || 0)}
-					>
-						<HeaderButtons>
-							{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
-						</HeaderButtons>
-						<HeaderAvatar>
-							{profile && renderAvatar(profile, { dark: true })}
-						</HeaderAvatar>
-					</Header>
-					<Navbar background="alt" placement="top" autoHeight>
-						<Container mode="horizontal">
-							<Tabs tabs={tabs} onClick={selectTab} />
-						</Container>
-					</Navbar>
-					{renderTab()}
-					<Container background="alt" mode="vertical">
-						<Container mode="horizontal">
-							<Toolbar autoHeight>
-								<ToolbarLeft>
-									<ToolbarItem>
-										<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
-									</ToolbarItem>
-								</ToolbarLeft>
-							</Toolbar>
-						</Container>
+					<HeaderButtons>
+						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+					</HeaderButtons>
+					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
+				</Header>
+				<Navbar background="alt" placement="top" autoHeight>
+					<Container mode="horizontal">
+						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>
-					{!!collectionState.currentCollection && (
-						<PublishCollectionModal
-							collection={collectionState.currentCollection}
-							isOpen={isPublishModalOpen}
-							onClose={onCloseShareCollectionModal}
-							history={history}
-							location={location}
-							match={match}
-							user={user}
-						/>
+				</Navbar>
+				{renderTab()}
+				<Container background="alt" mode="vertical">
+					<Container mode="horizontal">
+						<Toolbar autoHeight>
+							<ToolbarLeft>
+								<ToolbarItem>
+									<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarLeft>
+						</Toolbar>
+					</Container>
+				</Container>
+				{!!collectionState.currentCollection && (
+					<PublishCollectionModal
+						collection={collectionState.currentCollection}
+						isOpen={isPublishModalOpen}
+						onClose={onCloseShareCollectionModal}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
+				)}
+				<DeleteCollectionModal
+					collectionId={
+						(collectionState.currentCollection as Avo.Collection.Collection).id
+					}
+					isOpen={isDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
+					deleteObjectCallback={onDeleteCollection}
+				/>
+				<InputModal
+					title={
+						isCollection
+							? t('collection/views/collection-edit___hernoem-deze-collectie')
+							: t(
+									'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
+							  )
+					}
+					inputLabel={
+						isCollection
+							? t('collection/components/collection-or-bundle-edit___naam-collectie')
+							: t('collection/components/collection-or-bundle-edit___naam-bundel')
+					}
+					inputValue={title}
+					maxLength={MAX_TITLE_LENGTH}
+					isOpen={isRenameModalOpen}
+					onClose={() => setIsRenameModalOpen(false)}
+					inputCallback={onRenameCollection}
+					emptyMessage={
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
+							  )
+					}
+				/>
+				<InputModal
+					title={
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
+							  )
+					}
+					inputLabel={t('collection/components/collection-or-bundle-edit___id')}
+					inputPlaceholder={
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___bijvoorbeeld-zg-6-g-181-x-5-j'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___bijvoorbeeld-c-8-a-48-b-7-e-d-27-d-4-b-9-a-a-793-9-ba-79-fff-41-df'
+							  )
+					}
+					isOpen={isEnterItemIdModalOpen}
+					onClose={() => setEnterItemIdModalOpen(false)}
+					inputCallback={handleAddItemById}
+				/>
+				{draggableListModal}{' '}
+				<Prompt
+					when={shouldBlockNavigation()}
+					message={t(
+						'Er zijn nog niet opgeslagen wijzigingen. Weet u zeker dat u de pagina wil verlaten?'
 					)}
-					<DeleteCollectionModal
-						collectionId={
-							(collectionState.currentCollection as Avo.Collection.Collection).id
-						}
-						isOpen={isDeleteModalOpen}
-						onClose={() => setIsDeleteModalOpen(false)}
-						deleteObjectCallback={onDeleteCollection}
-					/>
-					<InputModal
-						title={
-							isCollection
-								? t('collection/views/collection-edit___hernoem-deze-collectie')
-								: t(
-										'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
-								  )
-						}
-						inputLabel={
-							isCollection
-								? t(
-										'collection/components/collection-or-bundle-edit___naam-collectie'
-								  )
-								: t('collection/components/collection-or-bundle-edit___naam-bundel')
-						}
-						inputValue={title}
-						maxLength={MAX_TITLE_LENGTH}
-						isOpen={isRenameModalOpen}
-						onClose={() => setIsRenameModalOpen(false)}
-						inputCallback={onRenameCollection}
-						emptyMessage={
-							isCollection
-								? t(
-										'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
-								  )
-								: t(
-										'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
-								  )
-						}
-					/>
-					<InputModal
-						title={
-							isCollection
-								? t(
-										'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
-								  )
-								: t(
-										'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
-								  )
-						}
-						inputLabel={t('collection/components/collection-or-bundle-edit___id')}
-						inputPlaceholder={
-							isCollection
-								? t(
-										'collection/components/collection-or-bundle-edit___bijvoorbeeld-zg-6-g-181-x-5-j'
-								  )
-								: t(
-										'collection/components/collection-or-bundle-edit___bijvoorbeeld-c-8-a-48-b-7-e-d-27-d-4-b-9-a-a-793-9-ba-79-fff-41-df'
-								  )
-						}
-						isOpen={isEnterItemIdModalOpen}
-						onClose={() => setEnterItemIdModalOpen(false)}
-						inputCallback={handleAddItemById}
-					/>
-					{draggableListModal}
-				</BeforeUnloadComponent>
+				/>
 			</>
 		);
 	};

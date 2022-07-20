@@ -406,7 +406,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					)}
 					isOpen={assignmentsDeleteModalOpen}
 					onClose={() => setAssignmentsDeleteModalOpen(false)}
-					deleteObjectCallback={deleteSelectedAssignments}
+					confirmCallback={deleteSelectedAssignments}
 				/>
 				<ChangeAuthorModal
 					isOpen={isChangeAuthorModalOpen}
