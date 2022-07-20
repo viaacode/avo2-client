@@ -10,7 +10,7 @@ export enum AssignmentBlockItemDescriptionType {
 	none = 'none',
 }
 
-const getButtonLabels = () => ({
+const getButtonLabels = (): Record<AssignmentBlockItemDescriptionType, string> => ({
 	[AssignmentBlockItemDescriptionType.original]: i18n.t(
 		'assignment/views/assignment-edit___origineel'
 	),
@@ -20,6 +20,16 @@ const getButtonLabels = () => ({
 	[AssignmentBlockItemDescriptionType.none]: i18n.t(
 		'assignment/views/assignment-edit___geen-beschrijving'
 	),
+});
+
+const getButtonTooltips = (): Record<AssignmentBlockItemDescriptionType, string | undefined> => ({
+	[AssignmentBlockItemDescriptionType.original]: i18n.t(
+		'assignment/components/assignment-block-description-buttons___zoals-bij-origineel-fragment'
+	),
+	[AssignmentBlockItemDescriptionType.custom]: i18n.t(
+		'assignment/components/assignment-block-description-buttons___zoals-in-collectie'
+	),
+	[AssignmentBlockItemDescriptionType.none]: undefined,
 });
 
 export interface AssignmentBlockDescriptionButtonsProps {
@@ -40,6 +50,7 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 	],
 }) => {
 	const BUTTON_LABELS = getButtonLabels();
+	const BUTTON_TOOLTIPS = getButtonTooltips();
 
 	return (
 		<ButtonGroup>
@@ -49,6 +60,7 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 						type="secondary"
 						active={block.editMode === type}
 						label={BUTTON_LABELS[type]}
+						title={BUTTON_TOOLTIPS[type]}
 						onClick={() => {
 							setBlock({
 								...block,

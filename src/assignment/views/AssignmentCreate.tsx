@@ -241,7 +241,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				/>
 				<Button
 					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
+					title={t(
+						'assignment/views/assignment-create___bezorg-deze-opdrachtlink-aan-je-leerlingen'
+					)}
 					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
 					disabled
 				/>

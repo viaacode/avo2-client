@@ -23,7 +23,7 @@ export function useDraggableListModal(config?: {
 			type="secondary"
 			label={t('collection/components/collection-or-bundle-edit___herorden-fragmenten')}
 			title={t(
-				'collection/components/collection-or-bundle-edit___herorden-de-fragmenten-via-drag-and-drop'
+				'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop'
 			)}
 			onClick={(e) => {
 				(config?.setIsOpen || setIsOpen)(true);

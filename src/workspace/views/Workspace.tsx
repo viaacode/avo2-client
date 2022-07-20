@@ -1,9 +1,3 @@
-import { ApolloQueryResult } from 'apollo-client';
-import { compact, get, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	BlockHeading,
 	Button,
@@ -27,6 +21,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
+import { ApolloQueryResult } from 'apollo-client';
+import { compact, get, isEmpty } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -58,6 +57,7 @@ import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 import BookmarksOverview from './BookmarksOverview';
 import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
+
 import './Workspace.scss';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
@@ -428,6 +428,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 							type="primary"
 							label={t('workspace/views/workspace___nieuwe-opdracht')}
 							onClick={handleCreateNewAssignmentClick}
+							title={t(
+								'workspace/views/workspace___maak-een-opdracht-voor-je-leerlingen'
+							)}
 						/>
 					)
 				);

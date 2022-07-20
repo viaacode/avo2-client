@@ -87,7 +87,9 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 				<Button
 					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
 					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
+					title={t(
+						'assignment/components/share-assignment-with-pupil___bezorg-deze-opdrachtlink-aan-je-leerlingen'
+					)}
 					onClick={handleShareButtonClicked}
 				/>
 			</DropdownButton>
