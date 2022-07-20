@@ -7,6 +7,8 @@ import { DefaultSecureRouteProps } from '../authentication/components/SecuredRou
 import { CollectionLabelLookup, QualityLabel } from '../collection/collection.types';
 import { BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
+import { SearchOrderProperty } from './search.const';
+
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
 
@@ -29,6 +31,7 @@ export interface SearchFiltersAndResultsProps
 export interface SearchFiltersAndResultsPropsManual {
 	enabledFilters?: (keyof Avo.Search.Filters)[];
 	enabledTypeOptions?: Avo.Core.ContentType[];
+	enabledOrderProperties?: SearchOrderProperty[];
 	bookmarks: boolean;
 	filterState: FilterState;
 	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
