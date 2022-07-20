@@ -31,6 +31,7 @@ import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 
 import './styles/main.scss';
+import './App.scss';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -129,6 +130,7 @@ const Root: FunctionComponent = () => {
 						<QueryParamProvider ReactRouterRoute={Route}>
 							<AppWithRouter />
 							<ConfirmModal
+								className="c-modal__unsaved-changes"
 								isOpen={isUnsavedChangesModalOpen}
 								confirmCallback={() => {
 									setIsUnsavedChangesModalOpen(false);

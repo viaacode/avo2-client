@@ -26,7 +26,7 @@ import React, {
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link, Prompt } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -35,6 +35,7 @@ import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -563,13 +564,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							},
 						}}
 					/>
-
-					<Prompt
-						when={isDirty}
-						message={t(
-							'assignment/views/assignment-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-						)}
-					/>
 				</Container>
 			</div>
 
@@ -623,6 +617,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			</MetaTags>
 
 			{renderPageContent()}
+
+			<BeforeUnloadPrompt when={isDirty} />
 		</>
 	);
 };
