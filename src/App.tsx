@@ -146,6 +146,7 @@ const Root: FunctionComponent = () => {
 								body={t(
 									'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 								)}
+								confirmButtonType="primary"
 							/>
 						</QueryParamProvider>
 					</Router>
