@@ -14,7 +14,7 @@ export const BeforeUnloadPrompt: FunctionComponent<{ when: boolean; message?: st
 			message={
 				message ||
 				t(
-					'Er zijn nog niet opgeslagen wijzigingen. Weet u zeker dat u de pagina wil verlaten?'
+					'shared/components/before-unload-prompt/before-unload-prompt___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 				)
 			}
 		/>

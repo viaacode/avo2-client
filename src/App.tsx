@@ -140,11 +140,11 @@ const Root: FunctionComponent = () => {
 									(confirmUnsavedChangesCallback || noop)(false);
 									confirmUnsavedChangesCallback = null;
 								}}
-								cancelLabel={t('Blijven')}
-								confirmLabel={t('Verlaten')}
-								title={t('Wijzigingen opslaan')}
+								cancelLabel={t('app___blijven')}
+								confirmLabel={t('app___verlaten')}
+								title={t('app___wijzigingen-opslaan')}
 								body={t(
-									'Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?'
+									'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 								)}
 							/>
 						</QueryParamProvider>

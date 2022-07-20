@@ -1284,7 +1284,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<Prompt
 					when={shouldBlockNavigation()}
 					message={t(
-						'Er zijn nog niet opgeslagen wijzigingen. Weet u zeker dat u de pagina wil verlaten?'
+						'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 					)}
 				/>
 			</>
