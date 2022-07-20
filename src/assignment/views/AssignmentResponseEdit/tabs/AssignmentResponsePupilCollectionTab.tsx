@@ -14,6 +14,7 @@ import { isNil } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { UrlUpdateType } from 'use-query-params';
 
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
 import { CollectionBlockType } from '../../../../collection/collection.const';
@@ -27,7 +28,12 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
-import { AssignmentResponseFormState, PupilCollectionFragment } from '../../../assignment.types';
+import {
+	AssignmentResponseFormState,
+	PupilCollectionFragment,
+	PupilSearchFilterState,
+} from '../../../assignment.types';
+import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
 import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
 import {
 	useAssignmentBlockChangeHandler,
@@ -35,9 +41,9 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../../../hooks';
-import { AssignmentBlockItemDescriptionType } from '../../../hooks/assignment-block-description-buttons';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -50,6 +56,7 @@ interface AssignmentResponsePupilCollectionTabProps {
 	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
 	onShowPreviewClicked: () => void;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
+	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
 }
 
 const AssignmentResponsePupilCollectionTab: FunctionComponent<
@@ -63,6 +70,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	control,
 	onShowPreviewClicked,
 	setTab,
+	setFilterState,
 }) => {
 	const [t] = useTranslation();
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
@@ -116,10 +124,10 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		}
 	);
 	const setBlock = useAssignmentBlockChangeHandler(
-		(assignmentResponse as any)?.pupil_collection_blocks, // TODO remove cast once Avo.Core.BlockItemBase is in typings repo
+		assignmentResponse?.pupil_collection_blocks || [],
 		updateBlocksInAssignmentResponseState
 	);
-	const renderBlockContent = useEditBlocks(setBlock, [
+	const renderBlockContent = useEditBlocks(setBlock, buildAssignmentSearchLink(setFilterState), [
 		AssignmentBlockItemDescriptionType.original,
 		AssignmentBlockItemDescriptionType.custom,
 	]);

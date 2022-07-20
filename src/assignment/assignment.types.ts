@@ -4,6 +4,8 @@ import { AssignmentBlock, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assi
 
 import { FilterState } from '../search/search.types';
 
+import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
+
 export type AssignmentOverviewTableColumns =
 	| 'title'
 	| 'author'
@@ -101,6 +103,13 @@ export interface PupilCollectionFragment extends Avo.Core.BlockItemBase {
 }
 
 export interface EditBlockProps {
-	block: Avo.Core.BlockItemBase;
-	setBlock: (block: Avo.Core.BlockItemBase, update: Partial<Avo.Core.BlockItemBase>) => void;
+	block: EditableBlockItem;
+	setBlock: (updatedBlock: EditableBlockItem) => void;
+}
+
+export interface EditableBlockItem extends Avo.Core.BlockItemBase {
+	ownTitle?: string;
+	ownDescription?: string;
+	noTitle?: string;
+	editMode?: AssignmentBlockItemDescriptionType;
 }

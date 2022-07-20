@@ -33,6 +33,11 @@ export class PermissionService {
 		return get(user, 'profile.permissions', []);
 	}
 
+	/**
+	 * Checks if the user has at least one permission for the permissions list
+	 * @param permissions
+	 * @param user
+	 */
 	public static async hasPermissions(
 		permissions: Permissions,
 		user: Avo.User.User | null

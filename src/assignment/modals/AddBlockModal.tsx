@@ -45,6 +45,10 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
+	const disableSearchBlock = !!blocks.find(
+		(block) =>
+			block.type === AssignmentBlockType.ZOEK || block.type === AssignmentBlockType.BOUW
+	);
 	const items: AddBlockModalOption[] = useMemo(
 		() => [
 			{
@@ -69,14 +73,14 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				type: AssignmentBlockType.ZOEK as AddBlockModalType,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
 				title: t('assignment/modals/add-block___zoeken-bouwen'),
-				description: t(
-					'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
-				),
-				disabled: !!blocks.find(
-					(block) =>
-						block.type === AssignmentBlockType.ZOEK ||
-						block.type === AssignmentBlockType.BOUW
-				),
+				description: disableSearchBlock
+					? t(
+							'assignment/modals/add-block-modal___het-is-niet-mogelijk-om-meer-dan-een-zoekoefening-per-opdracht-te-gebruiken'
+					  )
+					: t(
+							'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
+					  ),
+				disabled: disableSearchBlock,
 			},
 			{
 				type: AssignmentBlockType.TEXT,

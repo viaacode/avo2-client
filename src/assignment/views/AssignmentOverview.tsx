@@ -694,8 +694,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 		// Pupil
 		if (activeView === AssignmentView.ACTIVE) {
+			if (hasFilters) {
+				return t(
+					'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
+				);
+			}
 			return t(
 				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-ontvangen-van-je-leerkracht'
+			);
+		}
+		if (hasFilters) {
+			return t(
+				'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm'
 			);
 		}
 		return t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-verlopen');

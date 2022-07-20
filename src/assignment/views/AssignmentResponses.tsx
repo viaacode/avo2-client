@@ -19,7 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
-import { cloneDeep, get, isNil } from 'lodash-es';
+import { cloneDeep, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -39,6 +39,7 @@ import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ASSIGNMENTS_ID, ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
@@ -59,7 +60,7 @@ const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = 'desc';
 
 const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
-	onUpdate = () => {},
+	onUpdate = noop,
 	// history,
 	match,
 	user,
@@ -175,12 +176,36 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (
+				PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS) ||
+				PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENTS) ||
+				PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES) ||
+				PermissionService.hasPerm(user, PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES)
+			) {
+				setLoadingInfo({
+					message: t(
+						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+					),
+					icon: 'lock',
+					state: 'error',
+				});
+			}
 			const assignmentId = match.params.id;
 
 			const assignment = await AssignmentService.fetchAssignmentById(assignmentId);
 
 			setAssignment(assignment);
 		} catch (err) {
+			if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
+				setLoadingInfo({
+					message: t(
+						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+					),
+					icon: 'lock',
+					state: 'error',
+				});
+				return;
+			}
 			setLoadingInfo({
 				state: 'error',
 				message: t(
@@ -245,8 +270,17 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	}, [fetchAssignment, match]);
 
 	useEffect(() => {
-		if (!isNil(canViewAssignmentResponses)) {
+		if (canViewAssignmentResponses) {
 			fetchAssignmentResponses();
+		} else if (!isNil(canViewAssignmentResponses)) {
+			// canViewAssignmentResponses: false
+			setLoadingInfo({
+				message: t(
+					'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+				),
+				icon: 'lock',
+				state: 'error',
+			});
 		}
 	}, [canViewAssignmentResponses, fetchAssignmentResponses]);
 

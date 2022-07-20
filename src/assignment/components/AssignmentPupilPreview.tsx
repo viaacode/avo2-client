@@ -12,11 +12,13 @@ import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentRe
 
 export type AssignmentPupilPreviewProps = {
 	assignment: AssignmentFormState;
+	isPreview?: boolean;
 	onClose: () => void;
 };
 
 const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	assignment,
+	isPreview = false,
 	onClose,
 	user,
 }) => {
@@ -68,6 +70,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 							SetStateAction<Avo.Assignment.Response_v2>
 						>
 					}
+					isPreview={isPreview}
 					showBackButton={false}
 					onAssignmentChanged={async () => {
 						// Ignore changes to assignment during preview
