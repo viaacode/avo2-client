@@ -23,20 +23,22 @@ export const BlockItemMetadata: FC<BlockItemMetadataProps> = ({
 		<section className="u-spacer-bottom">
 			{organisation && (
 				<div>
-					{t('assignment/views/assignment-edit___uitzender')}:{` ${organisation}`}
+					{t('shared/components/block-item-metadata/block-item-metadata___uitzender')}:
+					{` ${organisation}`}
 				</div>
 			)}
 
 			{broadcastDate && (
 				<div>
-					{t('assignment/views/assignment-edit___uitgezonden')}:
+					{t('shared/components/block-item-metadata/block-item-metadata___uitgezonden')}:
 					{` ${formatDate(broadcastDate)}`}
 				</div>
 			)}
 
 			{series && (
 				<div>
-					{t('assignment/views/assignment-edit___reeks')}: {buildSeriesLink(series)}
+					{t('shared/components/block-item-metadata/block-item-metadata___reeks')}:{' '}
+					{buildSeriesLink(series)}
 				</div>
 			)}
 		</section>
