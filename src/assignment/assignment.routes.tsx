@@ -4,7 +4,6 @@ import SecuredRoute from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
 import AssignmentCreate from './views/AssignmentCreate';
-import AssignmentDetail from './views/AssignmentDetail';
 import AssignmentEdit from './views/AssignmentEdit';
 import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
 import AssignmentResponseEditPage from './views/AssignmentResponseEdit/AssignmentResponseEditPage';
@@ -40,12 +39,6 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		exact
 		path={APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route}
 		key={APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route}
-	/>,
-	<SecuredRoute
-		component={AssignmentDetail} // TODO change to component that shows readonly view of assignment response
-		exact
-		path={APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route}
-		key={APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route}
 	/>,
 	<SecuredRoute // view pupil collection response as teacher/admin
 		component={AssignmentPupilCollectionDetail}

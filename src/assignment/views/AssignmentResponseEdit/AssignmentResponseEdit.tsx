@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	BlockHeading,
+	Box,
 	Container,
 	Flex,
 	Icon,
@@ -357,11 +358,27 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						tabs={renderTabs()}
 						info={
 							assignment ? (
-								<AssignmentMetadata
-									assignment={assignment}
-									assignmentResponse={assignmentResponse}
-									who={'teacher'}
-								/>
+								<>
+									<AssignmentMetadata
+										assignment={assignment}
+										assignmentResponse={assignmentResponse}
+										who={'teacher'}
+									/>
+									{!!assignment.answer_url && (
+										<Box backgroundColor="soft-white" condensed>
+											<p>
+												{t(
+													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
+												)}
+											</p>
+											<p>
+												<a href={assignment.answer_url}>
+													{assignment.answer_url}
+												</a>
+											</p>
+										</Box>
+									)}
+								</>
 							) : null
 						}
 						tour={<InteractiveTour showButton />}
