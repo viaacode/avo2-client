@@ -1125,6 +1125,7 @@
   "admin/users/components/temp-access-modal___einddatum": "Tot en met",
   "admin/users/components/temp-access-modal___opslaan": "Opslaan",
   "admin/users/components/temp-access-modal___tijdelijke-toegang-instellen": "Tijdelijke toegang instellen",
+  "admin/users/components/user-delete-modal___deze-inhoud-zal-verwijderd-worden": "Deze inhoud zal verwijderd worden:",
   "admin/users/components/user-delete-modal___gedeelde-links": "Gedeelde links",
   "admin/users/user___achternaam": "Achternaam",
   "admin/users/user___anonimiseer-de-publieke-content-verwijder-de-rest": "Anonimiseer de publieke content, verwijder de rest.",

@@ -230,7 +230,11 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 
 				{!!countOutputs.length && (
 					<Spacer margin="top" className="c-content">
-						<strong>{t('Deze inhoud zal verwijderd worden:')}</strong>
+						<strong>
+							{t(
+								'admin/users/components/user-delete-modal___deze-inhoud-zal-verwijderd-worden'
+							)}
+						</strong>
 						<ul>
 							{countOutputs.map((count, index) => (
 								<li key={`content-count-${index}`}>{count}</li>
