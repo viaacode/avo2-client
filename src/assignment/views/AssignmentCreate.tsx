@@ -65,7 +65,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		reset: resetForm,
 		setValue,
 		trigger,
-		formState: { isDirty },
 	} = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
