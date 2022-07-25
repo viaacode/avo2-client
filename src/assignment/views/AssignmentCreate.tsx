@@ -414,7 +414,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>
 
-			<BeforeUnloadPrompt when={isDirty} />
+			<BeforeUnloadPrompt when={true} />
 		</>
 	);
 };
