@@ -98,6 +98,17 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
+			// Assignment is loaded but if there is no deadline set, show 'Not yet available' error to the student
+			if (assignmentOrError.deadline_at === null) {
+				// error
+				setAssignmentError({
+					state: 'error',
+					...getAssignmentErrorObj(AssignmentRetrieveError.NOT_YET_AVAILABLE),
+				});
+				setAssignmentLoading(false);
+				return;
+			}
+
 			// Track assignment view
 			AssignmentService.increaseViewCount(assignmentOrError.id); // Not waiting for view events increment
 			trackEvents(
