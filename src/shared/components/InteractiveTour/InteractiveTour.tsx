@@ -120,6 +120,7 @@ const InteractiveTour: FunctionComponent<
 			const interactiveRoutePairs = reverse(
 				toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
 			);
+
 			const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
 				(pair) => {
 					const route = pair[1].route;
@@ -141,8 +142,10 @@ const InteractiveTour: FunctionComponent<
 			// Get all routes that have an interactive tour
 			const routeIdsWithTour: string[] =
 				await InteractiveTourService.fetchInteractiveTourRouteIds();
+
 			if (!routeIdsWithTour.includes(routeId)) {
 				// No tour available for this page
+				setTour(null);
 				return;
 			}
 
