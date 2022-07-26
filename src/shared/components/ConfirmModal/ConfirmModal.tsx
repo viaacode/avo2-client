@@ -24,6 +24,7 @@ export interface ConfirmModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	confirmCallback?: () => void;
+	className?: string;
 }
 
 const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
@@ -39,9 +40,11 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	onClose = noop,
 	isOpen,
 	confirmCallback = noop,
+	className,
 }) => {
 	return (
 		<Modal
+			className={className}
 			isOpen={isOpen}
 			title={title && sanitizeHtml(title, 'basic')}
 			size="small"
