@@ -16,14 +16,13 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, isNil, orderBy } from 'lodash-es';
+import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
-import { AssignmentService } from '../../assignment/assignment.service';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -44,7 +43,6 @@ import { QualityLabel } from '../collection.types';
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
-type AssignmentColumnId = 'title' | 'author' | 'is_archived' | 'actions';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
@@ -53,15 +51,6 @@ const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
 	author: 'profile.user.last_name',
 	is_public: 'is_public',
 	organization: 'profile.profile_organizations[0].organization_id',
-	actions: '',
-};
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const columnIdToAssignmentPath: { [columnId in AssignmentColumnId]: string } = {
-	/* eslint-enable @typescript-eslint/no-unused-vars */
-	title: 'title',
-	author: 'profile.user.last_name',
-	is_archived: 'is_archived',
 	actions: '',
 };
 
@@ -84,13 +73,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	>(undefined);
 	const [bundleSortColumn, setBundleSortColumn] = useState<string>('title');
 	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>('asc');
-
-	const [assignmentsContainingCollection, setAssignmentsContainingCollection] = useState<
-		Partial<Avo.Assignment.Assignment_v2>[] | undefined
-	>(undefined);
-	const [assignmentSortColumn, setAssignmentSortColumn] = useState<string>('title');
-	const [assignmentSortOrder, setAssignmentSortOrder] =
-		useState<Avo.Search.OrderDirection>('asc');
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
@@ -122,31 +104,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 			);
 		}
 	}, [setBundlesContainingCollection, t, collection]);
-
-	const fetchAssignmentsByCollectionUuid = useCallback(async () => {
-		try {
-			if (!collection) {
-				return;
-			}
-			setAssignmentsContainingCollection(
-				await AssignmentService.fetchAssignmentByContentIdAndType(
-					collection.id,
-					'COLLECTIE'
-				)
-			);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to get assignments containing collection', err, {
-					collection,
-				})
-			);
-			ToastService.danger(
-				t(
-					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-opdrachten-die-deze-collectie-bevatten-is-mislukt'
-				)
-			);
-		}
-	}, [setAssignmentsContainingCollection, t, collection]);
 
 	const fetchQualityLabels = useCallback(async () => {
 		try {
@@ -194,15 +151,9 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 
 	useEffect(() => {
 		fetchBundlesByCollectionUuid();
-		fetchAssignmentsByCollectionUuid();
 		fetchQualityLabels();
 		fetchAssociatedQuickLanes();
-	}, [
-		fetchBundlesByCollectionUuid,
-		fetchAssignmentsByCollectionUuid,
-		fetchQualityLabels,
-		fetchAssociatedQuickLanes,
-	]);
+	}, [fetchBundlesByCollectionUuid, fetchQualityLabels, fetchAssociatedQuickLanes]);
 
 	const updateCollectionMultiProperty = (
 		selectedTagOptions: TagInfo[],
@@ -232,11 +183,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		redirectToClientPage(link, history);
 	};
 
-	const navigateToAssignmentDetail = (id: string) => {
-		const link = buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, { id });
-		redirectToClientPage(link, history);
-	};
-
 	const handleBundleColumnClick = (columnId: BundleColumnId) => {
 		const sortOrder = bundleSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 		setBundleSortColumn(columnId);
@@ -245,19 +191,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 			orderBy(
 				bundlesContainingCollection,
 				[(coll) => get(coll, columnIdToBundlePath[columnId])],
-				[sortOrder]
-			)
-		);
-	};
-
-	const handleAssignmentColumnClick = (columnId: AssignmentColumnId) => {
-		const sortOrder = assignmentSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
-		setAssignmentSortColumn(columnId);
-		setAssignmentSortOrder(sortOrder);
-		setAssignmentsContainingCollection(
-			orderBy(
-				assignmentsContainingCollection,
-				[(coll) => get(coll, columnIdToAssignmentPath[columnId])],
 				[sortOrder]
 			)
 		);
@@ -283,12 +216,13 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		columnId: BundleColumnId
 	): ReactNode => {
 		switch (columnId) {
-			case 'author':
+			case 'author': {
 				const user = get(rowData, 'profile.user');
 				if (!user) {
 					return '-';
 				}
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+			}
 
 			case 'organization':
 				return get(rowData, 'profile.organisation.name', '-');
@@ -322,51 +256,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 						onClick={(evt) => {
 							evt.stopPropagation();
 							navigateToBundleDetail(rowData.id as string);
-						}}
-					/>
-				);
-
-			default:
-				return rowData[columnId];
-		}
-	};
-
-	const renderAssignmentCell = (
-		rowData: Partial<Avo.Assignment.Assignment_v2>,
-		columnId: AssignmentColumnId
-	): ReactNode => {
-		switch (columnId) {
-			case 'author': {
-				const user = get(rowData, 'profile.user');
-				if (!user) {
-					return '-';
-				}
-				return truncateTableValue(`${user.first_name} ${user.last_name}`);
-			}
-
-			case 'is_archived':
-				return rowData.deadline_at &&
-					new Date(rowData.deadline_at).getTime() < new Date().getTime()
-					? t('collection/components/collection-or-bundle-edit-admin___verlopen')
-					: t('collection/components/collection-or-bundle-edit-admin___actief');
-
-			case 'actions':
-				return (
-					<Button
-						type="borderless"
-						icon="eye"
-						title={t(
-							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-opdracht-detail-pagina'
-						)}
-						ariaLabel={t(
-							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-opdracht-detail-pagina'
-						)}
-						onClick={(evt) => {
-							evt.stopPropagation();
-							if (isNil(rowData.id)) {
-								return;
-							}
-							navigateToAssignmentDetail(String(rowData.id) as string);
 						}}
 					/>
 				);
@@ -435,67 +324,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 			) : (
 				t(
 					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
-				)
-			)}
-		</>
-	);
-
-	const renderAssignmentsContainingCollection = () => (
-		<>
-			<Spacer margin={['top-extra-large', 'bottom-small']}>
-				<BlockHeading type="h2">
-					{t(
-						'collection/components/collection-or-bundle-edit-admin___opdrachten-die-deze-collectie-bevatten'
-					)}
-				</BlockHeading>
-			</Spacer>
-			{!!assignmentsContainingCollection && !!assignmentsContainingCollection.length ? (
-				<Table
-					columns={[
-						{
-							label: t(
-								'collection/components/collection-or-bundle-edit-admin___titel'
-							),
-							id: 'title',
-							sortable: true,
-							dataType: TableColumnDataType.string,
-						},
-						{
-							label: t(
-								'collection/components/collection-or-bundle-edit-admin___auteur'
-							),
-							id: 'author',
-							sortable: true,
-							dataType: TableColumnDataType.string,
-						},
-						{
-							label: t(
-								'collection/components/collection-or-bundle-edit-admin___status'
-							),
-							id: 'is_archived',
-							sortable: true,
-							dataType: TableColumnDataType.boolean,
-						},
-						{
-							tooltip: t(
-								'collection/components/collection-or-bundle-edit-admin___acties'
-							),
-							id: 'actions',
-							sortable: false,
-						},
-					]}
-					data={assignmentsContainingCollection}
-					onColumnClick={handleAssignmentColumnClick as any}
-					onRowClick={(coll) => navigateToAssignmentDetail(coll.id)}
-					renderCell={renderAssignmentCell as any}
-					sortColumn={assignmentSortColumn}
-					sortOrder={assignmentSortOrder}
-					variant="bordered"
-					rowKey="id"
-				/>
-			) : (
-				t(
-					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-opdracht-opgenomen'
 				)
 			)}
 		</>
@@ -696,9 +524,6 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 								<>
 									{/* Show bundles that contain this collection */}
 									{renderBundlesContainingCollection()}
-
-									{/* Show assignments that contain this collection */}
-									{renderAssignmentsContainingCollection()}
 
 									{/* Show quick lane urls leading to this collection */}
 									{renderAssociatedQuickLaneTable()}
