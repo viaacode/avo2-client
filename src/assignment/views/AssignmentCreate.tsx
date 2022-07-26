@@ -59,7 +59,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
-	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
+	const {
+		control,
+		handleSubmit,
+		reset: resetForm,
+		setValue,
+		trigger,
+		formState: { isDirty },
+	} = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
