@@ -156,11 +156,6 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: true,
 		showForInteractiveTour: false,
 	},
-	WORKSPACE: {
-		route: `/${ROUTE_PARTS.workspace}`,
-		showInContentPicker: true,
-		showForInteractiveTour: true,
-	},
 	WORKSPACE_TAB: {
 		route: `/${ROUTE_PARTS.workspace}/:tabId`,
 		showInContentPicker: false,
@@ -183,6 +178,12 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	WORKSPACE_BOOKMARKS: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.bookmarks}`,
+		showInContentPicker: true,
+		showForInteractiveTour: true,
+	},
+	// Put WORKSPACE parent below children to ensure priority when resolving
+	WORKSPACE: {
+		route: `/${ROUTE_PARTS.workspace}`,
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
