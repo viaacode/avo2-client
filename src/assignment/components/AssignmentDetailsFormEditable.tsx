@@ -22,6 +22,7 @@ import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 import AssignmentLabels from './AssignmentLabels';
 
 import './AssignmentDetailsForm.scss';
+import { ToastService } from '../../shared/services';
 
 export const AssignmentDetailsFormIds = {
 	classrooms: 'c-assignment-details-form__classrooms', // labels with type 'CLASS'
@@ -46,6 +47,8 @@ const AssignmentDetailsFormEditable: FC<
 		(key: string | number) => `${assignment.id}--${key}`,
 		[assignment.id]
 	);
+
+	// Render
 
 	if (!user) {
 		return (
@@ -81,15 +84,28 @@ const AssignmentDetailsFormEditable: FC<
 							),
 						}}
 						onChange={(changed) => {
+							let target = changed;
+
+							if (changed.length > 1) {
+								ToastService.danger(
+									t(
+										'assignment/components/assignment-details-form-editable___opgepast-je-kan-maar-1-klas-instellen-per-opdracht'
+									)
+								);
+								target = [changed[0]];
+							}
+
 							const newLabels = mergeWithOtherLabels(
 								assignment.labels,
-								changed,
+								target,
 								'CLASS'
 							);
+
 							setValue('labels', newLabels, {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
+
 							setAssignment((prev) => ({
 								...prev,
 								labels: newLabels,
