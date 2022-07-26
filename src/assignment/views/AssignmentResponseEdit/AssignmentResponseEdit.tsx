@@ -20,7 +20,7 @@ import React, {
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link, Prompt } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
 	JsonParam,
 	NumberParam,
@@ -32,9 +32,11 @@ import {
 import { CollectionBlockType } from '../../../collection/collection.const';
 import { FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
+import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -50,6 +52,7 @@ import {
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
@@ -60,8 +63,6 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
-import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
@@ -390,12 +391,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 					<Spacer margin={['bottom-large']} />
 
-					<Prompt
-						when={isDirty}
-						message={t(
-							'assignment/views/assignment-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-						)}
-					/>
+					<BeforeUnloadPrompt when={isDirty} />
 				</div>
 
 				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}

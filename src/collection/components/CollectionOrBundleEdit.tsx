@@ -26,7 +26,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { matchPath, withRouter } from 'react-router';
-import { Prompt } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
@@ -40,6 +39,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
@@ -1280,13 +1280,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onClose={() => setEnterItemIdModalOpen(false)}
 					inputCallback={handleAddItemById}
 				/>
-				{draggableListModal}{' '}
-				<Prompt
-					when={shouldBlockNavigation()}
-					message={t(
-						'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-					)}
-				/>
+				{draggableListModal}
+				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
 			</>
 		);
 	};
