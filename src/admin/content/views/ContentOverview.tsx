@@ -1,3 +1,14 @@
+import {
+	Button,
+	ButtonToolbar,
+	LabelObj,
+	LinkTarget,
+	Modal,
+	ModalBody,
+	Spacer,
+	TagList,
+	TagOption,
+} from '@viaa/avo2-components';
 import { compact, get } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -10,18 +21,6 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import {
-	Button,
-	ButtonToolbar,
-	LabelObj,
-	LinkTarget,
-	Modal,
-	ModalBody,
-	Spacer,
-	TagList,
-	TagOption,
-} from '@viaa/avo2-components';
 
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -72,7 +71,7 @@ import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
 
-interface ContentOverviewProps extends DefaultSecureRouteProps {}
+type ContentOverviewProps = DefaultSecureRouteProps;
 
 const {
 	EDIT_ANY_CONTENT_PAGES,
@@ -387,7 +386,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'depublish_at':
 			case 'created_at':
 			case 'updated_at':
-				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
+				return rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 
 			case 'actions':
 				return (
@@ -512,7 +511,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={

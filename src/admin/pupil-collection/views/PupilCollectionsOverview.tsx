@@ -223,6 +223,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 	const deleteSelectedAssignmentResponses = async () => {
 		setIsLoading(true);
+		setPupilCollectionsDeleteModalOpen(false);
 		try {
 			await PupilCollectionService.deleteAssignmentResponses(selectedPupilCollectionIds);
 			await fetchPupilCollections();
@@ -406,7 +407,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					)}
 					isOpen={pupilCollectionsDeleteModalOpen}
 					onClose={() => setPupilCollectionsDeleteModalOpen(false)}
-					deleteObjectCallback={deleteSelectedAssignmentResponses}
+					confirmCallback={deleteSelectedAssignmentResponses}
 				/>
 				<ChangeAuthorModal
 					isOpen={isChangeAuthorModalOpen}

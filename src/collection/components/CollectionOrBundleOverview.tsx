@@ -682,7 +682,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					setSelected(null);
 					setIsDeleteModalOpen(false);
 				}}
-				deleteObjectCallback={onDeleteCollection}
+				confirmCallback={onDeleteCollection}
 			/>
 		);
 	};

@@ -1,5 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
+import i18n from '../shared/translations/i18n';
+
 import { SortOrder } from './search.types';
 
 export const ITEMS_PER_PAGE = 10;
@@ -59,16 +61,35 @@ export const DEFAULT_SORT_ORDER: SortOrder = {
 	orderDirection: 'desc',
 };
 
-export const GET_SEARCH_ORDER_OPTIONS = (
-	t: (key: string) => string
-): { label: string; value: string }[] => [
-	{ label: t('search/views/search___meest-relevant'), value: 'relevance_desc' },
-	{ label: t('search/views/search___meest-bekeken'), value: 'views_desc' },
-	{ label: t('search/views/search___uitzenddatum-aflopend'), value: 'broadcastDate_desc' },
-	{ label: t('search/views/search___uitzenddatum-oplopend'), value: 'broadcastDate_asc' },
+export enum SearchOrderProperty {
+	relevanceDesc = 'relevance_desc',
+	viewsDesc = 'views_desc',
+	broadcastDateDesc = 'broadcastDate_desc',
+	broadcastDateAsc = 'broadcastDate_asc',
+	createdAtDesc = 'createdAt_desc',
+	updatedAtDesc = 'updatedAt_desc',
+}
+
+export const GET_SEARCH_ORDER_OPTIONS = (): { label: string; value: SearchOrderProperty }[] => [
 	{
-		label: t('search/views/search___laatst-toegevoegd'),
-		value: 'createdAt_desc',
+		label: i18n.t('search/views/search___meest-relevant'),
+		value: SearchOrderProperty.relevanceDesc,
 	},
-	{ label: t('search/views/search___laatst-gewijzigd'), value: 'updatedAt_desc' },
+	{ label: i18n.t('search/views/search___meest-bekeken'), value: SearchOrderProperty.viewsDesc },
+	{
+		label: i18n.t('search/views/search___uitzenddatum-aflopend'),
+		value: SearchOrderProperty.broadcastDateDesc,
+	},
+	{
+		label: i18n.t('search/views/search___uitzenddatum-oplopend'),
+		value: SearchOrderProperty.broadcastDateAsc,
+	},
+	{
+		label: i18n.t('search/views/search___laatst-toegevoegd'),
+		value: SearchOrderProperty.createdAtDesc,
+	},
+	{
+		label: i18n.t('search/views/search___laatst-gewijzigd'),
+		value: SearchOrderProperty.updatedAtDesc,
+	},
 ];

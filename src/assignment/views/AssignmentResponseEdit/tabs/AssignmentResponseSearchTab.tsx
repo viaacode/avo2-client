@@ -32,6 +32,7 @@ import { ToastService } from '../../../../shared/services';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
+	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
@@ -280,6 +281,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				<SearchFiltersAndResults
 					enabledFilters={ENABLED_FILTERS_PUPIL_SEARCH}
 					enabledTypeOptions={ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH}
+					enabledOrderProperties={ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH}
 					bookmarks={false}
 					filterState={filterState}
 					setFilterState={handleNewFilterState}

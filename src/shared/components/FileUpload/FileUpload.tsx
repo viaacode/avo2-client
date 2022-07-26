@@ -276,7 +276,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={closeDeleteModal}
-				deleteObjectCallback={() => {
+				confirmCallback={() => {
 					deleteUploadedFile(urlToDelete || '');
 				}}
 			/>

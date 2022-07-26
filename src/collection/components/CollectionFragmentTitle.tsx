@@ -7,13 +7,15 @@ import { buildLink } from '../../shared/helpers';
 import { CollectionBlockType } from '../collection.const';
 import { BlockItemComponent } from '../collection.types';
 
+import './CollectionFragmentTitle.scss';
+
 export interface CollectionFragmentTitleProps extends BlockItemComponent {
 	canClickHeading?: boolean;
 }
 
 const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canClickHeading }) => {
 	const heading = (
-		<BlockHeading type="h2">
+		<BlockHeading type="h2" className="c-collection-fragment-title">
 			{block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
 				? block.custom_title
 				: block?.item_meta?.title}

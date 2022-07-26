@@ -839,7 +839,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					body={deleteAssignmentWarning(t, markedAssignment || undefined)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					deleteObjectCallback={async () => {
+					confirmCallback={async () => {
 						await deleteAssignment(t, markedAssignment?.id, user);
 						updateAndRefetch();
 					}}

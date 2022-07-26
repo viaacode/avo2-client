@@ -19,10 +19,12 @@ import { Link } from 'react-router-dom';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { navigate } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
@@ -32,8 +34,8 @@ import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEd
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import AssignmentUnload from '../components/AssignmentUnload';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -46,7 +48,6 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const [t] = useTranslation();
@@ -64,7 +65,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		reset: resetForm,
 		setValue,
 		trigger,
-		formState: { isDirty },
 	} = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
@@ -106,7 +106,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					)
 				);
 
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
+				resetForm();
+
+				// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
+				setTimeout(() => {
+					navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: created.id });
+				}, 100);
 			}
 		} catch (err) {
 			console.error(err);
@@ -124,6 +129,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	}, [resetForm, setAssignment, defaultValues]);
 
 	// UI
+	useWarningBeforeUnload({
+		when: true, // Always do on create
+	});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
@@ -344,35 +352,31 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<AssignmentUnload blockRoute={isDirty}>
-			<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
-				<div>
-					<AssignmentHeading
-						back={renderBackButton}
-						title={renderTitle}
-						actions={renderActions}
-						tabs={renderTabs}
-					/>
-
-					<Container mode="horizontal">
-						<Spacer margin={['top-large', 'bottom-extra-large']}>
-							{renderTabContent}
-						</Spacer>
-
-						{renderedModals}
-						{draggableListModal}
-					</Container>
-				</div>
-
-				{/* Always show on create */}
-				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
-				<StickySaveBar
-					isVisible={true}
-					onSave={handleSubmit(submit, (...args) => console.error(args))}
-					onCancel={() => reset()}
+		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+			<div>
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
 				/>
+
+				<Container mode="horizontal">
+					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+
+					{renderedModals}
+					{draggableListModal}
+				</Container>
 			</div>
-		</AssignmentUnload>
+
+			{/* Always show on create */}
+			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			<StickySaveBar
+				isVisible={true}
+				onSave={handleSubmit(submit, (...args) => console.error(args))}
+				onCancel={() => reset()}
+			/>
+		</div>
 	);
 
 	const renderPageContent = () => {
@@ -410,6 +414,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				loadingInfo={loadingInfo}
 				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 			/>
+
+			<BeforeUnloadPrompt when={true} />
 		</>
 	);
 };

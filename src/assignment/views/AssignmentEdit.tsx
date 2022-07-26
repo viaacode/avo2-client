@@ -35,25 +35,27 @@ import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../shared/services';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
+import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import AssignmentUnload from '../components/AssignmentUnload';
 import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
 import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
 import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -67,7 +69,6 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -108,6 +109,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	);
 
 	// UI
+	useWarningBeforeUnload({
+		when: isDirty,
+	});
+
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -199,7 +204,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			});
 		}
 		setAssigmentLoading(false);
-	}, [user, match.params, t, history, setOriginal, setAssignment]);
+	}, [user, match.params.id, t, history, setOriginal, setAssignment]);
 
 	// Events
 
@@ -408,7 +413,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									<DeleteAssignmentButton
 										assignment={original}
 										modal={{
-											deleteObjectCallback: () => {
+											confirmCallback: () => {
 												redirectToClientPage(backToOverview(), history);
 											},
 										}}
@@ -523,57 +528,44 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--edit c-sticky-save-bar__wrapper">
-			<AssignmentUnload
-				blockRoute={isDirty}
-				hasBlocks={assignmentHasPupilBlocks}
-				hasResponses={assignmentHasResponses}
-			>
-				<div>
-					<AssignmentHeading
-						back={renderBackButton}
-						title={renderTitle}
-						actions={renderActions}
-						tabs={renderTabs}
-					/>
+			<div>
+				<AssignmentHeading
+					back={renderBackButton}
+					title={renderTitle}
+					actions={renderActions}
+					tabs={renderTabs}
+				/>
 
-					<Container mode="horizontal">
-						{pastDeadline && (
-							<Spacer margin={['top-large']}>
-								<Alert type="info">
-									{t(
-										'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-									)}
-								</Alert>
-							</Spacer>
-						)}
-
-						<Spacer margin={['top-large', 'bottom-extra-large']}>
-							{renderTabContent}
+				<Container mode="horizontal">
+					{pastDeadline && (
+						<Spacer margin={['top-large']}>
+							<Alert type="info">
+								{t(
+									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+								)}
+							</Alert>
 						</Spacer>
+					)}
 
-						{renderedModals}
-						{draggableListModal}
+					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
 
-						<ConfirmModal
-							isOpen={isConfirmSaveActionModalOpen}
-							onClose={() => setIsConfirmSaveActionModalOpen(false)}
-							deleteObjectCallback={() => {
+					{renderedModals}
+					{draggableListModal}
+
+					<AssignmentConfirmSave
+						hasBlocks={assignmentHasPupilBlocks}
+						hasResponses={assignmentHasResponses}
+						modal={{
+							isOpen: isConfirmSaveActionModalOpen,
+							onClose: () => setIsConfirmSaveActionModalOpen(false),
+							confirmCallback: () => {
 								setIsConfirmSaveActionModalOpen(false);
 								handleSubmit(submit, (...args) => console.error(args))();
-							}}
-							title={t(
-								'assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan'
-							)}
-							body={t(
-								'assignment/views/assignment-edit___p-strong-opgelet-strong-leerlingen-hebben-deze-opdracht-reeds-bekeken-p-p-ben-je-zeker-dat-je-deze-nieuwe-wijzigingen-wil-opslaan-p'
-							)}
-							confirmLabel={t('assignment/views/assignment-edit___opslaan')}
-							cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-							confirmButtonType="primary"
-						/>
-					</Container>
-				</div>
-			</AssignmentUnload>
+							},
+						}}
+					/>
+				</Container>
+			</div>
 
 			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
 			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
@@ -625,6 +617,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			</MetaTags>
 
 			{renderPageContent()}
+
+			<BeforeUnloadPrompt when={isDirty} />
 		</>
 	);
 };

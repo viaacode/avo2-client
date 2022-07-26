@@ -1,9 +1,3 @@
-import { get } from 'lodash-es';
-import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -19,6 +13,11 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
@@ -110,7 +109,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 											? 'multicolor'
 											: 'custom'
 									}
-								></Icon>
+								/>
 							))}
 						</Column>
 						<Column className="c-account-link__column" size="3-5">
@@ -124,7 +123,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										className="c-account-link__icon"
 										type="multicolor"
 										name="circle-check"
-									></Icon>
+									/>
 									{t('settings/components/linked-accounts___gekoppeld')}
 								</span>
 							) : (
@@ -159,7 +158,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 					</Grid>
 				)}
 				<DeleteObjectModal
-					deleteObjectCallback={() => redirectToServerUnlinkAccount(location, idpType)}
+					confirmCallback={() => redirectToServerUnlinkAccount(location, idpType)}
 					isOpen={confirmModalOpen}
 					onClose={() => setConfirmModalOpen(false)}
 				/>

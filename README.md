@@ -19,6 +19,7 @@ This repository contains the React AVO Client app front-end for the end user.
 ## Functional
 
 The React AVO Client app will provide the following:
+
 * Implementation of the React @viaa/components in screens for the end user
 * Coupling with the NodeJS proxy for authentication & search
 
@@ -63,40 +64,29 @@ See postman collection (TODO add link)
 
 ### Troubleshooting
 
-## Deploy
+## Deploy to QAS
 
 Steps to deploy:
+
 * Update package.json version to match release branch version
 * Do an npm install or update the version of the package-lock.json file version
+* Extract translations
+*
 * Merge release branch into master
-* Add tag on master + push the tag (format: v1.1.1)
-* Go to jenkins to start a build or wait up to 20 minutes for an automatic build
-    * Only available on the viaa vpn
-    * https://jenkins-ci-cd.apps.do-prd-okp-m0.do.viaa.be/securityRealm/commenceLogin?from=%2Fjob%2Fci-cd%2F
-    * Password in 1password (VIAA jenkins login)
-    * Go to ci-cd
-    * Click on ci-cd/avo2-client-dev
-    * Click build now
-    * Click console output to follow the build
-* This deploys to `int` if the unit tests succeed
 * This deploys to `qas` if the integration tests succeed
-* Deploy to production has to happen manually by selecting the desired build image in openshift:
-    * https://do-prd-okp-m0.do.viaa.be:8443/console/project/ci-cd/browse/pipelines
-    * Same login as jenkins
 
-### Deploy to production
-* Install openshift-origin-client-tools
-* oc login https://do-prd-okp-m0.do.viaa.be:8443
-* login met de avodev openshift credentials
-* oc project sc-avo2
-* oc get imagestreamtags
-* oc tag sc-avo2/avo2-client:0.27.0 sc-avo2/avo2-client:prd
+### Deploy to PROD
+
+* Add tag on master + push the tag (format: v1.1.1)
+* Wait for build to succeed (eta 20min)
 
 ### Troubleshoot deploy
+
 If the deploy completes successfully but the version on the server doesn't seem to update,
 this could be an issue with the image not automatically being selected by openshift
 
 Steps:
+
 * You can login to openshift
 * Go to Deployments > avo2-client-qas
 * Actions > edit at the top right
@@ -104,6 +94,7 @@ Steps:
 * Save, wait for image to be deloyed
 
 Note:
+
 * the correct image should normally be the tag containing the environment name (eg: qas for qas environment)
 * This image is automatically updated when a new deploy occurs
 * When you select a different image than the env image, the auto updating behavior will not happen anymore

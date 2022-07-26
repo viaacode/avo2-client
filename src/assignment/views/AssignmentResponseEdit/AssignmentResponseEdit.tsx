@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	BlockHeading,
+	Box,
 	Container,
 	Flex,
 	Icon,
@@ -32,9 +33,11 @@ import {
 import { CollectionBlockType } from '../../../collection/collection.const';
 import { FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
+import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -50,6 +53,7 @@ import {
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
@@ -60,7 +64,6 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
@@ -105,6 +108,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	});
 
 	// UI
+	useWarningBeforeUnload({
+		when: isDirty,
+	});
+
 	const queryParamConfig = {
 		filters: JsonParam,
 		orderProperty: StringParam,
@@ -357,11 +364,25 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						tabs={renderTabs()}
 						info={
 							assignment ? (
-								<AssignmentMetadata
-									assignment={assignment}
-									assignmentResponse={assignmentResponse}
-									who={'teacher'}
-								/>
+								<>
+									<AssignmentMetadata
+										assignment={assignment}
+										assignmentResponse={assignmentResponse}
+										who={'teacher'}
+									/>
+									{!!assignment.answer_url && (
+										<Box backgroundColor="soft-white" condensed>
+											<p>
+												{t(
+													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
+												)}{' '}
+												<a href={assignment.answer_url}>
+													{assignment.answer_url}
+												</a>
+											</p>
+										</Box>
+									)}
+								</>
 							) : null
 						}
 						tour={<InteractiveTour showButton />}
@@ -384,6 +405,8 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					{renderTabContent()}
 
 					<Spacer margin={['bottom-large']} />
+
+					<BeforeUnloadPrompt when={isDirty} />
 				</div>
 
 				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}

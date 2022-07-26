@@ -221,6 +221,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 	const deleteSelectedAssignments = async () => {
 		setIsLoading(true);
+		setAssignmentsDeleteModalOpen(false);
 		try {
 			await AssignmentService.deleteAssignments(selectedAssignmentIds);
 			await fetchAssignments();
@@ -406,7 +407,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					)}
 					isOpen={assignmentsDeleteModalOpen}
 					onClose={() => setAssignmentsDeleteModalOpen(false)}
-					deleteObjectCallback={deleteSelectedAssignments}
+					confirmCallback={deleteSelectedAssignments}
 				/>
 				<ChangeAuthorModal
 					isOpen={isChangeAuthorModalOpen}

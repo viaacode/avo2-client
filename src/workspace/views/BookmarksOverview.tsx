@@ -319,7 +319,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}
-				deleteObjectCallback={onDeleteBookmark}
+				confirmCallback={onDeleteBookmark}
 			/>
 		</>
 	);

@@ -13,6 +13,10 @@
 @import './floating-error';
 @import './form-help-text';
 @import './hr';
+
+// TODO figure out why this style doesn't get imported from avo2-components lib
+@import './heading';
+
 @import './input';
 @import './label';
 @import './media-card-list';
