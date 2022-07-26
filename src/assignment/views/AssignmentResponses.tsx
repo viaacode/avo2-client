@@ -177,10 +177,10 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const fetchAssignment = useCallback(async () => {
 		try {
 			if (
-				PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS) ||
-				PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENTS) ||
-				PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES) ||
-				PermissionService.hasPerm(user, PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES)
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS) &&
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENTS) &&
+				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES) &&
+				!PermissionService.hasPerm(user, PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES)
 			) {
 				setLoadingInfo({
 					message: t(
