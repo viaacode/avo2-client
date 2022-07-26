@@ -99,9 +99,10 @@ const AssignmentDetailsFormEditable: FC<
 				</FormGroup>
 
 				<FormGroup
-					label={t('assignment/assignment___label')}
+					label={`${t('assignment/assignment___label')} (${t(
+						'assignment/assignment___optioneel'
+					)})`}
 					labelFor={getId(AssignmentDetailsFormIds.labels)}
-					required
 				>
 					<AssignmentLabels
 						type="LABEL"
