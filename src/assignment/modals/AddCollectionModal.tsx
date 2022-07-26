@@ -1,4 +1,5 @@
 import {
+	BlockHeading,
 	Button,
 	ButtonGroup,
 	ButtonToolbar,
@@ -264,11 +265,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 		switch (colKey) {
 			case 'title': {
 				const renderTitle = () => (
-					<div className="c-content-header c-content-header--small">
-						<h3 className="c-content-header__header u-m-0">
-							{truncateTableValue(collection.title)}
-						</h3>
-					</div>
+					<BlockHeading type="h3">{truncateTableValue(collection.title)}</BlockHeading>
 				);
 
 				return isMobileWidth() ? (
