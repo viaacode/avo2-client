@@ -79,6 +79,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	// Manual props
 	enabledFilters,
 	enabledTypeOptions,
+	enabledOrderProperties,
 	bookmarks,
 	filterState,
 	setFilterState,
@@ -527,7 +528,11 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 								<Select
 									className="c-search-view__sort-select"
 									id="sortBy"
-									options={GET_SEARCH_ORDER_OPTIONS(t)}
+									options={GET_SEARCH_ORDER_OPTIONS().filter(
+										(option) =>
+											!enabledOrderProperties ||
+											enabledOrderProperties.includes(option.value)
+									)}
 									value={defaultOrder}
 									onChange={(value) => handleOrderChanged(value)}
 								/>
