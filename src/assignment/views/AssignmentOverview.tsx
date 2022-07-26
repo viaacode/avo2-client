@@ -429,12 +429,27 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderResponsesCell = (cellData: any, assignment: AssignmentSchema_v2) => {
 		if ((cellData || []).length === 0) {
-			return renderDataCell('0', t('assignment/views/assignment-overview___responses'));
+			return renderDataCell(
+				<span
+					title={t(
+						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
+					)}
+				>
+					0
+				</span>,
+				t('assignment/views/assignment-overview___responses')
+			);
 		}
 
 		return renderDataCell(
 			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
-				{(cellData || []).length}
+				<span
+					title={t(
+						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
+					)}
+				>
+					{(cellData || []).length}
+				</span>
 			</Link>,
 			t('assignment/views/assignment-overview___responses')
 		);

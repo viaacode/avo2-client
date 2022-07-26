@@ -52,7 +52,11 @@ export function useAssignmentPupilTabs(
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,
 								label: (
-									<>
+									<span
+										title={t(
+											'assignment/hooks/assignment-pupil-tabs___aantal-fragmenten-in-collectie'
+										)}
+									>
 										{t(
 											'assignment/hooks/assignment-pupil-tabs___mijn-collectie'
 										)}
@@ -67,7 +71,7 @@ export function useAssignmentPupilTabs(
 										>
 											{numOfPupilCollectionFragments}
 										</Pill>
-									</>
+									</span>
 								),
 								icon: 'briefcase' as IconName,
 							},

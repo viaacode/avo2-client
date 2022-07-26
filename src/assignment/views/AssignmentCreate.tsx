@@ -59,13 +59,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
-	const {
-		control,
-		handleSubmit,
-		reset: resetForm,
-		setValue,
-		trigger,
-	} = form;
+	const { control, handleSubmit, reset: resetForm, setValue, trigger } = form;
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
@@ -249,7 +243,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				/>
 				<Button
 					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t('assignment/views/assignment-create___delen-met-leerlingen')}
+					title={t(
+						'assignment/views/assignment-create___bezorg-deze-opdrachtlink-aan-je-leerlingen'
+					)}
 					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
 					disabled
 				/>
