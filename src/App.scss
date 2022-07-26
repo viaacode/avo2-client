@@ -1,4 +1,4 @@
-.c-modal__unsaved-changes {
+.c-modal-context.c-modal__unsaved-changes {
 	z-index: 62; // Just above the other modals
 
 	+ .c-modal-backdrop--visible {
