@@ -13,7 +13,7 @@ import {
 	redirectToServerACMIDMLogin,
 	redirectToServerItsmeLogin,
 	redirectToServerKlascementLogin,
-	redirectToServerLeerIDLogin,
+	// redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
 } from '../helpers/redirects';
@@ -169,18 +169,19 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						}}
 					/>,
 
-					<Button
-						block
-						type="secondary"
-						className="c-button-leerid"
-						icon="leerid"
-						iconType="multicolor"
-						label={t('authentication/components/login-options___leerling-id')}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerLeerIDLogin(location);
-						}}
-					/>,
+					// Disabled due to https://meemoo.atlassian.net/browse/AVO-2062
+					// <Button
+					// 	block
+					// 	type="secondary"
+					// 	className="c-button-leerid"
+					// 	icon="leerid"
+					// 	iconType="multicolor"
+					// 	label={t('authentication/components/login-options___leerling-id')}
+					// 	onClick={() => {
+					// 		onOptionClicked();
+					// 		redirectToServerLeerIDLogin(location);
+					// 	}}
+					// />,
 
 					<Button
 						block

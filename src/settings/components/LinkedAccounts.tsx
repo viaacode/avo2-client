@@ -202,7 +202,10 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										'settings/components/account___koppel-je-account-met-andere-platformen'
 									)}
 								>
-									<div>{renderIdpLinkControls('VLAAMSEOVERHEID')}</div>
+									{/* Disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062 */}
+									<div>
+										{!isPupil && renderIdpLinkControls('VLAAMSEOVERHEID')}
+									</div>
 									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
 									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
 								</FormGroup>
