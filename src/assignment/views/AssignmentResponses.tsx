@@ -501,7 +501,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					)}
 					isOpen={isDeleteAssignmentResponseModalOpen}
 					onClose={handleDeleteModalClose}
-					deleteObjectCallback={() =>
+					confirmCallback={() =>
 						deleteAssignmentResponse(get(markedAssignmentResponse, 'id', null))
 					}
 				/>

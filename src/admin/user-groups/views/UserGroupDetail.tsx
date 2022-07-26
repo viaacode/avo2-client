@@ -1,9 +1,3 @@
-import { flatten, get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -16,6 +10,11 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
+import { flatten, get } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps } from 'react-router';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -46,7 +45,7 @@ import {
 
 import './UserGroupDetail.scss';
 
-interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
+type UserDetailProps = RouteComponentProps<{ id: string }>;
 
 const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
 	// Hooks
@@ -319,7 +318,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			<AdminLayoutBody>
 				{renderUserDetail()}
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

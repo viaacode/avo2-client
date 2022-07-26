@@ -1,12 +1,14 @@
 import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
+import { noop } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import { useTranslation } from 'react-i18next';
 import { Provider } from 'react-redux';
-import { Route, RouteComponentProps, Router, withRouter } from 'react-router-dom';
+import { Route, RouteComponentProps, BrowserRouter as Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { compose } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
@@ -18,6 +20,7 @@ import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
+import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
@@ -28,6 +31,7 @@ import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 
 import './styles/main.scss';
+import './App.scss';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -107,18 +111,51 @@ const App: FunctionComponent<RouteComponentProps> = (props) => {
 
 const AppWithRouter = compose(withRouter, withUser)(App) as FunctionComponent;
 
-const Root: FunctionComponent = () => (
-	<ApolloProvider client={dataService}>
-		<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
-			<Provider store={store}>
-				<Router history={history as any}>
-					<QueryParamProvider ReactRouterRoute={Route}>
-						<AppWithRouter />
-					</QueryParamProvider>
-				</Router>
-			</Provider>
-		</ApolloHooksProvider>
-	</ApolloProvider>
-);
+let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
+
+const Root: FunctionComponent = () => {
+	const [t] = useTranslation();
+	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
+
+	return (
+		<ApolloProvider client={dataService}>
+			<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
+				<Provider store={store}>
+					<Router
+						getUserConfirmation={(_message, callback) => {
+							setIsUnsavedChangesModalOpen(true);
+							confirmUnsavedChangesCallback = callback;
+						}}
+					>
+						<QueryParamProvider ReactRouterRoute={Route}>
+							<AppWithRouter />
+							<ConfirmModal
+								className="c-modal__unsaved-changes"
+								isOpen={isUnsavedChangesModalOpen}
+								confirmCallback={() => {
+									setIsUnsavedChangesModalOpen(false);
+									(confirmUnsavedChangesCallback || noop)(true);
+									confirmUnsavedChangesCallback = null;
+								}}
+								onClose={() => {
+									setIsUnsavedChangesModalOpen(false);
+									(confirmUnsavedChangesCallback || noop)(false);
+									confirmUnsavedChangesCallback = null;
+								}}
+								cancelLabel={t('app___blijven')}
+								confirmLabel={t('app___verlaten')}
+								title={t('app___wijzigingen-opslaan')}
+								body={t(
+									'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+								)}
+								confirmButtonType="primary"
+							/>
+						</QueryParamProvider>
+					</Router>
+				</Provider>
+			</ApolloHooksProvider>
+		</ApolloProvider>
+	);
+};
 
 export default Root;

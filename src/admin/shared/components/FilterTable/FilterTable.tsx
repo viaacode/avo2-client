@@ -466,7 +466,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			{!!bulkActions && !!bulkActions.length && (
 				<DeleteObjectModal
 					isOpen={confirmBulkActionModalOpen}
-					deleteObjectCallback={handleConfirmSelectBulkAction}
+					confirmCallback={handleConfirmSelectBulkAction}
 					onClose={() => setConfirmBulkActionModalOpen(false)}
 					confirmLabel={get(
 						bulkActions.find((action) => action.value === selectedBulkAction),

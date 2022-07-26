@@ -1,9 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -13,6 +7,11 @@ import {
 	Table,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps } from 'react-router';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -33,7 +32,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 
-interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
+type UserDetailProps = RouteComponentProps<{ id: string }>;
 
 const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
 	// Hooks
@@ -214,7 +213,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			<AdminLayoutBody>
 				{renderInteractiveTourDetail()}
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

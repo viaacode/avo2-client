@@ -1,11 +1,10 @@
+import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -33,7 +32,7 @@ import {
 	InteractiveTourTableState,
 } from '../interactive-tour.types';
 
-interface InteractiveTourOverviewProps extends DefaultSecureRouteProps {}
+type InteractiveTourOverviewProps = DefaultSecureRouteProps;
 
 const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewProps> = ({
 	history,
@@ -278,7 +277,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

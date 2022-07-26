@@ -1,3 +1,4 @@
+import { Button, ButtonToolbar, Container, Navbar, Tabs } from '@viaa/avo2-components';
 import { get, has, isFunction, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -9,8 +10,6 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-
-import { Button, ButtonToolbar, Container, Navbar, Tabs } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -57,17 +56,17 @@ import {
 	PageType,
 } from '../content.types';
 import {
+	CONTENT_PAGE_INITIAL_STATE,
 	ContentEditAction,
 	contentEditReducer,
 	ContentPageEditState,
-	CONTENT_PAGE_INITIAL_STATE,
 } from '../helpers/reducers';
 import { useContentTypes } from '../hooks';
 
 import './ContentEdit.scss';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
-interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
+type ContentEditProps = DefaultSecureRouteProps<{ id?: string }>;
 
 const { EDIT_ANY_CONTENT_PAGES, EDIT_OWN_CONTENT_PAGES } = PermissionName;
 
@@ -586,7 +585,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						</MetaTags>
 						{renderTabContent()}
 						<DeleteObjectModal
-							deleteObjectCallback={() => {
+							confirmCallback={() => {
 								if (!isNil(configToDelete)) {
 									changeContentPageState({
 										type: ContentEditActionType.REMOVE_CONTENT_BLOCK_CONFIG,

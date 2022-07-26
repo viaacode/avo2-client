@@ -1,8 +1,3 @@
-import { cloneDeep, isEqual, isNil, startCase } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	Button,
 	ButtonGroup,
@@ -13,6 +8,10 @@ import {
 	Table,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { cloneDeep, isEqual, isNil, startCase } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -30,7 +29,7 @@ import { MenuService } from '../menu.service';
 
 import './MenuDetail.scss';
 
-interface MenuDetailProps extends DefaultSecureRouteProps<{ menu: string }> {}
+type MenuDetailProps = DefaultSecureRouteProps<{ menu: string }>;
 
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [t] = useTranslation();
@@ -306,7 +305,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 						</Flex>
 					</Spacer>
 					<DeleteObjectModal
-						deleteObjectCallback={handleDelete}
+						confirmCallback={handleDelete}
 						isOpen={isConfirmModalOpen}
 						onClose={() => setIsConfirmModalOpen(false)}
 					/>

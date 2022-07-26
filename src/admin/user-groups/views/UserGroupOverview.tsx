@@ -1,10 +1,9 @@
+import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -31,7 +30,7 @@ import {
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
 
-interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
+type UserGroupOverviewProps = DefaultSecureRouteProps;
 
 const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();
@@ -252,7 +251,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

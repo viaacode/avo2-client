@@ -1,10 +1,9 @@
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -46,7 +45,7 @@ import {
 
 import './ContentPageLabelOverview.scss';
 
-interface ContentPageLabelOverviewProps extends DefaultSecureRouteProps {}
+type ContentPageLabelOverviewProps = DefaultSecureRouteProps;
 
 const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps> = ({
 	history,
@@ -205,7 +204,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 
 			case 'created_at':
 			case 'updated_at':
-				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
+				return rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 
 			case 'link_to':
 				const linkTo = rowData.link_to;
@@ -316,7 +315,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					isLoading={isLoading}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
+					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>

@@ -56,11 +56,11 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 					setOpen(false);
 					modal?.onClose && modal.onClose();
 				}}
-				deleteObjectCallback={async () => {
+				confirmCallback={async () => {
 					await deleteAssignment(t, assignment?.id, user);
 
 					setOpen(false);
-					modal?.deleteObjectCallback && modal.deleteObjectCallback();
+					modal?.confirmCallback && modal.confirmCallback();
 				}}
 			/>
 		</>

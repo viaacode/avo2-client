@@ -1,8 +1,3 @@
-import { compact, flatten, get, without } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	BlockHeading,
 	Box,
@@ -19,6 +14,10 @@ import {
 	Table,
 	TextInput,
 } from '@viaa/avo2-components';
+import { compact, flatten, get, without } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -46,7 +45,7 @@ import {
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
 
-interface UserGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type UserGroupEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, location }) => {
 	const [t] = useTranslation();
@@ -469,7 +468,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							sortOrder={sortOrder}
 						/>
 						<DeleteObjectModal
-							deleteObjectCallback={handlePermissionGroupDelete}
+							confirmCallback={handlePermissionGroupDelete}
 							isOpen={isConfirmDeleteModalOpen}
 							onClose={() => setIsConfirmModalOpen(false)}
 						/>

@@ -23,7 +23,8 @@ export interface ConfirmModalProps {
 	confirmButtonType?: ButtonType;
 	isOpen: boolean;
 	onClose?: () => void;
-	deleteObjectCallback?: () => void;
+	confirmCallback?: () => void;
+	className?: string;
 }
 
 const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
@@ -38,15 +39,12 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	confirmButtonType = 'danger',
 	onClose = noop,
 	isOpen,
-	deleteObjectCallback = noop,
+	confirmCallback = noop,
+	className,
 }) => {
-	const handleDelete = () => {
-		onClose();
-		deleteObjectCallback();
-	};
-
 	return (
 		<Modal
+			className={className}
 			isOpen={isOpen}
 			title={title && sanitizeHtml(title, 'basic')}
 			size="small"
@@ -63,7 +61,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 								<Button
 									type={confirmButtonType}
 									label={confirmLabel}
-									onClick={handleDelete}
+									onClick={confirmCallback}
 								/>
 							</ButtonToolbar>
 						</ToolbarItem>

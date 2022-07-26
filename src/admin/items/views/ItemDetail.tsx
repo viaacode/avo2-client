@@ -1,10 +1,3 @@
-import { get, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -18,6 +11,12 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { get, orderBy } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
@@ -64,7 +63,7 @@ const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
 	actions: '',
 };
 
-interface ItemDetailProps extends RouteComponentProps<{ id: string }> {}
+type ItemDetailProps = RouteComponentProps<{ id: string }>;
 
 const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	// Hooks
@@ -450,7 +449,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								],
 							])}
 							{renderDetailRow(
-								!!replacementUuid ? (
+								replacementUuid ? (
 									<Link
 										to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
 											id: replacementUuid,
@@ -532,7 +531,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						}
 						isOpen={isConfirmPublishModalOpen}
 						onClose={() => setIsConfirmPublishModalOpen(false)}
-						deleteObjectCallback={toggleItemPublishedState}
+						confirmCallback={toggleItemPublishedState}
 					/>
 					<DepublishItemModal
 						item={item}
