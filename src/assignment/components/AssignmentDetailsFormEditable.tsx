@@ -22,6 +22,7 @@ import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 import AssignmentLabels from './AssignmentLabels';
 
 import './AssignmentDetailsForm.scss';
+import { endOfDay } from 'date-fns/esm';
 
 export const AssignmentDetailsFormIds = {
 	classrooms: 'c-assignment-details-form__classrooms', // labels with type 'CLASS'
@@ -163,6 +164,9 @@ const AssignmentDetailsFormEditable: FC<
 					<DatePicker
 						value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
 						showTimeInput
+						minDate={new Date()}
+						minTime={new Date()}
+						maxTime={endOfDay(new Date())}
 						onChange={(value) => {
 							setValue('deadline_at', value?.toISOString(), {
 								shouldDirty: true,
