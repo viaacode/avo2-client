@@ -1286,6 +1286,7 @@
   "assignment/components/assignment-confirm-save___weet-je-zeker-dat-je-de-wijzigingen-wil-opslaan": "Weet je zeker dat je de wijzigingen wil opslaan",
   "assignment/components/assignment-details-form-editable___geen-klassen-beschikbaar": "Geen klassen beschikbaar",
   "assignment/components/assignment-details-form-editable___geen-labels-beschikbaar": "Geen labels beschikbaar",
+  "assignment/components/assignment-details-form-editable___opgepast-je-kan-maar-1-klas-instellen-per-opdracht": "Opgepast: je kan maar 1 klas instellen per opdracht!",
   "assignment/components/assignment-details-form-editable___voeg-een-klas-toe": "Voeg een klas toe",
   "assignment/components/assignment-details-form-editable___voeg-een-label-toe": "Voeg een label toe",
   "assignment/components/assignment-metadata___leerling": "Leerling",
