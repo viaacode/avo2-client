@@ -45,7 +45,8 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 		});
 	const isAssignmentDetailsComplete =
 		!!assignment?.labels.filter((l) => l.assignment_label.type === 'CLASS')?.length &&
-		!!assignment?.labels.filter((l) => l.assignment_label.type === 'LABEL')?.length &&
+		// Disabled due to https://meemoo.atlassian.net/browse/AVO-2051
+		// !!assignment?.labels.filter((l) => l.assignment_label.type === 'LABEL')?.length &&
 		!!assignment?.available_at &&
 		!!assignment?.deadline_at &&
 		!!assignment?.blocks?.length;
