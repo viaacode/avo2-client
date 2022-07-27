@@ -1,10 +1,3 @@
-import { debounce } from 'lodash-es';
-import React, { createRef, FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
-import { Trans } from 'react-i18next';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { Scrollbar } from 'react-scrollbars-custom';
-import { compose } from 'redux';
-
 import {
 	BlockHeading,
 	Column,
@@ -14,6 +7,12 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { debounce } from 'lodash-es';
+import React, { createRef, FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
+import { Trans } from 'react-i18next';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Scrollbar } from 'react-scrollbars-custom';
+import { compose } from 'redux';
 
 import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
@@ -63,7 +62,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
-	const [time, , formatTimestamps] = useVideoWithTimestamps(descriptionRef, seekTime);
+	const { time, format } = useVideoWithTimestamps(descriptionRef, seekTime);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
@@ -144,7 +143,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 					className="c-content"
 					sanitizePreset="full"
 					type="div"
-					content={formatTimestamps(convertToHtml(description))}
+					content={format(convertToHtml(description))}
 				/>
 			</>
 		);

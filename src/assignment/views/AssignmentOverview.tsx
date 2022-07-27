@@ -57,6 +57,7 @@ import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '..
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
@@ -70,7 +71,6 @@ import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-ass
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
-import { KeyCode } from '../../shared/types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
