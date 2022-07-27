@@ -126,6 +126,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			<TagList
 				tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
 				onTagClosed={deleteAssignmentLabel}
+				closable
 			/>
 
 			<Flex>

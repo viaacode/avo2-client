@@ -210,6 +210,9 @@ export function useBlockListModals(
 											? collectionItem.custom_description
 											: null,
 										use_custom_fields: collectionItem.use_custom_fields,
+										start_oc: collectionItem.start_oc,
+										end_oc: collectionItem.end_oc,
+										thumbnail_path: collectionItem.thumbnail_path,
 									})
 								);
 
