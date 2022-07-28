@@ -410,6 +410,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			}
 			assignment_type
 			deadline_at
+			available_at
 			id
 			is_deleted
 			title
