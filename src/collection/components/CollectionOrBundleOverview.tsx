@@ -14,14 +14,15 @@ import {
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { Avo } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { fromPairs, get, isNil } from 'lodash-es';
+import { fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { AssignmentService } from '../../assignment/assignment.service';
+import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -61,7 +62,7 @@ interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewProps> = ({
 	numberOfItems,
 	type,
-	onUpdate = () => {},
+	onUpdate = noop,
 	history,
 	user,
 }) => {
@@ -78,6 +79,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
 	const [selected, setSelected] = useState<string | null>(null);
 	const [selectedDetail, setSelectedDetail] = useState<CollectionSchema | undefined>(undefined);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
@@ -300,6 +302,23 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		}
 	};
 
+	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
+		const collection = await CollectionService.fetchCollectionOrBundleById(
+			selected as string,
+			'collection',
+			undefined
+		);
+		if (collection) {
+			const assignmentId = await AssignmentService.createAssignmentFromCollection(
+				user,
+				collection,
+				withDescription
+			);
+
+			history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
+		}
+	};
+
 	// Render functions
 	const getLinkProps = (id: string, title: string): { to: string; title: string } => ({
 		title,
@@ -394,7 +413,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					break;
 
 				case 'createAssignment':
-					redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+					setSelected(collectionId);
+					setIsCreateAssignmentModalOpen(true);
 					break;
 
 				case 'createQuickLane':
@@ -463,10 +483,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			case 'title':
 				return renderTitle(collection);
 
-			case 'inFolder':
+			case 'inFolder': {
 				const isInFolder = true; // TODO: Check if collection is in bundle
 				return isInFolder && <Button icon="folder" type="borderless" />;
-
+			}
 			case 'is_public':
 				return (
 					<div
@@ -497,10 +517,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				return renderActions(id);
 
 			case 'created_at':
-			case 'updated_at':
+			case 'updated_at': {
 				const cellData = collection[colKey as 'created_at' | 'updated_at'];
 				return <span title={formatTimestamp(cellData)}>{formatDate(cellData)}</span>;
-
+			}
 			default:
 				return null;
 		}
@@ -705,11 +725,33 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		);
 	};
 
+	const renderCreateAssignmentModal = () => {
+		return (
+			<CreateAssignmentModal
+				isOpen={isCreateAssignmentModalOpen}
+				onClose={() => setIsCreateAssignmentModalOpen(false)}
+				createAssignmentCallback={onCreateAssignmentFromCollection}
+				translations={{
+					title: t(
+						'collection/components/collection-or-bundle-overview___maak-nieuwe-opdracht'
+					),
+					primaryButton: t(
+						'collection/components/collection-or-bundle-overview___maak-opdracht'
+					),
+					secondaryButton: t(
+						'collection/components/collection-or-bundle-overview___annuleer'
+					),
+				}}
+			/>
+		);
+	};
+
 	const renderCollections = () => (
 		<>
 			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
 			{!isNil(selected) && renderDeleteModal()}
 			{renderQuickLaneModal()}
+			{renderCreateAssignmentModal()}
 		</>
 	);
 
