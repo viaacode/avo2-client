@@ -19,7 +19,9 @@ import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBloc
  * This function does that collapsing
  * @param blocks
  */
-export function cleanupTitleAndDescriptions(blocks: EditableBlockItem[]): Avo.Core.BlockItemBase[] {
+export function cleanupTitleAndDescriptions(
+	blocks: EditableBlockItem[] = []
+): Avo.Core.BlockItemBase[] {
 	return blocks.map((block) => {
 		if (block.type === AssignmentBlockType.ITEM) {
 			switch (block.editMode) {
