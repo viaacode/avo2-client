@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from './assignment/assignment.const';
 import { ROUTE_PARTS } from './shared/constants';
 import i18n from './shared/translations/i18n';
 
@@ -42,6 +43,7 @@ export type RouteId =
 	| 'ASSIGNMENT_RESPONSE_EDIT'
 	| 'ASSIGNMENT_RESPONSES'
 	| 'ASSIGNMENT_PUPIL_COLLECTION_DETAIL'
+	| 'ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT'
 	| 'LINK_YOUR_ACCOUNT'
 	| 'SETTINGS'
 	| 'SETTINGS_TAB'
@@ -204,6 +206,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	ASSIGNMENT_PUPIL_COLLECTION_DETAIL: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId`,
+		showInContentPicker: false,
+		showForInteractiveTour: false,
+	},
+	ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}?tab=${ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION}`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},

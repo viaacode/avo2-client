@@ -6,6 +6,7 @@ import { APP_PATH } from '../constants';
 import AssignmentCreate from './views/AssignmentCreate';
 import AssignmentEdit from './views/AssignmentEdit';
 import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
+import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/AssignmentResponseAdminEdit';
 import AssignmentResponseEditPage from './views/AssignmentResponseEdit/AssignmentResponseEditPage';
 import AssignmentResponses from './views/AssignmentResponses';
 
@@ -45,5 +46,11 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		exact
 		path={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route}
 		key={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route}
+	/>,
+	<SecuredRoute // edit pupil collection response as admin
+		component={AssignmentResponseAdminEdit}
+		exact
+		path={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route}
+		key={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route}
 	/>,
 ];

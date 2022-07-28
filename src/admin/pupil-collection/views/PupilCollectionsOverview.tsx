@@ -337,9 +337,13 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			case 'actions':
 			default:
 				// TODO link to correct edit page for pupil collection
+				//localhost:8080/werkruimte/opdrachten/de61d05b-ab4c-4651-a631-d97f76e9f280/antwoorden/6b7ebe33-6cdf-4e7f-b5d4-a38b8e2fa8b8
 				return (
 					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: pupilCollection.id })}
+						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route, {
+							assignmentId: assignment?.id,
+							responseId: id,
+						})}
 					>
 						<Button icon="edit-2" ariaLabel="Bewerk deze opdracht" type="secondary" />
 					</Link>
