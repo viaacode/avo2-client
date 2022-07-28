@@ -1,13 +1,4 @@
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	Icon,
-	Spacer,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-} from '@viaa/avo2-components';
+import { Button, Container, Icon, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
@@ -198,28 +189,18 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			return null;
 		}
 		return (
-			<Toolbar>
-				<ToolbarLeft>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="tertiary"
-								icon="collection"
-								label={t(
-									'assignment/views/assignment-response-edit___voeg-toe-aan-mijn-collectie'
-								)}
-								title={t(
-									'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
-								)}
-								ariaLabel={t(
-									'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
-								)}
-								onClick={() => handleAddToPupilCollection(item)}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarLeft>
-			</Toolbar>
+			<Button
+				type="tertiary"
+				icon="collection"
+				label={t('assignment/views/assignment-response-edit___voeg-toe-aan-mijn-collectie')}
+				title={t(
+					'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
+				)}
+				ariaLabel={t(
+					'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
+				)}
+				onClick={() => handleAddToPupilCollection(item)}
+			/>
 		);
 	};
 
