@@ -19,8 +19,12 @@ const format = (input: string) => {
 
 export const useVideoWithTimestamps = (
 	element?: RefObject<HTMLElement | undefined | null>,
-	initialTime: number = 0
-): [number, Dispatch<SetStateAction<number>>, (input: string) => string] => {
+	initialTime = 0
+): {
+	time: number;
+	setTime: Dispatch<SetStateAction<number>>;
+	format: (input: string) => string;
+} => {
 	const [time, setTime] = useState<number>(initialTime);
 	const [query] = useQueryParams({
 		time: NumberParam,
@@ -54,5 +58,5 @@ export const useVideoWithTimestamps = (
 		initialTime && setTime(initialTime);
 	}, [initialTime, setTime]);
 
-	return [time, setTime, format];
+	return { time, setTime, format };
 };

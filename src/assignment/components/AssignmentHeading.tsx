@@ -35,15 +35,12 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 			<Container
 				mode="vertical"
 				size="small"
-				className={[...(info ? ['u-p-b-0'] : [])].join(' ')}
+				className={classnames({
+					'u-p-b-0': info,
+				})}
 			>
 				<Container mode="horizontal">
-					<Toolbar
-						autoHeight
-						className={classnames('c-assignment-heading__top', {
-							'c-assignment-heading__top__slim': !back,
-						})}
-					>
+					<Toolbar autoHeight className="c-assignment-heading__top">
 						<ToolbarLeft>
 							<ToolbarItem className="c-assignment-heading__title" grow>
 								{back}
@@ -67,7 +64,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 					background="alt"
 					mode="vertical"
 					size="small"
-					className="u-padding-bottom-s"
+					className="u-padding-bottom-s u-p-t-0"
 				>
 					<Container mode="horizontal">{info}</Container>
 				</Container>

@@ -1,6 +1,8 @@
-import { convertToHtml, DefaultProps } from '@viaa/avo2-components';
+import { Button, convertToHtml, DefaultProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { FC, useRef } from 'react';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import React, { FC, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,
@@ -19,12 +21,12 @@ import {
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
-	title?: CollectionFragmentTitleProps;
-	richText?: CollectionFragmentRichTextProps;
-	flowPlayer?: CollectionFragmentFlowPlayerProps;
-
-	meta?: Omit<BlockItemMetadataProps, 'block'>; // TODO @Ian cleanup configs and having to pass block multiple times
 	block: Avo.Core.BlockItemBase;
+	flowPlayer?: CollectionFragmentFlowPlayerProps;
+	meta?: Omit<BlockItemMetadataProps, 'block'>; // TODO @Ian cleanup configs and having to pass block multiple times
+	richText?: CollectionFragmentRichTextProps | null;
+	title?: CollectionFragmentTitleProps;
+	canOpenOriginal?: boolean;
 }
 
 const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
@@ -34,9 +36,84 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	meta,
 	flowPlayer,
 	className,
+	canOpenOriginal,
 }) => {
 	const richTextRef = useRef(null);
-	const [time, , formatTimestamps] = useVideoWithTimestamps(richTextRef);
+	const [showOriginal, setShowOriginal] = useState<boolean>(false);
+
+	const [t] = useTranslation();
+
+	const { time, format } = useVideoWithTimestamps(richTextRef);
+
+	const renderComparison = () => {
+		if (!richText || !richText.block) {
+			return null;
+		}
+
+		const cast = richText.block as AssignmentBlock;
+
+		const custom = cast.use_custom_fields && cast.custom_description;
+		const hasCustom = !!custom;
+
+		const original = cast.original_description || cast.item_meta?.description;
+
+		return (
+			<>
+				{hasCustom && (
+					<>
+						<b>
+							{t(
+								'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
+							)}
+						</b>
+
+						<CollectionFragmentRichText
+							{...richText}
+							content={format(convertToHtml(custom))}
+							ref={richTextRef}
+						/>
+					</>
+				)}
+
+				{(!hasCustom || showOriginal) && (
+					<>
+						<b>
+							{t(
+								'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
+							)}
+						</b>
+
+						<CollectionFragmentRichText
+							{...richText}
+							content={
+								hasCustom
+									? convertToHtml(original)
+									: format(convertToHtml(original))
+							}
+							ref={hasCustom ? undefined : richTextRef}
+						/>
+					</>
+				)}
+
+				{hasCustom && (
+					<Button
+						onClick={() => setShowOriginal(!showOriginal)}
+						type="inline-link"
+						icon="align-left"
+						label={
+							showOriginal
+								? t(
+										'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
+								  )
+								: t(
+										'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
+								  )
+						}
+					/>
+				)}
+			</>
+		);
+	};
 
 	return (
 		<div className="c-collection-fragment--type-item">
@@ -53,25 +130,22 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				bound={
 					<>
 						{meta && <BlockItemMetadata {...meta} block={block} />}
-						{richText &&
-							(() => {
-								// Add timestamps
-								const formatted = formatTimestamps(
+
+						{richText && !canOpenOriginal && (
+							<CollectionFragmentRichText
+								{...richText}
+								content={format(
 									convertToHtml(
 										richText.block?.use_custom_fields
 											? richText.block?.custom_description
 											: richText.block?.item_meta?.description
-									) || ''
-								);
+									)
+								)}
+								ref={richTextRef}
+							/>
+						)}
 
-								return (
-									<CollectionFragmentRichText
-										{...richText}
-										content={formatted}
-										ref={richTextRef}
-									/>
-								);
-							})()}
+						{richText && canOpenOriginal && renderComparison()}
 					</>
 				}
 			/>

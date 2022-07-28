@@ -3,7 +3,6 @@ import { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { InteractiveTour } from '../../shared/components';
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../shared/helpers';
@@ -41,12 +40,10 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 		/>
 	);
 	const collectionTitle = (
-		<BlockHeading className="u-spacer-left" type="h2">
-			{assignmentResponse?.collection_title || ''}
-		</BlockHeading>
+		<BlockHeading type="h2">{assignmentResponse?.collection_title || ''}</BlockHeading>
 	);
 	return (
-		<>
+		<div className="c-assignment-response-page c-assignment-response-page--edit">
 			<AlertBar
 				icon="alert-circle"
 				textLeft={t(
@@ -54,19 +51,20 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 				)}
 				contentRight={closeButton}
 			/>
-			<AssignmentHeading
-				title={collectionTitle}
-				info={metadata}
-				tour={<InteractiveTour showButton />}
-			/>
+			<AssignmentHeading title={collectionTitle} info={metadata} tour={null} />
 			<Container mode="horizontal">
 				<BlockList
 					blocks={
 						(assignmentResponse?.pupil_collection_blocks ||
 							[]) as Avo.Core.BlockItemBase[]
 					}
+					config={{
+						ITEM: {
+							canOpenOriginal: true,
+						},
+					}}
 				/>
 			</Container>
-		</>
+		</div>
 	);
 };

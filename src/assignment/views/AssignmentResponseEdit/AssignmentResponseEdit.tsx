@@ -11,6 +11,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -274,7 +275,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	const renderedTitle = useMemo(
 		() => (
-			<Flex center className="u-spacer-top-l">
+			<Flex center className={classnames({ 'u-spacer-top-l': showBackButton })}>
 				<Icon name="clipboard" size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">
@@ -282,7 +283,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				</BlockHeading>
 			</Flex>
 		),
-		[assignment]
+		[assignment, showBackButton]
 	);
 
 	const renderTabs = () => <Tabs tabs={tabs} onClick={onTabClick} />;
@@ -375,7 +376,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 											<p>
 												{t(
 													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
-												)}{' '}
+												)}
 												<a href={assignment.answer_url}>
 													{assignment.answer_url}
 												</a>

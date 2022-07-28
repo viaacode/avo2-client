@@ -1,4 +1,4 @@
-import { BlockHeading, Button, Container, Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, {
@@ -21,18 +21,14 @@ import {
 } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { InteractiveTour } from '../../../shared/components';
-import AlertBar from '../../../shared/components/AlertBar/AlertBar';
-import BlockList from '../../../shared/components/BlockList/BlockList';
-import { isMobileWidth } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import { AssignmentRetrieveError } from '../../assignment.types';
-import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
 import AssignmentResponseEdit from './AssignmentResponseEdit';
 
@@ -145,63 +141,6 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Render
 
-	const renderPupilCollectionForTeacherPreview = () => {
-		const closePreviewButton = (
-			<Button
-				icon="close"
-				label={
-					isMobileWidth()
-						? undefined
-						: t(
-								'assignment/views/assignment-response-edit/assignment-response-edit-page___sluit-preview'
-						  )
-				}
-				ariaLabel={t(
-					'assignment/views/assignment-response-edit/assignment-response-edit-page___sluit-preview'
-				)}
-				type="borderless-i"
-				onClick={() => setIsTeacherPreviewEnabled(false)}
-			/>
-		);
-		const collectionTitle = (
-			<BlockHeading className="u-spacer-left" type="h2">
-				{assignmentResponse?.collection_title || ''}
-			</BlockHeading>
-		);
-		return (
-			<>
-				<AlertBar
-					icon="alert-circle"
-					textLeft={t(
-						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-bent-aan-het-kijken-als-lesgever'
-					)}
-					contentRight={closePreviewButton}
-				/>
-				<AssignmentHeading
-					title={collectionTitle}
-					info={
-						assignment ? (
-							<AssignmentMetadata
-								assignment={assignment}
-								assignmentResponse={assignmentResponse}
-								who={'pupil'}
-							/>
-						) : null
-					}
-					tour={<InteractiveTour showButton />}
-				/>
-				<Container mode="horizontal">
-					<BlockList
-						blocks={
-							(assignmentResponse?.pupil_collection_blocks ||
-								[]) as Avo.Core.BlockItemBase[]
-						}
-					/>
-				</Container>
-			</>
-		);
-	};
-
 	const renderPageContent = () => {
 		if (assignmentLoading) {
 			return (
@@ -238,9 +177,21 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 		if (isTeacherPreviewEnabled) {
 			return (
-				<div className="c-assignment-response-page c-assignment-response-page--edit">
-					{renderPupilCollectionForTeacherPreview()}
-				</div>
+				assignmentResponse && (
+					<div className="c-assignment-response-page c-assignment-response-page--edit">
+						<PupilCollectionForTeacherPreview
+							assignmentResponse={assignmentResponse}
+							metadata={
+								<AssignmentMetadata
+									assignment={assignment}
+									assignmentResponse={assignmentResponse}
+									who={'pupil'}
+								/>
+							}
+							onClose={() => setIsTeacherPreviewEnabled(false)}
+						/>
+					</div>
+				)
 			);
 		}
 

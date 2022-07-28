@@ -1,9 +1,10 @@
-import { BlockHeading, Container } from '@viaa/avo2-components';
+import { BlockHeading, Container, Icon } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -15,6 +16,10 @@ import { CustomError } from '../../shared/helpers';
 import { AssignmentService } from '../assignment.service';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetadata from '../components/AssignmentMetadata';
+import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { toAssignmentResponsesOverview } from '../helpers/links';
+
+import './AssignmentPupilCollectionDetail.scss';
 
 type AssignmentPupilCollectionDetailProps = DefaultSecureRouteProps<{
 	responseId: string;
@@ -97,13 +102,27 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 
 	// Render
 
+	const renderBackButton = useMemo(
+		() =>
+			assignment && (
+				<Link className="c-return" to={toAssignmentResponsesOverview(assignment)}>
+					<Icon name="chevron-left" size="small" type="arrows" />
+					{t('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
+				</Link>
+			),
+		[t, toAssignmentResponsesOverview, assignment]
+	);
+
 	const renderReadOnlyPupilCollectionBlocks = () => {
 		const collectionTitle = (
-			<BlockHeading type="h2">{assignmentResponse?.collection_title || ''}</BlockHeading>
+			<BlockHeading className="u-spacer-top-l" type="h2">
+				{assignmentResponse?.collection_title || ''}
+			</BlockHeading>
 		);
 		return (
 			<>
 				<AssignmentHeading
+					back={renderBackButton}
 					title={collectionTitle}
 					info={
 						assignment ? (
@@ -114,6 +133,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 							/>
 						) : null
 					}
+					tour={null}
 				/>
 				{assignmentResponse?.pupil_collection_blocks?.length ? (
 					<Container mode="horizontal">
@@ -122,6 +142,21 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 								(assignmentResponse?.pupil_collection_blocks ||
 									[]) as Avo.Core.BlockItemBase[]
 							}
+							config={{
+								ITEM: {
+									title: {
+										canClickHeading: PermissionService.hasPerm(
+											user,
+											PermissionName.VIEW_ANY_PUBLISHED_ITEMS
+										),
+									},
+									meta: {
+										buildSeriesLink: (serie) =>
+											buildGlobalSearchLink({ serie: [serie] }),
+									},
+									canOpenOriginal: true,
+								},
+							}}
 						/>
 					</Container>
 				) : (
