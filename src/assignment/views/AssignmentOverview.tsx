@@ -334,7 +334,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					await duplicateAssignment(t, latest);
 
 					updateAndReset();
-					setQuery({ view: AssignmentView.ACTIVE });
+
+					if (query.view === AssignmentView.ACTIVE) {
+						await fetchAssignments();
+					} else {
+						setQuery({ view: AssignmentView.ACTIVE });
+					}
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
