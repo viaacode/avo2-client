@@ -1242,6 +1242,17 @@ const CollectionDetail: FunctionComponent<
 									isOpen={isCreateAssignmentModalOpen}
 									onClose={() => setIsCreateAssignmentModalOpen(false)}
 									createAssignmentCallback={onCreateAssignment}
+									translations={{
+										title: t(
+											'assignment/modals/create-assignment-modal___importeer-naar-nieuwe-opdracht'
+										),
+										primaryButton: t(
+											'assignment/modals/create-assignment-modal___importeer'
+										),
+										secondaryButton: t(
+											'assignment/modals/create-assignment-modal___annuleer'
+										),
+									}}
 								/>
 								<ImportToAssignmentModal
 									user={user}

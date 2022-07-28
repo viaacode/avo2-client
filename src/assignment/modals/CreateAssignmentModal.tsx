@@ -1,7 +1,3 @@
-import { noop } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -15,17 +11,26 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface CreateAssignmentModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	createAssignmentCallback: (withDescription: boolean) => void;
+	translations: {
+		title: string;
+		primaryButton: string;
+		secondaryButton: string;
+	};
 }
 
 const CreateAssignmentModal: FunctionComponent<CreateAssignmentModalProps> = ({
 	isOpen,
 	onClose,
 	createAssignmentCallback,
+	translations,
 }) => {
 	const [t] = useTranslation();
 
@@ -44,12 +49,12 @@ const CreateAssignmentModal: FunctionComponent<CreateAssignmentModalProps> = ({
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={t('assignment/modals/create-assignment-modal___annuleer')}
+								label={translations.secondaryButton}
 								onClick={onClose}
 							/>
 							<Button
 								type="primary"
-								label={t('assignment/modals/create-assignment-modal___importeer')}
+								label={translations.primaryButton}
 								onClick={handleCreateAssignment}
 							/>
 						</ButtonToolbar>
@@ -84,7 +89,7 @@ const CreateAssignmentModal: FunctionComponent<CreateAssignmentModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('assignment/modals/create-assignment-modal___importeer-naar-nieuwe-opdracht')}
+			title={translations.title}
 			size="medium"
 			onClose={onClose}
 			scrollable
