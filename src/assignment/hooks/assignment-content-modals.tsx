@@ -197,19 +197,11 @@ export function useBlockListModals(
 										type: collectionItem.type,
 										fragment_id: collectionItem.external_id,
 										position: getAddBlockModalPosition + index,
-										original_title: withDescription
-											? collectionItem.custom_title
-											: null,
-										original_description: withDescription
-											? collectionItem.custom_description
-											: null,
-										custom_title: collectionItem.use_custom_fields
-											? collectionItem.custom_title
-											: null,
-										custom_description: collectionItem.use_custom_fields
-											? collectionItem.custom_description
-											: null,
-										use_custom_fields: collectionItem.use_custom_fields,
+										original_title: collectionItem.custom_title,
+										original_description: collectionItem.custom_description,
+										custom_title: null,
+										custom_description: null,
+										use_custom_fields: !withDescription,
 										start_oc: collectionItem.start_oc,
 										end_oc: collectionItem.end_oc,
 										thumbnail_path: collectionItem.thumbnail_path,
