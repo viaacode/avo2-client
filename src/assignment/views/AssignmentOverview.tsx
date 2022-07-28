@@ -24,7 +24,7 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
-import { cloneDeep, compact, get, isEqual, isNil, noop } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
@@ -90,7 +90,8 @@ const DEFAULT_SORT_ORDER = 'desc';
 const defaultFiltersAndSort = {
 	selectedAssignmentLabelIds: [],
 	selectedClassLabelsIds: [],
-	filter: '',
+	filter: undefined,
+	view: undefined,
 	page: 0,
 	sort_column: DEFAULT_SORT_COLUMN,
 	sort_order: DEFAULT_SORT_ORDER,
@@ -107,7 +108,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
-	const [filterString, setFilterString] = useState<string>('');
+	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
 	);
@@ -166,6 +167,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const copySearchTermsToQueryState = () => {
 		handleQueryChanged(filterString, 'filter');
 	};
+
 	useKeyPress('Enter', copySearchTermsToQueryState);
 
 	const handleSortOrderChange = (columnId: string) => {
@@ -194,10 +196,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const updateAndReset = async () => {
 		onUpdate();
-
-		if (!isEqual(defaultFiltersAndSort, query)) {
-			resetFiltersAndSort();
-		}
+		resetFiltersAndSort();
 	};
 
 	const checkPermissions = useCallback(async () => {
@@ -247,26 +246,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 
-			try {
-				const response = await AssignmentService.fetchAssignments(
-					canEditAssignments,
-					user,
-					query.view === AssignmentView.FINISHED, // true === past deadline
-					sortColumn,
-					sortOrder,
-					columnDataType,
-					query.page || 0,
-					query.filter || '',
-					(query.selectedAssignmentLabelIds as string[]) || [],
-					(query.selectedClassLabelIds as string[]) || []
-				);
+			const response = await AssignmentService.fetchAssignments(
+				canEditAssignments,
+				user,
+				query.view === AssignmentView.FINISHED, // true === past deadline
+				sortColumn,
+				sortOrder,
+				columnDataType,
+				query.page || 0,
+				query.filter || '',
+				(query.selectedAssignmentLabelIds as string[]) || [],
+				(query.selectedClassLabelIds as string[]) || []
+			);
 
-				setAssignments(response.assignments);
-				setAssigmentCount(response.count);
-				setLoadingInfo({ state: 'loaded' });
-			} catch {
-				setLoadingInfo({ state: 'error' });
-			}
+			setAssignments(response.assignments);
+			setAssigmentCount(response.count);
+
+			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -332,14 +328,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						);
 
 					await duplicateAssignment(t, latest);
-
-					updateAndReset();
-
-					if (query.view === AssignmentView.ACTIVE) {
-						await fetchAssignments();
-					} else {
-						setQuery({ view: AssignmentView.ACTIVE });
-					}
+					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
@@ -849,8 +838,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						await deleteAssignment(t, markedAssignment?.id, user);
 
 						handleDeleteModalClose();
-						updateAndReset();
 
+						await updateAndReset();
 						await fetchAssignments();
 					}}
 				/>
