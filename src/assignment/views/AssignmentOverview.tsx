@@ -24,7 +24,7 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType, AssignmentSchema_v2 } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
-import { cloneDeep, compact, get, isEqual, isNil, noop } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
@@ -37,7 +37,13 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { DelimitedArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
+import {
+	DelimitedArrayParam,
+	NumberParam,
+	StringParam,
+	useQueryParams,
+	withDefault,
+} from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -84,8 +90,8 @@ const DEFAULT_SORT_ORDER = 'desc';
 const defaultFiltersAndSort = {
 	selectedAssignmentLabelIds: [],
 	selectedClassLabelsIds: [],
-	filter: '',
-	view: AssignmentView.ACTIVE,
+	filter: undefined,
+	view: undefined,
 	page: 0,
 	sort_column: DEFAULT_SORT_COLUMN,
 	sort_order: DEFAULT_SORT_ORDER,
@@ -102,7 +108,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
-	const [filterString, setFilterString] = useState<string>('');
+	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
 	);
@@ -124,7 +130,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		selectedAssignmentLabelIds: DelimitedArrayParam,
 		selectedClassLabelIds: DelimitedArrayParam,
 		filter: StringParam,
-		view: StringParam,
+		view: withDefault(StringParam, AssignmentView.ACTIVE),
 		page: NumberParam,
 		sort_column: StringParam,
 		sort_order: StringParam,
@@ -133,9 +139,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	useEffect(() => {
 		localStorage.setItem(ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, JSON.stringify(query));
 	}, [query]);
-
-	// Init values
-	const activeView = query.view || AssignmentView.ACTIVE;
 
 	useEffect(() => {
 		if (query.filter) {
@@ -164,6 +167,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const copySearchTermsToQueryState = () => {
 		handleQueryChanged(filterString, 'filter');
 	};
+
 	useKeyPress('Enter', copySearchTermsToQueryState);
 
 	const handleSortOrderChange = (columnId: string) => {
@@ -187,17 +191,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setSortColumn(DEFAULT_SORT_COLUMN);
 		setSortOrder(DEFAULT_SORT_ORDER);
 
-		setQuery(defaultFiltersAndSort, 'pushIn');
+		setQuery(defaultFiltersAndSort);
 	};
 
-	const updateAndRefetch = async () => {
+	const updateAndReset = async () => {
 		onUpdate();
-
-		if (!isEqual(defaultFiltersAndSort, query)) {
-			resetFiltersAndSort();
-		}
-
-		await fetchAssignments();
+		resetFiltersAndSort();
 	};
 
 	const checkPermissions = useCallback(async () => {
@@ -237,6 +236,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return;
 			}
 
+			setLoadingInfo({ state: 'loading' });
+			setAssignments(null);
+			setAssigmentCount(0);
+
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
@@ -246,7 +249,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
 				user,
-				activeView === AssignmentView.FINISHED, // true === past deadline
+				query.view === AssignmentView.FINISHED, // true === past deadline
 				sortColumn,
 				sortOrder,
 				columnDataType,
@@ -258,6 +261,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			setAssignments(response.assignments);
 			setAssigmentCount(response.count);
+
+			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -266,17 +271,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				),
 			});
 		}
-	}, [
-		tableColumns,
-		t,
-		canEditAssignments,
-		setLoadingInfo,
-		query,
-		activeView,
-		sortColumn,
-		sortOrder,
-		user,
-	]);
+	}, [tableColumns, t, canEditAssignments, setLoadingInfo, query, sortColumn, sortOrder, user]);
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		// Fetch all labels for th current user
@@ -333,7 +328,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						);
 
 					await duplicateAssignment(t, latest);
-					updateAndRefetch();
+					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
@@ -370,7 +365,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 						onClose={() => setDropdownOpenForAssignmentId(null)}
 						menuItems={[
-							...(activeView === AssignmentView.FINISHED
+							...(query.view === AssignmentView.FINISHED
 								? []
 								: [
 										{
@@ -593,7 +588,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 											value: 'finished_assignments',
 										},
 									]}
-									value={activeView}
+									value={query.view}
 									onChange={(activeViewId: string) =>
 										handleQueryChanged(
 											activeViewId as Avo.Assignment.View,
@@ -612,7 +607,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										title={t(
 											'assignment/views/assignment-overview___filter-op-actieve-opdrachten'
 										)}
-										active={activeView === AssignmentView.ACTIVE}
+										active={query.view === AssignmentView.ACTIVE}
 										onClick={() =>
 											handleQueryChanged(AssignmentView.ACTIVE, 'view')
 										}
@@ -625,7 +620,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										title={t(
 											'assignment/views/assignment-overview___filter-op-afgelopen-opdrachten'
 										)}
-										active={activeView === AssignmentView.FINISHED}
+										active={query.view === AssignmentView.FINISHED}
 										onClick={() =>
 											handleQueryChanged(AssignmentView.FINISHED, 'view')
 										}
@@ -690,7 +685,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			!!query.selectedClassLabelIds?.length;
 		if (canEditAssignments) {
 			// Teacher
-			if (activeView === AssignmentView.ACTIVE) {
+			if (query.view === AssignmentView.ACTIVE) {
 				if (hasFilters) {
 					return t(
 						'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
@@ -708,7 +703,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			return t('assignment/views/assignment-overview___je-hebt-nog-geen-verlopen-opdrachten');
 		}
 		// Pupil
-		if (activeView === AssignmentView.ACTIVE) {
+		if (query.view === AssignmentView.ACTIVE) {
 			if (hasFilters) {
 				return t(
 					'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
@@ -729,7 +724,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const getEmptyFallbackDescription = () => {
 		if (canEditAssignments) {
 			// Teacher
-			if (activeView === AssignmentView.ACTIVE) {
+			if (query.view === AssignmentView.ACTIVE) {
 				return t(
 					'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken'
 				);
@@ -739,7 +734,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			);
 		}
 		// Pupil
-		if (activeView === AssignmentView.ACTIVE) {
+		if (query.view === AssignmentView.ACTIVE) {
 			return t(
 				'assignment/views/assignment-overview___beschrijving-opdrachten-in-werkruimte-voor-leerling'
 			);
@@ -752,13 +747,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const getEmptyFallbackIcon = (): IconName => {
 		if (canEditAssignments) {
 			// Teacher
-			if (activeView === AssignmentView.ACTIVE) {
+			if (query.view === AssignmentView.ACTIVE) {
 				return 'clipboard';
 			}
 			return 'archive';
 		}
 		// Pupil
-		if (activeView === AssignmentView.ACTIVE) {
+		if (query.view === AssignmentView.ACTIVE) {
 			return 'clipboard';
 		}
 		return 'clock';
@@ -806,7 +801,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							? t(
 									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
 							  )
-							: activeView === AssignmentView.FINISHED
+							: query.view === AssignmentView.FINISHED
 							? t(
 									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
 							  )
@@ -841,8 +836,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					onClose={handleDeleteModalClose}
 					confirmCallback={async () => {
 						await deleteAssignment(t, markedAssignment?.id, user);
+
 						handleDeleteModalClose();
-						updateAndRefetch();
+
+						await updateAndReset();
+						await fetchAssignments();
 					}}
 				/>
 			</>
