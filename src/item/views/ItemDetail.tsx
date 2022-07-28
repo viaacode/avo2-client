@@ -24,10 +24,6 @@ import {
 	Table,
 	Thumbnail,
 	ToggleButton,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
@@ -656,113 +652,104 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 	const defaultRenderActionButtons = () => {
 		return (
-			<Toolbar>
-				<ToolbarLeft>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="tertiary"
-								icon="scissors"
-								label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
-								title={t(
-									'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-								)}
-								ariaLabel={t(
-									'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
-								)}
-								onClick={() => {
-									setIsAddToCollectionModalOpen(true);
-								}}
-							/>
-
-							{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
-								<Dropdown
-									buttonType="tertiary"
-									icon="clipboard"
-									label={t('item/views/item-detail___voeg-toe-aan-opdracht')}
-									isOpen={isCreateAssignmentDropdownOpen}
-									onClose={() => setIsCreateAssignmentDropdownOpen(false)}
-									onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
-								>
-									<DropdownContent>
-										<Flex orientation="vertical">
-											{cutButton({
-												className: 'u-m-0',
-												icon: undefined,
-												id: ITEM_ACTIONS.createAssignment,
-												label: t(
-													'item/views/item-detail___nieuwe-opdracht'
-												),
-												type: 'borderless',
-											})}
-											<Button
-												className="u-m-0"
-												id={ITEM_ACTIONS.importToAssignment}
-												label={t(
-													'item/views/item-detail___bestaande-opdracht'
-												)}
-												onClick={() =>
-													executeAction(ITEM_ACTIONS.importToAssignment)
-												}
-												type="borderless"
-											/>
-										</Flex>
-									</DropdownContent>
-								</Dropdown>
+			<div className="c-item-detail__action-buttons">
+				<div className="c-item-detail__action-buttons--left">
+					{PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS) && (
+						<Button
+							type="tertiary"
+							icon="scissors"
+							label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
+							title={t(
+								'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 							)}
-
-							{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
-								<Button
-									type="tertiary"
-									icon="link-2"
-									label={t('item/views/item___delen-met-leerlingen')}
-									ariaLabel={t(
-										'item/views/item-detail___deel-dit-met-alle-leerlingen'
-									)}
-									title={t(
-										'item/views/item-detail___deel-dit-met-alle-leerlingen'
-									)}
-									onClick={() => {
-										setIsQuickLaneModalOpen(true);
-									}}
-								/>
+							ariaLabel={t(
+								'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 							)}
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarLeft>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<ToggleButton
-								type="tertiary"
-								icon="bookmark"
-								active={bookmarkViewPlayCounts.isBookmarked}
-								ariaLabel={t('item/views/item___toggle-bladwijzer')}
-								title={t('item/views/item___toggle-bladwijzer')}
-								onClick={toggleBookmark}
-							/>
-							<Button
-								type="tertiary"
-								icon="share-2"
-								ariaLabel={t('item/views/item___share-item')}
-								title={t('item/views/item___share-item')}
-								onClick={() => {
-									setIsShareThroughEmailModalOpen(true);
-								}}
-							/>
-							<Button
-								type="tertiary"
-								icon="flag"
-								ariaLabel={t('item/views/item___rapporteer-item')}
-								title={t('item/views/item___rapporteer-item')}
-								onClick={() => {
-									setIsReportItemModalOpen(true);
-								}}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
+							onClick={() => {
+								setIsAddToCollectionModalOpen(true);
+							}}
+						/>
+					)}
+
+					{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+						<Dropdown
+							buttonType="tertiary"
+							icon="clipboard"
+							label={t('item/views/item-detail___voeg-toe-aan-opdracht')}
+							isOpen={isCreateAssignmentDropdownOpen}
+							onClose={() => setIsCreateAssignmentDropdownOpen(false)}
+							onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
+						>
+							<DropdownContent>
+								<Flex orientation="vertical">
+									{cutButton({
+										className: 'u-m-0',
+										icon: undefined,
+										id: ITEM_ACTIONS.createAssignment,
+										label: t('item/views/item-detail___nieuwe-opdracht'),
+										type: 'borderless',
+									})}
+									<Button
+										className="u-m-0"
+										id={ITEM_ACTIONS.importToAssignment}
+										label={t('item/views/item-detail___bestaande-opdracht')}
+										onClick={() =>
+											executeAction(ITEM_ACTIONS.importToAssignment)
+										}
+										type="borderless"
+									/>
+								</Flex>
+							</DropdownContent>
+						</Dropdown>
+					)}
+
+					{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
+						<Button
+							type="tertiary"
+							icon="link-2"
+							label={t('item/views/item___delen-met-leerlingen')}
+							ariaLabel={t('item/views/item-detail___deel-dit-met-alle-leerlingen')}
+							title={t('item/views/item-detail___deel-dit-met-alle-leerlingen')}
+							onClick={() => {
+								setIsQuickLaneModalOpen(true);
+							}}
+						/>
+					)}
+				</div>
+
+				<div className="c-item-detail__action-buttons--right">
+					{PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS) && (
+						<ToggleButton
+							type="tertiary"
+							icon="bookmark"
+							active={bookmarkViewPlayCounts.isBookmarked}
+							ariaLabel={t('item/views/item___toggle-bladwijzer')}
+							title={t('item/views/item___toggle-bladwijzer')}
+							onClick={toggleBookmark}
+						/>
+					)}
+
+					<Button
+						type="tertiary"
+						icon="share-2"
+						ariaLabel={t('item/views/item___share-item')}
+						title={t('item/views/item___share-item')}
+						onClick={() => {
+							setIsShareThroughEmailModalOpen(true);
+						}}
+					/>
+
+					<Button
+						type="tertiary"
+						icon="flag"
+						ariaLabel={t('item/views/item___rapporteer-item')}
+						title={t('item/views/item___rapporteer-item')}
+						onClick={() => {
+							setIsReportItemModalOpen(true);
+						}}
+					/>
+				</div>
+			</div>
 		);
 	};
 
@@ -866,10 +853,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						/>
 						<Grid>
 							<Column size="2-7">
-								<Spacer margin="top-large">
-									<Flex justify="between" wrap>
-										{(renderActionButtons || defaultRenderActionButtons)(item)}
-									</Flex>
+								<Spacer margin="top-small">
+									{(renderActionButtons || defaultRenderActionButtons)(item)}
 								</Spacer>
 							</Column>
 							<Column size="2-5">
