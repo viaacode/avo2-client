@@ -215,6 +215,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				goToSearchLink={goToSearchLink}
 				enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
 				renderActionButtons={renderItemDetailActionButton}
+				renderBookmarkCount={() => null}
 			/>
 		);
 	};

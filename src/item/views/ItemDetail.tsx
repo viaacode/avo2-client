@@ -23,7 +23,6 @@ import {
 	Spacer,
 	Table,
 	Thumbnail,
-	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
@@ -75,6 +74,14 @@ import {
 	reorderDate,
 } from '../../shared/helpers';
 import {
+	defaultRenderBookmarkButton,
+	renderBookmarkButtonProps,
+} from '../../shared/helpers/default-render-bookmark-button';
+import {
+	defaultRenderBookmarkCount,
+	renderBookmarkCountProps,
+} from '../../shared/helpers/default-render-bookmark-count';
+import {
 	defaultGoToDetailLink,
 	defaultRenderDetailLink,
 } from '../../shared/helpers/default-render-detail-link';
@@ -114,6 +121,8 @@ interface ItemDetailProps {
 	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
+	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
+	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
 }
 
 export const ITEM_ACTIONS = {
@@ -133,6 +142,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	goToSearchLink = defaultGoToSearchLink(history),
 	enabledMetaData = ALL_SEARCH_FILTERS,
 	renderActionButtons,
+	renderBookmarkButton = defaultRenderBookmarkButton,
+	renderBookmarkCount = defaultRenderBookmarkCount,
 }) => {
 	const [t] = useTranslation();
 
@@ -718,16 +729,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				</div>
 
 				<div className="c-item-detail__action-buttons--right">
-					{PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS) && (
-						<ToggleButton
-							type="tertiary"
-							icon="bookmark"
-							active={bookmarkViewPlayCounts.isBookmarked}
-							ariaLabel={t('item/views/item___toggle-bladwijzer')}
-							title={t('item/views/item___toggle-bladwijzer')}
-							onClick={toggleBookmark}
-						/>
-					)}
+					{PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS) &&
+						renderBookmarkButton &&
+						renderBookmarkButton({
+							active: bookmarkViewPlayCounts.isBookmarked,
+							ariaLabel: t('item/views/item___toggle-bladwijzer'),
+							title: t('item/views/item___toggle-bladwijzer'),
+							onClick: toggleBookmark,
+						})}
 
 					<Button
 						type="tertiary"
@@ -794,10 +803,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 									label={String(bookmarkViewPlayCounts.viewCount || 0)}
 									icon="eye"
 								/>
-								<MetaDataItem
-									label={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-									icon="bookmark"
-								/>
+								{renderBookmarkCount &&
+									renderBookmarkCount({
+										label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
+									})}
 							</MetaData>
 							<InteractiveTour showButton />
 						</ButtonToolbar>

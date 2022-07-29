@@ -48,8 +48,7 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 		// Disabled due to https://meemoo.atlassian.net/browse/AVO-2051
 		// !!assignment?.labels.filter((l) => l.assignment_label.type === 'LABEL')?.length &&
 		!!assignment?.available_at &&
-		!!assignment?.deadline_at &&
-		!!assignment?.blocks?.length;
+		!!assignment?.deadline_at;
 	const hasAssignmentContent = !!assignment?.blocks?.length;
 
 	// Events

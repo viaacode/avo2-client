@@ -90,6 +90,7 @@ export function useAssignmentPupilTabs(
 	const onTabClick = useCallback(
 		(id: string | number) => {
 			setTab(id as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS);
+			scrollTo({ top: 0 });
 		},
 		[setTab]
 	);
