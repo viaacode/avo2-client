@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ErrorView } from '../../../../error/views';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
+import { isItemWithMeta } from '../../../helpers/is-item-with-meta';
 
 interface AssignmentResponseAssignmentTabProps {
 	blocks: Avo.Assignment.Assignment_v2['blocks'] | null;
@@ -35,7 +36,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 		}
 		return (
 			<BlockList
-				blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
+				blocks={((blocks || []) as Avo.Core.BlockItemBase[]).filter(isItemWithMeta)}
 				config={{
 					TEXT: {
 						title: {
