@@ -596,6 +596,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										)
 									}
 									className="c-assignment-overview__archive-select"
+									isSearchable={false}
 								/>
 							) : (
 								<ButtonGroup className="c-assignment-overview__archive-buttons">

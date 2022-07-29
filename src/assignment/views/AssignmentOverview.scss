@@ -3,15 +3,15 @@
 
 .m-assignment-overview {
 	@media screen and (max-width: ($g-bp2 - 1)) {
-		&__header {
-			&-toolbar {
+		&__header-toolbar {
+			&.c-toolbar{
 				@include blockifyToolbar();
+			}
 
-				> .c-toolbar__right {
-					// Hide search button
-					.c-toolbar__item .o-form-group-layout .o-form-group:last-of-type {
-						display: none;
-					}
+			> .c-toolbar__right {
+				// Hide search button
+				.c-toolbar__item .o-form-group-layout .o-form-group:last-of-type {
+					display: none;
 				}
 			}
 		}
