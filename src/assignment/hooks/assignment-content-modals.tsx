@@ -189,23 +189,48 @@ export function useBlockListModals(
 
 							if (collection.collection_fragments) {
 								const mapped = collection.collection_fragments.map(
-									(collectionItem, index): Partial<AssignmentBlock> => ({
-										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${
-											new Date().valueOf() + index
-										}`,
-										item_meta: collectionItem.item_meta,
-										type: collectionItem.type,
-										fragment_id: collectionItem.external_id,
-										position: getAddBlockModalPosition + index,
-										original_title: collectionItem.custom_title,
-										original_description: collectionItem.custom_description,
-										custom_title: null,
-										custom_description: null,
-										use_custom_fields: !withDescription,
-										start_oc: collectionItem.start_oc,
-										end_oc: collectionItem.end_oc,
-										thumbnail_path: collectionItem.thumbnail_path,
-									})
+									(collectionItem, index): Partial<AssignmentBlock> => {
+										// Note: logic almost identical as in AssignmentService.importCollectionToAssignment
+										// But with minor differences (id, item_meta, ..)
+										const block: Partial<AssignmentBlock> = {
+											id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${
+												new Date().valueOf() + index
+											}`,
+											item_meta: collectionItem.item_meta,
+											type: collectionItem.type,
+											fragment_id: collectionItem.external_id,
+											position: getAddBlockModalPosition + index,
+											original_title: collectionItem.custom_title,
+											original_description: collectionItem.custom_description,
+											custom_title: null,
+											custom_description: null,
+											use_custom_fields: false,
+											start_oc: collectionItem.start_oc,
+											end_oc: collectionItem.end_oc,
+											thumbnail_path: collectionItem.thumbnail_path,
+										};
+
+										if (collectionItem.type === AssignmentBlockType.TEXT) {
+											// text: original text null, custom text set
+											block.custom_title = collectionItem.custom_title;
+											block.custom_description =
+												collectionItem.custom_description;
+											block.use_custom_fields = true;
+											block.type = AssignmentBlockType.TEXT;
+										} else {
+											// ITEM
+											// custom_title and custom_description remain null
+											// regardless of withDescription: ALWAYS copy the fragment custom title and description to the original fields
+											// Since importing from collection, the collection is the source of truth and the original == collection fields
+											block.original_title = collectionItem.custom_title;
+											block.original_description =
+												collectionItem.custom_description;
+											block.use_custom_fields = !withDescription;
+											block.type = AssignmentBlockType.ITEM;
+										}
+
+										return block;
+									}
 								);
 
 								const newBlocks = insertMultipleAtPosition(
