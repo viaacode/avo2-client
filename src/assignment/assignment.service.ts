@@ -805,11 +805,16 @@ export class AssignmentService {
 
 			const blocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
-					if (block.fragment_id) {
-						block.item_meta =
-							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
-							undefined;
+					try {
+						if (block.fragment_id) {
+							block.item_meta =
+								(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+								undefined;
+						}
+					} catch (error) {
+						console.warn(`Unable to fetch meta data for ${block.fragment_id}`);
 					}
+
 					return block;
 				})
 			);
@@ -820,14 +825,19 @@ export class AssignmentService {
 			};
 		} catch (err) {
 			const graphqlError = get(err, 'graphQLErrors[0].message');
+
 			if (graphqlError) {
 				return graphqlError;
 			}
 
-			throw new CustomError('Failed to fetch assignment with content', err, {
+			const customError = new CustomError('Failed to fetch assignment with content', err, {
 				pupilProfileId,
 				assignmentId,
 			});
+
+			console.error(customError);
+
+			throw customError;
 		}
 	}
 
