@@ -107,7 +107,7 @@ export const AssignmentBlockEditItem: FC<
 						/>
 
 						{cutButton({
-							className: 'u-spacer-top',
+							className: 'u-spacer-top u-spacer-bottom',
 						})}
 						{cutModal({
 							itemMetaData: item,
