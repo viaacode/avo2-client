@@ -61,7 +61,9 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
 			if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
 				setAssignmentError({
-					message: t('Enkel een admin kan leerlingencollecties bewerken'),
+					message: t(
+						'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken'
+					),
 					icon: 'user-student',
 				});
 				setAssignmentLoading(false);
@@ -98,7 +100,9 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			);
 			if (!response) {
 				setAssignmentError({
-					message: t('De leerlingencollectie kon niet opgehaald worden'),
+					message: t(
+						'assignment/views/assignment-response-edit/assignment-response-admin-edit___de-leerlingencollectie-kon-niet-opgehaald-worden'
+					),
 					icon: 'user-student',
 				});
 				setAssignmentLoading(false);

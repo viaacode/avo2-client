@@ -76,7 +76,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			if (!canViewAnAssignment(user)) {
 				setAssignmentError({
-					message: t('Je hebt geen rechten om deze opdracht te bekijken'),
+					message: t(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+					),
 					icon: 'lock',
 				});
 				setAssignmentLoading(false);
