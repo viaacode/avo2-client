@@ -4,7 +4,7 @@
 .m-assignment-overview {
 	@media screen and (max-width: ($g-bp2 - 1)) {
 		&__header-toolbar {
-			&.c-toolbar{
+			&.c-toolbar {
 				@include blockifyToolbar();
 			}
 
@@ -47,39 +47,28 @@
 			grid-template-rows: repeat(3, auto);
 			grid-template-columns: auto min-content;
 
-			// Title column
+			.c-tag-list,
+			.c-assignment-overview__updated-at {
+				display: none;
+			}
+
+			.c-assignment-overview__actions {
+				grid-row: 1;
+				grid-column: 2/3;
+				margin: 0 !important;
+
+				.c-button-toolbar {
+					justify-content: flex-end;
+				}
+			}
+
 			> div {
-				&:nth-child(6) {
+				grid-column: 1/3;
+
+				// Title column
+				&:first-child {
 					grid-row: 1;
 					grid-column: 1/2;
-				}
-			}
-
-			// Action column
-			> div {
-				&:nth-child(6) {
-					grid-row: 1;
-					grid-column: 2/3;
-
-					.u-spacer-top {
-						margin: 0 !important;
-					}
-				}
-			}
-
-			// Property columns
-			> div {
-				&:nth-child(3),
-				&:nth-child(5) {
-					grid-column: 1/3;
-				}
-			}
-
-			// Hide columns
-			> div {
-				&:nth-child(2),
-				&:nth-child(4) {
-					display: none;
 				}
 			}
 		}
@@ -99,6 +88,14 @@
 
 		&__value {
 			flex-grow: 1;
+		}
+
+		&--labels {
+			grid-row: 3;
+
+			@media screen and (min-width: ($g-bp2)) {
+				display: none;
+			}
 		}
 	}
 }

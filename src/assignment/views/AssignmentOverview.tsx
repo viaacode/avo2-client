@@ -71,7 +71,11 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
+import {
+	AssignmentOverviewTableColumns,
+	AssignmentSchemaLabel_v2,
+	AssignmentView,
+} from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
@@ -358,7 +362,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderActions = (rowData: Avo.Assignment.Assignment_v2) => {
 		return (
-			<ButtonToolbar>
+			<ButtonToolbar className="c-assignment-overview__actions">
 				{canEditAssignments && (
 					<MoreOptionsDropdown
 						isOpen={dropdownOpenForAssignmentId === rowData.id}
@@ -399,10 +403,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: Avo.Assignment.Label_v2[]) => (
+	const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
 		<TagList
-			tags={(labels as any).map(({ assignment_label: item }: any) => ({
-				// TODO make types stricter
+			tags={labels.map(({ assignment_label: item }: any) => ({
 				id: item.id,
 				label: item.label || '',
 				color: item.color_override || item.enum_color?.label || 'hotpink',
@@ -412,12 +415,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		/>
 	);
 
-	const renderDataCell = (value: ReactNode, label?: ReactNode) =>
+	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
 		isMobileWidth() ? (
-			<div className="m-assignment-overview__table__data-cell">
+			<div className={classnames('m-assignment-overview__table__data-cell', className)}>
 				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
 				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
 			</div>
+		) : className ? (
+			<span className={className}>{value}</span>
 		) : (
 			value
 		);
@@ -464,6 +469,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT }
 		);
 
+		const labels = (assignment.labels as AssignmentSchemaLabel_v2[]).filter(
+			({ assignment_label: item }) => item.type === 'LABEL'
+		);
+
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
 		) {
@@ -491,11 +500,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 
 			case 'labels':
-				return renderLabels(
-					(assignment.labels as any[]).filter(
-						({ assignment_label: item }) => item.type === 'LABEL'
-					)
-				);
+				return labels.length > 0 ? (
+					<>
+						{renderLabels(labels)}
+						{renderDataCell(
+							labels.map((label) => label.assignment_label.label).join(', '),
+							`${t('Labels:')}`,
+							'm-assignment-overview__table__data-cell--labels'
+						)}
+					</>
+				) : null;
 
 			case 'class_room':
 				return renderLabels(
@@ -512,11 +526,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					small: isMobileWidth(),
 				};
 
-				return isMobileWidth() ? (
-					<Spacer margin="bottom-small">{renderAvatar(profile, avatarOptions)}</Spacer>
-				) : (
-					renderAvatar(profile, avatarOptions)
-				);
+				return !isMobileWidth() && renderAvatar(profile, avatarOptions);
 			}
 
 			case 'deadline_at':
@@ -526,14 +536,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 
 			case 'updated_at':
-				return formatDate(cellData);
+				return (
+					<span className="c-assignment-overview__updated-at">
+						{formatDate(cellData)}
+					</span>
+				);
 
 			case 'responses':
 				return renderResponsesCell(cellData, assignment);
 
 			case 'actions':
 				if (isMobileWidth()) {
-					return <Spacer margin="top">{renderActions(assignment)}</Spacer>;
+					return (
+						<Spacer className="c-assignment-overview__actions" margin="top">
+							{renderActions(assignment)}
+						</Spacer>
+					);
 				}
 				return renderActions(assignment);
 
