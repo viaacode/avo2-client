@@ -1,7 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from './assignment/assignment.const';
 import { ROUTE_PARTS } from './shared/constants';
 import i18n from './shared/translations/i18n';
 
@@ -210,7 +209,7 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showForInteractiveTour: false,
 	},
 	ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}?tab=${ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION}`,
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},

@@ -14,6 +14,7 @@ import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
@@ -340,10 +341,14 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 				//localhost:8080/werkruimte/opdrachten/de61d05b-ab4c-4651-a631-d97f76e9f280/antwoorden/6b7ebe33-6cdf-4e7f-b5d4-a38b8e2fa8b8
 				return (
 					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route, {
-							assignmentId: assignment?.id,
-							responseId: id,
-						})}
+						to={buildLink(
+							APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
+							{
+								assignmentId: assignment?.id,
+								responseId: id,
+							},
+							{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION }
+						)}
 					>
 						<Button icon="edit-2" ariaLabel="Bewerk deze opdracht" type="secondary" />
 					</Link>

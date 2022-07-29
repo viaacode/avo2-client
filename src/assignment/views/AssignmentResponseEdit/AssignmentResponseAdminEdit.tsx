@@ -15,10 +15,10 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-// import {
-// 	PermissionName,
-// 	PermissionService,
-// } from '../../../authentication/helpers/permission-service';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
@@ -59,14 +59,14 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			setAssignmentLoading(true);
 
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
-			// if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
-			// 	setAssignmentError({
-			// 		message: t('Enkel een admin kan leerlingencollecties bewerken'),
-			// 		icon: 'user-student',
-			// 	});
-			// 	setAssignmentLoading(false);
-			// 	return;
-			// }
+			if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
+				setAssignmentError({
+					message: t('Enkel een admin kan leerlingencollecties bewerken'),
+					icon: 'user-student',
+				});
+				setAssignmentLoading(false);
+				return;
+			}
 
 			// Get assignment
 			setAssignmentError(null);
