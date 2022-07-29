@@ -50,7 +50,10 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 					label={t(
 						'shared/components/block-list/blocks/assignment-block-type-search___start-met-zoeken'
 					)}
-					onClick={onSearchButtonClicked}
+					onClick={() => {
+						onSearchButtonClicked();
+						scrollTo({ top: 0 });
+					}}
 					disabled={pastDeadline}
 				/>
 				<Spacer margin="bottom-small" />
@@ -60,7 +63,10 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 						label={t(
 							'shared/components/block-list/blocks/assignment-block-type-search___naar-mijn-collectie'
 						)}
-						onClick={onCollectionButtonClicked}
+						onClick={() => {
+							onCollectionButtonClicked;
+							scrollTo({ top: 0 });
+						}}
 					/>
 				)}
 			</Flex>
