@@ -35,7 +35,7 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 
 	return (
 		<section className="u-spacer-bottom">
-			<Flex className="l-assignment-response--meta-data">
+			<Flex className="l-assignment-response__meta-data">
 				{teacherName && (
 					<Spacer margin="right">
 						{t('assignment/views/assignment-response-edit___lesgever')}:{' '}

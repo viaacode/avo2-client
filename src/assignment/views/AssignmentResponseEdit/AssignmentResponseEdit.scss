@@ -16,10 +16,12 @@
 		background-color: transparent;
 	}
 
-	.l-assignment-response--meta-data {
-		@media screen and (max-width: $g-bp3) {
-			flex-direction: column;
-			padding-left: 1.5rem;
+	.l-assignment-response__meta-data {
+		flex-wrap: wrap;
+
+		> div {
+			width: 50%;
+			margin-right: 0 !important;
 		}
 	}
 
