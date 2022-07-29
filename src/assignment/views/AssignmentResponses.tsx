@@ -49,6 +49,7 @@ import {
 	AssignmentResponseTableColumns,
 	AssignmentType,
 } from '../assignment.types';
+import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
 
 import './AssignmentOverview.scss';
 
@@ -176,12 +177,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			if (
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS) &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENTS) &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES) &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES)
-			) {
+			if (!canViewAnAssignment(user)) {
 				setLoadingInfo({
 					message: t(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
