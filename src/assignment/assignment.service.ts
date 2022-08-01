@@ -805,11 +805,16 @@ export class AssignmentService {
 
 			const blocks = await Promise.all(
 				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
-					if (block.fragment_id) {
-						block.item_meta =
-							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
-							undefined;
+					try {
+						if (block.fragment_id) {
+							block.item_meta =
+								(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+								undefined;
+						}
+					} catch (error) {
+						console.warn(`Unable to fetch meta data for ${block.fragment_id}`);
 					}
+
 					return block;
 				})
 			);
@@ -820,14 +825,19 @@ export class AssignmentService {
 			};
 		} catch (err) {
 			const graphqlError = get(err, 'graphQLErrors[0].message');
+
 			if (graphqlError) {
 				return graphqlError;
 			}
 
-			throw new CustomError('Failed to fetch assignment with content', err, {
+			const customError = new CustomError('Failed to fetch assignment with content', err, {
 				pupilProfileId,
 				assignmentId,
 			});
+
+			console.error(customError);
+
+			throw customError;
 		}
 	}
 
@@ -1182,10 +1192,10 @@ export class AssignmentService {
 				} else {
 					// ITEM
 					// custom_title and custom_description remain null
-					block.original_title = withDescription ? fragment.custom_title : null;
-					block.original_description = withDescription
-						? fragment.custom_description
-						: null;
+					// regardless of withDescription: ALWAYS copy the fragment custom title and description to the original fields
+					// Since importing from collection, the collection is the source of truth and the original == collection fields
+					block.original_title = fragment.custom_title;
+					block.original_description = fragment.custom_description;
 					block.use_custom_fields = !withDescription;
 					block.type = AssignmentBlockType.ITEM;
 				}

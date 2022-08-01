@@ -23,26 +23,25 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
-import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import { AssignmentRetrieveError } from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
-import { canViewAnAssignment } from '../../helpers/can-view-an-assignment';
 
 import AssignmentResponseEdit from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEditPage: FunctionComponent<
-	UserProps & DefaultSecureRouteProps<{ id: string }>
+const AssignmentResponseAdminEdit: FunctionComponent<
+	UserProps & DefaultSecureRouteProps<{ assignmentId: string; responseId: string }>
 > = ({ match, user }) => {
 	const [t] = useTranslation();
 
 	// Data
-	const assignmentId = match.params.id;
+	const assignmentId = match.params.assignmentId;
+	const assignmentResponseId = match.params.responseId;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
@@ -60,26 +59,12 @@ const AssignmentResponseEditPage: FunctionComponent<
 			setAssignmentLoading(true);
 
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
-			if (
-				!PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE) &&
-				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
-			) {
+			if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
 				setAssignmentError({
 					message: t(
-						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien'
+						'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken'
 					),
 					icon: 'user-student',
-				});
-				setAssignmentLoading(false);
-				return;
-			}
-
-			if (!canViewAnAssignment(user)) {
-				setAssignmentError({
-					message: t(
-						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
-					),
-					icon: 'lock',
 				});
 				setAssignmentLoading(false);
 				return;
@@ -109,35 +94,22 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			// Assignment is loaded but if there is no deadline set, show 'Not yet available' error to the student
-			if (assignmentOrError.deadline_at === null) {
-				// error
+			// Create an assignment response if needed
+			const response = await AssignmentService.getAssignmentResponseById(
+				assignmentResponseId
+			);
+			if (!response) {
 				setAssignmentError({
-					state: 'error',
-					...getAssignmentErrorObj(AssignmentRetrieveError.NOT_YET_AVAILABLE),
+					message: t(
+						'assignment/views/assignment-response-edit/assignment-response-admin-edit___de-leerlingencollectie-kon-niet-opgehaald-worden'
+					),
+					icon: 'user-student',
 				});
 				setAssignmentLoading(false);
 				return;
 			}
 
-			// Track assignment view
-			AssignmentService.increaseViewCount(assignmentOrError.id); // Not waiting for view events increment
-			trackEvents(
-				{
-					object: assignmentOrError.id,
-					object_type: 'avo_assignment',
-					action: 'view',
-				},
-				user
-			);
-
-			// Create an assignment response if needed
-			const newOrExistingAssignmentResponse =
-				await AssignmentService.createOrFetchAssignmentResponseObject(
-					assignmentOrError,
-					user
-				);
-			setAssignmentResponse(newOrExistingAssignmentResponse);
+			setAssignmentResponse(response);
 
 			setAssignment(assignmentOrError);
 		} catch (err) {
@@ -261,4 +233,4 @@ const AssignmentResponseEditPage: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentResponseEditPage) as FunctionComponent;
+export default compose(withRouter, withUser)(AssignmentResponseAdminEdit) as FunctionComponent;
