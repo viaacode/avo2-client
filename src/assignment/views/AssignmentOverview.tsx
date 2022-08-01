@@ -505,7 +505,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						{renderLabels(labels)}
 						{renderDataCell(
 							labels.map((label) => label.assignment_label.label).join(', '),
-							`${t('Labels:')}`,
+							`${t('assignment/views/assignment-overview___labels')}`,
 							'm-assignment-overview__table__data-cell--labels'
 						)}
 					</>
