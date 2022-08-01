@@ -20,8 +20,16 @@
 		flex-wrap: wrap;
 
 		> div {
-			width: 50%;
-			margin-right: 0 !important;
+			width: 100%;
+
+			@media screen and (min-width: $g-bp1) {
+				width: 50%;
+			}
+
+			@media screen and (min-width: $g-bp3) {
+				width: auto;
+				margin-right: $g-spacer-unit * 2;
+			}
 		}
 	}
 
