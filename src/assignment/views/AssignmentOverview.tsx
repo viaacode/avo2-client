@@ -582,11 +582,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderHeader = () => {
 		return (
-			<Toolbar
-				className={classnames('m-assignment-overview__header-toolbar', {
-					'm-assignment-overview__header-toolbar-mobile': isMobileWidth(),
-				})}
-			>
+			<Toolbar className="m-assignment-overview__header-toolbar">
 				<ToolbarLeft>
 					<ToolbarItem>
 						<ButtonToolbar>
@@ -810,9 +806,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<>
 				{renderHeader()}
 				<Table
-					className={classnames('m-assignment-overview__table', {
-						'm-assignment-overview__table-mobile': isMobileWidth(),
-					})}
+					className="m-assignment-overview__table"
 					columns={tableColumns}
 					data={assignments}
 					emptyStateMessage={

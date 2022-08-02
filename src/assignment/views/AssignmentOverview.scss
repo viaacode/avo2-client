@@ -42,7 +42,7 @@
 	}
 
 	&__table {
-		&-mobile.c-table__card .c-panel__body {
+		&.c-table__card .c-panel__body {
 			display: grid;
 			grid-template-rows: repeat(3, auto);
 			grid-template-columns: auto min-content;
@@ -79,7 +79,7 @@
 		width: 100%;
 
 		&__label {
-			width: 86px;
+			width: 160px;
 			max-width: 100%;
 			overflow: hidden;
 			text-overflow: ellipsis;
