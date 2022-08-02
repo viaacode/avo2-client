@@ -5,7 +5,8 @@
 $sticky-save-bar-spacing-horizontal: $g-spacer-unit * 4;
 $sticky-save-bar-width: 800px;
 
-$sticky-save-bar-threshold: $sticky-save-bar-width + (math.div($sticky-save-bar-spacing-horizontal * 2, 1rem) * 10px);
+$sticky-save-bar-threshold: $sticky-save-bar-width +
+	(math.div($sticky-save-bar-spacing-horizontal * 2, 1rem) * 10px);
 
 .c-sticky-save-bar__wrapper {
 	display: flex;

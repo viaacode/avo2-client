@@ -2,7 +2,7 @@
 
 .c-share-assignment-with-pupil-popup {
 	padding: 1.5rem;
-	width: 100%;
+	width: 40rem;
 
 	.c-input {
 		border-radius: 4px 0 0 4px;
@@ -24,6 +24,10 @@
 
 	p {
 		font-size: 1.4rem;
+	}
+
+	@media screen and (min-width: $g-bp3) {
+		width: 45rem;
 	}
 
 	@media screen and (min-width: $g-bp3) {
