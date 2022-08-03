@@ -1,5 +1,4 @@
 import {
-	BlockHeading,
 	Button,
 	ButtonGroup,
 	ButtonToolbar,
@@ -11,6 +10,9 @@ import {
 	Icon,
 	Modal,
 	ModalBody,
+	ModalFooterLeft,
+	ModalFooterRight,
+	Select,
 	Spacer,
 	Table,
 	TableColumn,
@@ -25,13 +27,12 @@ import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollBar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
 import { ContentTypeNumber } from '../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import { CustomError, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import { CustomError, formatDate, formatTimestamp } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -218,44 +219,6 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 		setSelectedCollectionId((selectedIds[0] as string) || null);
 	};
 
-	const renderFooterActions = () => {
-		return (
-			<Toolbar>
-				<ToolbarLeft>
-					<Flex>
-						<Toggle
-							checked={createWithDescription}
-							onChange={(checked) => setCreateWithDescription(checked)}
-						/>
-						<Spacer margin="left">
-							<FlexItem>
-								{t(
-									'assignment/modals/add-collection-modal___importeer-fragmenten-met-beschrijving'
-								)}
-							</FlexItem>
-						</Spacer>
-					</Flex>
-				</ToolbarLeft>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="secondary"
-								label={t('assignment/modals/add-collection-modal___annuleer')}
-								onClick={resetStateAndCallOnClose}
-							/>
-							<Button
-								type="primary"
-								label={t('assignment/modals/add-collection-modal___importeer')}
-								onClick={handleImportToAssignment}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
-		);
-	};
-
 	const renderCell = (
 		collection: Avo.Collection.Collection,
 		colKey: keyof Avo.Collection.Collection
@@ -264,15 +227,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 		switch (colKey) {
 			case 'title': {
-				const renderTitle = () => (
-					<BlockHeading type="h3">{truncateTableValue(collection.title)}</BlockHeading>
-				);
-
-				return isMobileWidth() ? (
-					<Spacer margin="bottom-small">{renderTitle()}</Spacer>
-				) : (
-					renderTitle()
-				);
+				return truncateTableValue(collection.title);
 			}
 
 			case 'is_public':
@@ -303,7 +258,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					<Toolbar>
 						<ToolbarLeft>
 							<ToolbarItem>
-								<ButtonToolbar>
+								<ButtonToolbar className="c-add-collection-modal__tab-buttons">
 									<ButtonGroup>
 										<Button
 											type="secondary"
@@ -338,6 +293,27 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 										/>
 									</ButtonGroup>
 								</ButtonToolbar>
+
+								<Select
+									className={'c-add-collection-modal__tab-select'}
+									isSearchable={false}
+									value={activeView}
+									options={[
+										{
+											label: t(
+												'assignment/modals/add-collection-modal___mijn-collecties'
+											),
+											value: AddCollectionTab.myCollections,
+										},
+										{
+											label: t(
+												'assignment/modals/add-collection-modal___bladwijzer-collecties'
+											),
+											value: AddCollectionTab.bookmarkedCollections,
+										},
+									]}
+									onChange={(value) => setActiveView(value as AddCollectionTab)}
+								/>
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
@@ -358,36 +334,31 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					</Toolbar>
 				</Container>
 
-				<ScrollBar>
-					<Table
-						columns={tableColumns}
-						data={collections || undefined}
-						emptyStateMessage={
-							filterString
-								? t(
-										'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
-								  )
-								: t(
-										'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
-								  )
-						}
-						renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
-							renderCell(rowData, colKey as keyof Avo.Collection.Collection)
-						}
-						rowKey="id"
-						variant="styled"
-						onColumnClick={handleColumnClick as any}
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-						useCards={isMobileWidth()}
-						showRadioButtons
-						selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
-						onSelectionChanged={handleSelectedCollectionChanged}
-						onRowClick={(collection) => setSelectedCollectionId(collection.id)}
-					/>
-				</ScrollBar>
-
-				<Container mode="horizontal">{renderFooterActions()}</Container>
+				<Table
+					columns={tableColumns}
+					data={collections || undefined}
+					emptyStateMessage={
+						filterString
+							? t(
+									'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
+							  )
+							: t(
+									'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
+							  )
+					}
+					renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
+						renderCell(rowData, colKey as keyof Avo.Collection.Collection)
+					}
+					rowKey="id"
+					variant="styled"
+					onColumnClick={handleColumnClick as any}
+					sortColumn={sortColumn}
+					sortOrder={sortOrder}
+					showRadioButtons
+					selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
+					onSelectionChanged={handleSelectedCollectionChanged}
+					onRowClick={(collection) => setSelectedCollectionId(collection.id)}
+				/>
 			</>
 		);
 	};
@@ -408,6 +379,37 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					render={renderModalBody}
 				/>
 			</ModalBody>
+
+			<ModalFooterLeft>
+				<Flex>
+					<Toggle
+						checked={createWithDescription}
+						onChange={(checked) => setCreateWithDescription(checked)}
+					/>
+					<Spacer margin="left">
+						<FlexItem>
+							{t(
+								'assignment/modals/add-collection-modal___importeer-fragmenten-met-beschrijving'
+							)}
+						</FlexItem>
+					</Spacer>
+				</Flex>
+			</ModalFooterLeft>
+
+			<ModalFooterRight>
+				<ButtonToolbar>
+					<Button
+						type="secondary"
+						label={t('assignment/modals/add-collection-modal___annuleer')}
+						onClick={resetStateAndCallOnClose}
+					/>
+					<Button
+						type="primary"
+						label={t('assignment/modals/add-collection-modal___importeer')}
+						onClick={handleImportToAssignment}
+					/>
+				</ButtonToolbar>
+			</ModalFooterRight>
 		</Modal>
 	);
 };
