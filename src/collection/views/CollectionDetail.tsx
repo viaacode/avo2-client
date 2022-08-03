@@ -739,17 +739,6 @@ const CollectionDetail: FunctionComponent<
 
 		const isPublic = !!collection && collection.is_public;
 
-		const createAssignmentOptions = [
-			{
-				label: t('collection/views/collection-detail___nieuwe-opdracht'),
-				id: COLLECTION_ACTIONS.createAssignment,
-			},
-			{
-				label: t('collection/views/collection-detail___bestaande-opdracht'),
-				id: COLLECTION_ACTIONS.importToAssignment,
-			},
-		];
-
 		return (
 			<ButtonToolbar>
 				{permissions?.canAutoplayCollection && (
@@ -771,7 +760,23 @@ const CollectionDetail: FunctionComponent<
 						onClose={() => setIsCreateAssignmentDropdownOpen(false)}
 						onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
 					>
-						<MenuContent menuItems={createAssignmentOptions} onClick={executeAction} />
+						<MenuContent
+							menuItems={[
+								{
+									label: t(
+										'collection/views/collection-detail___nieuwe-opdracht'
+									),
+									id: COLLECTION_ACTIONS.createAssignment,
+								},
+								{
+									label: t(
+										'collection/views/collection-detail___bestaande-opdracht'
+									),
+									id: COLLECTION_ACTIONS.importToAssignment,
+								},
+							]}
+							onClick={executeAction}
+						/>
 					</Dropdown>
 				)}
 				{permissions?.canCreateQuickLane && !permissions?.canCreateAssignments && (
@@ -862,12 +867,15 @@ const CollectionDetail: FunctionComponent<
 				: []),
 			...(permissions?.canCreateAssignments
 				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.createAssignment,
-							t('collection/views/collection-detail___maak-opdracht'),
-							'clipboard'
-						),
-				  ]
+						{
+							label: t('Importeer naar nieuwe opdracht'),
+							id: COLLECTION_ACTIONS.createAssignment,
+						},
+						{
+							label: t('Importeer naar bestaande opdracht'),
+							id: COLLECTION_ACTIONS.importToAssignment,
+						},
+				  ].map((option) => createDropdownMenuItem(option.id, option.label, 'clipboard'))
 				: []),
 			...(permissions?.canPublishCollections
 				? [
