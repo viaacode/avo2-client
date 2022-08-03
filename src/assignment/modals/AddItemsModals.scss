@@ -42,6 +42,10 @@
 			.c-toolbar__right,
 			.c-toolbar__item {
 				width: 100%;
+
+				@media screen and (min-width: $g-bp2) {
+					width: auto;
+				}
 			}
 		}
 
@@ -55,7 +59,8 @@
 
 		.c-thumbnail {
 			margin-right: 10px;
-			max-width: 125px;
+			min-width: 125px; // Force growth on mobile
+			max-width: 125px; // Constrain growth on desktop
 			height: 70px;
 		}
 
@@ -91,5 +96,10 @@
 				align-self: flex-end;
 			}
 		}
+	}
+
+	&__table-wrapper {
+		overflow: auto;
+		max-width: 100%;
 	}
 }

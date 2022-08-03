@@ -334,31 +334,33 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					</Toolbar>
 				</Container>
 
-				<Table
-					columns={tableColumns}
-					data={collections || undefined}
-					emptyStateMessage={
-						filterString
-							? t(
-									'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
-							  )
-							: t(
-									'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
-							  )
-					}
-					renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
-						renderCell(rowData, colKey as keyof Avo.Collection.Collection)
-					}
-					rowKey="id"
-					variant="styled"
-					onColumnClick={handleColumnClick as any}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-					showRadioButtons
-					selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
-					onSelectionChanged={handleSelectedCollectionChanged}
-					onRowClick={(collection) => setSelectedCollectionId(collection.id)}
-				/>
+				<div className="c-add-collection-modal__table-wrapper">
+					<Table
+						columns={tableColumns}
+						data={collections || undefined}
+						emptyStateMessage={
+							filterString
+								? t(
+										'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
+								  )
+								: t(
+										'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
+								  )
+						}
+						renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
+							renderCell(rowData, colKey as keyof Avo.Collection.Collection)
+						}
+						rowKey="id"
+						variant="styled"
+						onColumnClick={handleColumnClick as any}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+						showRadioButtons
+						selectedItemIds={selectedCollectionId ? [selectedCollectionId] : []}
+						onSelectionChanged={handleSelectedCollectionChanged}
+						onRowClick={(collection) => setSelectedCollectionId(collection.id)}
+					/>
+				</div>
 			</>
 		);
 	};
