@@ -15,6 +15,7 @@ import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-on
 import CollectionFragmentRichText from '../../../../collection/components/CollectionFragmentRichText';
 
 import './AssignmentBlockTypeSearch.scss';
+import './CollectionFragmentColumns.scss';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
@@ -35,7 +36,13 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	const [t] = useTranslation();
 
 	return (
-		<div className={classnames('c-assignment-block-type-search', className)}>
+		<div
+			className={classnames(
+				'c-assignment-block-type-search',
+				'c-collection-fragment--simple-columns',
+				className
+			)}
+		>
 			<Flex orientation="vertical">
 				<BlockHeading type="h2">
 					{t(

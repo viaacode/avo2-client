@@ -20,6 +20,8 @@ import {
 } from '../../BlockItemMetadata/BlockItemMetadata';
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 
+import './CollectionFragmentColumns.scss';
+
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
@@ -115,6 +117,28 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 		);
 	};
 
+	if (canOpenOriginal) {
+		return (
+			<div className="c-collection-fragment--type-item">
+				{title && <CollectionFragmentTitle {...title} />}
+				<div className="c-collection-fragment--simple-columns">
+					<div>
+						{flowPlayer ? (
+							<CollectionFragmentFlowPlayer {...flowPlayer} seekTime={time} />
+						) : (
+							<div />
+						)}
+					</div>
+					<div>
+						<div ref={boundColumnContentRef}>
+							{meta && <BlockItemMetadata {...meta} block={block} />}
+							{richText && canOpenOriginal && renderComparison()}
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 	return (
 		<div className="c-collection-fragment--type-item">
 			{title && <CollectionFragmentTitle {...title} />}
@@ -143,8 +167,6 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 								)}
 							/>
 						)}
-
-						{richText && canOpenOriginal && renderComparison()}
 					</div>
 				}
 			/>

@@ -1,0 +1,14 @@
+@import '../../../../styles/settings/variables';
+
+.c-collection-fragment--simple-columns {
+	display: flex;
+	justify-content: space-between;
+
+	> div:first-child {
+		width: 50%;
+	}
+
+	> div:last-child {
+		width: calc(100% - 50% - 30px);
+	}
+}
