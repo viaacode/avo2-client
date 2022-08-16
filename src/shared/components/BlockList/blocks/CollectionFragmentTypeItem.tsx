@@ -1,7 +1,7 @@
-import { Button, convertToHtml, DefaultProps } from '@viaa/avo2-components';
+import { convertToHtml, DefaultProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CollectionFragmentFlowPlayer, {
@@ -18,9 +18,11 @@ import {
 	BlockItemMetadata,
 	BlockItemMetadataProps,
 } from '../../BlockItemMetadata/BlockItemMetadata';
-import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
+import CollapsibleContainer from '../../CollapsibleContainer/CollapsibleContainer';
+import MaxHeightContainer from '../../MaxHeightContainer/MaxHeightContainer';
 
 import './CollectionFragmentColumns.scss';
+import './CollectionFragmentTypeItem.scss';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
@@ -37,17 +39,15 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	richText,
 	meta,
 	flowPlayer,
-	className,
 	canOpenOriginal,
 }) => {
 	const boundColumnContentRef = useRef(null);
-	const [showOriginal, setShowOriginal] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
 	const { time, format } = useVideoWithTimestamps(boundColumnContentRef);
 
-	const renderComparison = () => {
+	const renderDescriptions = () => {
 		if (!richText || !richText.block) {
 			return null;
 		}
@@ -59,119 +59,128 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 
 		const original = cast.original_description || cast.item_meta?.description;
 
-		return (
-			<>
-				{hasCustom && (
-					<>
-						<b>
-							{t(
-								'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
-							)}
-						</b>
+		const output = [];
+		if (hasCustom) {
+			output.push(
+				<>
+					<b>
+						{t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
+						)}
+					</b>
 
+					<MaxHeightContainer maxHeight={380}>
 						<CollectionFragmentRichText
 							{...richText}
 							content={format(convertToHtml(custom))}
-							ref={boundColumnContentRef}
 						/>
-					</>
-				)}
+					</MaxHeightContainer>
+				</>
+			);
+		}
+		if (original && canOpenOriginal) {
+			output.push(
+				<>
+					<CollapsibleContainer
+						expandLabel={t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
+						)}
+						collapseLabel={t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
+						)}
+						initialState={hasCustom ? 'collapsed' : 'expanded'}
+					>
+						<MaxHeightContainer maxHeight={380}>
+							<b>
+								{t(
+									'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
+								)}
+							</b>
+							<CollectionFragmentRichText
+								{...richText}
+								content={
+									hasCustom
+										? convertToHtml(original)
+										: format(convertToHtml(original))
+								}
+							/>
+						</MaxHeightContainer>
+					</CollapsibleContainer>
+				</>
+			);
+		}
 
-				{(!hasCustom || showOriginal) && (
-					<>
-						<b>
-							{t(
-								'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
-							)}
-						</b>
-
-						<CollectionFragmentRichText
-							{...richText}
-							content={
-								hasCustom
-									? convertToHtml(original)
-									: format(convertToHtml(original))
-							}
-							ref={hasCustom ? undefined : boundColumnContentRef}
-						/>
-					</>
-				)}
-
-				{hasCustom && (
-					<Button
-						onClick={() => setShowOriginal(!showOriginal)}
-						type="inline-link"
-						icon="align-left"
-						label={
-							showOriginal
-								? t(
-										'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
-								  )
-								: t(
-										'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
-								  )
-						}
-					/>
-				)}
-			</>
-		);
+		return <>{output}</>;
 	};
 
-	if (canOpenOriginal) {
-		return (
-			<div className="c-collection-fragment--type-item">
-				{title && <CollectionFragmentTitle {...title} />}
-				<div className="c-collection-fragment--simple-columns">
-					<div>
-						{flowPlayer ? (
-							<CollectionFragmentFlowPlayer {...flowPlayer} seekTime={time} />
-						) : (
-							<div />
-						)}
-					</div>
-					<div>
-						<div ref={boundColumnContentRef}>
-							{meta && <BlockItemMetadata {...meta} block={block} />}
-							{richText && canOpenOriginal && renderComparison()}
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	}
 	return (
 		<div className="c-collection-fragment--type-item">
 			{title && <CollectionFragmentTitle {...title} />}
-			<CollapsibleColumn
-				className={className}
-				grow={
-					flowPlayer ? (
+			<div className="c-collection-fragment--simple-columns">
+				<div>
+					{flowPlayer ? (
 						<CollectionFragmentFlowPlayer {...flowPlayer} seekTime={time} />
 					) : (
 						<div />
-					)
-				}
-				bound={
+					)}
+				</div>
+				<div>
 					<div ref={boundColumnContentRef}>
 						{meta && <BlockItemMetadata {...meta} block={block} />}
-
-						{richText && !canOpenOriginal && (
-							<CollectionFragmentRichText
-								{...richText}
-								content={format(
-									convertToHtml(
-										richText.block?.use_custom_fields
-											? richText.block?.custom_description
-											: richText.block?.item_meta?.description
-									)
-								)}
-							/>
-						)}
+						{/*{richText && !canOpenOriginal && (*/}
+						{/*	<CollectionFragmentRichText*/}
+						{/*		{...richText}*/}
+						{/*		content={format(*/}
+						{/*			convertToHtml(*/}
+						{/*				richText.block?.use_custom_fields*/}
+						{/*					? richText.block?.custom_description*/}
+						{/*					: richText.block?.item_meta?.description*/}
+						{/*			)*/}
+						{/*		)}*/}
+						{/*	/>*/}
+						{/*)}*/}
+						{renderDescriptions()}
 					</div>
-				}
-			/>
+				</div>
+			</div>
 		</div>
 	);
+
+	// return (
+	// 	<div className="c-collection-fragment--type-item">
+	// 		{title && <CollectionFragmentTitle {...title} />}
+	// 		<CollapsibleColumn
+	// 			className={className}
+	// 			grow={
+	// 				flowPlayer ? (
+	// 					<CollectionFragmentFlowPlayer {...flowPlayer} seekTime={time} />
+	// 				) : (
+	// 					<div />
+	// 				)
+	// 			}
+	// 			bound={
+	// 				<div ref={boundColumnContentRef}>
+	// 					{meta && <BlockItemMetadata {...meta} block={block} />}
+	//
+	// 					{richText && !canOpenOriginal && (
+	// 						<CollectionFragmentRichText
+	// 							{...richText}
+	// 							content={format(
+	// 								convertToHtml(
+	// 									richText.block?.use_custom_fields
+	// 										? richText.block?.custom_description
+	// 										: richText.block?.item_meta?.description
+	// 								)
+	// 							)}
+	// 						/>
+	// 					)}
+	//
+	// 					{richText && canOpenOriginal && renderComparison()}
+	// 				</div>
+	// 			}
+	// 		/>
+	// 	</div>
+	// );
 };
 
 export default CollectionFragmentTypeItem;

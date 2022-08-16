@@ -7,15 +7,13 @@ import { BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentRichTextProps = BlockItemComponent &
 	Omit<HtmlProps, 'content'> &
-	Partial<Pick<HtmlProps, 'content'>> & {
-		ref?: React.MutableRefObject<HTMLDivElement | null>;
-	};
+	Partial<Pick<HtmlProps, 'content'>>;
 
 const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) => {
 	const { block, ...rest } = props;
 
 	return (
-		<div className="c-collection-fragment-rich-text" ref={rest.ref}>
+		<div className="c-collection-fragment-rich-text">
 			<Html
 				type="div"
 				className="c-collection-fragment-rich-text__parser c-content"

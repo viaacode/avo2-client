@@ -53,7 +53,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 				<div className="c-collapsible-column__bounded-toggle">
 					<Button
 						type="underlined-link"
-						icon={isExpanded ? 'close' : 'plus'} // TODO: add 'minus' icon
+						icon="align-left"
 						label={
 							isExpanded
 								? t(
