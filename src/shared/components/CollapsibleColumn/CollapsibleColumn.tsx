@@ -13,26 +13,33 @@ export interface CollapsibleColumnProps extends DefaultProps {
 
 const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow, bound }) => {
 	const [t] = useTranslation();
-	const el = useRef<HTMLDivElement>(null);
+	const boundColumnContentRef = useRef<HTMLDivElement>(null);
+	const growColumnContentRef = useRef<HTMLDivElement>(null);
 
 	const [overflowing, setOverflowing] = useState(false);
-	const [scrollable, setScrollable] = useState(false);
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	const [maxHeight, setMaxHeight] = useState<number>(380);
 
 	const wrapperClassName = [
 		'c-collapsible-column',
 		...(overflowing ? ['c-collapsible-column--overflowing'] : []),
-		...(scrollable ? ['c-collapsible-column--scrollable'] : []),
+		...(isExpanded ? ['c-collapsible-column--scrollable'] : []),
 		className,
 	].join(' ');
 
 	const boundedClassName = [
 		'c-collapsible-column__bounded',
 		...(overflowing ? ['c-collapsible-column__bounded--overflowing'] : []),
-		...(scrollable ? ['c-collapsible-column__bounded--scrollable'] : []),
+		...(isExpanded ? ['c-collapsible-column__bounded--scrollable'] : []),
 	].join(' ');
 
-	useResizeObserver(el, () => {
-		const isOverflowing = (el.current?.scrollHeight || 0) > (el.current?.offsetHeight || 0);
+	useResizeObserver(boundColumnContentRef, () => {
+		const isOverflowing =
+			(boundColumnContentRef.current?.scrollHeight || 0) >=
+			(growColumnContentRef.current?.scrollHeight || 0);
+
+		setMaxHeight(growColumnContentRef.current?.scrollHeight || 0);
 
 		if (isOverflowing !== overflowing) {
 			setOverflowing(isOverflowing);
@@ -42,13 +49,13 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 	const content = (
 		<>
 			{bound}
-			{(overflowing || scrollable) && (
+			{(overflowing || isExpanded) && (
 				<div className="c-collapsible-column__bounded-toggle">
 					<Button
 						type="underlined-link"
-						icon={scrollable ? 'close' : 'plus'} // TODO: add 'minus' icon
+						icon={isExpanded ? 'close' : 'plus'} // TODO: add 'minus' icon
 						label={
-							scrollable
+							isExpanded
 								? t(
 										'shared/components/collapsible-column/collapsible-column___toon-minder'
 								  )
@@ -56,7 +63,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 										'shared/components/collapsible-column/collapsible-column___toon-meer'
 								  )
 						}
-						onClick={() => setScrollable(!scrollable)}
+						onClick={() => setIsExpanded(!isExpanded)}
 					/>
 				</div>
 			)}
@@ -65,11 +72,17 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow,
 
 	return (
 		<div className={wrapperClassName} style={style}>
-			{grow}
+			<div>
+				<div ref={growColumnContentRef}>{grow}</div>
+			</div>
 
-			<div className={boundedClassName} ref={el}>
-				<div className="c-collapsible-column__bounded-content">
-					{scrollable ? <Scrollbar>{content}</Scrollbar> : content}
+			<div className={boundedClassName} style={{ maxHeight: maxHeight + 'px' }}>
+				<div
+					className="c-collapsible-column__bounded-content"
+					ref={boundColumnContentRef}
+					style={isExpanded ? { height: maxHeight + 'px' } : {}}
+				>
+					{isExpanded ? <Scrollbar>{content}</Scrollbar> : content}
 				</div>
 			</div>
 		</div>

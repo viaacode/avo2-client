@@ -38,12 +38,12 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	className,
 	canOpenOriginal,
 }) => {
-	const richTextRef = useRef(null);
+	const boundColumnContentRef = useRef(null);
 	const [showOriginal, setShowOriginal] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
-	const { time, format } = useVideoWithTimestamps(richTextRef);
+	const { time, format } = useVideoWithTimestamps(boundColumnContentRef);
 
 	const renderComparison = () => {
 		if (!richText || !richText.block) {
@@ -70,7 +70,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 						<CollectionFragmentRichText
 							{...richText}
 							content={format(convertToHtml(custom))}
-							ref={richTextRef}
+							ref={boundColumnContentRef}
 						/>
 					</>
 				)}
@@ -90,7 +90,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 									? convertToHtml(original)
 									: format(convertToHtml(original))
 							}
-							ref={hasCustom ? undefined : richTextRef}
+							ref={hasCustom ? undefined : boundColumnContentRef}
 						/>
 					</>
 				)}
@@ -128,7 +128,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 					)
 				}
 				bound={
-					<>
+					<div ref={boundColumnContentRef}>
 						{meta && <BlockItemMetadata {...meta} block={block} />}
 
 						{richText && !canOpenOriginal && (
@@ -141,12 +141,11 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 											: richText.block?.item_meta?.description
 									)
 								)}
-								ref={richTextRef}
 							/>
 						)}
 
 						{richText && canOpenOriginal && renderComparison()}
-					</>
+					</div>
 				}
 			/>
 		</div>
