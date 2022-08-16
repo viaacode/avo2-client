@@ -65,7 +65,7 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { LANGUAGES } from '../../shared/constants';
+import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	CustomError,
@@ -191,8 +191,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
 			if (
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) &&
-				!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)
+				!(
+					PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) ||
+					(PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT) &&
+						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
+				)
 			) {
 				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
