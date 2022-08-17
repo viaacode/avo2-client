@@ -41,24 +41,9 @@ export const AssignmentBlockEditItem: FC<
 	const editableBlock = {
 		...block,
 		editMode: block.editMode || getBlockEditMode(block),
-		ownTitle:
-			block.ownTitle ||
-			block.custom_title ||
-			(block as unknown as AssignmentBlock).original_title ||
-			block.item_meta?.title ||
-			undefined,
-		ownDescription:
-			block.ownDescription ||
-			block.custom_description ||
-			(block as AssignmentBlock).original_description ||
-			block.item_meta?.description ||
-			undefined,
-		noTitle:
-			block.noTitle ||
-			block.custom_title ||
-			(block as unknown as AssignmentBlock).original_title ||
-			block.item_meta?.title ||
-			undefined,
+		ownTitle: block.ownTitle ?? (block.custom_title || undefined),
+		ownDescription: block.ownDescription ?? (block.custom_description || undefined),
+		noTitle: block.noTitle ?? (block.custom_title || undefined),
 	};
 
 	if (!editableBlock.item_meta) {
