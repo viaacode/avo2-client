@@ -120,6 +120,7 @@ interface ItemDetailProps {
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
+	showInteractiveTour: boolean;
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
 	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
@@ -141,6 +142,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	goToDetailLink = defaultGoToDetailLink(history),
 	goToSearchLink = defaultGoToSearchLink(history),
 	enabledMetaData = ALL_SEARCH_FILTERS,
+	showInteractiveTour = true,
 	renderActionButtons,
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
@@ -808,7 +810,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
 									})}
 							</MetaData>
-							<InteractiveTour showButton />
+							{showInteractiveTour && <InteractiveTour showButton />}
 						</ButtonToolbar>
 					</HeaderButtons>
 					<HeaderAvatar>
