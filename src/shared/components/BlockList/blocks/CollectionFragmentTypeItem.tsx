@@ -62,7 +62,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 		const output = [];
 		if (hasCustom) {
 			output.push(
-				<>
+				<div key={block.id + '--custom'}>
 					<b>
 						{t(
 							'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
@@ -75,38 +75,37 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 							content={format(convertToHtml(custom))}
 						/>
 					</MaxHeightContainer>
-				</>
+				</div>
 			);
 		}
 		if (original && canOpenOriginal) {
 			output.push(
-				<>
-					<CollapsibleContainer
-						expandLabel={t(
-							'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
-						)}
-						collapseLabel={t(
-							'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
-						)}
-						initialState={hasCustom ? 'collapsed' : 'expanded'}
-					>
-						<MaxHeightContainer maxHeight={380}>
-							<b>
-								{t(
-									'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
-								)}
-							</b>
-							<CollectionFragmentRichText
-								{...richText}
-								content={
-									hasCustom
-										? convertToHtml(original)
-										: format(convertToHtml(original))
-								}
-							/>
-						</MaxHeightContainer>
-					</CollapsibleContainer>
-				</>
+				<CollapsibleContainer
+					key={block.id + '--original'}
+					expandLabel={t(
+						'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
+					)}
+					collapseLabel={t(
+						'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
+					)}
+					initialState={hasCustom ? 'collapsed' : 'expanded'}
+				>
+					<MaxHeightContainer maxHeight={380}>
+						<b>
+							{t(
+								'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
+							)}
+						</b>
+						<CollectionFragmentRichText
+							{...richText}
+							content={
+								hasCustom
+									? convertToHtml(original)
+									: format(convertToHtml(original))
+							}
+						/>
+					</MaxHeightContainer>
+				</CollapsibleContainer>
 			);
 		}
 
