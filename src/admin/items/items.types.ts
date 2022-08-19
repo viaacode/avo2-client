@@ -15,6 +15,7 @@ export type ItemsOverviewTableCols =
 	| 'is_published'
 	| 'issued'
 	| 'lom_classification'
+	| 'lom_thema'
 	| 'lom_context'
 	| 'lom_intendedenduserrole'
 	| 'lom_keywords'
@@ -52,6 +53,7 @@ export interface ItemsTableState extends FilterableTableState {
 	is_published: PublishedStatus;
 	issued: string;
 	lom_classification: string[];
+	lom_thema: string[];
 	lom_context: string[];
 	lom_intendedenduserrole: string[];
 	lom_keywords: string[];
