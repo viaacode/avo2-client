@@ -22,12 +22,16 @@ export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
 	}
 	return (
 		<StickyEdgeBar className="c-sticky-save-bar">
-			<strong>{t('assignment/views/assignment-edit___wijzigingen-opslaan')}</strong>
+			<strong className="c-sticky-save-bar__cta">
+				{t('assignment/views/assignment-edit___wijzigingen-opslaan')}
+			</strong>
+
 			<Button
 				className="u-spacer-right-s"
 				label={t('assignment/views/assignment-edit___annuleer')}
 				onClick={onCancel}
 			/>
+
 			<Button
 				type="tertiary"
 				label={t('assignment/views/assignment-edit___opslaan')}

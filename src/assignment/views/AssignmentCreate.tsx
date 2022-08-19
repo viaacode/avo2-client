@@ -30,6 +30,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
+import AssignmentActions from '../components/AssignmentActions';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
@@ -226,41 +227,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		[t, control, setAssignment]
 	);
 
-	// These actions are just UI, they are disabled because they can't be used during creation
-	const renderActions = useMemo(
-		() => (
-			<>
-				<Button
-					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
-					title={t(
-						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-					)}
-					ariaLabel={t(
-						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-					)}
-					type="secondary"
-					onClick={() => setIsViewAsPupilEnabled(true)}
-				/>
-				<Button
-					disabled
-					icon="more-horizontal"
-					type="secondary"
-					ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
-					title={t('assignment/views/assignment-detail___meer-opties')}
-				/>
-				<Button
-					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t(
-						'assignment/views/assignment-create___bezorg-deze-opdrachtlink-aan-je-leerlingen'
-					)}
-					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					disabled
-				/>
-			</>
-		),
-		[t]
-	);
-
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
@@ -358,7 +324,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderTitle}
-					actions={renderActions}
+					actions={
+						<AssignmentActions
+							duplicate={{ disabled: true }}
+							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
+							remove={{ button: { disabled: true } }}
+						/>
+					}
 					tabs={renderTabs}
 				/>
 
