@@ -1099,6 +1099,10 @@ export class AssignmentService {
 				);
 
 			if (existingAssignmentResponse) {
+				if (assignment.assignment_type === AssignmentType.BOUW) {
+					existingAssignmentResponse.collection_title =
+						existingAssignmentResponse.collection_title || 'Nieuwe collectie';
+				}
 				return existingAssignmentResponse;
 			}
 
