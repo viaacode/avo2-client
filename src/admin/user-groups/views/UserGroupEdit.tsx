@@ -177,6 +177,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	};
 
 	const handlePermissionGroupDelete = () => {
+		setIsConfirmModalOpen(false);
 		if (!userGroup) {
 			return;
 		}

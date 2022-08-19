@@ -1,7 +1,6 @@
+import { Avo } from '@viaa/avo2-types';
 import { get, isFunction, kebabCase, omit } from 'lodash-es';
 import moment from 'moment';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -525,43 +524,44 @@ export class ContentService {
 		profileId: string
 	): Promise<Partial<ContentPageInfo> | null> {
 		try {
-			const contentToInsert = { ...contentPageInfo };
+			const duplicatedContentPage = { ...contentPageInfo };
 
 			// update attributes specific to duplicate
-			contentToInsert.is_public = false;
-			contentToInsert.published_at = null;
-			contentToInsert.depublish_at = null;
-			contentToInsert.publish_at = null;
-			contentToInsert.path = null;
-			contentToInsert.created_at = moment().toISOString();
-			contentToInsert.updated_at = contentToInsert.created_at;
-			contentToInsert.user_profile_id = profileId;
+			duplicatedContentPage.thumbnail_path = null; // https://meemoo.atlassian.net/browse/AVO-1841
+			duplicatedContentPage.is_public = false;
+			duplicatedContentPage.published_at = null;
+			duplicatedContentPage.depublish_at = null;
+			duplicatedContentPage.publish_at = null;
+			duplicatedContentPage.path = null;
+			duplicatedContentPage.created_at = moment().toISOString();
+			duplicatedContentPage.updated_at = duplicatedContentPage.created_at;
+			duplicatedContentPage.user_profile_id = profileId;
 
 			try {
-				contentToInsert.title = await this.getCopyTitleForContentPage(
+				duplicatedContentPage.title = await this.getCopyTitleForContentPage(
 					copyPrefix,
 					copyRegex,
-					contentToInsert.title
+					duplicatedContentPage.title
 				);
 			} catch (err) {
 				const customError = new CustomError(
 					'Failed to retrieve title for duplicate content page',
 					err,
 					{
-						contentToInsert,
+						contentToInsert: duplicatedContentPage,
 					}
 				);
 
 				console.error(customError);
 
 				// fallback to simple copy title
-				contentToInsert.title = `${copyPrefix.replace(' %index%', '')}${
-					contentToInsert.title
+				duplicatedContentPage.title = `${copyPrefix.replace(' %index%', '')}${
+					duplicatedContentPage.title
 				}`;
 			}
 
 			// insert duplicated collection
-			return await ContentService.insertContentPage(contentToInsert);
+			return await ContentService.insertContentPage(duplicatedContentPage);
 		} catch (err) {
 			throw new CustomError('Failed to duplicate collection', err, {
 				copyPrefix,
