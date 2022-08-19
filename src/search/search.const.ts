@@ -11,6 +11,7 @@ export enum SearchFilter {
 	type = 'type',
 	educationLevel = 'educationLevel',
 	domain = 'domain',
+	thema = 'thema',
 	broadcastDate = 'broadcastDate',
 	language = 'language',
 	keyword = 'keyword',
@@ -25,6 +26,7 @@ export const ALL_SEARCH_FILTERS: SearchFilter[] = [
 	SearchFilter.type,
 	SearchFilter.educationLevel,
 	SearchFilter.domain,
+	SearchFilter.thema,
 	SearchFilter.broadcastDate,
 	SearchFilter.language,
 	SearchFilter.keyword,
@@ -44,6 +46,7 @@ export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
 	[SearchFilter.type]: [],
 	[SearchFilter.educationLevel]: [],
 	[SearchFilter.domain]: [],
+	[SearchFilter.thema]: [],
 	[SearchFilter.broadcastDate]: {
 		gte: '',
 		lte: '',
