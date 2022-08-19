@@ -7,11 +7,13 @@ import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { AssignmentBlockType, EditBlockProps } from '../../assignment.types';
 import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
 
+import './AssignmentBlockEditSearch.scss';
+
 export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock }) => {
 	const [t] = useTranslation();
 
 	return (
-		<>
+		<div className="c-assignment-block-edit--search">
 			<TitleDescriptionForm
 				className="u-padding-l"
 				id={block.id}
@@ -47,6 +49,6 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 					});
 				}}
 			/>
-		</>
+		</div>
 	);
 };
