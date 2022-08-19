@@ -148,6 +148,7 @@ export class AssignmentHelper {
 								onChange={(newState) =>
 									setAssignmentProp('descriptionRichEditorState', newState)
 								}
+								enabledHeadings={['h3', 'h4', 'normal']}
 							/>
 						</FormGroup>
 						{/* <FormGroup label={i18n.t('assignment/views/assignment-edit___inhoud')}>
