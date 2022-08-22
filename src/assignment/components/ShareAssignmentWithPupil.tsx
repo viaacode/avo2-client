@@ -1,9 +1,11 @@
 import {
 	Alert,
 	Button,
+	ButtonProps,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	DropdownProps,
 	Flex,
 	Spacer,
 	TextInput,
@@ -20,15 +22,19 @@ import { ToastService } from '../../shared/services';
 import './ShareAssignmentWithPupil.scss';
 
 export type ShareAssignmentWithPupilProps = {
-	assignment: Avo.Assignment.Assignment_v2;
-	onDetailLinkClicked: () => void;
-	onContentLinkClicked: () => void;
+	assignment?: Avo.Assignment.Assignment_v2;
+	onDetailLinkClicked?: () => void;
+	onContentLinkClicked?: () => void;
+	button?: Partial<ButtonProps>;
+	dropdown?: Partial<DropdownProps>;
 };
 
 export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 	assignment,
 	onDetailLinkClicked,
 	onContentLinkClicked,
+	button,
+	dropdown,
 }) => {
 	const [t] = useTranslation();
 
@@ -38,11 +44,12 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 
 	// Computed
 
-	const assignmentShareLink: string =
-		window.location.origin +
-		buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, {
-			id: assignment.id,
-		});
+	const assignmentShareLink: string = assignment
+		? window.location.origin +
+		  buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, {
+				id: assignment.id,
+		  })
+		: '';
 	const isAssignmentDetailsComplete =
 		!!assignment?.labels.filter((l) => l.assignment_label.type === 'CLASS')?.length &&
 		// Disabled due to https://meemoo.atlassian.net/browse/AVO-2051
@@ -68,12 +75,12 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 	};
 
 	const handleContentLinkClicked = () => {
-		onContentLinkClicked();
+		onContentLinkClicked?.();
 		setIsShareDropdownOpen(false);
 	};
 
 	const handleDetailLinkClicked = () => {
-		onDetailLinkClicked();
+		onDetailLinkClicked?.();
 		setIsShareDropdownOpen(false);
 	};
 
@@ -82,6 +89,7 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 			isOpen={isShareDropdownOpen}
 			onClose={() => setIsShareDropdownOpen(false)}
 			placement="bottom-end"
+			{...dropdown}
 		>
 			<DropdownButton>
 				<Button
@@ -91,6 +99,8 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 						'assignment/components/share-assignment-with-pupil___bezorg-deze-opdrachtlink-aan-je-leerlingen'
 					)}
 					onClick={handleShareButtonClicked}
+					{...button}
+					disabled={button?.disabled || assignmentShareLink.length === 0}
 				/>
 			</DropdownButton>
 			<DropdownContent>

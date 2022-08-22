@@ -8,20 +8,17 @@ import {
 	FormGroup,
 	Modal,
 	ModalBody,
+	ModalFooterRight,
 	Spacer,
 	Table,
 	TableColumn,
 	TextInput,
 	Thumbnail,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollBar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
@@ -171,33 +168,6 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 		setSelectedBookmarkId((selectedIds[0] as string) || undefined);
 	};
 
-	const renderFooterActions = () => {
-		return (
-			<Toolbar>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="secondary"
-								label={t(
-									'assignment/modals/add-bookmark-fragment-modal___annuleer'
-								)}
-								onClick={onClose}
-							/>
-							<Button
-								type="primary"
-								label={t(
-									'assignment/modals/add-bookmark-fragment-modal___voeg-toe'
-								)}
-								onClick={handleImportToAssignment}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
-		);
-	};
-
 	const renderCell = (bookmark: BookmarkInfo, colKey: keyof BookmarkInfo) => {
 		const cellData: any = (bookmark as any)[colKey];
 
@@ -259,7 +229,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 					</Form>
 				</Container>
 
-				<ScrollBar>
+				<div className="c-add-fragment-modal__table-wrapper">
 					<Table
 						columns={tableColumns}
 						data={bookmarks || undefined}
@@ -280,7 +250,6 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						onColumnClick={handleColumnClick as any}
 						sortColumn={sortColumn}
 						sortOrder={sortOrder}
-						useCards={isMobileWidth()}
 						showRadioButtons
 						selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
 						onSelectionChanged={handleSelectedBookmarkItemChanged}
@@ -288,9 +257,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 							setSelectedBookmarkId(bookmark.contentLinkId);
 						}}
 					/>
-				</ScrollBar>
-
-				<Container mode="horizontal">{renderFooterActions()}</Container>
+				</div>
 			</>
 		);
 	};
@@ -313,6 +280,21 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 					render={renderModalBody}
 				/>
 			</ModalBody>
+
+			<ModalFooterRight>
+				<ButtonToolbar>
+					<Button
+						type="secondary"
+						label={t('assignment/modals/add-bookmark-fragment-modal___annuleer')}
+						onClick={onClose}
+					/>
+					<Button
+						type="primary"
+						label={t('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
+						onClick={handleImportToAssignment}
+					/>
+				</ButtonToolbar>
+			</ModalFooterRight>
 		</Modal>
 	);
 };
