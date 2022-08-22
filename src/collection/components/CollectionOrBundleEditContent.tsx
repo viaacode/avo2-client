@@ -289,6 +289,15 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 			{/*/!* TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED *!/*/}
 
 			<Container mode="horizontal" key={collectionFragments.map(getFragmentKey).join('_')}>
+				{isCollection && (
+					<FragmentAdd
+						index={-1}
+						collectionId={collection.id}
+						numberOfFragments={collectionFragments.length}
+						changeCollectionState={changeCollectionState}
+					/>
+				)}
+
 				{collectionFragments.map((fragment: Avo.Collection.Fragment, index: number) => (
 					<FragmentEdit
 						// If the parent is a collection then the fragment is an ITEM or TEXT
@@ -319,15 +328,6 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					/>
 				))}
 			</Container>
-
-			{!collectionFragments.length && isCollection && (
-				<FragmentAdd
-					index={0}
-					collectionId={collection.id}
-					numberOfFragments={collectionFragments.length}
-					changeCollectionState={changeCollectionState}
-				/>
-			)}
 		</Container>
 	);
 };
