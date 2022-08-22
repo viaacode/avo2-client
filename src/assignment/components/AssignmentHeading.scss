@@ -6,14 +6,38 @@
 		display: grid;
 		grid-template-columns: auto auto auto;
 		padding-left: $g-spacer-unit * 2;
+		z-index: 1; // Ensure rich text does not overlap
 
 		@media screen and (min-width: $g-bp2) {
 			gap: $g-spacer-unit;
 		}
 
-		button {
+		& > button,
+		& > .c-dropdown__trigger,
+		& > .c-assignment-heading__dropdown-wrapper {
 			transform: translateY(2px); // Account for visual centering
 
+			@media screen and (min-width: $g-bp2) {
+				transform: none;
+			}
+		}
+
+		.c-dropdown__content-open {
+			padding-top: 2px; // Account for visual centering
+
+			.c-button .c-button__content {
+				justify-content: left;
+			}
+
+			button {
+				&[disabled] {
+					opacity: 0.5;
+					cursor: not-allowed;
+				}
+			}
+		}
+
+		button {
 			.c-button__label {
 				max-width: 100%;
 				white-space: nowrap;
@@ -21,18 +45,8 @@
 				overflow: hidden;
 			}
 
-			&:first-child,
-			&:last-child {
-				display: none;
-
-				@media (min-width: $g-bp2) {
-					display: initial;
-				}
-			}
-
 			@media screen and (min-width: $g-bp2) {
 				min-width: 0;
-				transform: none;
 			}
 		}
 
@@ -86,10 +100,22 @@
 		}
 	}
 
+	&__bottom {
+		.c-tabs {
+			> .c-tab-item {
+				padding: 0.8rem;
+
+				@media screen and (min-width: $g-bp1) {
+					padding: 1.2rem;
+				}
+			}
+		}
+	}
+
 	&__title {
 		max-width: 100%;
 
-		.c-h2 {
+		.c-heading {
 			flex-grow: 1;
 			min-width: 0;
 		}
@@ -147,5 +173,19 @@
 	& + .o-container {
 		overflow: initial !important; // Allow sticky elements in this context
 		flex-grow: 1; // Shove the footer down and fill the container
+	}
+
+	.c-assignment-heading__hide-on-mobile {
+		display: none;
+
+		@media screen and (min-width: $g-bp2) {
+			display: block;
+		}
+	}
+
+	.c-assignment-heading__show-on-mobile {
+		@media screen and (min-width: $g-bp2) {
+			display: none;
+		}
 	}
 }

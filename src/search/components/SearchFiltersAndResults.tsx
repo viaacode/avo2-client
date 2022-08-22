@@ -510,13 +510,13 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					</Spacer>
 				</Container>
 			</Navbar>
-			<Container mode="horizontal">
+			<Container mode="horizontal" className="c-search-view__sort-and-count">
 				<Toolbar>
 					<ToolbarLeft>
 						<ToolbarItem>
-							<p className="c-body-1 u-text-muted">
+							<span className="u-text-muted">
 								{resultStart}-{resultEnd} van {resultsCount} resultaten
-							</p>
+							</span>
 						</ToolbarItem>
 					</ToolbarLeft>
 					<ToolbarRight>

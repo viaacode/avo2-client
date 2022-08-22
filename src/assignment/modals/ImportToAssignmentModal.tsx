@@ -8,14 +8,12 @@ import {
 	FormGroup,
 	Modal,
 	ModalBody,
+	ModalFooterLeft,
+	ModalFooterRight,
 	Spacer,
 	Table,
 	TextInput,
 	Toggle,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
@@ -142,46 +140,6 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 		setSelectedAssignmentId((selectedIds[0] as string) || undefined);
 	};
 
-	const renderFooterActions = () => {
-		return (
-			<Toolbar>
-				<ToolbarLeft>
-					{showToggle && (
-						<Flex>
-							<Toggle
-								checked={createWithDescription}
-								onChange={(checked) => setCreateWithDescription(checked)}
-							/>
-							<Spacer margin="left">
-								<FlexItem>
-									{t(
-										'assignment/modals/import-to-assignment-modal___importeer-fragmenten-met-beschrijving'
-									)}
-								</FlexItem>
-							</Spacer>
-						</Flex>
-					)}
-				</ToolbarLeft>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="secondary"
-								label={translations.secondaryButton}
-								onClick={onClose}
-							/>
-							<Button
-								type="primary"
-								label={translations.primaryButton}
-								onClick={handleImportToAssignment}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
-		);
-	};
-
 	// very similar to table in assignment overview, but with differences
 	const renderCell = (
 		assignment: Avo.Assignment.Assignment_v2,
@@ -270,34 +228,33 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					</Form>
 				</Container>
 
-				<Table
-					columns={tableColumns}
-					data={assignments || undefined}
-					emptyStateMessage={
-						filterString
-							? t(
-									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
-							  )
-							: t(
-									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
-							  )
-					}
-					renderCell={(rowData: Avo.Assignment.Assignment_v2, colKey: string) =>
-						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
-					}
-					rowKey="id"
-					variant="styled"
-					onColumnClick={handleColumnClick as any}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-					useCards={isMobileWidth()}
-					showRadioButtons
-					selectedItemIds={selectedAssignmentId ? [selectedAssignmentId] : []}
-					onSelectionChanged={handleSelectedAssignmentChanged}
-					onRowClick={(assignment) => setSelectedAssignmentId(assignment.id)}
-				/>
-
-				<Container mode="horizontal">{renderFooterActions()}</Container>
+				<div className="c-import-to-assignment-modal__table-wrapper">
+					<Table
+						columns={tableColumns}
+						data={assignments || undefined}
+						emptyStateMessage={
+							filterString
+								? t(
+										'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+								  )
+								: t(
+										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
+								  )
+						}
+						renderCell={(rowData: Avo.Assignment.Assignment_v2, colKey: string) =>
+							renderCell(rowData, colKey as AssignmentOverviewTableColumns)
+						}
+						rowKey="id"
+						variant="styled"
+						onColumnClick={handleColumnClick as any}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+						showRadioButtons
+						selectedItemIds={selectedAssignmentId ? [selectedAssignmentId] : []}
+						onSelectionChanged={handleSelectedAssignmentChanged}
+						onRowClick={(assignment) => setSelectedAssignmentId(assignment.id)}
+					/>
+				</div>
 			</>
 		);
 	};
@@ -318,6 +275,39 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					render={renderModalBody}
 				/>
 			</ModalBody>
+
+			{showToggle && (
+				<ModalFooterLeft>
+					<Flex>
+						<Toggle
+							checked={createWithDescription}
+							onChange={(checked) => setCreateWithDescription(checked)}
+						/>
+						<Spacer margin="left">
+							<FlexItem>
+								{t(
+									'assignment/modals/import-to-assignment-modal___importeer-fragmenten-met-beschrijving'
+								)}
+							</FlexItem>
+						</Spacer>
+					</Flex>
+				</ModalFooterLeft>
+			)}
+
+			<ModalFooterRight>
+				<ButtonToolbar>
+					<Button
+						type="secondary"
+						label={translations.secondaryButton}
+						onClick={onClose}
+					/>
+					<Button
+						type="primary"
+						label={translations.primaryButton}
+						onClick={handleImportToAssignment}
+					/>
+				</ButtonToolbar>
+			</ModalFooterRight>
 		</Modal>
 	);
 };

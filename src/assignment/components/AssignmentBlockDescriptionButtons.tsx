@@ -1,8 +1,10 @@
-import { Button, ButtonGroup } from '@viaa/avo2-components';
+import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 
 import i18n from '../../shared/translations/i18n';
 import { EditableBlockItem } from '../assignment.types';
+
+import './AssignmentBlockDescriptionButtons.scss';
 
 export enum AssignmentBlockItemDescriptionType {
 	original = 'original',
@@ -52,25 +54,74 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 	const BUTTON_LABELS = getButtonLabels();
 	const BUTTON_TOOLTIPS = getButtonTooltips();
 
+	const onBlockClicked = (editMode: AssignmentBlockItemDescriptionType) => {
+		let updated = { ...block, editMode };
+
+		if (editMode === AssignmentBlockItemDescriptionType.custom) {
+			updated = {
+				...updated,
+				ownTitle:
+					block.ownTitle ?? (block.custom_title || block.item_meta?.title || undefined),
+				ownDescription:
+					block.ownDescription ??
+					(block.custom_description || block.item_meta?.description || undefined),
+			};
+		} else if (editMode === AssignmentBlockItemDescriptionType.none) {
+			updated = {
+				...updated,
+				noTitle:
+					block.noTitle ?? (block.custom_title || block.item_meta?.title || undefined),
+			};
+		}
+
+		setBlock(updated);
+	};
+
+	const renderButtons = () => {
+		return (
+			<ButtonGroup className="c-assignment-block-description-buttons--default">
+				{types.map((type) => {
+					return (
+						<Button
+							type="secondary"
+							active={block.editMode === type}
+							label={BUTTON_LABELS[type]}
+							title={BUTTON_TOOLTIPS[type]}
+							onClick={() => onBlockClicked(type)}
+							key={'customise-item-form__button--' + block.id + '--' + type}
+						/>
+					);
+				})}
+			</ButtonGroup>
+		);
+	};
+
+	const renderDropdown = () => {
+		return (
+			<Select
+				className={'c-assignment-block-description-buttons--select'}
+				isSearchable={false}
+				value={block.editMode}
+				options={types.map((type) => {
+					return {
+						label: BUTTON_LABELS[type],
+						value: type,
+					};
+				})}
+				onChange={(value) =>
+					setBlock({
+						...block,
+						editMode: value as AssignmentBlockItemDescriptionType,
+					})
+				}
+			/>
+		);
+	};
+
 	return (
-		<ButtonGroup>
-			{types.map((type) => {
-				return (
-					<Button
-						type="secondary"
-						active={block.editMode === type}
-						label={BUTTON_LABELS[type]}
-						title={BUTTON_TOOLTIPS[type]}
-						onClick={() => {
-							setBlock({
-								...block,
-								editMode: type,
-							});
-						}}
-						key={'customise-item-form__button--' + block.id + '--' + type}
-					/>
-				);
-			})}
-		</ButtonGroup>
+		<>
+			{renderButtons()}
+			{renderDropdown()}
+		</>
 	);
 };

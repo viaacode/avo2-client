@@ -1,17 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-	Alert,
-	Button,
-	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
-	Flex,
-	Icon,
-	Spacer,
-	Spinner,
-	Tabs,
-} from '@viaa/avo2-components';
+import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, {
@@ -45,15 +33,13 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentFormState } from '../assignment.types';
+import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
-import DeleteAssignmentButton from '../components/DeleteAssignmentButton';
-import DuplicateAssignmentButton from '../components/DuplicateAssignmentButton';
-import { ShareAssignmentWithPupil } from '../components/ShareAssignmentWithPupil';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
@@ -115,7 +101,6 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
-	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
 		useState<boolean>(false);
 
@@ -358,91 +343,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		[t, control, setAssignment]
 	);
 
-	// These actions are just UI, they are disabled because they need to be implemented in a AssignmentActions component
-	const renderActions = useMemo(
-		() => (
-			<>
-				<Button
-					ariaLabel={t(
-						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-					)}
-					label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
-					title={t(
-						'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-					)}
-					type="secondary"
-					onClick={() => setIsViewAsPupilEnabled(true)}
-				/>
-				{original && (
-					<>
-						<div className="c-assignment-heading__dropdown-wrapper">
-							<Dropdown
-								isOpen={isOverflowDropdownOpen}
-								icon="more-horizontal"
-								buttonType="secondary"
-								placement="bottom-end"
-							>
-								<DropdownButton>
-									<Button
-										ariaLabel={t(
-											'assignment/views/assignment-detail___meer-opties'
-										)}
-										icon="more-horizontal"
-										title={t(
-											'assignment/views/assignment-detail___meer-opties'
-										)}
-										type="secondary"
-										onClick={() =>
-											setOverflowDropdownOpen(!isOverflowDropdownOpen)
-										}
-									/>
-								</DropdownButton>
-								<DropdownContent>
-									<DuplicateAssignmentButton
-										assignment={original}
-										onClick={(_e, duplicated) => {
-											duplicated &&
-												redirectToClientPage(
-													toAssignmentDetail(duplicated),
-													history
-												);
-
-											setOverflowDropdownOpen(false);
-										}}
-									/>
-									<DeleteAssignmentButton
-										assignment={original}
-										modal={{
-											confirmCallback: () => {
-												redirectToClientPage(backToOverview(), history);
-											},
-										}}
-									/>
-								</DropdownContent>
-							</Dropdown>
-						</div>
-
-						<div className="c-assignment-heading__dropdown-wrapper">
-							<ShareAssignmentWithPupil
-								assignment={original} // Needs to be saved before you can share
-								onContentLinkClicked={() =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud)
-								}
-								onDetailLinkClicked={() =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details)
-								}
-							/>
-						</div>
-					</>
-				)}
-			</>
-		),
-		[t, original, setTab, setIsViewAsPupilEnabled, isOverflowDropdownOpen]
-	);
-
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
-	const renderTabContent = useMemo(() => {
+	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
 				if (pastDeadline) {
@@ -532,7 +435,36 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderTitle}
-					actions={renderActions}
+					actions={
+						<AssignmentActions
+							duplicate={{
+								assignment: original || undefined,
+								onClick: (_e, duplicated) => {
+									duplicated &&
+										redirectToClientPage(
+											toAssignmentDetail(duplicated),
+											history
+										);
+								},
+							}}
+							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
+							share={{
+								assignment: original || undefined, // Needs to be saved before you can share
+								onContentLinkClicked: () =>
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud),
+								onDetailLinkClicked: () =>
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details),
+							}}
+							remove={{
+								assignment: original || undefined,
+								modal: {
+									confirmCallback: () => {
+										redirectToClientPage(backToOverview(), history);
+									},
+								},
+							}}
+						/>
+					}
 					tabs={renderTabs}
 				/>
 
@@ -547,7 +479,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						</Spacer>
 					)}
 
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+					<Spacer margin={['top-large', 'bottom-extra-large']}>
+						{renderedTabContent}
+					</Spacer>
 
 					{renderedModals}
 					{draggableListModal}
@@ -602,14 +536,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('assignment/views/assignment-create___maak-opdracht-pagina-titel')
+						t('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
 					)}
 				</title>
 
 				<meta
 					name="description"
 					content={t(
-						'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving'
+						'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
 					)}
 				/>
 			</MetaTags>

@@ -102,6 +102,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 
 	const handleDelete = async () => {
 		try {
+			setIsConfirmModalOpen(false);
 			if (!interactiveTourIdToDelete) {
 				ToastService.danger(
 					t(
