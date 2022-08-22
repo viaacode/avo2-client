@@ -54,7 +54,30 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 	const BUTTON_LABELS = getButtonLabels();
 	const BUTTON_TOOLTIPS = getButtonTooltips();
 
-	const renderButtons = () => (
+	const onBlockClicked = (editMode: AssignmentBlockItemDescriptionType) => {
+		let updated = { ...block, editMode };
+
+		if (editMode === AssignmentBlockItemDescriptionType.custom) {
+			updated = {
+				...updated,
+				ownTitle:
+					block.ownTitle ?? (block.custom_title || block.item_meta?.title || undefined),
+				ownDescription:
+					block.ownDescription ??
+					(block.custom_description || block.item_meta?.description || undefined),
+			};
+		} else if (editMode === AssignmentBlockItemDescriptionType.none) {
+			updated = {
+				...updated,
+				noTitle:
+					block.noTitle ?? (block.custom_title || block.item_meta?.title || undefined),
+			};
+		}
+
+		setBlock(updated);
+	};
+
+	return (
 		<ButtonGroup className="c-assignment-block-description-buttons--default">
 			{types.map((type) => {
 				return (
@@ -63,12 +86,7 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 						active={block.editMode === type}
 						label={BUTTON_LABELS[type]}
 						title={BUTTON_TOOLTIPS[type]}
-						onClick={() =>
-							setBlock({
-								...block,
-								editMode: type,
-							})
-						}
+						onClick={() => onBlockClicked(type)}
 						key={'customise-item-form__button--' + block.id + '--' + type}
 					/>
 				);
