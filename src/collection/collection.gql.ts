@@ -151,7 +151,11 @@ export const GET_BOOKMARKED_COLLECTIONS_BY_OWNER = gql`
 		$where: [app_collection_bookmarks_bool_exp] = []
 	) {
 		app_collection_bookmarks(
-			where: { profile_id: { _eq: $owner_profile_id }, _and: $where }
+			where: {
+				profile_id: { _eq: $owner_profile_id }
+				bookmarkedCollection: {}
+				_and: $where
+			}
 			offset: $offset
 			limit: $limit
 			order_by: $order
