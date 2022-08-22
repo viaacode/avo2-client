@@ -5,8 +5,9 @@ import {
 	AssignmentLabel_v2,
 	AssignmentSchema_v2,
 } from '@viaa/avo2-types/types/assignment';
+import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, compact, get, isNil, without } from 'lodash-es';
+import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -812,7 +813,7 @@ export class AssignmentService {
 								undefined;
 						}
 					} catch (error) {
-						console.warn(`Unable to fetch meta data for ${block.fragment_id}`);
+						console.warn(`Unable to fetch meta data for ${block.fragment_id}`, error);
 					}
 
 					return block;
@@ -943,33 +944,28 @@ export class AssignmentService {
 	 * Fetches the item for each block in the pupil collection of the response
 	 * If the item was replaced by another, the other item is used
 	 * The item_meta is filled in into the existing response (mutable)
-	 * @param assignmentResponse
+	 * @param response
 	 */
 	static async fillItemMetaForAssignmentResponse(
-		assignmentResponse: Avo.Assignment.Response_v2
-	): Promise<void> {
-		// Fetch item_meta for each pupil collection block
-		const items = compact(
-			await Promise.all(
-				(assignmentResponse.pupil_collection_blocks || [])?.map((block) => {
-					const fragmentId: string | undefined | null = (block as PupilCollectionFragment)
-						.fragment_id;
-					if (fragmentId) {
-						return ItemsService.fetchItemByExternalId(fragmentId);
-					}
-					return null;
-				})
-			)
-		);
+		response: Avo.Assignment.Response_v2
+	): Promise<BlockItemBaseSchema[]> {
+		return Promise.all(
+			(response.pupil_collection_blocks || []).map(async (block) => {
+				const cast = block as PupilCollectionFragment;
 
-		assignmentResponse.pupil_collection_blocks?.forEach((block) => {
-			block.item_meta =
-				items.find(
-					(item) =>
-						!!item &&
-						item.external_id === (block as PupilCollectionFragment).fragment_id
-				) || undefined;
-		});
+				try {
+					if (cast.fragment_id) {
+						block.item_meta =
+							(await ItemsService.fetchItemByExternalId(cast.fragment_id)) ||
+							undefined;
+					}
+				} catch (error) {
+					console.warn(`Unable to fetch meta data for ${cast.fragment_id}`, error);
+				}
+
+				return block;
+			})
+		);
 	}
 
 	/**
@@ -1031,7 +1027,8 @@ export class AssignmentService {
 				return undefined;
 			}
 
-			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+			assignmentResponse.pupil_collection_blocks =
+				await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
 
 			return assignmentResponse;
 		} catch (err) {
@@ -1068,7 +1065,8 @@ export class AssignmentService {
 				return undefined;
 			}
 
-			await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+			assignmentResponse.pupil_collection_blocks =
+				await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
 
 			return assignmentResponse;
 		} catch (err) {
@@ -1137,7 +1135,8 @@ export class AssignmentService {
 				);
 			}
 
-			await AssignmentService.fillItemMetaForAssignmentResponse(insertedAssignmentResponse);
+			insertedAssignmentResponse.pupil_collection_blocks =
+				await this.fillItemMetaForAssignmentResponse(insertedAssignmentResponse);
 
 			return insertedAssignmentResponse;
 		} catch (err) {

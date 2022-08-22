@@ -5,7 +5,6 @@ import { array, object, SchemaOf, string } from 'yup';
 import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderProperty } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
-import { isMobileWidth } from '../shared/helpers';
 import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -32,16 +31,16 @@ export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 
 type ColumnDataType = 'string' | 'number' | 'boolean' | 'dateTime' | undefined;
 
-const getLabelsColumn = (): AssignmentColumn[] => {
-	return isMobileWidth()
-		? []
-		: [
+const getLabelsColumn = (show: boolean): AssignmentColumn[] => {
+	return show
+		? [
 				{
 					id: 'labels' as AssignmentOverviewTableColumns,
 					label: i18n.t('assignment/assignment___label'),
 					sortable: false,
 				},
-		  ];
+		  ]
+		: [];
 };
 
 const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
@@ -112,7 +111,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 		dataType: TableColumnDataType.string,
 	},
 	...getClassColumn(canEditAssignments),
-	...getLabelsColumn(),
+	...getLabelsColumn(!canEditAssignments),
 	...getTeacherColumn(canEditAssignments),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
