@@ -151,7 +151,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					SearchFilter.subject
 				)}
 			{isFilterEnabled(SearchFilter.thema) &&
-				renderCheckboxDropdownModal(t('Thema'), SearchFilter.thema)}
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___thema'),
+					SearchFilter.thema
+				)}
 			{isFilterEnabled(SearchFilter.keyword) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___trefwoord'),

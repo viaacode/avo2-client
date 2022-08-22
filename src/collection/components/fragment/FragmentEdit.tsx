@@ -135,6 +135,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	const itemMetaData = (fragment as any).item_meta;
 
 	const onDeleteFragment = () => {
+		setDeleteModalOpen(false);
 		setOpenOptionsId(null);
 
 		changeCollectionState({

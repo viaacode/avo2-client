@@ -90,11 +90,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	// Methods
 	const handleDelete = async (): Promise<void> => {
 		try {
+			setIsConfirmModalOpen(false);
 			if (isNil(idToDelete)) {
 				throw new CustomError('The idToDelete is not defined', null, { idToDelete });
 			}
 			await MenuService.deleteMenuItem(idToDelete);
-			fetchMenuItems();
+			await fetchMenuItems();
 			ToastService.success(
 				t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd')
 			);

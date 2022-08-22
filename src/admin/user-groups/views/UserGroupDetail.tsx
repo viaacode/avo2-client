@@ -122,6 +122,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 
 	const handleDelete = async () => {
 		try {
+			setIsConfirmModalOpen(false);
 			if (!userGroup) {
 				ToastService.danger(
 					t(

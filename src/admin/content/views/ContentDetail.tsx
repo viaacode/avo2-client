@@ -166,6 +166,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	}, [contentPageInfo, setLoadingInfo]);
 
 	const handleDelete = () => {
+		setIsConfirmModalOpen(false);
 		triggerContentDelete({
 			variables: { id },
 			update: ApolloCacheManager.clearContentCache,

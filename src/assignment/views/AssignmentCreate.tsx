@@ -21,6 +21,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import Html from '../../shared/components/Html/Html';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { navigate } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
@@ -193,12 +194,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
-			divider: (item) => (
+			divider: (position: number) => (
 				<Button
 					icon="plus"
 					type="secondary"
 					onClick={() => {
-						addBlockModal.setEntity((item?.position || 0) + 1);
+						addBlockModal.setEntity(position);
 						addBlockModal.setOpen(true);
 					}}
 				/>
@@ -247,30 +248,17 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 						<EmptyStateMessage
 							title={t(
-								'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten'
+								'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-titel'
 							)}
 							message={
 								<>
 									<strong>
-										{t(
-											'assignment/views/assignment-create___hulp-nodig-bij-jet-maken-van-opdrachten'
-										)}
+										<Html
+											content={t(
+												'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-beschrijving'
+											)}
+										/>
 									</strong>
-									{t('assignment/views/assignment-create___bekijk-ons')}{' '}
-									<Button
-										type="inline-link"
-										label={t(
-											'assignment/views/assignment-create___leerfilmpje'
-										)}
-										onClick={() =>
-											ToastService.info(
-												t(
-													'assignment/views/assignment-create___nog-niet-beschikbaar'
-												)
-											)
-										}
-									/>{' '}
-									{t('assignment/views/assignment-create___en-wordt-een-pro')}
 								</>
 							}
 						/>

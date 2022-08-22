@@ -175,16 +175,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const toggleItemPublishedState = async () => {
 		try {
+			setIsConfirmPublishModalOpen(false);
 			if (!item) {
 				throw new CustomError('The item has not been loaded yet', null, { item });
 			}
 			if (!item.is_published) {
 				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
-				ToastService.success(t('admin/items/views/item-detail___het-item-is-gepubliceerd'));
 				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
-				fetchItemById();
+				await fetchItemById();
+				ToastService.success(t('admin/items/views/item-detail___het-item-is-gepubliceerd'));
 			} else {
 				setDepublishItemModalOpen(true);
 			}

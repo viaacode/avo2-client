@@ -1,7 +1,6 @@
+import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 
 import { NEW_FRAGMENT } from '../../collection.const';
 import { CollectionAction } from '../CollectionOrBundleEdit';
