@@ -4,12 +4,14 @@ import {
 	Column,
 	Container,
 	Dropdown,
+	Flex,
 	Grid,
 	Header,
 	HeaderButtons,
 	HeaderRow,
 	MenuContent,
 	Spacer,
+	Spinner,
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -31,13 +33,9 @@ import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import {
-	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	LoadingInfo,
-	ShareThroughEmailModal,
-} from '../../shared/components';
+import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -121,9 +119,11 @@ const CollectionDetail: FunctionComponent<
 		collection: Avo.Collection.Collection | null;
 		permissions: CollectionDetailPermissions;
 		showLoginPopup: boolean;
+		showNoAccessPopup: boolean;
 	} | null>(null);
 	const permissions = collectionInfo?.permissions;
 	const showLoginPopup = collectionInfo?.showLoginPopup;
+	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
 	const collection = collectionInfo?.collection;
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
@@ -242,12 +242,85 @@ const CollectionDetail: FunctionComponent<
 		}
 	}, [collection, isFirstRender, setIsFirstRender]);
 
+	const getPermissions = async (
+		collectionId: string,
+		user: Avo.User.User | undefined
+	): Promise<CollectionDetailPermissions> => {
+		if (!user) {
+			return {};
+		}
+		const rawPermissions = await Promise.all([
+			PermissionService.hasPermissions(
+				{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{
+						name: PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS,
+					},
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{
+						name: PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS,
+					},
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionName.EDIT_ANY_COLLECTIONS },
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionName.PUBLISH_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionName.PUBLISH_ANY_COLLECTIONS },
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+				],
+				user
+			),
+			PermissionService.hasPermissions([{ name: PermissionName.CREATE_COLLECTIONS }], user),
+			PermissionService.hasPermissions(
+				[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+				user
+			),
+			PermissionService.hasPermissions([{ name: PermissionName.CREATE_QUICK_LANE }], user),
+			PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION),
+			PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS),
+			PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES),
+		]);
+
+		return {
+			canViewCollections: rawPermissions[0],
+			canViewPublishedCollections: rawPermissions[1],
+			canViewUnpublishedCollections: rawPermissions[2],
+			canEditCollections: rawPermissions[3],
+			canPublishCollections: rawPermissions[4],
+			canDeleteCollections: rawPermissions[5],
+			canCreateCollections: rawPermissions[6],
+			canViewAnyPublishedItems: rawPermissions[7],
+			canCreateQuickLane: rawPermissions[8],
+			canAutoplayCollection: rawPermissions[9],
+			canCreateAssignments: rawPermissions[10],
+			canCreateBundles: rawPermissions[11],
+		};
+	};
+
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
-			if (!user) {
-				return;
-			}
-			let uuid;
+			let uuid: string | null;
 			if (isUuid(collectionId)) {
 				uuid = collectionId;
 			} else {
@@ -268,92 +341,19 @@ const CollectionDetail: FunctionComponent<
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
 				defaultGoToDetailLink(history)(uuid, 'collectie');
-
 				return;
 			}
 
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{
-							name: PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS,
-						},
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{
-							name: PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS,
-						},
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
-						{ name: PermissionName.EDIT_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.PUBLISH_OWN_COLLECTIONS, obj: collectionId },
-						{ name: PermissionName.PUBLISH_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
-						{ name: PermissionName.DELETE_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.CREATE_COLLECTIONS }],
-					user
-				),
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
-					user
-				),
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.CREATE_QUICK_LANE }],
-					user
-				),
-				PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION),
-				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS),
-				PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES),
-			]);
+			const permissionObj = await getPermissions(collectionId, user);
 
-			const permissionObj: CollectionDetailPermissions = {
-				canViewCollections: rawPermissions[0],
-				canViewPublishedCollections: rawPermissions[1],
-				canViewUnpublishedCollections: rawPermissions[2],
-				canEditCollections: rawPermissions[3],
-				canPublishCollections: rawPermissions[4],
-				canDeleteCollections: rawPermissions[5],
-				canCreateCollections: rawPermissions[6],
-				canViewAnyPublishedItems: rawPermissions[7],
-				canCreateQuickLane: rawPermissions[8],
-				canAutoplayCollection: rawPermissions[9],
-				canCreateAssignments: rawPermissions[10],
-				canCreateBundles: rawPermissions[11],
-			};
-
-			let showPopup = false;
+			let showNoAccessPopup = false;
 
 			if (
 				!permissionObj.canViewCollections &&
 				!permissionObj.canViewPublishedCollections &&
 				!permissionObj.canViewUnpublishedCollections
 			) {
-				showPopup = true;
+				showNoAccessPopup = true;
 			}
 
 			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
@@ -373,6 +373,19 @@ const CollectionDetail: FunctionComponent<
 				return;
 			}
 
+			if (!user) {
+				setCollectionInfo({
+					showNoAccessPopup: false,
+					showLoginPopup: true,
+					permissions: permissionObj,
+					collection: collectionObj || null,
+				});
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
+
 			if (
 				(!permissionObj.canViewCollections &&
 					collectionObj.is_public &&
@@ -381,11 +394,12 @@ const CollectionDetail: FunctionComponent<
 					!collectionObj.is_public &&
 					!permissionObj.canViewUnpublishedCollections)
 			) {
-				showPopup = true;
+				showNoAccessPopup = true;
 			}
 
 			setCollectionInfo({
-				showLoginPopup: showPopup,
+				showNoAccessPopup: showNoAccessPopup,
+				showLoginPopup: false,
 				permissions: permissionObj,
 				collection: collectionObj || null,
 			});
@@ -415,16 +429,22 @@ const CollectionDetail: FunctionComponent<
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
-		getRelatedCollections();
-	}, [getRelatedCollections]);
+		if (collectionInfo?.permissions?.canViewCollections) {
+			getRelatedCollections();
+		}
+	}, [collectionInfo, getRelatedCollections]);
 
 	useEffect(() => {
-		getPublishedBundles();
-	}, [getPublishedBundles]);
+		if (collectionInfo?.permissions?.canViewCollections) {
+			getPublishedBundles();
+		}
+	}, [collectionInfo, getPublishedBundles]);
 
 	useEffect(() => {
-		triggerEvents();
-	}, [triggerEvents]);
+		if (collectionInfo?.permissions?.canViewCollections) {
+			triggerEvents();
+		}
+	}, [collectionInfo, triggerEvents]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection && !isNil(showLoginPopup)) {
@@ -739,17 +759,6 @@ const CollectionDetail: FunctionComponent<
 
 		const isPublic = !!collection && collection.is_public;
 
-		const createAssignmentOptions = [
-			{
-				label: t('collection/views/collection-detail___nieuwe-opdracht'),
-				id: COLLECTION_ACTIONS.createAssignment,
-			},
-			{
-				label: t('collection/views/collection-detail___bestaande-opdracht'),
-				id: COLLECTION_ACTIONS.importToAssignment,
-			},
-		];
-
 		return (
 			<ButtonToolbar>
 				{permissions?.canAutoplayCollection && (
@@ -771,7 +780,23 @@ const CollectionDetail: FunctionComponent<
 						onClose={() => setIsCreateAssignmentDropdownOpen(false)}
 						onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
 					>
-						<MenuContent menuItems={createAssignmentOptions} onClick={executeAction} />
+						<MenuContent
+							menuItems={[
+								{
+									label: t(
+										'collection/views/collection-detail___nieuwe-opdracht'
+									),
+									id: COLLECTION_ACTIONS.createAssignment,
+								},
+								{
+									label: t(
+										'collection/views/collection-detail___bestaande-opdracht'
+									),
+									id: COLLECTION_ACTIONS.importToAssignment,
+								},
+							]}
+							onClick={executeAction}
+						/>
 					</Dropdown>
 				)}
 				{permissions?.canCreateQuickLane && !permissions?.canCreateAssignments && (
@@ -862,12 +887,15 @@ const CollectionDetail: FunctionComponent<
 				: []),
 			...(permissions?.canCreateAssignments
 				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.createAssignment,
-							t('collection/views/collection-detail___maak-opdracht'),
-							'clipboard'
-						),
-				  ]
+						{
+							label: t('Importeer naar nieuwe opdracht'),
+							id: COLLECTION_ACTIONS.createAssignment,
+						},
+						{
+							label: t('Importeer naar bestaande opdracht'),
+							id: COLLECTION_ACTIONS.importToAssignment,
+						},
+				  ].map((option) => createDropdownMenuItem(option.id, option.label, 'clipboard'))
 				: []),
 			...(permissions?.canPublishCollections
 				? [
@@ -952,14 +980,371 @@ const CollectionDetail: FunctionComponent<
 		);
 	};
 
-	const renderCollection = () => {
-		if (!collection) {
-			return null;
-		}
-		const { profile, collection_fragments, title } = collection as Avo.Collection.Collection;
+	const renderCollectionBody = () => {
+		const { collection_fragments } = collection as Avo.Collection.Collection;
 		const hasCopies = (get(collection, 'relations') || []).length > 0;
 		const hasParentBundles = !!publishedBundles.length;
 
+		return (
+			<>
+				<Container mode="vertical">
+					<Container mode="horizontal">
+						{!!collection && !!user && (
+							<FragmentList
+								collectionFragments={collection_fragments}
+								showDescription
+								linkToItems={permissions?.canViewAnyPublishedItems || false}
+								canPlay={
+									!isAddToBundleModalOpen &&
+									!isDeleteModalOpen &&
+									!isPublishModalOpen &&
+									!isShareThroughEmailModalOpen &&
+									!isAutoplayCollectionModalOpen
+								}
+								history={history}
+								location={location}
+								match={match}
+								user={user}
+								collection={collection}
+							/>
+						)}
+					</Container>
+				</Container>
+				<Container mode="vertical">
+					<Container mode="horizontal">
+						<h3 className="c-h3">
+							{t('collection/views/collection-detail___info-over-deze-collectie')}
+						</h3>
+						<Grid>
+							{!!collection &&
+								renderCommonMetadata(
+									collection,
+									enabledMetaData,
+									defaultRenderSearchLink
+								)}
+							{(hasCopies || hasParentBundles) && (
+								<Column size="3-6">
+									<Spacer margin="top-large">
+										<p className="u-text-bold">
+											<Trans i18nKey="collection/views/collection-detail___ordering">
+												Ordering
+											</Trans>
+										</p>
+										{hasCopies && (
+											<p className="c-body-1">
+												{`${t(
+													'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
+												)} `}
+												{(
+													get(collection, 'relations', []) as Relation[]
+												).map((relation: Relation) => (
+													<Link
+														key={`copy-of-link-${relation.object_meta.id}`}
+														to={buildLink(
+															APP_PATH.COLLECTION_DETAIL.route,
+															{ id: relation.object_meta.id }
+														)}
+													>
+														{relation.object_meta.title}
+													</Link>
+												))}
+											</p>
+										)}
+
+										{hasParentBundles && (
+											<p className="c-body-1">
+												{`${t(
+													'collection/views/collection-detail___deze-collectie-is-deel-van-een-map'
+												)} `}
+												{publishedBundles.map((bundle, index) => (
+													<>
+														{index !== 0 &&
+															!!publishedBundles.length &&
+															', '}
+														<Link
+															to={buildLink(
+																APP_PATH.BUNDLE_DETAIL.route,
+																{
+																	id: bundle.id,
+																}
+															)}
+														>
+															{bundle.title}
+														</Link>
+													</>
+												))}
+											</p>
+										)}
+									</Spacer>
+								</Column>
+							)}
+						</Grid>
+						{renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
+					</Container>
+				</Container>
+			</>
+		);
+	};
+
+	const renderModals = () => {
+		const { collection_fragments } = collection as Avo.Collection.Collection;
+
+		return (
+			<>
+				{!!collection && !!user && (
+					<PublishCollectionModal
+						collection={collection}
+						isOpen={isPublishModalOpen}
+						onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+							setIsPublishModalOpen(false);
+
+							if (newCollection) {
+								setCollectionInfo((oldCollectionInfo) => ({
+									showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
+									showNoAccessPopup:
+										oldCollectionInfo?.showNoAccessPopup || false,
+									permissions: oldCollectionInfo?.permissions || {},
+									collection: newCollection || null,
+								}));
+							}
+						}}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
+				)}
+				{collectionId !== undefined && !!user && (
+					<AddToBundleModal
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						collection={collection as Avo.Collection.Collection}
+						collectionId={collectionId as string}
+						isOpen={isAddToBundleModalOpen}
+						onClose={() => setIsAddToBundleModalOpen(false)}
+					/>
+				)}
+				<DeleteCollectionModal
+					collectionId={(collection as Avo.Collection.Collection).id}
+					isOpen={isDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
+					deleteObjectCallback={onDeleteCollection}
+				/>
+				<ShareThroughEmailModal
+					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}
+					type="collection"
+					emailLinkHref={window.location.href}
+					emailLinkTitle={(collection as Avo.Collection.Collection).title}
+					isOpen={isShareThroughEmailModalOpen}
+					onClose={() => setIsShareThroughEmailModalOpen(false)}
+				/>
+				{!!collection_fragments && collection && (
+					<AutoplayCollectionModal
+						isOpen={isAutoplayCollectionModalOpen}
+						onClose={() => setIsAutoplayCollectionModalOpen(false)}
+						collectionFragments={collection_fragments}
+					/>
+				)}
+				{!!collection && (
+					<QuickLaneModal
+						modalTitle={t('collection/views/collection-detail___delen-met-leerlingen')}
+						isOpen={isQuickLaneModalOpen}
+						content={collection}
+						content_label="COLLECTIE"
+						onClose={() => {
+							setIsQuickLaneModalOpen(false);
+						}}
+						onUpdate={(newCollection) => {
+							if ((collection as CollectionSchema).collection_fragments) {
+								setCollectionInfo((oldCollectionInfo) => ({
+									showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
+									showNoAccessPopup:
+										oldCollectionInfo?.showNoAccessPopup || false,
+									permissions: oldCollectionInfo?.permissions || {},
+									collection:
+										(newCollection as Avo.Collection.Collection) || null,
+								}));
+							}
+						}}
+					/>
+				)}
+				{!!collection && !!user && (
+					<>
+						<CreateAssignmentModal
+							isOpen={isCreateAssignmentModalOpen}
+							onClose={() => setIsCreateAssignmentModalOpen(false)}
+							createAssignmentCallback={onCreateAssignment}
+							translations={{
+								title: t(
+									'assignment/modals/create-assignment-modal___importeer-naar-nieuwe-opdracht'
+								),
+								primaryButton: t(
+									'assignment/modals/create-assignment-modal___importeer'
+								),
+								secondaryButton: t(
+									'assignment/modals/create-assignment-modal___annuleer'
+								),
+							}}
+						/>
+						<ImportToAssignmentModal
+							user={user}
+							isOpen={isImportToAssignmentModalOpen}
+							onClose={() => setIsImportToAssignmentModalOpen(false)}
+							importToAssignmentCallback={onImportToAssignment}
+							showToggle={true}
+							translations={{
+								title: t(
+									'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
+								),
+								primaryButton: t(
+									'assignment/modals/import-to-assignment-modal___importeer'
+								),
+								secondaryButton: t(
+									'assignment/modals/import-to-assignment-modal___annuleer'
+								),
+							}}
+						/>
+						<ConfirmImportToAssignmentWithResponsesModal
+							isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
+							onClose={() =>
+								setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
+							}
+							confirmCallback={onConfirmImportAssignment}
+							translations={{
+								title: t(
+									'assignment/modals/confirm-import-to-assignment-with-responses-modal___collectie-importeren'
+								),
+								warningCallout: t(
+									'assignment/modals/confirm-import-to-assignment-with-responses-modal___opgelet'
+								),
+								warningMessage: t(
+									'assignment/modals/confirm-import-to-assignment-with-responses-modal___leerlingen-hebben-deze-opdracht-reeds-bekeken'
+								),
+								warningBody: t(
+									'assignment/modals/confirm-import-to-assignment-with-responses-modal___ben-je-zeker-dat-je-de-collectie-wil-importeren-tot-deze-opdracht'
+								),
+								primaryButton: t(
+									'assignment/modals/create-assignment-modal___importeer'
+								),
+								secondaryButton: t(
+									'assignment/modals/create-assignment-modal___annuleer'
+								),
+							}}
+						/>
+					</>
+				)}
+			</>
+		);
+	};
+
+	const renderCollection = () => {
+		if (loadingInfo.state === 'loading') {
+			return (
+				<Flex center className="c-filter-table__loading">
+					<Spacer margin={['top-large', 'bottom-large']}>
+						<Spinner size="large" />
+					</Spacer>
+				</Flex>
+			);
+		}
+
+		if (showNoAccessPopup) {
+			return (
+				<ErrorView
+					icon="lock"
+					message={t(
+						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
+					)}
+					actionButtons={['home']}
+				/>
+			);
+		}
+
+		if (loadingInfo.state === 'error') {
+			return (
+				<ErrorView
+					icon="alert-triangle"
+					message={t(
+						'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt'
+					)}
+					actionButtons={['home']}
+				/>
+			);
+		}
+
+		const { profile, title } = collection as Avo.Collection.Collection;
+
+		return (
+			<div
+				className={classnames(
+					'm-collection-detail',
+					showLoginPopup ? 'hide-behind-login-popup' : ''
+				)}
+			>
+				<Header
+					title={title}
+					category="collection"
+					showMetaData
+					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+					views={String(bookmarkViewPlayCounts.viewCount || 0)}
+				>
+					{!showLoginPopup && (
+						<HeaderButtons>
+							{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+						</HeaderButtons>
+					)}
+
+					<HeaderRow>
+						<Spacer margin={'top-small'}>
+							{profile && renderAvatar(profile, { dark: true })}
+						</Spacer>
+					</HeaderRow>
+				</Header>
+
+				{/*/!* Start *!/*/}
+
+				{/*<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">*/}
+				{/*	<BlockList*/}
+				{/*		blocks={collection.collection_fragments}*/}
+				{/*		config={{*/}
+				{/*			TEXT: {*/}
+				{/*				title: {*/}
+				{/*					canClickHeading: permissions?.canViewAnyPublishedItems,*/}
+				{/*				},*/}
+				{/*			},*/}
+				{/*			ITEM: {*/}
+				{/*				meta: {*/}
+				{/*					canClickSeries: permissions?.canViewAnyPublishedItems,*/}
+				{/*				},*/}
+				{/*				flowPlayer: {*/}
+				{/*					canPlay:*/}
+				{/*						!isAddToBundleModalOpen &&*/}
+				{/*						!isDeleteModalOpen &&*/}
+				{/*						!isPublishModalOpen &&*/}
+				{/*						!isShareThroughEmailModalOpen &&*/}
+				{/*						!isAutoplayCollectionModalOpen,*/}
+				{/*				},*/}
+				{/*			},*/}
+				{/*		}}*/}
+				{/*	/>*/}
+				{/*</Container>*/}
+
+				{/*<br />*/}
+				{/*<hr />*/}
+				{/*<br />*/}
+
+				{/*/!* End *!/*/}
+
+				{renderCollectionBody()}
+				{!showLoginPopup && renderModals()}
+				{showLoginPopup && <RegisterOrLogin />}
+			</div>
+		);
+	};
+
+	const renderPageContent = () => {
 		return (
 			<>
 				<MetaTags>
@@ -990,333 +1375,12 @@ const CollectionDetail: FunctionComponent<
 						...(get(collection, 'lom_context') || []),
 					]}
 				/>
-				<div
-					className={classnames(
-						'm-collection-detail',
-						showLoginPopup ? 'hide-behind-login-popup' : ''
-					)}
-				>
-					<Header
-						title={title}
-						category="collection"
-						showMetaData
-						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-						views={String(bookmarkViewPlayCounts.viewCount || 0)}
-					>
-						{!showLoginPopup && (
-							<HeaderButtons>
-								{isMobileWidth()
-									? renderHeaderButtonsMobile()
-									: renderHeaderButtons()}
-							</HeaderButtons>
-						)}
-
-						<HeaderRow>
-							<Spacer margin={'top-small'}>
-								{profile && renderAvatar(profile, { dark: true })}
-							</Spacer>
-						</HeaderRow>
-					</Header>
-
-					{/*/!* Start *!/*/}
-
-					{/*<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">*/}
-					{/*	<BlockList*/}
-					{/*		blocks={collection.collection_fragments}*/}
-					{/*		config={{*/}
-					{/*			TEXT: {*/}
-					{/*				title: {*/}
-					{/*					canClickHeading: permissions?.canViewAnyPublishedItems,*/}
-					{/*				},*/}
-					{/*			},*/}
-					{/*			ITEM: {*/}
-					{/*				meta: {*/}
-					{/*					canClickSeries: permissions?.canViewAnyPublishedItems,*/}
-					{/*				},*/}
-					{/*				flowPlayer: {*/}
-					{/*					canPlay:*/}
-					{/*						!isAddToBundleModalOpen &&*/}
-					{/*						!isDeleteModalOpen &&*/}
-					{/*						!isPublishModalOpen &&*/}
-					{/*						!isShareThroughEmailModalOpen &&*/}
-					{/*						!isAutoplayCollectionModalOpen,*/}
-					{/*				},*/}
-					{/*			},*/}
-					{/*		}}*/}
-					{/*	/>*/}
-					{/*</Container>*/}
-
-					{/*<br />*/}
-					{/*<hr />*/}
-					{/*<br />*/}
-
-					{/*/!* End *!/*/}
-
-					<Container mode="vertical">
-						<Container mode="horizontal">
-							{!!collection && !!user && (
-								<FragmentList
-									collectionFragments={collection_fragments}
-									showDescription
-									linkToItems={permissions?.canViewAnyPublishedItems || false}
-									canPlay={
-										!isAddToBundleModalOpen &&
-										!isDeleteModalOpen &&
-										!isPublishModalOpen &&
-										!isShareThroughEmailModalOpen &&
-										!isAutoplayCollectionModalOpen
-									}
-									history={history}
-									location={location}
-									match={match}
-									user={user}
-									collection={collection}
-								/>
-							)}
-						</Container>
-					</Container>
-					<Container mode="vertical">
-						<Container mode="horizontal">
-							<h3 className="c-h3">
-								{t('collection/views/collection-detail___info-over-deze-collectie')}
-							</h3>
-							<Grid>
-								{!!collection &&
-									renderCommonMetadata(
-										collection,
-										enabledMetaData,
-										defaultRenderSearchLink
-									)}
-								{(hasCopies || hasParentBundles) && (
-									<Column size="3-6">
-										<Spacer margin="top-large">
-											<p className="u-text-bold">
-												<Trans i18nKey="collection/views/collection-detail___ordering">
-													Ordering
-												</Trans>
-											</p>
-											{hasCopies && (
-												<p className="c-body-1">
-													{`${t(
-														'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
-													)} `}
-													{(
-														get(
-															collection,
-															'relations',
-															[]
-														) as Relation[]
-													).map((relation: Relation) => (
-														<Link
-															key={`copy-of-link-${relation.object_meta.id}`}
-															to={buildLink(
-																APP_PATH.COLLECTION_DETAIL.route,
-																{ id: relation.object_meta.id }
-															)}
-														>
-															{relation.object_meta.title}
-														</Link>
-													))}
-												</p>
-											)}
-
-											{hasParentBundles && (
-												<p className="c-body-1">
-													{`${t(
-														'collection/views/collection-detail___deze-collectie-is-deel-van-een-map'
-													)} `}
-													{publishedBundles.map((bundle, index) => (
-														<>
-															{index !== 0 &&
-																!!publishedBundles.length &&
-																', '}
-															<Link
-																to={buildLink(
-																	APP_PATH.BUNDLE_DETAIL.route,
-																	{
-																		id: bundle.id,
-																	}
-																)}
-															>
-																{bundle.title}
-															</Link>
-														</>
-													))}
-												</p>
-											)}
-										</Spacer>
-									</Column>
-								)}
-							</Grid>
-							{renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
-						</Container>
-					</Container>
-				</div>
-				{!showLoginPopup && (
-					<>
-						{!!collection && !!user && (
-							<PublishCollectionModal
-								collection={collection}
-								isOpen={isPublishModalOpen}
-								onClose={(newCollection: Avo.Collection.Collection | undefined) => {
-									setIsPublishModalOpen(false);
-
-									if (newCollection) {
-										setCollectionInfo((oldCollectionInfo) => ({
-											showLoginPopup:
-												oldCollectionInfo?.showLoginPopup || false,
-											permissions: oldCollectionInfo?.permissions || {},
-											collection: newCollection || null,
-										}));
-									}
-								}}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
-							/>
-						)}
-						{collectionId !== undefined && !!user && (
-							<AddToBundleModal
-								history={history}
-								location={location}
-								match={match}
-								user={user}
-								collection={collection as Avo.Collection.Collection}
-								collectionId={collectionId as string}
-								isOpen={isAddToBundleModalOpen}
-								onClose={() => setIsAddToBundleModalOpen(false)}
-							/>
-						)}
-						<DeleteCollectionModal
-							collectionId={(collection as Avo.Collection.Collection).id}
-							isOpen={isDeleteModalOpen}
-							onClose={() => setIsDeleteModalOpen(false)}
-							deleteObjectCallback={onDeleteCollection}
-						/>
-						<ShareThroughEmailModal
-							modalTitle={t(
-								'collection/views/collection-detail___deel-deze-collectie'
-							)}
-							type="collection"
-							emailLinkHref={window.location.href}
-							emailLinkTitle={(collection as Avo.Collection.Collection).title}
-							isOpen={isShareThroughEmailModalOpen}
-							onClose={() => setIsShareThroughEmailModalOpen(false)}
-						/>
-						{!!collection_fragments && collection && (
-							<AutoplayCollectionModal
-								isOpen={isAutoplayCollectionModalOpen}
-								onClose={() => setIsAutoplayCollectionModalOpen(false)}
-								collectionFragments={collection_fragments}
-							/>
-						)}
-						{!!collection && (
-							<QuickLaneModal
-								modalTitle={t(
-									'collection/views/collection-detail___delen-met-leerlingen'
-								)}
-								isOpen={isQuickLaneModalOpen}
-								content={collection}
-								content_label="COLLECTIE"
-								onClose={() => {
-									setIsQuickLaneModalOpen(false);
-								}}
-								onUpdate={(newCollection) => {
-									if ((collection as CollectionSchema).collection_fragments) {
-										setCollectionInfo((oldCollectionInfo) => ({
-											showLoginPopup:
-												oldCollectionInfo?.showLoginPopup || false,
-											permissions: oldCollectionInfo?.permissions || {},
-											collection:
-												(newCollection as Avo.Collection.Collection) ||
-												null,
-										}));
-									}
-								}}
-							/>
-						)}
-						{!!collection && !!user && (
-							<>
-								<CreateAssignmentModal
-									isOpen={isCreateAssignmentModalOpen}
-									onClose={() => setIsCreateAssignmentModalOpen(false)}
-									createAssignmentCallback={onCreateAssignment}
-									translations={{
-										title: t(
-											'assignment/modals/create-assignment-modal___importeer-naar-nieuwe-opdracht'
-										),
-										primaryButton: t(
-											'assignment/modals/create-assignment-modal___importeer'
-										),
-										secondaryButton: t(
-											'assignment/modals/create-assignment-modal___annuleer'
-										),
-									}}
-								/>
-								<ImportToAssignmentModal
-									user={user}
-									isOpen={isImportToAssignmentModalOpen}
-									onClose={() => setIsImportToAssignmentModalOpen(false)}
-									importToAssignmentCallback={onImportToAssignment}
-									showToggle={true}
-									translations={{
-										title: t(
-											'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
-										),
-										primaryButton: t(
-											'assignment/modals/import-to-assignment-modal___importeer'
-										),
-										secondaryButton: t(
-											'assignment/modals/import-to-assignment-modal___annuleer'
-										),
-									}}
-								/>
-								<ConfirmImportToAssignmentWithResponsesModal
-									isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
-									onClose={() =>
-										setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
-									}
-									confirmCallback={onConfirmImportAssignment}
-									translations={{
-										title: t(
-											'assignment/modals/confirm-import-to-assignment-with-responses-modal___collectie-importeren'
-										),
-										warningCallout: t(
-											'assignment/modals/confirm-import-to-assignment-with-responses-modal___opgelet'
-										),
-										warningMessage: t(
-											'assignment/modals/confirm-import-to-assignment-with-responses-modal___leerlingen-hebben-deze-opdracht-reeds-bekeken'
-										),
-										warningBody: t(
-											'assignment/modals/confirm-import-to-assignment-with-responses-modal___ben-je-zeker-dat-je-de-collectie-wil-importeren-tot-deze-opdracht'
-										),
-										primaryButton: t(
-											'assignment/modals/create-assignment-modal___importeer'
-										),
-										secondaryButton: t(
-											'assignment/modals/create-assignment-modal___annuleer'
-										),
-									}}
-								/>
-							</>
-						)}
-					</>
-				)}
-				{showLoginPopup && <RegisterOrLogin />}
+				{renderCollection()}
 			</>
 		);
 	};
 
-	return (
-		<>
-			<LoadingErrorLoadedComponent
-				render={renderCollection}
-				dataObject={permissions}
-				loadingInfo={loadingInfo}
-			/>
-		</>
-	);
+	return renderPageContent();
 };
 
 export default compose(
