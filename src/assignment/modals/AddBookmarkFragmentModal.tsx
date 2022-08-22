@@ -8,7 +8,6 @@ import {
 	FormGroup,
 	Modal,
 	ModalBody,
-	ModalFooterRight,
 	Spacer,
 	Table,
 	TableColumn,
