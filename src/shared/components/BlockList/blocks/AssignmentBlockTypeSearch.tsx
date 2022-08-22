@@ -12,9 +12,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
-import CollectionFragmentRichText from '../../../../collection/components/CollectionFragmentRichText';
-
 import './AssignmentBlockTypeSearch.scss';
+import { CollectionFragmentRichText } from '../../../../collection/components';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;

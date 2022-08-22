@@ -46,7 +46,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 					<CollectionFragmentTypeText
 						{...config?.TEXT}
 						title={{ ...config?.TEXT?.title, block }}
-						richText={{ ...config?.TEXT?.richText, block }}
+						block={block}
 					/>
 				);
 
@@ -59,7 +59,6 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 							...config?.ITEM?.title,
 							block,
 						}}
-						richText={{ ...config?.ITEM?.richText, block }}
 						flowPlayer={{
 							...config?.ITEM?.flowPlayer,
 							block,

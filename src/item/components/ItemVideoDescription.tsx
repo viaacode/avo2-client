@@ -17,10 +17,9 @@ import { compose } from 'redux';
 import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import Html from '../../shared/components/Html/Html';
+import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { stripHtml } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
-import { useVideoWithTimestamps } from '../../shared/hooks/useVideoWithTimestamps';
 
 import './ItemVideoDescription.scss';
 
@@ -62,7 +61,6 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
-	const { time, format } = useVideoWithTimestamps(descriptionRef, seekTime);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
@@ -96,7 +94,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 				item={itemMetaData}
 				canPlay={canPlay}
 				cuePoints={cuePoints}
-				seekTime={time}
+				seekTime={seekTime}
 				onPlay={onPlay}
 				external_id={itemMetaData.external_id}
 				duration={itemMetaData.duration}
@@ -139,12 +137,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 					</BlockHeading>
 				)}
 
-				<Html
-					className="c-content"
-					sanitizePreset="full"
-					type="div"
-					content={format(convertToHtml(description))}
-				/>
+				<TextWithTimestamps content={description || ''} />
 			</>
 		);
 	};
