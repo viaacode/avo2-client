@@ -214,9 +214,9 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				goToDetailLink={goToDetailLink}
 				goToSearchLink={goToSearchLink}
 				enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
-				showInteractiveTour={false}
 				renderActionButtons={renderItemDetailActionButton}
 				renderBookmarkCount={() => null}
+				renderInteractiveTour={() => null}
 			/>
 		);
 	};
