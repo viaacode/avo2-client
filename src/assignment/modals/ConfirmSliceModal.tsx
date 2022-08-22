@@ -68,6 +68,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
 				);
 			case AssignmentBlockType.ZOEK:
+			case AssignmentBlockType.BOUW:
 				return responses.length > 0 ? (
 					<>
 						<b>{t('assignment/modals/confirm-slice___opgelet')}: </b>

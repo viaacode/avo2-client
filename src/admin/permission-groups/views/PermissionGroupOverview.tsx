@@ -97,6 +97,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 
 	// Methods
 	const handleDelete = async () => {
+		setIsConfirmModalOpen(false);
 		await PermissionGroupService.deletePermissionGroup(permissionGroupIdToDelete);
 		await fetchPermissionGroups();
 		ToastService.success(
