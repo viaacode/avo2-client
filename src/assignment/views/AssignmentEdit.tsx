@@ -345,7 +345,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
-	const renderTabContent = useMemo(() => {
+	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
 				if (pastDeadline) {
@@ -459,6 +459,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								assignment: original || undefined,
 								modal: {
 									confirmCallback: () => {
+										reset();
 										redirectToClientPage(backToOverview(), history);
 									},
 								},
@@ -479,7 +480,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						</Spacer>
 					)}
 
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
+					<Spacer margin={['top-large', 'bottom-extra-large']}>
+						{renderedTabContent}
+					</Spacer>
 
 					{renderedModals}
 					{draggableListModal}

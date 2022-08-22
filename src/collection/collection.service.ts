@@ -1293,7 +1293,7 @@ export class CollectionService {
 			}
 
 			const bookmarks = response?.data?.app_collection_bookmarks || [];
-			return bookmarks.map((bookmark: any) => bookmark.bookmarkedCollection);
+			return compact(bookmarks.map((bookmark: any) => bookmark.bookmarkedCollection)); // bookmarkedCollection can sometimes be null apparently
 		} catch (err) {
 			throw new CustomError('Fetch bookmarked collections by owner failed', err, {
 				variables,

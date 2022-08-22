@@ -119,6 +119,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const onDeleteBookmark = async () => {
 		try {
+			setIsDeleteModalOpen(false);
 			if (!bookmarkToDelete) {
 				ToastService.danger(
 					t('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
