@@ -23,7 +23,7 @@ export interface ListSorterProps<T> {
 	actions?: ListSorterRenderer<T>;
 	items?: (T & ListSorterItem)[];
 	content?: ListSorterRenderer<T>;
-	divider?: ListSorterRenderer<T>;
+	divider?: (position: number) => ReactNode;
 	heading?: ListSorterRenderer<T>;
 	thumbnail?: ListSorterRenderer<T>;
 }
@@ -115,7 +115,7 @@ export const ListSorter: ListSorterType = ({
 				{divider && (
 					<div className="c-list-sorter__divider">
 						<hr />
-						{divider(item, i)}
+						{divider(item.position + 1)}
 						<hr />
 					</div>
 				)}
@@ -124,12 +124,17 @@ export const ListSorter: ListSorterType = ({
 
 	return (
 		<ul className="c-list-sorter">
+			{divider && (
+				<div className="c-list-sorter__divider">
+					<hr />
+					{divider(0)}
+					<hr />
+				</div>
+			)}
 			{sortBy(items, (block) => block.position).map((item, i) => {
 				const j = items.length === i + 1 ? undefined : i;
 				return renderItem(item, j);
 			})}
-
-			{(!items || items.length <= 0) && renderItem({ id: emptyId, position: -1 }, 0)}
 		</ul>
 	);
 };

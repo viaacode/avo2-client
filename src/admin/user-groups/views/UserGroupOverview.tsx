@@ -92,6 +92,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 
 	const handleDelete = async () => {
 		try {
+			setIsConfirmModalOpen(false);
 			if (!userGroupIdToDelete) {
 				ToastService.danger(
 					t(

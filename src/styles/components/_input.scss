@@ -58,9 +58,11 @@ textarea.c-input {
 textarea.c-input--h-small {
 	height: 12rem;
 }
+
 textarea.c-input--h-medium {
 	height: 16rem;
 }
+
 textarea.c-input--h-large {
 	height: 20rem;
 }
@@ -69,12 +71,15 @@ textarea.c-input--h-large {
 .c-input--w-xsmall {
 	width: 4rem;
 }
+
 .c-input--w-small {
 	width: 9.6rem;
 }
+
 .c-input--w-medium {
 	width: 16rem;
 }
+
 .c-input--w-large {
 	width: 44rem;
 }
@@ -102,6 +107,24 @@ textarea.c-input--h-large {
 
 	.o-svg-icon {
 		left: 0.8rem;
+		opacity: 0.5;
+		position: absolute;
+		top: 0.9rem;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+}
+
+.c-input-with-icon-right {
+	display: block;
+	position: relative;
+
+	.c-input {
+		padding-right: 3rem;
+	}
+
+	.o-svg-icon {
+		right: 0.8rem;
 		opacity: 0.5;
 		position: absolute;
 		top: 0.9rem;
