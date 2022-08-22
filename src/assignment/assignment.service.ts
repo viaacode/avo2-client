@@ -1101,7 +1101,8 @@ export class AssignmentService {
 			if (existingAssignmentResponse) {
 				if (assignment.assignment_type === AssignmentType.BOUW) {
 					existingAssignmentResponse.collection_title =
-						existingAssignmentResponse.collection_title || 'Nieuwe collectie';
+						existingAssignmentResponse.collection_title ||
+						i18n.t('assignment/assignment___nieuwe-collectie');
 				}
 				return existingAssignmentResponse;
 			}
@@ -1111,7 +1112,9 @@ export class AssignmentService {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
 				collection_title:
-					assignment.assignment_type === AssignmentType.BOUW ? 'Nieuwe collectie' : null,
+					assignment.assignment_type === AssignmentType.BOUW
+						? i18n.t('assignment/assignment___nieuwe-collectie')
+						: null,
 			};
 			const response = await dataService.mutate({
 				mutation: INSERT_ASSIGNMENT_RESPONSE,
