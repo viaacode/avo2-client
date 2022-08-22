@@ -48,6 +48,7 @@ import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
+	AssignmentType,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
@@ -292,6 +293,13 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderTabContent = () => {
 		switch (activeTab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
+				if (
+					assignment.assignment_type !== AssignmentType.ZOEK &&
+					assignment.assignment_type !== AssignmentType.BOUW
+				) {
+					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
+					return null;
+				}
 				return (
 					<AssignmentResponseSearchTab
 						assignment={assignment}
@@ -314,6 +322,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
+				if (assignment.assignment_type !== AssignmentType.BOUW) {
+					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
+					return null;
+				}
 				if (!assignmentResponse) {
 					return (
 						<Spacer margin="top-extra-large">
@@ -343,7 +355,6 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
-			default:
 				return (
 					<AssignmentResponseAssignmentTab
 						blocks={assignment?.blocks || []}
@@ -352,6 +363,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						buildSearchLink={buildAssignmentSearchLink(setFilterState)}
 					/>
 				);
+
+			default:
+				setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
+				return null;
 		}
 	};
 

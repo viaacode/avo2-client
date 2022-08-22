@@ -192,6 +192,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	};
 
 	const handleConfirmSelectBulkAction = () => {
+		setConfirmBulkActionModalOpen(false);
 		if (onSelectBulkAction && selectedBulkAction) {
 			onSelectBulkAction(selectedBulkAction);
 			setSelectedBulkAction(null);

@@ -249,6 +249,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	// Methods
 	const handleDelete = async () => {
 		try {
+			setIsConfirmModalOpen(false);
 			if (!contentToDelete) {
 				return;
 			}
