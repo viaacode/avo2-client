@@ -234,7 +234,7 @@ export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
 			id
 			collection_title
 			updated_at
-			pupil_collection_blocks_aggregate {
+			pupil_collection_blocks_aggregate(where: { type: { _eq: "ITEM" } }) {
 				aggregate {
 					count
 				}
