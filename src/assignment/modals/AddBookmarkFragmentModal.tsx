@@ -8,14 +8,12 @@ import {
 	FormGroup,
 	Modal,
 	ModalBody,
+	ModalFooterRight,
 	Spacer,
 	Table,
 	TableColumn,
 	TextInput,
 	Thumbnail,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
@@ -174,33 +172,6 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 		setSelectedBookmarkId((selectedIds[0] as string) || undefined);
 	};
 
-	const renderFooterActions = () => {
-		return (
-			<Toolbar>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="secondary"
-								label={t(
-									'assignment/modals/add-bookmark-fragment-modal___annuleer'
-								)}
-								onClick={onClose}
-							/>
-							<Button
-								type="primary"
-								label={t(
-									'assignment/modals/add-bookmark-fragment-modal___voeg-toe'
-								)}
-								onClick={handleImportToAssignment}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
-		);
-	};
-
 	const renderCell = (bookmark: BookmarkInfo, colKey: AddBookmarkFragmentColumn) => {
 		switch (colKey) {
 			case AddBookmarkFragmentColumn.contentTitle: {
@@ -312,7 +283,20 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 				/>
 			</ModalBody>
 
-			{renderFooterActions()}
+			<ModalFooterRight>
+				<ButtonToolbar>
+					<Button
+						type="secondary"
+						label={t('assignment/modals/add-bookmark-fragment-modal___annuleer')}
+						onClick={onClose}
+					/>
+					<Button
+						type="primary"
+						label={t('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
+						onClick={handleImportToAssignment}
+					/>
+				</ButtonToolbar>
+			</ModalFooterRight>
 		</Modal>
 	);
 };
