@@ -25,6 +25,7 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 					),
 					initialHtml: convertToHtml(block.custom_description),
 					controls: WYSIWYG_OPTIONS_AUTHOR,
+					enabledHeadings: ['h3', 'h4', 'normal'],
 					onChange: (value) =>
 						setBlock({
 							...block,
