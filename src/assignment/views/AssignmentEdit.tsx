@@ -459,6 +459,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								assignment: original || undefined,
 								modal: {
 									confirmCallback: () => {
+										reset();
 										redirectToClientPage(backToOverview(), history);
 									},
 								},
