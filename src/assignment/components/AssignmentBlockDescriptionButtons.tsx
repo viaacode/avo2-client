@@ -1,8 +1,10 @@
-import { Button, ButtonGroup } from '@viaa/avo2-components';
+import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 
 import i18n from '../../shared/translations/i18n';
 import { EditableBlockItem } from '../assignment.types';
+
+import './AssignmentBlockDescriptionButtons.scss';
 
 export enum AssignmentBlockItemDescriptionType {
 	original = 'original',
@@ -52,8 +54,8 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 	const BUTTON_LABELS = getButtonLabels();
 	const BUTTON_TOOLTIPS = getButtonTooltips();
 
-	return (
-		<ButtonGroup>
+	const renderButtons = () => (
+		<ButtonGroup className="c-assignment-block-description-buttons--default">
 			{types.map((type) => {
 				return (
 					<Button
@@ -61,16 +63,45 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 						active={block.editMode === type}
 						label={BUTTON_LABELS[type]}
 						title={BUTTON_TOOLTIPS[type]}
-						onClick={() => {
+						onClick={() =>
 							setBlock({
 								...block,
 								editMode: type,
-							});
-						}}
+							})
+						}
 						key={'customise-item-form__button--' + block.id + '--' + type}
 					/>
 				);
 			})}
 		</ButtonGroup>
+	);
+
+	const renderDropdown = () => {
+		return (
+			<Select
+				className={'c-assignment-block-description-buttons--select'}
+				isSearchable={false}
+				value={block.editMode}
+				options={types.map((type) => {
+					return {
+						label: BUTTON_LABELS[type],
+						value: type,
+					};
+				})}
+				onChange={(value) =>
+					setBlock({
+						...block,
+						editMode: value as AssignmentBlockItemDescriptionType,
+					})
+				}
+			/>
+		);
+	};
+
+	return (
+		<>
+			{renderButtons()}
+			{renderDropdown()}
+		</>
 	);
 };
