@@ -48,6 +48,7 @@ import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
+	AssignmentType,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
@@ -55,6 +56,7 @@ import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
+import { isItemWithMeta } from '../../helpers/is-item-with-meta';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
@@ -129,7 +131,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,
 		assignmentResponse?.pupil_collection_blocks?.filter(
-			(b) => b.type === CollectionBlockType.ITEM
+			(b) => b.type === CollectionBlockType.ITEM && isItemWithMeta(b)
 		)?.length || 0,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
@@ -291,6 +293,13 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderTabContent = () => {
 		switch (activeTab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
+				if (
+					assignment.assignment_type !== AssignmentType.ZOEK &&
+					assignment.assignment_type !== AssignmentType.BOUW
+				) {
+					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
+					return null;
+				}
 				return (
 					<AssignmentResponseSearchTab
 						assignment={assignment}
@@ -313,6 +322,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
+				if (assignment.assignment_type !== AssignmentType.BOUW) {
+					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
+					return null;
+				}
 				if (!assignmentResponse) {
 					return (
 						<Spacer margin="top-extra-large">
@@ -342,7 +355,6 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
-			default:
 				return (
 					<AssignmentResponseAssignmentTab
 						blocks={assignment?.blocks || []}
@@ -351,6 +363,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						buildSearchLink={buildAssignmentSearchLink(setFilterState)}
 					/>
 				);
+
+			default:
+				setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
+				return null;
 		}
 	};
 

@@ -8,6 +8,7 @@ import {
 	FormGroup,
 	Modal,
 	ModalBody,
+	ModalFooterRight,
 	Spacer,
 	Table,
 	TableColumn,
@@ -21,7 +22,6 @@ import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollBar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
@@ -46,19 +46,19 @@ enum AddBookmarkFragmentColumn {
 
 const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
 	{
-		id: 'contentTitle',
+		id: AddBookmarkFragmentColumn.contentTitle,
 		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___titel'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
-		id: 'contentDuration',
+		id: AddBookmarkFragmentColumn.contentDuration,
 		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___speelduur'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
-		id: 'createdAt',
+		id: AddBookmarkFragmentColumn.createdAt,
 		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___laatst-toegevoegd'),
 		sortable: true,
 		dataType: 'dateTime',
@@ -261,7 +261,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 					</Form>
 				</Container>
 
-				<ScrollBar>
+				<div className="c-add-fragment-modal__table-wrapper">
 					<Table
 						columns={tableColumns}
 						data={bookmarks || undefined}
@@ -282,7 +282,6 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						onColumnClick={handleColumnClick as any}
 						sortColumn={sortColumn}
 						sortOrder={sortOrder}
-						useCards={isMobileWidth()}
 						showRadioButtons
 						selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
 						onSelectionChanged={handleSelectedBookmarkItemChanged}
@@ -290,9 +289,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 							setSelectedBookmarkId(bookmark.contentLinkId);
 						}}
 					/>
-				</ScrollBar>
-
-				<Container mode="horizontal">{renderFooterActions()}</Container>
+				</div>
 			</>
 		);
 	};
@@ -315,6 +312,8 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 					render={renderModalBody}
 				/>
 			</ModalBody>
+
+			{renderFooterActions()}
 		</Modal>
 	);
 };
