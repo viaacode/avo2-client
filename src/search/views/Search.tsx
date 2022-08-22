@@ -166,7 +166,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 						message={t(
 							'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
 						)}
-						icon={'lock'}
+						icon="lock"
 						actionButtons={['home']}
 					/>
 				</PermissionGuardFail>
