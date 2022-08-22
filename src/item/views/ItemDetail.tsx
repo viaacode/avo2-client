@@ -59,7 +59,6 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import {
-	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareThroughEmailModal,
@@ -85,6 +84,7 @@ import {
 	defaultGoToDetailLink,
 	defaultRenderDetailLink,
 } from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderInteractiveTour } from '../../shared/helpers/default-render-interactive-tour';
 import {
 	defaultGoToSearchLink,
 	defaultRenderSearchLink,
@@ -123,6 +123,7 @@ interface ItemDetailProps {
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
 	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
+	renderInteractiveTour?: () => ReactNode;
 }
 
 export const ITEM_ACTIONS = {
@@ -144,6 +145,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	renderActionButtons,
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
+	renderInteractiveTour = defaultRenderInteractiveTour,
 }) => {
 	const [t] = useTranslation();
 
@@ -818,7 +820,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
 									})}
 							</MetaData>
-							<InteractiveTour showButton />
+							{renderInteractiveTour?.()}
 						</ButtonToolbar>
 					</HeaderButtons>
 					<HeaderAvatar>
