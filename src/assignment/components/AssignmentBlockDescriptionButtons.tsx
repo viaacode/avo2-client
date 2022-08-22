@@ -77,22 +77,24 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 		setBlock(updated);
 	};
 
-	return (
-		<ButtonGroup className="c-assignment-block-description-buttons--default">
-			{types.map((type) => {
-				return (
-					<Button
-						type="secondary"
-						active={block.editMode === type}
-						label={BUTTON_LABELS[type]}
-						title={BUTTON_TOOLTIPS[type]}
-						onClick={() => onBlockClicked(type)}
-						key={'customise-item-form__button--' + block.id + '--' + type}
-					/>
-				);
-			})}
-		</ButtonGroup>
-	);
+	const renderButtons = () => {
+		return (
+			<ButtonGroup className="c-assignment-block-description-buttons--default">
+				{types.map((type) => {
+					return (
+						<Button
+							type="secondary"
+							active={block.editMode === type}
+							label={BUTTON_LABELS[type]}
+							title={BUTTON_TOOLTIPS[type]}
+							onClick={() => onBlockClicked(type)}
+							key={'customise-item-form__button--' + block.id + '--' + type}
+						/>
+					);
+				})}
+			</ButtonGroup>
+		);
+	};
 
 	const renderDropdown = () => {
 		return (

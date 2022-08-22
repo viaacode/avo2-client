@@ -135,6 +135,7 @@ export const AssignmentBlockEditItem: FC<
 							label: t('assignment/views/assignment-edit___beschrijving-fragment'),
 							initialHtml: convertToHtml(description),
 							controls: WYSIWYG_OPTIONS_AUTHOR,
+							enabledHeadings: ['h3', 'h4', 'normal'],
 							disabled:
 								editableBlock.editMode ===
 								AssignmentBlockItemDescriptionType.original,
