@@ -1,4 +1,5 @@
 import { BlockHeading } from '@viaa/avo2-components';
+import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -17,8 +18,8 @@ const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canC
 	const heading = (
 		<BlockHeading type="h2" className="c-collection-fragment-title">
 			{block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
-				? block.custom_title
-				: block?.item_meta?.title}
+				? block.custom_title || block?.item_meta?.title
+				: (block as AssignmentBlock).original_title || block?.item_meta?.title}
 		</BlockHeading>
 	);
 

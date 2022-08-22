@@ -362,6 +362,12 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 		) {
 			affected_rows
 		}
+		update_app_pupil_collection_blocks(
+			where: { fragment_id: { _eq: $oldItemExternalId }, type: { _eq: "ITEM" } }
+			_set: { fragment_id: $newItemExternalId }
+		) {
+			affected_rows
+		}
 	}
 `;
 

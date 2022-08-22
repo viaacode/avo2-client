@@ -120,6 +120,9 @@ export const AssignmentBlockEditItem: FC<
 					</>
 				);
 			}}
+			buttonsLabel={t(
+				'assignment/components/blocks/assignment-block-edit-item___titel-en-beschrijving'
+			)}
 			buttons={
 				<AssignmentBlockDescriptionButtons
 					block={editableBlock}

@@ -30,4 +30,14 @@ $component: 'c-icon-bar';
 			}
 		}
 	}
+
+	@media screen and (max-width: ($g-bp2 - 1px)) {
+		&__content {
+			.c-video-player {
+				max-width: none;
+				width: calc(100% + 4.4rem + 2px);
+				transform: translateX(calc(-4.4rem - 2px));
+			}
+		}
+	}
 }
