@@ -158,7 +158,10 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 					</Grid>
 				)}
 				<DeleteObjectModal
-					confirmCallback={() => redirectToServerUnlinkAccount(location, idpType)}
+					confirmCallback={() => {
+						setConfirmModalOpen(false);
+						redirectToServerUnlinkAccount(location, idpType);
+					}}
 					isOpen={confirmModalOpen}
 					onClose={() => setConfirmModalOpen(false)}
 				/>

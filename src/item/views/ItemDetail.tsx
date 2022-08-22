@@ -36,7 +36,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -65,7 +65,7 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { LANGUAGES } from '../../shared/constants';
+import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	CustomError,
@@ -191,8 +191,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
 			if (
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) &&
-				!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)
+				!(
+					PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) ||
+					(PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT) &&
+						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
+				)
 			) {
 				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
@@ -481,9 +484,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">
-							<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
-						</th>
+						<th scope="row">{t('item/views/item___geschikt-voor')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,
@@ -516,15 +517,42 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">
-							<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
-						</th>
+						<th scope="row">{t('item/views/item___vakken')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,
 								item.external_id,
 								SearchFilter.subject,
 								item.lom_classification
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderThemas = (item: Avo.Item.Item) => {
+		if (!item.external_id || !item.lom_thema || !enabledMetaData.includes(SearchFilter.thema)) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">{t('item/views/item-detail___themas')}</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.thema,
+								item.lom_thema
 							)}
 						</td>
 					</tr>
@@ -547,9 +575,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">
-							<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
-						</th>
+						<th scope="row">{t('item/views/item___trefwoorden')}</th>
 						<td>
 							{stringsToTagList(
 								item.lom_keywords || [],
@@ -564,7 +590,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						</td>
 					</tr>
 					{/*<tr>*/}
-					{/*<th scope="row"><Trans i18nKey="item/views/item___klascement">Klascement</Trans></th>*/}
+					{/*<th scope="row">{t('item/views/item___klascement')}</th>*/}
 					{/*<td>*/}
 					{/*<a href={'http://www.klascement.be/link_item'}>*/}
 					{/*www.klascement.be/link_item*/}
@@ -588,21 +614,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				<Grid tag="tbody">
 					{!!item.issued && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">
-								<Trans i18nKey="item/views/item___publicatiedatum">
-									Publicatiedatum
-								</Trans>
-							</th>
+							<th scope="row">{t('item/views/item___publicatiedatum')}</th>
 							<td>{reorderDate(item.issued, '/')}</td>
 						</Column>
 					)}
 					{!!item.published_at && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">
-								<Trans i18nKey="item/views/item___toegevoegd-op">
-									Toegevoegd op
-								</Trans>
-							</th>
+							<th scope="row">{t('item/views/item___toegevoegd-op')}</th>
 							<td>{reorderDate(item.published_at, '/')}</td>
 						</Column>
 					)}
@@ -610,9 +628,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				<Grid tag="tbody">
 					{!!get(item, 'organisation.name') && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">
-								<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
-							</th>
+							<th scope="row">{t('item/views/item___aanbieder')}</th>
 							<td>
 								{renderSearchLink(item.organisation.name, {
 									filters: {
@@ -624,9 +640,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 					{!!item.duration && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">
-								<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
-							</th>
+							<th scope="row">{t('item/views/item___speelduur')}</th>
 							<td>{item.duration}</td>
 						</Column>
 					)}
@@ -634,9 +648,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				<Grid tag="tbody">
 					{!!item.series && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">
-								<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
-							</th>
+							<th scope="row">{t('item/views/item___reeks')}</th>
 							<td>
 								{renderSearchLink(item.series, {
 									filters: { serie: [item.series] },
@@ -646,9 +658,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 					{!!item.lom_languages && !!item.lom_languages.length && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">
-								<Trans i18nKey="item/views/item___taal">Taal</Trans>
-							</th>
+							<th scope="row">{t('item/views/item___taal')}</th>
 							<td>
 								{item.lom_languages
 									.map((languageCode) => LANGUAGES.nl[languageCode])
@@ -874,7 +884,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
 									<BlockHeading type="h3">
-										<Trans i18nKey="item/views/item___metadata">Metadata</Trans>
+										{t('item/views/item___metadata')}
 									</BlockHeading>
 									{renderGeneralMetaData(item)}
 									{(!!renderEducationLevels(item) || renderSubjects(item)) && (
@@ -882,6 +892,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 									)}
 									{renderEducationLevels(item)}
 									{renderSubjects(item)}
+									{renderThemas(item)}
 									{!!renderKeywords(item) && <div className="c-hr" />}
 									{renderKeywords(item)}
 								</Container>
@@ -889,9 +900,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
 									<BlockHeading type="h3">
-										<Trans i18nKey="item/views/item___bekijk-ook">
-											Bekijk ook
-										</Trans>
+										{t('item/views/item___bekijk-ook')}
 									</BlockHeading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>

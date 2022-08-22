@@ -194,12 +194,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
 		listSorter: {
 			content: (item) => item && renderBlockContent(item),
-			divider: (item) => (
+			divider: (position: number) => (
 				<Button
 					icon="plus"
 					type="secondary"
 					onClick={() => {
-						addBlockModal.setEntity((item?.position || 0) + 1);
+						addBlockModal.setEntity(position);
 						addBlockModal.setOpen(true);
 					}}
 				/>

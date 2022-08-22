@@ -1,7 +1,3 @@
-import { compact, get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Checkbox,
 	Column,
@@ -18,6 +14,9 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { compact, get } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { getProfileId } from '../../../../authentication/helpers/get-profile-id';
 import {
@@ -360,7 +359,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										value={mapLabelsToTags(contentPageInfo.labels || [])}
 										options={mapLabelsToTags(contentTypeLabels)}
 										placeholder={
-											!!contentPageInfo.content_type
+											contentPageInfo.content_type
 												? t(
 														'admin/content/components/content-edit-form/content-edit-form___kies-of-maak-een-label-optioneel'
 												  )

@@ -1,22 +1,21 @@
+import { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
-import CollectionFragmentRichText, {
-	CollectionFragmentRichTextProps,
-} from '../../../../collection/components/CollectionFragmentRichText';
+import { CollectionFragmentRichText } from '../../../../collection/components';
 import CollectionFragmentTitle, {
 	CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
 
 export interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
-	richText?: CollectionFragmentRichTextProps;
+	block?: Avo.Core.BlockItemBase;
 }
 
-const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, richText }) => {
+const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, block }) => {
 	return (
 		<>
 			{title && <CollectionFragmentTitle {...title} />}
-			{richText && <CollectionFragmentRichText {...richText} />}
+			{block && <CollectionFragmentRichText block={block} />}
 		</>
 	);
 };

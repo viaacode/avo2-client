@@ -1,7 +1,3 @@
-import { isEqual } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	WYSIWYG,
 	WYSIWYGMedia,
@@ -9,6 +5,9 @@ import {
 	WYSIWYGUploadInfo,
 } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { isEqual } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { WYSIWYG_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
@@ -20,6 +19,7 @@ import './WYSIWYGWrapper.scss';
 export type WYSIWYGWrapperProps = WYSIWYGProps & {
 	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload
 	ownerId?: string;
+	className?: string;
 };
 
 /**

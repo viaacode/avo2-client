@@ -10,7 +10,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { isNil } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +32,7 @@ import {
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../../assignment.types';
+import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
 import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
 import {
@@ -43,7 +43,6 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
-import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -138,7 +137,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		{
 			listSorter: {
 				content: (item) => item && renderBlockContent(item),
-				divider: (item) => (
+				divider: (position: number) => (
 					<Button
 						icon="plus"
 						type="secondary"
@@ -149,8 +148,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									assignment_response_id: assignmentResponse.id,
 									type: CollectionBlockType.TEXT,
-									position:
-										!item || isNil(item?.position) ? 0 : item.position + 1,
+									position,
 								} as PupilCollectionFragment
 							);
 
