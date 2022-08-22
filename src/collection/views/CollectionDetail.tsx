@@ -888,11 +888,15 @@ const CollectionDetail: FunctionComponent<
 			...(permissions?.canCreateAssignments
 				? [
 						{
-							label: t('Importeer naar nieuwe opdracht'),
+							label: t(
+								'collection/views/collection-detail___importeer-naar-nieuwe-opdracht'
+							),
 							id: COLLECTION_ACTIONS.createAssignment,
 						},
 						{
-							label: t('Importeer naar bestaande opdracht'),
+							label: t(
+								'collection/views/collection-detail___importeer-naar-bestaande-opdracht'
+							),
 							id: COLLECTION_ACTIONS.importToAssignment,
 						},
 				  ].map((option) => createDropdownMenuItem(option.id, option.label, 'clipboard'))
