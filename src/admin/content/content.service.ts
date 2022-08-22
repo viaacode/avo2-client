@@ -524,44 +524,42 @@ export class ContentService {
 		profileId: string
 	): Promise<Partial<ContentPageInfo> | null> {
 		try {
-			const duplicatedContentPage = { ...contentPageInfo };
+			const duplicate = { ...contentPageInfo };
 
 			// update attributes specific to duplicate
-			duplicatedContentPage.thumbnail_path = null; // https://meemoo.atlassian.net/browse/AVO-1841
-			duplicatedContentPage.is_public = false;
-			duplicatedContentPage.published_at = null;
-			duplicatedContentPage.depublish_at = null;
-			duplicatedContentPage.publish_at = null;
-			duplicatedContentPage.path = null;
-			duplicatedContentPage.created_at = moment().toISOString();
-			duplicatedContentPage.updated_at = duplicatedContentPage.created_at;
-			duplicatedContentPage.user_profile_id = profileId;
+			duplicate.thumbnail_path = null; // https://meemoo.atlassian.net/browse/AVO-1841
+			duplicate.is_public = false;
+			duplicate.published_at = null;
+			duplicate.depublish_at = null;
+			duplicate.publish_at = null;
+			duplicate.path = null;
+			duplicate.created_at = moment().toISOString();
+			duplicate.updated_at = duplicate.created_at;
+			duplicate.user_profile_id = profileId;
 
 			try {
-				duplicatedContentPage.title = await this.getCopyTitleForContentPage(
+				duplicate.title = await this.getCopyTitleForContentPage(
 					copyPrefix,
 					copyRegex,
-					duplicatedContentPage.title
+					duplicate.title
 				);
 			} catch (err) {
 				const customError = new CustomError(
 					'Failed to retrieve title for duplicate content page',
 					err,
 					{
-						contentToInsert: duplicatedContentPage,
+						contentToInsert: duplicate,
 					}
 				);
 
 				console.error(customError);
 
 				// fallback to simple copy title
-				duplicatedContentPage.title = `${copyPrefix.replace(' %index%', '')}${
-					duplicatedContentPage.title
-				}`;
+				duplicate.title = `${copyPrefix.replace(' %index%', '')}${duplicate.title}`;
 			}
 
 			// insert duplicated collection
-			return await ContentService.insertContentPage(duplicatedContentPage);
+			return await ContentService.insertContentPage(duplicate);
 		} catch (err) {
 			throw new CustomError('Failed to duplicate collection', err, {
 				copyPrefix,
