@@ -18,9 +18,16 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import { cloneDeep, get, isNil, noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
@@ -52,6 +59,7 @@ import {
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
 
 import './AssignmentOverview.scss';
+import './AssignmentResponses.scss';
 
 interface AssignmentResponsesProps extends DefaultSecureRouteProps<{ id: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -205,7 +213,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			setLoadingInfo({
 				state: 'error',
 				message: t(
-					'assignment/views/assignment-overview___het-ophalen-van-je-opdrachten-is-mislukt'
+					'assignment/views/assignment-responses___het-ophalen-van-de-opdracht-is-mislukt'
 				),
 			});
 		}
@@ -241,7 +249,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			setLoadingInfo({
 				state: 'error',
 				message: t(
-					'assignment/views/assignment-overview___het-ophalen-van-je-opdrachten-is-mislukt'
+					'assignment/views/assignment-responses___het-ophalen-van-responses-is-mislukt'
 				),
 			});
 		}
@@ -334,6 +342,18 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		setMarkedAssignmentResponse(null);
 	};
 
+	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
+		isMobileWidth() ? (
+			<div className={classNames('m-assignment-overview__table__data-cell', className)}>
+				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
+				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
+			</div>
+		) : className ? (
+			<span className={className}>{value}</span>
+		) : (
+			value
+		);
+
 	const renderCell = (
 		assignmentResponse: Avo.Assignment.Response_v2,
 		colKey: AssignmentResponseTableColumns
@@ -342,7 +362,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 		switch (colKey) {
 			case 'pupil': {
-				const renderTitle = () => (
+				const renderAuthor = () => (
 					<Flex>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
@@ -353,37 +373,52 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				);
 
 				return isMobileWidth() ? (
-					<Spacer margin="bottom-small">{renderTitle()}</Spacer>
+					<Spacer margin="bottom-small">{renderAuthor()}</Spacer>
 				) : (
-					renderTitle()
+					renderAuthor()
 				);
 			}
 			case 'pupil_collection_block_count':
-				return get(
-					assignmentResponse,
-					'pupil_collection_blocks_aggregate.aggregate.count',
-					''
+				return renderDataCell(
+					get(
+						assignmentResponse,
+						'pupil_collection_blocks_aggregate.aggregate.count',
+						''
+					),
+					t('assignment/views/assignment-responses___fragmenten'),
+					'c-assignment-responses__block-count'
 				);
 
 			case 'updated_at':
-				return formatDate(cellData);
+				return renderDataCell(
+					formatDate(cellData),
+					undefined,
+					'c-assignment-responses__updated-at'
+				);
 
 			case 'collection_title':
-				return (cellData || []).length === 0 ? (
-					''
-				) : (
-					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-							assignmentId: match.params.id,
-							responseId: assignmentResponse.id,
-						})}
-					>
-						{cellData}
-					</Link>
+				return (
+					(cellData || '').length > 0 &&
+					renderDataCell(
+						<Link
+							to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
+								assignmentId: match.params.id,
+								responseId: assignmentResponse.id,
+							})}
+						>
+							{cellData}
+						</Link>,
+						t('assignment/views/assignment-responses___leerlingencollectie'),
+						'c-assignment-responses__collection-title'
+					)
 				);
 
 			case 'actions':
-				return renderDeleteAction(assignmentResponse);
+				return (
+					<div className="c-assignment-responses__actions">
+						{renderDeleteAction(assignmentResponse)}
+					</div>
+				);
 
 			default:
 				return cellData;
@@ -392,11 +427,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const renderHeader = () => {
 		return (
-			<Toolbar
-				className={classnames('m-assignment-overview__header-toolbar', {
-					'm-assignment-overview__header-toolbar-mobile': isMobileWidth(),
-				})}
-			>
+			<Toolbar className="m-assignment-overview__header-toolbar">
 				<ToolbarLeft>
 					<BlockHeading type="h2" className="u-m-0">
 						{assignmentResponsesCount}{' '}
@@ -459,6 +490,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			<>
 				{renderHeader()}
 				<Table
+					className="c-assignment-responses__table"
 					columns={tableColumns}
 					data={assignmentResponses}
 					emptyStateMessage={
@@ -508,28 +540,26 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const renderAssignmentResponsePage = () => {
 		return (
-			<div className="m-workspace">
+			<div className="c-assignment-responses">
 				<Container background="alt" mode="vertical" size="small">
-					<Container mode="horizontal">
-						<Toolbar>
-							<ToolbarLeft>
-								<ToolbarItem grow>
-									<Link
-										className="c-return"
-										to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-											tabId: ASSIGNMENTS_ID,
-										})}
-									>
-										<Icon name="chevron-left" size="small" type="arrows" />
-										<Trans i18nKey="Opdrachten">Opdrachten</Trans>
-									</Link>
-									<BlockHeading type="h2" className="u-m-0">
-										<Icon name="clipboard" size="large" />
-										{assignment?.title}
-									</BlockHeading>
-								</ToolbarItem>
-							</ToolbarLeft>
-						</Toolbar>
+					<Container mode="horizontal" className="c-assignment-responses-header">
+						<Link
+							className="c-return"
+							to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
+								tabId: ASSIGNMENTS_ID,
+							})}
+						>
+							<Icon name="chevron-left" size="small" type="arrows" />
+							<Trans i18nKey="Opdrachten">Opdrachten</Trans>
+						</Link>
+
+						<Flex center className="u-spacer-top-l">
+							<Icon name="clipboard" size="large" />
+
+							<BlockHeading className="u-spacer-left" type="h2">
+								{assignment?.title}
+							</BlockHeading>
+						</Flex>
 					</Container>
 				</Container>
 
