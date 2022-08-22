@@ -1,22 +1,30 @@
-.c-content-page-publish-modal__display-date {
-	margin-top: 3.2rem;
-
-	.o-form-group__label {
-		font-weight: 500;
+.p-content-page-publish-modal {
+	.c-datepicker {
+		width: 100%;
+		max-width: 35rem;
 	}
 
-	.u-spacer {
-		position: relative;
-		display: inline-block;
+	&__display-date {
+		margin-top: 3.2rem;
 
-		.c-tooltip-trigger {
-			position: absolute;
-			right: 10px;
-			top: 6px;
+		.o-form-group__label {
+			font-weight: 500;
 		}
 
-		.c-tooltip[data-popper-placement^='right'] > .c-tooltip__arrow {
-			left: -4px;
+		.u-spacer {
+			position: relative;
+			display: inline-block;
+			width: 25.6rem;
+
+			.c-tooltip-trigger {
+				position: absolute;
+				right: -25px;
+				top: 6px;
+			}
+
+			.c-tooltip[data-popper-placement^='right'] > .c-tooltip__arrow {
+				left: -4px;
+			}
 		}
 	}
 }
