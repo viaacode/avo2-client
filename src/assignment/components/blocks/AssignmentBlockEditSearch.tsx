@@ -13,9 +13,9 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 	const [t] = useTranslation();
 
 	return (
-		<div className="c-assignment-block-edit--search">
+		<>
 			<TitleDescriptionForm
-				className="u-padding-l"
+				className="u-padding-l c-assignment-block-edit__search__title-description"
 				id={block.id}
 				title={undefined}
 				description={{
@@ -49,6 +49,6 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 					});
 				}}
 			/>
-		</div>
+		</>
 	);
 };
