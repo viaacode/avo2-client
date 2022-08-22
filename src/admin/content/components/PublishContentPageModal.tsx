@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -20,6 +17,8 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Html from '../../../shared/components/Html/Html';
 import { ToastService } from '../../../shared/services';
@@ -103,6 +102,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 			size="large"
 			onClose={closeModal}
 			scrollable={false}
+			className="p-content-page-publish-modal"
 		>
 			<ModalBody>
 				<p>
@@ -176,7 +176,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 					label={t(
 						'admin/content/components/publish-content-page-modal___display-datum-optioneel'
 					)}
-					className="c-content-page-publish-modal__display-date"
+					className="p-content-page-publish-modal__display-date"
 				>
 					<Spacer>
 						<DatePicker

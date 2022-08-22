@@ -10,7 +10,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { endOfDay } from 'date-fns/esm';
 import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -181,8 +180,6 @@ const AssignmentDetailsFormEditable: FC<
 						value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
 						showTimeInput
 						minDate={new Date()}
-						minTime={new Date()}
-						maxTime={endOfDay(new Date())}
 						onChange={(value) => {
 							setValue('deadline_at', value?.toISOString(), {
 								shouldDirty: true,
@@ -193,6 +190,7 @@ const AssignmentDetailsFormEditable: FC<
 								deadline_at: value ? value.toISOString() : null,
 							}));
 						}}
+						defaultTime="23:59"
 					/>
 					<p className="c-form-help-text">
 						{t(
