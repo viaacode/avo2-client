@@ -25,13 +25,14 @@ import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
 import { insideIframe } from './shared/helpers/inside-iframe';
-import withUser from './shared/hocs/withUser';
+import withUser, { UserProps } from './shared/hocs/withUser';
 import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 
 import './styles/main.scss';
 import './App.scss';
+import { SpecialUserGroup } from './admin/user-groups/user-group.const';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -48,7 +49,7 @@ wrapHistory(history, {
 	},
 });
 
-const App: FunctionComponent<RouteComponentProps> = (props) => {
+const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -62,6 +63,16 @@ const App: FunctionComponent<RouteComponentProps> = (props) => {
 				console.error(new CustomError('Failed to wait for translations', err));
 			});
 	}, [setLoadingInfo]);
+
+	useEffect(() => {
+		if (props?.user?.profile?.userGroupIds?.[0] === SpecialUserGroup.Pupil) {
+			// Remove zendesk when a pupil is logged in
+			const zendeskWidget = document.querySelector('iframe#launcher');
+			if (zendeskWidget) {
+				zendeskWidget.remove();
+			}
+		}
+	}, [props.user]);
 
 	// Render
 	const renderApp = () => {
