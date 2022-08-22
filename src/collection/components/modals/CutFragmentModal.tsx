@@ -239,15 +239,17 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						onBlur={parseTimes}
 						onKeyUp={handleOnKeyUp}
 					/>
-					<div className="m-multi-range-wrapper">
-						<MultiRange
-							values={[fragmentStart, Math.min(fragmentEnd, fragmentDuration)]}
-							onChange={onUpdateMultiRangeValues}
-							min={0}
-							max={fragmentDuration}
-							step={1}
-						/>
-					</div>
+					{fragmentDuration > 0 && ( // Prevent uncaught RangeError: min (0) is equal/bigger than max (0)
+						<div className="m-multi-range-wrapper">
+							<MultiRange
+								values={[fragmentStart, Math.min(fragmentEnd, fragmentDuration)]}
+								onChange={onUpdateMultiRangeValues}
+								min={0}
+								max={fragmentDuration}
+								step={1}
+							/>
+						</div>
+					)}
 					<TextInput
 						value={fragmentEndString}
 						onChange={setFragmentEndString}

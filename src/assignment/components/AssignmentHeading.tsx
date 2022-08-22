@@ -71,7 +71,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 			)}
 
 			{(tabs || tour) && (
-				<Container mode="horizontal">
+				<Container mode="horizontal" className="c-assignment-heading__bottom">
 					<Toolbar className="c-toolbar--no-height">
 						{tabs && <ToolbarLeft>{tabs}</ToolbarLeft>}
 

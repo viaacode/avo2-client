@@ -78,6 +78,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 
 	const handleDelete = async () => {
 		try {
+			setIsConfirmModalOpen(false);
 			if (!interactiveTour || !interactiveTour.id) {
 				console.error(
 					new CustomError(
