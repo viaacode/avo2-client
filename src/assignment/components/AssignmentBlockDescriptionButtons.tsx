@@ -52,30 +52,27 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 	const BUTTON_LABELS = getButtonLabels();
 	const BUTTON_TOOLTIPS = getButtonTooltips();
 
-	const onBlockClicked = (type: AssignmentBlockItemDescriptionType) => {
-		if (type === AssignmentBlockItemDescriptionType.original) {
-			setBlock({
-				...block,
-				editMode: AssignmentBlockItemDescriptionType.original,
-			});
-		} else if (type === AssignmentBlockItemDescriptionType.custom) {
-			setBlock({
-				...block,
-				editMode: AssignmentBlockItemDescriptionType.custom,
+	const onBlockClicked = (editMode: AssignmentBlockItemDescriptionType) => {
+		let updated = { ...block, editMode };
+
+		if (editMode === AssignmentBlockItemDescriptionType.custom) {
+			updated = {
+				...updated,
 				ownTitle:
 					block.ownTitle ?? (block.custom_title || block.item_meta?.title || undefined),
 				ownDescription:
 					block.ownDescription ??
 					(block.custom_description || block.item_meta?.description || undefined),
-			});
-		} else if (type === AssignmentBlockItemDescriptionType.none) {
-			setBlock({
-				...block,
-				editMode: AssignmentBlockItemDescriptionType.none,
+			};
+		} else if (editMode === AssignmentBlockItemDescriptionType.none) {
+			updated = {
+				...updated,
 				noTitle:
 					block.noTitle ?? (block.custom_title || block.item_meta?.title || undefined),
-			});
+			};
 		}
+
+		setBlock(updated);
 	};
 
 	return (
