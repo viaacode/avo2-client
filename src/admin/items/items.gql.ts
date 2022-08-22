@@ -20,6 +20,7 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			is_published
 			issued
 			lom_classification
+			lom_thema
 			lom_context
 			lom_intendedenduserrole
 			lom_keywords
@@ -109,6 +110,7 @@ export const GET_ITEM_BY_UUID = gql`
 			is_published
 			issued
 			lom_classification
+			lom_thema
 			lom_context
 			lom_intendedenduserrole
 			lom_keywords
@@ -255,6 +257,7 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 			issued
 			issued_edtf
 			lom_classification
+			lom_thema
 			lom_context
 			lom_intendedenduserrole
 			lom_keywords
