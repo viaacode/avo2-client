@@ -1,0 +1,19 @@
+@import '../../styles/settings/variables';
+
+$component: 'c-assignment-block-description-buttons';
+
+.#{$component} {
+	&--default {
+		display: none;
+
+		@media screen and (min-width: $g-bp2) {
+			display: block;
+		}
+	}
+
+	&--select {
+		@media screen and (min-width: $g-bp2) {
+			display: none;
+		}
+	}
+}

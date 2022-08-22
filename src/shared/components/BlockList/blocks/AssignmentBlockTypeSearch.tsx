@@ -64,7 +64,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 							'shared/components/block-list/blocks/assignment-block-type-search___naar-mijn-collectie'
 						)}
 						onClick={() => {
-							onCollectionButtonClicked;
+							onCollectionButtonClicked();
 							scrollTo({ top: 0 });
 						}}
 					/>
