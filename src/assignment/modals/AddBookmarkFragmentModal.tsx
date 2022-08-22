@@ -14,6 +14,9 @@ import {
 	TableColumn,
 	TextInput,
 	Thumbnail,
+	Toolbar,
+	ToolbarItem,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
@@ -31,26 +34,31 @@ import { BookmarksViewsPlaysService, ToastService } from '../../shared/services'
 import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { AssignmentOverviewTableColumns } from '../assignment.types';
 
 import './AddItemsModals.scss';
 
 // Column definitions
+enum AddBookmarkFragmentColumn {
+	contentTitle = 'contentTitle',
+	contentDuration = 'contentDuration',
+	createdAt = 'createdAt',
+}
+
 const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
 	{
-		id: 'contentTitle',
+		id: AddBookmarkFragmentColumn.contentTitle,
 		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___titel'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
-		id: 'contentDuration',
+		id: AddBookmarkFragmentColumn.contentDuration,
 		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___speelduur'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
-		id: 'contentCreatedAt',
+		id: AddBookmarkFragmentColumn.createdAt,
 		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___laatst-toegevoegd'),
 		sortable: true,
 		dataType: 'dateTime',
@@ -58,7 +66,7 @@ const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
 ];
 
 const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-	[columnId in keyof BookmarkInfo]: (order: Avo.Search.OrderDirection) => any;
+	[columnId in AddBookmarkFragmentColumn]: (order: Avo.Search.OrderDirection) => any;
 }> = {
 	contentTitle: (order: Avo.Search.OrderDirection) => ({
 		bookmarkedItem: {
@@ -70,10 +78,8 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			duration: order,
 		},
 	}),
-	contentCreatedAt: (order: Avo.Search.OrderDirection) => ({
-		bookmarkedItem: {
-			created_at: order,
-		},
+	createdAt: (order: Avo.Search.OrderDirection) => ({
+		created_at: order,
 	}),
 };
 
@@ -97,8 +103,9 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [selectedBookmarkId, setSelectedBookmarkId] = useState<string>();
-	const [sortColumn, sortOrder, handleColumnClick] =
-		useTableSort<AssignmentOverviewTableColumns>('updated_at');
+	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<AddBookmarkFragmentColumn>(
+		AddBookmarkFragmentColumn.createdAt
+	);
 	const [filterString, setFilterString] = useState<string>('');
 
 	const tableColumns = useMemo(() => GET_ADD_BOOKMARK_FRAGMENT_COLUMNS(), []);
@@ -168,11 +175,36 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 		setSelectedBookmarkId((selectedIds[0] as string) || undefined);
 	};
 
-	const renderCell = (bookmark: BookmarkInfo, colKey: keyof BookmarkInfo) => {
-		const cellData: any = (bookmark as any)[colKey];
+	const renderFooterActions = () => {
+		return (
+			<Toolbar>
+				<ToolbarRight>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								type="secondary"
+								label={t(
+									'assignment/modals/add-bookmark-fragment-modal___annuleer'
+								)}
+								onClick={onClose}
+							/>
+							<Button
+								type="primary"
+								label={t(
+									'assignment/modals/add-bookmark-fragment-modal___voeg-toe'
+								)}
+								onClick={handleImportToAssignment}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarRight>
+			</Toolbar>
+		);
+	};
 
+	const renderCell = (bookmark: BookmarkInfo, colKey: AddBookmarkFragmentColumn) => {
 		switch (colKey) {
-			case 'contentTitle': {
+			case AddBookmarkFragmentColumn.contentTitle: {
 				const renderTitle = () => (
 					<div className="c-content-header c-content-header--small">
 						<Flex orientation="horizontal">
@@ -202,13 +234,13 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 				);
 			}
 
-			case 'contentCreatedAt':
-				return formatDate(cellData);
+			case AddBookmarkFragmentColumn.createdAt:
+				return formatDate(bookmark.createdAt);
 
 			// duration does not require specific rendering
 
 			default:
-				return cellData;
+				return (bookmark as any)[colKey];
 		}
 	};
 
@@ -243,7 +275,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 								  )
 						}
 						renderCell={(rowData: BookmarkInfo, colKey: string) =>
-							renderCell(rowData, colKey as keyof BookmarkInfo)
+							renderCell(rowData, colKey as AddBookmarkFragmentColumn)
 						}
 						rowKey="contentLinkId"
 						variant="styled"
@@ -281,20 +313,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 				/>
 			</ModalBody>
 
-			<ModalFooterRight>
-				<ButtonToolbar>
-					<Button
-						type="secondary"
-						label={t('assignment/modals/add-bookmark-fragment-modal___annuleer')}
-						onClick={onClose}
-					/>
-					<Button
-						type="primary"
-						label={t('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
-						onClick={handleImportToAssignment}
-					/>
-				</ButtonToolbar>
-			</ModalFooterRight>
+			{renderFooterActions()}
 		</Modal>
 	);
 };
