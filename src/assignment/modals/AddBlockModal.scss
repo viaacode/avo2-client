@@ -44,6 +44,10 @@ $component: 'c-add-block';
 
 	&__content {
 		padding: $g-spacer-unit * 2;
+
+		.c-heading {
+			margin-top: 0;
+		}
 	}
 
 	&__description {

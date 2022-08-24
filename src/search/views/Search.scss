@@ -20,4 +20,61 @@
 			}
 		}
 	}
+
+	// Desktop-first to avoid overwrite hell
+	@media screen and (max-width: ($g-bp2 - 1px)) {
+		.c-search-view__sort-and-count {
+			.c-toolbar {
+				flex-flow: column-reverse;
+				align-items: flex-start;
+
+				&__left,
+				&__right {
+					width: 100%;
+					padding-top: $g-spacer-unit * 1.5;
+				}
+
+				&__right {
+					justify-content: normal;
+					padding-bottom: $g-spacer-unit * 1.5; // Reverse order so right needs bottom spacing
+					border-bottom: 1px solid transparent; // Provide space for psuedo
+					position: relative;
+
+					.o-form-group {
+						&-layout {
+							width: 100%;
+						}
+
+						&__label {
+							margin-right: $g-spacer-unit * 1.5;
+						}
+
+						&__controls {
+							flex-grow: 1;
+						}
+					}
+
+					&:after {
+						content: '';
+						display: block;
+						position: absolute;
+						inset: 100% 0 -1px 0;
+						border-bottom: 1px solid $color-gray-100;
+						transform: scaleX(2);
+					}
+				}
+			}
+		}
+
+		// Search results container
+		.c-search-view__sort-and-count + .o-container-vertical {
+			padding-top: $g-spacer-unit * 2;
+		}
+	}
+
+	.c-search-result__image {
+		.c-button.c-button--inline-link {
+			margin-top: initial;
+		}
+	}
 }

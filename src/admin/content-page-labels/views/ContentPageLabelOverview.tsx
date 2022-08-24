@@ -175,6 +175,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 
 	// Methods
 	const handleDelete = async () => {
+		setIsConfirmModalOpen(false);
 		await ContentPageLabelService.deleteContentPageLabel(contentPageLabelIdToDelete);
 		await fetchContentPageLabels();
 		ToastService.success(

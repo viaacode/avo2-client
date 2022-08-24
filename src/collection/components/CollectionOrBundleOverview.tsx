@@ -236,6 +236,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const onDeleteCollection = async () => {
 		try {
+			setIsDeleteModalOpen(false);
 			await triggerCollectionDelete({
 				variables: {
 					id: selected,

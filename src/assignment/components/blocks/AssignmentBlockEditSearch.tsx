@@ -7,13 +7,15 @@ import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { AssignmentBlockType, EditBlockProps } from '../../assignment.types';
 import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
 
+import './AssignmentBlockEditSearch.scss';
+
 export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock }) => {
 	const [t] = useTranslation();
 
 	return (
 		<>
 			<TitleDescriptionForm
-				className="u-padding-l"
+				className="u-padding-l c-assignment-block-edit__search__title-description"
 				id={block.id}
 				title={undefined}
 				description={{
@@ -23,6 +25,7 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 					),
 					initialHtml: convertToHtml(block.custom_description),
 					controls: WYSIWYG_OPTIONS_AUTHOR,
+					enabledHeadings: ['h3', 'h4', 'normal'],
 					onChange: (value) =>
 						setBlock({
 							...block,

@@ -586,6 +586,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						{renderTabContent()}
 						<DeleteObjectModal
 							confirmCallback={() => {
+								setIsDeleteModalOpen(false);
 								if (!isNil(configToDelete)) {
 									changeContentPageState({
 										type: ContentEditActionType.REMOVE_CONTENT_BLOCK_CONFIG,

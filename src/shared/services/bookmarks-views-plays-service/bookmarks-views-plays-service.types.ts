@@ -10,7 +10,7 @@ export type BookmarkStatusLookup = {
 };
 
 export interface BookmarkInfo {
-	createdAt: number;
+	createdAt: number; // Bookmark created at date
 	contentId: string;
 	contentLinkId: string;
 	contentType: EnglishContentType;

@@ -1,6 +1,5 @@
-import { first, get, isNil, without } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { first, get, isNil, without } from 'lodash-es';
 
 import {
 	PermissionName,
@@ -33,7 +32,7 @@ export function generateCollectionWhereObject(
 	includeDeleted: boolean,
 	checkPermissions: boolean,
 	isCollectionTableOrView: 'collectionTable' | 'view'
-) {
+): any {
 	const isCollectionTable: boolean = isCollectionTableOrView === 'collectionTable';
 	const andFilters: any[] = [];
 
@@ -109,6 +108,7 @@ export function generateCollectionWhereObject(
 			)
 		);
 	}
+
 	if (filters.education_levels && filters.education_levels.length) {
 		andFilters.push(
 			...getMultiOptionsFilters(
