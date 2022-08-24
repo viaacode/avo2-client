@@ -5,3 +5,7 @@
 		z-index: 61; // Just above the other modals
 	}
 }
+
+.hide-zendesk-widget iframe#launcher {
+	display: none !important;
+}
