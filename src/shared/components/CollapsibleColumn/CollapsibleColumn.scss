@@ -28,10 +28,6 @@ $component: 'c-collapsible-column';
 			position: absolute;
 			width: 100%;
 		}
-
-		.c-button {
-			transform: translateX(0 - ($g-spacer-unit * 2));
-		}
 	}
 
 	&--expanded {

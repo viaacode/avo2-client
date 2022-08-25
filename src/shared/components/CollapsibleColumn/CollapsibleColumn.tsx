@@ -39,7 +39,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, child
 			{(overflowing || expanded) && (
 				<div className="c-collapsible-column__toggle">
 					<Button
-						type="underlined-link"
+						type="inline-link"
 						icon={expanded ? 'close' : 'plus'} // TODO: add 'minus' icon
 						label={
 							expanded
