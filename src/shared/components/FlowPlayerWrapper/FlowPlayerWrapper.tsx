@@ -1,9 +1,8 @@
-import { get, isNil } from 'lodash-es';
+import { AspectRatioWrapper, Icon } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { AspectRatioWrapper, FlowPlayer, Icon } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import {
 	CustomError,
@@ -21,6 +20,7 @@ import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
 import './FlowPlayerWrapper.scss';
+import { FlowPlayer, FlowplayerSourceList } from './FlowPlayer';
 
 export interface CuePoints {
 	start: number | null;
@@ -29,7 +29,7 @@ export interface CuePoints {
 
 export type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
-	src?: string;
+	src?: string | FlowplayerSourceList;
 	poster?: string;
 	external_id?: string;
 	title?: string;
@@ -43,7 +43,7 @@ export type FlowPlayerWrapperProps = {
 	cuePoints?: CuePoints;
 	seekTime?: number;
 	autoplay?: boolean;
-	onPlay?: () => void;
+	onPlay?: (playingSrc: string) => void;
 	onEnded?: () => void;
 };
 
@@ -58,9 +58,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
-	const [triggeredForUrl, setTriggeredForUrl] = useState<string | null>(null);
+	const [triggeredForUrl, setTriggeredForUrl] = useState<Record<string, boolean>>({});
 	const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false);
-	const [src, setSrc] = useState<string | undefined>(props.src);
+	const [src, setSrc] = useState<string | FlowplayerSourceList | undefined>(props.src);
 
 	useEffect(() => {
 		// reset token when item changes
@@ -94,7 +94,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	}, [props.autoplay, item, initFlowPlayer]);
 
-	const handlePlay = () => {
+	const handlePlay = (playingSrc: string) => {
 		trackEvents(
 			{
 				object: props.external_id || '',
@@ -105,7 +105,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		);
 
 		// Only trigger once per video
-		if (item && item.uid && triggeredForUrl !== src) {
+		if (item && item.uid && !triggeredForUrl[playingSrc]) {
 			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
 				console.error(
 					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
@@ -113,10 +113,13 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			});
 
 			if (props.onPlay) {
-				props.onPlay();
+				props.onPlay(playingSrc);
 			}
 
-			setTriggeredForUrl(src || null);
+			setTriggeredForUrl({
+				...triggeredForUrl,
+				[playingSrc]: true,
+			});
 		}
 
 		SmartschoolAnalyticsService.triggerVideoPlayEvent(
@@ -144,21 +147,43 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
-	const getBrowserSafeUrl = (src: string): string => {
+	const getBrowserSafeUrl = (
+		src: string | FlowplayerSourceList
+	): string | FlowplayerSourceList => {
 		if (hasHlsSupport()) {
 			return src;
 		}
 
-		if (src.includes('flowplayer')) {
-			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
-		}
+		if (isString(src)) {
+			// Convert src url
+			if (src.includes('flowplayer')) {
+				return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
+			}
 
-		if (src.endsWith('.m3u8')) {
-			ToastService.danger(
-				t(
-					'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
-				)
-			);
+			if (src.endsWith('.m3u8')) {
+				ToastService.danger(
+					t(
+						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
+					)
+				);
+			}
+		} else {
+			// Convert each url in the entry in the playlist if possible
+			(src as FlowplayerSourceList).items.forEach((entry) => {
+				if (entry.src.includes('flowplayer')) {
+					entry.src = entry.src
+						.replace('/hls/', '/v-')
+						.replace('/playlist.m3u8', '_original.mp4');
+				}
+			});
+
+			if ((src as FlowplayerSourceList).items.some((entry) => entry.src.includes('.m3u8'))) {
+				ToastService.danger(
+					t(
+						'Bepaalde videos in de playlist kunnen niet worden afgespeeld. Probeer een andere browser.'
+					)
+				);
+			}
 		}
 
 		return src;
