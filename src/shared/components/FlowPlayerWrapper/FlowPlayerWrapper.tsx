@@ -8,6 +8,7 @@ import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
 	getEnv,
+	isMobileWidth,
 	reorderDate,
 	toSeconds,
 } from '../../helpers';
@@ -241,6 +242,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					autoplay={(!!item && !!src) || props.autoplay}
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
+					playlistScrollable={!isMobileWidth()}
 					onPlay={handlePlay}
 					onEnded={props.onEnded}
 					googleAnalyticsId={trackingId}

@@ -8,6 +8,7 @@ import { FlowplayerSourceList } from '../../../shared/components/FlowPlayerWrapp
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
+import { isMobileWidth } from '../../../shared/helpers';
 
 interface AutoplayCollectionModalProps {
 	isOpen: boolean;
@@ -126,17 +127,9 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 			size="extra-large"
 			onClose={onClose}
 			className="c-modal__autoplay-modal"
+			scrollable={isMobileWidth()}
 		>
-			<ModalBody>
-				<div className="c-modal__autoplay-grid">
-					<p className="c-modal__autoplay-queue-title">
-						{t(
-							'collection/components/modals/autoplay-collection-modal___volgende-in-de-afspeellijst'
-						)}
-					</p>
-					{isOpen && renderPlaylist()}
-				</div>
-			</ModalBody>
+			<ModalBody>{isOpen && renderPlaylist()}</ModalBody>
 		</Modal>
 	);
 };

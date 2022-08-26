@@ -14,7 +14,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
-import { get, isNil, isString, noop } from 'lodash-es';
+import { debounce, get, isNil, isString, noop } from 'lodash-es';
 import React, { createRef, ReactNode } from 'react';
 import { default as Scrollbar } from 'react-scrollbars-custom';
 
@@ -155,6 +155,7 @@ export interface FlowPlayerPropsSchema extends DefaultProps {
 	preload?: 'none' | 'auto' | 'metadata';
 	plugins?: FlowplayerPlugin[];
 	subtitles?: FlowplayerTrackSchema[];
+	playlistScrollable: boolean;
 	canPlay?: boolean; // Indicates if the video can play at this type. Eg: will be set to false if a modal is open in front of the video player
 	className?: string;
 	googleAnalyticsId?: string;
@@ -165,6 +166,7 @@ export interface FlowPlayerPropsSchema extends DefaultProps {
 interface FlowPlayerState {
 	flowPlayerInstance: Player | null;
 	startedPlaying: boolean;
+	videoHeight: number;
 }
 
 export const convertGAEventsArrayToObject = (
@@ -177,6 +179,8 @@ export const convertGAEventsArrayToObject = (
 	}, {});
 };
 
+const DEFAULT_VIDEO_HEIGHT = 500;
+
 export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlayerState> {
 	private videoContainerRef = createRef<HTMLDivElement>();
 
@@ -185,6 +189,7 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 		this.state = {
 			flowPlayerInstance: null,
 			startedPlaying: false,
+			videoHeight: DEFAULT_VIDEO_HEIGHT,
 		};
 	}
 
@@ -199,10 +204,6 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 			}
 		});
 		document.querySelectorAll('.fp-skip-prev,.fp-skip-next').forEach((elem) => elem.remove());
-	}
-
-	componentWillUnmount(): void {
-		this.destroyPlayer();
 	}
 
 	shouldComponentUpdate(nextProps: FlowPlayerPropsSchema): boolean {
@@ -268,10 +269,37 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 		return false;
 	}
 
+	private onResizeHandler = debounce(
+		() => {
+			if (this.videoContainerRef.current) {
+				const vidHeight = this.videoContainerRef.current.getBoundingClientRect().height;
+				this.setState({
+					...this.state,
+					videoHeight: vidHeight,
+				});
+			} else {
+				this.setState({
+					...this.state,
+					videoHeight: DEFAULT_VIDEO_HEIGHT,
+				});
+			}
+		},
+		300,
+		{ leading: false, trailing: true }
+	);
+
 	componentDidMount(): void {
 		if (this.props.src) {
 			this.reInitFlowPlayer(this.props);
 		}
+
+		window.addEventListener('resize', this.onResizeHandler);
+		this.onResizeHandler();
+	}
+
+	componentWillUnmount(): void {
+		this.destroyPlayer();
+		window.removeEventListener('resize', this.onResizeHandler);
 	}
 
 	private createTitleOverlay() {
@@ -524,6 +552,7 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 			}
 		);
 		flowplayerInstance.on('loadeddata', () => {
+			this.onResizeHandler();
 			this.updateCuepointPosition();
 		});
 		flowplayerInstance.on('timeupdate', () => {
@@ -590,6 +619,42 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 		}
 	}
 
+	private renderPlaylistItems(playlistItems: FlowplayerSourceList['items']) {
+		return (
+			<ul className="c-video-player__playlist">
+				{playlistItems.map((item, itemIndex) => {
+					return (
+						<li key={item.src + '--' + itemIndex}>
+							<MediaCard
+								title={item.title}
+								onClick={() => {
+									const player = this.state.flowPlayerInstance as any;
+									player?.playlist?.play(itemIndex);
+									player.emit(flowplayer.events.CUEPOINTS, {
+										cuepoints: (this.props.src as FlowplayerSourceListSchema)
+											.items[itemIndex].cuepoints,
+									});
+									this.updateCuepointPosition();
+								}}
+								orientation="vertical"
+								category="search" // Clearest color on white background
+							>
+								<MediaCardThumbnail>
+									<Thumbnail
+										category={item.category}
+										src={item.poster}
+										meta={item.provider}
+										label={item.category}
+									/>
+								</MediaCardThumbnail>
+							</MediaCard>
+						</li>
+					);
+				})}
+			</ul>
+		);
+	}
+
 	render(): ReactNode {
 		const playlistItems = (this.props.src as FlowplayerSourceListSchema)?.items;
 		return (
@@ -599,48 +664,23 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 					data-player-id={this.props.dataPlayerId}
 					ref={this.videoContainerRef}
 				/>
-				{playlistItems && (
+				{playlistItems && this.props.playlistScrollable && (
 					<Scrollbar
-						className="c-video-player__playlist"
+						className="c-video-player__playlist__scrollable"
+						noScrollX
 						style={{
 							width: '30%',
-							height: '500px',
+							height:
+								(this.videoContainerRef.current?.getBoundingClientRect().height ||
+									500) + 'px',
 						}}
 					>
-						<ul>
-							{playlistItems.map((item, itemIndex) => {
-								return (
-									<li key={item.src + '--' + itemIndex}>
-										<MediaCard
-											title={item.title}
-											onClick={() => {
-												const player = this.state.flowPlayerInstance as any;
-												player?.playlist?.play(itemIndex);
-												player.emit(flowplayer.events.CUEPOINTS, {
-													cuepoints: (
-														this.props.src as FlowplayerSourceListSchema
-													).items[itemIndex].cuepoints,
-												});
-												this.updateCuepointPosition();
-											}}
-											orientation="vertical"
-											category="search" // Clearest color on white background
-										>
-											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.category}
-													src={item.poster}
-													meta={item.provider}
-													label={item.category}
-												/>
-											</MediaCardThumbnail>
-										</MediaCard>
-									</li>
-								);
-							})}
-						</ul>
+						{this.renderPlaylistItems(playlistItems)}
 					</Scrollbar>
 				)}
+				{playlistItems &&
+					!this.props.playlistScrollable &&
+					this.renderPlaylistItems(playlistItems)}
 			</div>
 		);
 	}
