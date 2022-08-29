@@ -1,4 +1,4 @@
-import flowplayer, { Config, Player } from '@flowplayer/player';
+import flowplayer, { Config } from '@flowplayer/player';
 import '@flowplayer/player/flowplayer.css';
 import cuepointsPlugin from '@flowplayer/player/plugins/cuepoints';
 import googleAnalyticsPlugin from '@flowplayer/player/plugins/google-analytics';
@@ -14,8 +14,8 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
-import { debounce, get, isNil, isString, noop } from 'lodash-es';
-import React, { createRef, ReactNode } from 'react';
+import { get, isNil, isString, noop } from 'lodash-es';
+import React, { createRef, FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { default as Scrollbar } from 'react-scrollbars-custom';
 
 import './FlowPlayer.scss';
@@ -163,12 +163,6 @@ export interface FlowPlayerPropsSchema extends DefaultProps {
 	googleAnalyticsTitle?: string;
 }
 
-interface FlowPlayerState {
-	flowPlayerInstance: Player | null;
-	startedPlaying: boolean;
-	videoHeight: number;
-}
-
 export const convertGAEventsArrayToObject = (
 	googleAnalyticsEvents: GoogleAnalyticsEvent[]
 ): any => {
@@ -180,147 +174,111 @@ export const convertGAEventsArrayToObject = (
 };
 
 const DEFAULT_VIDEO_HEIGHT = 500;
+const DELAY_BETWEEN_PLAYLIST_VIDEOS = 70000;
 
-export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlayerState> {
-	private videoContainerRef = createRef<HTMLDivElement>();
+export const FlowPlayer: FunctionComponent<FlowPlayerPropsSchema> = ({
+	src,
+	poster,
+	title,
+	metadata,
+	seekTime,
+	token,
+	preload,
+	speed,
+	dataPlayerId,
+	plugins = [
+		'subtitles',
+		'cuepoints',
+		'hls',
+		'ga',
+		'keyboard',
+		'playlist',
+		// 'chromecast', 'airplay', // Disabled for now for video security: https://meemoo.atlassian.net/browse/AVO-1859
+	],
+	start,
+	end,
+	canPlay,
+	logo,
+	onPlay,
+	onPause,
+	onEnded,
+	onTimeUpdate,
+	className,
+	playlistScrollable,
+	subtitles,
+	googleAnalyticsId,
+	googleAnalyticsEvents,
+	googleAnalyticsTitle,
+}) => {
+	const videoContainerRef = createRef<HTMLDivElement>();
+	const [player, setPlayer] = useState<any | null>(null);
+	const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
+	const [startedPlaying, setStartedPlaying] = useState<boolean>(false);
+	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT);
 
-	constructor(props: FlowPlayerPropsSchema) {
-		super(props);
-		this.state = {
-			flowPlayerInstance: null,
-			startedPlaying: false,
-			videoHeight: DEFAULT_VIDEO_HEIGHT,
+	useEffect(() => {
+		if (src) {
+			reInitFlowPlayer();
+		}
+
+		// Listen to video size changes
+		if (videoContainerRef.current) {
+			const resizeObserver = new ResizeObserver(onResizeHandler);
+			resizeObserver.observe(videoContainerRef.current);
+			setResizeObserver(resizeObserver);
+			onResizeHandler();
+		}
+
+		return () => {
+			// const flowPlayerInstance = flowPlayerInstance;
+			if (player) {
+				player.destroy();
+				if (player.parentElement) {
+					player.parentElement.innerHTML = '';
+				}
+			}
+			document
+				.querySelectorAll('.fp-skip-prev,.fp-skip-next')
+				.forEach((elem) => elem.remove());
+
+			if (videoContainerRef.current) {
+				resizeObserver?.unobserve(videoContainerRef.current);
+			}
 		};
-	}
+	}, []);
 
-	private destroyPlayer() {
-		this.setState((state) => {
-			const flowPlayerInstance = state.flowPlayerInstance;
-			if (flowPlayerInstance) {
-				flowPlayerInstance.destroy();
-				if (flowPlayerInstance.parentElement) {
-					flowPlayerInstance.parentElement.innerHTML = '';
-				}
-			}
-		});
-		document.querySelectorAll('.fp-skip-prev,.fp-skip-next').forEach((elem) => elem.remove());
-	}
-
-	shouldComponentUpdate(nextProps: FlowPlayerPropsSchema): boolean {
-		if (!this.videoContainerRef.current) {
-			return true;
+	const onResizeHandler = () => {
+		const tempVideoHeight =
+			videoContainerRef.current?.getBoundingClientRect().height || DEFAULT_VIDEO_HEIGHT;
+		const playlistContainer: HTMLDivElement | null | undefined =
+			videoContainerRef.current?.parentNode?.querySelector(
+				'.c-video-player__playlist__scrollable'
+			);
+		setVideoHeight(tempVideoHeight);
+		if (playlistContainer) {
+			playlistContainer.style.height = tempVideoHeight + 'px';
 		}
+	};
 
-		const flowPlayerInstance = this.state.flowPlayerInstance;
-		if (flowPlayerInstance) {
-			if (nextProps.seekTime !== this.props.seekTime && nextProps.seekTime) {
-				flowPlayerInstance.currentTime = nextProps.seekTime;
-			}
-
-			if (nextProps.start !== this.props.start || nextProps.end !== this.props.end) {
-				if (this.videoContainerRef) {
-					flowPlayerInstance.emit(flowplayer.events.CUEPOINTS, {
-						cuepoints: [
-							{
-								start: nextProps.start,
-								end: nextProps.end,
-							},
-						],
-					});
-				}
-			}
-
-			// Pause video when modal opens in front
-			// Or pause video when modal is closed which contains this flowplayer
-			if (!nextProps.canPlay && this.props.canPlay) {
-				flowPlayerInstance.pause();
-			}
-		}
-
-		if (nextProps.poster !== this.props.poster && (this.props.poster || nextProps.poster)) {
-			// Video was changed before playing the video
-			return true;
-		}
-
-		// Get the first part of the first video src, to see if the video url changed
-		const nextUrl: string | undefined =
-			nextProps.src &&
-			(
-				(nextProps.src as FlowplayerSourceListSchema)?.items?.[0]?.src ||
-				(nextProps.src as string)
-			)?.split('?')[0];
-		const currentUrl: string | undefined =
-			this.props.src &&
-			(
-				(this.props.src as FlowplayerSourceListSchema)?.items?.[0]?.src ||
-				(this.props.src as string)
-			)?.split('?')[0];
-		if (nextUrl !== currentUrl) {
-			if (nextUrl) {
-				// User clicked the post to play the video
-				this.reInitFlowPlayer(nextProps);
-			} else {
-				// User clicked another video and the video src has been set to undefined
-				this.destroyPlayer();
-			}
-			return true;
-		}
-
-		return false;
-	}
-
-	private onResizeHandler = debounce(
-		() => {
-			if (this.videoContainerRef.current) {
-				const vidHeight = this.videoContainerRef.current.getBoundingClientRect().height;
-				this.setState({
-					...this.state,
-					videoHeight: vidHeight,
-				});
-			} else {
-				this.setState({
-					...this.state,
-					videoHeight: DEFAULT_VIDEO_HEIGHT,
-				});
-			}
-		},
-		300,
-		{ leading: false, trailing: true }
-	);
-
-	componentDidMount(): void {
-		if (this.props.src) {
-			this.reInitFlowPlayer(this.props);
-		}
-
-		window.addEventListener('resize', this.onResizeHandler);
-		this.onResizeHandler();
-	}
-
-	componentWillUnmount(): void {
-		this.destroyPlayer();
-		window.removeEventListener('resize', this.onResizeHandler);
-	}
-
-	private createTitleOverlay() {
+	const createTitleOverlay = () => {
 		const titleOverlay = document.createElement('div');
 		titleOverlay.classList.add('c-title-overlay');
 
 		const publishDiv = document.createElement('div');
 		publishDiv.classList.add('u-d-flex');
 
-		if (this.props.title) {
+		if (title) {
 			const titleHeader = document.createElement('h5');
 			titleHeader.classList.add('c-title-overlay__title');
-			titleHeader.innerText = this.props.title || '';
+			titleHeader.innerText = title || '';
 			titleOverlay.appendChild(titleHeader);
 		}
 
 		titleOverlay.classList.add('a-flowplayer__title');
 		titleOverlay.appendChild(publishDiv);
 
-		if (this.props.metadata && this.props.metadata.length) {
-			this.props.metadata.forEach((metadata: string) => {
+		if (metadata && metadata.length) {
+			metadata.forEach((metadata: string) => {
 				const substitleDiv = document.createElement('div');
 				substitleDiv.innerText = metadata;
 				substitleDiv.classList.add('c-title-overlay__meta');
@@ -329,33 +287,33 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 		}
 
 		return titleOverlay;
-	}
+	};
 
-	private createLogoOverlay() {
-		if (this.props.logo) {
+	const createLogoOverlay = () => {
+		if (logo) {
 			const logoOverlay = document.createElement('div');
 			const logoImg = document.createElement('img');
 
 			logoOverlay.classList.add('c-logo-overlay');
 			logoImg.classList.add('c-logo-overlay__img');
 
-			logoImg.src = this.props.logo;
+			logoImg.src = logo;
 
 			logoOverlay.appendChild(logoImg);
 
 			return logoOverlay;
 		}
-	}
+	};
 
-	private drawCustomElements(flowplayerInstance: Player) {
-		if (!flowplayerInstance.parentElement) {
+	const drawCustomElements = () => {
+		if (!player?.parentElement) {
 			return;
 		}
 
 		// Add overlay elements for title and logo
-		const flowPlayerUi = flowplayerInstance.parentElement.querySelector('.fp-ui');
-		const titleElem = this.createTitleOverlay();
-		const logoElem = this.createLogoOverlay();
+		const flowPlayerUi = player.parentElement.querySelector('.fp-ui');
+		const titleElem = createTitleOverlay();
+		const logoElem = createLogoOverlay();
 		if (flowPlayerUi) {
 			flowPlayerUi.prepend(titleElem);
 			if (logoElem) {
@@ -364,20 +322,19 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 		}
 
 		// Add cuepoint indicator div to the flowplayer timeline
-		const timeline = flowplayerInstance.parentElement.querySelector('.fp-timeline');
+		const timeline = player.parentElement.querySelector('.fp-timeline');
 		if (timeline) {
 			const cuePointIndicator = document.createElement('div');
 			cuePointIndicator.classList.add('fp-cuepoint');
 			timeline.appendChild(cuePointIndicator);
 		}
-	}
+	};
 
 	/**
 	 * Jump to first cuepoint if it exists
 	 * @private
 	 */
-	private jumpToFirstCuepoint() {
-		const player = this.state.flowPlayerInstance;
+	const jumpToFirstCuepoint = () => {
 		if (!player) {
 			return;
 		}
@@ -386,78 +343,66 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 		if (startTime) {
 			player.currentTime = startTime;
 		}
-	}
+	};
 
-	private reInitFlowPlayer(props: FlowPlayerPropsSchema) {
-		this.destroyPlayer();
+	const reInitFlowPlayer = () => {
+		player?.destroy();
 
-		if (!this.videoContainerRef.current) {
+		if (!videoContainerRef.current) {
 			return;
 		}
 
-		const plugins = props.plugins || [
-			'subtitles',
-			'cuepoints',
-			'hls',
-			'ga',
-			'keyboard',
-			'playlist',
-			// 'chromecast', 'airplay', // Disabled for now for video security: https://meemoo.atlassian.net/browse/AVO-1859
-		];
-
 		const flowPlayerConfig: FlowplayerConfigWithPlugins = {
 			// DATA
-			src: props.src,
-			token: props.token,
-			poster: (props.src as FlowplayerSourceListSchema)?.items?.[0]?.poster || props.poster,
+			src: src,
+			token: token,
+			poster: (src as FlowplayerSourceListSchema)?.items?.[0]?.poster || poster,
 
 			// CONFIGURATION
-			autoplay: props.autoplay ? flowplayer.autoplay.ON : flowplayer.autoplay.OFF,
+			// autoplay breaks the wait time between videos of a playlist => when autoplay and playlist, we'll start the first video from code manually
+			autoplay: isString(src) ? flowplayer.autoplay.ON : flowplayer.autoplay.OFF,
 			multiplay: false,
 			ui: (flowplayer as any).ui.LOGO_ON_RIGHT | (flowplayer as any).ui.USE_DRAG_HANDLE,
 			plugins,
-			preload: props.preload || (!props.poster ? 'metadata' : 'none'),
+			preload: preload || (!poster ? 'metadata' : 'none'),
 			lang: 'nl',
 
 			// KEYBOARD
 			...(plugins.includes('keyboard') ? { keyboard: { seek_step: '15' } } : {}),
 
 			// SPEED
-			speed: props.speed,
+			speed: speed,
 
 			// CUEPOINTS
 			// Only set cuepoints if an end point was passed in the props or one of the playlist items has cuepoints configured
 			...(plugins.includes('cuepoints') &&
-			(props.end ||
-				(this.props.src as FlowplayerSourceListSchema)?.items?.some(
-					(item) => !!item.cuepoints
-				))
+			(end || (src as FlowplayerSourceListSchema)?.items?.some((item) => !!item.cuepoints))
 				? {
 						cuepoints: [
 							{
-								startTime: props.start,
-								endTime: props.end,
+								startTime: start,
+								endTime: end,
 							},
 						],
 				  }
 				: {}),
 
 			// PLAYLIST
-			...(plugins.includes('playlist') && !isString(props.src)
+			...(plugins.includes('playlist') && !isString(src)
 				? {
 						playlist: {
 							advance: true,
 							skip_controls: true,
-							delay: 7,
+							delay: DELAY_BETWEEN_PLAYLIST_VIDEOS,
 						},
 				  }
 				: {}),
 
 			// SUBTITLES
-			...(plugins.includes('subtitles') && props.subtitles
+			...(plugins.includes('subtitles') && subtitles
 				? {
 						subtitles: {
-							tracks: props.subtitles,
+							tracks: subtitles,
 						},
 				  }
 				: {}),
@@ -472,49 +417,46 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 				: {}),
 
 			// GOOGLE ANALYTICS
-			...(plugins.includes('ga') && props.googleAnalyticsId
+			...(plugins.includes('ga') && googleAnalyticsId
 				? {
 						ga: {
-							ga_instances: [props.googleAnalyticsId],
-							event_actions: props.googleAnalyticsEvents
-								? convertGAEventsArrayToObject(props.googleAnalyticsEvents)
+							ga_instances: [googleAnalyticsId],
+							event_actions: googleAnalyticsEvents
+								? convertGAEventsArrayToObject(googleAnalyticsEvents)
 								: {},
-							media_title: props.googleAnalyticsTitle || props.title,
+							media_title: googleAnalyticsTitle || title,
 						},
 				  }
 				: {}),
 		};
 
-		const flowplayerInstance: Player = flowplayer(
-			this.videoContainerRef.current as HTMLElement,
-			flowPlayerConfig
-		);
+		const tempPlayer = flowplayer(videoContainerRef.current as HTMLElement, flowPlayerConfig);
 
-		if (!flowplayerInstance) {
+		if (!tempPlayer) {
 			console.error('Failed to init flow player');
 			return;
 		}
 
 		// Jump to the end of the video when a cuepoint end event is encountered
 		// The video end event can then be handled however the user sees fit
-		flowplayerInstance.on(flowplayer.events.CUEPOINT_END, () => {
-			if (flowplayerInstance) {
-				flowplayerInstance.currentTime = flowplayerInstance.duration;
+		tempPlayer.on(flowplayer.events.CUEPOINT_END, () => {
+			if (tempPlayer) {
+				tempPlayer.currentTime = tempPlayer.duration;
 			}
 		});
 
-		flowplayerInstance.on('error', (err: any) => {
+		tempPlayer.on('error', (err: any) => {
 			console.error(err);
 		});
 
 		if (plugins.includes('playlist')) {
-			flowplayerInstance.on('playlist:ready', () => {
+			tempPlayer.on('playlist:ready', () => {
 				// Update cover images on the playlist
 				document
 					.querySelectorAll('.fp-playlist li .video-info')
 					.forEach((elem, elemIndex) => {
 						const image = document.createElement('img');
-						image.src = (this.props.src as FlowplayerSourceListSchema).items[elemIndex]
+						image.src = (src as FlowplayerSourceListSchema).items[elemIndex]
 							.poster as string;
 						const div = document.createElement('div');
 						div.classList.add('image');
@@ -524,79 +466,69 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 			});
 		}
 
-		this.drawCustomElements(flowplayerInstance);
+		drawCustomElements();
 
-		flowplayerInstance.on('playing', () => {
-			if (!this.state.startedPlaying) {
+		tempPlayer.on('playing', () => {
+			if (!startedPlaying) {
 				// First time playing the video
 
-				this.jumpToFirstCuepoint();
+				jumpToFirstCuepoint();
 
-				if (this.props.onPlay && this.state.flowPlayerInstance) {
-					this.props.onPlay(this.state.flowPlayerInstance.src);
+				if (onPlay && player) {
+					onPlay(player.src);
 				}
-
-				this.setState({
-					...this.state,
-					startedPlaying: true,
-				});
+				setStartedPlaying(true);
 			}
 		});
-		flowplayerInstance.on('pause', this.props.onPause || noop);
-		flowplayerInstance.on('ended', this.props.onEnded || noop);
-		flowplayerInstance.on(
+		tempPlayer.on('pause', onPause || noop);
+		tempPlayer.on('ended', onEnded || noop);
+		tempPlayer.on(
 			playlistPlugin.events.PLAYLIST_NEXT,
 			(evt: Event & { detail: { next_index: number } }) => {
-				this.updateActivePlaylistItem(evt.detail.next_index);
-				this.jumpToFirstCuepoint();
+				updateActivePlaylistItem(evt.detail.next_index);
+				jumpToFirstCuepoint();
 			}
 		);
-		flowplayerInstance.on('loadeddata', () => {
-			this.onResizeHandler();
-			this.updateCuepointPosition();
+		tempPlayer.on('loadeddata', () => {
+			onResizeHandler();
+			updateCuepointPosition();
 		});
-		flowplayerInstance.on('timeupdate', () => {
-			(this.props.onTimeUpdate || noop)(
-				get(this.videoContainerRef, 'current.currentTime', 0)
-			);
+		tempPlayer.on('timeupdate', () => {
+			(onTimeUpdate || noop)(get(videoContainerRef, 'current.currentTime', 0));
 		});
 
-		this.setState({
-			flowPlayerInstance: flowplayerInstance,
-		});
-	}
+		setPlayer(tempPlayer);
+	};
 
 	/**
 	 * Sets the cuepoint config from the active item in the playlist as the cuepoint on the flowplayer
 	 * @param itemIndex
 	 * @private
 	 */
-	private updateActivePlaylistItem(itemIndex: number): void {
-		const player = this.state.flowPlayerInstance;
+	const updateActivePlaylistItem = (itemIndex: number): void => {
 		if (!player || isNaN(player.duration)) {
 			return;
 		}
 
-		const playlistItem = (this.props.src as FlowplayerSourceListSchema)?.items?.[itemIndex];
+		const playlistItem = (src as FlowplayerSourceListSchema)?.items?.[itemIndex];
 
 		if (playlistItem) {
 			// Update cuepoint
 			player.emit(flowplayer.events.CUEPOINTS, {
 				cuepoints: playlistItem.cuepoints,
 			});
-			this.updateCuepointPosition();
+			updateCuepointPosition();
 
 			// Update poster
 			player.poster = playlistItem.poster;
 			player.opts.poster = playlistItem.poster;
 		}
-	}
+	};
 
 	/**
 	 * Updates the styles of the timeline cuepoint indicator according to the active cuepoint
 	 */
-	private updateCuepointPosition() {
-		const player = this.state.flowPlayerInstance;
+	const updateCuepointPosition = () => {
 		if (!player || isNaN(player.duration)) {
 			return;
 		}
@@ -612,14 +544,22 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 				return;
 			}
 			start = start || 0;
-			end = end || player.duration;
+			end = (end || player.duration || 0) as number;
 			cuePointIndicator.style.left = Math.round((start / player.duration) * 100) + '%';
 			cuePointIndicator.style.width = ((end - start) / player.duration) * 100 + '%';
 			cuePointIndicator.style.display = 'block';
 		}
-	}
+	};
 
-	private renderPlaylistItems(playlistItems: FlowplayerSourceList['items']) {
+	const handleMediaCardClicked = (itemIndex: number): void => {
+		player.playlist?.play(itemIndex);
+		player.emit(flowplayer.events.CUEPOINTS, {
+			cuepoints: (src as FlowplayerSourceListSchema).items[itemIndex].cuepoints,
+		});
+		updateCuepointPosition();
+	};
+
+	const renderPlaylistItems = (playlistItems: FlowplayerSourceList['items']) => {
 		return (
 			<ul className="c-video-player__playlist">
 				{playlistItems.map((item, itemIndex) => {
@@ -627,15 +567,7 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 						<li key={item.src + '--' + itemIndex}>
 							<MediaCard
 								title={item.title}
-								onClick={() => {
-									const player = this.state.flowPlayerInstance as any;
-									player?.playlist?.play(itemIndex);
-									player.emit(flowplayer.events.CUEPOINTS, {
-										cuepoints: (this.props.src as FlowplayerSourceListSchema)
-											.items[itemIndex].cuepoints,
-									});
-									this.updateCuepointPosition();
-								}}
+								onClick={() => handleMediaCardClicked(itemIndex)}
 								orientation="vertical"
 								category="search" // Clearest color on white background
 							>
@@ -653,35 +585,36 @@ export class FlowPlayer extends React.Component<FlowPlayerPropsSchema, FlowPlaye
 				})}
 			</ul>
 		);
-	}
+	};
 
-	render(): ReactNode {
-		const playlistItems = (this.props.src as FlowplayerSourceListSchema)?.items;
+	const renderedVideoContainer = useMemo(() => {
 		return (
-			<div className={classnames(this.props.className, 'c-video-player')}>
-				<div
-					className={classnames('c-video-player-inner')}
-					data-player-id={this.props.dataPlayerId}
-					ref={this.videoContainerRef}
-				/>
-				{playlistItems && this.props.playlistScrollable && (
-					<Scrollbar
-						className="c-video-player__playlist__scrollable"
-						noScrollX
-						style={{
-							width: '30%',
-							height:
-								(this.videoContainerRef.current?.getBoundingClientRect().height ||
-									500) + 'px',
-						}}
-					>
-						{this.renderPlaylistItems(playlistItems)}
-					</Scrollbar>
-				)}
-				{playlistItems &&
-					!this.props.playlistScrollable &&
-					this.renderPlaylistItems(playlistItems)}
-			</div>
+			<div
+				className={classnames('c-video-player-inner')}
+				data-player-id={dataPlayerId}
+				ref={videoContainerRef}
+			/>
 		);
-	}
-}
+	}, [videoContainerRef.current, seekTime, start, end, canPlay, poster, src]);
+
+	const playlistItems = (src as FlowplayerSourceListSchema)?.items;
+
+	return (
+		<div className={classnames(className, 'c-video-player')}>
+			{renderedVideoContainer}
+			{playlistItems && playlistScrollable && (
+				<Scrollbar
+					className="c-video-player__playlist__scrollable"
+					noScrollX
+					style={{
+						width: '30%',
+						height: videoHeight ? videoHeight + 'px' : 'auto',
+					}}
+				>
+					{renderPlaylistItems(playlistItems)}
+				</Scrollbar>
+			)}
+			{playlistItems && !playlistScrollable && renderPlaylistItems(playlistItems)}
+		</div>
+	);
+};
