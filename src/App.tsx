@@ -65,12 +65,11 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	}, [setLoadingInfo]);
 
 	useEffect(() => {
+		// Hide zendesk when a pupil is logged in
 		if (props?.user?.profile?.userGroupIds?.[0] === SpecialUserGroup.Pupil) {
-			// Remove zendesk when a pupil is logged in
-			const zendeskWidget = document.querySelector('iframe#launcher');
-			if (zendeskWidget) {
-				zendeskWidget.remove();
-			}
+			document.body.classList.add('hide-zendesk-widget');
+		} else {
+			document.body.classList.remove('hide-zendesk-widget');
 		}
 	}, [props.user]);
 
