@@ -10,6 +10,8 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
+import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
+import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
@@ -68,6 +70,7 @@ import {
 	AssignmentType,
 	PupilCollectionFragment,
 } from './assignment.types';
+import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
 
 export class AssignmentService {
 	static async fetchAssignments(
@@ -117,9 +120,7 @@ export class AssignmentService {
 			}
 			if (!isNil(pastDeadline)) {
 				if (pastDeadline) {
-					filterArray.push({
-						deadline_at: { _lt: new Date().toISOString() },
-					});
+					filterArray.push({ deadline_at: { _lt: new Date().toISOString() } });
 				} else {
 					filterArray.push({
 						_or: [
@@ -129,6 +130,17 @@ export class AssignmentService {
 					});
 				}
 			}
+
+			if (getUserGroupIds(user).includes(SpecialUserGroup.Pupil)) {
+				// Filter on academic year for students
+				filterArray.push({
+					_and: [
+						{ deadline_at: { _gt: startOfAcademicYear().toISOString() } },
+						{ deadline_at: { _lt: endOfAcademicYear().toISOString() } },
+					],
+				});
+			}
+
 			variables = {
 				limit,
 				offset: limit === null ? 0 : page * limit,
