@@ -147,7 +147,6 @@ export interface FlowPlayerPropsSchema extends DefaultProps {
 	token?: string;
 	dataPlayerId?: string;
 	autoplay?: boolean;
-	seekTime?: number;
 	onPlay?: (src: string) => void;
 	onPause?: () => void;
 	onEnded?: () => void;
@@ -174,14 +173,13 @@ export const convertGAEventsArrayToObject = (
 };
 
 const DEFAULT_VIDEO_HEIGHT = 500;
-const DELAY_BETWEEN_PLAYLIST_VIDEOS = 70000;
+const DELAY_BETWEEN_PLAYLIST_VIDEOS = 7;
 
 export const FlowPlayer: FunctionComponent<FlowPlayerPropsSchema> = ({
 	src,
 	poster,
 	title,
 	metadata,
-	seekTime,
 	token,
 	preload,
 	speed,
@@ -232,7 +230,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerPropsSchema> = ({
 		return () => {
 			// const flowPlayerInstance = flowPlayerInstance;
 			if (player) {
-				player.destroy();
+				// player.destroy();
 				if (player.parentElement) {
 					player.parentElement.innerHTML = '';
 				}
@@ -346,12 +344,11 @@ export const FlowPlayer: FunctionComponent<FlowPlayerPropsSchema> = ({
 	};
 
 	const reInitFlowPlayer = () => {
-		player?.destroy();
-
 		if (!videoContainerRef.current) {
 			return;
 		}
 
+		// player?.destroy();
 		const flowPlayerConfig: FlowplayerConfigWithPlugins = {
 			// DATA
 			src: src,
@@ -595,7 +592,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerPropsSchema> = ({
 				ref={videoContainerRef}
 			/>
 		);
-	}, [videoContainerRef.current, seekTime, start, end, canPlay, poster, src]);
+	}, [videoContainerRef, dataPlayerId, start, end, canPlay, poster, src]);
 
 	const playlistItems = (src as FlowplayerSourceListSchema)?.items;
 

@@ -20,8 +20,9 @@ import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
-import './FlowPlayerWrapper.scss';
 import { FlowPlayer, FlowplayerSourceList } from './FlowPlayer';
+
+import './FlowPlayerWrapper.scss';
 
 export interface CuePoints {
 	start: number | null;
@@ -42,7 +43,6 @@ export type FlowPlayerWrapperProps = {
 	annotationText?: string;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
-	seekTime?: number;
 	autoplay?: boolean;
 	onPlay?: (playingSrc: string) => void;
 	onEnded?: () => void;
@@ -211,7 +211,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
 				<FlowPlayer
 					src={getBrowserSafeUrl(src)}
-					seekTime={props.seekTime}
 					poster={poster}
 					title={props.title}
 					metadata={
