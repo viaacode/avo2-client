@@ -135,8 +135,8 @@ export class AssignmentService {
 				// Filter on academic year for students
 				filterArray.push({
 					_and: [
-						{ deadline_at: { _gt: startOfAcademicYear().toISOString() } },
-						{ deadline_at: { _lt: endOfAcademicYear().toISOString() } },
+						{ deadline_at: { _gte: startOfAcademicYear().toISOString() } },
+						{ deadline_at: { _lte: endOfAcademicYear().toISOString() } },
 					],
 				});
 			}

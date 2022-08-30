@@ -2,7 +2,7 @@ import { add, set, startOfYear, sub } from 'date-fns';
 
 export function currentAcademicYear(): Date {
 	const month = new Date().getMonth();
-	const isPastAugust = month >= 8; // 0-offset
+	const isPastAugust = month > 7; // 0-offset, 7 === August
 	const currentYear = startOfYear(new Date());
 	return isPastAugust ? currentYear : sub(currentYear, { years: 1 });
 }
