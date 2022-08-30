@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { isPast } from 'date-fns';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -195,6 +196,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const handleOnSave = async () => {
 		if (!user.profile?.id || !original) {
+			return;
+		}
+
+		if (assignment.deadline_at && isPast(new Date(assignment.deadline_at))) {
+			ToastService.danger(t('De deadline mag niet in het verleden liggen.'));
 			return;
 		}
 
