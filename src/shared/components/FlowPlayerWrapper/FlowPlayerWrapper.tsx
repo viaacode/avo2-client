@@ -1,4 +1,4 @@
-import { AspectRatioWrapper, Icon } from '@viaa/avo2-components';
+import { AspectRatioWrapper, FlowPlayer, FlowplayerSourceList, Icon } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -19,8 +19,6 @@ import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
-
-import { FlowPlayer, FlowplayerSourceList } from './FlowPlayer';
 
 import './FlowPlayerWrapper.scss';
 
