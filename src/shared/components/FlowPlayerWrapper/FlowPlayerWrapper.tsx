@@ -61,6 +61,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false);
 	const [src, setSrc] = useState<string | FlowplayerSourceList | undefined>(props.src);
 
+	const isPlaylist = !isString(src) && !isNil(src);
+
 	useEffect(() => {
 		// reset token when item changes
 		setSrc(props.src);
@@ -69,10 +71,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 	const initFlowPlayer = useCallback(async () => {
 		try {
-			if (!item) {
+			if (!item && !props.src) {
 				throw new CustomError('Failed to init flowplayer since item is undefined');
 			}
-			setSrc(await fetchPlayerTicket(item.external_id));
+			if (item) {
+				setSrc(await fetchPlayerTicket(item.external_id));
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to initFlowPlayer in FlowPlayerWrapper', err, {
@@ -153,20 +157,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			return src;
 		}
 
-		if (isString(src)) {
-			// Convert src url
-			if (src.includes('flowplayer')) {
-				return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
-			}
-
-			if (src.endsWith('.m3u8')) {
-				ToastService.danger(
-					t(
-						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
-					)
-				);
-			}
-		} else {
+		if (isPlaylist) {
 			// Convert each url in the entry in the playlist if possible
 			(src as FlowplayerSourceList).items.forEach((entry) => {
 				if (entry.src.includes('flowplayer')) {
@@ -180,6 +171,21 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				ToastService.danger(
 					t(
 						'Bepaalde videos in de playlist kunnen niet worden afgespeeld. Probeer een andere browser.'
+					)
+				);
+			}
+		} else {
+			// Convert src url
+			if ((src as string).includes('flowplayer')) {
+				return (src as string)
+					.replace('/hls/', '/v-')
+					.replace('/playlist.m3u8', '_original.mp4');
+			}
+
+			if ((src as string).endsWith('.m3u8')) {
+				ToastService.danger(
+					t(
+						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
 			}
@@ -236,7 +242,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					}}
 					start={item ? start : null}
 					end={item ? end : null}
-					autoplay={(!!item && !!src) || props.autoplay}
+					autoplay={(!!item && !!src) || (!isPlaylist && props.autoplay)}
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
 					playlistScrollable={!isMobileWidth()}

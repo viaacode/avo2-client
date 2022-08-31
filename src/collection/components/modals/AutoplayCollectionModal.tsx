@@ -49,8 +49,10 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	}, [collectionFragments]);
 
 	useEffect(() => {
-		fetchPlayableUrls();
-	}, [fetchPlayableUrls]);
+		if (isOpen && !sourceList) {
+			fetchPlayableUrls();
+		}
+	}, [fetchPlayableUrls, isOpen]);
 
 	const renderPlaylist = () => {
 		if (!sourceList) {
