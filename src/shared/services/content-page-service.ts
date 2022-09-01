@@ -1,6 +1,5 @@
-import queryString from 'query-string';
-
 import { ButtonAction } from '@viaa/avo2-components';
+import queryString from 'query-string';
 
 import { ResolvedItemOrCollection } from '../../admin/content-block/components/wrappers/MediaGridWrapper/MediaGridWrapper.types';
 import { ContentPageInfo } from '../../admin/content/content.types';
@@ -30,7 +29,9 @@ export class ContentPageService {
 			let responseContent: any;
 			try {
 				responseContent = await response.json();
-			} catch (err) {}
+			} catch (err) {
+				// Ignore failed json parsing => will be handled by the status code not being between 200 and 400
+			}
 			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError('Failed to get content page from /content-pages', null, {
 					path,
