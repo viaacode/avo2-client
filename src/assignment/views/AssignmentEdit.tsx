@@ -200,7 +200,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		}
 
 		if (assignment.deadline_at && isPast(new Date(assignment.deadline_at))) {
-			ToastService.danger(t('De deadline mag niet in het verleden liggen.'));
+			ToastService.danger(
+				t('assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen')
+			);
 			return;
 		}
 

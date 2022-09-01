@@ -201,7 +201,9 @@ const AssignmentDetailsFormEditable: FC<
 					</p>
 					{deadline && isPast(deadline) && (
 						<p className="c-form-help-text--error">
-							{t('De deadline mag niet in het verleden liggen.')}
+							{t(
+								'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
+							)}
 						</p>
 					)}
 				</FormGroup>
