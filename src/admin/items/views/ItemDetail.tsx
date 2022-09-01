@@ -271,12 +271,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		columnId: CollectionColumnId
 	): ReactNode => {
 		switch (columnId) {
-			case 'author':
+			case 'author': {
 				const user = get(rowData, 'profile.user');
 				if (!user) {
 					return '-';
 				}
 				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+			}
 
 			case 'organization':
 				return get(rowData, 'profile.organisation.name', '-');

@@ -1,3 +1,15 @@
+import {
+	Accordion,
+	Button,
+	ButtonToolbar,
+	Container,
+	MenuItemInfo,
+	Spacer,
+	Table,
+	TagList,
+	TagOption,
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, sortBy } from 'lodash-es';
 import moment from 'moment';
 import React, {
@@ -11,19 +23,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import {
-	Accordion,
-	Button,
-	ButtonToolbar,
-	Container,
-	MenuItemInfo,
-	Spacer,
-	Table,
-	TagList,
-	TagOption,
-} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -64,7 +63,7 @@ import {
 	UserTempAccess,
 } from '../user.types';
 
-interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+type UserDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
 const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }) => {
 	// Hooks
@@ -247,7 +246,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		}
 	};
 
-	const renderTempAccess = (tempAccess: UserTempAccess | null): String => {
+	const renderTempAccess = (tempAccess: UserTempAccess | null): string => {
 		if (!tempAccess) {
 			return '-';
 		}
@@ -260,7 +259,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			: `${t('admin/users/views/user-detail___tot')} ${formatDate(until)}`;
 	};
 
-	const renderTempAccessDuration = (tempAccess: UserTempAccess | null): String => {
+	const renderTempAccessDuration = (tempAccess: UserTempAccess | null): string => {
 		if (!tempAccess) {
 			return '-';
 		}
@@ -283,7 +282,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						return (
 							<tr key={`user-group-row-${item.id}`}>
 								<td>
-									{!!path ? (
+									{path ? (
 										<Link
 											to={buildLink(path, {
 												id: item.id,
@@ -407,7 +406,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								!!userGroup ? (
+								userGroup ? (
 									<Link
 										to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
 											id: userGroup.id,
@@ -494,7 +493,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								t('admin/users/views/user-detail___opleidingsniveaus')
 							)}
 							{renderDetailRow(
-								!!eduOrgs.length ? (
+								eduOrgs.length ? (
 									<TagList
 										closable={false}
 										swatches={false}
