@@ -500,16 +500,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 
 			case 'labels':
-				return labels.length > 0 ? (
-					<>
-						{renderLabels(labels)}
-						{renderDataCell(
-							labels.map((label) => label.assignment_label.label).join(', '),
-							`${t('assignment/views/assignment-overview___labels')}`,
-							'm-assignment-overview__table__data-cell--labels'
-						)}
-					</>
-				) : null;
+				return labels.length > 0 ? renderLabels(labels) : null;
 
 			case 'class_room':
 				return renderLabels(

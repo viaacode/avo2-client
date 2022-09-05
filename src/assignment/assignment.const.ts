@@ -31,16 +31,14 @@ export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 
 type ColumnDataType = 'string' | 'number' | 'boolean' | 'dateTime' | undefined;
 
-const getLabelsColumn = (show: boolean): AssignmentColumn[] => {
-	return show
-		? [
-				{
-					id: 'labels' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/assignment___label'),
-					sortable: false,
-				},
-		  ]
-		: [];
+const getLabelsColumn = (): AssignmentColumn[] => {
+	return [
+		{
+			id: 'labels' as AssignmentOverviewTableColumns,
+			label: i18n.t('assignment/assignment___label'),
+			sortable: false,
+		},
+	];
 };
 
 const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
@@ -111,7 +109,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 		dataType: TableColumnDataType.string,
 	},
 	...getClassColumn(canEditAssignments),
-	...getLabelsColumn(!canEditAssignments),
+	...getLabelsColumn(),
 	...getTeacherColumn(canEditAssignments),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
