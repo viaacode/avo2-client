@@ -6,6 +6,7 @@ import {
 	AssignmentSchema_v2,
 } from '@viaa/avo2-types/types/assignment';
 import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
@@ -934,7 +935,8 @@ export class AssignmentService {
 	 * @param blocks
 	 */
 	static async enrichBlocksWithMeta<T = PupilCollectionFragment | AssignmentBlock>(
-		blocks?: BlockItemBaseSchema[]
+		blocks?: BlockItemBaseSchema[],
+		items: (ItemSchema | null)[] = []
 	): Promise<T[]> {
 		const enriched = await Promise.all(
 			(blocks || []).map(async (block) => {
@@ -945,7 +947,10 @@ export class AssignmentService {
 						return {
 							...block,
 							item_meta:
-								(await ItemsService.fetchItemByExternalId(cast.fragment_id)) ||
+								items.find((item) => item?.external_id === cast.fragment_id) ||
+								(
+									await ItemsService.fetchItemsByExternalId([cast.fragment_id])
+								)[0] ||
 								undefined,
 						};
 					} catch (error) {

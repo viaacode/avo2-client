@@ -31,6 +31,7 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
+import { ItemsService } from '../../admin/items/items.service';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -55,8 +56,10 @@ import {
 	AssignmentOverviewTableColumns,
 	AssignmentResponseTableColumns,
 	AssignmentType,
+	PupilCollectionFragment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
+import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
@@ -76,23 +79,35 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignmentResponses, setAssignmentResponses] = useState<
 		Avo.Assignment.Response_v2[] | null
 	>(null);
 	const [assignmentResponsesCount, setAssigmentResponsesCount] = useState<number>(0);
+	const [assignmentResponsesFragments, setAssignmentResponsesFragments] = useState<string[]>([]);
+
+	const assignmentResponsesFragmentsHash = useMemo(
+		() => assignmentResponsesFragments.join(),
+		[assignmentResponsesFragments]
+	);
+
+	// UI
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [filterString, setFilterString] = useState<string>('');
+	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
+		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER);
+
+	// Modal
 	const [isDeleteAssignmentResponseModalOpen, setDeleteAssignmentResponseModalOpen] =
 		useState<boolean>(false);
 	const [markedAssignmentResponse, setMarkedAssignmentResponse] =
 		useState<Avo.Assignment.Response_v2 | null>(null);
+
+	// Permissions
 	const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<boolean | null>(
 		null
 	);
-
-	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
-		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER);
 
 	const tableColumns = useMemo(
 		() =>
@@ -243,8 +258,18 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				query.filter || ''
 			);
 
+			// Determine each response's fragments to evaluate their published-status
+			const fragments = response.assignmentResponses
+				.flatMap((response) =>
+					((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
+						(block) => block.fragment_id
+					)
+				)
+				.filter((value, index, self) => self.indexOf(value) === index);
+
 			setAssignmentResponses(response.assignmentResponses);
 			setAssigmentResponsesCount(response.count);
+			setAssignmentResponsesFragments(fragments);
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -265,6 +290,26 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		t,
 	]);
 
+	const fetchAssignmentResponsesFragments = async (items: string[]) => {
+		// Note: duplicate ids don't matter, they're only fetched once
+		const fragments = await ItemsService.fetchItemsByExternalId(items);
+
+		setAssignmentResponses(
+			await Promise.all(
+				(assignmentResponses || []).map(async (response) => {
+					return {
+						...response,
+						pupil_collection_blocks:
+							await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
+								response.pupil_collection_blocks,
+								fragments
+							),
+					};
+				})
+			)
+		);
+	};
+
 	useEffect(() => {
 		checkPermissions();
 	}, [checkPermissions]);
@@ -272,6 +317,10 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	useEffect(() => {
 		fetchAssignment();
 	}, [fetchAssignment, match]);
+
+	useEffect(() => {
+		fetchAssignmentResponsesFragments(assignmentResponsesFragments);
+	}, [assignmentResponsesFragmentsHash]);
 
 	useEffect(() => {
 		if (canViewAssignmentResponses) {
@@ -380,11 +429,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			}
 			case 'pupil_collection_block_count':
 				return renderDataCell(
-					get(
-						assignmentResponse,
-						'pupil_collection_blocks_aggregate.aggregate.count',
-						''
-					),
+					assignmentResponse.pupil_collection_blocks?.filter(isItemWithMeta).length || '',
 					t('assignment/views/assignment-responses___fragmenten'),
 					'c-assignment-responses__block-count'
 				);
