@@ -209,7 +209,7 @@ const AssignmentDetailsFormEditable: FC<
 					{availableAt && deadline && availableAt.getTime() > deadline.getTime() && (
 						<p className="c-form-help-text--error">
 							{t(
-								'De beschikbaar vanaf datum moet voor de deadline liggen, anders zullen je leerlingen geen toegang hebben tot deze opdracht.'
+								'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 							)}
 						</p>
 					)}

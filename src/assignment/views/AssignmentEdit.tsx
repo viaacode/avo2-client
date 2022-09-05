@@ -213,7 +213,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		) {
 			ToastService.danger(
 				t(
-					'De beschikbaar vanaf datum moet voor de deadline liggen, anders zullen je leerlingen geen toegang hebben tot deze opdracht.'
+					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 				)
 			);
 			return;
