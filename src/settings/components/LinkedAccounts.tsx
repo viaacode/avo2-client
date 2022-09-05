@@ -39,6 +39,7 @@ interface IdpProps {
 	description?: string;
 	iconNames: IconName[];
 	hideForPupil?: boolean;
+	idpParameters?: string;
 }
 
 interface DeleteModalToggle {
@@ -77,6 +78,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 				? t('settings/components/linked-accounts___aanmelden-met-je-leer-id')
 				: t('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
 			iconNames: isPupil ? ['leerid'] : ['itsme', 'eid'],
+			idpParameters: isPupil ? 'authMech=leerid' : 'authMech=itsme',
 		},
 		SMARTSCHOOL: {
 			label: t('settings/components/linked-accounts___smartschool'),
@@ -102,6 +104,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 						<Column className={`c-account-link__column ${className}`} size="3-2">
 							{currentIdp.iconNames.map((iconName: string) => (
 								<Icon
+									key={`c-account-link--${iconName}`}
 									name={iconName as IconName}
 									size="huge"
 									type={
@@ -149,7 +152,11 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										label={t('settings/components/linked-accounts___koppel')}
 										title={t('settings/components/linked-accounts___koppel')}
 										onClick={() =>
-											redirectToServerLinkAccount(location, idpType)
+											redirectToServerLinkAccount(
+												location,
+												idpType,
+												currentIdp.idpParameters
+											)
 										}
 									/>
 								)}
@@ -205,10 +212,8 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										'settings/components/account___koppel-je-account-met-andere-platformen'
 									)}
 								>
-									{/* Disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062 */}
-									<div>
-										{!isPupil && renderIdpLinkControls('VLAAMSEOVERHEID')}
-									</div>
+									{/* Previously disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062 */}
+									<div>{renderIdpLinkControls('VLAAMSEOVERHEID')}</div>
 									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
 									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
 								</FormGroup>
