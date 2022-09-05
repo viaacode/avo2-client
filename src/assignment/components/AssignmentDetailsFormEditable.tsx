@@ -62,6 +62,7 @@ const AssignmentDetailsFormEditable: FC<
 	}
 
 	const deadline = assignment.deadline_at ? new Date(assignment.deadline_at) : null;
+	const availableAt = assignment.available_at ? new Date(assignment.available_at) : new Date();
 	return (
 		<div className={classnames('c-assignment-details-form', className)} style={style}>
 			<Form>
@@ -156,10 +157,9 @@ const AssignmentDetailsFormEditable: FC<
 					required
 				>
 					<DatePicker
-						value={
-							assignment.available_at ? new Date(assignment.available_at) : new Date()
-						}
+						value={availableAt}
 						showTimeInput
+						minDate={new Date()}
 						onChange={(value: Date | null) => {
 							setValue('available_at', value?.toISOString(), {
 								shouldDirty: true,
@@ -203,6 +203,13 @@ const AssignmentDetailsFormEditable: FC<
 						<p className="c-form-help-text--error">
 							{t(
 								'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
+							)}
+						</p>
+					)}
+					{availableAt && deadline && availableAt.getTime() > deadline.getTime() && (
+						<p className="c-form-help-text--error">
+							{t(
+								'De beschikbaar vanaf datum moet voor de deadline liggen, anders zullen je leerlingen geen toegang hebben tot deze opdracht.'
 							)}
 						</p>
 					)}

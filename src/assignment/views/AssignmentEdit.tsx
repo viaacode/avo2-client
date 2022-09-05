@@ -206,6 +206,19 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return;
 		}
 
+		if (
+			assignment.available_at &&
+			assignment.deadline_at &&
+			new Date(assignment.available_at).getTime() > new Date(assignment.deadline_at).getTime()
+		) {
+			ToastService.danger(
+				t(
+					'De beschikbaar vanaf datum moet voor de deadline liggen, anders zullen je leerlingen geen toegang hebben tot deze opdracht.'
+				)
+			);
+			return;
+		}
+
 		if (assignmentHasResponses) {
 			setIsConfirmSaveActionModalOpen(true);
 			return;
