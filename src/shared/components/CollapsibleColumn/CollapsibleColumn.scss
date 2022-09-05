@@ -12,6 +12,7 @@ $component: 'c-collapsible-column';
 
 	&__toggle {
 		background: #fff;
+		margin: 0 (0 - ($g-spacer-unit * 2));
 
 		&:before {
 			background: rgb(255, 255, 255);

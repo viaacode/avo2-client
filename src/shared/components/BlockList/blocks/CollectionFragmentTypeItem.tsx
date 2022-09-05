@@ -1,8 +1,8 @@
-import { Button, DefaultProps } from '@viaa/avo2-components';
+import { DefaultProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classNames from 'classnames';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CollectionBlockType } from '../../../../collection/collection.const';
@@ -36,7 +36,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	className,
 	canOpenOriginal,
 }) => {
-	const [showOriginal, setShowOriginal] = useState<boolean>(false);
+	console.info('canOpenOriginal', canOpenOriginal);
 
 	const [t] = useTranslation();
 
@@ -47,11 +47,13 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	const customDescription = useMemo(
 		() => (
 			<>
-				<b>
-					{t(
-						'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
-					)}
-				</b>
+				{canOpenOriginal && (
+					<b>
+						{t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
+						)}
+					</b>
+				)}
 
 				<TextWithTimestamps
 					content={
@@ -62,22 +64,24 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				/>
 			</>
 		),
-		[block, t]
+		[canOpenOriginal, block, t]
 	);
 
 	const originalDescription = useMemo(
 		() => (
 			<>
-				<b>
-					{t(
-						'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
-					)}
-				</b>
+				{canOpenOriginal && (
+					<b>
+						{t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
+						)}
+					</b>
+				)}
 
 				<TextWithTimestamps content={original || ''} />
 			</>
 		),
-		[original, t]
+		[canOpenOriginal, original, t]
 	);
 
 	return (
@@ -98,28 +102,15 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 						{custom ? customDescription : originalDescription}
 					</CollapsibleColumn>
 
-					{custom && showOriginal && (
-						<>
-							<br />
-							{originalDescription}
-						</>
-					)}
-
 					{custom && canOpenOriginal && (
-						<Button
-							onClick={() => setShowOriginal(!showOriginal)}
-							type="inline-link"
-							icon="align-left"
-							label={
-								showOriginal
-									? t(
-											'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
-									  )
-									: t(
-											'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
-									  )
-							}
-						/>
+						<CollapsibleColumn
+							button={{
+								icon: (expanded) => (expanded ? 'eye-off' : 'eye'),
+								label: (expanded) => (expanded ? t('Verberg') : t('Toon')),
+							}}
+						>
+							{originalDescription}
+						</CollapsibleColumn>
 					)}
 				</div>
 			)}
