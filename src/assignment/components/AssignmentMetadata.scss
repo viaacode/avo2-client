@@ -1,18 +1,18 @@
 @import '../../styles/settings/variables';
 
 .l-assignment-response__meta-data {
-    flex-wrap: wrap;
+	flex-wrap: wrap;
 
-    > div {
-        width: 100%;
+	> div {
+		width: 100%;
 
-        @media screen and (min-width: $g-bp1) {
-            width: 50%;
-        }
+		@media screen and (min-width: $g-bp1) {
+			width: 50%;
+		}
 
-        @media screen and (min-width: $g-bp3) {
-            width: auto;
-            margin-right: $g-spacer-unit * 2;
-        }
-    }
+		@media screen and (min-width: $g-bp3) {
+			width: auto;
+			margin-right: $g-spacer-unit * 2;
+		}
+	}
 }
