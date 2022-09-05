@@ -519,7 +519,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">{t('Onderwijsgraad')}</th>
+						<th scope="row">{t('item/views/item-detail___onderwijsgraad')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,

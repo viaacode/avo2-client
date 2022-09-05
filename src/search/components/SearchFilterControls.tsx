@@ -142,7 +142,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					SearchFilter.educationLevel
 				)}
 			{isFilterEnabled(SearchFilter.educationDegree) &&
-				renderCheckboxDropdownModal(t('Onderwijsgraad'), SearchFilter.educationDegree)}
+				renderCheckboxDropdownModal(
+					t('search/components/search-filter-controls___onderwijsgraad'),
+					SearchFilter.educationDegree
+				)}
 			{isFilterEnabled(SearchFilter.subject) &&
 				renderCheckboxDropdownModal(
 					t('search/components/search-filter-controls___vak'),
