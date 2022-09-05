@@ -55,10 +55,10 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 			if (item && !src) {
 				// !src since the proxy can resolve the src already for users without an account
 				// Video from MAM
-				const mediaItemTemp = await ItemsService.fetchItemByExternalId(
-					item.value.toString()
-				);
-				setMediaItem(mediaItemTemp);
+				const mediaItemTemp = await ItemsService.fetchItemsByExternalId([
+					item.value.toString(),
+				]);
+				setMediaItem(mediaItemTemp[0]);
 				setVideoStill(poster || get(mediaItemTemp, 'thumbnail_path'));
 			} else {
 				// Custom video

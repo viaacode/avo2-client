@@ -874,7 +874,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		try {
 			if (isCollection) {
 				// We're adding an item to the collection
-				const item = await ItemsService.fetchItemByExternalId(id);
+				const item = (await ItemsService.fetchItemsByExternalId([id]))[0];
 				if (!item) {
 					throw new CustomError('Response does not contain an item', null, {
 						item,
