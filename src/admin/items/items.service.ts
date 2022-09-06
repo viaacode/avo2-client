@@ -17,7 +17,7 @@ import {
 	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
 	GET_DISTINCT_SERIES,
 	GET_ITEMS_WITH_FILTERS,
-	GET_ITEM_BY_EXTERNAL_ID,
+	GET_ITEMS_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEM_DEPUBLISH_REASON,
 	GET_PUBLIC_ITEMS,
@@ -35,6 +35,7 @@ import {
 	UnpublishedItem,
 	UnpublishedItemsOverviewTableCols,
 } from './items.types';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 export class ItemsService {
 	public static async fetchItemsWithFilters(
@@ -258,14 +259,18 @@ export class ItemsService {
 		);
 	}
 
-	public static async fetchItemByExternalId(
-		externalId: string
-	): Promise<(Avo.Item.Item & { replacement_for?: string }) | null> {
+	public static async fetchItemsByExternalId(
+		externalIds: string[]
+	): Promise<Array<(Avo.Item.Item & { replacement_for?: string }) | null>> {
+		if (externalIds.length < 1) {
+			return [];
+		}
+
 		try {
 			const response = await dataService.query({
-				query: GET_ITEM_BY_EXTERNAL_ID,
+				query: GET_ITEMS_BY_EXTERNAL_ID,
 				variables: {
-					externalId,
+					externalIds,
 				},
 			});
 
@@ -273,46 +278,59 @@ export class ItemsService {
 				throw new CustomError('Response contains graphql errors', null, { response });
 			}
 
-			// Return item if an item is found that is published and not deleted
-			const item = get(response, 'data.app_item_meta[0]');
-			if (item) {
-				return addDefaultAudioStillToItem(item) || null;
-			}
+			const items: ItemSchema[] = get(response, 'data.app_item_meta', []);
 
-			// Return the replacement item if a REPLACED_BY relation is found for the current item
-			// TODO replace with single query to fetch depublish_reason and relations after task is done: https://meemoo.atlassian.net/browse/DEV-1166
-			const itemUid = await ItemsService.fetchItemUuidByExternalId(externalId);
-			if (itemUid) {
-				const relations = await RelationService.fetchRelationsBySubject(
-					'item',
-					[itemUid],
-					'IS_REPLACED_BY'
-				);
-				const replacedByItemUid = get(relations, '[0].object', null);
-				if (replacedByItemUid) {
-					const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
-					(replacementItem as any).replacement_for = externalId;
-					return replacementItem;
-				}
-			}
+			return Promise.all(
+				externalIds.map((externalId) => {
+					// Return item if an item is found that is published and not deleted
+					const item = items.find((item) => item.external_id === externalId);
 
-			// Return the depublish reason if the item has a depublish reason
-			const depublishReason = await this.fetchDepublishReasonByExternalId(externalId);
+					if (item) {
+						return addDefaultAudioStillToItem(item) || null;
+					}
 
-			if (depublishReason) {
-				return {
-					depublish_reason: depublishReason,
-				} as Avo.Item.Item;
-			}
-
-			// otherwise return null
-			return null;
+					return this.fetchItemReplacementByExternalId(externalId);
+				})
+			);
 		} catch (err) {
-			throw new CustomError('Failed to get item by external id', err, {
-				externalId,
-				query: 'GET_ITEM_BY_EXTERNAL_ID',
+			throw new CustomError('Failed to get items by external id', err, {
+				externalIds,
+				query: 'GET_ITEMS_BY_EXTERNAL_ID',
 			});
 		}
+	}
+
+	public static async fetchItemReplacementByExternalId(externalId: string) {
+		// Return the replacement item if a REPLACED_BY relation is found for the current item
+		// TODO replace with single query to fetch depublish_reason and relations after task is done: https://meemoo.atlassian.net/browse/DEV-1166
+		const itemUid = await ItemsService.fetchItemUuidByExternalId(externalId);
+
+		if (itemUid) {
+			const relations = await RelationService.fetchRelationsBySubject(
+				'item',
+				[itemUid],
+				'IS_REPLACED_BY'
+			);
+
+			const replacedByItemUid = get(relations, '[0].object', null);
+
+			if (replacedByItemUid) {
+				const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
+				return { ...replacementItem, replacement_for: externalId };
+			}
+		}
+
+		// Return the depublish reason if the item has a depublish reason
+		const depublishReason = await this.fetchDepublishReasonByExternalId(externalId);
+
+		if (depublishReason) {
+			return {
+				depublish_reason: depublishReason,
+			} as Avo.Item.Item;
+		}
+
+		// otherwise return null
+		return null;
 	}
 
 	public static async fetchItemExternalIdByMediamosaId(

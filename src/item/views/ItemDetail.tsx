@@ -219,8 +219,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				return;
 			}
 
-			const itemObj: (Avo.Item.Item & { replacement_for?: string }) | null =
-				await ItemsService.fetchItemByExternalId(itemId);
+			const itemObj: (Avo.Item.Item & { replacement_for?: string }) | null = (
+				await ItemsService.fetchItemsByExternalId([itemId])
+			)[0];
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',

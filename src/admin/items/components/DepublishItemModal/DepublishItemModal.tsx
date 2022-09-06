@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,7 @@ interface DepublishItemModalProps {
 
 const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 	item,
-	onClose = () => {},
+	onClose = noop,
 	isOpen,
 }) => {
 	const [t] = useTranslation();
@@ -93,8 +93,9 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			if (depublishType === 'depublish_with_reason') {
 				await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
 			} else if (depublishType === 'depublish_with_replacement' && replacementExternalId) {
-				const replacementItem: Avo.Item.Item | null =
-					await ItemsService.fetchItemByExternalId(replacementExternalId);
+				const replacementItem: Avo.Item.Item | null = (
+					await ItemsService.fetchItemsByExternalId([replacementExternalId])
+				)[0];
 				if (!replacementItem) {
 					ToastService.danger(
 						t(
