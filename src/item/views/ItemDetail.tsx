@@ -502,6 +502,39 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		);
 	};
 
+	const renderEducationDegrees = (item: Avo.Item.Item) => {
+		if (
+			!item.external_id ||
+			!item.lom_typical_age_range ||
+			!enabledMetaData.includes(SearchFilter.educationDegree)
+		) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">{t('item/views/item-detail___onderwijsgraad')}</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.educationDegree,
+								item.lom_typical_age_range
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
+
 	const renderSubjects = (item: Avo.Item.Item) => {
 		if (
 			!item.external_id ||
@@ -890,10 +923,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										{t('item/views/item___metadata')}
 									</BlockHeading>
 									{renderGeneralMetaData(item)}
-									{(!!renderEducationLevels(item) || renderSubjects(item)) && (
-										<div className="c-hr" />
-									)}
+									{(!!renderEducationLevels(item) ||
+										renderEducationDegrees(item) ||
+										renderSubjects(item)) && <div className="c-hr" />}
 									{renderEducationLevels(item)}
+									{renderEducationDegrees(item)}
 									{renderSubjects(item)}
 									{renderThemas(item)}
 									{!!renderKeywords(item) && <div className="c-hr" />}
