@@ -1,7 +1,8 @@
-import { Button, DefaultProps } from '@viaa/avo2-components';
+import { DefaultProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import React, { FC, useState } from 'react';
+import classNames from 'classnames';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CollectionBlockType } from '../../../../collection/collection.const';
@@ -17,6 +18,7 @@ import {
 } from '../../BlockItemMetadata/BlockItemMetadata';
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
+import './CollectionFragmentTypeItem.scss';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
@@ -34,95 +36,84 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	className,
 	canOpenOriginal,
 }) => {
-	const [showOriginal, setShowOriginal] = useState<boolean>(false);
+	console.info('canOpenOriginal', canOpenOriginal);
 
 	const [t] = useTranslation();
 
-	const renderComparison = () => {
-		const cast = block as AssignmentBlock;
+	const cast = block as AssignmentBlock;
+	const custom = cast.use_custom_fields && cast.custom_description;
+	const original = cast.original_description || cast.item_meta?.description;
 
-		const custom = cast.use_custom_fields && cast.custom_description;
-		const hasCustom = !!custom;
-
-		const original = cast.original_description || cast.item_meta?.description;
-
-		return (
+	const customDescription = useMemo(
+		() => (
 			<>
-				{hasCustom && (
-					<>
-						<b>
-							{t(
-								'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
-							)}
-						</b>
-
-						<TextWithTimestamps
-							content={
-								(block?.use_custom_fields ||
-								block?.type === CollectionBlockType.TEXT
-									? block.custom_description
-									: block?.item_meta?.description) || ''
-							}
-						/>
-					</>
+				{canOpenOriginal && (
+					<b>
+						{t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
+						)}
+					</b>
 				)}
 
-				{(!hasCustom || showOriginal) && (
-					<>
-						<b>
-							{t(
-								'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
-							)}
-						</b>
-
-						<TextWithTimestamps content={original || ''} />
-					</>
-				)}
-
-				{hasCustom && (
-					<Button
-						onClick={() => setShowOriginal(!showOriginal)}
-						type="inline-link"
-						icon="align-left"
-						label={
-							showOriginal
-								? t(
-										'shared/components/block-list/blocks/collection-fragment-type-item___verberg-originele-beschrijving'
-								  )
-								: t(
-										'shared/components/block-list/blocks/collection-fragment-type-item___toon-originele-beschrijving'
-								  )
-						}
-					/>
-				)}
+				<TextWithTimestamps
+					content={
+						(block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
+							? block.custom_description
+							: block?.item_meta?.description) || ''
+					}
+				/>
 			</>
-		);
-	};
+		),
+		[canOpenOriginal, block, t]
+	);
+
+	const originalDescription = useMemo(
+		() => (
+			<>
+				{canOpenOriginal && (
+					<b>
+						{t(
+							'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
+						)}
+					</b>
+				)}
+
+				<TextWithTimestamps content={original || ''} />
+			</>
+		),
+		[canOpenOriginal, original, t]
+	);
 
 	return (
-		<div className="c-collection-fragment--type-item">
+		<div className={classNames(className, 'c-collection-fragment-type-item')}>
 			{title && <CollectionFragmentTitle {...title} />}
-			<CollapsibleColumn
-				className={className}
-				grow={flowPlayer ? <CollectionFragmentFlowPlayer {...flowPlayer} /> : <div />}
-				bound={
-					<>
+
+			{flowPlayer && (
+				<div className="c-collection-fragment-type-item__video">
+					<CollectionFragmentFlowPlayer {...flowPlayer} />
+				</div>
+			)}
+
+			{meta && block && (
+				<div className="c-collection-fragment-type-item__sidebar">
+					<CollapsibleColumn>
 						{meta && <BlockItemMetadata {...meta} block={block} />}
 
-						{block && !canOpenOriginal && (
-							<TextWithTimestamps
-								content={
-									(block?.use_custom_fields
-										? block?.custom_description
-										: block?.item_meta?.description) || ''
-								}
-							/>
-						)}
+						{custom ? customDescription : originalDescription}
+					</CollapsibleColumn>
 
-						{block && canOpenOriginal && renderComparison()}
-					</>
-				}
-			/>
+					{custom && canOpenOriginal && (
+						<CollapsibleColumn
+							button={{
+								icon: (expanded) => (expanded ? 'eye-off' : 'eye'),
+								label: (expanded) => (expanded ? t('Verberg') : t('Toon')),
+							}}
+						>
+							{originalDescription}
+						</CollapsibleColumn>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };
