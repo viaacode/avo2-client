@@ -1,7 +1,3 @@
-import { clamp } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -24,6 +20,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { clamp } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -78,7 +77,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	);
 	const [collections, setCollections] = useState<Partial<Avo.Collection.Collection>[]>([]);
 
-	const minTime: number = 0;
+	const minTime = 0;
 	const maxTime: number = toSeconds(itemMetaData.duration) || 0;
 
 	const clampDuration = (value: number): number => {
@@ -163,7 +162,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			collection_uuid: collection.id,
 			item_meta: itemMetaData,
 			type: 'ITEM',
-			thumbnail_path: !!fragmentStartTime
+			thumbnail_path: fragmentStartTime
 				? await VideoStillService.getVideoStill(externalId, fragmentStartTime * 1000)
 				: null,
 		};
@@ -393,7 +392,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									showDescription
 									canPlay={isOpen}
 									cuePoints={{ start, end }}
-									seekTime={fragmentStartTime || 0}
 									verticalLayout={isMobileWidth()}
 								/>
 								<Grid>
