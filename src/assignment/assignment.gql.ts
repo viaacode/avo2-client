@@ -545,17 +545,6 @@ export const UPDATE_ASSIGNMENT_RESPONSE = gql`
 	}
 `;
 
-export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
-	mutation toggleAssignmentResponseSubmitStatus($id: Int!, $submittedAt: timestamptz) {
-		update_app_assignment_responses(
-			where: { id: { _eq: $id } }
-			_set: { submitted_at: $submittedAt }
-		) {
-			affected_rows
-		}
-	}
-`;
-
 export const DELETE_ASSIGNMENT = gql`
 	mutation deleteAssignmentById($assignmentId: uuid!) {
 		delete_app_assignments_v2(where: { id: { _eq: $assignmentId } }) {
