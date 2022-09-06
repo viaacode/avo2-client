@@ -43,6 +43,7 @@ import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
+import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -206,11 +207,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return;
 		}
 
-		if (
-			assignment.available_at &&
-			assignment.deadline_at &&
-			new Date(assignment.available_at).getTime() > new Date(assignment.deadline_at).getTime()
-		) {
+		if (isDeadlineBeforeAvailableAt(assignment.available_at, assignment.deadline_at)) {
 			ToastService.danger(
 				t(
 					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'

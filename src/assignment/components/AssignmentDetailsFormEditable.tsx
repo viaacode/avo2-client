@@ -19,6 +19,7 @@ import { compose } from 'redux';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { AssignmentFormState } from '../assignment.types';
+import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
 import AssignmentLabels from './AssignmentLabels';
@@ -206,7 +207,7 @@ const AssignmentDetailsFormEditable: FC<
 							)}
 						</p>
 					)}
-					{availableAt && deadline && availableAt.getTime() > deadline.getTime() && (
+					{isDeadlineBeforeAvailableAt(availableAt, deadline) && (
 						<p className="c-form-help-text--error">
 							{t(
 								'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
