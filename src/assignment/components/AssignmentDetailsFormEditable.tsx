@@ -10,6 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
+import { isPast } from 'date-fns';
 import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -60,6 +61,7 @@ const AssignmentDetailsFormEditable: FC<
 		);
 	}
 
+	const deadline = assignment.deadline_at ? new Date(assignment.deadline_at) : null;
 	return (
 		<div className={classnames('c-assignment-details-form', className)} style={style}>
 			<Form>
@@ -177,7 +179,7 @@ const AssignmentDetailsFormEditable: FC<
 					required
 				>
 					<DatePicker
-						value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
+						value={deadline}
 						showTimeInput
 						minDate={new Date()}
 						onChange={(value) => {
@@ -197,6 +199,13 @@ const AssignmentDetailsFormEditable: FC<
 							'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
 						)}
 					</p>
+					{deadline && isPast(deadline) && (
+						<p className="c-form-help-text--error">
+							{t(
+								'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
+							)}
+						</p>
+					)}
 				</FormGroup>
 
 				<FormGroup
