@@ -3,62 +3,44 @@
 $component: 'c-collapsible-column';
 
 .#{$component} {
-	display: grid;
+	overflow: hidden;
+	position: relative;
 
-	&__bounded {
-		position: relative;
-		overflow: hidden;
+	&__content {
+		max-height: 100%;
+	}
 
-		&-content {
-			inset: 0 0 0 0;
+	&__toggle {
+		background: #fff;
+		margin: 0 (0 - ($g-spacer-unit * 2));
+
+		&:before {
+			background: rgb(255, 255, 255);
+			background: linear-gradient(
+				0deg,
+				rgba(255, 255, 255, 1) 0%,
+				rgba(255, 255, 255, 0.667) 50%,
+				rgba(255, 255, 255, 0) 100%
+			);
+			bottom: 100%;
+			content: '';
+			display: block;
+			height: 1em;
 			position: absolute;
-		}
-
-		&-toggle {
-			background: #fff;
-			bottom: 0;
-			left: 0;
-			position: absolute;
-			right: 0;
-
-			&:before {
-				background: rgb(255, 255, 255);
-				background: linear-gradient(
-					0deg,
-					rgba(255, 255, 255, 1) 0%,
-					rgba(255, 255, 255, 0.667) 50%,
-					rgba(255, 255, 255, 0) 100%
-				);
-				bottom: 100%;
-				content: '';
-				display: block;
-				height: 1em;
-				position: absolute;
-				width: 100%;
-			}
-
-			.c-button {
-				transform: translateX(0 - ($g-spacer-unit * 2));
-			}
-		}
-
-		&--scrollable {
-			.#{$component} {
-				&__bounded {
-					&-toggle {
-						position: static;
-
-						&:before {
-							display: none;
-						}
-					}
-				}
-			}
+			width: 100%;
 		}
 	}
 
-	.ScrollbarsCustom-TrackY {
-		height: 100% !important;
-		top: 0 !important;
+	&--expanded {
+		max-height: none !important;
+	}
+
+	&--overflowing:not(.#{$component}--expanded) {
+		.#{$component} {
+			&__toggle {
+				inset: auto 0 0 0;
+				position: absolute;
+			}
+		}
 	}
 }

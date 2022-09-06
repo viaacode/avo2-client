@@ -19,8 +19,6 @@ import AssignmentMetadata from '../components/AssignmentMetadata';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { toAssignmentResponsesOverview } from '../helpers/links';
 
-import './AssignmentPupilCollectionDetail.scss';
-
 type AssignmentPupilCollectionDetailProps = DefaultSecureRouteProps<{
 	responseId: string;
 	assignmentId: string;
