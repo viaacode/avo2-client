@@ -4,7 +4,7 @@
 import * as path from 'path';
 
 import fse from 'fs-extra';
-import glob from 'glob';
+import * as glob from 'glob';
 import { split } from 'lodash';
 
 if (!process.env.GRAPHQL_URL) {
@@ -16,10 +16,6 @@ if (!process.env.GRAPHQL_SECRET) {
 	throw new Error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_SECRET is not set'
 	);
-}
-
-if (!process.env.PROXY_PATH) {
-	throw new Error('PROXY_PATH env var is required');
 }
 
 /**
@@ -99,21 +95,8 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 	}
 }
 
-function copyWhitelistToProxy() {
-	const sourceFile = path.join(__dirname, 'client-whitelist.json');
-	const dest = path.join(
-		__dirname,
-		process.env.PROXY_PATH || '',
-		'scripts',
-		'client-whitelist.json'
-	);
-	fse.copySync(sourceFile, dest);
-	console.log('Whitelist file copied to proxy: ' + dest);
-}
-
 async function run() {
 	await extractQueriesFromCode(/const ([^\s]+) = gql`([^`]+?)`/gm);
-	copyWhitelistToProxy();
 }
 
 run();
