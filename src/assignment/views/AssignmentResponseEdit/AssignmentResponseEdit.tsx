@@ -392,7 +392,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 											<p>
 												{t(
 													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
-												)}
+												)}{' '}
 												<a href={assignment.answer_url}>
 													{assignment.answer_url}
 												</a>
