@@ -36,8 +36,6 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	className,
 	canOpenOriginal,
 }) => {
-	console.info('canOpenOriginal', canOpenOriginal);
-
 	const [t] = useTranslation();
 
 	const cast = block as AssignmentBlock;
@@ -106,7 +104,14 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 						<CollapsibleColumn
 							button={{
 								icon: (expanded) => (expanded ? 'eye-off' : 'eye'),
-								label: (expanded) => (expanded ? t('Verberg') : t('Toon')),
+								label: (expanded) =>
+									expanded
+										? t(
+												'shared/components/block-list/blocks/collection-fragment-type-item___verberg'
+										  )
+										: t(
+												'shared/components/block-list/blocks/collection-fragment-type-item___toon'
+										  ),
 							}}
 						>
 							{originalDescription}
