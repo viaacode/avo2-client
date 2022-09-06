@@ -19,6 +19,7 @@ import { compose } from 'redux';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { AssignmentFormState } from '../assignment.types';
+import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
 import AssignmentLabels from './AssignmentLabels';
@@ -62,6 +63,7 @@ const AssignmentDetailsFormEditable: FC<
 	}
 
 	const deadline = assignment.deadline_at ? new Date(assignment.deadline_at) : null;
+	const availableAt = assignment.available_at ? new Date(assignment.available_at) : new Date();
 	return (
 		<div className={classnames('c-assignment-details-form', className)} style={style}>
 			<Form>
@@ -156,10 +158,9 @@ const AssignmentDetailsFormEditable: FC<
 					required
 				>
 					<DatePicker
-						value={
-							assignment.available_at ? new Date(assignment.available_at) : new Date()
-						}
+						value={availableAt}
 						showTimeInput
+						minDate={new Date()}
 						onChange={(value: Date | null) => {
 							setValue('available_at', value?.toISOString(), {
 								shouldDirty: true,
@@ -203,6 +204,13 @@ const AssignmentDetailsFormEditable: FC<
 						<p className="c-form-help-text--error">
 							{t(
 								'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
+							)}
+						</p>
+					)}
+					{isDeadlineBeforeAvailableAt(availableAt, deadline) && (
+						<p className="c-form-help-text--error">
+							{t(
+								'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 							)}
 						</p>
 					)}
