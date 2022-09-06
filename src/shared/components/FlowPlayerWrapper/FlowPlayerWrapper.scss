@@ -15,6 +15,7 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 	border-radius: 0.4rem;
 	overflow: hidden;
 	max-width: 100%;
+	width: 100%;
 
 	.a-flowplayer__text {
 		color: $color-gray-200;
@@ -23,6 +24,7 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 
 .c-video-player__overlay {
 	position: relative;
+	width: 100%;
 
 	.c-video-player__thumbnail {
 		background-size: cover;

@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { isPast } from 'date-fns';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -42,6 +43,7 @@ import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
+import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
@@ -195,6 +197,22 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const handleOnSave = async () => {
 		if (!user.profile?.id || !original) {
+			return;
+		}
+
+		if (assignment.deadline_at && isPast(new Date(assignment.deadline_at))) {
+			ToastService.danger(
+				t('assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen')
+			);
+			return;
+		}
+
+		if (isDeadlineBeforeAvailableAt(assignment.available_at, assignment.deadline_at)) {
+			ToastService.danger(
+				t(
+					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
+				)
+			);
 			return;
 		}
 
