@@ -25,7 +25,7 @@ export const GET_ITEMS_WITH_FILTERS = gql`
 			lom_intendedenduserrole
 			lom_keywords
 			lom_languages
-			lom_typicalagerange
+			lom_typical_age_range: lom_typicalagerange
 			org_id
 			organisation {
 				or_id
@@ -115,7 +115,7 @@ export const GET_ITEM_BY_UUID = gql`
 			lom_intendedenduserrole
 			lom_keywords
 			lom_languages
-			lom_typicalagerange
+			lom_typical_age_range: lom_typicalagerange
 			org_id
 			organisation {
 				or_id
@@ -262,7 +262,7 @@ export const GET_ITEM_BY_EXTERNAL_ID = gql`
 			lom_intendedenduserrole
 			lom_keywords
 			lom_languages
-			lom_typicalagerange
+			lom_typical_age_range: lom_typicalagerange
 			org_id
 			organisation {
 				or_id

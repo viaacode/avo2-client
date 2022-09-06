@@ -1,7 +1,3 @@
-import { clamp, noop } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -15,6 +11,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { clamp, noop } from 'lodash-es';
+import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { CustomError, formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
@@ -225,7 +224,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					external_id={itemMetaData.external_id}
 					duration={itemMetaData.duration}
 					title={itemMetaData.title}
-					seekTime={fragmentStart}
 					cuePoints={{
 						start: fragmentStart,
 						end: fragmentEnd,

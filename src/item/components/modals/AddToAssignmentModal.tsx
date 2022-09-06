@@ -185,7 +185,6 @@ const AddToAssignmentModal: FunctionComponent<
 									showDescription
 									canPlay={isOpen}
 									cuePoints={{ start, end }}
-									seekTime={fragmentStartTime || 0}
 									verticalLayout={isMobileWidth()}
 								/>
 								<Grid>
