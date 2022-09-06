@@ -17,12 +17,7 @@ import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import {
-	ApolloCacheManager,
-	AssignmentLabelsService,
-	dataService,
-	ToastService,
-} from '../shared/services';
+import { ApolloCacheManager, AssignmentLabelsService, dataService } from '../shared/services';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
@@ -60,7 +55,6 @@ import {
 	UPDATE_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_BLOCK,
 	UPDATE_ASSIGNMENT_RESPONSE,
-	UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
 	UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
 } from './assignment.gql';
 import {
@@ -383,7 +377,6 @@ export class AssignmentService {
 				);
 			}
 
-			AssignmentService.warnAboutDeadlineInThePast(update);
 			update.updated_at = new Date().toISOString();
 
 			await AssignmentService.updateAssignmentBlocks(
@@ -609,35 +602,6 @@ export class AssignmentService {
 		return await Promise.all(promises);
 	}
 
-	static async toggleAssignmentResponseSubmitStatus(
-		id: number | string,
-		submittedAt: string | null
-	): Promise<void> {
-		try {
-			const response = await dataService.mutate<Avo.Assignment.Assignment_v2>({
-				mutation: UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS,
-				variables: {
-					id,
-					submittedAt,
-				},
-				update: ApolloCacheManager.clearAssignmentCache,
-			});
-
-			if (response.errors) {
-				throw new CustomError('Graphql response contains errors', null, { response });
-			}
-		} catch (err) {
-			throw new CustomError(
-				'Failed to toggle submitted at status for assignment response',
-				err,
-				{
-					id,
-					submittedAt,
-				}
-			);
-		}
-	}
-
 	static async insertAssignment(
 		assignment: Partial<Avo.Assignment.Assignment_v2>,
 		addedLabels?: AssignmentSchemaLabel_v2[]
@@ -646,8 +610,6 @@ export class AssignmentService {
 			const assignmentToSave = AssignmentService.transformAssignment({
 				...assignment,
 			});
-
-			AssignmentService.warnAboutDeadlineInThePast(assignmentToSave);
 
 			const response = await dataService.mutate<Avo.Assignment.Assignment_v2>({
 				mutation: INSERT_ASSIGNMENT,
@@ -765,20 +727,6 @@ export class AssignmentService {
 				blocks,
 				query: 'INSERT_ASSIGNMENT_BLOCKS',
 			});
-		}
-	}
-
-	private static warnAboutDeadlineInThePast(
-		assignment: Pick<AssignmentSchema_v2, 'deadline_at'>
-	) {
-		// Validate if deadline_at is not in the past
-		if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
-			ToastService.info([
-				i18n.t('assignment/assignment___de-ingestelde-deadline-ligt-in-het-verleden'),
-				i18n.t(
-					'assignment/assignment___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht'
-				),
-			]);
 		}
 	}
 
