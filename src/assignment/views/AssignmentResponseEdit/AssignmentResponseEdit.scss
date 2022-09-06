@@ -57,6 +57,10 @@
 	}
 
 	.c-tabs {
+		.c-tab-item {
+			white-space: nowrap;
+		}
+
 		.c-pill.animated {
 			background-color: $color-yellow;
 			color: white;
