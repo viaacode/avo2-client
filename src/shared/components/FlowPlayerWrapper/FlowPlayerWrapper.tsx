@@ -1,14 +1,14 @@
-import { get, isNil } from 'lodash-es';
+import { AspectRatioWrapper, FlowPlayer, FlowplayerSourceList, Icon } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { AspectRatioWrapper, FlowPlayer, Icon } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
 	getEnv,
+	isMobileWidth,
 	reorderDate,
 	toSeconds,
 } from '../../helpers';
@@ -29,7 +29,7 @@ export interface CuePoints {
 
 export type FlowPlayerWrapperProps = {
 	item?: Avo.Item.Item;
-	src?: string;
+	src?: string | FlowplayerSourceList;
 	poster?: string;
 	external_id?: string;
 	title?: string;
@@ -41,9 +41,8 @@ export type FlowPlayerWrapperProps = {
 	annotationText?: string;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
-	seekTime?: number;
 	autoplay?: boolean;
-	onPlay?: () => void;
+	onPlay?: (playingSrc: string) => void;
 	onEnded?: () => void;
 };
 
@@ -58,9 +57,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
-	const [triggeredForUrl, setTriggeredForUrl] = useState<string | null>(null);
+	const [triggeredForUrl, setTriggeredForUrl] = useState<Record<string, boolean>>({});
 	const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false);
-	const [src, setSrc] = useState<string | undefined>(props.src);
+	const [src, setSrc] = useState<string | FlowplayerSourceList | undefined>(props.src);
+
+	const isPlaylist = !isString(src) && !isNil(src);
 
 	useEffect(() => {
 		// reset token when item changes
@@ -70,10 +71,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 	const initFlowPlayer = useCallback(async () => {
 		try {
-			if (!item) {
+			if (!item && !props.src) {
 				throw new CustomError('Failed to init flowplayer since item is undefined');
 			}
-			setSrc(await fetchPlayerTicket(item.external_id));
+			if (item) {
+				setSrc(await fetchPlayerTicket(item.external_id));
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to initFlowPlayer in FlowPlayerWrapper', err, {
@@ -94,7 +97,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	}, [props.autoplay, item, initFlowPlayer]);
 
-	const handlePlay = () => {
+	const handlePlay = (playingSrc: string) => {
 		trackEvents(
 			{
 				object: props.external_id || '',
@@ -105,7 +108,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		);
 
 		// Only trigger once per video
-		if (item && item.uid && triggeredForUrl !== src) {
+		if (item && item.uid && !triggeredForUrl[playingSrc]) {
 			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
 				console.error(
 					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
@@ -113,10 +116,13 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			});
 
 			if (props.onPlay) {
-				props.onPlay();
+				props.onPlay(playingSrc);
 			}
 
-			setTriggeredForUrl(src || null);
+			setTriggeredForUrl({
+				...triggeredForUrl,
+				[playingSrc]: true,
+			});
 		}
 
 		SmartschoolAnalyticsService.triggerVideoPlayEvent(
@@ -144,21 +150,45 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
-	const getBrowserSafeUrl = (src: string): string => {
+	const getBrowserSafeUrl = (
+		src: string | FlowplayerSourceList
+	): string | FlowplayerSourceList => {
 		if (hasHlsSupport()) {
 			return src;
 		}
 
-		if (src.includes('flowplayer')) {
-			return src.replace('/hls/', '/v-').replace('/playlist.m3u8', '_original.mp4');
-		}
+		if (isPlaylist) {
+			// Convert each url in the entry in the playlist if possible
+			(src as FlowplayerSourceList).items.forEach((entry) => {
+				if (entry.src.includes('flowplayer')) {
+					entry.src = entry.src
+						.replace('/hls/', '/v-')
+						.replace('/playlist.m3u8', '_original.mp4');
+				}
+			});
 
-		if (src.endsWith('.m3u8')) {
-			ToastService.danger(
-				t(
-					'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
-				)
-			);
+			if ((src as FlowplayerSourceList).items.some((entry) => entry.src.includes('.m3u8'))) {
+				ToastService.danger(
+					t(
+						'Bepaalde videos in de playlist kunnen niet worden afgespeeld. Probeer een andere browser.'
+					)
+				);
+			}
+		} else {
+			// Convert src url
+			if ((src as string).includes('flowplayer')) {
+				return (src as string)
+					.replace('/hls/', '/v-')
+					.replace('/playlist.m3u8', '_original.mp4');
+			}
+
+			if ((src as string).endsWith('.m3u8')) {
+				ToastService.danger(
+					t(
+						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
+					)
+				);
+			}
 		}
 
 		return src;
@@ -185,7 +215,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			{src && (props.autoplay || clickedThumbnail || !item) ? (
 				<FlowPlayer
 					src={getBrowserSafeUrl(src)}
-					seekTime={props.seekTime}
 					poster={poster}
 					title={props.title}
 					metadata={
@@ -213,9 +242,10 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 					}}
 					start={item ? start : null}
 					end={item ? end : null}
-					autoplay={(!!item && !!src) || props.autoplay}
+					autoplay={(!!item && !!src) || (!isPlaylist && props.autoplay)}
 					canPlay={props.canPlay}
 					subtitles={getSubtitles(item)}
+					playlistScrollable={!isMobileWidth()}
 					onPlay={handlePlay}
 					onEnded={props.onEnded}
 					googleAnalyticsId={trackingId}
