@@ -54,18 +54,28 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 		...(className ? [className] : []),
 	];
 
+	const getId = (key: string | number) => `${id}--${key}`;
+
 	/**
-	 * We keep track of a tempDescription here so we can trigger onChange events onBlur, which improved typing performance
-	 * Ideally we would like to move away from the braft rich text editor and use something like: https://github.com/ianstormtaylor/slate
+	 * We keep track of temp fields here so we can trigger onChange events onBlur, which improves perceived performance
+	 * Ideally we would like to move away from the braft rich text editor causing this lag and use something like:
+	 * https://github.com/ianstormtaylor/slate
 	 */
+	const [tempTitle, setTempTitle] = useState<string | undefined>();
 	const [tempDescription, setTempDescription] = useState<RichEditorState | undefined>();
 
-	const getId = (key: string | number) => `${id}--${key}`;
+	/**
+	 * Synchronise the temp fields with incoming values
+	 */
 
 	// See WYSIWYGInternal.tsx:162
 	useEffect(() => {
 		setTempDescription(undefined);
 	}, [description?.initialHtml]);
+
+	useEffect(() => {
+		setTempTitle(title?.value);
+	}, [title?.value]);
 
 	return (
 		<div className={wrapperClasses.join(' ')} style={style}>
@@ -97,8 +107,9 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 						<FormGroup label={title.label} labelFor={getId(CustomiseItemFormIds.title)}>
 							<TextInput
 								{...title}
-								value={title?.value}
-								onChange={title?.onChange}
+								value={tempTitle}
+								onChange={setTempTitle}
+								onBlur={() => title?.onChange?.(tempTitle || '')}
 								id={getId(CustomiseItemFormIds.title)}
 							/>
 
