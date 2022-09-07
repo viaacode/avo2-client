@@ -170,7 +170,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			if ((src as FlowplayerSourceList).items.some((entry) => entry.src.includes('.m3u8'))) {
 				ToastService.danger(
 					t(
-						'Bepaalde videos in de playlist kunnen niet worden afgespeeld. Probeer een andere browser.'
+						'shared/components/flow-player-wrapper/flow-player-wrapper___bepaalde-videos-in-de-playlist-kunnen-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
 			}

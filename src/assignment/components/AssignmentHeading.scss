@@ -101,6 +101,10 @@
 	}
 
 	&__bottom {
+		max-width: 100%;
+		overflow-x: auto;
+		overflow-y: hidden;
+
 		.c-tabs {
 			> .c-tab-item {
 				padding: 0.8rem;

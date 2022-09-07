@@ -9,7 +9,8 @@
 		}
 	}
 
-	&__tab-buttons {
+	&__tab-buttons,
+	&__tab-buttons.c-button-toolbar {
 		display: none;
 
 		@media screen and (min-width: $g-bp2) {
