@@ -404,13 +404,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderLabels = (labels: AssignmentSchemaLabel_v2[], label: string) => {
-		return isMobileWidth() ? (
-			renderDataCell(
-				labels.map((label) => label.assignment_label.label).join(', '),
+		if (isMobileWidth()) {
+			return renderDataCell(
+				labels.map((label) => label.assignment_label.label).join(', ') || '-',
 				label,
 				'm-assignment-overview__table__data-cell--labels'
-			)
-		) : (
+			);
+		}
+
+		if (!labels.length) {
+			return '-';
+		}
+
+		return (
 			<TagList
 				tags={labels.map(({ assignment_label: item }: any) => ({
 					id: item.id,
@@ -427,12 +433,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		isMobileWidth() ? (
 			<div className={classnames('m-assignment-overview__table__data-cell', className)}>
 				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
-				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
+				<div className="m-assignment-overview__table__data-cell__value">{value || '-'}</div>
 			</div>
-		) : className ? (
-			<span className={className}>{value}</span>
 		) : (
-			value
+			<span className={className}>{value || '-'}</span>
 		);
 
 	const renderResponsesCell = (cellData: any, assignment: AssignmentSchema_v2) => {
@@ -508,9 +512,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 
 			case 'labels':
-				return labels.length > 0
-					? renderLabels(labels, t('assignment/views/assignment-overview___labels'))
-					: null;
+				return renderLabels(labels, t('assignment/views/assignment-overview___labels'));
 
 			case 'class_room':
 				return renderLabels(
