@@ -1,20 +1,16 @@
+import { Button, ButtonToolbar, Container, Icon, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { Button, ButtonToolbar, Container, Icon, Spacer } from '@viaa/avo2-components';
-
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { navigate } from '../../shared/helpers';
 
 import './LinkYourAccount.scss';
+import Html from '../../shared/components/Html/Html';
 
-export interface RegisterOrLoginProps {}
-
-const LinkYourAccount: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
-	history,
-}) => {
+const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) => {
 	const [t] = useTranslation();
 
 	return (
@@ -75,6 +71,13 @@ const LinkYourAccount: FunctionComponent<RegisterOrLoginProps & RouteComponentPr
 								</Spacer>
 							</div>
 						</div>
+					</Spacer>
+					<Spacer margin="bottom">
+						<Html
+							content={t(
+								'authentication/views/link-your-account___lees-er-alles-over-in-dit-faq-artikel'
+							)}
+						/>
 					</Spacer>
 				</Spacer>
 				<ButtonToolbar>
