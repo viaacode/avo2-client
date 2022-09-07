@@ -403,17 +403,25 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
-		<TagList
-			tags={labels.map(({ assignment_label: item }: any) => ({
-				id: item.id,
-				label: item.label || '',
-				color: item.color_override || item.enum_color?.label || 'hotpink',
-			}))}
-			swatches
-			closable={false}
-		/>
-	);
+	const renderLabels = (labels: AssignmentSchemaLabel_v2[], label: string) => {
+		return isMobileWidth() ? (
+			renderDataCell(
+				labels.map((label) => label.assignment_label.label).join(', '),
+				label,
+				'm-assignment-overview__table__data-cell--labels'
+			)
+		) : (
+			<TagList
+				tags={labels.map(({ assignment_label: item }: any) => ({
+					id: item.id,
+					label: item.label || '',
+					color: item.color_override || item.enum_color?.label || 'hotpink',
+				}))}
+				swatches
+				closable={false}
+			/>
+		);
+	};
 
 	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
 		isMobileWidth() ? (
@@ -500,13 +508,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 
 			case 'labels':
-				return labels.length > 0 ? renderLabels(labels) : null;
+				return labels.length > 0
+					? renderLabels(labels, t('assignment/views/assignment-overview___labels'))
+					: null;
 
 			case 'class_room':
 				return renderLabels(
 					(assignment.labels as any[]).filter(
 						({ assignment_label: item }) => item.type === 'CLASS'
-					)
+					),
+					t('assignment/views/assignment-overview___klas')
 				);
 
 			case 'author': {
