@@ -234,11 +234,11 @@ export const GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID = gql`
 	}
 `;
 
-export const GET_ITEM_BY_EXTERNAL_ID = gql`
-	query getItemByExternalId($externalId: bpchar!) {
+export const GET_ITEMS_BY_EXTERNAL_ID = gql`
+	query getItemsByExternalId($externalIds: [bpchar!] = []) {
 		app_item_meta(
 			where: {
-				external_id: { _eq: $externalId }
+				external_id: { _in: $externalIds }
 				is_deleted: { _eq: false }
 				is_published: { _eq: true }
 			}

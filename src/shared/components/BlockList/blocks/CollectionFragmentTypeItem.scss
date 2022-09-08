@@ -1,7 +1,8 @@
 @use 'sass:math';
 @import '../../../../styles/settings/variables';
 
-$item-description-height-xs: 160px;
+$item-description-height-0: 188px;
+$item-description-height-2: 320px;
 
 .c-collection-fragment-type-item {
 	display: grid;
@@ -32,10 +33,10 @@ $item-description-height-xs: 160px;
 
 	// Limit the description with more/less buttons
 	.c-collapsible-column {
-		max-height: $item-description-height-xs;
+		max-height: $item-description-height-0;
 
 		@media screen and (min-width: $g-item-fragment-column-bp) {
-			max-height: $item-description-height-xs * 2;
+			max-height: $item-description-height-2;
 		}
 
 		+ .c-collapsible-column {

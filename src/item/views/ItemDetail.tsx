@@ -97,6 +97,7 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { UnpublishableItem } from '../../shared/types';
 import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
@@ -219,8 +220,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				return;
 			}
 
-			const itemObj: (Avo.Item.Item & { replacement_for?: string }) | null =
-				await ItemsService.fetchItemByExternalId(itemId);
+			const itemObj: UnpublishableItem = await ItemsService.fetchItemByExternalId(itemId);
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',

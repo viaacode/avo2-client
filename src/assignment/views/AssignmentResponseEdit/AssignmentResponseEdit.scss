@@ -16,23 +16,6 @@
 		background-color: transparent;
 	}
 
-	.l-assignment-response__meta-data {
-		flex-wrap: wrap;
-
-		> div {
-			width: 100%;
-
-			@media screen and (min-width: $g-bp1) {
-				width: 50%;
-			}
-
-			@media screen and (min-width: $g-bp3) {
-				width: auto;
-				margin-right: $g-spacer-unit * 2;
-			}
-		}
-	}
-
 	.c-return--search-results {
 		margin: 1rem 0;
 		padding: 0.9rem 0 2.5rem;
@@ -74,6 +57,10 @@
 	}
 
 	.c-tabs {
+		.c-tab-item {
+			white-space: nowrap;
+		}
+
 		.c-pill.animated {
 			background-color: $color-yellow;
 			color: white;

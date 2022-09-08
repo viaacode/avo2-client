@@ -6,6 +6,7 @@ import {
 	AssignmentSchema_v2,
 } from '@viaa/avo2-types/types/assignment';
 import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
@@ -65,6 +66,7 @@ import {
 	PupilCollectionFragment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
+import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
 	static async fetchAssignments(
@@ -217,21 +219,7 @@ export class AssignmentService {
 
 			return {
 				...assignmentResponse,
-				blocks: await Promise.all(
-					assignmentResponse.blocks.map(async (block) =>
-						block.fragment_id
-							? await ItemsService.fetchItemByExternalId(block.fragment_id).then(
-									(item_meta) =>
-										item_meta
-											? {
-													...block,
-													item_meta,
-											  }
-											: block
-							  )
-							: block
-					)
-				),
+				blocks: await this.enrichBlocksWithMeta<AssignmentBlock>(assignmentResponse.blocks),
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
@@ -764,20 +752,8 @@ export class AssignmentService {
 				assignmentId
 			);
 
-			const blocks = await Promise.all(
-				initialAssignmentBlocks.map(async (block: Avo.Assignment.Block) => {
-					try {
-						if (block.fragment_id) {
-							block.item_meta =
-								(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
-								undefined;
-						}
-					} catch (error) {
-						console.warn(`Unable to fetch meta data for ${block.fragment_id}`, error);
-					}
-
-					return block;
-				})
+			const blocks = await this.enrichBlocksWithMeta<AssignmentBlock>(
+				initialAssignmentBlocks
 			);
 
 			return {
@@ -901,31 +877,38 @@ export class AssignmentService {
 	}
 
 	/**
-	 * Fetches the item for each block in the pupil collection of the response
+	 * Fetches the item for each block in the list of given blocks
 	 * If the item was replaced by another, the other item is used
 	 * The item_meta is filled in into the existing response (mutable)
-	 * @param response
+	 * @param blocks
 	 */
-	static async fillItemMetaForAssignmentResponse(
-		response: Avo.Assignment.Response_v2
-	): Promise<BlockItemBaseSchema[]> {
-		return Promise.all(
-			(response.pupil_collection_blocks || []).map(async (block) => {
-				const cast = block as PupilCollectionFragment;
+	static async enrichBlocksWithMeta<T = PupilCollectionFragment | AssignmentBlock>(
+		blocks?: BlockItemBaseSchema[],
+		items: (ItemSchema | null)[] = []
+	): Promise<T[]> {
+		const enriched = await Promise.all(
+			(blocks || []).map(async (block) => {
+				const cast = block as PupilCollectionFragment | AssignmentBlock;
 
-				try {
-					if (cast.fragment_id) {
-						block.item_meta =
-							(await ItemsService.fetchItemByExternalId(cast.fragment_id)) ||
-							undefined;
+				if (cast.fragment_id) {
+					try {
+						return {
+							...block,
+							item_meta:
+								items.find((item) => item?.external_id === cast.fragment_id) ||
+								(await ItemsService.fetchItemByExternalId(cast.fragment_id)) ||
+								undefined,
+						};
+					} catch (error) {
+						console.warn(`Unable to fetch meta data for ${cast.fragment_id}`, error);
 					}
-				} catch (error) {
-					console.warn(`Unable to fetch meta data for ${cast.fragment_id}`, error);
 				}
 
 				return block;
 			})
 		);
+
+		return enriched.filter(isItemWithMeta) as unknown as T[];
 	}
 
 	/**
@@ -988,7 +971,9 @@ export class AssignmentService {
 			}
 
 			assignmentResponse.pupil_collection_blocks =
-				await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+				await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
+					assignmentResponse.pupil_collection_blocks
+				);
 
 			return assignmentResponse;
 		} catch (err) {
@@ -1026,7 +1011,9 @@ export class AssignmentService {
 			}
 
 			assignmentResponse.pupil_collection_blocks =
-				await AssignmentService.fillItemMetaForAssignmentResponse(assignmentResponse);
+				await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
+					assignmentResponse.pupil_collection_blocks
+				);
 
 			return assignmentResponse;
 		} catch (err) {
@@ -1103,7 +1090,9 @@ export class AssignmentService {
 			}
 
 			insertedAssignmentResponse.pupil_collection_blocks =
-				await this.fillItemMetaForAssignmentResponse(insertedAssignmentResponse);
+				await this.enrichBlocksWithMeta<PupilCollectionFragment>(
+					assignmentResponse.pupil_collection_blocks
+				);
 
 			return insertedAssignmentResponse;
 		} catch (err) {

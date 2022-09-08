@@ -232,7 +232,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		return (
 			<>
 				<Container mode="vertical">
-					<Toolbar size="large">
+					<Toolbar alignTop className="c-toolbar--no-height u-spacer-bottom-l">
 						<ToolbarLeft>
 							<Controller
 								name="collection_title"
@@ -244,7 +244,10 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 										)}
 										className="c-form-group--full-width"
 									>
-										<Flex orientation="vertical">
+										<Flex
+											className="u-spacer-top-s u-spacer-bottom-s"
+											orientation="vertical"
+										>
 											<TextInput
 												type="text"
 												value={field.value || ''}
@@ -276,9 +279,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 						</ToolbarLeft>
 						<ToolbarRight>{renderActionButtons()}</ToolbarRight>
 					</Toolbar>
-				</Container>
-				<Container mode="vertical">
+
 					{renderedListSorter}
+
 					{!assignmentResponse?.pupil_collection_blocks?.length && (
 						<EmptyStateMessage
 							img={<PupilSvg />}
