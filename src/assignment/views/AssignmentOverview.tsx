@@ -405,15 +405,17 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderLabels = (labels: AssignmentSchemaLabel_v2[], label: string) => {
+		if (!labels.length) {
+			return '-';
+		}
+
 		return renderMobileDesktop({
 			mobile: renderDataCell(
-				labels.map((label) => label.assignment_label.label).join(', ') || '-',
+				labels.map((label) => label.assignment_label.label).join(', '),
 				label,
 				'm-assignment-overview__table__data-cell--labels'
 			),
-			desktop: !labels.length ? (
-				'-'
-			) : (
+			desktop: (
 				<TagList
 					tags={labels.map(({ assignment_label: item }: any) => ({
 						id: item.id,
