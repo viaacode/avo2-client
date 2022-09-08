@@ -12,8 +12,8 @@ export function renderMobileDesktop(children: {
 }): ReactNode {
 	return (
 		<>
-			<div className="u-less-than--mobile-width">{children.mobile}</div>
-			<div className="u-more-than--mobile-width">{children.desktop}</div>
+			<div className="u-hide-gte-bp2">{children.mobile}</div>
+			<div className="u-hide-lt-bp2">{children.desktop}</div>
 		</>
 	);
 }
