@@ -1,0 +1,16 @@
+@import '../../styles/settings/variables';
+
+.u-hide {
+	// Hide the element when the viewport is at least $g-bp2, bigger than mobile
+	&-gte-bp2 {
+		@media (min-width: $g-bp2) {
+			display: none;
+		}
+	}
+	// Hide the element when the viewport is less than $g-bp2, smaller than desktop
+	&-lt-bp2 {
+		@media (max-width: ($g-bp2 - 1px)) {
+			display: none;
+		}
+	}
+}

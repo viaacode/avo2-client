@@ -60,6 +60,7 @@ import {
 import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
 import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '../../shared/helpers';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
@@ -403,29 +404,43 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: AssignmentSchemaLabel_v2[]) => (
-		<TagList
-			tags={labels.map(({ assignment_label: item }: any) => ({
-				id: item.id,
-				label: item.label || '',
-				color: item.color_override || item.enum_color?.label || 'hotpink',
-			}))}
-			swatches
-			closable={false}
-		/>
-	);
+	const renderLabels = (labels: AssignmentSchemaLabel_v2[], label: string) => {
+		if (!labels.length) {
+			return '-';
+		}
+
+		return renderMobileDesktop({
+			mobile: renderDataCell(
+				labels.map((label) => label.assignment_label.label).join(', '),
+				label,
+				'm-assignment-overview__table__data-cell--labels'
+			),
+			desktop: (
+				<TagList
+					tags={labels.map(({ assignment_label: item }: any) => ({
+						id: item.id,
+						label: item.label || '',
+						color: item.color_override || item.enum_color?.label || 'hotpink',
+					}))}
+					swatches
+					closable={false}
+				/>
+			),
+		});
+	};
 
 	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
-		isMobileWidth() ? (
-			<div className={classnames('m-assignment-overview__table__data-cell', className)}>
-				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
-				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
-			</div>
-		) : className ? (
-			<span className={className}>{value}</span>
-		) : (
-			value
-		);
+		renderMobileDesktop({
+			mobile: (
+				<div className={classnames('m-assignment-overview__table__data-cell', className)}>
+					<div className="m-assignment-overview__table__data-cell__label">{label}</div>
+					<div className="m-assignment-overview__table__data-cell__value">
+						{value || '-'}
+					</div>
+				</div>
+			),
+			desktop: <span className={className}>{value || '-'}</span>,
+		});
 
 	const renderResponsesCell = (cellData: any, assignment: AssignmentSchema_v2) => {
 		if ((cellData || []).length === 0) {
@@ -492,30 +507,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					</Flex>
 				);
 
-				return isMobileWidth() ? (
-					<Spacer margin="bottom-small">{renderTitle()}</Spacer>
-				) : (
-					renderTitle()
-				);
+				return renderMobileDesktop({
+					mobile: <Spacer margin="bottom-small">{renderTitle()}</Spacer>,
+					desktop: renderTitle(),
+				});
 			}
 
 			case 'labels':
-				return labels.length > 0 ? (
-					<>
-						{renderLabels(labels)}
-						{renderDataCell(
-							labels.map((label) => label.assignment_label.label).join(', '),
-							`${t('assignment/views/assignment-overview___labels')}`,
-							'm-assignment-overview__table__data-cell--labels'
-						)}
-					</>
-				) : null;
+				return renderLabels(labels, t('assignment/views/assignment-overview___labels'));
 
 			case 'class_room':
 				return renderLabels(
 					(assignment.labels as any[]).filter(
 						({ assignment_label: item }) => item.type === 'CLASS'
-					)
+					),
+					t('assignment/views/assignment-overview___klas')
 				);
 
 			case 'author': {
@@ -526,7 +532,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					small: isMobileWidth(),
 				};
 
-				return !isMobileWidth() && renderAvatar(profile, avatarOptions);
+				return renderMobileDesktop({
+					mobile: null,
+					desktop: renderAvatar(profile, avatarOptions),
+				});
 			}
 
 			case 'deadline_at':
@@ -546,14 +555,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return renderResponsesCell(cellData, assignment);
 
 			case 'actions':
-				if (isMobileWidth()) {
-					return (
+				return renderMobileDesktop({
+					mobile: (
 						<Spacer className="c-assignment-overview__actions" margin="top">
 							{renderActions(assignment)}
 						</Spacer>
-					);
-				}
-				return renderActions(assignment);
+					),
+					desktop: renderActions(assignment),
+				});
 
 			default:
 				return JSON.stringify(cellData);
@@ -586,62 +595,65 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				<ToolbarLeft>
 					<ToolbarItem>
 						<ButtonToolbar>
-							{isMobileWidth() ? (
-								<Select
-									options={[
-										{
-											label: t(
+							{renderMobileDesktop({
+								mobile: (
+									<Select
+										options={[
+											{
+												label: t(
+													'assignment/views/assignment-overview___actieve-opdrachten'
+												),
+												value: 'assignments',
+											},
+											{
+												label: t(
+													'assignment/views/assignment-overview___afgelopen-opdrachten'
+												),
+												value: 'finished_assignments',
+											},
+										]}
+										value={query.view}
+										onChange={(activeViewId: string) =>
+											handleQueryChanged(
+												activeViewId as Avo.Assignment.View,
+												'view'
+											)
+										}
+										className="c-assignment-overview__archive-select"
+										isSearchable={false}
+									/>
+								),
+								desktop: (
+									<ButtonGroup className="c-assignment-overview__archive-buttons">
+										<Button
+											type="secondary"
+											label={t(
 												'assignment/views/assignment-overview___actieve-opdrachten'
-											),
-											value: 'assignments',
-										},
-										{
-											label: t(
+											)}
+											title={t(
+												'assignment/views/assignment-overview___filter-op-actieve-opdrachten'
+											)}
+											active={query.view === AssignmentView.ACTIVE}
+											onClick={() =>
+												handleQueryChanged(AssignmentView.ACTIVE, 'view')
+											}
+										/>
+										<Button
+											type="secondary"
+											label={t(
 												'assignment/views/assignment-overview___afgelopen-opdrachten'
-											),
-											value: 'finished_assignments',
-										},
-									]}
-									value={query.view}
-									onChange={(activeViewId: string) =>
-										handleQueryChanged(
-											activeViewId as Avo.Assignment.View,
-											'view'
-										)
-									}
-									className="c-assignment-overview__archive-select"
-									isSearchable={false}
-								/>
-							) : (
-								<ButtonGroup className="c-assignment-overview__archive-buttons">
-									<Button
-										type="secondary"
-										label={t(
-											'assignment/views/assignment-overview___actieve-opdrachten'
-										)}
-										title={t(
-											'assignment/views/assignment-overview___filter-op-actieve-opdrachten'
-										)}
-										active={query.view === AssignmentView.ACTIVE}
-										onClick={() =>
-											handleQueryChanged(AssignmentView.ACTIVE, 'view')
-										}
-									/>
-									<Button
-										type="secondary"
-										label={t(
-											'assignment/views/assignment-overview___afgelopen-opdrachten'
-										)}
-										title={t(
-											'assignment/views/assignment-overview___filter-op-afgelopen-opdrachten'
-										)}
-										active={query.view === AssignmentView.FINISHED}
-										onClick={() =>
-											handleQueryChanged(AssignmentView.FINISHED, 'view')
-										}
-									/>
-								</ButtonGroup>
-							)}
+											)}
+											title={t(
+												'assignment/views/assignment-overview___filter-op-afgelopen-opdrachten'
+											)}
+											active={query.view === AssignmentView.FINISHED}
+											onClick={() =>
+												handleQueryChanged(AssignmentView.FINISHED, 'view')
+											}
+										/>
+									</ButtonGroup>
+								),
+							})}
 							{canEditAssignments && (
 								<>
 									<CheckboxDropdownModal

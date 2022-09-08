@@ -1,6 +1,3 @@
-import { differenceInHours } from 'date-fns';
-import React, { FC, useMemo } from 'react';
-
 import {
 	DeadlineIndicator,
 	DeadlineIndicatorColors,
@@ -8,6 +5,8 @@ import {
 	Flex,
 	FlexItem,
 } from '@viaa/avo2-components';
+import { differenceInHours } from 'date-fns';
+import React, { FC, useMemo } from 'react';
 
 import { formatCustomTimestamp } from '../../shared/helpers';
 
@@ -35,16 +34,12 @@ const AssignmentDeadline: FC<AssignmentDeadlineProps> = ({ deadline }) => {
 	}, [deadline]);
 
 	if (!config) {
-		return null;
+		return <>-</>;
 	}
 
 	return (
 		<Flex center>
-			<DeadlineIndicator
-				className="u-spacer-right-s"
-				color={config[0]}
-				shape={config[1]}
-			></DeadlineIndicator>
+			<DeadlineIndicator className="u-spacer-right-s" color={config[0]} shape={config[1]} />
 
 			<FlexItem shrink={false}>
 				{formatCustomTimestamp(deadline, 'DD MMMM YYYY HH:mm')}
