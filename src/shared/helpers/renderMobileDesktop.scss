@@ -1,0 +1,19 @@
+@import '../../styles/settings/variables';
+
+.u-less-than--mobile-width {
+	display: none;
+	width: 100%;
+
+	@media (max-width: $g-bp2) {
+		display: block;
+	}
+}
+
+.u-more-than--mobile-width {
+	display: none;
+	width: 100%;
+
+	@media (min-width: $g-bp2) {
+		display: block;
+	}
+}
