@@ -896,9 +896,7 @@ export class AssignmentService {
 							...block,
 							item_meta:
 								items.find((item) => item?.external_id === cast.fragment_id) ||
-								(
-									await ItemsService.fetchItemsByExternalId([cast.fragment_id])
-								)[0] ||
+								(await ItemsService.fetchItemByExternalId(cast.fragment_id)) ||
 								undefined,
 						};
 					} catch (error) {

@@ -93,15 +93,16 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			if (depublishType === 'depublish_with_reason') {
 				await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
 			} else if (depublishType === 'depublish_with_replacement' && replacementExternalId) {
-				const replacementItem: Avo.Item.Item | null = (
-					await ItemsService.fetchItemsByExternalId([replacementExternalId])
-				)[0];
+				const replacementItem: Avo.Item.Item | null =
+					await ItemsService.fetchItemByExternalId(replacementExternalId);
+
 				if (!replacementItem) {
 					ToastService.danger(
 						t(
 							'admin/items/components/depublish-item-modal/depublish-item-modal___het-bepalen-van-de-id-van-het-vervang-item-is-mislukt'
 						)
 					);
+
 					return;
 				}
 

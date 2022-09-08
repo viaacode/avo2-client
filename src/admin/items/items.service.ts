@@ -36,6 +36,7 @@ import {
 	UnpublishedItemsOverviewTableCols,
 } from './items.types';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { UnpublishableItem } from '../../shared/types';
 
 export class ItemsService {
 	public static async fetchItemsWithFilters(
@@ -259,9 +260,13 @@ export class ItemsService {
 		);
 	}
 
+	public static async fetchItemByExternalId(externalId: string): Promise<UnpublishableItem> {
+		return (await this.fetchItemsByExternalId([externalId]))[0] || null;
+	}
+
 	public static async fetchItemsByExternalId(
 		externalIds: string[]
-	): Promise<Array<(Avo.Item.Item & { replacement_for?: string }) | null>> {
+	): Promise<Array<UnpublishableItem>> {
 		if (externalIds.length < 1) {
 			return [];
 		}
@@ -300,7 +305,9 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItemReplacementByExternalId(externalId: string) {
+	public static async fetchItemReplacementByExternalId(
+		externalId: string
+	): Promise<UnpublishableItem> {
 		// Return the replacement item if a REPLACED_BY relation is found for the current item
 		// TODO replace with single query to fetch depublish_reason and relations after task is done: https://meemoo.atlassian.net/browse/DEV-1166
 		const itemUid = await ItemsService.fetchItemUuidByExternalId(externalId);

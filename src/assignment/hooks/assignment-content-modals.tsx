@@ -121,8 +121,7 @@ export function useBlockListModals(
 							}
 
 							// fetch item details
-							const item_meta =
-								(await ItemsService.fetchItemsByExternalId([id]))[0] || null;
+							const item_meta = await ItemsService.fetchItemByExternalId(id);
 							setItem(item_meta);
 							setIsTrimItemModalOpen(true);
 						}}
