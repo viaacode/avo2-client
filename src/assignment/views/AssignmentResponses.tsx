@@ -19,7 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classNames from 'classnames';
-import { cloneDeep, get, isNil, noop } from 'lodash-es';
+import { cloneDeep, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -259,17 +259,15 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			);
 
 			// Determine each response's fragments to evaluate their published-status
-			const fragments = response.assignmentResponses
-				.flatMap((response) =>
-					((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
-						(block) => block.fragment_id
-					)
+			const fragments = response.assignmentResponses.flatMap((response) =>
+				((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
+					(block) => block.fragment_id
 				)
-				.filter((value, index, self) => self.indexOf(value) === index);
+			);
 
 			setAssignmentResponses(response.assignmentResponses);
 			setAssigmentResponsesCount(response.count);
-			setAssignmentResponsesFragments(fragments);
+			setAssignmentResponsesFragments(uniq(fragments));
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
