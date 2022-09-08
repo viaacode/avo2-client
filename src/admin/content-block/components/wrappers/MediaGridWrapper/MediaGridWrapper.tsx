@@ -306,7 +306,7 @@ const MediaGridWrapper: FunctionComponent<
 
 	const renderMediaCardWrapper = (mediaCard: ReactNode, item: MediaListItem) => {
 		if (openInModal(item)) {
-			return <div onClick={() => handleItemClicked(item)}>{mediaCard}</div>;
+			return <a onClick={() => handleItemClicked(item)}>{mediaCard}</a>;
 		}
 		return renderLink(item.itemAction, mediaCard, item.buttonAltTitle || item.title);
 	};
