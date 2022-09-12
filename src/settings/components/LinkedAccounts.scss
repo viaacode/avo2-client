@@ -1,15 +1,22 @@
 @import '../../styles/settings/colors';
 @import '../../styles/settings/variables';
 
-.c-account-link {
-	height: 100px;
+$bp: $g-bp3;
 
-	border: 2px solid #e4f1f3;
+.c-account-link {
+	@media screen and (min-width: $bp) {
+		height: 100px;
+		border: 2px solid #e4f1f3;
+	}
 
 	&__column {
 		display: flex;
 		justify-content: center;
 		flex-direction: column;
+
+		@media screen and (max-width: ($bp - 1px)) {
+			margin-top: $g-spacer-unit;
+		}
 
 		&--smartschool,
 		&--itsme-eid,
@@ -19,12 +26,16 @@
 			align-items: center;
 
 			margin: 0 !important;
+
+			@media screen and (max-width: ($bp - 1px)) {
+				min-height: 100px;
+			}
 		}
 
 		&--itsme-eid {
-			// color: $color-;
-
-			border-right: 2px solid #e4f1f3;
+			@media screen and (min-width: $bp) {
+				border-right: 2px solid #e4f1f3;
+			}
 		}
 
 		&--smartschool {
