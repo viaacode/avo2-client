@@ -5,11 +5,22 @@ import {
 	ExpandableContainer,
 	Grid,
 	Spacer,
+	Toolbar,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
-import React, { createRef, FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
-import { Trans } from 'react-i18next';
+import React, {
+	createRef,
+	FunctionComponent,
+	ReactNode,
+	RefObject,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
@@ -19,7 +30,7 @@ import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { stripHtml } from '../../shared/helpers';
-import withUser from '../../shared/hocs/withUser';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 import './ItemVideoDescription.scss';
 
@@ -33,8 +44,8 @@ interface ItemVideoDescriptionProps {
 	src?: string;
 	poster?: string;
 	cuePoints?: CuePoints;
-	seekTime?: number;
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
+	renderButtons?: (itemMetaData: Avo.Item.Item) => ReactNode;
 	verticalLayout?: boolean;
 	titleLink?: string;
 	onPlay?: () => void;
@@ -42,7 +53,9 @@ interface ItemVideoDescriptionProps {
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteComponentProps> = ({
+const ItemVideoDescription: FunctionComponent<
+	ItemVideoDescriptionProps & UserProps & RouteComponentProps
+> = ({
 	itemMetaData,
 	showTitle = false,
 	showDescription = true,
@@ -52,12 +65,13 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	src,
 	poster,
 	cuePoints,
-	seekTime = 0,
 	canPlay = true,
+	renderButtons = () => null,
 	verticalLayout = false,
 	titleLink,
 	onPlay,
 }) => {
+	const [t] = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
@@ -94,7 +108,6 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 				item={itemMetaData}
 				canPlay={canPlay}
 				cuePoints={cuePoints}
-				seekTime={seekTime}
 				onPlay={onPlay}
 				external_id={itemMetaData.external_id}
 				duration={itemMetaData.duration}
@@ -127,15 +140,18 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps & RouteC
 	const renderDescription = () => {
 		return (
 			<>
-				{showTitle ? (
-					renderTitle()
-				) : (
-					<BlockHeading type="h4">
-						<Trans i18nKey="item/components/item-video-description___beschrijving">
-							Beschrijving
-						</Trans>
-					</BlockHeading>
-				)}
+				<Toolbar>
+					<ToolbarLeft>
+						{showTitle ? (
+							renderTitle()
+						) : (
+							<BlockHeading type="h4">
+								{t('item/components/item-video-description___beschrijving')}
+							</BlockHeading>
+						)}
+					</ToolbarLeft>
+					<ToolbarRight>{renderButtons(itemMetaData)}</ToolbarRight>
+				</Toolbar>
 
 				<TextWithTimestamps content={description || ''} />
 			</>

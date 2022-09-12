@@ -1,5 +1,3 @@
-import React, { FunctionComponent } from 'react';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -9,6 +7,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 interface ConfirmImportToAssignmentWithResponsesModalProps {
 	isOpen: boolean;
@@ -54,8 +53,7 @@ const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<
 		return (
 			<>
 				<p>
-					<strong>{translations.warningCallout}</strong>
-					{translations.warningMessage}
+					<strong>{translations.warningCallout}</strong> {translations.warningMessage}
 				</p>
 				<p>{translations.warningBody}</p>
 				{renderConfirmButtons()}

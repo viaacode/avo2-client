@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { formatTimestamp } from '../../shared/helpers';
 
+import './AssignmentMetadata.scss';
+
 type AssignmentMetadataProps = {
 	assignment: Avo.Assignment.Assignment_v2;
 	assignmentResponse?: Avo.Assignment.Response_v2 | null;

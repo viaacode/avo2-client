@@ -101,6 +101,14 @@
 	}
 
 	&__bottom {
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		// Don't overwrite .o-container on wide screens
+		@media screen and (max-width: ($g-bp2 - 1px)) {
+			max-width: 100%;
+		}
+
 		.c-tabs {
 			> .c-tab-item {
 				padding: 0.8rem;

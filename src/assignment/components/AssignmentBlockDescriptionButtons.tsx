@@ -108,12 +108,7 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 						value: type,
 					};
 				})}
-				onChange={(value) =>
-					setBlock({
-						...block,
-						editMode: value as AssignmentBlockItemDescriptionType,
-					})
-				}
+				onChange={(value) => onBlockClicked(value as AssignmentBlockItemDescriptionType)}
 			/>
 		);
 	};

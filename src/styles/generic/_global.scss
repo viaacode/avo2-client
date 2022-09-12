@@ -15,6 +15,10 @@
 
 .o-app > .o-container {
 	overflow-x: hidden;
+
+	.o-container {
+		width: 100%;
+	}
 }
 
 // Avoid 1px div causing extra scrollbar in admin dashboard

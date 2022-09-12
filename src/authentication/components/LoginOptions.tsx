@@ -1,9 +1,8 @@
+import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { FunctionComponent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-
-import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
 import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
@@ -13,7 +12,7 @@ import {
 	redirectToServerACMIDMLogin,
 	redirectToServerItsmeLogin,
 	redirectToServerKlascementLogin,
-	// redirectToServerLeerIDLogin,
+	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
 } from '../helpers/redirects';
@@ -63,7 +62,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.TEACHER:
 				return (
 					<>
-						<Icon name="user-teacher"></Icon>
+						<Icon name="user-teacher" />
 						{t('authentication/components/login-options___log-in-als-lesgever')}
 					</>
 				);
@@ -71,7 +70,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.STUDENT:
 				return (
 					<>
-						<Icon name="user-student"></Icon>
+						<Icon name="user-student" />
 						{t('authentication/components/login-options___log-in-als-leerling')}
 					</>
 				);
@@ -86,6 +85,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.TEACHER:
 				return [
 					<Button
+						key="login-button-archief"
 						block
 						label={t(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
@@ -100,6 +100,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					/>,
 
 					<Button
+						key="login-button-itsme"
 						block
 						type="secondary"
 						className="c-button-itsme"
@@ -113,6 +114,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					/>,
 
 					<Button
+						key="login-button-acmidm"
 						block
 						type="secondary"
 						className="c-button-acmidm"
@@ -127,6 +129,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					/>,
 
 					<Button
+						key="login-button-smartschool"
 						block
 						className="c-button-smartschool"
 						icon="smartschool"
@@ -140,6 +143,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					/>,
 
 					<Button
+						key="login-button-klascement"
 						block
 						className="c-button-klascement"
 						icon="klascement"
@@ -156,6 +160,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.STUDENT:
 				return [
 					<Button
+						key="login-button-archief-pupil"
 						block
 						label={t(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
@@ -169,21 +174,22 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						}}
 					/>,
 
-					// Disabled due to https://meemoo.atlassian.net/browse/AVO-2062
-					// <Button
-					// 	block
-					// 	type="secondary"
-					// 	className="c-button-leerid"
-					// 	icon="leerid"
-					// 	iconType="multicolor"
-					// 	label={t('authentication/components/login-options___leerling-id')}
-					// 	onClick={() => {
-					// 		onOptionClicked();
-					// 		redirectToServerLeerIDLogin(location);
-					// 	}}
-					// />,
+					<Button
+						key="login-button-leerid-pupil"
+						block
+						type="secondary"
+						className="c-button-leerid"
+						icon="leerid"
+						iconType="multicolor"
+						label={t('authentication/components/login-options___leerling-id')}
+						onClick={() => {
+							onOptionClicked();
+							redirectToServerLeerIDLogin(location);
+						}}
+					/>,
 
 					<Button
+						key="login-button-smartschool-pupil"
 						block
 						className="c-button-smartschool"
 						icon="smartschool"

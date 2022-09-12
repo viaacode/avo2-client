@@ -1,4 +1,4 @@
-import { convertToHtml } from '@viaa/avo2-components';
+import { convertToHtml, setPlayingVideoSeekTime } from '@viaa/avo2-components';
 import React, { FC, useCallback, useEffect, useRef } from 'react';
 
 import { parseDuration } from '../../helpers';
@@ -26,12 +26,7 @@ const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
 		if (isTimestamp) {
 			const parsed = parseDuration(text);
 			if (!isNaN(parsed)) {
-				const playingVideo: HTMLVideoElement | null = document.querySelector(
-					'.c-video-player .is-playing video'
-				) as HTMLVideoElement | null;
-				if (playingVideo) {
-					playingVideo.currentTime = parsed;
-				}
+				setPlayingVideoSeekTime(parsed);
 			}
 		}
 	}, []);

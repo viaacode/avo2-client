@@ -56,7 +56,6 @@ import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
-import { isItemWithMeta } from '../../helpers/is-item-with-meta';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
@@ -131,7 +130,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,
 		assignmentResponse?.pupil_collection_blocks?.filter(
-			(b) => b.type === CollectionBlockType.ITEM && isItemWithMeta(b)
+			(b) => b.type === CollectionBlockType.ITEM
 		)?.length || 0,
 		(filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
 			ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
@@ -392,7 +391,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 											<p>
 												{t(
 													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
-												)}
+												)}{' '}
 												<a href={assignment.answer_url}>
 													{assignment.answer_url}
 												</a>

@@ -234,10 +234,10 @@ export const GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID = gql`
 			id
 			collection_title
 			updated_at
-			pupil_collection_blocks_aggregate(where: { type: { _eq: "ITEM" } }) {
-				aggregate {
-					count
-				}
+			pupil_collection_blocks(where: { type: { _eq: "ITEM" } }) {
+				id
+				type
+				fragment_id
 			}
 			owner {
 				full_name
@@ -541,17 +541,6 @@ export const UPDATE_ASSIGNMENT_RESPONSE = gql`
 					full_name
 				}
 			}
-		}
-	}
-`;
-
-export const UPDATE_ASSIGNMENT_RESPONSE_SUBMITTED_STATUS = gql`
-	mutation toggleAssignmentResponseSubmitStatus($id: Int!, $submittedAt: timestamptz) {
-		update_app_assignment_responses(
-			where: { id: { _eq: $id } }
-			_set: { submitted_at: $submittedAt }
-		) {
-			affected_rows
 		}
 	}
 `;

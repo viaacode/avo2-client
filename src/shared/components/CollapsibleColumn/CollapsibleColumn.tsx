@@ -1,77 +1,80 @@
 import useResizeObserver from '@react-hook/resize-observer';
-import { Button, DefaultProps } from '@viaa/avo2-components';
-import React, { FC, ReactNode, useRef, useState } from 'react';
+import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
+import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Scrollbar from 'react-scrollbars-custom';
 
 import './CollapsibleColumn.scss';
 
-export interface CollapsibleColumnProps extends DefaultProps {
-	grow: ReactNode;
-	bound?: ReactNode;
-}
+export type CollapsibleColumnProps = DefaultProps & {
+	button?: Partial<Omit<ButtonProps, 'icon' | 'label'>> & {
+		icon?: (expanded: boolean) => IconName;
+		label?: (expanded: boolean) => string;
+	};
+};
 
-const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, grow, bound }) => {
+const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, children, button }) => {
 	const [t] = useTranslation();
 	const el = useRef<HTMLDivElement>(null);
 
 	const [overflowing, setOverflowing] = useState(false);
-	const [scrollable, setScrollable] = useState(false);
+	const [expanded, setExpanded] = useState(false);
 
 	const wrapperClassName = [
 		'c-collapsible-column',
 		...(overflowing ? ['c-collapsible-column--overflowing'] : []),
-		...(scrollable ? ['c-collapsible-column--scrollable'] : []),
+		...(expanded ? ['c-collapsible-column--expanded'] : []),
 		className,
 	].join(' ');
 
-	const boundedClassName = [
-		'c-collapsible-column__bounded',
-		...(overflowing ? ['c-collapsible-column__bounded--overflowing'] : []),
-		...(scrollable ? ['c-collapsible-column__bounded--scrollable'] : []),
-	].join(' ');
-
 	useResizeObserver(el, () => {
-		const isOverflowing = (el.current?.scrollHeight || 0) > (el.current?.offsetHeight || 0);
+		const isOverflowing =
+			(el.current?.offsetHeight || 0) > (el.current?.parentElement?.offsetHeight || 0);
 
 		if (isOverflowing !== overflowing) {
 			setOverflowing(isOverflowing);
 		}
 	});
 
-	const content = (
-		<>
-			{bound}
-			{(overflowing || scrollable) && (
-				<div className="c-collapsible-column__bounded-toggle">
-					<Button
-						type="underlined-link"
-						icon={scrollable ? 'close' : 'plus'} // TODO: add 'minus' icon
-						label={
-							scrollable
-								? t(
-										'shared/components/collapsible-column/collapsible-column___toon-minder'
-								  )
-								: t(
-										'shared/components/collapsible-column/collapsible-column___toon-meer'
-								  )
-						}
-						onClick={() => setScrollable(!scrollable)}
-					/>
-				</div>
-			)}
-		</>
-	);
+	const getButtonIcon = () => {
+		if (button?.icon) {
+			return button.icon(expanded);
+		}
+
+		return expanded ? 'close' : 'plus';
+	};
+
+	const getButtonLabel = () => {
+		if (button?.label) {
+			return button.label(expanded);
+		}
+
+		return expanded
+			? t('shared/components/collapsible-column/collapsible-column___toon-minder')
+			: t('shared/components/collapsible-column/collapsible-column___toon-meer');
+	};
 
 	return (
 		<div className={wrapperClassName} style={style}>
-			{grow}
-
-			<div className={boundedClassName} ref={el}>
-				<div className="c-collapsible-column__bounded-content">
-					{scrollable ? <Scrollbar>{content}</Scrollbar> : content}
-				</div>
+			<div className="c-collapsible-column__content" ref={el}>
+				{children}
 			</div>
+
+			{(overflowing || expanded) && (
+				<div className="c-collapsible-column__toggle">
+					<Button
+						type="underlined-link"
+						{...button}
+						icon={getButtonIcon()}
+						label={getButtonLabel()}
+						onClick={(e) => {
+							expanded && setOverflowing(true);
+							setExpanded(!expanded);
+
+							button?.onClick?.(e);
+						}}
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

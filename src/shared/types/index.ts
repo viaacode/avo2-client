@@ -41,3 +41,5 @@ export interface LabeledFormField {
 }
 
 export type Positioned<T> = T & { id: string | number; position: number };
+
+export type UnpublishableItem = (Avo.Item.Item & { replacement_for?: string }) | null;

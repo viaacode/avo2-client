@@ -54,14 +54,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
 			const profileIsComplete = !!(user && isProfileComplete(user));
 
-			// Disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062
-			if (!isPupil) {
-				setShowNudgingModal(
-					!(profilePreference || []).length &&
-						!hasVlaamseOverheidLinked &&
-						profileIsComplete
-				);
-			}
+			setShowNudgingModal(
+				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
 		}

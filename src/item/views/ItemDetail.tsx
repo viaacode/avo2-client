@@ -97,6 +97,7 @@ import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmar
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { UnpublishableItem } from '../../shared/types';
 import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
@@ -219,8 +220,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				return;
 			}
 
-			const itemObj: (Avo.Item.Item & { replacement_for?: string }) | null =
-				await ItemsService.fetchItemByExternalId(itemId);
+			const itemObj: UnpublishableItem = await ItemsService.fetchItemByExternalId(itemId);
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',
@@ -493,6 +493,39 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 								item.external_id,
 								SearchFilter.educationLevel,
 								item.lom_context
+							)}
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderEducationDegrees = (item: Avo.Item.Item) => {
+		if (
+			!item.external_id ||
+			!item.lom_typical_age_range ||
+			!enabledMetaData.includes(SearchFilter.educationDegree)
+		) {
+			return null;
+		}
+		return (
+			<Table
+				horizontal
+				untable
+				className={classnames('c-meta-data__table', {
+					'c-meta-data__table-mobile': isMobileWidth(),
+				})}
+			>
+				<tbody>
+					<tr>
+						<th scope="row">{t('item/views/item-detail___onderwijsgraad')}</th>
+						<td>
+							{renderSearchLinks(
+								renderSearchLink,
+								item.external_id,
+								SearchFilter.educationDegree,
+								item.lom_typical_age_range
 							)}
 						</td>
 					</tr>
@@ -889,10 +922,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										{t('item/views/item___metadata')}
 									</BlockHeading>
 									{renderGeneralMetaData(item)}
-									{(!!renderEducationLevels(item) || renderSubjects(item)) && (
-										<div className="c-hr" />
-									)}
+									{(!!renderEducationLevels(item) ||
+										renderEducationDegrees(item) ||
+										renderSubjects(item)) && <div className="c-hr" />}
 									{renderEducationLevels(item)}
+									{renderEducationDegrees(item)}
 									{renderSubjects(item)}
 									{renderThemas(item)}
 									{!!renderKeywords(item) && <div className="c-hr" />}

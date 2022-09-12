@@ -6,7 +6,6 @@ import {
 	BLOCK_ITEM_ICONS,
 	BLOCK_ITEM_LABELS,
 } from '../../shared/components/BlockList/BlockList.consts';
-import { isItemWithMeta } from '../helpers/is-item-with-meta';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 
 export function useBlocksList(
@@ -18,28 +17,23 @@ export function useBlocksList(
 	}
 ): [ReactNode, (Avo.Core.BlockItemBase & ListSorterItem)[]] {
 	const items = useMemo(() => {
-		return (
-			(blocks || [])
-				.map((block) => {
-					const mapped: Avo.Core.BlockItemBase & ListSorterItem = {
-						...block,
-						...config?.listSorterItem,
-						icon: BLOCK_ITEM_ICONS()[block.type](block),
-						onPositionChange: (item, delta) => {
-							const switched = switchAssignmentBlockPositions(
-								blocks,
-								item as Avo.Core.BlockItemBase,
-								delta
-							);
-							setBlocks(switched);
-						},
-					};
+		return (blocks || []).map((block) => {
+			const mapped: Avo.Core.BlockItemBase & ListSorterItem = {
+				...block,
+				...config?.listSorterItem,
+				icon: BLOCK_ITEM_ICONS()[block.type](block),
+				onPositionChange: (item, delta) => {
+					const switched = switchAssignmentBlockPositions(
+						blocks,
+						item as Avo.Core.BlockItemBase,
+						delta
+					);
+					setBlocks(switched);
+				},
+			};
 
-					return mapped;
-				})
-				// Hide depublished items without replacements
-				.filter(isItemWithMeta)
-		);
+			return mapped;
+		});
 	}, [blocks, setBlocks, config]);
 
 	const ui = useMemo(
