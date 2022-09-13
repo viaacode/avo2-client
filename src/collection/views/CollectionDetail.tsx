@@ -441,7 +441,11 @@ const CollectionDetail: FunctionComponent<
 	}, [collectionInfo, getPublishedBundles]);
 
 	useEffect(() => {
-		if (collectionInfo?.permissions?.canViewCollections) {
+		if (
+			collectionInfo?.permissions?.canViewCollections ||
+			collectionInfo?.permissions?.canViewPublishedCollections ||
+			collectionInfo?.permissions?.canViewUnpublishedCollections
+		) {
 			triggerEvents();
 		}
 	}, [collectionInfo, triggerEvents]);
