@@ -1,6 +1,7 @@
 import {
 	Container,
 	Flex,
+	MoreOptionsDropdown,
 	Navbar,
 	Toolbar,
 	ToolbarItem,
@@ -33,7 +34,6 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { buildLink, copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
@@ -41,6 +41,7 @@ import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
+import { getMoreOptionsLabel } from '../../shared/constants';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -129,6 +130,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 											isOpen={isOptionsMenuOpen}
 											onOpen={() => setIsOptionsMenuOpen(true)}
 											onClose={() => setIsOptionsMenuOpen(false)}
+											label={getMoreOptionsLabel()}
 											menuItems={[
 												{
 													icon: 'link',

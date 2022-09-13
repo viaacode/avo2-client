@@ -10,6 +10,7 @@ import {
 	HeaderButtons,
 	HeaderRow,
 	MenuContent,
+	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
 	ToggleButton,
@@ -37,9 +38,8 @@ import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { ROUTE_PARTS } from '../../shared/constants';
+import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -855,6 +855,7 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>
@@ -977,6 +978,7 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
 					menuItems={COLLECTION_DROPDOWN_ITEMS_MOBILE}
 					onOptionClicked={executeAction}
 				/>
