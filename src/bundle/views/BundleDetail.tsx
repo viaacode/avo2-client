@@ -13,6 +13,7 @@ import {
 	MediaCardThumbnail,
 	MetaData,
 	MetaDataItem,
+	MoreOptionsDropdown,
 	Spacer,
 	Thumbnail,
 	ToggleButton,
@@ -49,7 +50,6 @@ import {
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -72,6 +72,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
+import { getMoreOptionsLabel } from '../../shared/constants';
 
 type BundleDetailProps = {
 	id?: string;
@@ -535,6 +536,7 @@ const BundleDetail: FunctionComponent<
 				onClose={() => setIsOptionsMenuOpen(false)}
 				menuItems={BUNDLE_DROPDOWN_ITEMS}
 				onOptionClicked={executeAction}
+				label={getMoreOptionsLabel()}
 			/>
 		);
 	};
@@ -599,6 +601,7 @@ const BundleDetail: FunctionComponent<
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
 					menuItems={BUNDLE_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>

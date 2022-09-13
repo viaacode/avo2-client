@@ -6,6 +6,7 @@ import {
 	FormGroup,
 	Grid,
 	IconName,
+	MoreOptionsDropdown,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -28,9 +29,12 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
-import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
+import {
+	getMoreOptionsLabel,
+	WYSIWYG_OPTIONS_AUTHOR,
+	WYSIWYG_OPTIONS_DEFAULT,
+} from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
@@ -352,6 +356,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 									isOpen={openOptionsId === fragment.id}
 									onOpen={() => setOpenOptionsId(fragment.id)}
 									onClose={() => setOpenOptionsId(null)}
+									label={getMoreOptionsLabel()}
 									menuItems={FRAGMENT_DROPDOWN_ITEMS}
 									onOptionClicked={onClickDropdownItem}
 								/>
