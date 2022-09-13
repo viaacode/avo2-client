@@ -575,18 +575,13 @@ export class CollectionService {
 		collection: Partial<Avo.Collection.Collection>
 	): Promise<void> => {
 		try {
-			const dbCollection = collection;
-
-			// Extra work to handle different naming in graphql vs elasticsearch
-			// Prefer to use lom_typical_age_range everywhere and only switch to lom_typicalagerange when fetching/inserting into graphql
-			(dbCollection as any).lom_typicalagerange = dbCollection.lom_typical_age_range;
-			delete dbCollection.lom_typical_age_range;
+			const dbCollection = cleanCollectionBeforeSave(collection);
 
 			await dataService.mutate({
 				mutation: UPDATE_COLLECTION,
 				variables: {
 					id,
-					collection,
+					collection: dbCollection,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});

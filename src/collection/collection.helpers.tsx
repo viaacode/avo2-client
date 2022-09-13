@@ -334,6 +334,7 @@ export const getFragmentsFromCollection = (
 export const cleanCollectionBeforeSave = (
 	collection: Partial<Avo.Collection.Collection>
 ): Partial<Avo.Collection.Collection> => {
+	// Remove some props
 	const propertiesToDelete = [
 		'collection_fragments',
 		'__typename',
@@ -351,8 +352,13 @@ export const cleanCollectionBeforeSave = (
 		'management_actualised_at',
 		'marcom_note',
 	];
+	const cleanCollection = omit(collection, propertiesToDelete);
 
-	return omit(collection, propertiesToDelete);
+	// Rename lom_typical_age_range to lom_typicalagerange since graphql has a different naming from elasticsearch
+	(cleanCollection as any).lom_typicalagerange = cleanCollection.lom_typical_age_range;
+	delete cleanCollection.lom_typical_age_range;
+
+	return cleanCollection;
 };
 
 /**
