@@ -12,6 +12,7 @@ import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { REMOVE_COLLECTION_BOOKMARKS } from '../shared/services/bookmarks-views-plays-service';
 import { AppCollectionBookmark } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { VideoStillService } from '../shared/services/video-stills-service';
@@ -602,13 +603,21 @@ export class CollectionService {
 	static deleteCollection = async (collectionId: string): Promise<void> => {
 		try {
 			// delete collection by id
-			await dataService.mutate({
-				mutation: SOFT_DELETE_COLLECTION,
-				variables: {
-					id: collectionId,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await Promise.all([
+				dataService.mutate({
+					mutation: SOFT_DELETE_COLLECTION,
+					variables: {
+						id: collectionId,
+					},
+					update: ApolloCacheManager.clearCollectionCache,
+				}),
+				dataService.mutate({
+					mutation: REMOVE_COLLECTION_BOOKMARKS,
+					variables: {
+						collectionUuid: collectionId,
+					},
+				}),
+			]);
 		} catch (err) {
 			throw new CustomError(`Failed to delete collection or bundle'}`, err, {
 				collectionId,
