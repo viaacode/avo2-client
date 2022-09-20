@@ -436,7 +436,7 @@ export class UserService {
 				privateCollections: get(response, 'data.privateCollections.aggregate.count'),
 				assignments: get(response, 'data.assignments.aggregate.count', '-'),
 				bookmarks:
-					get(response, 'data.collectionBookmarks.aggregate.count ', 0) +
+					get(response, 'data.collectionBookmarks.aggregate.count', 0) +
 					get(response, 'data.itemBookmarks.aggregate.count', 0),
 				publicContentPages: get(response, 'data.publicContentPages.aggregate.count'),
 				privateContentPages: get(response, 'data.privateContentPages.aggregate.count'),
