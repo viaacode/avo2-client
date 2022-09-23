@@ -1,8 +1,3 @@
-import { get, uniq } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link, RouteComponentProps } from 'react-router-dom';
-
 import {
 	BlockHeading,
 	Button,
@@ -21,6 +16,10 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get, uniq } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
@@ -134,7 +133,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							icon="delete"
 							onClick={() => {
 								if (rowData.id) {
-									deleteMarcomEntry(rowData.id);
+									deleteMarcomEntry(rowData);
 								}
 							}}
 							size="small"
@@ -200,19 +199,28 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 		}
 	};
 
-	const deleteMarcomEntry = async (id: string) => {
+	const deleteMarcomEntry = async (marcomEntry: Partial<MarcomEntry>) => {
 		try {
-			await CollectionService.deleteMarcomEntry(id);
+			if (marcomEntry.id) {
+				if (!isCollection) {
+					// bundle => delete all marcom entries with the same values from child collections (parent_collection_id) in de bundle: https://meemoo.atlassian.net/browse/AVO-1892
+					await CollectionService.deleteMarcomEntryByIdParentId(marcomEntry);
+				}
+				// Delete the communication entry for the current collection/bundle
+				await CollectionService.deleteMarcomEntryById(marcomEntry.id);
+			}
 			await fetchMarcomEntries();
 			ToastService.success(
-				t(
-					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-gelukt'
-				)
+				isCollection
+					? t('De communicatie-entry is verwijderd voor deze collectie.')
+					: t(
+							'De communicatie-entry is verwijderd voor de bundel en alle collecties in deze bundel.'
+					  )
 			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to remove marcom entry from the database', err, {
-					id,
+					marcomEntry,
 				})
 			);
 			ToastService.danger(
