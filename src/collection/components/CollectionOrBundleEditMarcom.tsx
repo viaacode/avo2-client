@@ -23,6 +23,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
+import { CheckboxDropdownModal } from '../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -55,6 +56,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
+	const [selectedChannelTypes, setSelectedChannelTypes] = useState<string[]>([]);
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -86,7 +88,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			case 'publish_date':
 				return formatDate(value) || '-';
 
-			case 'external_link':
+			case 'external_link': {
 				const valueLink: string = (value || '').includes('//') ? value || '' : `//${value}`;
 				return value ? (
 					<a href={valueLink} target="_blank" rel="noopener noreferrer">
@@ -95,6 +97,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				) : (
 					'-'
 				);
+			}
 
 			case 'channel_type':
 				return truncateTableValue(
@@ -223,6 +226,31 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 		}
 	};
 
+	const getEmptyMarcomTableMessage = () => {
+		if (selectedChannelTypes?.length) {
+			// With filters
+			return t('Er zijn geen marcom entries die voldoen aan de geselecteerde filters');
+		}
+		if (isCollection) {
+			// Collection
+			// Without filters
+			return t(
+				'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
+			);
+		} else {
+			// Bundle
+			// Without filters
+			return t(
+				'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
+			);
+		}
+	};
+
+	const channelTypeOptions = GET_MARCOM_CHANNEL_TYPE_OPTIONS().map((option) => ({
+		id: option.value,
+		label: option.label,
+		checked: selectedChannelTypes.includes(option.value),
+	}));
 	return (
 		<>
 			<Container mode="vertical">
@@ -298,27 +326,37 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 						</Flex>
 						<Spacer margin={['top-extra-large', 'bottom-large']}>
-							<BlockHeading type="h3">
+							<BlockHeading type="h3" className="u-padding-top u-padding-bottom">
 								{t(
 									'collection/components/collection-or-bundle-edit-marcom___eerdere-communicatie'
 								)}
 							</BlockHeading>
 							{marcomEntries ? (
-								<Table
-									data={marcomEntries}
-									columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
-									renderCell={renderMarcomTableCell as any}
-									emptyStateMessage={
-										isCollection
-											? t(
-													'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
-											  )
-											: t(
-													'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-bundel'
-											  )
-									}
-									rowKey="id"
-								/>
+								<>
+									<CheckboxDropdownModal
+										label={t('Communicatie type')}
+										id="communication_type"
+										options={channelTypeOptions}
+										onChange={(selected) => {
+											setSelectedChannelTypes(selected);
+										}}
+									/>
+									<Table
+										data={
+											selectedChannelTypes?.length
+												? marcomEntries.filter((entry) =>
+														selectedChannelTypes.includes(
+															entry.channel_type || ''
+														)
+												  )
+												: marcomEntries
+										}
+										columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
+										renderCell={renderMarcomTableCell as any}
+										emptyStateMessage={getEmptyMarcomTableMessage()}
+										rowKey="id"
+									/>
+								</>
 							) : (
 								<Spacer margin={['top-large', 'bottom-large']}>
 									<Flex center>
