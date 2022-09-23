@@ -212,9 +212,11 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			await fetchMarcomEntries();
 			ToastService.success(
 				isCollection
-					? t('De communicatie-entry is verwijderd voor deze collectie.')
+					? t(
+							'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-deze-collectie'
+					  )
 					: t(
-							'De communicatie-entry is verwijderd voor de bundel en alle collecties in deze bundel.'
+							'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-de-bundel-en-alle-collecties-in-deze-bundel'
 					  )
 			);
 		} catch (err) {
