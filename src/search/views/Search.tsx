@@ -10,7 +10,7 @@ import {
 	ToolbarTitle,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import queryString from 'query-string';
+import { isNil, omitBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -34,6 +34,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink, copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
@@ -41,7 +42,6 @@ import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
-import { getMoreOptionsLabel } from '../../shared/constants';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -92,9 +92,18 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		newFilterState: FilterState,
 		className?: string
 	) => {
+		const { filters, page, ...rest } = newFilterState;
+		const newFilterStateObject: Record<string, string> = omitBy(
+			{
+				filters: JSON.stringify(filters),
+				page: page ? String(page) : undefined,
+				...rest,
+			},
+			isNil
+		) as Record<string, string>;
 		return (
 			<Link
-				to={buildLink(APP_PATH.SEARCH.route, {}, queryString.stringify(newFilterState))}
+				to={buildLink(APP_PATH.SEARCH.route, {}, newFilterStateObject)}
 				className={className}
 			>
 				{linkText}
