@@ -650,7 +650,7 @@ const Profile: FunctionComponent<
 				return get(profile, 'profile_user_group.group.label') || '-';
 
 			case 'is_blocked':
-				return get(profile, 'user.is_blocked') || 'Nee';
+				return get(profile, 'user.is_blocked') ? 'Ja' : 'Nee';
 
 			case 'last_access_at': {
 				const lastAccessDate = get(profile, 'user.last_access_at');
