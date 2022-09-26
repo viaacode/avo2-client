@@ -1,13 +1,9 @@
+import { Container, Flex, Spinner } from '@viaa/avo2-components';
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Container, Flex, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { Permissions, PermissionService } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
 import { ErrorViewQueryParams } from '../../../error/views/ErrorView';
-import i18n from '../../translations/i18n';
 
 export type LoadingState = 'loading' | 'loaded' | 'error';
 
@@ -80,40 +76,3 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 			return showSpinner ? renderSpinner() : <></>;
 	}
 };
-
-export async function checkPermissions(
-	permissions: Permissions,
-	user: Avo.User.User | undefined,
-	successFunc: () => void,
-	setLoadingInfo: (info: LoadingInfo) => void,
-	noPermissionsMessage?: string
-) {
-	try {
-		if (!user) {
-			return;
-		}
-
-		if (await PermissionService.hasPermissions(permissions, user)) {
-			successFunc();
-		} else {
-			setLoadingInfo({
-				state: 'error',
-				message:
-					noPermissionsMessage ||
-					i18n.t(
-						'shared/components/loading-error-loaded-component/loading-error-loaded-component___je-hebt-geen-rechten-voor-deze-pagina'
-					),
-				icon: 'lock',
-			});
-		}
-	} catch (err) {
-		console.error('Failed to check permissions', err, { permissions, user });
-		setLoadingInfo({
-			state: 'error',
-			message: i18n.t(
-				'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
-			),
-			icon: 'alert-triangle',
-		});
-	}
-}

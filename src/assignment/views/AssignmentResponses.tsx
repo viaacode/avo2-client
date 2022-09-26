@@ -31,8 +31,8 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
-import { ItemsService } from '../../admin/items/items.service';
 
+import { ItemsService } from '../../admin/items/items.service';
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -290,7 +290,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const fetchAssignmentResponsesFragments = async (items: string[]) => {
 		// Note: duplicate ids don't matter, they're only fetched once
-		const fragments = await ItemsService.fetchItemsByExternalId(items);
+		const fragments = await ItemsService.fetchItemsByExternalIds(items);
 
 		setAssignmentResponses(
 			await Promise.all(
