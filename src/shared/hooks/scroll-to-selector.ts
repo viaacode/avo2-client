@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export function useScrollToId(id: string | null): void {
+export function useScrollToSelector(selector: string | null): void {
 	const [timerId, setTimerId] = useState<number | null>(null);
 	const scrollDownToFocusedItem = useCallback(() => {
-		if (id) {
-			const item = document.getElementById(id);
+		if (selector) {
+			const item = document.querySelector(selector) as HTMLElement | null;
 			if (item && item.offsetTop) {
-				window.scrollTo(0, item.offsetTop - 0.4 * window.innerHeight);
-				setTimeout(() => {
-					if (window.scrollY === 0) {
-						scrollDownToFocusedItem();
-					}
-				}, 100);
+				item.scrollIntoView();
 			} else {
 				if (timerId) {
 					clearTimeout(timerId);
@@ -23,7 +18,7 @@ export function useScrollToId(id: string | null): void {
 				);
 			}
 		}
-	}, [id]);
+	}, [selector]);
 
 	useEffect(() => {
 		scrollDownToFocusedItem();
