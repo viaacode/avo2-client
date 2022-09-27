@@ -207,7 +207,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			if (marcomEntry.id) {
 				if (!isCollection) {
 					// bundle => delete all marcom entries with the same values from child collections (parent_collection_id) in de bundle: https://meemoo.atlassian.net/browse/AVO-1892
-					await CollectionService.deleteMarcomEntryByIdParentId(marcomEntry);
+					await CollectionService.deleteMarcomEntryByParentId(marcomEntry);
 				}
 				// Delete the communication entry for the current collection/bundle
 				await CollectionService.deleteMarcomEntryById(marcomEntry.id);

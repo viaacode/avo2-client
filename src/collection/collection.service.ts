@@ -1431,7 +1431,7 @@ export class CollectionService {
 		}
 	}
 
-	static async deleteMarcomEntryByIdParentId(marcomEntry: Partial<MarcomEntry>): Promise<void> {
+	static async deleteMarcomEntryByParentId(marcomEntry: Partial<MarcomEntry>): Promise<void> {
 		try {
 			if (!marcomEntry.publish_date) {
 				return; // Can't delete entries without a date
