@@ -158,42 +158,6 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 				key: 'content',
 				exact: false,
 				subLinks: [
-					{
-						label: i18n.t('admin/admin___paginas'),
-						location: ADMIN_PATH.PAGES,
-						key: 'pages',
-						exact: true,
-					},
-					{
-						label: i18n.t('admin/admin___projecten'),
-						location: ADMIN_PATH.PROJECTS,
-						key: 'projects',
-						exact: true,
-					},
-					{
-						label: i18n.t('admin/admin___nieuws'),
-						location: ADMIN_PATH.NEWS,
-						key: 'news',
-						exact: true,
-					},
-					{
-						label: i18n.t('admin/admin___screencasts'),
-						location: ADMIN_PATH.SCREENCASTS,
-						key: 'screencasts',
-						exact: true,
-					},
-					{
-						label: i18n.t('admin/admin___fa-qs'),
-						location: ADMIN_PATH.FAQS,
-						key: 'faqs',
-						exact: true,
-					},
-					{
-						label: i18n.t('admin/admin___overzichtspaginas'),
-						location: ADMIN_PATH.OVERVIEWS,
-						key: 'faqs',
-						exact: true,
-					},
 					// Only show the startpages to the users that can edit all pages
 					...(userPermissions.includes(PermissionName.EDIT_ANY_CONTENT_PAGES)
 						? [
