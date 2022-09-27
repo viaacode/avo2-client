@@ -18,7 +18,7 @@ import { PupilCollectionService } from '../../../../pupil-collection/pupil-colle
 import { SearchFiltersAndResults } from '../../../../search/components';
 import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
-import { useScrollToId } from '../../../../shared/hooks/scroll-to-id';
+import { useScrollToSelector } from '../../../../shared/hooks/scroll-to-selector';
 import { ToastService } from '../../../../shared/services';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import {
@@ -54,7 +54,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	// UI
 	const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] = useState<boolean>(false);
 	const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
-	useScrollToId(filterState.focus ? `search-result-${filterState.focus}` : null);
+	useScrollToSelector(filterState.focus ? `#search-result-${filterState.focus}` : null);
 
 	// HTTP
 
