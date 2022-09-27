@@ -20,6 +20,21 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 	.a-flowplayer__text {
 		color: $color-gray-200;
 	}
+
+	.c-video-player__playlist__item {
+		padding: 1.7rem 1rem 0.5rem;
+		border-radius: 0.4rem;
+
+		&--active {
+			background-color: $color-gray-100;
+		}
+
+		.c-media-card {
+			width: 100%;
+			max-width: none;
+			text-align: left;
+		}
+	}
 }
 
 .c-video-player__overlay {
