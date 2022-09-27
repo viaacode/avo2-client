@@ -1,5 +1,4 @@
 import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { ReactNode } from 'react';
 import { Link, LinkProps } from 'react-router-dom';
 import { UrlUpdateType } from 'use-query-params';
@@ -12,7 +11,9 @@ import { PupilSearchFilterState } from '../assignment.types';
 
 /**
  * Creates a link that navigates to the /search route
- * @param filters
+ * @param state
+ * @param props
+ * @param children
  */
 export const buildGlobalSearchLink = (
 	state: Partial<FilterState>,
@@ -30,7 +31,7 @@ export const buildGlobalSearchLink = (
 				{
 					...rest,
 					filters: JSON.stringify(state.filters),
-					...(state.page ? { page: String(state.page) } : {}),
+					...(page ? { page: String(page) } : {}),
 				}
 			)}
 		>
@@ -46,14 +47,14 @@ export const buildGlobalSearchLink = (
 export const buildAssignmentSearchLink =
 	(setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void) =>
 	// eslint-disable-next-line react/display-name
-	(filters: Partial<Avo.Search.Filters>): ReactNode => {
+	(filterState: Partial<FilterState>): ReactNode => {
 		return (
 			<Button
 				type="inline-link"
-				label={filters.serie?.[0]}
+				label={filterState.filters?.serie?.[0]}
 				onClick={() => {
 					setFilterState({
-						filters,
+						filters: filterState.filters,
 						tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
 						selectedSearchResultId: undefined,
 					});
