@@ -23,6 +23,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import {
 	PermissionGuard,
 	PermissionGuardFail,
@@ -33,6 +34,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
@@ -40,8 +42,6 @@ import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
-import { getMoreOptionsLabel } from '../../shared/constants';
-import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -93,7 +93,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		className?: string
 	) => {
 		const filters = newFilterState.filters;
-		return filters && buildGlobalSearchLink(filters, { className }, linkText);
+		return filters && buildGlobalSearchLink(newFilterState, { className }, linkText);
 	};
 
 	return (

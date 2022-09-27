@@ -5,6 +5,7 @@ import { Link, LinkProps } from 'react-router-dom';
 import { UrlUpdateType } from 'use-query-params';
 
 import { APP_PATH } from '../../constants';
+import { FilterState } from '../../search/search.types';
 import { buildLink } from '../../shared/helpers';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { PupilSearchFilterState } from '../assignment.types';
@@ -14,16 +15,26 @@ import { PupilSearchFilterState } from '../assignment.types';
  * @param filters
  */
 export const buildGlobalSearchLink = (
-	filters: Partial<Avo.Search.Filters>,
+	state: Partial<FilterState>,
 	props?: Partial<Omit<LinkProps, 'to'>>,
 	children?: ReactNode
 ): ReactNode => {
+	const { page, ...rest } = state;
+
 	return (
 		<Link
 			{...props}
-			to={buildLink(APP_PATH.SEARCH.route, {}, { filters: JSON.stringify(filters) })}
+			to={buildLink(
+				APP_PATH.SEARCH.route,
+				{},
+				{
+					...rest,
+					filters: JSON.stringify(state.filters),
+					...(state.page ? { page: String(state.page) } : {}),
+				}
+			)}
 		>
-			{children || filters.serie?.[0]}
+			{children || state.filters?.serie?.[0]}
 		</Link>
 	);
 };
