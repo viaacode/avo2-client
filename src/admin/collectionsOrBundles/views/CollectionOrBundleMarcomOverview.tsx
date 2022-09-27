@@ -14,6 +14,7 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { GET_MARCOM_CHANNEL_TYPE_OPTIONS } from '../../../collection/collection.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -40,7 +41,6 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-	CollectionOrBundleActualisationTableState,
 	CollectionOrBundleMarcomOverviewTableCols,
 	CollectionOrBundleMarcomTableState,
 } from '../collections-or-bundles.types';
@@ -113,6 +113,28 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		[collectionLabels, t, tableState]
 	);
 
+	const channelTypeOptions = useMemo(() => {
+		const options = GET_MARCOM_CHANNEL_TYPE_OPTIONS().map((option) => ({
+			id: option.value,
+			label: option.label,
+			checked: (tableState?.marcom_last_communication_channel_type || []).includes(
+				String(option.value)
+			),
+		}));
+		return [
+			{
+				id: NULL_FILTER,
+				label: t(
+					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-kanaal-type'
+				),
+				checked: (tableState?.marcom_last_communication_channel_type || []).includes(
+					NULL_FILTER
+				),
+			},
+			...options,
+		];
+	}, [GET_MARCOM_CHANNEL_TYPE_OPTIONS, tableState]);
+
 	const organisationOptions = useMemo(
 		() => [
 			{
@@ -140,6 +162,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			GET_COLLECTION_MARCOM_COLUMNS(
 				userGroupOptions,
 				collectionLabelOptions,
+				channelTypeOptions,
 				subjects,
 				educationLevels,
 				organisationOptions
@@ -151,7 +174,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 
 	// methods
 	const generateWhereObject = useCallback(
-		(filters: Partial<CollectionOrBundleActualisationTableState>) => {
+		(filters: Partial<CollectionOrBundleMarcomTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
 				user,
@@ -176,7 +199,6 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 			const filters = getFilters(tableState);
-			filters.excludeChannelType = null;
 			const [collectionsTemp, collectionsCountTemp] =
 				await CollectionsOrBundlesService.getCollectionEditorial(
 					tableState.page || 0,
@@ -191,7 +213,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to get collection actualisations from the database', err, {
+				new CustomError('Failed to get collection marcom entries from the database', err, {
 					tableState,
 				})
 			);
@@ -267,7 +289,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			{ id: rowData.id, tabId: 'marcom' }
 		);
 		switch (columnId) {
-			case 'title':
+			case 'title': {
 				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
 				return (
 					<Link to={editLink}>
@@ -288,6 +310,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 						)}
 					</Link>
 				);
+			}
 
 			case 'actions':
 				return (
