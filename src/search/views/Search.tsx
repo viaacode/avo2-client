@@ -93,7 +93,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		className?: string
 	) => {
 		const filters = newFilterState.filters;
-		return filters && buildGlobalSearchLink(filters, { className }, linkText);
+		return filters && buildGlobalSearchLink(newFilterState, { className }, linkText);
 	};
 
 	return (
