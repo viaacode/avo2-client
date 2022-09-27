@@ -124,7 +124,9 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		return [
 			{
 				id: NULL_FILTER,
-				label: t('Geen kanaal type'),
+				label: t(
+					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-kanaal-type'
+				),
 				checked: (tableState?.marcom_last_communication_channel_type || []).includes(
 					NULL_FILTER
 				),
