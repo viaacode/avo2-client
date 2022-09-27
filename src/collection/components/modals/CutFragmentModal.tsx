@@ -1,26 +1,23 @@
 import {
 	Button,
 	ButtonToolbar,
-	Container,
 	Modal,
 	ModalBody,
-	MultiRange,
-	TextInput,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { clamp, noop } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
-import { CustomError, formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
+import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { ToastService } from '../../../shared/services';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { KeyCode } from '../../../shared/types';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 
@@ -56,32 +53,19 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		fragment.end_oc,
 		toSeconds(itemMetaData.duration)
 	);
-	const startString = formatDurationHoursMinutesSeconds(start);
-	const endString = formatDurationHoursMinutesSeconds(end);
-	const itemMeta = fragment.item_meta as Avo.Item.Item;
 
-	const [fragmentStart, setFragmentStart] = useState<number>(start);
-	const [fragmentEnd, setFragmentEnd] = useState<number>(end);
-	const [fragmentStartString, setFragmentStartString] = useState<string>(startString);
-	const [fragmentEndString, setFragmentEndString] = useState<string>(endString);
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(start);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(end);
 
 	const getValidationErrors = (): string[] => {
-		const startTime = toSeconds(fragmentStartString, true);
-		const endTime = toSeconds(fragmentEndString, true);
-
 		return getValidationErrorsForStartAndEnd({
 			...fragment,
-			start_oc: startTime,
-			end_oc: endTime,
+			start_oc: fragmentStartTime,
+			end_oc: fragmentEndTime,
 		});
 	};
 
 	const onSaveCut = async () => {
-		setFragmentStart(toSeconds(fragmentStartString, true) as number);
-		setFragmentEnd(toSeconds(fragmentEndString, true) as number);
-		setFragmentStartString(formatDurationHoursMinutesSeconds(fragmentStart));
-		setFragmentEndString(formatDurationHoursMinutesSeconds(fragmentEnd));
-
 		const errors = getValidationErrors();
 
 		if (errors && errors.length) {
@@ -90,23 +74,20 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			return;
 		}
 
-		const startTime = toSeconds(fragmentStartString, true);
-		const endTime = toSeconds(fragmentEndString, true);
-
-		const hasNoCut = startTime === 0 && endTime === fragmentDuration;
+		const hasNoCut = fragmentStartTime === 0 && fragmentEndTime === fragmentDuration;
 
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'start_oc',
-			fragmentPropValue: hasNoCut ? null : startTime,
+			fragmentPropValue: hasNoCut ? null : fragmentStartTime,
 		});
 
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'end_oc',
-			fragmentPropValue: hasNoCut ? null : endTime,
+			fragmentPropValue: hasNoCut ? null : fragmentEndTime,
 		});
 
 		try {
@@ -114,7 +95,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 				? itemMetaData.thumbnail_path
 				: await VideoStillService.getVideoStill(
 						fragment.external_id,
-						(startTime || 0) * 1000
+						(fragmentStartTime || 0) * 1000
 				  );
 
 			if (videoStill) {
@@ -133,20 +114,20 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'start_oc',
-			fragmentPropValue: startTime,
+			fragmentPropValue: fragmentStartTime,
 		});
 
 		changeCollectionState({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'end_oc',
-			fragmentPropValue: endTime,
+			fragmentPropValue: fragmentEndTime,
 		});
 
 		onConfirm &&
 			onConfirm({
-				start_oc: hasNoCut ? null : startTime,
-				end_oc: hasNoCut ? null : endTime,
+				start_oc: hasNoCut ? null : fragmentStartTime,
+				end_oc: hasNoCut ? null : fragmentEndTime,
 			});
 
 		onClose();
@@ -154,55 +135,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	const onCancelCut = () => {
 		// Reset to default state
-		setFragmentStart(start);
-		setFragmentEnd(end);
-		setFragmentStartString(startString);
-		setFragmentEndString(endString);
+		setFragmentStartTime(start);
+		setFragmentEndTime(end);
 
 		// Close modal
 		onClose();
-	};
-
-	/**
-	 * Checks in the text input fields have a correct value
-	 */
-	const parseTimes = () => {
-		// Limit start end and times between 0 and fragment duration
-		let startTime = toSeconds(fragmentStartString, true) as number;
-		let endTime = toSeconds(fragmentEndString, true) as number;
-		const duration = (itemMeta && itemMeta.duration && toSeconds(itemMeta.duration)) || 0;
-		if (startTime) {
-			startTime = clamp(startTime, 0, duration);
-			setFragmentStart(startTime);
-			setFragmentStartString(formatDurationHoursMinutesSeconds(startTime));
-		}
-		if (endTime) {
-			endTime = clamp(endTime, 0, duration);
-			setFragmentEnd(endTime);
-			setFragmentEndString(formatDurationHoursMinutesSeconds(endTime));
-		}
-	};
-
-	const onUpdateMultiRangeValues = (values: number[]) => {
-		setFragmentStart(values[0]);
-		setFragmentEnd(values[1]);
-		setFragmentStartString(formatDurationHoursMinutesSeconds(values[0]));
-		setFragmentEndString(formatDurationHoursMinutesSeconds(values[1]));
-	};
-
-	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
-		try {
-			if (evt.keyCode === KeyCode.Enter) {
-				parseTimes();
-			}
-		} catch (err) {
-			console.error(new CustomError('Failed to parse times on enter key', err));
-			ToastService.danger(
-				t(
-					'collection/components/modals/cut-fragment-modal___de-ingevulde-tijd-heeft-geen-geldig-formaat'
-				)
-			);
-		}
 	};
 
 	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
@@ -225,36 +162,22 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					duration={itemMetaData.duration}
 					title={itemMetaData.title}
 					cuePoints={{
-						start: fragmentStart,
-						end: fragmentEnd,
+						start: fragmentStartTime,
+						end: fragmentEndTime,
 					}}
 					canPlay={isOpen}
 				/>
-				<Container mode="vertical" className="m-time-crop-controls">
-					<TextInput
-						value={fragmentStartString}
-						onChange={setFragmentStartString}
-						onBlur={parseTimes}
-						onKeyUp={handleOnKeyUp}
-					/>
-					{fragmentDuration > 0 && ( // Prevent uncaught RangeError: min (0) is equal/bigger than max (0)
-						<div className="m-multi-range-wrapper">
-							<MultiRange
-								values={[fragmentStart, Math.min(fragmentEnd, fragmentDuration)]}
-								onChange={onUpdateMultiRangeValues}
-								min={0}
-								max={fragmentDuration}
-								step={1}
-							/>
-						</div>
-					)}
-					<TextInput
-						value={fragmentEndString}
-						onChange={setFragmentEndString}
-						onBlur={parseTimes}
-						onKeyUp={handleOnKeyUp}
-					/>
-				</Container>
+				<TimeCropControls
+					className="u-spacer-top-l u-spacer-bottom-l"
+					startTime={fragmentStartTime}
+					endTime={fragmentEndTime}
+					minTime={0}
+					maxTime={fragmentDuration}
+					onChange={(newStartTime: number, newEndTime: number) => {
+						setFragmentStartTime(newStartTime);
+						setFragmentEndTime(newEndTime);
+					}}
+				/>
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>
