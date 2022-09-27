@@ -10,7 +10,6 @@ import {
 	ToolbarTitle,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { isNil, omitBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -24,6 +23,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import {
 	PermissionGuard,
 	PermissionGuardFail,
@@ -31,11 +31,11 @@ import {
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import { buildLink, copyToClipboard, generateContentLinkString } from '../../shared/helpers';
+import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { SearchFiltersAndResults } from '../components';
@@ -92,23 +92,8 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		newFilterState: FilterState,
 		className?: string
 	) => {
-		const { filters, page, ...rest } = newFilterState;
-		const newFilterStateObject: Record<string, string> = omitBy(
-			{
-				filters: JSON.stringify(filters),
-				page: page ? String(page) : undefined,
-				...rest,
-			},
-			isNil
-		) as Record<string, string>;
-		return (
-			<Link
-				to={buildLink(APP_PATH.SEARCH.route, {}, newFilterStateObject)}
-				className={className}
-			>
-				{linkText}
-			</Link>
-		);
+		const filters = newFilterState.filters;
+		return filters && buildGlobalSearchLink(filters, { className }, linkText);
 	};
 
 	return (

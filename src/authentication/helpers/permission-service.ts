@@ -133,7 +133,6 @@ export class PermissionService {
 				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;
 			}
 
-			case PermissionName.EDIT_ASSIGNMENTS:
 			case PermissionName.EDIT_OWN_ASSIGNMENTS: {
 				const assignment = isString(obj)
 					? await AssignmentService.fetchAssignmentById(obj)

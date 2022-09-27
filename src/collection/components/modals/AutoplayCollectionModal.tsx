@@ -43,6 +43,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 					poster: frag.thumbnail_path || '',
 					category: 'video',
 					provider: frag.item_meta?.organisation?.name || '',
+					cuepoints: [{ startTime: frag.start_oc, endTime: frag.end_oc }],
 				};
 			}),
 		});

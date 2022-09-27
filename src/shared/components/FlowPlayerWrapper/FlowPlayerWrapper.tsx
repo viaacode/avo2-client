@@ -1,7 +1,16 @@
-import { AspectRatioWrapper, FlowPlayer, FlowplayerSourceList, Icon } from '@viaa/avo2-components';
+import {
+	AspectRatioWrapper,
+	FlowPlayer,
+	FlowplayerSourceItem,
+	FlowplayerSourceList,
+	Icon,
+	MediaCard,
+	MediaCardThumbnail,
+	Thumbnail,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isNil, isString } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -150,6 +159,25 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
+	const renderPlaylistTile = (item: FlowplayerSourceItem): ReactNode => {
+		return (
+			<MediaCard
+				title={item.title}
+				orientation="vertical"
+				category="search" // Clearest color on white background
+			>
+				<MediaCardThumbnail>
+					<Thumbnail
+						category={item.category}
+						src={item.poster}
+						meta={item.provider}
+						label={item.category}
+					/>
+				</MediaCardThumbnail>
+			</MediaCard>
+		);
+	};
+
 	const getBrowserSafeUrl = (
 		src: string | FlowplayerSourceList
 	): string | FlowplayerSourceList => {
@@ -261,6 +289,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						] as any
 					}
 					googleAnalyticsTitle={props.title}
+					renderPlaylistTile={renderPlaylistTile}
 				/>
 			) : (
 				<div className="c-video-player__overlay" onClick={handlePosterClicked}>
