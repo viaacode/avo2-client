@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
 import { FetchResult } from 'apollo-link';
+import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
@@ -21,6 +22,7 @@ import i18n from '../shared/translations/i18n';
 import {
 	DELETE_COLLECTION_FRAGMENT,
 	DELETE_COLLECTION_LABELS,
+	DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID,
 	DELETE_MARCOM_ENTRY,
 	GET_BOOKMARKED_COLLECTIONS_BY_OWNER,
 	GET_BUNDLE_TITLES_BY_OWNER,
@@ -1409,7 +1411,7 @@ export class CollectionService {
 		await this.insertMarcomEntry(allEntries);
 	}
 
-	static async deleteMarcomEntry(id: string): Promise<void> {
+	static async deleteMarcomEntryById(id: string): Promise<void> {
 		try {
 			const response = await dataService.mutate({
 				variables: {
@@ -1426,6 +1428,37 @@ export class CollectionService {
 				id,
 				query: 'DELETE_MARCOM_ENTRY',
 			});
+		}
+	}
+
+	static async deleteMarcomEntryByIdParentId(marcomEntry: Partial<MarcomEntry>): Promise<void> {
+		try {
+			if (!marcomEntry.publish_date) {
+				return; // Can't delete entries without a date
+			}
+			const response = await dataService.mutate({
+				variables: {
+					parentCollectionId: marcomEntry.collection_id,
+					channelName: marcomEntry.channel_name,
+					channelType: marcomEntry.channel_type,
+					publishDateGte: startOfDay(new Date(marcomEntry.publish_date)),
+					publishDateLte: endOfDay(new Date(marcomEntry.publish_date)),
+				},
+				mutation: DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID,
+			});
+
+			if (response.errors) {
+				throw new CustomError('graphql response contains errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError(
+				'Failed to delete marcom entries by parent collection uuid from the database',
+				err,
+				{
+					marcomEntry,
+					query: 'DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID',
+				}
+			);
 		}
 	}
 
