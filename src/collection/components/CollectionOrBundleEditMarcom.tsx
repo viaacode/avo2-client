@@ -229,7 +229,9 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	const getEmptyMarcomTableMessage = () => {
 		if (selectedChannelTypes?.length) {
 			// With filters
-			return t('Er zijn geen marcom entries die voldoen aan de geselecteerde filters');
+			return t(
+				'collection/components/collection-or-bundle-edit-marcom___er-zijn-geen-marcom-entries-die-voldoen-aan-de-geselecteerde-filters'
+			);
 		}
 		if (isCollection) {
 			// Collection
@@ -334,7 +336,9 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							{marcomEntries ? (
 								<>
 									<CheckboxDropdownModal
-										label={t('Communicatie type')}
+										label={t(
+											'collection/components/collection-or-bundle-edit-marcom___communicatie-type'
+										)}
 										id="communication_type"
 										options={channelTypeOptions}
 										onChange={(selected) => {
