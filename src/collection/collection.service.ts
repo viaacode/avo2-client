@@ -12,6 +12,7 @@ import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { REMOVE_COLLECTION_BOOKMARKS } from '../shared/services/bookmarks-views-plays-service';
 import { AppCollectionBookmark } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { VideoStillService } from '../shared/services/video-stills-service';
@@ -575,18 +576,13 @@ export class CollectionService {
 		collection: Partial<Avo.Collection.Collection>
 	): Promise<void> => {
 		try {
-			const dbCollection = collection;
-
-			// Extra work to handle different naming in graphql vs elasticsearch
-			// Prefer to use lom_typical_age_range everywhere and only switch to lom_typicalagerange when fetching/inserting into graphql
-			(dbCollection as any).lom_typicalagerange = dbCollection.lom_typical_age_range;
-			delete dbCollection.lom_typical_age_range;
+			const dbCollection = cleanCollectionBeforeSave(collection);
 
 			await dataService.mutate({
 				mutation: UPDATE_COLLECTION,
 				variables: {
 					id,
-					collection,
+					collection: dbCollection,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
@@ -607,13 +603,21 @@ export class CollectionService {
 	static deleteCollection = async (collectionId: string): Promise<void> => {
 		try {
 			// delete collection by id
-			await dataService.mutate({
-				mutation: SOFT_DELETE_COLLECTION,
-				variables: {
-					id: collectionId,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await Promise.all([
+				dataService.mutate({
+					mutation: SOFT_DELETE_COLLECTION,
+					variables: {
+						id: collectionId,
+					},
+					update: ApolloCacheManager.clearCollectionCache,
+				}),
+				dataService.mutate({
+					mutation: REMOVE_COLLECTION_BOOKMARKS,
+					variables: {
+						collectionUuid: collectionId,
+					},
+				}),
+			]);
 		} catch (err) {
 			throw new CustomError(`Failed to delete collection or bundle'}`, err, {
 				collectionId,

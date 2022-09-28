@@ -5,6 +5,7 @@ import {
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
+	MoreOptionsDropdown,
 	Navbar,
 	Spacer,
 	TabProps,
@@ -40,7 +41,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -1126,6 +1127,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>
@@ -1167,6 +1169,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>

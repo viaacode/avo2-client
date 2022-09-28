@@ -1,6 +1,7 @@
 import {
 	Container,
 	Flex,
+	MoreOptionsDropdown,
 	Navbar,
 	Toolbar,
 	ToolbarItem,
@@ -9,7 +10,6 @@ import {
 	ToolbarTitle,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -30,17 +30,18 @@ import {
 } from '../../authentication/components';
 import { PermissionName } from '../../authentication/helpers/permission-names';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { buildLink, copyToClipboard, generateContentLinkString } from '../../shared/helpers';
+import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
+import { getMoreOptionsLabel } from '../../shared/constants';
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -91,14 +92,8 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		newFilterState: FilterState,
 		className?: string
 	) => {
-		return (
-			<Link
-				to={buildLink(APP_PATH.SEARCH.route, {}, queryString.stringify(newFilterState))}
-				className={className}
-			>
-				{linkText}
-			</Link>
-		);
+		const filters = newFilterState.filters;
+		return filters && buildGlobalSearchLink(filters, { className }, linkText);
 	};
 
 	return (
@@ -129,6 +124,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 											isOpen={isOptionsMenuOpen}
 											onOpen={() => setIsOptionsMenuOpen(true)}
 											onClose={() => setIsOptionsMenuOpen(false)}
+											label={getMoreOptionsLabel()}
 											menuItems={[
 												{
 													icon: 'link',

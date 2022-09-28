@@ -1,7 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Container,
@@ -12,6 +8,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -35,7 +34,7 @@ import {
 	SettingsTab,
 } from '../settings.const';
 
-interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
+type ForPupilsProps = DefaultSecureRouteProps<{ tabId: string }>;
 
 const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 	const [t] = useTranslation();
@@ -64,10 +63,11 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 			)
 		) {
 			tabHeaders.push(generateTabHeader(ACCOUNT_ID, t('settings/views/settings___account')));
-			tabHeaders.push(
-				generateTabHeader(LINKED_ACCOUNTS, t('settings/views/settings___koppelingen'))
-			);
 		}
+
+		tabHeaders.push(
+			generateTabHeader(LINKED_ACCOUNTS, t('settings/views/settings___koppelingen'))
+		);
 
 		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
 			tabHeaders.push(

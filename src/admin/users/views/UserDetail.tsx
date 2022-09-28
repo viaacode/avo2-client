@@ -4,6 +4,7 @@ import {
 	ButtonToolbar,
 	Container,
 	MenuItemInfo,
+	MoreOptionsDropdown,
 	Spacer,
 	Table,
 	TagList,
@@ -32,7 +33,7 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import MoreOptionsDropdown from '../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
+import { getMoreOptionsLabel } from '../../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -579,6 +580,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								isOpen={isOptionsMenuOpen}
 								onOpen={() => setIsOptionsMenuOpen(true)}
 								onClose={() => setIsOptionsMenuOpen(false)}
+								label={getMoreOptionsLabel()}
 								menuItems={CONTENT_DROPDOWN_ITEMS}
 								onOptionClicked={executeAction}
 							/>

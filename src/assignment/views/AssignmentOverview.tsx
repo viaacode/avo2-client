@@ -7,6 +7,7 @@ import {
 	FormGroup,
 	Icon,
 	IconName,
+	MoreOptionsDropdown,
 	Pagination,
 	Select,
 	Spacer,
@@ -57,8 +58,10 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
-import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
+import {
+	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
+	getMoreOptionsLabel,
+} from '../../shared/constants';
 import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -209,11 +212,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			if (user) {
 				setCanEditAssignments(
 					await PermissionService.hasPermissions(
-						[
-							PermissionName.EDIT_ANY_ASSIGNMENTS,
-							PermissionName.EDIT_OWN_ASSIGNMENTS,
-							PermissionName.EDIT_ASSIGNMENTS,
-						],
+						[PermissionName.EDIT_ANY_ASSIGNMENTS, PermissionName.EDIT_OWN_ASSIGNMENTS],
 						user
 					)
 				);
@@ -224,7 +223,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				permissions: [
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
 					PermissionName.EDIT_OWN_ASSIGNMENTS,
-					PermissionName.EDIT_ASSIGNMENTS,
 				],
 			});
 			ToastService.danger(
@@ -362,6 +360,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderActions = (rowData: Avo.Assignment.Assignment_v2) => {
+		const handleOptionClicked = async (actionId: ReactText) => {
+			await handleExtraOptionsItemClicked(
+				actionId.toString() as ExtraAssignmentOptions,
+				rowData
+			);
+		};
 		return (
 			<ButtonToolbar className="c-assignment-overview__actions">
 				{canEditAssignments && (
@@ -369,6 +373,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						isOpen={dropdownOpenForAssignmentId === rowData.id}
 						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 						onClose={() => setDropdownOpenForAssignmentId(null)}
+						label={getMoreOptionsLabel()}
 						menuItems={[
 							...(query.view === AssignmentView.FINISHED
 								? []
@@ -392,12 +397,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								label: t('assignment/views/assignment-overview___verwijder'),
 							},
 						]}
-						onOptionClicked={(actionId: ReactText) =>
-							handleExtraOptionsItemClicked(
-								actionId.toString() as ExtraAssignmentOptions,
-								rowData
-							)
-						}
+						onOptionClicked={handleOptionClicked}
 					/>
 				)}
 			</ButtonToolbar>
