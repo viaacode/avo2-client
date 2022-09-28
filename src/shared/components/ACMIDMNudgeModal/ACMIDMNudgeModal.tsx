@@ -51,7 +51,11 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 				ProfilePreference.DoNotShow
 			);
 
-			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
+			const hasVlaamseOverheidLinked = !!(
+				user &&
+				hasIdpLinked(user, 'VLAAMSEOVERHEID__SUB_ID') &&
+				hasIdpLinked(user, 'VLAAMSEOVERHEID__ACCOUNT_ID')
+			);
 			const profileIsComplete = !!(user && isProfileComplete(user));
 
 			setShowNudgingModal(

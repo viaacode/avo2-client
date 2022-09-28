@@ -36,6 +36,14 @@ export const REMOVE_COLLECTION_BOOKMARK = gql`
 	}
 `;
 
+export const REMOVE_COLLECTION_BOOKMARKS = gql`
+	mutation deleteCollectionBookmark($collectionUuid: uuid!) {
+		delete_app_collection_bookmarks(where: { collection_uuid: { _eq: $collectionUuid } }) {
+			affected_rows
+		}
+	}
+`;
+
 export const INCREMENT_ITEM_VIEWS = gql`
 	mutation increaseItemViews($itemUuid: uuid!) {
 		update_app_item_views(where: { item_id: { _eq: $itemUuid } }, _inc: { count: 1 }) {

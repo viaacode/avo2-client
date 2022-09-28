@@ -4,6 +4,7 @@ import {
 	Container,
 	Flex,
 	FormGroup,
+	MoreOptionsDropdown,
 	TextInput,
 	Toolbar,
 	ToolbarLeft,
@@ -19,7 +20,6 @@ import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.s
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
-import MoreOptionsDropdown from '../../../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import { isMobileWidth } from '../../../../shared/helpers';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../../../shared/services';
@@ -43,6 +43,7 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+import { getMoreOptionsLabel } from '../../../../shared/constants';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -194,6 +195,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					isOpen={isMobileOptionsMenuOpen}
 					onOpen={() => setIsMobileOptionsMenuOpen(true)}
 					onClose={() => setIsMobileOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
 					menuItems={[
 						{
 							label: t(

@@ -5,6 +5,7 @@ import {
 	Icon,
 	MetaData,
 	MetaDataItem,
+	MoreOptionsDropdown,
 	Pagination,
 	Spacer,
 	Table,
@@ -31,7 +32,6 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import MoreOptionsDropdown from '../../shared/components/MoreOptionsDropdown/MoreOptionsDropdown';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import {
 	buildLink,
@@ -52,6 +52,8 @@ import { ContentTypeNumber } from '../collection.types';
 
 import './CollectionOrBundleOverview.scss';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
+
+import { getMoreOptionsLabel } from '../../shared/constants';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -442,6 +444,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					isOpen={dropdownOpen[collectionId] || false}
 					onOpen={() => setDropdownOpen({ [collectionId]: true })}
 					onClose={() => setDropdownOpen({ [collectionId]: false })}
+					label={getMoreOptionsLabel()}
 					menuItems={ROW_DROPDOWN_ITEMS}
 					onOptionClicked={onClickDropdownItem}
 				/>
