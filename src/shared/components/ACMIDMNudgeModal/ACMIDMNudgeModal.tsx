@@ -1,4 +1,5 @@
 import { Button, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
+import { IdpTypeSchema } from '@viaa/avo2-types/types/auth';
 import { get } from 'lodash-es';
 import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +52,16 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 				ProfilePreference.DoNotShow
 			);
 
-			const hasVlaamseOverheidLinked = !!(user && hasIdpLinked(user, 'VLAAMSEOVERHEID'));
+			const hasVlaamseOverheidLinked = !!(
+				user &&
+				(
+					[
+						'VLAAMSEOVERHEID',
+						'VLAAMSEOVERHEID__ACCOUNT_ID',
+						'VLAAMSEOVERHEID__SUB_ID',
+					] as IdpTypeSchema[]
+				).some((idp) => hasIdpLinked(user, idp))
+			);
 			const profileIsComplete = !!(user && isProfileComplete(user));
 
 			setShowNudgingModal(
