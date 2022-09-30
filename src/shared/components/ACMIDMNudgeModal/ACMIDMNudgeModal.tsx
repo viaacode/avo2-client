@@ -10,6 +10,7 @@ import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../uistate/store/actions';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
@@ -56,9 +57,13 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 				hasIdpLinked(user, 'VLAAMSEOVERHEID__SUB_ID') &&
 				hasIdpLinked(user, 'VLAAMSEOVERHEID__ACCOUNT_ID');
 			const profileIsComplete = !!(user && isProfileComplete(user));
+			const viewingLinkingScreen = location.pathname === APP_PATH.SETTINGS_LINKS.route;
 
 			setShowNudgingModal(
-				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
+				!(profilePreference || []).length &&
+					!hasVlaamseOverheidLinked &&
+					profileIsComplete &&
+					!viewingLinkingScreen
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
