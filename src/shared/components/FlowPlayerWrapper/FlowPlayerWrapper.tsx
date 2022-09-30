@@ -1,8 +1,5 @@
 import {
 	AspectRatioWrapper,
-	FlowPlayer,
-	FlowplayerSourceItem,
-	FlowplayerSourceList,
 	Icon,
 	MediaCard,
 	MediaCardThumbnail,
@@ -28,6 +25,9 @@ import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
+
+import { FlowPlayer } from './Flowplayer/FlowPlayer';
+import { FlowplayerSourceItemSchema, FlowplayerSourceList } from './Flowplayer/FlowPlayer.types';
 
 import './FlowPlayerWrapper.scss';
 
@@ -159,7 +159,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
-	const renderPlaylistTile = (item: FlowplayerSourceItem): ReactNode => {
+	const renderPlaylistTile = (item: FlowplayerSourceItemSchema): ReactNode => {
 		return (
 			<MediaCard
 				title={item.title}
@@ -222,16 +222,11 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		return src;
 	};
 
-	let [start, end]: [number | null, number | null] = getValidStartAndEnd(
+	const [start, end]: [number | null, number | null] = getValidStartAndEnd(
 		props.cuePoints?.start,
 		props.cuePoints?.end,
 		toSeconds(item?.duration)
 	);
-
-	if (start === 0 && end === toSeconds(item?.duration)) {
-		start = null;
-		end = null;
-	}
 
 	const trackingId =
 		window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]
