@@ -10,6 +10,7 @@ import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../uistate/store/actions';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
@@ -90,8 +91,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		}
 
 		const isOnAssignmentPage = location.pathname.includes(ROUTE_PARTS.assignments);
+		const isOnAccountLinkingPage = location.pathname.includes(APP_PATH.SETTINGS_LINKS.route);
 
-		if (user && (!isPupil || (isPupil && !isOnAssignmentPage))) {
+		if (user && !isOnAccountLinkingPage && (!isPupil || (isPupil && !isOnAssignmentPage))) {
 			fetchProfilePreference();
 		}
 	}, [fetchProfilePreference, user, isPupil, location, setShowNudgingModal]);
