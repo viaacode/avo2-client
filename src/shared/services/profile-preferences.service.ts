@@ -8,12 +8,21 @@ import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
 
-export enum ProfilePreference {
+export enum ProfilePreferenceKey {
 	DoNotShow = 'DO_NOT_SHOW',
 }
 
+export interface ProfilePreference {
+	id: number;
+	profile_id: string;
+	key: 'DO_NOT_SHOW' | string;
+}
+
 export class ProfilePreferencesService {
-	static async fetchProfilePreference(profileId: string, key: ProfilePreference): Promise<any> {
+	static async fetchProfilePreference(
+		profileId: string,
+		key: ProfilePreferenceKey
+	): Promise<ProfilePreference[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_PROFILE_PREFERENCE,
@@ -29,14 +38,17 @@ export class ProfilePreferencesService {
 		}
 	}
 
-	static async setProfilePreference(profileId: string, key: ProfilePreference): Promise<any> {
+	static async setProfilePreference(
+		profileId: string,
+		key: ProfilePreferenceKey
+	): Promise<number> {
 		try {
 			const response = await dataService.mutate({
 				mutation: SET_PROFILE_PREFERENCE,
 				variables: { profileId, key },
 			});
 
-			return response;
+			return response?.data?.insert_users_profile_preferences?.affected_rows;
 		} catch (err) {
 			throw new CustomError('Het inserten van de profile preference is mislukt.', err, {
 				query: SET_PROFILE_PREFERENCE,

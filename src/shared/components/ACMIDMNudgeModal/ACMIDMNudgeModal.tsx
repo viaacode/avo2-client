@@ -18,7 +18,7 @@ import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../const
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
-	ProfilePreference,
+	ProfilePreferenceKey,
 	ProfilePreferencesService,
 } from '../../services/profile-preferences.service';
 
@@ -40,37 +40,11 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	// HTTP
 
-	const fetchProfilePreference = useCallback(async () => {
-		if (showNudgingModal !== null) {
-			// was already initialized
-			return;
-		}
-
-		try {
-			const profilePreference = await ProfilePreferencesService.fetchProfilePreference(
-				getProfileId(user),
-				ProfilePreference.DoNotShow
-			);
-
-			const hasVlaamseOverheidLinked =
-				!!user &&
-				hasIdpLinked(user, 'VLAAMSEOVERHEID__SUB_ID') &&
-				hasIdpLinked(user, 'VLAAMSEOVERHEID__ACCOUNT_ID');
-			const profileIsComplete = !!(user && isProfileComplete(user));
-
-			setShowNudgingModal(
-				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
-			);
-		} catch (err) {
-			console.error(new CustomError('Failed to fetch profile preference', err));
-		}
-	}, [user, showNudgingModal, setShowNudgingModal]);
-
 	const setProfilePreference = async () => {
 		try {
 			await ProfilePreferencesService.setProfilePreference(
 				getProfileId(user),
-				ProfilePreference.DoNotShow
+				ProfilePreferenceKey.DoNotShow
 			);
 
 			setShowNudgingModal(false);
@@ -81,7 +55,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	// Lifecycle
 
-	useEffect(() => {
+	const updateShowNudgingModal = useCallback(async () => {
 		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
 
 		// Stop early if previously dismissed
@@ -94,9 +68,29 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		const isOnAccountLinkingPage = location.pathname.includes(APP_PATH.SETTINGS_LINKS.route);
 
 		if (user && !isOnAccountLinkingPage && (!isPupil || (isPupil && !isOnAssignmentPage))) {
-			fetchProfilePreference();
+			const profilePreferences =
+				(await ProfilePreferencesService.fetchProfilePreference(
+					getProfileId(user),
+					ProfilePreferenceKey.DoNotShow
+				)) || [];
+
+			const hasVlaamseOverheidLinked =
+				!!user &&
+				(hasIdpLinked(user, 'VLAAMSEOVERHEID__SUB_ID') ||
+					hasIdpLinked(user, 'VLAAMSEOVERHEID__ACCOUNT_ID'));
+			const profileIsComplete = user && isProfileComplete(user);
+
+			setShowNudgingModal(
+				!profilePreferences.length && !hasVlaamseOverheidLinked && profileIsComplete
+			);
+		} else {
+			setShowNudgingModal(false);
 		}
-	}, [fetchProfilePreference, user, isPupil, location, setShowNudgingModal]);
+	}, [user, isPupil, location, setShowNudgingModal]);
+
+	useEffect(() => {
+		updateShowNudgingModal();
+	}, [updateShowNudgingModal]);
 
 	// Events
 
