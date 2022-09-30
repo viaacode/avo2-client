@@ -57,13 +57,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 				hasIdpLinked(user, 'VLAAMSEOVERHEID__SUB_ID') &&
 				hasIdpLinked(user, 'VLAAMSEOVERHEID__ACCOUNT_ID');
 			const profileIsComplete = !!(user && isProfileComplete(user));
-			const viewingLinkingScreen = location.pathname === APP_PATH.SETTINGS_LINKS.route;
 
 			setShowNudgingModal(
-				!(profilePreference || []).length &&
-					!hasVlaamseOverheidLinked &&
-					profileIsComplete &&
-					!viewingLinkingScreen
+				!(profilePreference || []).length && !hasVlaamseOverheidLinked && profileIsComplete
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch profile preference', err));
@@ -95,8 +91,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		}
 
 		const isOnAssignmentPage = location.pathname.includes(ROUTE_PARTS.assignments);
+		const isOnAccountLinkingPage = location.pathname.includes(APP_PATH.SETTINGS_LINKS.route);
 
-		if (user && (!isPupil || (isPupil && !isOnAssignmentPage))) {
+		if (user && !isOnAccountLinkingPage && (!isPupil || (isPupil && !isOnAssignmentPage))) {
 			fetchProfilePreference();
 		}
 	}, [fetchProfilePreference, user, isPupil, location, setShowNudgingModal]);
