@@ -29,10 +29,12 @@ export function trackEvents(
 			(event: MinimalClientEvent): Avo.EventLogging.Event => {
 				return {
 					occurred_at: new Date().toISOString(),
-					source_url: window.location.href, // url when the event was triggered
+					source_url: window.location.origin + window.location.pathname, // url when the event was triggered
 					subject: get(user, 'profile.id', 'anonymous'), // Entity making causing the event
 					subject_type: 'user',
-					source_querystring: insideIframe() ? window.parent.location.href : '',
+					source_querystring: insideIframe()
+						? window.parent.location.href
+						: window.location.search,
 					...event,
 					message: '', // AVO-1675: message should be anonymous and is redundant: leave it empty
 				};
