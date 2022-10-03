@@ -444,11 +444,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							])}
 							{renderDateDetailRows(storedProfile, [
 								[
-									'blocked_at.max',
+									'last_blocked_at.aggregate.max.created_at',
 									t('admin/users/views/user-detail___laatst-geblokeerd-op'),
 								],
 								[
-									'unblocked_at.max',
+									'last_unblocked_at.aggregate.max.created_at',
 									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
 								],
 							])}

@@ -163,7 +163,10 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				...getDateRangeFilters(
 					filters,
 					['blocked_at', 'unblocked_at'],
-					['blocked_at.max', 'unblocked_at.max']
+					[
+						'last_blocked_at.aggregate.max.created_at',
+						'last_unblocked_at.aggregate.max.created_at',
+					]
 				)
 			);
 

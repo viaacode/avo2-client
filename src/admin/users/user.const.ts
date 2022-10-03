@@ -257,13 +257,21 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 		is_blocked: order,
 	}),
 	blocked_at: (order: Avo.Search.OrderDirection) => ({
-		blocked_at: {
-			max: order,
+		last_blocked_at: {
+			aggregate: {
+				max: {
+					created_at: order,
+				},
+			},
 		},
 	}),
 	unblocked_at: (order: Avo.Search.OrderDirection) => ({
-		unblocked_at: {
-			max: order,
+		last_unblocked_at: {
+			aggregate: {
+				max: {
+					created_at: order,
+				},
+			},
 		},
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({
