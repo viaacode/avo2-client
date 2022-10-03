@@ -162,10 +162,8 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				...getDateRangeFilters(
 					filters,
 					['blocked_at', 'unblocked_at'],
-					[
-						'last_blocked_at.aggregate.max.created_at',
-						'last_unblocked_at.aggregate.max.created_at',
-					]
+					// Filtering has to happen on blocked_at, fetching on last_blocked_at: https://meemoo.atlassian.net/browse/AVO-2129?focusedCommentId=34844
+					['blocked_at.max', 'unblocked_at.max']
 				)
 			);
 
