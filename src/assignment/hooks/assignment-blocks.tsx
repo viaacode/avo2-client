@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import React, { ReactNode } from 'react';
 
+import { FilterState } from '../../search/search.types';
 import { AssignmentBlockType } from '../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem';
@@ -9,7 +10,7 @@ import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEdi
 
 export function useEditBlocks(
 	setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
-	buildSearchLink?: (props: Partial<Avo.Search.Filters>) => ReactNode | string,
+	buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string,
 	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
 ): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	return function useEditBlocks(block: Avo.Core.BlockItemBase) {

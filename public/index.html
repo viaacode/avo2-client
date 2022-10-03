@@ -47,9 +47,11 @@
 
 <!-- No-JS fallback -->
 <noscript>You need to enable JavaScript to run this app.</noscript>
+
+<!-- Main react app node -->
 <div id="root"></div>
 
-<!-- Detect old browsers-->
+<!-- Detect old browsers -->
 <script src="%PUBLIC_URL%/old-browser-detector.min.js"></script>
 <script type="text/javascript">
 	var Detector = new oldBrowserDetector(null, function () {
@@ -58,6 +60,16 @@
 	});
 
 	Detector.detect();
+</script>
+
+<!-- Detect no access to localstorage -->
+<script type="text/javascript">
+	try {
+		const _ls = window.localStorage;
+	} catch (err) {
+		// Local storage is not available => flowplayer will crash the page => redirect to the backend error page
+		window.location.href = window._ENV_.PROXY_URL + '/third-party-cookies'
+	}
 </script>
 </body>
 </html>

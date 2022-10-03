@@ -14,7 +14,10 @@ import {
 	getQueryFilter,
 	NULL_FILTER,
 } from '../../shared/helpers/filters';
-import { CollectionTableStates } from '../collections-or-bundles.types';
+import {
+	CollectionOrBundleMarcomTableState,
+	CollectionTableStates,
+} from '../collections-or-bundles.types';
 
 /**
  * Generates the filters for the collections and bundles screens and the actualisation, quality check and marcom screens
@@ -184,17 +187,6 @@ export function generateCollectionWhereObject(
 		},
 	});
 
-	const excludeChannelType = get(filters, 'excludeChannelType');
-	if (excludeChannelType) {
-		andFilters.push({
-			channel_type: { _neq: excludeChannelType },
-		});
-	} else if (excludeChannelType === null) {
-		andFilters.push({
-			channel_type: { _is_null: false },
-		});
-	}
-
 	// Actualisation filters
 	andFilters.push(
 		...getMultiOptionFilters(filters, ['actualisation_status'], ['mgmt_current_status'])
@@ -233,6 +225,21 @@ export function generateCollectionWhereObject(
 	);
 
 	// Marcom filters
+	const marcomFilters = filters as CollectionOrBundleMarcomTableState;
+	if (marcomFilters?.marcom_last_communication_channel_type?.length) {
+		andFilters.push({
+			_or: [
+				{
+					channel_type: {
+						_in: marcomFilters.marcom_last_communication_channel_type,
+					},
+				},
+				...(marcomFilters.marcom_last_communication_channel_type.includes(NULL_FILTER)
+					? [{ channel_type: { _is_null: true } }]
+					: []),
+			],
+		});
+	}
 	andFilters.push(...getBooleanFilters(filters, ['marcom_klascement'], ['klascement']));
 
 	return andFilters;

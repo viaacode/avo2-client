@@ -192,9 +192,13 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 			setCollectionCount(collectionsCountTemp);
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to get collection actualisations from the database', err, {
-					tableState,
-				})
+				new CustomError(
+					'Failed to get collection quality check entries from the database',
+					err,
+					{
+						tableState,
+					}
+				)
 			);
 
 			setLoadingInfo({

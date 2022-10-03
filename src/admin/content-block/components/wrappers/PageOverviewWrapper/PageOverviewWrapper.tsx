@@ -19,6 +19,7 @@ import { ROUTE_PARTS } from '../../../../../shared/constants';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
+import { useScrollToSelector } from '../../../../../shared/hooks/scroll-to-selector';
 import { ToastService } from '../../../../../shared/services';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import i18n from '../../../../../shared/translations/i18n';
@@ -100,6 +101,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [selectedTabObjects, setSelectedTabObjects] = useState<LabelObj[]>([]);
 	const [focusedPage, setFocusedPage] = useState<PageInfo | null>(null);
+
+	// Scroll down to the overview block if a label was clicked: https://meemoo.atlassian.net/browse/AVO-1473
+	useScrollToSelector(queryParamsState.label?.length ? '.c-content-page-overview-block' : null);
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
@@ -331,7 +335,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				buttonAltTitle={buttonAltTitle}
 				focusedPage={focusedPage}
 				getLabelLink={(label: string) => {
-					return `/${ROUTE_PARTS.news}?label=${encodeURIComponent(label)}`;
+					return `${window.location.origin}/${
+						ROUTE_PARTS.news
+					}?label=${encodeURIComponent(label)}`;
 				}}
 				renderLink={renderLink}
 			/>

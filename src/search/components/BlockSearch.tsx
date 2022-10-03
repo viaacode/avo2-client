@@ -27,11 +27,11 @@ import { useDebounce } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { KeyCode } from '../../shared/types';
 import { AppState } from '../../store';
+import { SearchFilter } from '../search.const';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 import './BlockSearch.scss';
-import { SearchFilter } from '../search.const';
 
 interface BlockSearchProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;

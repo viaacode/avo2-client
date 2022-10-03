@@ -5,6 +5,7 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { FilterState } from '../../../search/search.types';
 import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
@@ -32,7 +33,7 @@ function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableBlockItem) {
 export const AssignmentBlockEditItem: FC<
 	EditBlockProps & {
 		AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[];
-		buildSearchLink?: (props: Partial<Avo.Search.Filters>) => ReactNode | string;
+		buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string;
 	}
 > = ({ block, setBlock, AssignmentBlockItemDescriptionTypes, buildSearchLink }) => {
 	const [t] = useTranslation();
@@ -151,7 +152,9 @@ export const AssignmentBlockEditItem: FC<
 			<BlockItemMetadata
 				block={editableBlock}
 				buildSeriesLink={
-					buildSearchLink ? (series) => buildSearchLink({ serie: [series] }) : undefined
+					buildSearchLink
+						? (series) => buildSearchLink({ filters: { serie: [series] } })
+						: undefined
 				}
 			/>
 		</CustomiseItemForm>

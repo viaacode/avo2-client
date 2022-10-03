@@ -10,7 +10,8 @@ import {
 	ToolbarTitle,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, ReactNode, ReactText, useState } from 'react';
+import { isEmpty } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
@@ -23,6 +24,7 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import {
 	PermissionGuard,
 	PermissionGuardFail,
@@ -33,15 +35,15 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
-import { getMoreOptionsLabel } from '../../shared/constants';
-import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -58,6 +60,20 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		FilterState,
 		(FilterState: FilterState, updateType?: UrlUpdateType) => void
 	];
+
+	useEffect(() => {
+		if (!isEmpty(filterState.filters)) {
+			trackEvents(
+				{
+					object: filterState.filters?.query || '',
+					object_type: 'query',
+					action: 'search',
+					resource: filterState.filters,
+				},
+				user
+			);
+		}
+	}, [filterState]);
 
 	const handleOptionClicked = (optionId: string | number | ReactText) => {
 		setIsOptionsMenuOpen(false);
@@ -93,7 +109,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 		className?: string
 	) => {
 		const filters = newFilterState.filters;
-		return filters && buildGlobalSearchLink(filters, { className }, linkText);
+		return filters && buildGlobalSearchLink(newFilterState, { className }, linkText);
 	};
 
 	return (

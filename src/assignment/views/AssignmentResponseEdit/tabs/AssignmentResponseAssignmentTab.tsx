@@ -3,6 +3,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorView } from '../../../../error/views';
+import { FilterState } from '../../../../search/search.types';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
@@ -10,7 +11,7 @@ interface AssignmentResponseAssignmentTabProps {
 	blocks: Avo.Assignment.Assignment_v2['blocks'] | null;
 	pastDeadline: boolean;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
-	buildSearchLink: (props: Partial<Avo.Search.Filters>) => ReactNode | string;
+	buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;
 }
 
 const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssignmentTabProps> = ({

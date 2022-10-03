@@ -134,7 +134,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.COLLECTIONS_OVERVIEW,
 						{},
 						{
-							is_public: '1',
+							is_public: 'true',
 							owner_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -152,7 +152,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.COLLECTIONS_OVERVIEW,
 						{},
 						{
-							is_public: '0',
+							is_public: 'false',
 							owner_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -170,7 +170,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 						{},
 						{
-							is_public: '1',
+							is_public: 'true',
 							user_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -188,7 +188,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 						{},
 						{
-							is_public: '0',
+							is_public: 'false',
 							user_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
