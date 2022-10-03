@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import {
 	Button,
 	ButtonToolbar,
@@ -33,6 +32,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -42,18 +42,16 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ApolloCacheManager, ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { SOFT_DELETE_COLLECTION } from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeNumber } from '../collection.types';
 
-import './CollectionOrBundleOverview.scss';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
-import { getMoreOptionsLabel } from '../../shared/constants';
+import './CollectionOrBundleOverview.scss';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -87,9 +85,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
-
-	// Mutations
-	const [triggerCollectionDelete] = useMutation(SOFT_DELETE_COLLECTION);
 
 	// Listeners
 	const onClickDelete = (collectionId: string) => {
@@ -239,12 +234,19 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onDeleteCollection = async () => {
 		try {
 			setIsDeleteModalOpen(false);
-			await triggerCollectionDelete({
-				variables: {
-					id: selected,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			if (!selected) {
+				ToastService.danger(
+					isCollection
+						? t(
+								'Er was geen collectie geselecteerd, gelieve opnieuw te proberen na het herladen van de pagina.'
+						  )
+						: t(
+								'Er was geen bundel geselecteerd, gelieve opnieuw te proberen na het herladen van de pagina.'
+						  )
+				);
+				return;
+			}
+			await CollectionService.deleteCollection(selected);
 
 			trackEvents(
 				{
