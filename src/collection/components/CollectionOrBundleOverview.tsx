@@ -46,7 +46,6 @@ import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { SOFT_DELETE_COLLECTION } from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeNumber } from '../collection.types';
 

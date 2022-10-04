@@ -2,6 +2,16 @@ import { Avo } from '@viaa/avo2-types';
 import { get, isFunction, kebabCase, omit } from 'lodash-es';
 import moment from 'moment';
 
+import {
+	DeleteContentLabelLinksDocument,
+	DeleteContentLabelLinksMutation,
+	InsertContentDocument,
+	InsertContentLabelLinksDocument,
+	InsertContentLabelLinksMutation,
+	InsertContentMutation,
+	UpdateContentByIdDocument,
+	UpdateContentByIdMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
@@ -19,20 +29,6 @@ import {
 	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
-import {
-	DELETE_CONTENT_LABEL_LINKS,
-	GET_CONTENT_BY_ID,
-	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
-	GET_CONTENT_PAGES,
-	GET_CONTENT_TYPES,
-	GET_PUBLIC_CONTENT_PAGES_BY_TITLE,
-	GET_PUBLIC_PROJECT_CONTENT_PAGES,
-	GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
-	INSERT_CONTENT,
-	INSERT_CONTENT_LABEL_LINKS,
-	SOFT_DELETE_CONTENT,
-	UPDATE_CONTENT_BY_ID,
-} from './content.gql';
 import { ContentOverviewTableCols, ContentPageInfo } from './content.types';
 import {
 	convertToContentPageInfo,
@@ -187,14 +183,6 @@ export class ContentService {
 				query: GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 			});
 
-			if (response.errors) {
-				throw new CustomError(
-					'Failed to get content labels by content type from database because of graphql errors',
-					null,
-					{ response }
-				);
-			}
-
 			const labels = get(response, 'data.app_content_labels');
 
 			if (!labels) {
@@ -229,15 +217,11 @@ export class ContentService {
 				})),
 			};
 
-			const response = await dataService.mutate({
+			await dataService.query<InsertContentLabelLinksMutation>({
+				query: InsertContentLabelLinksDocument,
 				variables,
-				mutation: INSERT_CONTENT_LABEL_LINKS,
 				update: ApolloCacheManager.clearContentLabels,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to insert content label links in the database', err, {
 				variables,
@@ -258,15 +242,11 @@ export class ContentService {
 				contentPageId,
 			};
 
-			const response = await dataService.mutate({
+			await dataService.query<DeleteContentLabelLinksMutation>({
+				query: DeleteContentLabelLinksDocument,
 				variables,
-				mutation: DELETE_CONTENT_LABEL_LINKS,
 				update: ApolloCacheManager.clearContentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to insert content label links in the database', err, {
 				variables,
@@ -347,17 +327,13 @@ export class ContentService {
 			const dbContentPage = this.cleanupBeforeInsert(
 				convertToDatabaseContentPage(contentPage)
 			);
-			const response = await dataService.mutate({
-				mutation: INSERT_CONTENT,
+			const response = await dataService.query<InsertContentMutation>({
+				query: InsertContentDocument,
 				variables: {
 					contentPage: dbContentPage,
 				},
 				update: ApolloCacheManager.clearContentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
 			const id: number | null = get(
 				response,
@@ -398,18 +374,14 @@ export class ContentService {
 			const dbContentPage = this.cleanupBeforeInsert(
 				convertToDatabaseContentPage(contentPage)
 			);
-			const response = await dataService.mutate({
-				mutation: UPDATE_CONTENT_BY_ID,
+			const response = await dataService.query<UpdateContentByIdMutation>({
+				query: UpdateContentByIdDocument,
 				variables: {
 					contentPage: dbContentPage,
 					id: contentPage.id,
 				},
 				update: ApolloCacheManager.clearContentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
 			const updatedContent = get(response, 'data.update_app_content.affected_rows', null);
 			if (!updatedContent) {
@@ -571,15 +543,11 @@ export class ContentService {
 
 	public static async deleteContentPage(id: number) {
 		try {
-			const response = await dataService.mutate({
+			await dataService.mutate({
 				variables: { id },
 				mutation: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete content page from the database', err, {
 				id,

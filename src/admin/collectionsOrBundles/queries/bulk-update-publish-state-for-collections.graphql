@@ -1,4 +1,4 @@
-mutation bulkUpdatePublishSTateForCollections(
+mutation bulkUpdatePublishStateForCollections(
 	$isPublic: Boolean!
 	$collectionIds: [uuid!]!
 	$now: timestamptz!

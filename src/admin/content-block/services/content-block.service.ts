@@ -1,18 +1,20 @@
+import { Avo } from '@viaa/avo2-types';
 import { FetchResult } from 'apollo-link';
 import { compact, get, has, omit, without } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
+import {
+	DeleteContentBlockDocument,
+	DeleteContentBlockMutation,
+	InsertContentBlocksDocument,
+	InsertContentBlocksMutation,
+	UpdateContentBlockDocument,
+	UpdateContentBlockMutation,
+} from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ContentBlockConfig } from '../../shared/types';
 import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
-import {
-	DELETE_CONTENT_BLOCK,
-	INSERT_CONTENT_BLOCKS,
-	UPDATE_CONTENT_BLOCK,
-} from '../content-block.gql';
 import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
@@ -46,8 +48,8 @@ export class ContentBlockService {
 	): Promise<FetchResult<any> | null> {
 		const contentBlock = convertBlockToDatabaseFormat(contentBlockConfig);
 
-		return await dataService.mutate({
-			mutation: UPDATE_CONTENT_BLOCK,
+		return await dataService.query<UpdateContentBlockMutation>({
+			query: UpdateContentBlockDocument,
 			variables: { contentBlock, id: contentBlockConfig.id },
 			update: ApolloCacheManager.clearContentBlocksCache,
 		});
@@ -60,8 +62,8 @@ export class ContentBlockService {
 	 */
 	public static async deleteContentBlock(id: number) {
 		try {
-			return await dataService.mutate({
-				mutation: DELETE_CONTENT_BLOCK,
+			return await dataService.query<DeleteContentBlockMutation>({
+				query: DeleteContentBlockDocument,
 				variables: { id },
 				update: ApolloCacheManager.clearContentBlocksCache,
 			});
@@ -102,8 +104,8 @@ export class ContentBlockService {
 			const dbBlocks: Partial<Avo.ContentPage.Block>[] =
 				convertBlocksToDatabaseFormat(contentBlockConfigs);
 			(dbBlocks || []).forEach((block) => (block.content_id = contentId));
-			const response = await dataService.mutate({
-				mutation: INSERT_CONTENT_BLOCKS,
+			const response = await dataService.query<InsertContentBlocksMutation>({
+				query: InsertContentBlocksDocument,
 				variables: {
 					contentBlocks: this.cleanContentBlocksBeforeDatabaseInsert(dbBlocks),
 				},

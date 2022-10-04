@@ -1,13 +1,9 @@
 import { get } from 'lodash-es';
 
+import { GetNotificationDocument, GetNotificationQuery } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
 import { ApolloCacheManager, dataService } from './data-service';
-import {
-	GET_NOTIFICATION,
-	INSERT_NOTIFICATION,
-	UPDATE_NOTIFICATION,
-} from './notification-service.gql';
 
 export interface NotificationInfo {
 	through_email: boolean;
@@ -20,19 +16,13 @@ export class NotificationService {
 		profileId: string
 	): Promise<NotificationInfo | null> {
 		try {
-			const response = await dataService.query({
-				query: GET_NOTIFICATION,
+			const response = await dataService.query<GetNotificationQuery>({
+				query: GetNotificationDocument,
 				variables: {
 					key,
 					profileId,
 				},
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 
 			return get(response, 'data.users_notifications[0]', null);
 		} catch (err) {
@@ -51,7 +41,7 @@ export class NotificationService {
 		throughPlatform: boolean
 	): Promise<void> {
 		try {
-			const notificationEntryExists: boolean = !!(await NotificationService.getNotification(
+			const notificationEntryExists = !!(await NotificationService.getNotification(
 				key,
 				profileId
 			));

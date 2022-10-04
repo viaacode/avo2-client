@@ -1,35 +1,24 @@
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
+import {
+	GetMenuItemByIdDocument,
+	GetMenuItemByIdQuery,
+	InsertMenuItemDocument,
+	InsertMenuItemMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
-
-import {
-	DELETE_MENU_ITEM,
-	GET_MENUS,
-	GET_MENU_ITEMS_BY_PLACEMENT,
-	GET_MENU_ITEM_BY_ID,
-	INSERT_MENU_ITEM,
-	UPDATE_MENU_ITEM_BY_ID,
-} from './menu.gql';
 
 const MENU_RESULT_PATH = 'app_content_nav_elements';
 
 export class MenuService {
 	public static async fetchMenuItemById(id: number): Promise<Avo.Menu.Menu | null> {
 		try {
-			const response = await dataService.query({
-				query: GET_MENU_ITEM_BY_ID,
+			const response = await dataService.query<GetMenuItemByIdQuery>({
+				query: GetMenuItemByIdDocument,
 				variables: { id },
 			});
-
-			if (!response) {
-				throw new CustomError('Response is undefined');
-			}
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
 			return get(response, `data.${MENU_RESULT_PATH}[0]`, null);
 		} catch (err) {
@@ -51,9 +40,6 @@ export class MenuService {
 			if (!response) {
 				throw new CustomError('Response is undefined');
 			}
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
 			return get(response, `data.${MENU_RESULT_PATH}`, []);
 		} catch (err) {
@@ -66,16 +52,13 @@ export class MenuService {
 
 	public static async insertMenuItem(menuItem: Partial<Avo.Menu.Menu>): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_MENU_ITEM,
+			const response = await dataService.query<InsertMenuItemMutation>({
+				query: InsertMenuItemDocument,
 				variables: {
 					menuItem,
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			});
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
 			const id = get(response, 'data.insert_app_content_nav_elements.returning[0].id');
 			if (isNil(id)) {
 				throw new CustomError('Response does not contain inserted id', null, { response });
@@ -116,18 +99,11 @@ export class MenuService {
 
 	public static async deleteMenuItem(id: number): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: DELETE_MENU_ITEM,
+			await dataService.query<DeleteMenuItemMutation>({
+				query: DeleteMenuItemDocument,
 				variables: { id },
 				update: ApolloCacheManager.clearNavElementsCache,
 			});
-
-			if (!response) {
-				throw new CustomError('Response is undefined');
-			}
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete menu item by id', err, {
 				id,

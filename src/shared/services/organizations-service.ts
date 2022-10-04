@@ -1,16 +1,13 @@
+import { Avo } from '@viaa/avo2-types';
 import { get, sortBy } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
+import {
+	GetUsersByCompanyIdDocument,
+	GetUsersByCompanyIdQuery,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-import {
-	GET_ALL_ORGANISATIONS,
-	GET_DISTINCT_ORGANISATIONS,
-	GET_ORGANISATIONS_WITH_USERS,
-	GET_USERS_IN_COMPANY,
-} from './organizations-service.gql';
 
 export class OrganisationService {
 	public static async fetchOrganisations(
@@ -20,10 +17,6 @@ export class OrganisationService {
 			const response = await dataService.query({
 				query: onlyWithItems ? GET_DISTINCT_ORGANISATIONS : GET_ALL_ORGANISATIONS,
 			});
-
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
 
 			let organisations: Partial<Avo.Organization.Organization>[] | null;
 			if (onlyWithItems) {
@@ -54,10 +47,6 @@ export class OrganisationService {
 		try {
 			const response = await dataService.query({ query: GET_ORGANISATIONS_WITH_USERS });
 
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-
 			const organisations: Partial<Avo.Organization.Organization>[] | null = get(
 				response,
 				'data.shared_organisations_with_users'
@@ -81,16 +70,12 @@ export class OrganisationService {
 		companyId: string
 	): Promise<Partial<Avo.User.Profile>[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_USERS_IN_COMPANY,
+			const response = await dataService.query<GetUsersByCompanyIdQuery>({
+				query: GetUsersByCompanyIdDocument,
 				variables: {
 					companyId,
 				},
 			});
-
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
 
 			const users: Partial<Avo.User.Profile>[] | null = get(response, 'data.users_profiles');
 

@@ -1,23 +1,25 @@
+import { Avo } from '@viaa/avo2-types';
 import { flatten, get, isNil, orderBy } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
+import {
+	DeletePermissionGroupByIdDocument,
+	DeletePermissionGroupByIdMutation,
+	GetPermissionGroupByIdDocument,
+	GetPermissionGroupByIdQuery,
+	InsertPermissionGroupDocument,
+	InsertPermissionGroupMutation,
+	InsertPermissionsInPermissionGroupDocument,
+	InsertPermissionsInPermissionGroupMutation,
+	RemovePermissionsFromPermissionGroupDocument,
+	RemovePermissionsFromPermissionGroupMutation,
+	UpdatePermissionGroupDocument,
+	UpdatePermissionGroupMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
-import { GET_ALL_PERMISSION_GROUPS } from '../user-groups/user-group.gql';
 
 import { ITEMS_PER_PAGE } from './permission-group.const';
-import {
-	ADD_PERMISSIONS_TO_GROUP,
-	DELETE_PERMISSION_GROUP,
-	GET_ALL_PERMISSIONS,
-	GET_PERMISSION_GROUPS,
-	GET_PERMISSION_GROUP_BY_ID,
-	INSERT_PERMISSIONS_GROUP,
-	REMOVE_PERMISSIONS_FROM_GROUP,
-	UPDATE_PERMISSIONS_GROUP,
-} from './permission-group.gql';
 import {
 	Permission,
 	PermissionGroup,
@@ -69,13 +71,6 @@ export class PermissionGroupService {
 			const response = await dataService.query({
 				query: GET_ALL_PERMISSION_GROUPS,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, {
-					response,
-				});
-			}
-
 			const permissionGroups: PermissionGroup[] | undefined = get(
 				response,
 				'data.users_permission_groups'
@@ -97,8 +92,8 @@ export class PermissionGroupService {
 
 	public static async fetchPermissionGroup(id: string): Promise<PermissionGroup> {
 		try {
-			const response = await dataService.query({
-				query: GET_PERMISSION_GROUP_BY_ID,
+			const response = await dataService.query<GetPermissionGroupByIdQuery>({
+				query: GetPermissionGroupByIdDocument,
 				variables: { id },
 			});
 
@@ -137,8 +132,8 @@ export class PermissionGroupService {
 		permissionGroupId: number | string
 	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: ADD_PERMISSIONS_TO_GROUP,
+			await dataService.query<InsertPermissionsInPermissionGroupMutation>({
+				query: InsertPermissionsInPermissionGroupDocument,
 				variables: {
 					objs: permissionIds.map((permissionId) => ({
 						user_permission_id: permissionId,
@@ -147,11 +142,6 @@ export class PermissionGroupService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to add permission to group', null, {
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to add  permissions to group', err, {
 				query: 'ADD_PERMISSIONS_TO_GROUP',
@@ -168,19 +158,14 @@ export class PermissionGroupService {
 		permissionGroupId: number | string
 	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: REMOVE_PERMISSIONS_FROM_GROUP,
+			await dataService.query<RemovePermissionsFromPermissionGroupMutation>({
+				query: RemovePermissionsFromPermissionGroupDocument,
 				variables: {
 					permissionIds,
 					permissionGroupId,
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to remove permissions from group', null, {
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to remove permissions from group', err, {
 				query: 'REMOVE_PERMISSIONS_FROM_GROUP',
@@ -194,8 +179,8 @@ export class PermissionGroupService {
 
 	public static async insertPermissionGroup(permissionGroup: PermissionGroup): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_PERMISSIONS_GROUP,
+			const response = await dataService.query<InsertPermissionGroupMutation>({
+				query: InsertPermissionGroupDocument,
 				variables: {
 					permissionGroup: {
 						label: permissionGroup.label,
@@ -204,12 +189,6 @@ export class PermissionGroupService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to insert permission group in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 			const permissionGroupId = get(
 				response,
 				'data.insert_users_permission_groups.returning[0].id'
@@ -230,10 +209,10 @@ export class PermissionGroupService {
 		}
 	}
 
-	static async updatePermissionGroup(permissionGroup: PermissionGroup) {
+	static async updatePermissionGroup(permissionGroup: PermissionGroup): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_PERMISSIONS_GROUP,
+			await dataService.query<UpdatePermissionGroupMutation>({
+				query: UpdatePermissionGroupDocument,
 				variables: {
 					permissionGroup: {
 						label: permissionGroup.label,
@@ -243,12 +222,6 @@ export class PermissionGroupService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to update permission group in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update permission group in the database', err, {
 				permissionGroup,
@@ -257,7 +230,9 @@ export class PermissionGroupService {
 		}
 	}
 
-	public static async deletePermissionGroup(permissionGroupId: number | null | undefined) {
+	public static async deletePermissionGroup(
+		permissionGroupId: number | null | undefined
+	): Promise<void> {
 		try {
 			if (isNil(permissionGroupId)) {
 				throw new CustomError(
@@ -268,19 +243,13 @@ export class PermissionGroupService {
 					}
 				);
 			}
-			const response = await dataService.mutate({
-				mutation: DELETE_PERMISSION_GROUP,
+			await dataService.query<DeletePermissionGroupByIdMutation>({
+				query: DeletePermissionGroupByIdDocument,
 				variables: {
 					id: permissionGroupId,
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to delete permission group from the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete permission group from the database', err, {

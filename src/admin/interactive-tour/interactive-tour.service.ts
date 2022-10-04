@@ -1,18 +1,22 @@
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
+import {
+	DeleteInteractiveTourDocument,
+	DeleteInteractiveTourMutation,
+	GetInteractiveTourByIdDocument,
+	GetInteractiveTourByIdQuery,
+	GetInteractiveToursDocument,
+	GetInteractiveToursQuery,
+	InsertInteractiveTourDocument,
+	InsertInteractiveTourMutation,
+	UpdateInteractiveTourDocument,
+	UpdateInteractiveTourMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
-import {
-	DELETE_INTERACTIVE_TOUR,
-	GET_INTERACTIVE_TOURS,
-	GET_INTERACTIVE_TOUR_BY_ID,
-	INSERT_INTERACTIVE_TOUR,
-	UPDATE_INTERACTIVE_TOUR,
-} from './interactive-tour.gql';
 import { EditableStep, InteractiveTourOverviewTableCols } from './interactive-tour.types';
 
 export class InteractiveTourService {
@@ -21,7 +25,7 @@ export class InteractiveTourService {
 		sortColumn: InteractiveTourOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		where: any
-	): Promise<[Avo.InteractiveTour.InteractiveTour[], number]> {
+	): Promise<[GetInteractiveToursQuery['app_interactive_tour'], number]> {
 		let variables: any;
 		try {
 			variables = {
@@ -30,15 +34,13 @@ export class InteractiveTourService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetInteractiveToursQuery>({
 				variables,
-				query: GET_INTERACTIVE_TOURS,
+				query: GetInteractiveToursDocument,
 			});
-			const interactiveTours = get(response, 'data.app_interactive_tour');
-			const interactiveTourCount = get(
-				response,
-				'data.app_interactive_tour_aggregate.aggregate.count'
-			);
+			const interactiveTours = response?.app_interactive_tour;
+			const interactiveTourCount =
+				response?.app_interactive_tour_aggregate?.aggregate?.count || 0;
 
 			if (!interactiveTours) {
 				throw new CustomError('Response does not contain any interactive tours', null, {
@@ -57,17 +59,17 @@ export class InteractiveTourService {
 
 	public static async fetchInteractiveTour(
 		id: string
-	): Promise<Avo.InteractiveTour.InteractiveTour> {
+	): Promise<GetInteractiveTourByIdQuery['app_interactive_tour'][0]> {
 		let variables: any;
 		try {
 			variables = {
 				id,
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetInteractiveTourByIdQuery>({
 				variables,
-				query: GET_INTERACTIVE_TOUR_BY_ID,
+				query: GetInteractiveTourByIdDocument,
 			});
-			const interactiveTour = get(response, 'data.app_interactive_tour[0]');
+			const interactiveTour = response?.app_interactive_tour?.[0];
 
 			if (!interactiveTour) {
 				throw new CustomError('Response does not contain an interactiveTour', null, {
@@ -88,8 +90,8 @@ export class InteractiveTourService {
 		interactiveTour: Avo.InteractiveTour.InteractiveTour
 	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_INTERACTIVE_TOUR,
+			const response = await dataService.query<InsertInteractiveTourMutation>({
+				query: InsertInteractiveTourDocument,
 				variables: {
 					interactiveTour: {
 						name: interactiveTour.name,
@@ -99,12 +101,6 @@ export class InteractiveTourService {
 				},
 				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to insert interactive tour in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 			const interactiveTourId = get(
 				response,
 				'data.insert_app_interactive_tour.returning[0].id'
@@ -127,8 +123,8 @@ export class InteractiveTourService {
 
 	static async updateInteractiveTour(interactiveTour: Avo.InteractiveTour.InteractiveTour) {
 		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_INTERACTIVE_TOUR,
+			await dataService.query<UpdateInteractiveTourMutation>({
+				query: UpdateInteractiveTourDocument,
 				variables: {
 					interactiveTour: {
 						name: interactiveTour.name,
@@ -139,12 +135,6 @@ export class InteractiveTourService {
 				},
 				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to update interactive tour in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update interactive tour in the database', err, {
 				interactiveTour,
@@ -155,19 +145,13 @@ export class InteractiveTourService {
 
 	static async deleteInteractiveTour(interactiveTourId: number) {
 		try {
-			const response = await dataService.mutate({
-				mutation: DELETE_INTERACTIVE_TOUR,
+			await dataService.query<DeleteInteractiveTourMutation>({
+				query: DeleteInteractiveTourDocument,
 				variables: {
 					interactiveTourId,
 				},
 				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to delete interactive tour from the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete interactive tour from the database', err, {
 				interactiveTourId,

@@ -1,21 +1,23 @@
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil, orderBy, uniqBy } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
+import {
+	DeleteUserGroupDocument,
+	DeleteUserGroupMutation,
+	InsertUserGroupDocument,
+	InsertUserGroupMutation,
+	LinkPermissionGroupToUserGroupDocument,
+	LinkPermissionGroupToUserGroupMutation,
+	UnlinkPermissionGroupFromUserGroupDocument,
+	UnlinkPermissionGroupFromUserGroupMutation,
+	UpdateUserGroupDocument,
+	UpdateUserGroupMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
 
 import { ITEMS_PER_PAGE } from './user-group.const';
-import {
-	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
-	DELETE_USER_GROUP,
-	GET_USER_GROUPS_WITH_FILTERS,
-	GET_USER_GROUP_BY_ID,
-	INSERT_USER_GROUP,
-	REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
-	UPDATE_USER_GROUP,
-} from './user-group.gql';
 import { UserGroup } from './user-group.types';
 
 export class UserGroupService {
@@ -73,10 +75,6 @@ export class UserGroupService {
 				query: GET_USER_GROUP_BY_ID,
 			});
 
-			if (response.errors) {
-				throw new CustomError('response contains errors', null, { response });
-			}
-
 			return get(response, 'data.users_groups[0]');
 		} catch (err) {
 			throw new CustomError('Failed to fetch user group by id from graphql', err, {
@@ -91,8 +89,8 @@ export class UserGroupService {
 		userGroupId: number | string
 	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: ADD_PERMISSION_GROUPS_TO_USER_GROUP,
+			await dataService.query<LinkPermissionGroupToUserGroupMutation>({
+				query: LinkPermissionGroupToUserGroupDocument,
 				variables: {
 					objs: permissionGroupIds.map((permissionGroupId) => ({
 						user_permission_group_id: permissionGroupId,
@@ -101,11 +99,6 @@ export class UserGroupService {
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to add permission groups to user group', null, {
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to add permission groups to user group', err, {
 				query: 'ADD_PERMISSION_GROUPS_TO_USER_GROUP',
@@ -122,19 +115,14 @@ export class UserGroupService {
 		userGroupId: number | string
 	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
+			await dataService.query<UnlinkPermissionGroupFromUserGroupMutation>({
+				query: UnlinkPermissionGroupFromUserGroupDocument,
 				variables: {
 					permissionGroupIds,
 					userGroupId,
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to remove permission groups from user group', null, {
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to remove permission groups from user group', err, {
 				query: 'REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP',
@@ -148,8 +136,8 @@ export class UserGroupService {
 
 	public static async insertUserGroup(userGroup: UserGroup): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_USER_GROUP,
+			const response = await dataService.query<InsertUserGroupMutation>({
+				query: InsertUserGroupDocument,
 				variables: {
 					userGroup: {
 						label: userGroup.label,
@@ -158,12 +146,6 @@ export class UserGroupService {
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to insert user group in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 			const userGroupId = get(response, 'data.insert_users_groups.returning[0].id');
 			if (isNil(userGroupId)) {
 				throw new CustomError(
@@ -183,8 +165,8 @@ export class UserGroupService {
 
 	static async updateUserGroup(userGroup: UserGroup) {
 		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_USER_GROUP,
+			await dataService.query<UpdateUserGroupMutation>({
+				query: UpdateUserGroupDocument,
 				variables: {
 					userGroup: {
 						label: userGroup.label,
@@ -194,12 +176,6 @@ export class UserGroupService {
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to update user group in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update user group in the database', err, {
 				userGroup,
@@ -210,19 +186,13 @@ export class UserGroupService {
 
 	public static async deleteUserGroup(userGroupId: number) {
 		try {
-			const response = await dataService.mutate({
-				mutation: DELETE_USER_GROUP,
+			await dataService.query<DeleteUserGroupMutation>({
+				query: DeleteUserGroupDocument,
 				variables: {
 					userGroupId,
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to delete user group from the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete user group from the database', err, {
 				userGroupId,

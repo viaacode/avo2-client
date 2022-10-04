@@ -3,20 +3,6 @@ import type { DocumentNode } from 'graphql';
 import { get } from 'lodash-es';
 
 import {
-	GET_COLLECTION_PLAYS,
-	GET_COLLECTION_VIEWS,
-	GET_ITEM_PLAYS,
-	GET_ITEM_VIEWS,
-	INCREMENT_COLLECTION_PLAYS,
-	INCREMENT_COLLECTION_VIEWS,
-	INCREMENT_ITEM_PLAYS,
-	INCREMENT_ITEM_VIEWS,
-	INSERT_COLLECTION_BOOKMARK,
-	INSERT_ITEM_BOOKMARK,
-	REMOVE_COLLECTION_BOOKMARK,
-	REMOVE_ITEM_BOOKMARK,
-} from './bookmarks-views-plays-service.gql';
-import {
 	BookmarkViewPlayCounts,
 	EventAction,
 	EventContentType,

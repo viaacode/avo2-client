@@ -4,6 +4,14 @@ import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
+import {
+	GetBookmarkStatusesDocument,
+	GetBookmarkStatusesQuery,
+	GetCollectionBookmarkViewPlayCountsDocument,
+	GetCollectionBookmarkViewPlayCountsQuery,
+	GetItemBookmarkViewPlayCountsDocument,
+	GetItemBookmarkViewPlayCountsQuery,
+} from '../../generated/graphql-db-types';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import i18n from '../../translations/i18n';
 import { ApolloCacheManager, dataService } from '../data-service';
@@ -11,15 +19,6 @@ import { trackEvents } from '../event-logging-service';
 import { ToastService } from '../toast-service';
 
 import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
-import {
-	GET_BOOKMARK_STATUSES,
-	GET_BOOKMARKS_FOR_USER,
-	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
-	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
-	GET_ITEM_BOOKMARKS_FOR_USER,
-	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
-	GET_MULTIPLE_ITEM_VIEW_COUNTS,
-} from './bookmarks-views-plays-service.gql';
 import {
 	AppCollectionBookmark,
 	AppItemBookmark,
@@ -55,28 +54,11 @@ export class BookmarksViewsPlaysService {
 					user
 				);
 
-				const response = await dataService.mutate({
+				await dataService.mutate({
 					variables,
 					mutation: query,
 					update: ApolloCacheManager.clearBookmarksViewsPlays,
 				});
-
-				if (response.errors) {
-					// Bookmark related action failed
-					console.error('Failed to store action into the database', null, {
-						response,
-						variables,
-					});
-					ToastService.danger(
-						action === 'bookmark'
-							? i18n.t(
-									'shared/services/bookmarks-views-plays-service___het-aanmaken-van-de-bladwijzer-is-mislukt'
-							  )
-							: i18n.t(
-									'shared/services/bookmarks-views-plays-service___het-verwijderen-van-de-bladwijzer-is-mislukt'
-							  )
-					);
-				}
 			}
 
 			// Finished incrementing
@@ -99,8 +81,8 @@ export class BookmarksViewsPlaysService {
 		itemUuid: string,
 		user: Avo.User.User | null
 	): Promise<BookmarkViewPlayCounts> {
-		const response = await dataService.query({
-			query: GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
+		const response = await dataService.query<GetItemBookmarkViewPlayCountsQuery>({
+			query: GetItemBookmarkViewPlayCountsDocument,
 			variables: { itemUuid, profileId: get(user, 'profile.id', null) },
 		});
 		const isBookmarked = !!get(response, 'data.app_item_bookmarks[0]');
@@ -119,8 +101,8 @@ export class BookmarksViewsPlaysService {
 		collectionUuid: string,
 		user: Avo.User.User | null
 	): Promise<BookmarkViewPlayCounts> {
-		const response = await dataService.query({
-			query: GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
+		const response = await dataService.query<GetCollectionBookmarkViewPlayCountsQuery>({
+			query: GetCollectionBookmarkViewPlayCountsDocument,
 			variables: { collectionUuid, profileId: get(user, 'profile.id', null) },
 		});
 		const isBookmarked = !!get(response, 'data.app_collection_bookmarks[0]');
@@ -365,15 +347,11 @@ export class BookmarksViewsPlaysService {
 				user
 			);
 
-			const response = await dataService.mutate({
+			await dataService.mutate({
 				variables,
 				mutation: query,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Graphql errors', null, { errors: response.errors });
-			}
 		} catch (err) {
 			const error = new CustomError(
 				'Failed to increment view/play count in the database',
@@ -427,17 +405,14 @@ export class BookmarksViewsPlaysService {
 			const collectionUuids: string[] = collectionObjectInfos.map(
 				(objectInfo) => objectInfo.uuid
 			);
-			const response = await dataService.query({
-				query: GET_BOOKMARK_STATUSES,
+			const response = await dataService.query<GetBookmarkStatusesQuery>({
+				query: GetBookmarkStatusesDocument,
 				variables: {
 					profileId,
 					itemUuids,
 					collectionUuids,
 				},
 			});
-			if (response.errors) {
-				throw new CustomError('response contains errors', null, { response });
-			}
 			// Extract the ids of the bookmark items that were found
 			const itemBookmarkIds = get(response, 'data.app_item_bookmarks', []).map(
 				(itemBookmark: { item_id: string }) => itemBookmark.item_id

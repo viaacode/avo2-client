@@ -7,7 +7,6 @@ import {
 } from '@viaa/avo2-types/types/assignment';
 import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
-import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -16,6 +15,32 @@ import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
+import {
+	AssignmentPupilBlocksDocument,
+	AssignmentPupilBlocksQuery,
+	BulkUpdateAuthorForAssignmentsDocument,
+	BulkUpdateAuthorForAssignmentsMutation,
+	DeleteAssignmentByIdDocument,
+	DeleteAssignmentByIdMutation,
+	DeleteAssignmentsByIdDocument,
+	DeleteAssignmentsByIdMutation,
+	GetAssignmentBlocksDocument,
+	GetAssignmentBlocksQuery,
+	GetAssignmentIdsDocument,
+	GetAssignmentIdsQuery,
+	GetAssignmentsAdminOverviewDocument,
+	GetAssignmentsAdminOverviewQuery,
+	GetAssignmentsByOwnerDocument,
+	GetAssignmentsByOwnerQuery,
+	GetAssignmentsByResponseOwnerIdDocument,
+	GetAssignmentsByResponseOwnerIdQuery,
+	GetMaxPositionAssignmentBlocksDocument,
+	GetMaxPositionAssignmentBlocksQuery,
+	InsertAssignmentBlocksDocument,
+	InsertAssignmentBlocksMutation,
+	InsertAssignmentResponseDocument,
+	InsertAssignmentResponseMutation,
+} from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, AssignmentLabelsService, dataService } from '../shared/services';
@@ -30,34 +55,6 @@ import {
 	ITEMS_PER_PAGE,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
-import {
-	ASSIGNMENT_PUPIL_BLOCKS,
-	BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
-	DELETE_ASSIGNMENT,
-	DELETE_ASSIGNMENT_RESPONSE,
-	DELETE_ASSIGNMENTS,
-	GET_ASSIGNMENT_BLOCKS,
-	GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
-	GET_ASSIGNMENT_BY_UUID,
-	GET_ASSIGNMENT_IDS,
-	GET_ASSIGNMENT_RESPONSE,
-	GET_ASSIGNMENT_RESPONSE_BY_ID,
-	GET_ASSIGNMENT_RESPONSES,
-	GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
-	GET_ASSIGNMENT_WITH_RESPONSE,
-	GET_ASSIGNMENTS_ADMIN_OVERVIEW,
-	GET_ASSIGNMENTS_BY_OWNER_ID,
-	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
-	GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
-	INCREMENT_ASSIGNMENT_VIEW_COUNT,
-	INSERT_ASSIGNMENT,
-	INSERT_ASSIGNMENT_BLOCKS,
-	INSERT_ASSIGNMENT_RESPONSE,
-	UPDATE_ASSIGNMENT,
-	UPDATE_ASSIGNMENT_BLOCK,
-	UPDATE_ASSIGNMENT_RESPONSE,
-	UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
-} from './assignment.gql';
 import {
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
@@ -82,7 +79,10 @@ export class AssignmentService {
 		classIds: string[] | undefined,
 		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
-		assignments: Avo.Assignment.Assignment_v2[];
+		assignments: (
+			| GetAssignmentsByOwnerQuery
+			| GetAssignmentsByResponseOwnerIdQuery
+		)['app_assignments_v2'];
 		count: number;
 	}> {
 		let variables: any;
@@ -152,32 +152,24 @@ export class AssignmentService {
 			const assignmentQuery = {
 				variables,
 				query: canEditAssignments
-					? GET_ASSIGNMENTS_BY_OWNER_ID
-					: GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
+					? GetAssignmentsByOwnerDocument
+					: GetAssignmentsByResponseOwnerIdDocument,
 			};
 
 			// Get the assignment from graphql
-			const response: ApolloQueryResult<any> = await dataService.query(assignmentQuery);
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
+			const assignmentResponse = await dataService.query<
+				GetAssignmentsByOwnerQuery | GetAssignmentsByResponseOwnerIdQuery
+			>(assignmentQuery);
 
-			const assignmentResponse = get(response, 'data');
-
-			if (
-				!assignmentResponse ||
-				(!assignmentResponse.app_assignments_v2 &&
-					!assignmentResponse.app_assignment_responses) ||
-				!assignmentResponse.count
-			) {
+			if (!assignmentResponse?.app_assignments_v2 || isNil(assignmentResponse.count)) {
 				throw new CustomError('Response does not have the expected format', null, {
 					assignmentResponse,
 				});
 			}
 
 			return {
-				assignments: get(assignmentResponse, 'app_assignments_v2', []),
-				count: get(assignmentResponse, 'count.aggregate.count', 0),
+				assignments: assignmentResponse.app_assignments_v2 || [],
+				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
 			throw new CustomError('Failed to fetch assignments from database', err, {
@@ -201,10 +193,6 @@ export class AssignmentService {
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
 				assignmentQuery
 			);
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const assignmentResponse: Avo.Assignment.Assignment_v2 | undefined = get(
 				response,
@@ -230,19 +218,21 @@ export class AssignmentService {
 	}
 
 	static async hasPupilCollectionBlocks(assignmentId: string): Promise<boolean> {
-		const pupilBlocks = await dataService.query({
-			query: ASSIGNMENT_PUPIL_BLOCKS,
+		const pupilBlocks = await dataService.query<AssignmentPupilBlocksQuery>({
+			query: AssignmentPupilBlocksDocument,
 			variables: { assignmentId },
 		});
-		return pupilBlocks.data.app_pupil_collection_blocks.length > 0;
+		return pupilBlocks.app_pupil_collection_blocks.length > 0;
 	}
 
-	static async fetchAssignmentBlocks(assignmentId: string): Promise<Avo.Assignment.Block[]> {
-		const blocks = await dataService.query({
-			query: GET_ASSIGNMENT_BLOCKS,
+	static async fetchAssignmentBlocks(
+		assignmentId: string
+	): Promise<GetAssignmentBlocksQuery['app_assignment_blocks_v2']> {
+		const blocks = await dataService.query<GetAssignmentBlocksQuery>({
+			query: GetAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
-		return get(blocks, 'data.app_assignment_blocks_v2', []);
+		return blocks.app_assignment_blocks_v2 || [];
 	}
 
 	static async fetchAssignmentByContentIdAndType(
@@ -254,10 +244,6 @@ export class AssignmentService {
 				query: GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
 				variables: { contentId, contentType },
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const assignments: Avo.Assignment.Assignment_v2[] | undefined = get(
 				response,
@@ -326,8 +312,8 @@ export class AssignmentService {
 
 	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
-			await dataService.mutate({
-				mutation: DELETE_ASSIGNMENT,
+			await dataService.query<DeleteAssignmentByIdMutation>({
+				query: DeleteAssignmentByIdDocument,
 				variables: { assignmentId },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
@@ -340,8 +326,8 @@ export class AssignmentService {
 
 	static async deleteAssignments(assignmentIds: string[]): Promise<void> {
 		try {
-			await dataService.mutate({
-				mutation: DELETE_ASSIGNMENTS,
+			await dataService.query<DeleteAssignmentsByIdMutation>({
+				query: DeleteAssignmentsByIdDocument,
 				variables: { assignmentIds },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
@@ -704,8 +690,8 @@ export class AssignmentService {
 				return newBlock;
 			});
 
-			await dataService.mutate({
-				mutation: INSERT_ASSIGNMENT_BLOCKS,
+			await dataService.query<InsertAssignmentBlocksQuery>({
+				query: InsertAssignmentBlocksDocument,
 				variables: {
 					assignmentBlocks: newBlocks,
 				},
@@ -731,12 +717,7 @@ export class AssignmentService {
 						assignmentId,
 						pupilUuid: pupilProfileId,
 					},
-					fetchPolicy: 'no-cache',
 				});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, response);
-			}
 
 			const tempAssignment: Avo.Assignment.Assignment_v2 | undefined | null = get(
 				response,
@@ -831,9 +812,6 @@ export class AssignmentService {
 
 			// Get the assignment from graphql
 			const response: ApolloQueryResult<any> = await dataService.query(assignmentQuery);
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const assignmentResponse = get(response, 'data');
 
@@ -926,12 +904,7 @@ export class AssignmentService {
 			}> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSES,
 				variables: { profileId, assignmentId },
-				fetchPolicy: 'no-cache',
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			return response?.data?.app_assignment_responses_v2 || [];
 		} catch (err) {
@@ -956,12 +929,7 @@ export class AssignmentService {
 			}> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSE,
 				variables: { profileId, assignmentId },
-				fetchPolicy: 'no-cache',
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
 				response?.data?.app_assignment_responses_v2?.[0];
@@ -996,12 +964,7 @@ export class AssignmentService {
 			}> = await dataService.query({
 				query: GET_ASSIGNMENT_RESPONSE_BY_ID,
 				variables: { assignmentResponseId },
-				fetchPolicy: 'no-cache',
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
 				response?.data?.app_assignment_responses_v2?.[0];
@@ -1063,18 +1026,12 @@ export class AssignmentService {
 						? i18n.t('assignment/assignment___nieuwe-collectie')
 						: null,
 			};
-			const response = await dataService.mutate({
-				mutation: INSERT_ASSIGNMENT_RESPONSE,
+			const response = await dataService.query<InsertAssignmentResponseMutation>({
+				query: InsertAssignmentResponseDocument,
 				variables: {
 					assignmentResponses: [assignmentResponse],
 				},
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains Graphql errors', null, {
-					response,
-				});
-			}
 
 			const insertedAssignmentResponse: Avo.Assignment.Response_v2 | undefined = get(
 				response,
@@ -1103,8 +1060,8 @@ export class AssignmentService {
 	}
 
 	static async getAssignmentBlockMaxPosition(assignmentId: string): Promise<number | null> {
-		const result = await dataService.query({
-			query: GET_MAX_POSITION_ASSIGNMENT_BLOCKS,
+		const result = await dataService.query<GetMaxPositionAssignmentBlocksQuery>({
+			query: GetMaxPositionAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
 		return get(
@@ -1277,8 +1234,8 @@ export class AssignmentService {
 			end_oc: item.end_oc,
 		};
 
-		await dataService.mutate({
-			mutation: INSERT_ASSIGNMENT_BLOCKS,
+		await dataService.query<InsertAssignmentBlocksMutation>({
+			query: InsertAssignmentBlocksDocument,
 			variables: {
 				assignmentBlocks: [block],
 			},
@@ -1345,7 +1302,7 @@ export class AssignmentService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[Avo.Assignment.Assignment_v2[], number]> {
+	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2'], number]> {
 		let variables;
 		try {
 			const whereWithoutDeleted = {
@@ -1365,22 +1322,14 @@ export class AssignmentService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetAssignmentsAdminOverviewQuery>({
+				query: GetAssignmentsAdminOverviewDocument,
 				variables,
-				query: GET_ASSIGNMENTS_ADMIN_OVERVIEW,
-				fetchPolicy: 'no-cache',
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
+			const assignments = response?.app_assignments_v2;
 
-			const assignments: Avo.Assignment.Assignment_v2[] = response?.data?.app_assignments_v2;
-
-			const assignmentCount =
-				response?.data?.app_assignments_v2_aggregate?.aggregate?.count || 0;
+			const assignmentCount = response?.app_assignments_v2_aggregate?.aggregate?.count || 0;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {
@@ -1388,7 +1337,7 @@ export class AssignmentService {
 				});
 			}
 
-			return [assignments as Avo.Assignment.Assignment_v2[], assignmentCount];
+			return [assignments, assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
 				variables,
@@ -1409,20 +1358,13 @@ export class AssignmentService {
 				where: whereWithoutDeleted,
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetAssignmentIdsQuery>({
 				variables,
-				query: GET_ASSIGNMENT_IDS,
-				fetchPolicy: 'no-cache',
+				query: GetAssignmentIdsDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
-			const assignmentIds: string[] = (response?.data?.app_assignments_v2 || []).map(
-				(assignment: Avo.Assignment.Assignment_v2) => assignment.id
+			const assignmentIds: string[] = (response?.app_assignments_v2 || []).map(
+				(assignment) => assignment.id
 			);
 
 			if (!assignmentIds) {
@@ -1443,10 +1385,10 @@ export class AssignmentService {
 	static async changeAssignmentsAuthor(
 		profileId: string,
 		assignmentIds: string[]
-	): Promise<void> {
+	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS,
+			const response = await dataService.query<BulkUpdateAuthorForAssignmentsMutation>({
+				query: BulkUpdateAuthorForAssignmentsDocument,
 				variables: {
 					assignmentIds,
 					authorId: profileId,
@@ -1455,11 +1397,7 @@ export class AssignmentService {
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-
-			return response?.data?.update_app_assignments_v2?.affected_rows || 0;
+			return response?.update_app_assignments_v2?.affected_rows || 0;
 		} catch (err) {
 			throw new CustomError('Failed to update author for assignments in the database', err, {
 				profileId,
@@ -1477,10 +1415,6 @@ export class AssignmentService {
 					assignmentId,
 				},
 			});
-
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
 
 			return response?.data?.update_app_assignment_v2_views?.affected_rows || 0;
 		} catch (err) {

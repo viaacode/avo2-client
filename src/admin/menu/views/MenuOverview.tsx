@@ -1,11 +1,10 @@
+import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -14,10 +13,9 @@ import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
-import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
 
-interface MenuOverviewProps extends DefaultSecureRouteProps {}
+type MenuOverviewProps = DefaultSecureRouteProps;
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();

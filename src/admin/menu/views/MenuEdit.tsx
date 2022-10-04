@@ -1,9 +1,3 @@
-import { ApolloQueryResult } from 'apollo-boost';
-import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	Badge,
 	Button,
@@ -15,6 +9,10 @@ import {
 	TagInfo,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -23,7 +21,6 @@ import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
-import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
@@ -32,7 +29,7 @@ import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const
 import { MenuService } from '../menu.service';
 import { MenuEditFormErrorState, MenuEditPageType, MenuEditParams } from '../menu.types';
 
-interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
+type MenuEditProps = DefaultSecureRouteProps<MenuEditParams>;
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [t] = useTranslation();

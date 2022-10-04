@@ -57,7 +57,6 @@ import {
 import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import PublishContentPageModal from '../components/PublishContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
-import { SOFT_DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';

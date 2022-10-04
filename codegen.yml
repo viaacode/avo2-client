@@ -10,4 +10,8 @@ generates:
     plugins:
       - typescript
       - typescript-operations
-      - typed-document-node
+      - typescript-react-query
+    config:
+      fetcher: './src/shared/services/data-service.ts#fetchData'
+
+

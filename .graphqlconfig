@@ -1,0 +1,16 @@
+{
+  "name": "AvO GraphQL Schema",
+  "schemaPath": "schema.graphql",
+  "extensions": {
+	"endpoints": {
+	  "Default GraphQL Endpoint": {
+		"url": "https://hasura-graphql-qas-avo.private.cloud.meemoo.be/v1/graphql",
+		"headers": {
+		  "user-agent": "JS GraphQL",
+		  "x-hasura-admin-secret": "XWXS7N9yS8KPOgJq"
+		},
+		"introspect": false
+	  }
+	}
+  }
+}

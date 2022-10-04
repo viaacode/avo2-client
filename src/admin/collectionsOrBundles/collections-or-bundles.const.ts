@@ -12,11 +12,6 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import {
-	GET_COLLECTION_ACTUALISATION,
-	GET_COLLECTION_MARCOM,
-	GET_COLLECTION_QUALITY_CHECK,
-} from './collections-or-bundles.gql';
 import { CollectionTableCols, EditorialType } from './collections-or-bundles.types';
 
 export const COLLECTIONS_OR_BUNDLES_PATH = {

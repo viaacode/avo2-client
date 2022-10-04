@@ -1,21 +1,23 @@
-import { get, isNil } from 'lodash-es';
-
 import { LabelObj } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get, isNil } from 'lodash-es';
 
+import {
+	DeleteContentPageLabelByIdDocument,
+	DeleteContentPageLabelByIdMutation,
+	GetContentPageLabelByIdDocument,
+	GetContentPageLabelByIdQuery,
+	InsertContentPageLabelDocument,
+	InsertContentPageLabelMutation,
+	UpdateContentPageLabelDocument,
+	UpdateContentPageLabelMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 
 import { ITEMS_PER_PAGE } from './content-page-label.const';
-import {
-	DELETE_CONTENT_PAGE_LABEL,
-	GET_CONTENT_PAGE_LABELS,
-	GET_CONTENT_PAGE_LABEL_BY_ID,
-	INSERT_CONTENT_PAGE_LABEL,
-	UPDATE_CONTENT_PAGE_LABEL,
-} from './content-page-label.gql';
 import { ContentPageLabel, ContentPageLabelOverviewTableCols } from './content-page-label.types';
 
 export class ContentPageLabelService {
@@ -61,8 +63,8 @@ export class ContentPageLabelService {
 
 	public static async fetchContentPageLabel(id: string): Promise<ContentPageLabel> {
 		try {
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGE_LABEL_BY_ID,
+			const response = await dataService.query<GetContentPageLabelByIdQuery>({
+				query: GetContentPageLabelByIdDocument,
 				variables: { id },
 			});
 
@@ -94,8 +96,8 @@ export class ContentPageLabelService {
 		contentPageLabel: ContentPageLabel
 	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_CONTENT_PAGE_LABEL,
+			const response = await dataService.query<InsertContentPageLabelMutation>({
+				query: InsertContentPageLabelDocument,
 				variables: {
 					contentPageLabel: {
 						label: contentPageLabel.label,
@@ -104,12 +106,6 @@ export class ContentPageLabelService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to insert content page label in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 			const contentPageLabelId = get(
 				response,
 				'data.insert_app_content_labels.returning[0].id'
@@ -130,10 +126,10 @@ export class ContentPageLabelService {
 		}
 	}
 
-	static async updateContentPageLabel(contentPageLabelInfo: ContentPageLabel) {
+	static async updateContentPageLabel(contentPageLabelInfo: ContentPageLabel): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_CONTENT_PAGE_LABEL,
+			await dataService.query<UpdateContentPageLabelMutation>({
+				query: UpdateContentPageLabelDocument,
 				variables: {
 					contentPageLabel: {
 						label: contentPageLabelInfo.label,
@@ -144,12 +140,6 @@ export class ContentPageLabelService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed to update content page label in the database', null, {
-					response,
-					errors: response.errors,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update content page label in the database', err, {
 				contentPageLabel: contentPageLabelInfo,
@@ -158,7 +148,9 @@ export class ContentPageLabelService {
 		}
 	}
 
-	public static async deleteContentPageLabel(contentPageLabelId: number | null | undefined) {
+	public static async deleteContentPageLabel(
+		contentPageLabelId: number | null | undefined
+	): Promise<void> {
 		try {
 			if (isNil(contentPageLabelId)) {
 				throw new CustomError(
@@ -169,23 +161,13 @@ export class ContentPageLabelService {
 					}
 				);
 			}
-			const response = await dataService.mutate({
-				mutation: DELETE_CONTENT_PAGE_LABEL,
+			await dataService.query<DeleteContentPageLabelByIdMutation>({
+				query: DeleteContentPageLabelByIdDocument,
 				variables: {
 					id: contentPageLabelId,
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			if (response.errors) {
-				throw new CustomError(
-					'Failed to delete content page label from the database',
-					null,
-					{
-						response,
-						errors: response.errors,
-					}
-				);
-			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete content page label from the database', err, {

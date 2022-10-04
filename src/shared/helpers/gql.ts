@@ -13,10 +13,6 @@ export const performQuery = async (query: Query, subResponse: string | null, err
 	try {
 		const response = await dataService.query(query);
 
-		if (response.errors) {
-			throw new CustomError('GraphQL response contains errors');
-		}
-
 		if (subResponse) {
 			return get(response, subResponse, null);
 		}

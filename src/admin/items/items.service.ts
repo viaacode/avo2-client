@@ -3,6 +3,18 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { compact, get } from 'lodash-es';
 import queryString from 'query-string';
 
+import {
+	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
+	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
+	FetchItemUuidByExternalIdDocument,
+	FetchItemUuidByExternalIdQuery,
+	GetItemsByExternalIdDocument,
+	GetItemsByExternalIdQuery,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
+	SetSharedItemsStatusDocument,
+	SetSharedItemsStatusMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
@@ -13,24 +25,6 @@ import { UnpublishableItem } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
-import {
-	DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
-	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
-	GET_DISTINCT_SERIES,
-	GET_ITEM_BY_UUID,
-	GET_ITEM_DEPUBLISH_REASON,
-	GET_ITEMS_BY_EXTERNAL_ID,
-	GET_ITEMS_WITH_FILTERS,
-	GET_PUBLIC_ITEMS,
-	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
-	GET_UNPUBLISHED_ITEM_PIDS,
-	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
-	REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
-	UPDATE_ITEM_DEPUBLISH_REASON,
-	UPDATE_ITEM_NOTES,
-	UPDATE_ITEM_PUBLISH_STATE,
-	UPDATE_SHARED_ITEMS_STATUS,
-} from './items.gql';
 import {
 	ItemsOverviewTableCols,
 	UnpublishedItem,
@@ -161,12 +155,6 @@ export class ItemsService {
 				variables,
 				mutation: UPDATE_ITEM_PUBLISH_STATE,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update is_published field for item in the database',
@@ -186,16 +174,10 @@ export class ItemsService {
 				itemUuid,
 				reason,
 			};
-			const response = await dataService.mutate({
+			await dataService.mutate({
 				variables,
 				mutation: UPDATE_ITEM_DEPUBLISH_REASON,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update depublish_reason field for item in the database',
@@ -219,12 +201,6 @@ export class ItemsService {
 				variables,
 				mutation: UPDATE_ITEM_NOTES,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update note field for item in the database', err, {
 				variables,
@@ -271,16 +247,12 @@ export class ItemsService {
 		}
 
 		try {
-			const response = await dataService.query({
-				query: GET_ITEMS_BY_EXTERNAL_ID,
+			const response = await dataService.query<GetItemsByExternalIdQuery>({
+				query: GetItemsByExternalIdDocument,
 				variables: {
 					externalIds,
 				},
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const items: ItemSchema[] = get(response, 'data.app_item_meta', []);
 
@@ -376,18 +348,12 @@ export class ItemsService {
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
 		try {
-			const response = await dataService.query({
-				query: FETCH_ITEM_UUID_BY_EXTERNAL_ID,
+			const response = await dataService.query<FetchItemUuidByExternalIdQuery>({
+				query: FetchItemUuidByExternalIdDocument,
 				variables: { externalId },
 			});
 
-			if (response.errors) {
-				if (response.errors[0].originalError?.message !== 'DEPUBLISH') {
-					throw new CustomError('GraphQL response contains errors');
-				}
-			}
-
-			return response?.data?.app_item_meta?.[0]?.uid || null;
+			return response?.app_item_meta?.[0]?.uid || null;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)',
@@ -451,20 +417,16 @@ export class ItemsService {
 	public static async deleteItemFromCollectionsAndBookmarks(
 		itemUid: string,
 		itemExternalId: string
-	) {
+	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
+			await dataService.query<DeleteItemFromCollectionBookmarksAndAssignmentsMutation>({
+				query: DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 				variables: {
 					itemUid,
 					itemExternalId,
 				},
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to delete item from collections and bookmarks in the database',
@@ -481,10 +443,10 @@ export class ItemsService {
 		oldItemExternalId: string,
 		newItemUid: string,
 		newItemExternalId: string
-	) {
+	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
+			await dataService.query<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation>({
+				query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 				variables: {
 					oldItemUid,
 					oldItemExternalId,
@@ -493,10 +455,6 @@ export class ItemsService {
 				},
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to replace item in collections, bookmarks and assignments in the database',
@@ -508,20 +466,16 @@ export class ItemsService {
 		}
 	}
 
-	public static async setSharedItemsStatus(pids: string[], status: string) {
+	public static async setSharedItemsStatus(pids: string[], status: string): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_SHARED_ITEMS_STATUS,
+			await dataService.query<SetSharedItemsStatusMutation>({
+				query: SetSharedItemsStatusDocument,
 				variables: {
 					pids,
 					status,
 				},
 				update: ApolloCacheManager.clearSharedItemsCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update status for shared items in the database', err, {
 				query: 'UPDATE_SHARED_ITEMS_STATUS',
@@ -570,13 +524,7 @@ export class ItemsService {
 			const response = await dataService.query({
 				variables,
 				query: GET_UNPUBLISHED_ITEM_PIDS,
-				fetchPolicy: 'no-cache',
 			});
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 			return compact(
 				get(response, 'data.shared_items' || []).map((item: { pid: string }) =>
 					get(item, 'pid')

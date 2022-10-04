@@ -1,23 +1,9 @@
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
 import { RelationEntry, RelationType } from '@viaa/avo2-types/types/collection';
+import { get } from 'lodash-es';
 
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
-
-import {
-	DELETE_COLLECTION_RELATIONS_BY_OBJECT,
-	DELETE_COLLECTION_RELATIONS_BY_SUBJECT,
-	DELETE_ITEM_RELATIONS_BY_OBJECT,
-	DELETE_ITEM_RELATIONS_BY_SUBJECT,
-	FETCH_COLLECTION_RELATIONS_BY_OBJECTS,
-	FETCH_COLLECTION_RELATIONS_BY_SUBJECTS,
-	FETCH_ITEM_RELATIONS_BY_OBJECTS,
-	FETCH_ITEM_RELATIONS_BY_SUBJECTS,
-	INSERT_COLLECTION_RELATION,
-	INSERT_ITEM_RELATION,
-} from './relation.gql';
 
 export class RelationService {
 	public static async fetchRelationsByObject(
@@ -60,9 +46,6 @@ export class RelationService {
 				variables,
 				mutation: isCollection ? collectionQuery : itemQuery,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 			return (
 				get(
 					response,
@@ -107,9 +90,6 @@ export class RelationService {
 					? ApolloCacheManager.clearCollectionCache
 					: ApolloCacheManager.clearItemCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 			const relationId = get(
 				response,
 				`data.${
@@ -173,9 +153,6 @@ export class RelationService {
 					? ApolloCacheManager.clearCollectionCache
 					: ApolloCacheManager.clearItemCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete relation from the database', err, {
 				variables,

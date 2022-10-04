@@ -1,15 +1,3 @@
-import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	Reducer,
-	useCallback,
-	useEffect,
-	useReducer,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	BlockHeading,
 	Box,
@@ -26,12 +14,27 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	Reducer,
+	useCallback,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
+import {
+	GetInteractiveTourByIdDocument,
+	GetInteractiveTourByIdQuery,
+} from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
@@ -40,9 +43,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import {
+	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 	InteractiveTourAction,
 	interactiveTourEditReducer,
-	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 } from '../helpers/reducers';
 import {
 	getInitialInteractiveTour,
@@ -50,7 +53,6 @@ import {
 	MAX_STEP_TEXT_LENGTH,
 	MAX_STEP_TITLE_LENGTH,
 } from '../interactive-tour.const';
-import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
 	EditableInteractiveTour,
@@ -64,7 +66,7 @@ import {
 import './InteractiveTourEdit.scss';
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
-export interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	history,
@@ -123,8 +125,8 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			});
 		} else {
 			try {
-				const response = await dataService.query({
-					query: GET_INTERACTIVE_TOUR_BY_ID,
+				const response = await dataService.query<GetInteractiveTourByIdQuery>({
+					query: GetInteractiveTourByIdDocument,
 					variables: { id: match.params.id },
 				});
 

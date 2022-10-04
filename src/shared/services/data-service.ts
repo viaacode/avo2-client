@@ -1,26 +1,56 @@
-import { HttpLink, InMemoryCache } from 'apollo-boost';
-import { ApolloClient } from 'apollo-client';
-import { onError } from 'apollo-link-error';
-import { get } from 'lodash-es';
+import { DocumentNode } from 'graphql/language/ast';
+import { print } from 'graphql/language/printer';
+import { isString } from 'lodash-es';
 
 import { getEnv } from '../helpers';
 import { goToLoginBecauseOfUnauthorizedError } from '../helpers/fetch-with-logout';
 
-const cache = new InMemoryCache({
-	addTypename: false,
-});
-const httpLink = new HttpLink({ uri: `${getEnv('PROXY_URL')}/data`, credentials: 'include' });
+// Use by graphql codegen in codegen.yml to fetch info from the dataservice and wrap those requests in react-query hooks
+export const fetchData = <TData, TVariables>(
+	query: string | any,
+	variables?: TVariables,
+	options?: RequestInit['headers']
+): (() => Promise<TData>) => {
+	return async () => {
+		const res = await fetch(`${getEnv('PROXY_URL')}/data`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...options,
+			},
+			body: JSON.stringify({
+				query: isString(query) ? query : print(query),
+				variables,
+			}),
+		});
 
-const logoutMiddleware = onError(({ networkError }) => {
-	if (get(networkError, 'statusCode') === 401) {
-		goToLoginBecauseOfUnauthorizedError();
+		if (res.status === 401) {
+			goToLoginBecauseOfUnauthorizedError();
+			return;
+		}
+
+		const json = await res.json();
+
+		if (json.errors) {
+			const { message } = json.errors[0] || {};
+			throw new Error(message || 'Error');
+		}
+
+		return json.data;
+	};
+};
+
+export interface QueryInfo {
+	query: string | DocumentNode;
+	variables?: Record<string, any>;
+	update?: (cache: ApolloCache) => void;
+}
+
+export class dataService {
+	public static async query<T>(queryInfo: QueryInfo): Promise<T> {
+		return (await fetchData(queryInfo.query, queryInfo.variables)()) as T;
 	}
-});
-
-export const dataService = new ApolloClient({
-	cache,
-	link: logoutMiddleware.concat(httpLink),
-});
+}
 
 export const NO_RIGHTS_ERROR_MESSAGE = 'You are not allowed to run this query';
 

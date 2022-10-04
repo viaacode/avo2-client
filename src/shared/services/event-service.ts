@@ -55,11 +55,7 @@ export async function trackEvent(
 				null
 			);
 		}
-		const response = await dataService.query({ query, variables });
-
-		if (response.errors) {
-			throw new CustomError('Graphql errors', null, { errors: response.errors });
-		}
+		await dataService.query({ query, variables });
 	} catch (err) {
 		console.error('Failed to track metric event to the database', err, {
 			action,

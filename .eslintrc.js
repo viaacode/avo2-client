@@ -13,6 +13,7 @@ module.exports = {
 			version: '16.13',
 		},
 	},
+	ignorePatterns: ['.eslintrc.js', 'jest*.config.js', 'src/shared/generated/*.ts'],
 	rules: {
 		'@typescript-eslint/no-explicit-any': 'off',
 		'import/no-unresolved': [
@@ -62,6 +63,6 @@ module.exports = {
 			},
 		],
 
-		'react/prop-types': 'off'
+		'react/prop-types': 'off',
 	},
 };

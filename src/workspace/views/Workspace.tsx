@@ -51,7 +51,6 @@ import {
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
 } from '../workspace.const';
-import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';

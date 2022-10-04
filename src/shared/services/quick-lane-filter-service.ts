@@ -1,14 +1,15 @@
-import { ApolloQueryResult } from 'apollo-boost';
-
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
+import {
+	GetQuickLanesWithFiltersDocument,
+	GetQuickLanesWithFiltersQuery,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 import { getOrderObject } from '../helpers/generate-order-gql-query';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
-import { GET_QUICK_LANE_WITH_FILTERS } from '../queries/quick-lane-filter.gql';
-import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
+import { QuickLaneUrlObject } from '../types';
 import { TableColumnDataType } from '../types/table-column-data-type';
 
 import { dataService } from './data-service';
@@ -32,7 +33,9 @@ const asISO = (str?: string) => {
 };
 
 export class QuickLaneFilterService {
-	static async fetchFilteredQuickLanes(params?: QuickLaneFilters) {
+	static async fetchFilteredQuickLanes(
+		params?: QuickLaneFilters
+	): Promise<{ urls: QuickLaneUrlObject[]; count: number }> {
 		try {
 			const variables = {
 				limit: params?.limit,
@@ -69,20 +72,15 @@ export class QuickLaneFilterService {
 						: undefined,
 			};
 
-			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
+			const response = await dataService.query<GetQuickLanesWithFiltersQuery>({
 				variables,
-				query: GET_QUICK_LANE_WITH_FILTERS,
+				query: GetQuickLanesWithFiltersDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
+			const urls: QuickLaneUrlObject[] =
+				response?.app_quick_lanes?.map(quickLaneUrlRecordToObject) || [];
 
-			const urls: QuickLaneUrlObject[] = response.data.app_quick_lanes.map(
-				quickLaneUrlRecordToObject
-			);
-
-			return { urls, count: response.data.app_quick_lanes_aggregate.aggregate.count };
+			return { urls, count: response.app_quick_lanes_aggregate.aggregate?.count || 0 };
 		} catch (err) {
 			throw new CustomError('Failed to get filtered quick lane urls from database', err, {
 				params,

@@ -1,4 +1,4 @@
-mutation addTempAccess($user_id: uuid!, $from: date, $until: date!) {
+mutation updateUserTempAccessById($user_id: uuid!, $from: date, $until: date!) {
 	insert_shared_user_temp_access_one(
 		object: { user_id: $user_id, from: $from, until: $until }
 		on_conflict: { constraint: user_temp_access_pkey, update_columns: [from, until] }

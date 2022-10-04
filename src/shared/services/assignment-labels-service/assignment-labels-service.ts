@@ -1,40 +1,41 @@
+import { Avo } from '@viaa/avo2-types';
 import { get, omit } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-
 import { AssignmentLabelColor } from '../../../assignment/assignment.types';
+import {
+	DeleteAssignmentLabelDocument,
+	DeleteAssignmentLabelMutation,
+	GetAllAssignmentLabelColorsDocument,
+	GetAllAssignmentLabelColorsQuery,
+	GetAssignmentLabelsByProfileIdDocument,
+	GetAssignmentLabelsByProfileIdQuery,
+	InsertAssignmentLabelsDocument,
+	InsertAssignmentLabelsMutation,
+	LinkAssignmentLabelsToAssignmentDocument,
+	LinkAssignmentLabelsToAssignmentMutation,
+	UnlinkAssignmentLabelsFromAssignmentDocument,
+	UnlinkAssignmentLabelsFromAssignmentMutation,
+	UpdateAssignmentLabelsDocument,
+	UpdateAssignmentLabelsMutation,
+} from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
-
-import {
-	DELETE_ASSIGNMENT_LABELS,
-	GET_ALL_ASSIGNMENT_LABEL_COLORS,
-	GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
-	INSERT_ASSIGNMENT_LABELS,
-	LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
-	UNLINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
-	UPDATE_ASSIGNMENT_LABEL,
-} from './assignment-labels-service.gql';
 
 export class AssignmentLabelsService {
 	public static async getLabelsForProfile(
 		profileId: string,
 		type?: string
-	): Promise<Avo.Assignment.Label_v2[]> {
+	): Promise<GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2']> {
 		try {
-			const response = await dataService.query({
-				query: GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
+			const response = await dataService.query<GetAssignmentLabelsByProfileIdQuery>({
+				query: GetAssignmentLabelsByProfileIdDocument,
 				variables: {
 					profileId,
 					type,
 				},
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_assignment_labels_v2', []);
+			return response.app_assignment_labels_v2 || [];
 		} catch (err) {
 			throw new CustomError('Failed to get assignment labels', err, {
 				profileId,
@@ -51,15 +52,11 @@ export class AssignmentLabelsService {
 					omit(labelObj, ['__typename', 'enum_color', 'id'])
 				),
 			};
-			const response = await dataService.mutate({
+			const response = await dataService.query<InsertAssignmentLabelsMutation>({
+				query: InsertAssignmentLabelsDocument,
 				variables,
-				mutation: INSERT_ASSIGNMENT_LABELS,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
 			return get(response, 'insert_app_assignment_labels.returning', []).map(
 				(label: any) => label.id
@@ -86,15 +83,11 @@ export class AssignmentLabelsService {
 				label,
 				colorEnumValue,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateAssignmentLabelsMutation>({
+				query: UpdateAssignmentLabelsDocument,
 				variables,
-				mutation: UPDATE_ASSIGNMENT_LABEL,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update assignment label', err, {
 				variables,
@@ -110,15 +103,11 @@ export class AssignmentLabelsService {
 				profileId,
 				labelIds,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<DeleteAssignmentLabelMutation>({
+				query: DeleteAssignmentLabelDocument,
 				variables,
-				mutation: DELETE_ASSIGNMENT_LABELS,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete assignment labels', err, {
 				variables,
@@ -142,15 +131,11 @@ export class AssignmentLabelsService {
 					assignment_label_id: labelId,
 				})),
 			};
-			const response = await dataService.mutate({
+			await dataService.query<LinkAssignmentLabelsToAssignmentMutation>({
+				query: LinkAssignmentLabelsToAssignmentDocument,
 				variables,
-				mutation: LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to link assignment labels to assignment', err, {
 				variables,
@@ -172,15 +157,11 @@ export class AssignmentLabelsService {
 				assignmentUuid,
 				labelIds,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UnlinkAssignmentLabelsFromAssignmentMutation>({
+				query: UnlinkAssignmentLabelsFromAssignmentDocument,
 				variables,
-				mutation: UNLINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to unlink assignment labels from assignment', err, {
 				variables,
@@ -191,13 +172,9 @@ export class AssignmentLabelsService {
 
 	public static async getLabelColors(): Promise<AssignmentLabelColor[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_ALL_ASSIGNMENT_LABEL_COLORS,
+			const response = await dataService.query<GetAllAssignmentLabelColorsQuery>({
+				query: GetAllAssignmentLabelColorsDocument,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
 			return get(response, 'data.lookup_enum_colors', []);
 		} catch (err) {

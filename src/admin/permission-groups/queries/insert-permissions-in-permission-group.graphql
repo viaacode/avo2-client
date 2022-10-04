@@ -1,4 +1,4 @@
-mutation insertPermissionInPermissionGroup(
+mutation insertPermissionsInPermissionGroup(
 	$objs: [users_permission_group_user_permissions_insert_input!]!
 ) {
 	insert_users_permission_group_user_permissions(objects: $objs) {

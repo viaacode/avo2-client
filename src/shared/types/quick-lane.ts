@@ -7,6 +7,7 @@ import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
+import { GetQuickLanesByContentIdQuery } from '../generated/graphql-db-types';
 
 export interface QuickLaneUrl {
 	id: string;
@@ -24,9 +25,7 @@ export interface QuickLaneUrlObject extends QuickLaneUrl {
 	view_mode: AssignmentLayout;
 }
 
-export interface QuickLaneUrlRecord extends QuickLaneUrl {
-	view_mode: 'full' | 'without_description';
-}
+export type QuickLaneUrlRecord = GetQuickLanesByContentIdQuery['app_quick_lanes'][0];
 
 export interface QuickLaneQueryResponse {
 	app_quick_lanes: QuickLaneUrlRecord[];

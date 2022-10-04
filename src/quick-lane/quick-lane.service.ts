@@ -1,29 +1,25 @@
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
-import { ApolloQueryResult } from 'apollo-boost';
 import { get } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
+import {
+	GetQuickLaneByContentAndOwnerDocument,
+	GetQuickLaneByContentAndOwnerQuery,
+	GetQuickLaneByIdDocument,
+	GetQuickLaneByIdQuery,
+	InsertQuickLanesDocument,
+	InsertQuickLanesMutation,
+	UpdateQuickLaneByIdDocument,
+	UpdateQuickLaneByIdMutation,
+} from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
 import { dataService } from '../shared/services';
-import {
-	QuickLaneInsertResponse,
-	QuickLaneQueryResponse,
-	QuickLaneUpdateResponse,
-	QuickLaneUrlObject,
-	QuickLaneUrlRecord,
-} from '../shared/types';
-
-import {
-	GET_QUICK_LANE_BY_CONTENT_AND_OWNER,
-	GET_QUICK_LANE_BY_ID,
-	INSERT_QUICK_LANE,
-	UPDATE_QUICK_LANE,
-} from './quick-lane.gql';
+import { QuickLaneUrlObject, QuickLaneUrlRecord } from '../shared/types';
 
 // Mappers
 
@@ -78,8 +74,8 @@ export class QuickLaneService {
 		const now: string = new Date().toISOString();
 
 		try {
-			const response = await dataService.mutate<QuickLaneInsertResponse>({
-				mutation: INSERT_QUICK_LANE,
+			const response = await dataService.query<InsertQuickLanesMutation>({
+				query: InsertQuickLanesDocument,
 				variables: {
 					objects: objects.map((object) => {
 						return {
@@ -91,9 +87,8 @@ export class QuickLaneService {
 				},
 			});
 
-			const success = response.data?.insert_app_quick_lanes.returning.every(
-				(record) => record.id
-			);
+			const success =
+				response?.insert_app_quick_lanes?.returning?.every((record) => record.id) || true;
 
 			if (!success) {
 				throw new CustomError(
@@ -107,10 +102,8 @@ export class QuickLaneService {
 			}
 
 			return (
-				response.data || {
-					insert_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
-				}
-			).insert_app_quick_lanes.returning.map(quickLaneUrlRecordToObject);
+				response?.insert_app_quick_lanes?.returning?.map(quickLaneUrlRecordToObject) || []
+			);
 		} catch (err) {
 			throw new CustomError('Failed to insert quick lane urls', err, {
 				objects,
@@ -123,14 +116,10 @@ export class QuickLaneService {
 
 	static async fetchQuickLaneById(id: string): Promise<QuickLaneUrlObject> {
 		try {
-			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
-				query: GET_QUICK_LANE_BY_ID,
+			const response = await dataService.query<GetQuickLaneByIdQuery>({
+				query: GetQuickLaneByIdDocument,
 				variables: { id },
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const urls: QuickLaneUrlObject[] | undefined = get(
 				response,
@@ -180,15 +169,10 @@ export class QuickLaneService {
 		profileId: string
 	): Promise<QuickLaneUrlObject[]> {
 		try {
-			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
-				query: GET_QUICK_LANE_BY_CONTENT_AND_OWNER,
+			const response = await dataService.query<GetQuickLaneByContentAndOwnerQuery>({
+				query: GetQuickLaneByContentAndOwnerDocument,
 				variables: { contentId, contentLabel, profileId },
-				fetchPolicy: 'no-cache',
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
 
 			const urls: QuickLaneUrlObject[] | undefined = get(
 				response,
@@ -225,8 +209,8 @@ export class QuickLaneService {
 		const now: string = new Date().toISOString();
 
 		try {
-			const response = await dataService.mutate<QuickLaneUpdateResponse>({
-				mutation: UPDATE_QUICK_LANE,
+			const response = await dataService.query<UpdateQuickLaneByIdMutation>({
+				query: UpdateQuickLaneByIdDocument,
 				variables: {
 					id,
 					object: {
@@ -236,9 +220,8 @@ export class QuickLaneService {
 				},
 			});
 
-			const success = response.data?.update_app_quick_lanes.returning.every(
-				(record) => record.id
-			);
+			const success =
+				response?.update_app_quick_lanes?.returning?.every((record) => record.id) || true;
 
 			if (!success) {
 				throw new CustomError('Updating the quick lane failed, its id was missing', null, {
@@ -249,10 +232,8 @@ export class QuickLaneService {
 			}
 
 			return (
-				response.data || {
-					update_app_quick_lanes: { returning: [] as QuickLaneUrlRecord[] },
-				}
-			).update_app_quick_lanes.returning.map(quickLaneUrlRecordToObject);
+				response?.update_app_quick_lanes?.returning?.map(quickLaneUrlRecordToObject) || []
+			);
 		} catch (err) {
 			throw new CustomError('Failed to update quick lane url', err, {
 				id,
