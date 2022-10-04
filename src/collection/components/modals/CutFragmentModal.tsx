@@ -54,8 +54,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		toSeconds(itemMetaData.duration)
 	);
 
-	const [fragmentStartTime, setFragmentStartTime] = useState<number>(start);
-	const [fragmentEndTime, setFragmentEndTime] = useState<number>(end);
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(start || 0);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
+		end || toSeconds(itemMetaData.duration) || 0
+	);
 
 	const getValidationErrors = (): string[] => {
 		return getValidationErrorsForStartAndEnd({
@@ -135,8 +137,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	const onCancelCut = () => {
 		// Reset to default state
-		setFragmentStartTime(start);
-		setFragmentEndTime(end);
+		setFragmentStartTime(start || 0);
+		setFragmentEndTime(end || toSeconds(itemMetaData.duration) || 0);
 
 		// Close modal
 		onClose();

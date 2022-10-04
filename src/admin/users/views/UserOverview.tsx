@@ -1,3 +1,6 @@
+import { TagInfo, TagList, TagOption } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import FileSaver from 'file-saver';
 import { compact, first, get, isNil, without } from 'lodash-es';
 import React, {
@@ -13,10 +16,6 @@ import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import reactToString from 'react-to-string';
 import { compose } from 'redux';
-
-import { TagInfo, TagList, TagOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -533,11 +532,12 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 			case 'created_at':
 				return formatDate(created_at) || '-';
 
-			case 'last_access_at':
+			case 'last_access_at': {
 				const lastAccessDate = get(rowData, 'user.last_access_at');
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
+			}
 
-			case 'temp_access':
+			case 'temp_access': {
 				const tempAccess = get(rowData, 'user.temp_access.current.status');
 
 				switch (tempAccess) {
@@ -548,6 +548,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					default:
 						return '-';
 				}
+			}
 
 			case 'temp_access_from':
 				return formatDate(get(rowData, 'user.temp_access.from')) || '-';
@@ -565,11 +566,12 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				);
 
 			case 'education_levels':
-			case 'subjects':
+			case 'subjects': {
 				const labels = get(rowData, columnId, []);
 				return stringsToTagList(labels, null, navigateFilterToOption(columnId)) || '-';
+			}
 
-			case 'educational_organisations':
+			case 'educational_organisations': {
 				const orgs: ClientEducationOrganization[] = get(rowData, columnId, []);
 				const tags = orgs.map(
 					(org): TagOption => ({
@@ -584,6 +586,7 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 						onTagClicked={navigateFilterToOption(columnId)}
 					/>
 				);
+			}
 
 			default:
 				return truncateTableValue(rowData[columnId] || '-');

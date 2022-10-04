@@ -1,10 +1,19 @@
-import { Flex, FlowplayerSourceList, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
+import {
+	Flex,
+	FlowplayerSourceItem,
+	FlowplayerSourceList,
+	Modal,
+	ModalBody,
+	Spinner,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
-import { isMobileWidth } from '../../../shared/helpers';
+import { isMobileWidth, toSeconds } from '../../../shared/helpers';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
@@ -32,18 +41,23 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 		);
 		setSourceList({
 			type: 'flowplayer/playlist',
-			items: playableFragments.map((frag, fragIndex): FlowplayerSourceList['items'][0] => {
+			items: playableFragments.map((frag, fragIndex): FlowplayerSourceItem => {
 				const title =
 					(frag.use_custom_fields ? frag.custom_title : frag.item_meta?.title) ||
 					frag.item_meta?.title ||
 					'';
+				const [start, end] = getValidStartAndEnd(
+					frag.start_oc,
+					frag.end_oc,
+					toSeconds((frag.item_meta as ItemSchema).duration)
+				);
 				return {
 					src: playableUrls[fragIndex],
 					title,
 					poster: frag.thumbnail_path || '',
 					category: 'video',
 					provider: frag.item_meta?.organisation?.name || '',
-					cuepoints: [{ startTime: frag.start_oc, endTime: frag.end_oc }],
+					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,
 				};
 			}),
 		});
