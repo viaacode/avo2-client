@@ -1,11 +1,17 @@
-import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
+import {
+	Flex,
+	FlowplayerSourceItem,
+	FlowplayerSourceList,
+	Modal,
+	ModalBody,
+	Spinner,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
-import { FlowplayerSourceListSchema } from '../../../shared/components/FlowPlayerWrapper/Flowplayer/FlowPlayer.types';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
@@ -24,7 +30,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	collectionFragments,
 }) => {
 	const [t] = useTranslation();
-	const [sourceList, setSourceList] = useState<FlowplayerSourceListSchema | null>(null);
+	const [sourceList, setSourceList] = useState<FlowplayerSourceList | null>(null);
 
 	const fetchPlayableUrls = useCallback(async () => {
 		const playableFragments = collectionFragments.filter(
@@ -35,28 +41,25 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 		);
 		setSourceList({
 			type: 'flowplayer/playlist',
-			items: playableFragments.map(
-				(frag, fragIndex): FlowplayerSourceListSchema['items'][0] => {
-					const title =
-						(frag.use_custom_fields ? frag.custom_title : frag.item_meta?.title) ||
-						frag.item_meta?.title ||
-						'';
-					const [start, end] = getValidStartAndEnd(
-						frag.start_oc,
-						frag.end_oc,
-						toSeconds((frag.item_meta as ItemSchema).duration)
-					);
-					return {
-						src: playableUrls[fragIndex],
-						title,
-						poster: frag.thumbnail_path || '',
-						category: 'video',
-						provider: frag.item_meta?.organisation?.name || '',
-						cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,
-						duration: toSeconds((frag.item_meta as ItemSchema).duration) || 0,
-					};
-				}
-			),
+			items: playableFragments.map((frag, fragIndex): FlowplayerSourceItem => {
+				const title =
+					(frag.use_custom_fields ? frag.custom_title : frag.item_meta?.title) ||
+					frag.item_meta?.title ||
+					'';
+				const [start, end] = getValidStartAndEnd(
+					frag.start_oc,
+					frag.end_oc,
+					toSeconds((frag.item_meta as ItemSchema).duration)
+				);
+				return {
+					src: playableUrls[fragIndex],
+					title,
+					poster: frag.thumbnail_path || '',
+					category: 'video',
+					provider: frag.item_meta?.organisation?.name || '',
+					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,
+				};
+			}),
 		});
 	}, [collectionFragments]);
 

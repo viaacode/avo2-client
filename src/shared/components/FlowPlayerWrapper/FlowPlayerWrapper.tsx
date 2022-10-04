@@ -1,5 +1,8 @@
 import {
 	AspectRatioWrapper,
+	FlowPlayer,
+	FlowplayerSourceItem,
+	FlowplayerSourceList,
 	Icon,
 	MediaCard,
 	MediaCardThumbnail,
@@ -25,9 +28,6 @@ import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
-
-import { FlowPlayer } from './Flowplayer/FlowPlayer';
-import { FlowplayerSourceItemSchema, FlowplayerSourceList } from './Flowplayer/FlowPlayer.types';
 
 import './FlowPlayerWrapper.scss';
 
@@ -159,7 +159,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
-	const renderPlaylistTile = (item: FlowplayerSourceItemSchema): ReactNode => {
+	const renderPlaylistTile = (item: FlowplayerSourceItem): ReactNode => {
 		return (
 			<MediaCard
 				title={item.title}
