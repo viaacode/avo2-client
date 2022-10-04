@@ -129,17 +129,13 @@ const Root: FunctionComponent = () => {
 
 	useEffect(() => {
 		const url = new URL(window.location.href);
-
-		// Use one-shot function for type safety
-		((key: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked') => {
-			const hasLinked = url.searchParams.get(key) !== null;
-
-			if (hasLinked) {
-				ToastService.success(t('app___je-account-is-gekoppeld'));
-				url.searchParams.delete(key);
-				history.replace(url.toString().replace(url.origin, ''));
-			}
-		})();
+		const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
+		const hasLinked = url.searchParams.get(linked) !== null;
+		if (hasLinked) {
+			ToastService.success(t('app___je-account-is-gekoppeld'));
+			url.searchParams.delete(linked);
+			history.replace(url.toString().replace(url.origin, ''));
+		}
 	}, []);
 
 	return (
