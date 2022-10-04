@@ -1,0 +1,8 @@
+mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
+	update_app_collections(
+		where: { id: { _eq: $id }, is_deleted: { _eq: false } }
+		_set: $collection
+	) {
+		affected_rows
+	}
+}

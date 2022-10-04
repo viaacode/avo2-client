@@ -1,0 +1,60 @@
+query getUsers(
+	$offset: Int!
+	$limit: Int!
+	$orderBy: [users_summary_view_order_by!]!
+	$where: users_summary_view_bool_exp!
+) {
+	users_summary_view(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
+		user_id
+		full_name
+		first_name
+		last_name
+		mail
+		last_access_at
+		is_blocked
+		blocked_at {
+			date: max
+		}
+		unblocked_at {
+			date: max
+		}
+		profile_id
+		stamboek
+		acc_created_at
+		group_id
+		group_name
+		company_name
+		is_exception
+		business_category
+		idps {
+			idp
+		}
+		classifications {
+			key
+		}
+		contexts {
+			key
+		}
+		organisations {
+			organization_id
+			unit_id
+			organization {
+				ldap_description
+			}
+		}
+		user {
+			temp_access {
+				until
+				from
+				current {
+					status
+				}
+			}
+		}
+	}
+	users_summary_view_aggregate(where: $where) {
+		aggregate {
+			count
+		}
+	}
+}

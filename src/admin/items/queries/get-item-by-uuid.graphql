@@ -1,0 +1,57 @@
+query getItemByUuid($uuid: uuid!) {
+	app_item_meta(where: { uid: { _eq: $uuid } }) {
+		thumbnail_path
+		created_at
+		depublish_at
+		depublish_reason
+		description
+		duration
+		expiry_date
+		external_id
+		uid
+		is_deleted
+		is_published
+		issued
+		lom_classification
+		lom_thema
+		lom_context
+		lom_intendedenduserrole
+		lom_keywords
+		lom_languages
+		lom_typical_age_range: lom_typicalagerange
+		org_id
+		organisation {
+			or_id
+			name
+		}
+		publish_at
+		published_at
+		series
+		title
+		type {
+			id
+			label
+		}
+		updated_at
+		note
+		relations(where: { predicate: { _eq: "IS_REPLACED_BY" } }) {
+			object
+			subject
+			predicate
+			created_at
+			updated_at
+		}
+		item_collaterals(where: { description: { _eq: "subtitle" } }) {
+			path
+			description
+			external_id
+		}
+		view_counts_aggregate {
+			aggregate {
+				sum {
+					count
+				}
+			}
+		}
+	}
+}

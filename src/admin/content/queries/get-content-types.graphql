@@ -1,0 +1,6 @@
+query getContentTypes {
+	lookup_enum_content_types {
+		value
+		description
+	}
+}

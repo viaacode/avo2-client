@@ -1,0 +1,25 @@
+query getUserGroupById($id: Int!) {
+	users_groups(where: { id: { _eq: $id } }) {
+		label
+		id
+		description
+		created_at
+		updated_at
+		group_user_permission_groups(order_by: { permission_group: { label: asc } }) {
+			permission_group {
+				label
+				id
+				created_at
+				description
+				updated_at
+				permission_group_user_permissions(order_by: { permission: { description: asc } }) {
+					permission {
+						label
+						description
+						id
+					}
+				}
+			}
+		}
+	}
+}

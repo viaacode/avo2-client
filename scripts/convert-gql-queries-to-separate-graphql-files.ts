@@ -3,10 +3,9 @@
  */
 import * as path from 'path';
 
-import fse from 'fs-extra';
+import { ensureDirSync, readFileSync, writeFileSync } from 'fs-extra';
 import * as glob from 'glob';
-import { split } from 'lodash';
-import { kebabCase } from 'lodash-es';
+import { kebabCase, split } from 'lodash';
 
 /**
  * Extracts label of query
@@ -33,7 +32,7 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 		files.forEach((relativeFilePath: string) => {
 			try {
 				const absoluteFilePath = `${options.cwd}/${relativeFilePath}`;
-				const content: string = fse.readFileSync(absoluteFilePath).toString();
+				const content: string = readFileSync(absoluteFilePath).toString();
 
 				let matches: RegExpExecArray | null;
 				do {
@@ -66,7 +65,12 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 						queries[name] = query.replace(/[\t\r\n]+/gm, ' ').trim();
 
 						// Write new query file
-						fse.writeFile(path.join(path.dirname(absoluteFilePath), kebabCase(name) + 'graphql', queries[name]);
+						const queriesDir = path.join(path.dirname(absoluteFilePath), 'queries');
+						ensureDirSync(queriesDir);
+						writeFileSync(
+							path.join(queriesDir, kebabCase(name) + '.graphql'),
+							queries[name]
+						);
 					}
 				} while (matches);
 			} catch (err) {
@@ -74,11 +78,7 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 			}
 		});
 
-		console.log(
-			`Found ${
-				Object.keys(queries).length
-			} queries`
-		);
+		console.log(`Found ${Object.keys(queries).length} queries`);
 	} catch (err) {
 		console.error('Failed to extract and upload graphql query whitelist', JSON.stringify(err));
 	}

@@ -1,0 +1,111 @@
+query getUserById($id: uuid!) {
+	users_summary_view(
+		offset: 0
+		limit: 1
+		where: { profile_id: { _eq: $id }, is_deleted: { _eq: false } }
+	) {
+		profile_id
+		user_id
+		first_name
+		last_name
+		business_category
+		last_access_at
+		mail
+		is_blocked
+		is_deleted
+		is_exception
+		stamboek
+		acc_updated_at
+		acc_created_at
+		idps {
+			id
+			idp
+			idp_user_id
+		}
+		profile {
+			avatar
+			alias
+			title
+			business_category
+			updated_at
+			created_at
+			bio
+			alternative_email
+			usersByuserId {
+				full_name
+				first_name
+				last_name
+				mail
+			}
+			profile_organizations {
+				unit_id
+				organization_id
+			}
+			organisation {
+				logo_url
+				name
+			}
+			profile_user_group {
+				group {
+					created_at
+					description
+					id
+					label
+					ldap_role
+					updated_at
+					group_user_permission_groups {
+						group {
+							label
+							id
+						}
+						permission_group {
+							permission_group_user_permissions {
+								permission {
+									label
+									id
+								}
+							}
+							label
+							id
+						}
+					}
+				}
+			}
+			user_id
+		}
+		contexts {
+			id
+			key
+		}
+		group_id
+		group_name
+		company_name
+		company_id
+		blocked_at {
+			max
+		}
+		unblocked_at {
+			max
+		}
+		classifications {
+			id
+			key
+		}
+		organisations {
+			organization_id
+			unit_id
+			organization {
+				ldap_description
+			}
+		}
+		user {
+			temp_access {
+				from
+				until
+				current {
+					status
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,5 @@
+mutation softDeleteContent($id: Int!) {
+	update_app_content(where: { id: { _eq: $id } }, _set: { is_deleted: true }) {
+		affected_rows
+	}
+}

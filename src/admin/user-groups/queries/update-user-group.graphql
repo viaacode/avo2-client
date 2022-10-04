@@ -1,0 +1,5 @@
+mutation updateUserGroup($userGroup: users_groups_set_input!, $userGroupId: Int!) {
+	update_users_groups(where: { id: { _eq: $userGroupId } }, _set: $userGroup) {
+		affected_rows
+	}
+}

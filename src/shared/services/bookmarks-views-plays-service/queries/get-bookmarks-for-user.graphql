@@ -1,0 +1,41 @@
+query getBookmarksForUser($profileId: uuid!) {
+	app_item_bookmarks(where: { profile_id: { _eq: $profileId } }) {
+		bookmarkedItem {
+			title
+			thumbnail_path
+			duration
+			issued
+			item {
+				external_id
+				item_meta {
+					organisation {
+						name
+					}
+					is_deleted
+					is_published
+					type {
+						label
+					}
+				}
+			}
+			view_counts {
+				count
+			}
+		}
+		item_id
+		created_at
+	}
+	app_collection_bookmarks(where: { profile_id: { _eq: $profileId } }) {
+		bookmarkedCollection {
+			title
+			thumbnail_path
+			created_at
+			type_id
+			view_counts {
+				count
+			}
+		}
+		collection_uuid
+		created_at
+	}
+}

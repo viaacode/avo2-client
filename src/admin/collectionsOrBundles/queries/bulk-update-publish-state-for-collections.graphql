@@ -1,0 +1,13 @@
+mutation bulkUpdatePublishSTateForCollections(
+	$isPublic: Boolean!
+	$collectionIds: [uuid!]!
+	$now: timestamptz!
+	$updatedByProfileId: uuid!
+) {
+	update_app_collections(
+		where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
+		_set: { is_public: $isPublic, updated_at: $now, updated_by_profile_id: $updatedByProfileId }
+	) {
+		affected_rows
+	}
+}

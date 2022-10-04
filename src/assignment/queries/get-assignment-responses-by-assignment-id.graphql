@@ -23,9 +23,7 @@ query getAssignmentResponsesByAssignmentId(
 			full_name
 		}
 	}
-	count: app_assignment_responses_v2_aggregate(
-		where: { assignment_id: { _eq: $assignmentId } }
-	) {
+	count: app_assignment_responses_v2_aggregate(where: { assignment_id: { _eq: $assignmentId } }) {
 		aggregate {
 			count
 		}

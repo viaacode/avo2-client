@@ -1,0 +1,5 @@
+query getIdps {
+	users_idps {
+		value
+	}
+}

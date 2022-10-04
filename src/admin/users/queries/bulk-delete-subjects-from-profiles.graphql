@@ -1,0 +1,7 @@
+mutation bulkDeleteSubjectsFromProfiles($subjects: [String!]!, $profileIds: [uuid!]!) {
+	delete_users_profile_classifications(
+		where: { key: { _in: $subjects }, profile_id: { _in: $profileIds } }
+	) {
+		affected_rows
+	}
+}

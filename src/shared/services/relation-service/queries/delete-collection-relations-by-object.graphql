@@ -1,0 +1,10 @@
+mutation deleteCollectionRelationsByObject(
+	$objectId: uuid!
+	$relationType: lookup_enum_relation_types_enum!
+) {
+	delete_app_collection_relations(
+		where: { object: { _eq: $objectId }, predicate: { _eq: $relationType } }
+	) {
+		affected_rows
+	}
+}

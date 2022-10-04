@@ -1,0 +1,10 @@
+mutation removePermissionInPermissionGroup($permissionGroupId: Int!, $permissionIds: [Int!]!) {
+	delete_users_permission_group_user_permissions(
+		where: {
+			user_permission_group_id: { _eq: $permissionGroupId }
+			user_permission_id: { _in: $permissionIds }
+		}
+	) {
+		affected_rows
+	}
+}

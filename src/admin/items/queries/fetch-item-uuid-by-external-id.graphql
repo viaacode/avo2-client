@@ -1,0 +1,7 @@
+query fetchItemUuidByExternalId($externalId: bpchar!) {
+	app_item_meta(where: { external_id: { _eq: $externalId } }) {
+		uid
+		is_published
+		is_deleted
+	}
+}

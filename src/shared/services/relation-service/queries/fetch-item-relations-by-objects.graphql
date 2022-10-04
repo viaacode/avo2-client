@@ -1,0 +1,13 @@
+query getItemRelationsByObject(
+	$objectIds: [uuid!]!
+	$relationType: lookup_enum_relation_types_enum!
+) {
+	app_item_relations(where: { object: { _in: $objectIds }, predicate: { _eq: $relationType } }) {
+		id
+		object
+		subject
+		predicate
+		created_at
+		updated_at
+	}
+}
