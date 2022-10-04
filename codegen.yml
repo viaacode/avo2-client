@@ -4,7 +4,7 @@ schema:
       headers:
         x-hasura-admin-secret: ${GRAPHQL_SECRET}
 documents:
-  - "./src/**.graphql"
+  - "./src/**/*.graphql"
 generates:
   src/shared/generated/graphql-db-types.ts:
     plugins:

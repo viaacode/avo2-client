@@ -3,7 +3,7 @@
  */
 import * as path from 'path';
 
-import fse from 'fs-extra';
+import { readFileSync, writeFile } from 'fs-extra';
 import * as glob from 'glob';
 import { split } from 'lodash';
 
@@ -43,7 +43,7 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 		files.forEach((relativeFilePath: string) => {
 			try {
 				const absoluteFilePath = `${options.cwd}/${relativeFilePath}`;
-				const content: string = fse.readFileSync(absoluteFilePath).toString();
+				const content: string = readFileSync(absoluteFilePath).toString();
 
 				let matches: RegExpExecArray | null;
 				do {
@@ -83,7 +83,7 @@ async function extractQueriesFromCode(gqlRegex: RegExp) {
 
 		const outputFile = path.join(__dirname, 'client-whitelist.json');
 
-		await fse.writeFile(outputFile, JSON.stringify(queries, null, 2));
+		await writeFile(outputFile, JSON.stringify(queries, null, 2));
 
 		console.log(
 			`Found ${
