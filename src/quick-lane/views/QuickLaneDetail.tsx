@@ -1,10 +1,3 @@
-import classnames from 'classnames';
-import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { generatePath } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -21,6 +14,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
+import classnames from 'classnames';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { generatePath } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -31,14 +30,13 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
-import { trackEvents } from '../../shared/services/event-logging-service';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { isCollection, isItem } from '../quick-lane.helpers';
 import { QuickLaneService } from '../quick-lane.service';
 
 import './QuickLaneDetail.scss';
 
-interface QuickLaneDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
 const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	history,
@@ -128,14 +126,15 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			// Analytics
 
-			trackEvents(
-				{
-					object: String(response.id),
-					object_type: 'quick_lane',
-					action: 'view',
-				},
-				user
-			);
+			// TODO re-enable this once task https://meemoo.atlassian.net/browse/AVO-2177 is fixed
+			// trackEvents(
+			// 	{
+			// 		object: String(response.id),
+			// 		object_type: 'quick_lane',
+			// 		action: 'view',
+			// 	},
+			// 	user
+			// );
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {

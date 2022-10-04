@@ -1,6 +1,5 @@
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { CustomError, getFullName, getProfile } from '../../shared/helpers';
@@ -15,7 +14,15 @@ export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''):
 };
 
 export function hasIdpLinked(user: Avo.User.User, idpType: Avo.Auth.IdpType): boolean {
-	return get(user, 'idpmaps', [] as Avo.Auth.IdpType[]).includes(idpType);
+	const idpTypesOnUser = (user?.idpmaps || []) as Avo.Auth.IdpType[];
+	if (idpType === 'VLAAMSEOVERHEID') {
+		return (
+			idpTypesOnUser.includes('VLAAMSEOVERHEID') ||
+			idpTypesOnUser.includes('VLAAMSEOVERHEID__SUB_ID') ||
+			idpTypesOnUser.includes('VLAAMSEOVERHEID__ACCOUNT_ID')
+		);
+	}
+	return idpTypesOnUser.includes(idpType);
 }
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
@@ -69,7 +76,7 @@ export const getUserGroupId = (
 
 export function getProfileFromUser(
 	user: Avo.User.User | undefined,
-	silent: boolean = false
+	silent = false
 ): Avo.User.Profile | null {
 	if (!user) {
 		if (silent) {
