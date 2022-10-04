@@ -134,7 +134,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 			/>
 			<div className="m-multi-range-wrapper">
 				<MultiRange
-					values={[start, end]}
+					values={[start || minTime, end || maxTime]}
 					onChange={onUpdateMultiRangeValues}
 					min={minTime}
 					max={maxTime}

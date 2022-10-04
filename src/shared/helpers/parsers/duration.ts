@@ -18,7 +18,7 @@ export function parseDuration(duration: string) {
  */
 export function toSeconds(
 	duration: number | string | undefined | null,
-	silent: boolean = false
+	silent = false
 ): number | null {
 	if (!duration) {
 		return 0;
