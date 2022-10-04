@@ -1,0 +1,5 @@
+query getAssignmentIds($where: app_assignments_v2_bool_exp!) {
+	app_assignments_v2(where: $where) {
+		id
+	}
+}

@@ -1,0 +1,14 @@
+mutation insertAssignmentResponse(
+	$assignmentResponses: [app_assignment_responses_v2_insert_input!]!
+) {
+	insert_app_assignment_responses_v2(objects: $assignmentResponses) {
+		affected_rows
+		returning {
+			id
+			created_at
+			owner_profile_id
+			assignment_id
+			collection_title
+		}
+	}
+}

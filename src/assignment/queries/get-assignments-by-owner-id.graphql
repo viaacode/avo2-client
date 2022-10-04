@@ -1,0 +1,58 @@
+query getAssignmentsByOwner(
+	$owner_profile_id: uuid
+	$offset: Int = 0
+	$limit: Int
+	$order: [app_assignments_v2_order_by!]! = [{ deadline_at: desc }]
+	$filter: [app_assignments_v2_bool_exp]
+) {
+	app_assignments_v2(
+		where: {
+			owner_profile_id: { _eq: $owner_profile_id }
+			is_deleted: { _eq: false }
+			_and: $filter
+		}
+		offset: $offset
+		limit: $limit
+		order_by: $order
+	) {
+		id
+		labels(order_by: { assignment_label: { label: asc } }) {
+			assignment_label {
+				color_enum_value
+				color_override
+				enum_color {
+					label
+					value
+				}
+				id
+				label
+				type
+				owner_profile_id
+			}
+		}
+		responses {
+			id
+		}
+		assignment_type
+		deadline_at
+		is_deleted
+		title
+		owner_profile_id
+		updated_at
+		created_at
+		owner {
+			full_name
+		}
+	}
+	count: app_assignments_v2_aggregate(
+		where: {
+			owner_profile_id: { _eq: $owner_profile_id }
+			is_deleted: { _eq: false }
+			_and: $filter
+		}
+	) {
+		aggregate {
+			count
+		}
+	}
+}

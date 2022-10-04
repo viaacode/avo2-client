@@ -1,0 +1,13 @@
+overwrite: true
+schema:
+  - ${GRAPHQL_URL}:
+      headers:
+        x-hasura-admin-secret: ${GRAPHQL_SECRET}
+documents:
+  - "./src/**.graphql"
+generates:
+  src/shared/generated/graphql-db-types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node

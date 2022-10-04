@@ -18,7 +18,8 @@
     "whitelist-queries": "ts-node --transpile-only --require dotenv/config  --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts && cp scripts/client-whitelist.json ../avo2-proxy/server/scripts",
     "update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
     "licenses": "license-checker --csv --out licenses.csv",
-    "analyse": "npm run build && source-map-explorer 'build/static/js/*.js'"
+    "analyse": "npm run build && source-map-explorer 'build/static/js/*.js'",
+    "generate-database-types": "dotenv -e .env graphql-codegen -- --config codegen.yml"
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -93,6 +94,13 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@graphql-codegen/cli": "2.13.3",
+    "@graphql-codegen/introspection": "2.2.1",
+    "@graphql-codegen/typed-document-node": "2.3.3",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@graphql-codegen/typescript-operations": "2.5.3",
+    "@graphql-codegen/typescript-resolvers": "2.7.3",
+    "@graphql-typed-document-node/core": "3.1.1",
     "@types/classnames": "^2.2.8",
     "@types/enzyme": "^3.9.3",
     "@types/enzyme-adapter-react-16": "^1.0.5",

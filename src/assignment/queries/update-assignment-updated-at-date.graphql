@@ -1,0 +1,8 @@
+mutation updateAssignmentUpdatedAtDate($assignmentId: uuid!, $updatedAt: timestamptz!) {
+	update_app_assignments_v2(
+		where: { id: { _eq: $assignmentId } }
+		_set: { updated_at: $updatedAt }
+	) {
+		affected_rows
+	}
+}

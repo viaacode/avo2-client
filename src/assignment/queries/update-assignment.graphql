@@ -1,0 +1,8 @@
+mutation updateAssignmentById(
+	$assignmentId: uuid!
+	$assignment: app_assignments_v2_set_input!
+) {
+	update_app_assignments_v2(where: { id: { _eq: $assignmentId } }, _set: $assignment) {
+		affected_rows
+	}
+}
