@@ -1,8 +1,3 @@
-import { compact, get, intersection, sortBy, without } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ValueType } from 'react-select';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -19,13 +14,17 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import { compact, get, intersection, sortBy, without } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../../admin/content-block/components/fields';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';
 import { AssignmentLabelsService, ToastService } from '../../../shared/services';
-import { AssignmentLabelColor } from '../../assignment.types';
+import { AssignmentLabelColor, Label_v2 } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
 
@@ -43,7 +42,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Label_v2[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<
 		Avo.Assignment.Label_v2[]
 	>([]);

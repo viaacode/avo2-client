@@ -1,7 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import { get, omit } from 'lodash-es';
 
-import { AssignmentLabelColor } from '../../../assignment/assignment.types';
+import { AssignmentLabelColor, Label_v2 } from '../../../assignment/assignment.types';
 import {
 	DeleteAssignmentLabelDocument,
 	DeleteAssignmentLabelMutation,
@@ -22,10 +22,7 @@ import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
 
 export class AssignmentLabelsService {
-	public static async getLabelsForProfile(
-		profileId: string,
-		type?: string
-	): Promise<GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2']> {
+	public static async getLabelsForProfile(profileId: string, type?: string): Promise<Label_v2[]> {
 		try {
 			const response = await dataService.query<GetAssignmentLabelsByProfileIdQuery>({
 				query: GetAssignmentLabelsByProfileIdDocument,

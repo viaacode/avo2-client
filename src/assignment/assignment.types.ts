@@ -4,6 +4,7 @@ import { AssignmentBlock, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assi
 
 import { FilterState } from '../search/search.types';
 import {
+	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentResponseByIdQuery,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByResponseOwnerIdQuery,
@@ -18,6 +19,8 @@ export type Assignment_v2 = (
 
 export type Assignment_Response_v2 =
 	GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0];
+
+export type Label_v2 = GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2'][0];
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
