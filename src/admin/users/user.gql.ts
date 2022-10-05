@@ -84,11 +84,19 @@ export const GET_USER_BY_ID = gql`
 			group_name
 			company_name
 			company_id
-			blocked_at {
-				max
+			last_blocked_at: audits_aggregate(where: { event: { _eq: "BLOCKED" } }) {
+				aggregate {
+					max {
+						created_at
+					}
+				}
 			}
-			unblocked_at {
-				max
+			last_unblocked_at: audits_aggregate(where: { event: { _eq: "UNBLOCKED" } }) {
+				aggregate {
+					max {
+						created_at
+					}
+				}
 			}
 			classifications {
 				id
@@ -129,11 +137,19 @@ export const GET_USERS = gql`
 			mail
 			last_access_at
 			is_blocked
-			blocked_at {
-				date: max
+			last_blocked_at: audits_aggregate(where: { event: { _eq: "BLOCKED" } }) {
+				aggregate {
+					max {
+						created_at
+					}
+				}
 			}
-			unblocked_at {
-				date: max
+			last_unblocked_at: audits_aggregate(where: { event: { _eq: "UNBLOCKED" } }) {
+				aggregate {
+					max {
+						created_at
+					}
+				}
 			}
 			profile_id
 			stamboek
@@ -198,11 +214,19 @@ export const GET_USERS_IN_SAME_COMPANY = gql`
 			mail
 			last_access_at
 			is_blocked
-			blocked_at {
-				date: max
+			last_blocked_at: audits_aggregate(where: { event: { _eq: "BLOCKED" } }) {
+				aggregate {
+					max {
+						created_at
+					}
+				}
 			}
-			unblocked_at {
-				date: max
+			last_unblocked_at: audits_aggregate(where: { event: { _eq: "UNBLOCKED" } }) {
+				aggregate {
+					max {
+						created_at
+					}
+				}
 			}
 			profile_id
 			stamboek
