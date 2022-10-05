@@ -14,6 +14,7 @@ import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import { AssignmentService } from '../assignment.service';
+import { Assignment_Response_v2 } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetadata from '../components/AssignmentMetadata';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
@@ -31,13 +32,14 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	const [t] = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentResponse, setAssignmentResponse] =
-		useState<Avo.Assignment.Response_v2 | null>();
+	const [assignmentResponse, setAssignmentResponse] = useState<Assignment_Response_v2 | null>();
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;
 
 	const fetchAssignmentResponse = useCallback(
-		async (tempAssignment: Avo.Assignment.Assignment_v2) => {
+		async (
+			tempAssignment: Avo.Assignment.Assignment_v2
+		): Promise<Assignment_Response_v2 | null> => {
 			const canViewAssignmentResponses = await PermissionService.hasPermissions(
 				[
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
@@ -52,7 +54,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						'assignment/views/assignment-pupil-collection-detail___je-hebt-geen-toegang-om-deze-leerlingencollectie-te-bekijken'
 					),
 				});
-				return;
+				return null;
 			}
 
 			return AssignmentService.getAssignmentResponseById(assignmentResponseId);

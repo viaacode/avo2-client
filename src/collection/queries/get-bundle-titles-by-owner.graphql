@@ -1,4 +1,4 @@
-query getBundleNamesByOwner($owner_profile_id: uuid) {
+query getBundleTitlesByOwner($owner_profile_id: uuid) {
 	app_collections(
 		where: {
 			type_id: { _eq: 4 }

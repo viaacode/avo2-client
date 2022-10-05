@@ -62,7 +62,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	const fetchUserGroupById = useCallback(async () => {
 		try {
 			const userGroupObj: UserGroup | undefined = await UserGroupService.fetchUserGroupById(
-				match.params.id
+				parseInt(match.params.id)
 			);
 			if (!userGroupObj) {
 				setLoadingInfo({

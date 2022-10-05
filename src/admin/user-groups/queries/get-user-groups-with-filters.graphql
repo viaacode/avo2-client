@@ -1,4 +1,4 @@
-query getUserGroups(
+query getUserGroupsWithFilters(
 	$limit: Int!
 	$offset: Int!
 	$orderBy: [users_groups_order_by!]!

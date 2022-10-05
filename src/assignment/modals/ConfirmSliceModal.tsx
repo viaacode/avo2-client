@@ -18,7 +18,7 @@ import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.c
 import { AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	responses?: Avo.Assignment.Response_v2[];
+	responses?: Assignment_Response_v2[];
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }

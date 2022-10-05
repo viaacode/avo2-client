@@ -31,7 +31,7 @@ import { PupilSearchFilterState } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
 	assignment: Avo.Assignment.Assignment_v2 | null;
-	assignmentResponse: Avo.Assignment.Response_v2 | null;
+	assignmentResponse: Assignment_Response_v2 | null;
 	filterState: any;
 	setFilterState: any;
 	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection

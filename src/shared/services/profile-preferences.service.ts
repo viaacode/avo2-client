@@ -3,14 +3,14 @@ import { get } from 'lodash-es';
 import {
 	GetProfilePreferenceDocument,
 	GetProfilePreferenceQuery,
+	SetProfilePreferenceDocument,
+	SetProfilePreferenceMutation,
+	SetProfilePreferenceMutationVariables,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-
-export enum ProfilePreferenceKey {
-	DoNotShow = 'DO_NOT_SHOW',
-}
+import { ProfilePreferenceKey } from './profile-preferences.types';
 
 export interface ProfilePreference {
 	id: number;
@@ -43,15 +43,16 @@ export class ProfilePreferencesService {
 		key: ProfilePreferenceKey
 	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: SET_PROFILE_PREFERENCE,
-				variables: { profileId, key },
+			const variables: SetProfilePreferenceMutationVariables = { profileId, key };
+			const response = await dataService.query<SetProfilePreferenceMutation>({
+				query: SetProfilePreferenceDocument,
+				variables,
 			});
 
-			return response?.data?.insert_users_profile_preferences?.affected_rows;
+			return response.insert_users_profile_preferences?.affected_rows || 0;
 		} catch (err) {
 			throw new CustomError('Het inserten van de profile preference is mislukt.', err, {
-				query: SET_PROFILE_PREFERENCE,
+				query: 'SET_PROFILE_PREFERENCE',
 				variables: { profileId, key },
 			});
 		}

@@ -9,6 +9,7 @@ query getCollectionMarcomEntries($collectionUuid: uuid!) {
 		channel_type
 		external_link
 		publish_date
+		collection_id
 		parent_collection {
 			id
 			title

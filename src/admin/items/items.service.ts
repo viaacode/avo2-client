@@ -8,12 +8,32 @@ import {
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
 	FetchItemUuidByExternalIdDocument,
 	FetchItemUuidByExternalIdQuery,
+	GetDistinctSeriesDocument,
+	GetDistinctSeriesQuery,
+	GetItemDepublishReasonByExternalIdDocument,
 	GetItemsByExternalIdDocument,
 	GetItemsByExternalIdQuery,
+	GetPublicItemsByTitleOrExternalIdDocument,
+	GetPublicItemsByTitleOrExternalIdQuery,
+	GetPublicItemsDocument,
+	GetPublicItemsQuery,
+	GetUnpublishedItemPidsDocument,
+	GetUnpublishedItemPidsQuery,
+	GetUnpublishedItemPidsQueryVariables,
+	Lookup_Enum_Relation_Types_Enum,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
 	SetSharedItemsStatusDocument,
 	SetSharedItemsStatusMutation,
+	UpdateItemDepublishReasonDocument,
+	UpdateItemDepublishReasonMutation,
+	UpdateItemDepublishReasonMutationVariables,
+	UpdateItemNotesDocument,
+	UpdateItemNotesMutation,
+	UpdateItemNotesMutationVariables,
+	UpdateItemPublishedStateDocument,
+	UpdateItemPublishedStateMutation,
+	UpdateItemPublishedStateMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
@@ -145,15 +165,15 @@ export class ItemsService {
 	}
 
 	static async setItemPublishedState(itemUuid: string, isPublished: boolean): Promise<void> {
-		let variables: any;
+		let variables: UpdateItemPublishedStateMutationVariables | null = null;
 		try {
 			variables = {
 				itemUuid,
 				isPublished,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateItemPublishedStateMutation>({
+				query: UpdateItemPublishedStateDocument,
 				variables,
-				mutation: UPDATE_ITEM_PUBLISH_STATE,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -168,15 +188,15 @@ export class ItemsService {
 	}
 
 	static async setItemDepublishReason(itemUuid: string, reason: null | string): Promise<void> {
-		let variables: any;
+		let variables: UpdateItemDepublishReasonMutationVariables | null = null;
 		try {
 			variables = {
 				itemUuid,
 				reason,
 			};
-			await dataService.mutate({
+			await dataService.query<UpdateItemDepublishReasonMutation>({
 				variables,
-				mutation: UPDATE_ITEM_DEPUBLISH_REASON,
+				query: UpdateItemDepublishReasonDocument,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -191,15 +211,15 @@ export class ItemsService {
 	}
 
 	static async setItemNotes(itemUuid: string, note: string | null): Promise<void> {
-		let variables: any;
+		let variables: UpdateItemNotesMutationVariables | null = null;
 		try {
 			variables = {
 				itemUuid,
 				note,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateItemNotesMutation>({
 				variables,
-				mutation: UPDATE_ITEM_NOTES,
+				query: UpdateItemNotesDocument,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update note field for item in the database', err, {
@@ -209,22 +229,24 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchPublicItems(limit?: number): Promise<Avo.Item.Item[] | null> {
+	public static async fetchPublicItems(
+		limit?: number
+	): Promise<GetPublicItemsQuery['app_item_meta'] | null> {
 		const query = {
-			query: GET_PUBLIC_ITEMS,
+			query: GetPublicItemsDocument,
 			variables: { limit },
 		};
 
-		return performQuery(
+		return performQuery<GetPublicItemsQuery['app_item_meta']>(
 			query,
-			'data.app_item_meta',
+			'app_item_meta',
 			'Failed to retrieve items. GET_PUBLIC_ITEMS'
 		);
 	}
 
 	private static async fetchDepublishReasonByExternalId(externalId: string): Promise<string> {
 		const query = {
-			query: GET_ITEM_DEPUBLISH_REASON,
+			query: GetItemDepublishReasonByExternalIdDocument,
 			variables: { externalId },
 		};
 
@@ -287,7 +309,7 @@ export class ItemsService {
 			const relations = await RelationService.fetchRelationsBySubject(
 				'item',
 				[itemUid],
-				'IS_REPLACED_BY'
+				Lookup_Enum_Relation_Types_Enum.IsReplacedBy
 			);
 
 			const replacedByItemUid = get(relations, '[0].object', null);
@@ -365,10 +387,13 @@ export class ItemsService {
 	public static async fetchPublicItemsByTitleOrExternalId(
 		titleOrExternalId: string,
 		limit?: number
-	): Promise<Avo.Item.Item[]> {
+	): Promise<
+		| GetPublicItemsByTitleOrExternalIdQuery['itemsByExternalId']
+		| GetPublicItemsByTitleOrExternalIdQuery['itemsByTitle']
+	> {
 		try {
 			const query = {
-				query: GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
+				query: GetPublicItemsByTitleOrExternalIdDocument,
 				variables: {
 					limit,
 					title: `%${titleOrExternalId}%`,
@@ -376,16 +401,16 @@ export class ItemsService {
 				},
 			};
 
-			const response = await performQuery(
+			const response = await performQuery<GetPublicItemsByTitleOrExternalIdQuery>(
 				query,
-				'data',
+				null,
 				'Failed to retrieve items by title or external id.'
 			);
 
-			let items = get(response, 'itemsByExternalId', []);
+			let items = response.itemsByExternalId || [];
 
 			if (items.length === 0) {
-				items = get(response, 'itemsByTitle', []);
+				items = response.itemsByTitle || [];
 			}
 
 			return items;
@@ -400,13 +425,13 @@ export class ItemsService {
 
 	public static async fetchAllSeries(): Promise<string[]> {
 		try {
-			const response = await performQuery(
-				{ query: GET_DISTINCT_SERIES },
-				'data.app_item_meta',
+			const response = await performQuery<GetDistinctSeriesQuery['app_item_meta']>(
+				{ query: GetDistinctSeriesDocument },
+				'app_item_meta',
 				'Failed to retrieve distinct series'
 			);
 
-			return (response || []).map((item: { series: string }) => item.series);
+			return compact((response || []).map((item) => item.series));
 		} catch (err) {
 			throw new CustomError('Failed to fetch distinct series from the database', err, {
 				query: 'GET_DISTINCT_SERIES',
@@ -514,22 +539,16 @@ export class ItemsService {
 	}
 
 	static async getUnpublishedItemPids(where: any = {}): Promise<string[]> {
-		let variables: any;
+		let variables: GetUnpublishedItemPidsQueryVariables | null = null;
 		try {
-			variables = where
-				? {
-						where,
-				  }
-				: {};
-			const response = await dataService.query({
+			variables = {
+				where: where || undefined,
+			};
+			const response = await dataService.query<GetUnpublishedItemPidsQuery>({
+				query: GetUnpublishedItemPidsDocument,
 				variables,
-				query: GET_UNPUBLISHED_ITEM_PIDS,
 			});
-			return compact(
-				get(response, 'data.shared_items' || []).map((item: { pid: string }) =>
-					get(item, 'pid')
-				)
-			);
+			return compact(response.shared_items.map((item) => get(item, 'pid')));
 		} catch (err) {
 			throw new CustomError('Failed to get unpublished item pids from the database', err, {
 				variables,

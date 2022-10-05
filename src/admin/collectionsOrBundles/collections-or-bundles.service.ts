@@ -350,20 +350,15 @@ export class CollectionsOrBundlesService {
 	private static async bulkUpdateDateAndLastAuthorCollections(
 		collectionIds: string[],
 		updatedByProfileId: string
-	) {
-		const updateResponse =
-			await dataService.query<BulkUpdateDateAndLastAuthorCollectionsMutation>({
-				query: BulkUpdateDateAndLastAuthorCollectionsDocument,
-				variables: {
-					collectionIds,
-					updatedByProfileId,
-					now: new Date().toISOString(),
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-
-		if (updateResponse.errors) {
-			throw new CustomError('GraphQL query has errors', null, { updateResponse });
-		}
+	): Promise<void> {
+		await dataService.query<BulkUpdateDateAndLastAuthorCollectionsMutation>({
+			query: BulkUpdateDateAndLastAuthorCollectionsDocument,
+			variables: {
+				collectionIds,
+				updatedByProfileId,
+				now: new Date().toISOString(),
+			},
+			update: ApolloCacheManager.clearCollectionCache,
+		});
 	}
 }

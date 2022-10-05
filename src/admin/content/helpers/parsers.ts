@@ -1,7 +1,10 @@
 import { Avo } from '@viaa/avo2-types';
+import { ContentWidthSchema } from '@viaa/avo2-types/types/content-page';
+import { UserProfile } from '@viaa/avo2-types/types/user';
 
+import { GetContentPagesQuery } from '../../../shared/generated/graphql-db-types';
 import { parseContentBlocks } from '../../content-block/helpers';
-import { ContentPageInfo, ContentWidth } from '../content.types';
+import { ContentPageDb, ContentPageInfo, ContentWidth } from '../content.types';
 
 export function convertToContentPageInfo(dbContentPage: Avo.ContentPage.Page): ContentPageInfo {
 	const labels = (dbContentPage.content_content_labels || []).map(
@@ -38,17 +41,20 @@ export function convertToContentPageInfo(dbContentPage: Avo.ContentPage.Page): C
 }
 
 export function convertToContentPageInfos(
-	dbContentPages: Avo.ContentPage.Page[]
+	dbContentPages: GetContentPagesQuery['app_content']
 ): ContentPageInfo[] {
 	return (dbContentPages || []).map(convertToContentPageInfo);
 }
 
 export function convertToDatabaseContentPage(
-	contentPageInfo: Partial<ContentPageInfo>
+	contentPageInfo: ContentPageDb & {
+		description_state?: any;
+		description_html?: string;
+	}
 ): Avo.ContentPage.Page {
 	return {
 		id: contentPageInfo.id,
-		thumbnail_path: contentPageInfo.thumbnail_path,
+		thumbnail_path: contentPageInfo.thumbnail_path || null,
 		title: contentPageInfo.title,
 		description:
 			(contentPageInfo.description_state
@@ -57,17 +63,19 @@ export function convertToDatabaseContentPage(
 		seo_description: contentPageInfo.seo_description || null,
 		meta_description: contentPageInfo.meta_description || null,
 		is_protected: contentPageInfo.is_protected,
-		is_public: contentPageInfo.is_public,
-		path: contentPageInfo.path,
+		is_public: contentPageInfo.is_public || false,
+		path: contentPageInfo.path || null,
 		content_type: contentPageInfo.content_type,
-		content_width: contentPageInfo.content_width,
+		content_width: contentPageInfo.content_width as ContentWidthSchema,
 		publish_at: contentPageInfo.publish_at || null,
 		depublish_at: contentPageInfo.depublish_at || null,
 		published_at: contentPageInfo.published_at || null,
 		created_at: contentPageInfo.created_at || null,
 		updated_at: contentPageInfo.updated_at || null,
 		user_group_ids: contentPageInfo.user_group_ids,
-		profile: contentPageInfo.profile,
+		profile: contentPageInfo.profile as unknown as UserProfile,
 		user_profile_id: contentPageInfo.user_profile_id,
-	} as Avo.ContentPage.Page;
+		contentBlockssBycontentId: [],
+		content_content_labels: [],
+	};
 }

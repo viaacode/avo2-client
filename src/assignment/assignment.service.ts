@@ -1,11 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 import {
 	AssignmentBlock,
-	AssignmentContentLabel,
 	AssignmentLabel_v2,
 	AssignmentSchema_v2,
 } from '@viaa/avo2-types/types/assignment';
-import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
@@ -16,6 +14,7 @@ import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
+	App_Assignment_Responses_V2,
 	AssignmentPupilBlocksDocument,
 	AssignmentPupilBlocksQuery,
 	BulkUpdateAuthorForAssignmentsDocument,
@@ -45,18 +44,43 @@ import {
 	GetAssignmentResponsesQueryVariables,
 	GetAssignmentsAdminOverviewDocument,
 	GetAssignmentsAdminOverviewQuery,
+	GetAssignmentsByContentIdAndTypeDocument,
+	GetAssignmentsByContentIdAndTypeQuery,
+	GetAssignmentsByContentIdAndTypeQueryVariables,
 	GetAssignmentsByOwnerDocument,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByResponseOwnerIdDocument,
 	GetAssignmentsByResponseOwnerIdQuery,
+	GetAssignmentsByUuidDocument,
+	GetAssignmentsByUuidQuery,
+	GetAssignmentsByUuidQueryVariables,
+	GetAssignmentWithResponseDocument,
+	GetAssignmentWithResponseQuery,
+	GetAssignmentWithResponseQueryVariables,
 	GetMaxPositionAssignmentBlocksDocument,
 	GetMaxPositionAssignmentBlocksQuery,
+	IncrementAssignmentViewCountDocument,
+	IncrementAssignmentViewCountMutation,
+	IncrementAssignmentViewCountMutationVariables,
 	InsertAssignmentBlocksDocument,
 	InsertAssignmentBlocksMutation,
+	InsertAssignmentDocument,
+	InsertAssignmentMutation,
+	InsertAssignmentMutationVariables,
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
+	Lookup_Enum_Assignment_Content_Labels_Enum,
 	UpdateAssignmentBlockDocument,
 	UpdateAssignmentBlockMutation,
+	UpdateAssignmentByIdDocument,
+	UpdateAssignmentByIdMutation,
+	UpdateAssignmentByIdMutationVariables,
+	UpdateAssignmentResponseDocument,
+	UpdateAssignmentResponseMutation,
+	UpdateAssignmentResponseMutationVariables,
+	UpdateAssignmentUpdatedAtDateDocument,
+	UpdateAssignmentUpdatedAtDateMutation,
+	UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
@@ -73,6 +97,8 @@ import {
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
+	Assignment_Response_v2,
+	Assignment_v2,
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentSchemaLabel_v2,
@@ -96,10 +122,7 @@ export class AssignmentService {
 		classIds: string[] | undefined,
 		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
-		assignments: (
-			| GetAssignmentsByOwnerQuery
-			| GetAssignmentsByResponseOwnerIdQuery
-		)['app_assignments_v2'];
+		assignments: Assignment_v2[];
 		count: number;
 	}> {
 		let variables: any;
@@ -201,15 +224,12 @@ export class AssignmentService {
 
 	static async fetchAssignmentById(assignmentId: string): Promise<Avo.Assignment.Assignment_v2> {
 		try {
-			const assignmentQuery = {
-				query: GET_ASSIGNMENT_BY_UUID,
-				variables: { id: assignmentId },
-			};
-
 			// Get the assignment from graphql
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
-				assignmentQuery
-			);
+			const variables: GetAssignmentsByUuidQueryVariables = { id: assignmentId };
+			const response = await dataService.query<GetAssignmentsByUuidQuery>({
+				query: GetAssignmentsByUuidDocument,
+				variables,
+			});
 
 			const assignmentResponse: Avo.Assignment.Assignment_v2 | undefined = get(
 				response,
@@ -254,12 +274,16 @@ export class AssignmentService {
 
 	static async fetchAssignmentByContentIdAndType(
 		contentId: string,
-		contentType: AssignmentContentLabel
+		contentType: Lookup_Enum_Assignment_Content_Labels_Enum
 	): Promise<Partial<Avo.Assignment.Assignment_v2>[]> {
 		try {
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
-				query: GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE,
-				variables: { contentId, contentType },
+			const variables: GetAssignmentsByContentIdAndTypeQueryVariables = {
+				contentId,
+				contentType,
+			};
+			const response = await dataService.query<GetAssignmentsByContentIdAndTypeQuery>({
+				query: GetAssignmentsByContentIdAndTypeDocument,
+				variables,
 			});
 
 			const assignments: Avo.Assignment.Assignment_v2[] | undefined = get(
@@ -382,21 +406,15 @@ export class AssignmentService {
 
 			delete assignment.owner;
 
-			const response = await dataService.mutate<{
-				data: { update_app_assignments_v2: { affected_rows: number } };
-			}>({
-				mutation: UPDATE_ASSIGNMENT,
-				variables: {
-					assignment,
-					assignmentId: original.id,
-				},
+			const variables: UpdateAssignmentByIdMutationVariables = {
+				assignment,
+				assignmentId: original.id,
+			};
+			await dataService.query<UpdateAssignmentByIdMutation>({
+				query: UpdateAssignmentByIdDocument,
+				variables,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (!response || !response.data || (response.errors && response.errors.length)) {
-				console.error('assignment update returned empty response', response);
-				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
-			}
 
 			await this.updateAssignmentLabels(
 				original.id,
@@ -421,25 +439,15 @@ export class AssignmentService {
 
 	static async updateAssignmentUpdatedAtDate(assignmentId: string): Promise<void> {
 		try {
-			const response = await dataService.mutate<{
-				data: { update_app_assignments_v2: { affected_rows: number } };
-			}>({
-				mutation: UPDATE_ASSIGNMENT_UPDATED_AT_DATE,
-				variables: {
-					assignmentId,
-					updatedAt: new Date().toISOString(),
-				},
+			const variables: UpdateAssignmentUpdatedAtDateMutationVariables = {
+				assignmentId,
+				updatedAt: new Date().toISOString(),
+			};
+			await dataService.query<UpdateAssignmentUpdatedAtDateMutation>({
+				query: UpdateAssignmentUpdatedAtDateDocument,
+				variables,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (!response || !response.data || (response.errors && response.errors.length)) {
-				console.error('update assignment update_at date returned empty response', response);
-				throw new CustomError(
-					'Het aanpassen van de laatst aangepast datum van de opdracht is mislukt',
-					null,
-					{ response }
-				);
-			}
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment updated_at date', err, {
 				assignmentId,
@@ -452,9 +460,12 @@ export class AssignmentService {
 	}
 
 	static async updateAssignmentResponse(
-		original: Avo.Assignment.Response_v2,
-		update: Partial<Avo.Assignment.Response_v2>
-	): Promise<Avo.Assignment.Response_v2 | null> {
+		original: Assignment_Response_v2,
+		update: {
+			collection_title: string;
+			pupil_collection_blocks: PupilCollectionFragment[];
+		}
+	): Promise<Assignment_Response_v2 | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(
@@ -464,22 +475,16 @@ export class AssignmentService {
 				);
 			}
 
-			const response = await dataService.mutate<{
-				data: { update_app_assignment_responses_v2: { affected_rows: number } };
-			}>({
-				mutation: UPDATE_ASSIGNMENT_RESPONSE,
-				variables: {
-					collectionTitle: update.collection_title,
-					updatedAt: new Date().toISOString(),
-					assignmentResponseId: original.id,
-				},
+			const variables: UpdateAssignmentResponseMutationVariables = {
+				collectionTitle: update.collection_title,
+				updatedAt: new Date().toISOString(),
+				assignmentResponseId: original.id,
+			};
+			await dataService.query<UpdateAssignmentResponseMutation>({
+				query: UpdateAssignmentResponseDocument,
+				variables,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
-
-			if (!response || !response.data || (response.errors && response.errors.length)) {
-				console.error('assignment update returned empty response', response);
-				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
-			}
 
 			// Update blocks
 			await PupilCollectionService.updatePupilCollectionBlocks(
@@ -602,8 +607,8 @@ export class AssignmentService {
 				...assignment,
 			});
 
-			const response = await dataService.mutate<Avo.Assignment.Assignment_v2>({
-				mutation: INSERT_ASSIGNMENT,
+			const response = await dataService.query<Avo.Assignment.Assignment_v2>({
+				query: InsertAssignmentDocument,
 				variables: {
 					assignment: assignmentToSave,
 				},
@@ -707,7 +712,7 @@ export class AssignmentService {
 				return newBlock;
 			});
 
-			await dataService.query<InsertAssignmentBlocksQuery>({
+			await dataService.query<InsertAssignmentBlocksMutation>({
 				query: InsertAssignmentBlocksDocument,
 				variables: {
 					assignmentBlocks: newBlocks,
@@ -727,14 +732,14 @@ export class AssignmentService {
 	): Promise<Avo.Assignment.Assignment_v2 | string> {
 		try {
 			// Load assignment
-			const response: ApolloQueryResult<Avo.Assignment.Assignment_v2> =
-				await dataService.query({
-					query: GET_ASSIGNMENT_WITH_RESPONSE,
-					variables: {
-						assignmentId,
-						pupilUuid: pupilProfileId,
-					},
-				});
+			const variables: GetAssignmentWithResponseQueryVariables = {
+				assignmentId,
+				pupilUuid: pupilProfileId,
+			};
+			const response = await dataService.query<GetAssignmentWithResponseQuery>({
+				query: GetAssignmentWithResponseDocument,
+				variables,
+			});
 
 			const tempAssignment: Avo.Assignment.Assignment_v2 | undefined | null = get(
 				response,
@@ -793,7 +798,7 @@ export class AssignmentService {
 		page: number,
 		filterString: string | undefined
 	): Promise<{
-		assignmentResponses: Avo.Assignment.Response_v2[];
+		assignmentResponses: Assignment_Response_v2[];
 		count: number;
 	}> {
 		let variables: GetAssignmentResponsesByAssignmentIdQueryVariables | undefined = undefined;
@@ -881,7 +886,9 @@ export class AssignmentService {
 	 * @param items
 	 */
 	static async enrichBlocksWithMeta<T = PupilCollectionFragment | AssignmentBlock>(
-		blocks?: BlockItemBaseSchema[],
+		blocks?:
+			| GetAssignmentBlocksQuery['app_assignment_blocks_v2']
+			| App_Assignment_Responses_V2['pupil_collection_blocks'],
 		items: (ItemSchema | null)[] = []
 	): Promise<T[]> {
 		const enriched = await Promise.all(
@@ -917,7 +924,7 @@ export class AssignmentService {
 	static async getAssignmentResponses(
 		profileId: string,
 		assignmentId: string
-	): Promise<Avo.Assignment.Response_v2[]> {
+	): Promise<GetAssignmentResponsesQuery['app_assignment_responses_v2']> {
 		try {
 			const variables: GetAssignmentResponsesQueryVariables = { profileId, assignmentId };
 			const response = await dataService.query<GetAssignmentResponsesQuery>({
@@ -941,7 +948,7 @@ export class AssignmentService {
 	static async getAssignmentResponse(
 		profileId: string,
 		assignmentId: string
-	): Promise<Avo.Assignment.Response_v2 | undefined> {
+	): Promise<Assignment_Response_v2 | undefined> {
 		try {
 			const variables: GetAssignmentResponseQueryVariables = { profileId, assignmentId };
 			const response = await dataService.query<GetAssignmentResponseQuery>({
@@ -949,8 +956,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
-				response?.app_assignment_responses_v2?.[0];
+			const assignmentResponse = response?.app_assignment_responses_v2?.[0];
 
 			if (!assignmentResponse) {
 				return undefined;
@@ -961,7 +967,7 @@ export class AssignmentService {
 					assignmentResponse.pupil_collection_blocks
 				);
 
-			return assignmentResponse;
+			return assignmentResponse as Assignment_Response_v2 | undefined;
 		} catch (err) {
 			throw new CustomError('Failed to get assignment response from database', err, {
 				profileId,
@@ -975,7 +981,7 @@ export class AssignmentService {
 	 */
 	static async getAssignmentResponseById(
 		assignmentResponseId: string
-	): Promise<GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0] | undefined> {
+	): Promise<Assignment_Response_v2 | null> {
 		try {
 			const variables: GetAssignmentResponseByIdQueryVariables = { assignmentResponseId };
 			const response = await dataService.query<GetAssignmentResponseByIdQuery>({
@@ -988,7 +994,7 @@ export class AssignmentService {
 				| undefined = response?.app_assignment_responses_v2?.[0];
 
 			if (!assignmentResponse) {
-				return undefined;
+				return null;
 			}
 
 			assignmentResponse.pupil_collection_blocks =
@@ -1015,12 +1021,12 @@ export class AssignmentService {
 	static async createOrFetchAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment_v2,
 		user: Avo.User.User | undefined
-	): Promise<Avo.Assignment.Response_v2 | null> {
+	): Promise<Assignment_Response_v2 | null> {
 		try {
 			if (!user) {
 				return null;
 			}
-			const existingAssignmentResponse: Avo.Assignment.Response_v2 | undefined =
+			const existingAssignmentResponse: Assignment_Response_v2 | undefined =
 				await AssignmentService.getAssignmentResponse(
 					get(user, 'profile.id'),
 					get(assignment, 'id') as unknown as string
@@ -1036,7 +1042,7 @@ export class AssignmentService {
 			}
 
 			// Student has never viewed this assignment before, we should create a response object for him
-			const assignmentResponse: Partial<Avo.Assignment.Response_v2> = {
+			const assignmentResponse: Partial<Assignment_Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
 				collection_title:
@@ -1051,10 +1057,8 @@ export class AssignmentService {
 				},
 			});
 
-			const insertedAssignmentResponse: Avo.Assignment.Response_v2 | undefined = get(
-				response,
-				'data.insert_app_assignment_responses_v2.returning[0]'
-			);
+			const insertedAssignmentResponse =
+				response.insert_app_assignment_responses_v2?.returning?.[0];
 
 			if (isNil(insertedAssignmentResponse)) {
 				throw new CustomError(
@@ -1064,12 +1068,12 @@ export class AssignmentService {
 				);
 			}
 
-			insertedAssignmentResponse.pupil_collection_blocks =
-				await this.enrichBlocksWithMeta<PupilCollectionFragment>(
+			return {
+				...insertedAssignmentResponse,
+				pupil_collection_blocks: await this.enrichBlocksWithMeta<PupilCollectionFragment>(
 					assignmentResponse.pupil_collection_blocks
-				);
-
-			return insertedAssignmentResponse;
+				),
+			};
 		} catch (err) {
 			throw new CustomError('Failed to insert an assignment response in the database', err, {
 				assignment,
@@ -1161,22 +1165,22 @@ export class AssignmentService {
 		collection: Avo.Collection.Collection,
 		withDescription: boolean
 	): Promise<string> {
-		const assignmentToSave = {
-			title: collection.title,
-			description: collection.description,
-			owner_profile_id: getProfileId(user),
-			assignment_type: AssignmentType.KIJK,
+		const variables: InsertAssignmentMutationVariables = {
+			assignment: {
+				title: collection.title,
+				description: collection.description,
+				owner_profile_id: getProfileId(user),
+				assignment_type: AssignmentType.KIJK,
+			},
 		};
 
-		const assignment = await dataService.mutate<Avo.Assignment.Assignment_v2>({
-			mutation: INSERT_ASSIGNMENT,
-			variables: {
-				assignment: assignmentToSave,
-			},
+		const assignment = await dataService.query<InsertAssignmentMutation>({
+			query: InsertAssignmentDocument,
+			variables,
 			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
-		const assignmentId = get(assignment, 'data.insert_app_assignments_v2.returning[0].id');
+		const assignmentId = assignment.insert_app_assignments_v2?.returning?.[0]?.id;
 
 		if (isNil(assignmentId)) {
 			throw new CustomError(
@@ -1216,21 +1220,21 @@ export class AssignmentService {
 		user: Avo.User.User,
 		item: Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }
 	): Promise<string> {
-		const assignmentToSave = {
-			title: item.title,
-			owner_profile_id: getProfileId(user),
-			assignment_type: AssignmentType.KIJK,
+		const variables: InsertAssignmentMutationVariables = {
+			assignment: {
+				title: item.title,
+				owner_profile_id: getProfileId(user),
+				assignment_type: AssignmentType.KIJK,
+			},
 		};
 
-		const assignment = await dataService.mutate<Avo.Assignment.Assignment_v2>({
-			mutation: INSERT_ASSIGNMENT,
-			variables: {
-				assignment: assignmentToSave,
-			},
+		const assignment = await dataService.query<InsertAssignmentMutation>({
+			query: InsertAssignmentDocument,
+			variables,
 			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
-		const assignmentId = get(assignment, 'data.insert_app_assignments_v2.returning[0].id');
+		const assignmentId = assignment.insert_app_assignments_v2?.returning?.[0]?.id;
 
 		if (isNil(assignmentId)) {
 			throw new CustomError(
@@ -1427,14 +1431,15 @@ export class AssignmentService {
 
 	static async increaseViewCount(assignmentId: string): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INCREMENT_ASSIGNMENT_VIEW_COUNT,
-				variables: {
-					assignmentId,
-				},
+			const variables: IncrementAssignmentViewCountMutationVariables = {
+				assignmentId,
+			};
+			const response = await dataService.query<IncrementAssignmentViewCountMutation>({
+				query: IncrementAssignmentViewCountDocument,
+				variables,
 			});
 
-			return response?.data?.update_app_assignment_v2_views?.affected_rows || 0;
+			return response?.update_app_assignment_v2_views?.affected_rows || 0;
 		} catch (err) {
 			throw new CustomError('Failed to increase assignment view count in the database', err, {
 				assignmentId,

@@ -1,6 +1,5 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import type { DocumentNode } from 'graphql';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +14,7 @@ import { ErrorView } from '../../../error/views';
 import { dataService } from '../../services';
 
 export interface DataQueryComponentProps {
-	query: DocumentNode;
+	query: string;
 	resultPath?: string;
 	renderData: (data: any, refetch: () => void) => ReactNode;
 	variables?: any;

@@ -41,6 +41,7 @@ import { UserGroupService } from '../user-group.service';
 import {
 	PermissionGroupTableCols,
 	UserGroup,
+	UserGroupDb,
 	UserGroupEditFormErrorState,
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
@@ -79,8 +80,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			setUserGroup(permGroup);
 		} else {
 			try {
-				const userGroupObj: UserGroup | undefined =
-					await UserGroupService.fetchUserGroupById(match.params.id);
+				const userGroupObj: UserGroupDb = await UserGroupService.fetchUserGroupById(
+					parseInt(match.params.id)
+				);
 
 				if (!userGroupObj) {
 					setLoadingInfo({
@@ -93,7 +95,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					return;
 				}
 
-				const permissionGroups: Permission[] = flatten(
+				const permissionGroups: PermissionGroup[] = flatten(
 					get(userGroupObj, 'group_user_permission_groups', []).map(
 						(userGroupItem: any) => {
 							return get(userGroupItem, 'permission_group', []);
@@ -101,11 +103,11 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					)
 				);
 
-				const userGroupSimplified = {
+				const userGroupSimplified: UserGroup = {
 					permissionGroups,
 					id: userGroupObj.id,
 					label: userGroupObj.label,
-					description: userGroupObj.description,
+					description: userGroupObj.description || null,
 					created_at: userGroupObj.created_at,
 					updated_at: userGroupObj.updated_at,
 				};
@@ -316,32 +318,36 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			}));
 	};
 
-	const renderTableCell = (rowData: Permission, columnId: UserGroupOverviewTableCols) => {
+	const renderTableCell = (permission: Permission, columnId: UserGroupOverviewTableCols) => {
 		switch (columnId) {
 			case 'label':
 				return (
 					<div className="c-user-group__permission-list">
-						<div>{rowData.label}</div>
-						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
-							return (
-								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
-									{truncateTableValue(permission.description)}
-								</div>
-							);
-						})}
+						<div>{permission.label}</div>
+						{UserGroupService.getPermissions(permission).map(
+							(permission: Permission) => {
+								return (
+									<div
+										key={`permission-group-list-${permission.id}-${permission.id}`}
+									>
+										{truncateTableValue(permission.description)}
+									</div>
+								);
+							}
+						)}
 					</div>
 				);
 
 			case 'created_at':
 			case 'updated_at':
-				return formatDate(rowData[columnId]);
+				return formatDate(permission[columnId]);
 
 			case 'actions':
 				return (
 					<ButtonToolbar>
 						<Button
 							icon="delete"
-							onClick={() => openConfirmDeleteModal(rowData)}
+							onClick={() => openConfirmDeleteModal(permission)}
 							size="small"
 							ariaLabel={t(
 								'admin/user-groups/views/user-group-edit___verwijder-deze-gebruikersgroep'
@@ -356,7 +362,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 
 			case 'description': // fallthrough
 			default:
-				return rowData[columnId];
+				return permission[columnId];
 		}
 	};
 

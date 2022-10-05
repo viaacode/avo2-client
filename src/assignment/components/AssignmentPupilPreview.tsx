@@ -23,21 +23,19 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	user,
 }) => {
 	const [t] = useTranslation();
-	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
-		{
-			collection_title: '',
-			pupil_collection_blocks: [],
-			assignment_id: assignment.id as string,
-			assignment,
-			owner: {
-				full_name: t('assignment/components/assignment-pupil-preview___naam-leerling'),
-			},
-			owner_profile_id: user?.profile?.id,
-			id: '///fake-assignment-response-id',
-			created_at: new Date().toISOString(),
-			updated_at: new Date().toISOString(),
-		} as Avo.Assignment.Response_v2
-	);
+	const [assignmentResponse, setAssignmentResponse] = useState<Assignment_Response_v2 | null>({
+		collection_title: '',
+		pupil_collection_blocks: [],
+		assignment_id: assignment.id as string,
+		assignment,
+		owner: {
+			full_name: t('assignment/components/assignment-pupil-preview___naam-leerling'),
+		},
+		owner_profile_id: user?.profile?.id,
+		id: '///fake-assignment-response-id',
+		created_at: new Date().toISOString(),
+		updated_at: new Date().toISOString(),
+	} as Assignment_Response_v2);
 
 	const renderClosePreviewButton = () => (
 		<Button
@@ -66,9 +64,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 					assignment={assignment as Avo.Assignment.Assignment_v2}
 					assignmentResponse={assignmentResponse}
 					setAssignmentResponse={
-						setAssignmentResponse as Dispatch<
-							SetStateAction<Avo.Assignment.Response_v2>
-						>
+						setAssignmentResponse as Dispatch<SetStateAction<Assignment_Response_v2>>
 					}
 					isPreview={isPreview}
 					showBackButton={false}

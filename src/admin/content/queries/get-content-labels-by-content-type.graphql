@@ -1,4 +1,4 @@
-query getContentLabels($contentType: String!) {
+query getContentLabelsByContentType($contentType: String!) {
 	app_content_labels(where: { content_type: { _eq: $contentType } }) {
 		id
 		label

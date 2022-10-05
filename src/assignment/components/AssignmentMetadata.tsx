@@ -9,7 +9,7 @@ import './AssignmentMetadata.scss';
 
 type AssignmentMetadataProps = {
 	assignment: Avo.Assignment.Assignment_v2;
-	assignmentResponse?: Avo.Assignment.Response_v2 | null;
+	assignmentResponse?: Assignment_Response_v2 | null;
 	who: 'teacher' | 'pupil';
 };
 

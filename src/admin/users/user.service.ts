@@ -18,6 +18,7 @@ import {
 	GetIdpsQuery,
 	GetProfileIdsDocument,
 	GetProfileIdsQuery,
+	GetProfileIdsQueryVariables,
 	GetProfileNamesDocument,
 	GetProfileNamesQuery,
 	GetUserByIdDocument,
@@ -205,7 +206,7 @@ export class UserService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE,
-		query: DocumentNode = GetUsersDocument,
+		query: string = GetUsersDocument,
 		initialVariables: any = {}
 	): Promise<[Avo.User.Profile[], number]> {
 		let variables = initialVariables;
@@ -301,14 +302,14 @@ export class UserService {
 		}
 	}
 
-	static async getProfileIds(where: any = {}): Promise<string[]> {
-		let variables: any;
+	static async getProfileIds(
+		where: GetProfileIdsQueryVariables['where'] = {}
+	): Promise<string[]> {
+		let variables: GetProfileIdsQueryVariables | null = null;
 		try {
-			variables = where
-				? {
-						where,
-				  }
-				: {};
+			variables = {
+				where: where || undefined,
+			};
 			const response = await dataService.query<GetProfileIdsQuery>({
 				variables,
 				query: GetProfileIdsDocument,
@@ -509,13 +510,15 @@ export class UserService {
 		}
 	}
 
-	static async fetchDistinctBusinessCategories() {
+	static async fetchDistinctBusinessCategories(): Promise<string[]> {
 		try {
 			const response = await dataService.query<GetDistinctBusinessCategoriesQuery>({
 				query: GetDistinctBusinessCategoriesDocument,
 			});
-			return get(response, 'data.users_profiles', []).map(
-				(profile: Partial<Avo.User.Profile>) => profile.business_category
+			return compact(
+				response.users_profiles.map(
+					(profile: Partial<Avo.User.Profile>) => profile.business_category
+				)
 			);
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {
@@ -524,12 +527,12 @@ export class UserService {
 		}
 	}
 
-	static async fetchIdps() {
+	static async fetchIdps(): Promise<string[]> {
 		try {
 			const response = await dataService.query<GetIdpsQuery>({
 				query: GetIdpsDocument,
 			});
-			return get(response, 'data.users_idps', []).map((idp: { value: string }) => idp.value);
+			return response.users_idps.map((idp) => idp.value);
 		} catch (err) {
 			throw new CustomError('Failed to get idps from the database', err, {
 				query: 'GET_IDPS',

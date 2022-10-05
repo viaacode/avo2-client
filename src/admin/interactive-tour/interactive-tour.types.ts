@@ -1,6 +1,7 @@
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
+import { GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type InteractiveTourOverviewTableCols =
@@ -37,7 +38,7 @@ export interface EditableStep extends Avo.InteractiveTour.Step {
 	contentState: RichEditorState | undefined;
 }
 
-export interface EditableInteractiveTour extends Avo.InteractiveTour.InteractiveTour {
+export interface EditableInteractiveTour extends InteractiveTour {
 	steps: EditableStep[];
 }
 
@@ -46,3 +47,5 @@ export interface InteractiveTourState {
 	initialInteractiveTour: EditableInteractiveTour | null;
 	formErrors: InteractiveTourEditFormErrorState | null;
 }
+
+export type InteractiveTour = GetInteractiveTourByIdQuery['app_interactive_tour'][0];

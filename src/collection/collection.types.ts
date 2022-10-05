@@ -2,6 +2,17 @@ import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { invert } from 'lodash-es';
 
+import {
+	GetCollectionMarcomEntriesQuery,
+	GetPublicCollectionsByIdQuery,
+	GetPublicCollectionsByTitleQuery,
+} from '../shared/generated/graphql-db-types';
+
+export type Collection = (
+	| GetPublicCollectionsByIdQuery
+	| GetPublicCollectionsByTitleQuery
+)['app_collections'][0];
+
 export enum ContentTypeNumber {
 	audio = 1,
 	video = 2,
@@ -59,15 +70,7 @@ export type EditCollectionTab =
 	| 'quality_check'
 	| 'marcom';
 
-export interface MarcomEntry {
-	id: string;
-	channel_name: string | null;
-	channel_type: string | null;
-	external_link: string | null;
-	publish_date: string;
-	collection_id: string;
-	parent_collection: { title: string } | null;
-}
+export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
 
 export interface BlockItemComponent {
 	block?: Avo.Core.BlockItemBase;

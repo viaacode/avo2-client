@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { QueryClient } from '@tanstack/react-query';
 import {
 	Blankslate,
 	Button,
@@ -38,6 +38,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { getMoreOptionsLabel } from '../../../shared/constants';
+import { useSoftDeleteContentMutation } from '../../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -46,7 +47,7 @@ import {
 	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	AdminLayout,
@@ -88,7 +89,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 
-	const [triggerContentDelete] = useMutation(SOFT_DELETE_CONTENT);
+	const { mutateAsync: triggerContentDelete } = useSoftDeleteContentMutation();
 
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),
@@ -167,10 +168,17 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	const handleDelete = () => {
 		setIsConfirmModalOpen(false);
-		triggerContentDelete({
-			variables: { id },
-			update: ApolloCacheManager.clearContentCache,
-		})
+		triggerContentDelete(
+			{
+				id: parseInt(id),
+			},
+			{
+				onSuccess: async () => {
+					const queryClient = new QueryClient();
+					await queryClient.invalidateQueries(['softDeleteContent']);
+				},
+			}
+		)
 			.then(() => {
 				history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
 				ToastService.success(

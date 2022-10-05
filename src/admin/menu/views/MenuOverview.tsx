@@ -10,6 +10,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
+import { GetMenusDocument } from '../../../shared/generated/graphql-db-types';
 import { buildLink, navigate } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
@@ -143,7 +144,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 				<DataQueryComponent
 					renderData={renderMenuOverview}
 					resultPath="app_content_nav_elements"
-					query={GET_MENUS}
+					query={GetMenusDocument}
 				/>
 			</AdminLayoutBody>
 		</AdminLayout>

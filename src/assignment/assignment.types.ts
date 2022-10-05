@@ -3,8 +3,21 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 
 import { FilterState } from '../search/search.types';
+import {
+	GetAssignmentResponseByIdQuery,
+	GetAssignmentsByOwnerQuery,
+	GetAssignmentsByResponseOwnerIdQuery,
+} from '../shared/generated/graphql-db-types';
 
 import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
+
+export type Assignment_v2 = (
+	| GetAssignmentsByOwnerQuery
+	| GetAssignmentsByResponseOwnerIdQuery
+)['app_assignments_v2'];
+
+export type Assignment_Response_v2 =
+	GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0];
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
@@ -84,7 +97,7 @@ export type AssignmentFormState = Pick<Avo.Assignment.Assignment_v2, 'title'> &
 	};
 
 export type AssignmentResponseFormState = Pick<
-	Partial<Avo.Assignment.Response_v2>,
+	Partial<Assignment_Response_v2>,
 	'collection_title' | 'id'
 > & {
 	pupil_collection_blocks: Omit<PupilCollectionFragment, 'item_meta'>[]; // avoid circular reference ts error

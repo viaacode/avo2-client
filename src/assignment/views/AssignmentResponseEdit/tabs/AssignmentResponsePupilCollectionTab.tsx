@@ -52,8 +52,8 @@ enum MobileActionId {
 
 interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;
-	assignmentResponse: Avo.Assignment.Response_v2;
-	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	assignmentResponse: Assignment_Response_v2;
+	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
 	onShowPreviewClicked: () => void;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;

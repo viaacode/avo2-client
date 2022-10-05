@@ -5,6 +5,21 @@ import moment from 'moment';
 import {
 	DeleteContentLabelLinksDocument,
 	DeleteContentLabelLinksMutation,
+	GetContentByIdDocument,
+	GetContentLabelsByContentTypeDocument,
+	GetContentLabelsByContentTypeQuery,
+	GetContentLabelsByContentTypeQueryVariables,
+	GetContentPagesDocument,
+	GetContentPagesQuery,
+	GetContentPagesQueryVariables,
+	GetContentTypesDocument,
+	GetContentTypesQuery,
+	GetPublicContentPagesByTitleDocument,
+	GetPublicContentPagesByTitleQuery,
+	GetPublicProjectContentPagesByTitleDocument,
+	GetPublicProjectContentPagesByTitleQuery,
+	GetPublicProjectContentPagesDocument,
+	GetPublicProjectContentPagesQuery,
 	InsertContentDocument,
 	InsertContentLabelLinksDocument,
 	InsertContentLabelLinksMutation,
@@ -24,7 +39,6 @@ import { ContentBlockConfig } from '../shared/types';
 
 import {
 	CONTENT_RESULT_PATH,
-	CONTENT_TYPES_LOOKUP_PATH,
 	ITEMS_PER_PAGE,
 	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
@@ -39,7 +53,7 @@ import {
 export class ContentService {
 	public static async getPublicContentItems(limit: number): Promise<ContentPageInfo[] | null> {
 		const query = {
-			query: GET_CONTENT_PAGES,
+			query: GetContentPagesDocument,
 			variables: {
 				limit,
 				orderBy: { title: 'asc' },
@@ -48,9 +62,9 @@ export class ContentService {
 		};
 
 		return convertToContentPageInfos(
-			(await performQuery(
+			(await performQuery<GetContentPagesQuery['app_content']>(
 				query,
-				CONTENT_RESULT_PATH.GET,
+				'app_content',
 				'Failed to retrieve content pages.'
 			)) || []
 		) as ContentPageInfo[];
@@ -58,9 +72,9 @@ export class ContentService {
 
 	public static async getPublicProjectContentItems(
 		limit: number
-	): Promise<ContentPageInfo[] | null> {
+	): Promise<GetPublicProjectContentPagesQuery['app_content']> {
 		const query = {
-			query: GET_PUBLIC_PROJECT_CONTENT_PAGES,
+			query: GetPublicProjectContentPagesDocument,
 			variables: {
 				limit,
 				orderBy: { title: 'asc' },
@@ -68,9 +82,9 @@ export class ContentService {
 		};
 
 		return (
-			(await performQuery(
+			(await performQuery<GetPublicProjectContentPagesQuery['app_content']>(
 				query,
-				CONTENT_RESULT_PATH.GET,
+				'app_content',
 				'Failed to retrieve project content pages.'
 			)) || []
 		);
@@ -81,7 +95,7 @@ export class ContentService {
 		limit?: number
 	): Promise<ContentPageInfo[]> {
 		const query = {
-			query: GET_PUBLIC_CONTENT_PAGES_BY_TITLE,
+			query: GetPublicContentPagesByTitleDocument,
 			variables: {
 				limit: limit || null,
 				orderBy: { title: 'asc' },
@@ -94,9 +108,9 @@ export class ContentService {
 		};
 
 		return (
-			(await performQuery(
+			(await performQuery<GetPublicContentPagesByTitleQuery['app_content']>(
 				query,
-				CONTENT_RESULT_PATH.GET,
+				'app_content',
 				'Failed to retrieve content pages by title.'
 			)) || []
 		);
@@ -105,9 +119,9 @@ export class ContentService {
 	public static async getPublicProjectContentItemsByTitle(
 		title: string,
 		limit: number
-	): Promise<Partial<ContentPageInfo>[] | null> {
+	): Promise<GetPublicProjectContentPagesByTitleQuery['app_content'] | null> {
 		const query = {
-			query: GET_PUBLIC_PROJECT_CONTENT_PAGES_BY_TITLE,
+			query: GetPublicProjectContentPagesByTitleDocument,
 			variables: {
 				title,
 				limit,
@@ -124,7 +138,7 @@ export class ContentService {
 
 	public static async getContentPageById(id: number | string): Promise<ContentPageInfo> {
 		const query = {
-			query: GET_CONTENT_BY_ID,
+			query: GetContentByIdDocument,
 			variables: {
 				id,
 			},
@@ -148,14 +162,14 @@ export class ContentService {
 		{ value: Avo.ContentPage.Type; label: string }[] | null
 	> {
 		try {
-			const response = await dataService.query({ query: GET_CONTENT_TYPES });
+			const response = await dataService.query<GetContentTypesQuery>({
+				query: GetContentTypesDocument,
+			});
 
-			return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(
-				(obj: { value: Avo.ContentPage.Type; description: string }) => ({
-					value: obj.value,
-					label: obj.description,
-				})
-			);
+			return response.lookup_enum_content_types.map((obj) => ({
+				value: obj.value as Avo.ContentPage.Type,
+				label: obj.description || 'unknown type',
+			}));
 		} catch (err) {
 			console.error('Failed to retrieve content types.', err, { query: 'GET_CONTENT_TYPES' });
 			ToastService.danger(
@@ -171,16 +185,16 @@ export class ContentService {
 	public static async fetchLabelsByContentType(
 		contentType: string
 	): Promise<Avo.ContentPage.Label[]> {
-		let variables: any;
+		let variables: GetContentLabelsByContentTypeQueryVariables | null = null;
 
 		try {
 			variables = {
 				contentType,
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetContentLabelsByContentTypeQuery>({
 				variables,
-				query: GET_CONTENT_LABELS_BY_CONTENT_TYPE,
+				query: GetContentLabelsByContentTypeDocument,
 			});
 
 			const labels = get(response, 'data.app_content_labels');
@@ -260,9 +274,9 @@ export class ContentService {
 		sortColumn: ContentOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any
+		where: GetContentPagesQueryVariables['where']
 	): Promise<[ContentPageInfo[], number]> {
-		let variables: any;
+		let variables: GetContentPagesQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -276,9 +290,9 @@ export class ContentService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetContentPagesQuery>({
+				query: GetContentPagesDocument,
 				variables,
-				query: GET_CONTENT_PAGES,
 			});
 
 			const dbContentPages: Avo.ContentPage.Page[] | null = get(
@@ -543,9 +557,9 @@ export class ContentService {
 
 	public static async deleteContentPage(id: number) {
 		try {
-			await dataService.mutate({
+			await dataService.query({
 				variables: { id },
-				mutation: SOFT_DELETE_CONTENT,
+				query: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
 		} catch (err) {

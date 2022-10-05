@@ -1,8 +1,9 @@
-import { AssignmentContent, AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../generated/graphql-db-types';
 import { QuickLaneUrlObject } from '../../types';
 
 export const isShareable = (content: AssignmentContent): boolean => {
@@ -17,7 +18,7 @@ export const defaultQuickLaneState: QuickLaneUrlObject = {
 
 export const getContentUuid = (
 	content: AssignmentContent,
-	contentLabel: AssignmentContentLabel
+	contentLabel: Lookup_Enum_Assignment_Content_Labels_Enum
 ): string => {
 	switch (contentLabel) {
 		case 'ITEM':

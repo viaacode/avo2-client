@@ -1,4 +1,3 @@
-import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { get } from 'lodash-es';
@@ -13,6 +12,7 @@ import {
 	GetQuickLaneByIdQuery,
 	InsertQuickLanesDocument,
 	InsertQuickLanesMutation,
+	Lookup_Enum_Assignment_Content_Labels_Enum,
 	UpdateQuickLaneByIdDocument,
 	UpdateQuickLaneByIdMutation,
 } from '../shared/generated/graphql-db-types';
@@ -165,7 +165,7 @@ export class QuickLaneService {
 
 	static async fetchQuickLanesByContentAndOwnerId(
 		contentId: string,
-		contentLabel: AssignmentContentLabel,
+		contentLabel: Lookup_Enum_Assignment_Content_Labels_Enum,
 		profileId: string
 	): Promise<QuickLaneUrlObject[]> {
 		try {

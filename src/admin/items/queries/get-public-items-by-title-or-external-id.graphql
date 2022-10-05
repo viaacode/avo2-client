@@ -1,4 +1,4 @@
-query getItemsByTitleOrExternalId($title: String!, $externalId: bpchar!, $limit: Int!) {
+query getPublicItemsByTitleOrExternalId($title: String!, $externalId: bpchar!, $limit: Int!) {
 	itemsByTitle: app_item_meta(
 		order_by: { title: asc }
 		limit: $limit

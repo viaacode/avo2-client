@@ -13,7 +13,6 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -57,6 +56,7 @@ import { InteractiveTourService } from '../interactive-tour.service';
 import {
 	EditableInteractiveTour,
 	EditableStep,
+	InteractiveTour,
 	InteractiveTourEditActionType,
 	InteractiveTourEditFormErrorState,
 	InteractiveTourPageType,
@@ -230,9 +230,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		return isEmpty(errors) ? null : errors;
 	};
 
-	const convertTourContentToHtml = (
-		tour: EditableInteractiveTour
-	): Avo.InteractiveTour.InteractiveTour => {
+	const convertTourContentToHtml = (tour: EditableInteractiveTour): InteractiveTour => {
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {

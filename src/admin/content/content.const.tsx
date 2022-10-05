@@ -130,7 +130,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
-	GET: 'data.app_content',
+	GET: 'app_content',
 	INSERT: 'insert_app_content',
 	UPDATE: 'update_app_content',
 };

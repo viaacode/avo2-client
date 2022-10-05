@@ -1,4 +1,4 @@
-query getAssignmentsById($id: uuid!) {
+query getAssignmentsByUuid($id: uuid!) {
 	app_assignments_v2(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
 		answer_url
 		labels {

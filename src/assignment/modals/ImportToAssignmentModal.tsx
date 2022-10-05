@@ -37,7 +37,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns } from '../assignment.types';
+import { Assignment_v2, AssignmentOverviewTableColumns } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
@@ -67,9 +67,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
-	const [assignments, setAssignments] = useState<Partial<Avo.Assignment.Assignment_v2>[] | null>(
-		null
-	);
+	const [assignments, setAssignments] = useState<Partial<Assignment_v2>[] | null>(null);
 	const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>();
 	const [sortColumn, sortOrder, handleColumnClick] =
 		useTableSort<AssignmentOverviewTableColumns>('updated_at');

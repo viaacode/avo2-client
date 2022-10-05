@@ -69,8 +69,8 @@ import './AssignmentResponseEdit.scss';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment_v2;
-	assignmentResponse: Avo.Assignment.Response_v2;
-	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	assignmentResponse: Assignment_Response_v2;
+	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
 	showBackButton: boolean;
 	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;
@@ -91,7 +91,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<Avo.Assignment.Response_v2>(assignmentResponse);
+		useState<Assignment_Response_v2>(assignmentResponse);
 
 	const {
 		control,
@@ -198,10 +198,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			const updated = await AssignmentService.updateAssignmentResponse(
 				assignmentResponseOriginal,
 				{
-					collection_title: formState.collection_title,
+					collection_title: formState.collection_title || '',
 					pupil_collection_blocks: cleanupTitleAndDescriptions(
 						formState.pupil_collection_blocks
-					),
+					) as PupilCollectionFragment[],
 				}
 			);
 
@@ -340,7 +340,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						assignmentResponse={assignmentResponse}
 						setAssignmentResponse={
 							setAssignmentResponse as Dispatch<
-								SetStateAction<Avo.Assignment.Response_v2>
+								SetStateAction<Assignment_Response_v2>
 							>
 						}
 						setValue={setValue}

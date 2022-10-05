@@ -2,6 +2,12 @@ import { Avo } from '@viaa/avo2-types';
 import { get, sortBy } from 'lodash-es';
 
 import {
+	GetAllOrganisationsDocument,
+	GetAllOrganisationsQuery,
+	GetDistinctOrganisationsDocument,
+	GetDistinctOrganisationsQuery,
+	GetOrganisationsWithUsersDocument,
+	GetOrganisationsWithUsersQuery,
 	GetUsersByCompanyIdDocument,
 	GetUsersByCompanyIdQuery,
 } from '../generated/graphql-db-types';
@@ -14,8 +20,12 @@ export class OrganisationService {
 		onlyWithItems: boolean
 	): Promise<Partial<Avo.Organization.Organization>[]> {
 		try {
-			const response = await dataService.query({
-				query: onlyWithItems ? GET_DISTINCT_ORGANISATIONS : GET_ALL_ORGANISATIONS,
+			const response = await dataService.query<
+				GetDistinctOrganisationsQuery | GetAllOrganisationsQuery
+			>({
+				query: onlyWithItems
+					? GetDistinctOrganisationsDocument
+					: GetAllOrganisationsDocument,
 			});
 
 			let organisations: Partial<Avo.Organization.Organization>[] | null;
@@ -45,7 +55,9 @@ export class OrganisationService {
 		Partial<Avo.Organization.Organization>[]
 	> {
 		try {
-			const response = await dataService.query({ query: GET_ORGANISATIONS_WITH_USERS });
+			const response = await dataService.query<GetOrganisationsWithUsersQuery>({
+				query: GetOrganisationsWithUsersDocument,
+			});
 
 			const organisations: Partial<Avo.Organization.Organization>[] | null = get(
 				response,

@@ -55,8 +55,11 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 
 export function getInitialInteractiveTour(): EditableInteractiveTour {
 	return {
+		id: undefined,
 		name: '',
 		page_id: '',
+		created_at: new Date(),
+		updated_at: new Date(),
 		steps: [
 			{
 				target: '',

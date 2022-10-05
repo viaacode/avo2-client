@@ -69,6 +69,7 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -1162,7 +1163,7 @@ const CollectionDetail: FunctionComponent<
 						modalTitle={t('collection/views/collection-detail___delen-met-leerlingen')}
 						isOpen={isQuickLaneModalOpen}
 						content={collection}
-						content_label="COLLECTIE"
+						content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
 						onClose={() => {
 							setIsQuickLaneModalOpen(false);
 						}}

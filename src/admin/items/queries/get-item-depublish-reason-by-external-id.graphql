@@ -1,4 +1,4 @@
-query getDepublishReasonByExternalId($externalId: bpchar!) {
+query getItemDepublishReasonByExternalId($externalId: bpchar!) {
 	app_item_meta(
 		where: {
 			external_id: { _eq: $externalId }

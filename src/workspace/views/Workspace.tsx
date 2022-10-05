@@ -21,7 +21,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { ApolloQueryResult } from 'apollo-client';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -40,6 +39,10 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import {
+	GetWorkspaceTabCountsDocument,
+	GetWorkspaceTabCountsQuery,
+} from '../../shared/generated/graphql-db-types';
 import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 import {
@@ -64,14 +67,14 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 }
 
 // Using `hasAtLeastOnePerm` to avoid async
-const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown>): number => {
+const getQuickLaneCount = (user: UserSchema, response: GetWorkspaceTabCountsQuery): number => {
 	// Show count of personal quick lane
 	if (
 		PermissionService.hasAtLeastOnePerm(user, [
 			PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 		])
 	) {
-		return get(response, 'data.app_quick_lane_counts.aggregate.count', 0);
+		return response.app_quick_lane_counts.aggregate?.count || 0;
 	}
 
 	if (
@@ -79,7 +82,7 @@ const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown
 			PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 		])
 	) {
-		return get(response, 'data.app_quick_lane_organisation_counts.aggregate.count', 0);
+		return response.app_quick_lane_organisation_counts.aggregate?.count || 0;
 	}
 
 	return 0;
@@ -115,8 +118,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	const updatePermissionsAndCounts = useCallback(() => {
 		Promise.all([
-			dataService.query({
-				query: GET_WORKSPACE_TAB_COUNTS,
+			dataService.query<GetWorkspaceTabCountsQuery>({
+				query: GetWorkspaceTabCountsDocument,
 				variables: {
 					owner_profile_id: getProfileId(user),
 					company_id: get(user, 'profile.company_id') || 'EMPTY',

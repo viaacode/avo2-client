@@ -17,6 +17,10 @@ import MetaTags from 'react-meta-tags';
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import {
+	GetPermissionsFromContentPageByPathDocument,
+	GetPermissionsFromContentPageByPathQuery,
+} from '../../../shared/generated/graphql-db-types';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
@@ -109,16 +113,12 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	}, [menuItemId, menuParentId]);
 
 	const checkMenuItemContentPagePermissionsMismatch = useCallback(
-		(response: ApolloQueryResult<any>) => {
-			let contentUserGroupIds: number[] = get(
-				response,
-				'data.app_content[0].user_group_ids',
-				[]
-			);
+		(response: GetPermissionsFromContentPageByPathQuery) => {
+			let contentUserGroupIds: number[] = response.app_content[0].user_group_ids || [];
 			const navItemUserGroupIds: number[] = menuForm.user_group_ids || [];
 			const allUserGroupIds: number[] = allUserGroups.map((ug) => ug.value as number);
 
-			// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
+			// Add all user groups to content page user groups if content page is accessible by special user group: logged-in users
 			if (contentUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers)) {
 				contentUserGroupIds = uniq([
 					...contentUserGroupIds,
@@ -166,10 +166,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	// Check if the navigation item is visible for users that do not have access to the selected content page
 	useEffect(() => {
 		if (menuForm.content_type === 'CONTENT_PAGE' && menuForm.content_path) {
-			// Check if permissions are more strict than the permissions on the content_page
+			// Check if permissions are stricter than the permissions on the content_page
 			dataService
-				.query({
-					query: GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH,
+				.query<GetPermissionsFromContentPageByPathQuery>({
+					query: GetPermissionsFromContentPageByPathDocument,
 					variables: {
 						path: menuForm.content_path,
 					},

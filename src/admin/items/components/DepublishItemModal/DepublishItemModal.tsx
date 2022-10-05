@@ -1,7 +1,3 @@
-import { get, noop } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -18,8 +14,12 @@ import {
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 import { RelationEntry } from '@viaa/avo2-types/types/collection';
+import { get, noop } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
@@ -88,7 +88,11 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				);
 
 				// When we unpublish an item, it cannot be the replacement for any other items
-				await RelationService.deleteRelationsByObject('item', 'IS_REPLACED_BY', item.uid);
+				await RelationService.deleteRelationsByObject(
+					'item',
+					Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
+					item.uid
+				);
 			}
 			if (depublishType === 'depublish_with_reason') {
 				await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
@@ -118,7 +122,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				await RelationService.insertRelation(
 					'item',
 					item.uid,
-					'IS_REPLACED_BY',
+					Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
 					replacementItem.uid
 				);
 
@@ -130,9 +134,11 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// A => C
 				// B => C
 				const itemsReplacedByCurrentItem: RelationEntry<Avo.Item.Item>[] =
-					(await RelationService.fetchRelationsByObject('item', 'IS_REPLACED_BY', [
-						item.uid,
-					])) as RelationEntry<Avo.Item.Item>[];
+					(await RelationService.fetchRelationsByObject(
+						'item',
+						Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
+						[item.uid]
+					)) as RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
 					itemsReplacedByCurrentItem.map(
 						async (relation: RelationEntry<Avo.Item.Item>) => {
@@ -140,13 +146,13 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 							await RelationService.deleteRelationsBySubject(
 								'item',
 								relation.subject,
-								'IS_REPLACED_BY'
+								Lookup_Enum_Relation_Types_Enum.IsReplacedBy
 							);
 							// Insert new relationship that points to the same replacement item as the current item (A => C)
 							await RelationService.insertRelation(
 								'item',
 								relation.subject,
-								'IS_REPLACED_BY',
+								Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
 								replacementItem.uid
 							);
 						}

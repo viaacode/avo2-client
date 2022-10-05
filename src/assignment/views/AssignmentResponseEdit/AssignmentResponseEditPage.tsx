@@ -46,7 +46,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
-	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
+	const [assignmentResponse, setAssignmentResponse] = useState<Assignment_Response_v2 | null>(
 		null
 	);
 
@@ -226,7 +226,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
 				setAssignmentResponse={
-					setAssignmentResponse as Dispatch<SetStateAction<Avo.Assignment.Response_v2>>
+					setAssignmentResponse as Dispatch<SetStateAction<Assignment_Response_v2>>
 				}
 				showBackButton
 				onShowPreviewClicked={() => {

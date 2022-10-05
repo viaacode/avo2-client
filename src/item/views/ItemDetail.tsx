@@ -104,6 +104,7 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -990,7 +991,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					modalTitle={t('item/views/item___snel-delen-met-leerlingen')}
 					isOpen={isQuickLaneModalOpen}
 					content={item}
-					content_label="ITEM"
+					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
 					onClose={() => {
 						setIsQuickLaneModalOpen(false);
 					}}

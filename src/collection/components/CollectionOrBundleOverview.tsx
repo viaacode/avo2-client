@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { QueryClient } from '@tanstack/react-query';
 import {
 	Button,
 	ButtonToolbar,
@@ -33,6 +33,11 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { getMoreOptionsLabel } from '../../shared/constants';
+import {
+	Lookup_Enum_Assignment_Content_Labels_Enum,
+	useSoftDeleteContentMutation,
+} from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -42,17 +47,17 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ApolloCacheManager, ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
+import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import { ContentTypeNumber } from '../collection.types';
 
-import './CollectionOrBundleOverview.scss';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
-import { getMoreOptionsLabel } from '../../shared/constants';
+import './CollectionOrBundleOverview.scss';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -88,7 +93,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [page, setPage] = useState<number>(0);
 
 	// Mutations
-	const [triggerCollectionDelete] = useMutation(SOFT_DELETE_COLLECTION);
+	const { mutateAsync: triggerCollectionDelete } = useSoftDeleteContentMutation();
 
 	// Listeners
 	const onClickDelete = (collectionId: string) => {
@@ -238,12 +243,29 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onDeleteCollection = async () => {
 		try {
 			setIsDeleteModalOpen(false);
-			await triggerCollectionDelete({
-				variables: {
-					id: selected,
+			if (!selected) {
+				ToastService.danger(
+					isCollection
+						? t(
+								'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-overview___bundel-kon-niet-verwijderd-worden'
+						  )
+				);
+				return;
+			}
+			await triggerCollectionDelete(
+				{
+					id: parseInt(selected),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+				{
+					onSuccess: async () => {
+						const queryClient = new QueryClient();
+						await queryClient.invalidateQueries(COLLECTION_QUERY_KEYS);
+					},
+				}
+			);
 
 			trackEvents(
 				{
@@ -717,7 +739,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					modalTitle={t('collection/views/collection-overview___delen-met-leerlingen')}
 					isOpen={isQuickLaneModalOpen}
 					content={selectedDetail}
-					content_label="COLLECTIE"
+					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
 					onClose={() => {
 						setSelected(null);
 						setIsQuickLaneModalOpen(false);

@@ -1,11 +1,15 @@
 import { ButtonType, SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import type { DocumentNode } from 'graphql';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
+import {
+	GetCollectionActualisationsDocument,
+	GetCollectionMarcomDocument,
+	GetCollectionQualityCheckDocument,
+} from '../../shared/generated/graphql-db-types';
 import { stringToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -591,7 +595,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
-) => [
+): FilterableColumn[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),
@@ -622,7 +626,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
-) => [
+): FilterableColumn[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),
@@ -654,8 +658,8 @@ export const getCollectionManagementStatuses = (): CheckboxOption[] => [
 	{ checked: false, label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 ];
 
-export const EDITORIAL_QUERIES: Record<EditorialType, DocumentNode> = {
-	actualisation: GET_COLLECTION_ACTUALISATION,
-	quality_check: GET_COLLECTION_QUALITY_CHECK,
-	marcom: GET_COLLECTION_MARCOM,
+export const EDITORIAL_QUERIES: Record<EditorialType, string> = {
+	actualisation: GetCollectionActualisationsDocument,
+	quality_check: GetCollectionQualityCheckDocument,
+	marcom: GetCollectionMarcomDocument,
 };

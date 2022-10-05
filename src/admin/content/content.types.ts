@@ -2,6 +2,7 @@ import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { GetPublicContentPagesByTitleQuery } from '../../shared/generated/graphql-db-types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
 
@@ -50,6 +51,8 @@ export interface ContentTableState extends FilterableTableState {
  * - contentBlockConfigs: ContentBlockConfig[]; instead of contentBlockssBycontentId: ContentBlockSchema[];
  * - labels: Avo.ContentPage.Label[] instead of content_content_labels: ContentLabelLinkSchema[];
  */
+
+export type ContentPageDb = GetPublicContentPagesByTitleQuery['app_content'][0];
 
 export interface ContentPageInfo {
 	id: number;

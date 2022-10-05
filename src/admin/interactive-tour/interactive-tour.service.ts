@@ -17,7 +17,11 @@ import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
-import { EditableStep, InteractiveTourOverviewTableCols } from './interactive-tour.types';
+import {
+	EditableStep,
+	InteractiveTour,
+	InteractiveTourOverviewTableCols,
+} from './interactive-tour.types';
 
 export class InteractiveTourService {
 	public static async fetchInteractiveTours(
@@ -86,9 +90,7 @@ export class InteractiveTourService {
 		}
 	}
 
-	public static async insertInteractiveTour(
-		interactiveTour: Avo.InteractiveTour.InteractiveTour
-	): Promise<number> {
+	public static async insertInteractiveTour(interactiveTour: InteractiveTour): Promise<number> {
 		try {
 			const response = await dataService.query<InsertInteractiveTourMutation>({
 				query: InsertInteractiveTourDocument,
@@ -121,7 +123,7 @@ export class InteractiveTourService {
 		}
 	}
 
-	static async updateInteractiveTour(interactiveTour: Avo.InteractiveTour.InteractiveTour) {
+	static async updateInteractiveTour(interactiveTour: InteractiveTour): Promise<void> {
 		try {
 			await dataService.query<UpdateInteractiveTourMutation>({
 				query: UpdateInteractiveTourDocument,
@@ -143,7 +145,7 @@ export class InteractiveTourService {
 		}
 	}
 
-	static async deleteInteractiveTour(interactiveTourId: number) {
+	static async deleteInteractiveTour(interactiveTourId: number): Promise<void> {
 		try {
 			await dataService.query<DeleteInteractiveTourMutation>({
 				query: DeleteInteractiveTourDocument,

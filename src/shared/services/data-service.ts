@@ -54,6 +54,8 @@ export class dataService {
 
 export const NO_RIGHTS_ERROR_MESSAGE = 'You are not allowed to run this query';
 
+export const COLLECTION_QUERY_KEYS = ['getCollectionsByOwner']; // TODO, use this mechanism from react-query to clear cache instead of the apolloCacheManager
+
 type ApolloCache = { [key: string]: any };
 
 export class ApolloCacheManager {

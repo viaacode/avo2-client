@@ -9,16 +9,20 @@ interface Query {
 	variables?: any;
 }
 
-export const performQuery = async (query: Query, subResponse: string | null, error: string) => {
+export async function performQuery<T>(
+	query: Query,
+	subResponse: string | null,
+	error: string
+): Promise<T> {
 	try {
 		const response = await dataService.query(query);
 
 		if (subResponse) {
-			return get(response, subResponse, null);
+			return get(response, subResponse, null) as T;
 		}
 
-		return subResponse;
+		return response as T;
 	} catch (err) {
 		throw new CustomError(error, err);
 	}
-};
+}

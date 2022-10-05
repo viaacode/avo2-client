@@ -4,8 +4,15 @@ import { flatten, get, isNil, orderBy } from 'lodash-es';
 import {
 	DeletePermissionGroupByIdDocument,
 	DeletePermissionGroupByIdMutation,
+	GetAllPermissionGroupsDocument,
+	GetAllPermissionGroupsQuery,
+	GetAllPermissionsDocument,
+	GetAllPermissionsQuery,
 	GetPermissionGroupByIdDocument,
 	GetPermissionGroupByIdQuery,
+	GetPermissionGroupsDocument,
+	GetPermissionGroupsQuery,
+	GetPermissionGroupsQueryVariables,
 	InsertPermissionGroupDocument,
 	InsertPermissionGroupMutation,
 	InsertPermissionsInPermissionGroupDocument,
@@ -31,9 +38,9 @@ export class PermissionGroupService {
 		page: number,
 		sortColumn: PermissionGroupOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any
+		where: GetPermissionGroupsQueryVariables['where']
 	): Promise<[PermissionGroup[], number]> {
-		let variables: any;
+		let variables: GetPermissionGroupsQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -41,15 +48,13 @@ export class PermissionGroupService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetPermissionGroupsQuery>({
 				variables,
-				query: GET_PERMISSION_GROUPS,
+				query: GetPermissionGroupsDocument,
 			});
-			const permissionGroups = get(response, 'data.users_permission_groups');
-			const permissionGroupCount = get(
-				response,
-				'data.users_permission_groups_aggregate.aggregate.count'
-			);
+			const permissionGroups = response.users_permission_groups;
+			const permissionGroupCount =
+				response.users_permission_groups_aggregate.aggregate?.count || 0;
 
 			if (!permissionGroups) {
 				throw new CustomError('Response does not contain any permission groups', null, {
@@ -68,8 +73,8 @@ export class PermissionGroupService {
 
 	public static async fetchAllPermissionGroups(): Promise<PermissionGroup[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_ALL_PERMISSION_GROUPS,
+			const response = await dataService.query<GetAllPermissionGroupsQuery>({
+				query: GetAllPermissionGroupsDocument,
 			});
 			const permissionGroups: PermissionGroup[] | undefined = get(
 				response,
@@ -267,11 +272,11 @@ export class PermissionGroupService {
 
 	public static async fetchAllPermissions(): Promise<Permission[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_ALL_PERMISSIONS,
+			const response = await dataService.query<GetAllPermissionsQuery>({
+				query: GetAllPermissionsDocument,
 			});
 
-			const permissions: Permission[] | undefined = get(response, 'data.users_permissions');
+			const permissions = response.users_permissions;
 
 			if (!permissions) {
 				throw new CustomError('Response does not contain permissions', null, { response });

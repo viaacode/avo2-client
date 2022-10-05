@@ -1,8 +1,3 @@
-import { get, isNil, without } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	BlockHeading,
 	Box,
@@ -19,6 +14,10 @@ import {
 	Table,
 	TextInput,
 } from '@viaa/avo2-components';
+import { get, isNil, without } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -40,7 +39,7 @@ import {
 	PermissionsTableCols,
 } from '../permission-group.types';
 
-interface PermissionGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type PermissionGroupEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	history,
@@ -276,7 +275,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			}));
 	};
 
-	const renderTableCell = (rowData: Permission, columnId: PermissionsTableCols) => {
+	const renderTableCell = (rowData: PermissionGroup, columnId: PermissionsTableCols) => {
 		switch (columnId) {
 			case 'actions':
 				return (

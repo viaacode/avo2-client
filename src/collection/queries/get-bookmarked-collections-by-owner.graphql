@@ -1,4 +1,4 @@
-query getBookmarkedCollectionsForUser(
+query getBookmarkedCollectionsByOwner(
 	$owner_profile_id: uuid
 	$offset: Int = 0
 	$limit: Int

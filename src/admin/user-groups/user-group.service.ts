@@ -4,6 +4,12 @@ import { get, isNil, orderBy, uniqBy } from 'lodash-es';
 import {
 	DeleteUserGroupDocument,
 	DeleteUserGroupMutation,
+	GetUserGroupByIdDocument,
+	GetUserGroupByIdQuery,
+	GetUserGroupByIdQueryVariables,
+	GetUserGroupsWithFiltersDocument,
+	GetUserGroupsWithFiltersQuery,
+	GetUserGroupsWithFiltersQueryVariables,
 	InsertUserGroupDocument,
 	InsertUserGroupMutation,
 	LinkPermissionGroupToUserGroupDocument,
@@ -18,16 +24,16 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
 
 import { ITEMS_PER_PAGE } from './user-group.const';
-import { UserGroup } from './user-group.types';
+import { UserGroup, UserGroupDb } from './user-group.types';
 
 export class UserGroupService {
 	public static async fetchUserGroups(
 		page: number,
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any
+		where: GetUserGroupsWithFiltersQueryVariables['where']
 	): Promise<[UserGroup[], number]> {
-		let variables: any;
+		let variables: GetUserGroupsWithFiltersQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -35,9 +41,9 @@ export class UserGroupService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetUserGroupsWithFiltersQuery>({
 				variables,
-				query: GET_USER_GROUPS_WITH_FILTERS,
+				query: GetUserGroupsWithFiltersDocument,
 			});
 			const userGroups = get(response, 'data.users_groups');
 			const userGroupCount = get(response, 'data.users_groups_aggregate.aggregate.count');
@@ -64,18 +70,18 @@ export class UserGroupService {
 		return response[0];
 	}
 
-	public static async fetchUserGroupById(id: string): Promise<UserGroup | undefined> {
-		let variables: any;
+	public static async fetchUserGroupById(id: number): Promise<UserGroupDb> {
+		let variables: GetUserGroupByIdQueryVariables | null = null;
 		try {
 			variables = {
 				id,
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetUserGroupByIdQuery>({
 				variables,
-				query: GET_USER_GROUP_BY_ID,
+				query: GetUserGroupByIdDocument,
 			});
 
-			return get(response, 'data.users_groups[0]');
+			return response.users_groups[0];
 		} catch (err) {
 			throw new CustomError('Failed to fetch user group by id from graphql', err, {
 				variables,
@@ -163,7 +169,7 @@ export class UserGroupService {
 		}
 	}
 
-	static async updateUserGroup(userGroup: UserGroup) {
+	static async updateUserGroup(userGroup: UserGroup): Promise<void> {
 		try {
 			await dataService.query<UpdateUserGroupMutation>({
 				query: UpdateUserGroupDocument,
@@ -184,7 +190,7 @@ export class UserGroupService {
 		}
 	}
 
-	public static async deleteUserGroup(userGroupId: number) {
+	public static async deleteUserGroup(userGroupId: number): Promise<void> {
 		try {
 			await dataService.query<DeleteUserGroupMutation>({
 				query: DeleteUserGroupDocument,
@@ -205,7 +211,7 @@ export class UserGroupService {
 		permissionGroups: PermissionGroup[],
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection
-	): Permission[] {
+	): PermissionGroup[] {
 		return uniqBy(
 			orderBy(permissionGroups, [sortColumn], [sortOrder]),
 			(permissionGroup) => permissionGroup.id

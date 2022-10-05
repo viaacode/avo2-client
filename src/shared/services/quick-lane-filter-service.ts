@@ -1,10 +1,10 @@
-import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import {
 	GetQuickLanesWithFiltersDocument,
 	GetQuickLanesWithFiltersQuery,
+	Lookup_Enum_Assignment_Content_Labels_Enum,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 import { getOrderObject } from '../helpers/generate-order-gql-query';
@@ -18,7 +18,7 @@ export interface QuickLaneFilters {
 	filterString?: string;
 	companyIds?: string[];
 	profileIds?: string[];
-	contentLabels?: AssignmentContentLabel[];
+	contentLabels?: Lookup_Enum_Assignment_Content_Labels_Enum[];
 	createdAt?: DateRange;
 	updatedAt?: DateRange;
 	sortColumn?: string;
