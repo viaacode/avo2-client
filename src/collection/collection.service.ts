@@ -1,11 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
-import { FetchResult } from 'apollo-link';
 import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
-import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { CustomError, getEnv, performQuery } from '../shared/helpers';
@@ -13,7 +11,6 @@ import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
-import { REMOVE_COLLECTION_BOOKMARKS } from '../shared/services/bookmarks-views-plays-service';
 import { AppCollectionBookmark } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { VideoStillService } from '../shared/services/video-stills-service';
@@ -30,12 +27,37 @@ import {
 import { ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 import {
-	GetCollectionByTitleOrDescriptionDocument, GetCollectionByTitleOrDescriptionQuery,
-	GetCollectionsByItemUuidDocument, GetCollectionsByItemUuidQuery,
+	DeleteCollectionBookmarkDocument, DeleteCollectionBookmarkMutation,
+	DeleteCollectionFragmentByIdDocument,
+	DeleteCollectionFragmentByIdMutation,
+	GetCollectionByTitleOrDescriptionDocument,
+	GetCollectionByTitleOrDescriptionQuery,
+	GetCollectionsByItemUuidDocument,
+	GetCollectionsByItemUuidQuery,
 	GetOrganisationContentDocument,
 	GetOrganisationContentQuery,
-	GetPublicCollectionsDocument, GetPublicCollectionsQuery, GetPublishedBundlesContainingCollectionDocument, GetPublishedBundlesContainingCollectionQuery,
-	GetQualityLabelsDocument, GetQualityLabelsQuery, InsertMarcomNoteDocument, InsertMarcomNoteMutation, UpdateMarcomNoteDocument, UpdateMarcomNoteMutation
+	GetPublicCollectionsDocument,
+	GetPublicCollectionsQuery,
+	GetPublishedBundlesContainingCollectionDocument,
+	GetPublishedBundlesContainingCollectionQuery,
+	GetQualityLabelsDocument,
+	GetQualityLabelsQuery,
+	InsertCollectionDocument,
+	InsertCollectionFragmentsDocument,
+	InsertCollectionFragmentsMutation,
+	InsertCollectionFragmentsMutationVariables,
+	InsertCollectionManagementQualityCheckEntryDocument,
+	InsertCollectionManagementQualityCheckEntryMutation,
+	InsertCollectionManagementQualityCheckEntryMutationVariables,
+	InsertCollectionMutation,
+	InsertMarcomNoteDocument,
+	InsertMarcomNoteMutation,
+	Lookup_Enum_Collection_Management_Qc_Label_Enum, Lookup_Enum_Relation_Types_Enum, SoftDeleteCollectionByIdDocument, SoftDeleteCollectionByIdMutation,
+	UpdateCollectionByIdDocument,
+	UpdateCollectionByIdMutation,
+	UpdateCollectionByIdMutationVariables,
+	UpdateMarcomNoteDocument,
+	UpdateMarcomNoteMutation
 } from '../shared/generated/graphql-db-types';
 
 export interface OrganisationContentItem {
@@ -71,20 +93,14 @@ export class CollectionService {
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
 			// insert collection
-			const insertResponse: void | FetchResult<Avo.Collection.Collection> =
-					await dataService.mutate({
-						mutation: INSERT_COLLECTION,
+			const insertResponse =
+					await dataService.query<InsertCollectionMutation>({
+						query: InsertCollectionDocument,
 						variables: {
 							collection: cleanedCollection
 						},
-						update: ApolloCacheManager.clearCollectionCache
+						update: ApolloCacheManager.clearCollectionCache,
 					});
-
-			if (!insertResponse || insertResponse.errors) {
-				throw new CustomError('Failed to insert collection', null, {
-					insertResponse
-				});
-			}
 
 			// retrieve inserted collection from response
 			const insertedCollection: Avo.Collection.Collection | null = get(
@@ -204,8 +220,8 @@ export class CollectionService {
 
 			// delete fragments
 			const deletePromises = deleteFragmentIds.map((id: number | string) =>
-					dataService.mutate({
-						mutation: DELETE_COLLECTION_FRAGMENT,
+					dataService.query<DeleteCollectionFragmentByIdMutation>({
+						query: DeleteCollectionFragmentByIdDocument,
 						variables: { id },
 						update: ApolloCacheManager.clearCollectionCache
 					})
@@ -412,7 +428,7 @@ export class CollectionService {
 						equalLanguageCheckComment
 				) {
 					await CollectionService.createManagementQCEntry(collectionId, {
-						qc_label: 'TAALCHECK' as QualityCheckLabel,
+						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Taalcheck,
 						qc_status:
 								get(updatedCollection, 'management_language_check[0].qc_status') ??
 								null,
@@ -436,7 +452,7 @@ export class CollectionService {
 						equalLanguageCheckComment
 				) {
 					await CollectionService.createManagementQCEntry(collectionId, {
-						qc_label: 'KWALITEITSCHECK' as QualityCheckLabel,
+						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Kwaliteitscheck,
 						qc_status:
 								get(updatedCollection, 'management_quality_check[0].qc_status') ?? null,
 						assignee_profile_id: get(
@@ -451,7 +467,7 @@ export class CollectionService {
 				// Save approved_at entry when updated statuses are both OK and initial statuses are not both OK
 				if (initialApprovedStatus !== updatedApprovedStatus && updatedApprovedStatus) {
 					await CollectionService.createManagementQCEntry(collectionId, {
-						qc_label: 'EINDCHECK' as QualityCheckLabel,
+						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Eindcheck,
 						qc_status: null,
 						assignee_profile_id: get(
 								updatedCollection,
@@ -485,13 +501,13 @@ export class CollectionService {
 			managementData: Partial<Avo.Collection.Management>
 	) => {
 		try {
-			await dataService.mutate({
-				mutation: INSERT_COLLECTION_MANAGEMENT_ENTRY,
+			await dataService.query<InsertCollectionManagementEntryMutation>({
+				mutation: InsertCollectionManagementEntryDocument,
 				variables: {
 					...managementData,
 					collection_id: collectionId
 				},
-				update: ApolloCacheManager.clearCollectionCache
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to create collection management entry', err, {
@@ -507,13 +523,13 @@ export class CollectionService {
 			managementData: Partial<Avo.Collection.Management>
 	) => {
 		try {
-			await dataService.mutate({
-				mutation: UPDATE_COLLECTION_MANAGEMENT_ENTRY,
+			await dataService.query<UpdateCollectionManagementEntryMutation>({
+				mutation: UpdateCollectionManagementEntryDocument,
 				variables: {
 					...managementData,
 					collection_id: collectionId
 				},
-				update: ApolloCacheManager.clearCollectionCache
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update collection management entry', err, {
@@ -529,13 +545,14 @@ export class CollectionService {
 			managementQCData: Partial<Avo.Collection.ManagementQualityCheck>
 	) => {
 		try {
-			await dataService.mutate({
-				mutation: INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
-				variables: {
-					...managementQCData,
-					collection_id: collectionId
-				},
-				update: ApolloCacheManager.clearCollectionCache
+			const variables: InsertCollectionManagementQualityCheckEntryMutationVariables = {
+				...managementQCData,
+				collection_id: collectionId
+			}
+			await dataService.query<InsertCollectionManagementQualityCheckEntryMutation>({
+				query: InsertCollectionManagementQualityCheckEntryDocument,
+				variables,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -557,13 +574,14 @@ export class CollectionService {
 		try {
 			const dbCollection = cleanCollectionBeforeSave(collection);
 
-			await dataService.mutate({
-				mutation: UPDATE_COLLECTION,
-				variables: {
-					id,
-					collection: dbCollection
-				},
-				update: ApolloCacheManager.clearCollectionCache
+			const variables: UpdateCollectionByIdMutationVariables = {
+				id,
+				collection: dbCollection
+			};
+			await dataService.query<UpdateCollectionByIdMutation>({
+				query: UpdateCollectionByIdDocument,
+				variables,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update collection properties', err, {
@@ -583,15 +601,15 @@ export class CollectionService {
 		try {
 			// delete collection by id
 			await Promise.all([
-				dataService.mutate({
-					mutation: SOFT_DELETE_COLLECTION,
+				dataService.query<SoftDeleteCollectionByIdMutation>({
+					query: SoftDeleteCollectionByIdDocument,
 					variables: {
 						id: collectionId
 					},
 					update: ApolloCacheManager.clearCollectionCache
 				}),
-				dataService.mutate({
-					mutation: REMOVE_COLLECTION_BOOKMARKS,
+				dataService.query<DeleteCollectionBookmarkMutation>({
+					query: DeleteCollectionBookmarkDocument,
 					variables: {
 						collectionUuid: collectionId
 					}
@@ -673,7 +691,7 @@ export class CollectionService {
 			await RelationService.insertRelation(
 					'collection',
 					duplicatedCollection.id,
-					'IS_COPY_OF',
+					Lookup_Enum_Relation_Types_Enum.IsCopyOf,
 					collection.id
 			);
 
@@ -937,19 +955,21 @@ export class CollectionService {
 			fragments.forEach((fragment) => (fragment.collection_uuid = collectionId));
 
 			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
-				delete fragment.id;
 				delete (fragment as any).__typename;
 				delete fragment.item_meta;
-				return fragment;
+				return {
+					...fragment,
+					id: undefined,
+				};
 			});
 
-			const response = await dataService.mutate({
-				mutation: INSERT_COLLECTION_FRAGMENTS,
-				variables: {
-					id: collectionId,
-					fragments: cleanedFragments
-				},
-				update: ApolloCacheManager.clearCollectionCache
+			const variables: InsertCollectionFragmentsMutationVariables = {
+				fragments: cleanedFragments
+			};
+			const response = await dataService.query<InsertCollectionFragmentsMutation>({
+				query: InsertCollectionFragmentsDocument,
+				variables,
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			const fragmentIds = get(response, 'data.insert_app_collection_fragments.returning');

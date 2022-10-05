@@ -15,6 +15,13 @@ import {
 	BulkUpdateDateAndLastAuthorCollectionsMutation,
 	BulkUpdatePublishStateForCollectionsDocument,
 	BulkUpdatePublishStateForCollectionsMutation,
+	GetCollectionsByIdsDocument,
+	GetCollectionsByIdsQuery,
+	GetCollectionsByIdsQueryVariables,
+	GetCollectionsDocument,
+	GetCollectionsQuery,
+	GetCollectionsQueryVariables,
+	Lookup_Enum_Relation_Types_Enum,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -42,7 +49,7 @@ export class CollectionsOrBundlesService {
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any
+		where: GetCollectionsQueryVariables['where']
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
 
@@ -59,9 +66,9 @@ export class CollectionsOrBundlesService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetCollectionsQuery>({
 				variables,
-				query: GET_COLLECTIONS,
+				query: GetCollectionsDocument,
 			});
 
 			const collections: Avo.Collection.Collection[] | null = get(
@@ -84,7 +91,7 @@ export class CollectionsOrBundlesService {
 			const relations = (await RelationService.fetchRelationsBySubject(
 				'collection',
 				collections.map((coll: Avo.Collection.Collection) => coll.id),
-				'IS_COPY_OF'
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf
 			)) as RelationEntry<Avo.Collection.Collection>[];
 
 			relations.forEach((relation) => {
@@ -103,13 +110,15 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	static async getCollectionIds(where: any): Promise<string[]> {
+	static async getCollectionIds(
+		where: GetCollectionsByIdsQueryVariables['where']
+	): Promise<string[]> {
 		try {
-			const response = await dataService.query({
+			const response = await dataService.query<GetCollectionsByIdsQuery>({
 				variables: {
 					where,
 				},
-				query: GET_COLLECTION_IDS,
+				query: GetCollectionsByIdsDocument,
 			});
 
 			return get(response, 'data.app_collections', []).map(

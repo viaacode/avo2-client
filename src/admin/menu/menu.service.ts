@@ -2,10 +2,19 @@ import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 
 import {
+	DeleteMenuItemByIdDocument,
+	DeleteMenuItemByIdMutation,
 	GetMenuItemByIdDocument,
 	GetMenuItemByIdQuery,
+	GetMenuItemsByPlacementDocument,
+	GetMenuItemsByPlacementQuery,
+	GetMenusDocument,
+	GetMenusQuery,
 	InsertMenuItemDocument,
 	InsertMenuItemMutation,
+	UpdateMenuItemByIdDocument,
+	UpdateMenuItemByIdMutation,
+	UpdateMenuItemByIdMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
@@ -31,11 +40,13 @@ export class MenuService {
 
 	public static async fetchMenuItems(placement?: string): Promise<Avo.Menu.Menu[]> {
 		try {
-			const queryOptions = {
-				query: placement ? GET_MENU_ITEMS_BY_PLACEMENT : GET_MENUS,
-				variables: placement ? { placement } : {},
-			};
-			const response = await dataService.query(queryOptions);
+			const variables = placement ? { placement } : {};
+			const response = await dataService.query<
+				typeof placement extends string ? GetMenuItemsByPlacementQuery : GetMenusQuery
+			>({
+				query: placement ? GetMenuItemsByPlacementDocument : GetMenusDocument,
+				variables,
+			});
 
 			if (!response) {
 				throw new CustomError('Response is undefined');
@@ -75,15 +86,16 @@ export class MenuService {
 	public static async updateMenuItems(menuItems: Avo.Menu.Menu[]): Promise<void> {
 		try {
 			const promises: Promise<any>[] = menuItems.map((menuItem) => {
-				return dataService.mutate({
-					mutation: UPDATE_MENU_ITEM_BY_ID,
-					variables: {
-						id: menuItem.id,
-						menuItem: {
-							...menuItem,
-							updated_at: new Date().toISOString(),
-						},
+				const variables: UpdateMenuItemByIdMutationVariables = {
+					id: menuItem.id,
+					menuItem: {
+						...menuItem,
+						updated_at: new Date().toISOString(),
 					},
+				};
+				return dataService.query<UpdateMenuItemByIdMutation>({
+					query: UpdateMenuItemByIdDocument,
+					variables,
 					update: ApolloCacheManager.clearNavElementsCache,
 				});
 			});
@@ -99,8 +111,8 @@ export class MenuService {
 
 	public static async deleteMenuItem(id: number): Promise<void> {
 		try {
-			await dataService.query<DeleteMenuItemMutation>({
-				query: DeleteMenuItemDocument,
+			await dataService.query<DeleteMenuItemByIdMutation>({
+				query: DeleteMenuItemByIdDocument,
 				variables: { id },
 				update: ApolloCacheManager.clearNavElementsCache,
 			});

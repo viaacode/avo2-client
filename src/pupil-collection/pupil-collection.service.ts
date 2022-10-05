@@ -13,8 +13,12 @@ import {
 	GetMaxPositionPupilCollectionBlocksQuery,
 	GetPupilCollectionIdsDocument,
 	GetPupilCollectionIdsQuery,
+	GetPupilCollectionsAdminOverviewDocument,
+	GetPupilCollectionsAdminOverviewQuery,
 	InsertPupilCollectionBlocksDocument,
 	InsertPupilCollectionBlocksMutation,
+	UpdatePupilCollectionBlockDocument,
+	UpdatePupilCollectionBlockMutation,
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
@@ -36,7 +40,7 @@ export class PupilCollectionService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[Avo.Assignment.Response_v2[], number]> {
+	): Promise<[GetPupilCollectionsAdminOverviewQuery['app_assignment_responses_v2'], number]> {
 		let variables;
 		try {
 			variables = {
@@ -51,16 +55,16 @@ export class PupilCollectionService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetPupilCollectionsAdminOverviewQuery>({
 				variables,
-				query: GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
+				query: GetPupilCollectionsAdminOverviewDocument,
 			});
 
-			const pupilCollections: Avo.Assignment.Response_v2[] =
-				response?.data?.app_assignment_responses_v2;
+			const pupilCollections: GetPupilCollectionsAdminOverviewQuery['app_assignment_responses_v2'] =
+				response?.app_assignment_responses_v2;
 
 			const assignmentCount =
-				response?.data?.app_assignment_responses_v2_aggregate?.aggregate?.count || 0;
+				response?.app_assignment_responses_v2_aggregate?.aggregate?.count || 0;
 
 			if (!pupilCollections) {
 				throw new CustomError('Response does not contain any pupil collections', null, {
@@ -68,7 +72,7 @@ export class PupilCollectionService {
 				});
 			}
 
-			return [pupilCollections as Avo.Assignment.Response_v2[], assignmentCount];
+			return [pupilCollections, assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get pupil collections from the database', err, {
 				variables,
@@ -111,7 +115,7 @@ export class PupilCollectionService {
 	static async changePupilCollectionsAuthor(
 		profileId: string,
 		pupilCollectionIds: string[]
-	): Promise<void> {
+	): Promise<number> {
 		try {
 			const response = await dataService.query<BulkUpdateAuthorForPupilCollectionsMutation>({
 				query: BulkUpdateAuthorForPupilCollectionsDocument,
@@ -123,7 +127,7 @@ export class PupilCollectionService {
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			return response?.data?.update_app_assignments_v2?.affected_rows || 0;
+			return response?.update_app_assignment_responses_v2?.affected_rows || 0;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update author for pupil collections in the database',
@@ -188,15 +192,15 @@ export class PupilCollectionService {
 				.map(cleanup)
 				.filter((block) => block.id)
 				.map((block) =>
-					dataService.mutate({
-						mutation: UPDATE_PUPIL_COLLECTION_BLOCK,
+					dataService.query<UpdatePupilCollectionBlockMutation>({
+						query: UpdatePupilCollectionBlockDocument,
 						variables: { blockId: block.id, update: block },
 						update: ApolloCacheManager.clearAssignmentCache,
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
-				dataService.mutate({
-					mutation: UPDATE_PUPIL_COLLECTION_BLOCK,
+				dataService.query<UpdatePupilCollectionBlockMutation>({
+					query: UpdatePupilCollectionBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
 					update: ApolloCacheManager.clearAssignmentCache,
 				})
@@ -205,8 +209,8 @@ export class PupilCollectionService {
 
 		if (created.length > 0) {
 			promises.push(
-				dataService.mutate({
-					mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
+				dataService.query<InsertPupilCollectionBlocksMutation>({
+					query: InsertPupilCollectionBlocksDocument,
 					variables: {
 						pupilCollectionBlocks: created
 							.map(cleanup)
@@ -300,6 +304,6 @@ export class PupilCollectionService {
 
 		const returnObject = { ...insertedBlock, item_meta: item };
 
-		return returnObject;
+		return returnObject as Avo.Core.BlockItemBase;
 	}
 }

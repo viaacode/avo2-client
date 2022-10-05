@@ -58,7 +58,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			setResult({
 				loading: false,
 				error: null,
-				data: response.data,
+				data: response,
 			});
 		} catch (err) {
 			setResult({

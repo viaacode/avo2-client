@@ -22,12 +22,27 @@ import {
 	BulkUpdateAuthorForAssignmentsMutation,
 	DeleteAssignmentByIdDocument,
 	DeleteAssignmentByIdMutation,
+	DeleteAssignmentResponseByIdDocument,
+	DeleteAssignmentResponseByIdMutation,
+	DeleteAssignmentResponseByIdMutationVariables,
 	DeleteAssignmentsByIdDocument,
 	DeleteAssignmentsByIdMutation,
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
 	GetAssignmentIdsDocument,
 	GetAssignmentIdsQuery,
+	GetAssignmentResponseByIdDocument,
+	GetAssignmentResponseByIdQuery,
+	GetAssignmentResponseByIdQueryVariables,
+	GetAssignmentResponseDocument,
+	GetAssignmentResponseQuery,
+	GetAssignmentResponseQueryVariables,
+	GetAssignmentResponsesByAssignmentIdDocument,
+	GetAssignmentResponsesByAssignmentIdQuery,
+	GetAssignmentResponsesByAssignmentIdQueryVariables,
+	GetAssignmentResponsesDocument,
+	GetAssignmentResponsesQuery,
+	GetAssignmentResponsesQueryVariables,
 	GetAssignmentsAdminOverviewDocument,
 	GetAssignmentsAdminOverviewQuery,
 	GetAssignmentsByOwnerDocument,
@@ -40,6 +55,8 @@ import {
 	InsertAssignmentBlocksMutation,
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
+	UpdateAssignmentBlockDocument,
+	UpdateAssignmentBlockMutation,
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
@@ -536,15 +553,15 @@ export class AssignmentService {
 				.map(cleanup)
 				.filter((block) => block.id)
 				.map((block) =>
-					dataService.mutate({
-						mutation: UPDATE_ASSIGNMENT_BLOCK,
+					dataService.query<UpdateAssignmentBlockMutation>({
+						query: UpdateAssignmentBlockDocument,
 						variables: { blockId: block.id, update: block },
 						update: ApolloCacheManager.clearAssignmentCache,
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
-				dataService.mutate({
-					mutation: UPDATE_ASSIGNMENT_BLOCK,
+				dataService.query<UpdateAssignmentBlockMutation>({
+					query: UpdateAssignmentBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
 					update: ApolloCacheManager.clearAssignmentCache,
 				})
@@ -553,8 +570,8 @@ export class AssignmentService {
 
 		if (created.length > 0) {
 			promises.push(
-				dataService.mutate({
-					mutation: INSERT_ASSIGNMENT_BLOCKS,
+				dataService.query<InsertAssignmentBlocksMutation>({
+					query: InsertAssignmentBlocksDocument,
 					variables: {
 						assignmentBlocks: created
 							.map(cleanup)
@@ -779,7 +796,7 @@ export class AssignmentService {
 		assignmentResponses: Avo.Assignment.Response_v2[];
 		count: number;
 	}> {
-		let variables: any;
+		let variables: GetAssignmentResponsesByAssignmentIdQueryVariables | undefined = undefined;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
 			const filterArray: any[] = [];
@@ -805,13 +822,12 @@ export class AssignmentService {
 				limit: ITEMS_PER_PAGE,
 				filter: filterArray.length ? filterArray : {},
 			};
-			const assignmentQuery = {
-				variables,
-				query: GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID,
-			};
 
 			// Get the assignment from graphql
-			const response: ApolloQueryResult<any> = await dataService.query(assignmentQuery);
+			const response = await dataService.query<GetAssignmentResponsesByAssignmentIdQuery>({
+				variables,
+				query: GetAssignmentResponsesByAssignmentIdDocument,
+			});
 
 			const assignmentResponse = get(response, 'data');
 
@@ -840,9 +856,12 @@ export class AssignmentService {
 
 	static async deleteAssignmentResponse(assignmentResponseId: string): Promise<void> {
 		try {
-			await dataService.mutate({
-				mutation: DELETE_ASSIGNMENT_RESPONSE,
-				variables: { assignmentResponseId },
+			const variables: DeleteAssignmentResponseByIdMutationVariables = {
+				assignmentResponseId,
+			};
+			await dataService.query<DeleteAssignmentResponseByIdMutation>({
+				query: DeleteAssignmentResponseByIdDocument,
+				variables,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
@@ -859,6 +878,7 @@ export class AssignmentService {
 	 * If the item was replaced by another, the other item is used
 	 * The item_meta is filled in into the existing response (mutable)
 	 * @param blocks
+	 * @param items
 	 */
 	static async enrichBlocksWithMeta<T = PupilCollectionFragment | AssignmentBlock>(
 		blocks?: BlockItemBaseSchema[],
@@ -899,14 +919,13 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Avo.Assignment.Response_v2[]> {
 		try {
-			const response: ApolloQueryResult<{
-				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
-			}> = await dataService.query({
-				query: GET_ASSIGNMENT_RESPONSES,
-				variables: { profileId, assignmentId },
+			const variables: GetAssignmentResponsesQueryVariables = { profileId, assignmentId };
+			const response = await dataService.query<GetAssignmentResponsesQuery>({
+				query: GetAssignmentResponsesDocument,
+				variables,
 			});
 
-			return response?.data?.app_assignment_responses_v2 || [];
+			return response?.app_assignment_responses_v2 || [];
 		} catch (err) {
 			throw new CustomError('Failed to get assignment responses from database', err, {
 				profileId,
@@ -924,15 +943,14 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Avo.Assignment.Response_v2 | undefined> {
 		try {
-			const response: ApolloQueryResult<{
-				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
-			}> = await dataService.query({
-				query: GET_ASSIGNMENT_RESPONSE,
-				variables: { profileId, assignmentId },
+			const variables: GetAssignmentResponseQueryVariables = { profileId, assignmentId };
+			const response = await dataService.query<GetAssignmentResponseQuery>({
+				query: GetAssignmentResponseDocument,
+				variables,
 			});
 
 			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
-				response?.data?.app_assignment_responses_v2?.[0];
+				response?.app_assignment_responses_v2?.[0];
 
 			if (!assignmentResponse) {
 				return undefined;
@@ -957,17 +975,17 @@ export class AssignmentService {
 	 */
 	static async getAssignmentResponseById(
 		assignmentResponseId: string
-	): Promise<Avo.Assignment.Response_v2 | undefined> {
+	): Promise<GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0] | undefined> {
 		try {
-			const response: ApolloQueryResult<{
-				app_assignment_responses_v2: Avo.Assignment.Response_v2[];
-			}> = await dataService.query({
-				query: GET_ASSIGNMENT_RESPONSE_BY_ID,
-				variables: { assignmentResponseId },
+			const variables: GetAssignmentResponseByIdQueryVariables = { assignmentResponseId };
+			const response = await dataService.query<GetAssignmentResponseByIdQuery>({
+				query: GetAssignmentResponseByIdDocument,
+				variables,
 			});
 
-			const assignmentResponse: Avo.Assignment.Response_v2 | undefined =
-				response?.data?.app_assignment_responses_v2?.[0];
+			const assignmentResponse:
+				| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0]
+				| undefined = response?.app_assignment_responses_v2?.[0];
 
 			if (!assignmentResponse) {
 				return undefined;
@@ -1117,8 +1135,8 @@ export class AssignmentService {
 			try {
 				// Insert fragments into assignment and update the updated_at date in parallel
 				await Promise.all([
-					dataService.mutate({
-						mutation: INSERT_ASSIGNMENT_BLOCKS,
+					dataService.query<InsertAssignmentBlocksMutation>({
+						query: InsertAssignmentBlocksDocument,
 						variables: {
 							assignmentBlocks: blocks,
 						},
@@ -1282,8 +1300,8 @@ export class AssignmentService {
 
 		// Insert fragment into assignment and update the updated_at date in parallel
 		await Promise.all([
-			dataService.mutate({
-				mutation: INSERT_ASSIGNMENT_BLOCKS,
+			dataService.query<InsertAssignmentBlocksMutation>({
+				query: InsertAssignmentBlocksDocument,
 				variables: {
 					assignmentBlocks: [block],
 				},

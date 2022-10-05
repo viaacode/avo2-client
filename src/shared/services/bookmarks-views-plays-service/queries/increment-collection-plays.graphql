@@ -1,4 +1,4 @@
-mutation increaseCollectionPlays($collectionUuid: uuid!) {
+mutation incrementCollectionPlays($collectionUuid: uuid!) {
 	update_app_collection_plays(
 		where: { collection_uuid: { _eq: $collectionUuid } }
 		_inc: { count: 1 }

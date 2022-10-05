@@ -40765,13 +40765,6 @@ export type GetCollectionActualisationsQueryVariables = Exact<{
 
 export type GetCollectionActualisationsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_actualisation_overview', created_at?: any | null, is_public?: boolean | null, mgmt_created_at?: any | null, mgmt_current_status?: string | null, mgmt_last_eindcheck_date?: any | null, mgmt_status_expires_at?: any | null, mgmt_updated_at?: any | null, owner_profile_id?: any | null, title?: string | null, type_id?: number | null, updated_at?: any | null, updated_by_profile_id?: any | null, id?: any | null, subjects?: any | null, education_levels?: any | null, manager?: { __typename?: 'shared_user_names', full_name?: string | null, mail?: string | null, profile_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, last_editor?: { __typename?: 'shared_user_names', profile_id?: any | null, full_name?: string | null } | null }>, app_collections_aggregate: { __typename?: 'app_collection_actualisation_overview_aggregate', aggregate?: { __typename?: 'app_collection_actualisation_overview_aggregate_fields', count?: number | null } | null } };
 
-export type GetCollectionsByIdsQueryVariables = Exact<{
-  where: App_Collections_Bool_Exp;
-}>;
-
-
-export type GetCollectionsByIdsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any }> };
-
 export type GetCollectionMarcomQueryVariables = Exact<{
   where: App_Collection_Marcom_Overview_Bool_Exp;
   orderBy: Array<App_Collection_Marcom_Overview_Order_By> | App_Collection_Marcom_Overview_Order_By;
@@ -40791,6 +40784,13 @@ export type GetCollectionQualityCheckQueryVariables = Exact<{
 
 
 export type GetCollectionQualityCheckQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_qc_overview', is_public?: boolean | null, created_at?: any | null, updated_at?: any | null, title?: string | null, updated_by_profile_id?: any | null, mgmt_quality_check?: boolean | null, mgmt_language_check?: boolean | null, mgmt_eind_check_date?: any | null, id?: any | null, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, last_editor?: { __typename?: 'shared_user_names', full_name?: string | null } | null }>, app_collections_aggregate: { __typename?: 'app_collection_qc_overview_aggregate', aggregate?: { __typename?: 'app_collection_qc_overview_aggregate_fields', count?: number | null } | null } };
+
+export type GetCollectionsByIdsQueryVariables = Exact<{
+  where: App_Collections_Bool_Exp;
+}>;
+
+
+export type GetCollectionsByIdsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any }> };
 
 export type GetCollectionsQueryVariables = Exact<{
   where: App_Collections_Bool_Exp;
@@ -41148,10 +41148,10 @@ export type GetMenuItemsByPlacementQueryVariables = Exact<{
 
 export type GetMenuItemsByPlacementQuery = { __typename?: 'query_root', app_content_nav_elements: Array<{ __typename?: 'app_content_nav_elements', id: number, created_at: any, description?: string | null, user_group_ids?: any | null, icon_name: string, label: string, link_target?: string | null, placement: string, position: number, updated_at: any, content_type: string, content_path: string, tooltip?: string | null }> };
 
-export type GetNavElementsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetMenusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetNavElementsQuery = { __typename?: 'query_root', app_content_nav_elements: Array<{ __typename?: 'app_content_nav_elements', id: number, description?: string | null, placement: string, tooltip?: string | null }> };
+export type GetMenusQuery = { __typename?: 'query_root', app_content_nav_elements: Array<{ __typename?: 'app_content_nav_elements', id: number, description?: string | null, placement: string, tooltip?: string | null }> };
 
 export type InsertMenuItemMutationVariables = Exact<{
   menuItem: App_Content_Nav_Elements_Insert_Input;
@@ -41739,13 +41739,12 @@ export type GetQualityLabelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetQualityLabelsQuery = { __typename?: 'query_root', lookup_enum_collection_labels: Array<{ __typename?: 'lookup_enum_collection_labels', description?: string | null, value: string }> };
 
-export type InsertCollectionFragmentMutationVariables = Exact<{
-  id: Scalars['Int'];
+export type InsertCollectionFragmentsMutationVariables = Exact<{
   fragments: Array<App_Collection_Fragments_Insert_Input> | App_Collection_Fragments_Insert_Input;
 }>;
 
 
-export type InsertCollectionFragmentMutation = { __typename?: 'mutation_root', insert_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collection_fragments', id: number }> } | null };
+export type InsertCollectionFragmentsMutation = { __typename?: 'mutation_root', insert_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collection_fragments', id: number }> } | null };
 
 export type InsertCollectionLabelsMutationVariables = Exact<{
   objects: Array<App_Collection_Labels_Insert_Input> | App_Collection_Labels_Insert_Input;
@@ -41806,6 +41805,14 @@ export type SoftDeleteCollectionByIdMutationVariables = Exact<{
 
 export type SoftDeleteCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
 
+export type UpdateCollectionByIdMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  collection: App_Collections_Set_Input;
+}>;
+
+
+export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+
 export type UpdateCollectionFragmentByIdMutationVariables = Exact<{
   id: Scalars['Int'];
   fragment: App_Collection_Fragments_Set_Input;
@@ -41825,14 +41832,6 @@ export type UpdateCollectionManagementEntryMutationVariables = Exact<{
 
 
 export type UpdateCollectionManagementEntryMutation = { __typename?: 'mutation_root', update_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null };
-
-export type UpdateCollectionByIdMutationVariables = Exact<{
-  id: Scalars['uuid'];
-  collection: App_Collections_Set_Input;
-}>;
-
-
-export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
 
 export type UpdateMarcomNoteMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
@@ -42029,6 +42028,29 @@ export type UpdateAssignmentLabelsMutationVariables = Exact<{
 
 export type UpdateAssignmentLabelsMutation = { __typename?: 'mutation_root', update_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
 
+export type DeleteCollectionBookmarkByProfileIdMutationVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteCollectionBookmarkByProfileIdMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionBookmarkMutationVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+}>;
+
+
+export type DeleteCollectionBookmarkMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteItemBookmarkMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteItemBookmarkMutation = { __typename?: 'mutation_root', delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
+
 export type GetBookmarkStatusesQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   itemUuids: Array<Scalars['uuid']> | Scalars['uuid'];
@@ -42112,33 +42134,33 @@ export type GetMultipleItemViewCountsQueryVariables = Exact<{
 
 export type GetMultipleItemViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_item_views', count?: number | null, id?: any | null }> };
 
-export type IncreaseCollectionPlaysMutationVariables = Exact<{
+export type IncrementCollectionPlaysMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
 }>;
 
 
-export type IncreaseCollectionPlaysMutation = { __typename?: 'mutation_root', update_app_collection_plays?: { __typename?: 'app_collection_plays_mutation_response', affected_rows: number } | null };
+export type IncrementCollectionPlaysMutation = { __typename?: 'mutation_root', update_app_collection_plays?: { __typename?: 'app_collection_plays_mutation_response', affected_rows: number } | null };
 
-export type IncreaseCollectionViewsMutationVariables = Exact<{
+export type IncrementCollectionViewsMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
 }>;
 
 
-export type IncreaseCollectionViewsMutation = { __typename?: 'mutation_root', update_app_collection_views?: { __typename?: 'app_collection_views_mutation_response', affected_rows: number } | null };
+export type IncrementCollectionViewsMutation = { __typename?: 'mutation_root', update_app_collection_views?: { __typename?: 'app_collection_views_mutation_response', affected_rows: number } | null };
 
-export type IncreaseItemPlaysMutationVariables = Exact<{
+export type IncrementItemPlaysMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];
 }>;
 
 
-export type IncreaseItemPlaysMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
+export type IncrementItemPlaysMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
 
-export type IncreaseItemViewsMutationVariables = Exact<{
+export type IncrementItemViewsMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];
 }>;
 
 
-export type IncreaseItemViewsMutation = { __typename?: 'mutation_root', update_app_item_views?: { __typename?: 'app_item_views_mutation_response', affected_rows: number } | null };
+export type IncrementItemViewsMutation = { __typename?: 'mutation_root', update_app_item_views?: { __typename?: 'app_item_views_mutation_response', affected_rows: number } | null };
 
 export type InsertCollectionBookmarkMutationVariables = Exact<{
   bookmarkItem: App_Collection_Bookmarks_Insert_Input;
@@ -42153,29 +42175,6 @@ export type InsertItemBookmarkMutationVariables = Exact<{
 
 
 export type InsertItemBookmarkMutation = { __typename?: 'mutation_root', insert_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
-
-export type DeleteCollectionBookmarkByProfileIdMutationVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-  profileId?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type DeleteCollectionBookmarkByProfileIdMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
-
-export type DeleteCollectionBookmarkMutationVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-}>;
-
-
-export type DeleteCollectionBookmarkMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
-
-export type DeleteItemBookmarkMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  profileId?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type DeleteItemBookmarkMutation = { __typename?: 'mutation_root', delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
 
 export type GetAllOrganisationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -42504,25 +42503,6 @@ export const useGetCollectionActualisationsQuery = <
       fetchData<GetCollectionActualisationsQuery, GetCollectionActualisationsQueryVariables>(GetCollectionActualisationsDocument, variables),
       options
     );
-export const GetCollectionsByIdsDocument = `
-    query getCollectionsByIds($where: app_collections_bool_exp!) {
-  app_collections(where: $where) {
-    id
-  }
-}
-    `;
-export const useGetCollectionsByIdsQuery = <
-      TData = GetCollectionsByIdsQuery,
-      TError = unknown
-    >(
-      variables: GetCollectionsByIdsQueryVariables,
-      options?: UseQueryOptions<GetCollectionsByIdsQuery, TError, TData>
-    ) =>
-    useQuery<GetCollectionsByIdsQuery, TError, TData>(
-      ['getCollectionsByIds', variables],
-      fetchData<GetCollectionsByIdsQuery, GetCollectionsByIdsQueryVariables>(GetCollectionsByIdsDocument, variables),
-      options
-    );
 export const GetCollectionMarcomDocument = `
     query getCollectionMarcom($where: app_collection_marcom_overview_bool_exp!, $orderBy: [app_collection_marcom_overview_order_by!]!, $offset: Int!, $limit: Int!) {
   app_collections: app_collection_marcom_overview(
@@ -42649,6 +42629,25 @@ export const useGetCollectionQualityCheckQuery = <
     useQuery<GetCollectionQualityCheckQuery, TError, TData>(
       ['getCollectionQualityCheck', variables],
       fetchData<GetCollectionQualityCheckQuery, GetCollectionQualityCheckQueryVariables>(GetCollectionQualityCheckDocument, variables),
+      options
+    );
+export const GetCollectionsByIdsDocument = `
+    query getCollectionsByIds($where: app_collections_bool_exp!) {
+  app_collections(where: $where) {
+    id
+  }
+}
+    `;
+export const useGetCollectionsByIdsQuery = <
+      TData = GetCollectionsByIdsQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionsByIdsQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByIdsQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionsByIdsQuery, TError, TData>(
+      ['getCollectionsByIds', variables],
+      fetchData<GetCollectionsByIdsQuery, GetCollectionsByIdsQueryVariables>(GetCollectionsByIdsDocument, variables),
       options
     );
 export const GetCollectionsDocument = `
@@ -43946,8 +43945,8 @@ export const useGetMenuItemsByPlacementQuery = <
       fetchData<GetMenuItemsByPlacementQuery, GetMenuItemsByPlacementQueryVariables>(GetMenuItemsByPlacementDocument, variables),
       options
     );
-export const GetNavElementsDocument = `
-    query getNavElements {
+export const GetMenusDocument = `
+    query getMenus {
   app_content_nav_elements(distinct_on: placement, order_by: {placement: asc}) {
     id
     description
@@ -43956,16 +43955,16 @@ export const GetNavElementsDocument = `
   }
 }
     `;
-export const useGetNavElementsQuery = <
-      TData = GetNavElementsQuery,
+export const useGetMenusQuery = <
+      TData = GetMenusQuery,
       TError = unknown
     >(
-      variables?: GetNavElementsQueryVariables,
-      options?: UseQueryOptions<GetNavElementsQuery, TError, TData>
+      variables?: GetMenusQueryVariables,
+      options?: UseQueryOptions<GetMenusQuery, TError, TData>
     ) =>
-    useQuery<GetNavElementsQuery, TError, TData>(
-      variables === undefined ? ['getNavElements'] : ['getNavElements', variables],
-      fetchData<GetNavElementsQuery, GetNavElementsQueryVariables>(GetNavElementsDocument, variables),
+    useQuery<GetMenusQuery, TError, TData>(
+      variables === undefined ? ['getMenus'] : ['getMenus', variables],
+      fetchData<GetMenusQuery, GetMenusQueryVariables>(GetMenusDocument, variables),
       options
     );
 export const InsertMenuItemDocument = `
@@ -46310,8 +46309,8 @@ export const useGetQualityLabelsQuery = <
       fetchData<GetQualityLabelsQuery, GetQualityLabelsQueryVariables>(GetQualityLabelsDocument, variables),
       options
     );
-export const InsertCollectionFragmentDocument = `
-    mutation insertCollectionFragment($id: Int!, $fragments: [app_collection_fragments_insert_input!]!) {
+export const InsertCollectionFragmentsDocument = `
+    mutation insertCollectionFragments($fragments: [app_collection_fragments_insert_input!]!) {
   insert_app_collection_fragments(objects: $fragments) {
     affected_rows
     returning {
@@ -46320,13 +46319,13 @@ export const InsertCollectionFragmentDocument = `
   }
 }
     `;
-export const useInsertCollectionFragmentMutation = <
+export const useInsertCollectionFragmentsMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<InsertCollectionFragmentMutation, TError, InsertCollectionFragmentMutationVariables, TContext>) =>
-    useMutation<InsertCollectionFragmentMutation, TError, InsertCollectionFragmentMutationVariables, TContext>(
-      ['insertCollectionFragment'],
-      (variables?: InsertCollectionFragmentMutationVariables) => fetchData<InsertCollectionFragmentMutation, InsertCollectionFragmentMutationVariables>(InsertCollectionFragmentDocument, variables)(),
+    >(options?: UseMutationOptions<InsertCollectionFragmentsMutation, TError, InsertCollectionFragmentsMutationVariables, TContext>) =>
+    useMutation<InsertCollectionFragmentsMutation, TError, InsertCollectionFragmentsMutationVariables, TContext>(
+      ['insertCollectionFragments'],
+      (variables?: InsertCollectionFragmentsMutationVariables) => fetchData<InsertCollectionFragmentsMutation, InsertCollectionFragmentsMutationVariables>(InsertCollectionFragmentsDocument, variables)(),
       options
     );
 export const InsertCollectionLabelsDocument = `
@@ -46456,6 +46455,25 @@ export const useSoftDeleteCollectionByIdMutation = <
       (variables?: SoftDeleteCollectionByIdMutationVariables) => fetchData<SoftDeleteCollectionByIdMutation, SoftDeleteCollectionByIdMutationVariables>(SoftDeleteCollectionByIdDocument, variables)(),
       options
     );
+export const UpdateCollectionByIdDocument = `
+    mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
+  update_app_collections(
+    where: {id: {_eq: $id}, is_deleted: {_eq: false}}
+    _set: $collection
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateCollectionByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateCollectionByIdMutation, TError, UpdateCollectionByIdMutationVariables, TContext>) =>
+    useMutation<UpdateCollectionByIdMutation, TError, UpdateCollectionByIdMutationVariables, TContext>(
+      ['updateCollectionById'],
+      (variables?: UpdateCollectionByIdMutationVariables) => fetchData<UpdateCollectionByIdMutation, UpdateCollectionByIdMutationVariables>(UpdateCollectionByIdDocument, variables)(),
+      options
+    );
 export const UpdateCollectionFragmentByIdDocument = `
     mutation updateCollectionFragmentById($id: Int!, $fragment: app_collection_fragments_set_input!) {
   update_app_collection_fragments(where: {id: {_eq: $id}}, _set: $fragment) {
@@ -46489,25 +46507,6 @@ export const useUpdateCollectionManagementEntryMutation = <
     useMutation<UpdateCollectionManagementEntryMutation, TError, UpdateCollectionManagementEntryMutationVariables, TContext>(
       ['updateCollectionManagementEntry'],
       (variables?: UpdateCollectionManagementEntryMutationVariables) => fetchData<UpdateCollectionManagementEntryMutation, UpdateCollectionManagementEntryMutationVariables>(UpdateCollectionManagementEntryDocument, variables)(),
-      options
-    );
-export const UpdateCollectionByIdDocument = `
-    mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
-  update_app_collections(
-    where: {id: {_eq: $id}, is_deleted: {_eq: false}}
-    _set: $collection
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateCollectionByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateCollectionByIdMutation, TError, UpdateCollectionByIdMutationVariables, TContext>) =>
-    useMutation<UpdateCollectionByIdMutation, TError, UpdateCollectionByIdMutationVariables, TContext>(
-      ['updateCollectionById'],
-      (variables?: UpdateCollectionByIdMutationVariables) => fetchData<UpdateCollectionByIdMutation, UpdateCollectionByIdMutationVariables>(UpdateCollectionByIdDocument, variables)(),
       options
     );
 export const UpdateMarcomNoteDocument = `
@@ -47183,6 +47182,60 @@ export const useUpdateAssignmentLabelsMutation = <
       (variables?: UpdateAssignmentLabelsMutationVariables) => fetchData<UpdateAssignmentLabelsMutation, UpdateAssignmentLabelsMutationVariables>(UpdateAssignmentLabelsDocument, variables)(),
       options
     );
+export const DeleteCollectionBookmarkByProfileIdDocument = `
+    mutation deleteCollectionBookmarkByProfileId($collectionUuid: uuid!, $profileId: uuid) {
+  delete_app_collection_bookmarks(
+    where: {collection_uuid: {_eq: $collectionUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionBookmarkByProfileIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionBookmarkByProfileIdMutation, TError, DeleteCollectionBookmarkByProfileIdMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionBookmarkByProfileIdMutation, TError, DeleteCollectionBookmarkByProfileIdMutationVariables, TContext>(
+      ['deleteCollectionBookmarkByProfileId'],
+      (variables?: DeleteCollectionBookmarkByProfileIdMutationVariables) => fetchData<DeleteCollectionBookmarkByProfileIdMutation, DeleteCollectionBookmarkByProfileIdMutationVariables>(DeleteCollectionBookmarkByProfileIdDocument, variables)(),
+      options
+    );
+export const DeleteCollectionBookmarkDocument = `
+    mutation deleteCollectionBookmark($collectionUuid: uuid!) {
+  delete_app_collection_bookmarks(
+    where: {collection_uuid: {_eq: $collectionUuid}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>(
+      ['deleteCollectionBookmark'],
+      (variables?: DeleteCollectionBookmarkMutationVariables) => fetchData<DeleteCollectionBookmarkMutation, DeleteCollectionBookmarkMutationVariables>(DeleteCollectionBookmarkDocument, variables)(),
+      options
+    );
+export const DeleteItemBookmarkDocument = `
+    mutation deleteItemBookmark($itemUuid: uuid!, $profileId: uuid) {
+  delete_app_item_bookmarks(
+    where: {item_id: {_eq: $itemUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteItemBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteItemBookmarkMutation, TError, DeleteItemBookmarkMutationVariables, TContext>) =>
+    useMutation<DeleteItemBookmarkMutation, TError, DeleteItemBookmarkMutationVariables, TContext>(
+      ['deleteItemBookmark'],
+      (variables?: DeleteItemBookmarkMutationVariables) => fetchData<DeleteItemBookmarkMutation, DeleteItemBookmarkMutationVariables>(DeleteItemBookmarkDocument, variables)(),
+      options
+    );
 export const GetBookmarkStatusesDocument = `
     query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!) {
   app_collection_bookmarks(
@@ -47505,8 +47558,8 @@ export const useGetMultipleItemViewCountsQuery = <
       fetchData<GetMultipleItemViewCountsQuery, GetMultipleItemViewCountsQueryVariables>(GetMultipleItemViewCountsDocument, variables),
       options
     );
-export const IncreaseCollectionPlaysDocument = `
-    mutation increaseCollectionPlays($collectionUuid: uuid!) {
+export const IncrementCollectionPlaysDocument = `
+    mutation incrementCollectionPlays($collectionUuid: uuid!) {
   update_app_collection_plays(
     where: {collection_uuid: {_eq: $collectionUuid}}
     _inc: {count: 1}
@@ -47515,17 +47568,17 @@ export const IncreaseCollectionPlaysDocument = `
   }
 }
     `;
-export const useIncreaseCollectionPlaysMutation = <
+export const useIncrementCollectionPlaysMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncreaseCollectionPlaysMutation, TError, IncreaseCollectionPlaysMutationVariables, TContext>) =>
-    useMutation<IncreaseCollectionPlaysMutation, TError, IncreaseCollectionPlaysMutationVariables, TContext>(
-      ['increaseCollectionPlays'],
-      (variables?: IncreaseCollectionPlaysMutationVariables) => fetchData<IncreaseCollectionPlaysMutation, IncreaseCollectionPlaysMutationVariables>(IncreaseCollectionPlaysDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementCollectionPlaysMutation, TError, IncrementCollectionPlaysMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionPlaysMutation, TError, IncrementCollectionPlaysMutationVariables, TContext>(
+      ['incrementCollectionPlays'],
+      (variables?: IncrementCollectionPlaysMutationVariables) => fetchData<IncrementCollectionPlaysMutation, IncrementCollectionPlaysMutationVariables>(IncrementCollectionPlaysDocument, variables)(),
       options
     );
-export const IncreaseCollectionViewsDocument = `
-    mutation increaseCollectionViews($collectionUuid: uuid!) {
+export const IncrementCollectionViewsDocument = `
+    mutation incrementCollectionViews($collectionUuid: uuid!) {
   update_app_collection_views(
     where: {collection_uuid: {_eq: $collectionUuid}}
     _inc: {count: 1}
@@ -47534,45 +47587,45 @@ export const IncreaseCollectionViewsDocument = `
   }
 }
     `;
-export const useIncreaseCollectionViewsMutation = <
+export const useIncrementCollectionViewsMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncreaseCollectionViewsMutation, TError, IncreaseCollectionViewsMutationVariables, TContext>) =>
-    useMutation<IncreaseCollectionViewsMutation, TError, IncreaseCollectionViewsMutationVariables, TContext>(
-      ['increaseCollectionViews'],
-      (variables?: IncreaseCollectionViewsMutationVariables) => fetchData<IncreaseCollectionViewsMutation, IncreaseCollectionViewsMutationVariables>(IncreaseCollectionViewsDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>(
+      ['incrementCollectionViews'],
+      (variables?: IncrementCollectionViewsMutationVariables) => fetchData<IncrementCollectionViewsMutation, IncrementCollectionViewsMutationVariables>(IncrementCollectionViewsDocument, variables)(),
       options
     );
-export const IncreaseItemPlaysDocument = `
-    mutation increaseItemPlays($itemUuid: uuid!) {
+export const IncrementItemPlaysDocument = `
+    mutation incrementItemPlays($itemUuid: uuid!) {
   update_app_item_plays(where: {item_id: {_eq: $itemUuid}}, _inc: {count: 1}) {
     affected_rows
   }
 }
     `;
-export const useIncreaseItemPlaysMutation = <
+export const useIncrementItemPlaysMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncreaseItemPlaysMutation, TError, IncreaseItemPlaysMutationVariables, TContext>) =>
-    useMutation<IncreaseItemPlaysMutation, TError, IncreaseItemPlaysMutationVariables, TContext>(
-      ['increaseItemPlays'],
-      (variables?: IncreaseItemPlaysMutationVariables) => fetchData<IncreaseItemPlaysMutation, IncreaseItemPlaysMutationVariables>(IncreaseItemPlaysDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>(
+      ['incrementItemPlays'],
+      (variables?: IncrementItemPlaysMutationVariables) => fetchData<IncrementItemPlaysMutation, IncrementItemPlaysMutationVariables>(IncrementItemPlaysDocument, variables)(),
       options
     );
-export const IncreaseItemViewsDocument = `
-    mutation increaseItemViews($itemUuid: uuid!) {
+export const IncrementItemViewsDocument = `
+    mutation incrementItemViews($itemUuid: uuid!) {
   update_app_item_views(where: {item_id: {_eq: $itemUuid}}, _inc: {count: 1}) {
     affected_rows
   }
 }
     `;
-export const useIncreaseItemViewsMutation = <
+export const useIncrementItemViewsMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncreaseItemViewsMutation, TError, IncreaseItemViewsMutationVariables, TContext>) =>
-    useMutation<IncreaseItemViewsMutation, TError, IncreaseItemViewsMutationVariables, TContext>(
-      ['increaseItemViews'],
-      (variables?: IncreaseItemViewsMutationVariables) => fetchData<IncreaseItemViewsMutation, IncreaseItemViewsMutationVariables>(IncreaseItemViewsDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementItemViewsMutation, TError, IncrementItemViewsMutationVariables, TContext>) =>
+    useMutation<IncrementItemViewsMutation, TError, IncrementItemViewsMutationVariables, TContext>(
+      ['incrementItemViews'],
+      (variables?: IncrementItemViewsMutationVariables) => fetchData<IncrementItemViewsMutation, IncrementItemViewsMutationVariables>(IncrementItemViewsDocument, variables)(),
       options
     );
 export const InsertCollectionBookmarkDocument = `
@@ -47605,60 +47658,6 @@ export const useInsertItemBookmarkMutation = <
     useMutation<InsertItemBookmarkMutation, TError, InsertItemBookmarkMutationVariables, TContext>(
       ['insertItemBookmark'],
       (variables?: InsertItemBookmarkMutationVariables) => fetchData<InsertItemBookmarkMutation, InsertItemBookmarkMutationVariables>(InsertItemBookmarkDocument, variables)(),
-      options
-    );
-export const DeleteCollectionBookmarkByProfileIdDocument = `
-    mutation deleteCollectionBookmarkByProfileId($collectionUuid: uuid!, $profileId: uuid) {
-  delete_app_collection_bookmarks(
-    where: {collection_uuid: {_eq: $collectionUuid}, profile_id: {_eq: $profileId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionBookmarkByProfileIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionBookmarkByProfileIdMutation, TError, DeleteCollectionBookmarkByProfileIdMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionBookmarkByProfileIdMutation, TError, DeleteCollectionBookmarkByProfileIdMutationVariables, TContext>(
-      ['deleteCollectionBookmarkByProfileId'],
-      (variables?: DeleteCollectionBookmarkByProfileIdMutationVariables) => fetchData<DeleteCollectionBookmarkByProfileIdMutation, DeleteCollectionBookmarkByProfileIdMutationVariables>(DeleteCollectionBookmarkByProfileIdDocument, variables)(),
-      options
-    );
-export const DeleteCollectionBookmarkDocument = `
-    mutation deleteCollectionBookmark($collectionUuid: uuid!) {
-  delete_app_collection_bookmarks(
-    where: {collection_uuid: {_eq: $collectionUuid}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionBookmarkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>(
-      ['deleteCollectionBookmark'],
-      (variables?: DeleteCollectionBookmarkMutationVariables) => fetchData<DeleteCollectionBookmarkMutation, DeleteCollectionBookmarkMutationVariables>(DeleteCollectionBookmarkDocument, variables)(),
-      options
-    );
-export const DeleteItemBookmarkDocument = `
-    mutation deleteItemBookmark($itemUuid: uuid!, $profileId: uuid) {
-  delete_app_item_bookmarks(
-    where: {item_id: {_eq: $itemUuid}, profile_id: {_eq: $profileId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteItemBookmarkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteItemBookmarkMutation, TError, DeleteItemBookmarkMutationVariables, TContext>) =>
-    useMutation<DeleteItemBookmarkMutation, TError, DeleteItemBookmarkMutationVariables, TContext>(
-      ['deleteItemBookmark'],
-      (variables?: DeleteItemBookmarkMutationVariables) => fetchData<DeleteItemBookmarkMutation, DeleteItemBookmarkMutationVariables>(DeleteItemBookmarkDocument, variables)(),
       options
     );
 export const GetAllOrganisationsDocument = `

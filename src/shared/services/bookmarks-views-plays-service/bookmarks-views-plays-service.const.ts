@@ -1,6 +1,20 @@
 import { Avo } from '@viaa/avo2-types';
-import type { DocumentNode } from 'graphql';
 import { get } from 'lodash-es';
+
+import {
+	DeleteCollectionBookmarkByProfileIdDocument,
+	DeleteItemBookmarkDocument,
+	GetCollectionPlayCountDocument,
+	GetCollectionViewCountDocument,
+	GetItemPlayCountDocument,
+	GetItemViewCountDocument,
+	IncrementCollectionPlaysDocument,
+	IncrementCollectionViewsDocument,
+	IncrementItemPlaysDocument,
+	IncrementItemViewsDocument,
+	InsertCollectionBookmarkDocument,
+	InsertItemBookmarkDocument,
+} from '../../generated/graphql-db-types';
 
 import {
 	BookmarkViewPlayCounts,
@@ -17,9 +31,9 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 };
 
 export interface QueryDefinition {
-	query?: DocumentNode;
-	get?: DocumentNode;
-	increment?: DocumentNode;
+	query?: string;
+	get?: string;
+	increment?: string;
 	variables: (uuid: string, user?: Avo.User.User) => any;
 	responsePath?: string;
 }
@@ -33,7 +47,7 @@ export const EVENT_QUERIES: {
 } = {
 	bookmark: {
 		item: {
-			query: INSERT_ITEM_BOOKMARK,
+			query: InsertItemBookmarkDocument,
 			variables: (itemUuid: string, user?: Avo.User.User) => ({
 				bookmarkItem: {
 					item_id: itemUuid,
@@ -42,7 +56,7 @@ export const EVENT_QUERIES: {
 			}),
 		},
 		collection: {
-			query: INSERT_COLLECTION_BOOKMARK,
+			query: InsertCollectionBookmarkDocument,
 			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				bookmarkItem: {
 					collection_uuid: collectionUuid,
@@ -53,14 +67,14 @@ export const EVENT_QUERIES: {
 	},
 	unbookmark: {
 		item: {
-			query: REMOVE_ITEM_BOOKMARK,
+			query: DeleteItemBookmarkDocument,
 			variables: (itemUuid: string, user?: Avo.User.User) => ({
 				itemUuid,
 				profileId: get(user, 'profile.id', null),
 			}),
 		},
 		collection: {
-			query: REMOVE_COLLECTION_BOOKMARK,
+			query: DeleteCollectionBookmarkByProfileIdDocument,
 			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				collectionUuid,
 				profileId: get(user, 'profile.id', null),
@@ -69,16 +83,16 @@ export const EVENT_QUERIES: {
 	},
 	view: {
 		item: {
-			get: GET_ITEM_VIEWS,
-			increment: INCREMENT_ITEM_VIEWS,
+			get: GetItemViewCountDocument,
+			increment: IncrementItemViewsDocument,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
 			responsePath: 'data.app_item_meta[0].view_counts[0].count',
 		},
 		collection: {
-			get: GET_COLLECTION_VIEWS,
-			increment: INCREMENT_COLLECTION_VIEWS,
+			get: GetCollectionViewCountDocument,
+			increment: IncrementCollectionViewsDocument,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
@@ -87,16 +101,16 @@ export const EVENT_QUERIES: {
 	},
 	play: {
 		item: {
-			get: GET_ITEM_PLAYS,
-			increment: INCREMENT_ITEM_PLAYS,
+			get: GetItemPlayCountDocument,
+			increment: IncrementItemPlaysDocument,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
 			responsePath: 'data.app_item_meta[0].play_counts[0].count',
 		},
 		collection: {
-			get: GET_COLLECTION_PLAYS,
-			increment: INCREMENT_COLLECTION_PLAYS,
+			get: GetCollectionPlayCountDocument,
+			increment: IncrementCollectionPlaysDocument,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),

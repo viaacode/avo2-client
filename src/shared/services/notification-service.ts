@@ -1,6 +1,13 @@
 import { get } from 'lodash-es';
 
-import { GetNotificationDocument, GetNotificationQuery } from '../generated/graphql-db-types';
+import {
+	GetNotificationDocument,
+	GetNotificationQuery,
+	InsertNotificationDocument,
+	InsertNotificationMutation,
+	UpdateNotificationDocument,
+	UpdateNotificationMutation,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
 import { ApolloCacheManager, dataService } from './data-service';
@@ -47,9 +54,11 @@ export class NotificationService {
 			));
 			// If entry already exists => update existing entry
 			// If no entry exists in the notifications table => insert a new entry
-			const mutation = notificationEntryExists ? UPDATE_NOTIFICATION : INSERT_NOTIFICATION;
-			const mutateResponse = await dataService.mutate({
-				mutation,
+			const mutation = notificationEntryExists
+				? UpdateNotificationDocument
+				: InsertNotificationDocument;
+			await dataService.query<UpdateNotificationMutation | InsertNotificationMutation>({
+				query: mutation,
 				variables: {
 					profileId,
 					key,
@@ -58,12 +67,6 @@ export class NotificationService {
 				},
 				update: ApolloCacheManager.clearNotificationCache,
 			});
-			if (mutateResponse.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					mutation,
-					mutateResponse,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to set user notification', err, {
 				profileId,

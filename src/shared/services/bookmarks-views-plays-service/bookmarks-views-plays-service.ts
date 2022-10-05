@@ -5,18 +5,28 @@ import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
+	DeleteCollectionBookmarkByProfileIdMutation,
+	DeleteItemBookmarkMutation,
+	GetBookmarksForUserDocument,
 	GetBookmarkStatusesDocument,
 	GetBookmarkStatusesQuery,
 	GetCollectionBookmarkViewPlayCountsDocument,
 	GetCollectionBookmarkViewPlayCountsQuery,
+	GetItemBookmarksForUserDocument,
 	GetItemBookmarkViewPlayCountsDocument,
 	GetItemBookmarkViewPlayCountsQuery,
+	GetMultipleCollectionViewCountsDocument,
+	GetMultipleItemViewCountsDocument,
+	IncrementCollectionPlaysMutation,
+	IncrementCollectionViewsMutation,
+	IncrementItemPlaysMutation,
+	IncrementItemViewsMutation,
+	InsertCollectionBookmarkMutation,
+	InsertItemBookmarkMutation,
 } from '../../generated/graphql-db-types';
 import { CustomError, normalizeTimestamp } from '../../helpers';
-import i18n from '../../translations/i18n';
 import { ApolloCacheManager, dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
-import { ToastService } from '../toast-service';
 
 import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
@@ -54,9 +64,14 @@ export class BookmarksViewsPlaysService {
 					user
 				);
 
-				await dataService.mutate({
+				await dataService.query<
+					| InsertItemBookmarkMutation
+					| InsertCollectionBookmarkMutation
+					| DeleteItemBookmarkMutation
+					| DeleteCollectionBookmarkByProfileIdMutation
+				>({
+					query,
 					variables,
-					mutation: query,
 					update: ApolloCacheManager.clearBookmarksViewsPlays,
 				});
 			}
@@ -172,7 +187,7 @@ export class BookmarksViewsPlaysService {
 		orderObject: Record<string, string>[]
 	): Promise<BookmarkInfo[]> {
 		const response: GetBookmarksForUserResponse = await dataService.query({
-			query: GET_ITEM_BOOKMARKS_FOR_USER,
+			query: GetItemBookmarksForUserDocument,
 			variables: {
 				profileId: get(user, 'profile.id'),
 				filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
@@ -219,7 +234,7 @@ export class BookmarksViewsPlaysService {
 	 */
 	public static async getAllBookmarksForUser(user: Avo.User.User): Promise<BookmarkInfo[]> {
 		const response: GetBookmarksForUserResponse = await dataService.query({
-			query: GET_BOOKMARKS_FOR_USER,
+			query: GetBookmarksForUserDocument,
 			variables: { profileId: get(user, 'profile.id') },
 		});
 		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
@@ -321,8 +336,8 @@ export class BookmarksViewsPlaysService {
 		const response = await dataService.query({
 			query:
 				type === 'item'
-					? GET_MULTIPLE_ITEM_VIEW_COUNTS
-					: GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
+					? GetMultipleItemViewCountsDocument
+					: GetMultipleCollectionViewCountsDocument,
 			variables: { uuids: contentIds },
 		});
 		const items = get(response, 'data.items', []);
@@ -347,9 +362,14 @@ export class BookmarksViewsPlaysService {
 				user
 			);
 
-			await dataService.mutate({
+			await dataService.query<
+				| IncrementItemPlaysMutation
+				| IncrementItemViewsMutation
+				| IncrementCollectionViewsMutation
+				| IncrementCollectionPlaysMutation
+			>({
+				query,
 				variables,
-				mutation: query,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 		} catch (err) {

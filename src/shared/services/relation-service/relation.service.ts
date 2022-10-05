@@ -1,14 +1,37 @@
 import { Avo } from '@viaa/avo2-types';
-import { RelationEntry, RelationType } from '@viaa/avo2-types/types/collection';
+import { RelationEntry } from '@viaa/avo2-types/types/collection';
 import { get } from 'lodash-es';
 
+import {
+	DeleteCollectionRelationsByObjectDocument,
+	DeleteCollectionRelationsByObjectMutation,
+	DeleteCollectionRelationsBySubjectDocument,
+	DeleteCollectionRelationsBySubjectMutation,
+	DeleteItemRelationsByObjectDocument,
+	DeleteItemRelationsByObjectMutation,
+	DeleteItemRelationsBySubjectDocument,
+	DeleteItemRelationsBySubjectMutation,
+	GetCollectionRelationsByObjectDocument,
+	GetCollectionRelationsByObjectQuery,
+	GetCollectionRelationsBySubjectDocument,
+	GetCollectionRelationsBySubjectQuery,
+	GetItemRelationsByObjectDocument,
+	GetItemRelationsByObjectQuery,
+	GetItemRelationsBySubjectDocument,
+	GetItemRelationsBySubjectQuery,
+	InsertCollectionRelationDocument,
+	InsertCollectionRelationMutation,
+	InsertItemRelationDocument,
+	InsertItemRelationMutation,
+	Lookup_Enum_Relation_Types_Enum,
+} from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
 
 export class RelationService {
 	public static async fetchRelationsByObject(
 		type: 'collection' | 'item',
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[]
 	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, null, relationType, objectIds);
@@ -17,7 +40,7 @@ export class RelationService {
 	public static async fetchRelationsBySubject(
 		type: 'collection' | 'item',
 		subjectIds: string[],
-		relationType: RelationType
+		relationType: Lookup_Enum_Relation_Types_Enum
 	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, subjectIds, relationType, null);
 	}
@@ -25,10 +48,10 @@ export class RelationService {
 	private static async fetchRelations(
 		type: 'collection' | 'item',
 		subjectIds: string[] | null,
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[] | null
 	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
-		let variables: any;
+		let variables: any = undefined;
 		const isCollection = type === 'collection';
 		try {
 			variables = {
@@ -37,14 +60,19 @@ export class RelationService {
 				...(subjectIds ? { subjectIds } : {}),
 			};
 			const collectionQuery = objectIds
-				? FETCH_COLLECTION_RELATIONS_BY_OBJECTS
-				: FETCH_COLLECTION_RELATIONS_BY_SUBJECTS;
+				? GetCollectionRelationsByObjectDocument
+				: GetCollectionRelationsBySubjectDocument;
 			const itemQuery = objectIds
-				? FETCH_ITEM_RELATIONS_BY_OBJECTS
-				: FETCH_ITEM_RELATIONS_BY_SUBJECTS;
-			const response = await dataService.mutate({
+				? GetItemRelationsByObjectDocument
+				: GetItemRelationsBySubjectDocument;
+			const response = await dataService.query<
+				| GetCollectionRelationsByObjectQuery
+				| GetCollectionRelationsBySubjectQuery
+				| GetItemRelationsByObjectQuery
+				| GetItemRelationsBySubjectQuery
+			>({
 				variables,
-				mutation: isCollection ? collectionQuery : itemQuery,
+				query: isCollection ? collectionQuery : itemQuery,
 			});
 			return (
 				get(
@@ -72,7 +100,7 @@ export class RelationService {
 	public static async insertRelation(
 		type: 'collection' | 'item',
 		subjectId: string,
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string
 	): Promise<number> {
 		let variables: any;
@@ -83,9 +111,11 @@ export class RelationService {
 				objectId,
 				subjectId,
 			};
-			const response = await dataService.mutate({
+			const response = await dataService.query<
+				InsertCollectionRelationMutation | InsertItemRelationMutation
+			>({
 				variables,
-				mutation: isCollection ? INSERT_COLLECTION_RELATION : INSERT_ITEM_RELATION,
+				query: isCollection ? InsertCollectionRelationDocument : InsertItemRelationDocument,
 				update: isCollection
 					? ApolloCacheManager.clearCollectionCache
 					: ApolloCacheManager.clearItemCache,
@@ -112,7 +142,7 @@ export class RelationService {
 
 	public static async deleteRelationsByObject(
 		type: 'collection' | 'item',
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string
 	): Promise<void> {
 		return RelationService.deleteRelations(type, null, relationType, objectId);
@@ -121,7 +151,7 @@ export class RelationService {
 	public static async deleteRelationsBySubject(
 		type: 'collection' | 'item',
 		subjectId: string,
-		relationType: RelationType
+		relationType: Lookup_Enum_Relation_Types_Enum
 	): Promise<void> {
 		return RelationService.deleteRelations(type, subjectId, relationType, null);
 	}
@@ -129,7 +159,7 @@ export class RelationService {
 	private static async deleteRelations(
 		type: 'collection' | 'item',
 		subjectId: string | null,
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string | null
 	): Promise<void> {
 		const isCollection = type === 'collection';
@@ -141,14 +171,19 @@ export class RelationService {
 				...(subjectId ? { subjectId } : {}),
 			};
 			const collectionQuery = objectId
-				? DELETE_COLLECTION_RELATIONS_BY_OBJECT
-				: DELETE_COLLECTION_RELATIONS_BY_SUBJECT;
+				? DeleteCollectionRelationsByObjectDocument
+				: DeleteCollectionRelationsBySubjectDocument;
 			const itemQuery = objectId
-				? DELETE_ITEM_RELATIONS_BY_OBJECT
-				: DELETE_ITEM_RELATIONS_BY_SUBJECT;
-			const response = await dataService.mutate({
+				? DeleteItemRelationsByObjectDocument
+				: DeleteItemRelationsBySubjectDocument;
+			await dataService.query<
+				| DeleteCollectionRelationsByObjectMutation
+				| DeleteCollectionRelationsBySubjectMutation
+				| DeleteItemRelationsByObjectMutation
+				| DeleteItemRelationsBySubjectMutation
+			>({
 				variables,
-				mutation: isCollection ? collectionQuery : itemQuery,
+				query: isCollection ? collectionQuery : itemQuery,
 				update: isCollection
 					? ApolloCacheManager.clearCollectionCache
 					: ApolloCacheManager.clearItemCache,
