@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { clone, compact, fromPairs, take } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -82,8 +82,15 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 
 	// State
 	const [checkedStates, setCheckedStates] = useState(optionsFromPairs);
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [isOpen, setIsOpen] = useState(false);
 	const [searchKeyword, setSearchKeyword] = useState<string>('');
+	const [isDropdown, setIsDropdown] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		if (options.length && isDropdown === null) {
+			setIsDropdown(options.length <= 7);
+		}
+	}, [options, isOpen]);
 
 	// Methods
 	const getSelectedTags = (): Tag[] =>
@@ -108,6 +115,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	// Listeners
 	const applyFilter = async (): Promise<void> => {
 		onChange(getSelectedFilterIds(checkedStates), id);
+		onSearch?.(id);
 		await closeDropdownOrModal();
 	};
 
@@ -152,7 +160,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		</FormGroup>
 	);
 
-	const renderCheckboxControl = () => {
+	const renderDropdownControl = () => {
 		return (
 			<Dropdown
 				label={label}
@@ -258,10 +266,6 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 									value={searchKeyword}
 									onChange={(value) => {
 										setSearchKeyword(value);
-
-										if (onSearch) {
-											onSearch(id);
-										}
 									}}
 								/>
 								{!!options.filter(
@@ -337,12 +341,12 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	if (disabled) {
 		return (
 			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
-				{options.length <= 7 ? renderCheckboxControl() : renderModalControl()}
+				{isDropdown ? renderDropdownControl() : renderModalControl()}
 			</div>
 		);
 	}
 
-	return options.length <= 7 ? renderCheckboxControl() : renderModalControl();
+	return isDropdown ? renderDropdownControl() : renderModalControl();
 };
 
 export const renderDropdownButton = (
@@ -350,7 +354,7 @@ export const renderDropdownButton = (
 	isOpen: boolean,
 	selectedTags: { label: string; id: string | number }[],
 	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void,
-	showSelectedValuesOnCollapsed: boolean = true
+	showSelectedValuesOnCollapsed = true
 ) => {
 	return (
 		<Button autoHeight className="c-checkbox-dropdown-modal__trigger" type="secondary">
