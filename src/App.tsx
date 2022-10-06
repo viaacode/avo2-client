@@ -15,6 +15,7 @@ import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
+import { SpecialUserGroup } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
@@ -32,7 +33,6 @@ import store from './store';
 
 import './styles/main.scss';
 import './App.scss';
-import { SpecialUserGroup } from './admin/user-groups/user-group.const';
 
 const history = createBrowserHistory();
 wrapHistory(history, {

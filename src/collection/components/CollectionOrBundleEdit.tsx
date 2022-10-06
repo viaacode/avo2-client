@@ -7,7 +7,6 @@ import {
 	HeaderButtons,
 	MoreOptionsDropdown,
 	Navbar,
-	Spacer,
 	TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
@@ -876,16 +875,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	// Render functions
-	const renderSaveButton = () => (
-		<Button
-			type="primary"
-			label={t('collection/views/collection-edit___opslaan')}
-			onClick={() => executeAction('save')}
-			disabled={isSavingCollection}
-		/>
-	);
-
 	const handleAddItemById = async (id: string) => {
 		try {
 			if (isCollection) {
@@ -1146,7 +1135,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>
-				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);

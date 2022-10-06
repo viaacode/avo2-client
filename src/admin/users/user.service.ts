@@ -540,7 +540,7 @@ export class UserService {
 		}
 	}
 
-	static async fetchDistinctBusinessCategories() {
+	static async fetchDistinctBusinessCategories(): Promise<string[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_DISTINCT_BUSINESS_CATEGORIES,
@@ -548,9 +548,10 @@ export class UserService {
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
-			return get(response, 'data.users_profiles', []).map(
-				(profile: Partial<Avo.User.Profile>) => profile.business_category
-			);
+
+			return (get(response, 'data.users_profiles', []) as Partial<Avo.User.Profile>[])
+				.map((profile) => profile.business_category)
+				.filter((category) => !!category) as string[]; // Cast to fix infer
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {
 				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
@@ -558,7 +559,7 @@ export class UserService {
 		}
 	}
 
-	static async fetchIdps() {
+	static async fetchIdps(): Promise<string[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_IDPS,

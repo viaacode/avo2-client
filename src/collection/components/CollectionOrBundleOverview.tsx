@@ -33,6 +33,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -52,8 +53,6 @@ import { ContentTypeNumber } from '../collection.types';
 
 import './CollectionOrBundleOverview.scss';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
-
-import { getMoreOptionsLabel } from '../../shared/constants';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
