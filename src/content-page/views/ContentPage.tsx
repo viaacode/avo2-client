@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { cloneDeep, compact, intersection, noop, set } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BlockImageProps } from '@viaa/avo2-components';
@@ -69,7 +69,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 	}, [fetchContentPage]);
 
 	useEffect(() => {
-		if (contentPageInfo) {
+		if (contentPageInfo && loadingInfo.state !== 'loaded') {
 			setLoadingInfo({ state: 'loaded' });
 			scrollTo({ top: 0 });
 		}
@@ -150,7 +150,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 		return contentBlockBlockConfigs;
 	};
 
-	const renderContentPage = () => {
+	const renderContentPage = useCallback(() => {
 		return (
 			<>
 				<InteractiveTour showButton={false} />
@@ -181,14 +181,17 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 				)}
 			</>
 		);
-	};
+	}, [contentPageInfo]);
 
-	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={contentPageInfo}
-			render={renderContentPage}
-		/>
+	return useMemo(
+		() => (
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={contentPageInfo}
+				render={renderContentPage}
+			/>
+		),
+		[loadingInfo, contentPageInfo, renderContentPage]
 	);
 };
 
