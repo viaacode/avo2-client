@@ -85,7 +85,6 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	const [isOpen, setIsOpen] = useState(false);
 	const [searchKeyword, setSearchKeyword] = useState<string>('');
 
-
 	// Methods
 	const getSelectedTags = (): Tag[] =>
 		compact(
