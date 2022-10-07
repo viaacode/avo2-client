@@ -11,32 +11,26 @@ ENV CI $CI
 ENV TZ=Europe/Brussels
 WORKDIR /app
 RUN mkdir ./build/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
-COPY  . .
+COPY  --chown=node:node . .
 RUN chown -R node:node /app && chmod -R  g+sw /app
 RUN apk update
 RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-#USER node
-RUN npm ci --production=false --force --legacy-peer-deps
+USER node
+RUN npm ci --include=dev --legacy-peer-deps
+## Builder image
 FROM node:16-alpine AS build
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production
 ARG NODE_ENV=production
-ARG PRODUCTION=$PRODUCTION
-ARG CI=true
 ENV NODE_ENV $NODE_ENV
-ENV CI $CI
-ENV TZ=Europe/Brussels
-ENV NODE_OPTIONS="--max_old_space_size=4096"
 WORKDIR /app
-USER node
-RUN CI=false npm run build
-# set permissions for openshift
-#USER root
-#RUN chmod -R g+rwx /app && chown 101:101 /app
+# Build the app
+RUN npm run build
+## final image with static serving with nginx
 FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV
-ENV CI false
 USER root
 COPY default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/build /usr/share/nginx/html
