@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { clone, compact, fromPairs, take } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
