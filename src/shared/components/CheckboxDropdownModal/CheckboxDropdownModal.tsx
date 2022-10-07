@@ -84,13 +84,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	const [checkedStates, setCheckedStates] = useState(optionsFromPairs);
 	const [isOpen, setIsOpen] = useState(false);
 	const [searchKeyword, setSearchKeyword] = useState<string>('');
-	const [isDropdown, setIsDropdown] = useState<boolean | null>(null);
 
-	useEffect(() => {
-		if (options.length && isDropdown === null) {
-			setIsDropdown(options.length <= 7);
-		}
-	}, [options, isOpen]);
 
 	// Methods
 	const getSelectedTags = (): Tag[] =>
@@ -341,12 +335,12 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	if (disabled) {
 		return (
 			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
-				{isDropdown ? renderDropdownControl() : renderModalControl()}
+				{options.length <= 7 ? renderDropdownControl() : renderModalControl()}
 			</div>
 		);
 	}
 
-	return isDropdown ? renderDropdownControl() : renderModalControl();
+	return options.length <= 7 ? renderDropdownControl() : renderModalControl();
 };
 
 export const renderDropdownButton = (
