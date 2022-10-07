@@ -14,6 +14,16 @@
 		}
 	}
 
+	.c-toolbar__left {
+		flex-grow: 1;
+		max-width: 100%;
+		padding-left: 0.8rem;
+	}
+
+	.c-toolbar__right {
+		flex-shrink: 1;
+	}
+
 	@media (max-width: $g-bp2) {
 		.c-video-column {
 			margin-left: 0;
