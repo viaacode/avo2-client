@@ -1,6 +1,5 @@
 FROM nginxinc/nginx-unprivileged
 USER nginx
-
 FROM node:16-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
