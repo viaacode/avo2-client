@@ -86,7 +86,7 @@ pipeline {
                 container('oc') {
                     script {
                         sh '''#!/bin/bash
-			set -e
+                        set -e
                         oc project $OC_PROJECT
                         oc import-image $BASE_IMG --confirm
                         oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
@@ -94,6 +94,7 @@ pipeline {
                         oc annotate --overwrite buildconfig/$APP_NAME ref=$BRANCH_NAME shortcommit=$GIT_SHORT_COMMIT
                         patch-bc-current-ref.sh
                         oc start-build $APP_NAME --from-dir=. --follow=true --wait=true
+                        '''
                     }
                 }
             }
