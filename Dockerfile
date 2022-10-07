@@ -42,3 +42,5 @@ RUN chgrp -R 101 /usr/share/nginx/html && chmod -R g+rwx /usr/share/nginx/html
 RUN chmod +x env.sh
 USER nginx
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+
