@@ -309,6 +309,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 						changeCollectionState={changeCollectionState}
 						openOptionsId={openOptionsId}
 						setOpenOptionsId={setOpenOptionsId}
+						isParentACollection={isCollection}
 						fragment={fragment}
 						allowedToAddLinks={allowedToAddLinks as boolean}
 						renderWarning={() => {
