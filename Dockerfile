@@ -24,6 +24,7 @@ COPY --from=compile /app /app
 # set our node environment, defaults to production
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 # Build the app
 RUN npm run build
