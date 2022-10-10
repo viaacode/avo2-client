@@ -14,9 +14,9 @@
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --cache",
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --fix",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
-    "extract-translations": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format:fix",
-    "whitelist-queries": "ts-node --transpile-only --require dotenv/config  --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts && cp scripts/client-whitelist.json ../avo2-proxy/server/scripts",
-    "update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
+    "extract-translations": "ts-node --max-old-space-size=2048 --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format:fix",
+    "whitelist-queries": "ts-node --max-old-space-size=2048 --transpile-only --require dotenv/config  --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts && cp scripts/client-whitelist.json ../avo2-proxy/server/scripts",
+    "update-sitemap": "ts-node --max-old-space-size=2048 --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
     "licenses": "license-checker --csv --out licenses.csv",
     "analyse": "node --max-old-space-size=2048 $(which npm) run build && source-map-explorer 'build/static/js/*.js'"
   },
