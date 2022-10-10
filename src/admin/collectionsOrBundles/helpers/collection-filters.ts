@@ -226,16 +226,16 @@ export function generateCollectionWhereObject(
 
 	// Marcom filters
 	const marcomFilters = filters as CollectionOrBundleMarcomTableState;
-	if (marcomFilters?.marcom_last_communication_channel_type?.length) {
+	if (marcomFilters?.marcom_last_communication_channel_name?.length) {
 		andFilters.push({
 			_or: [
 				{
-					channel_type: {
-						_in: marcomFilters.marcom_last_communication_channel_type,
+					channel_name: {
+						_in: marcomFilters.marcom_last_communication_channel_name,
 					},
 				},
-				...(marcomFilters.marcom_last_communication_channel_type.includes(NULL_FILTER)
-					? [{ channel_type: { _is_null: true } }]
+				...(marcomFilters.marcom_last_communication_channel_name.includes(NULL_FILTER)
+					? [{ channel_name: { _is_null: true } }]
 					: []),
 			],
 		});
