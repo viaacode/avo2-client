@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { noop } from 'lodash-es';
@@ -27,10 +28,9 @@ import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
 import { insideIframe } from './shared/helpers/inside-iframe';
 import withUser, { UserProps } from './shared/hocs/withUser';
-import { dataService } from './shared/services';
+import { dataService, ToastService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
-
 import './styles/main.scss';
 import './App.scss';
 
@@ -126,6 +126,17 @@ let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 const Root: FunctionComponent = () => {
 	const [t] = useTranslation();
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
+
+	useEffect(() => {
+		const url = new URL(window.location.href);
+		const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
+		const hasLinked = url.searchParams.get(linked) !== null;
+		if (hasLinked) {
+			ToastService.success(t('app___je-account-is-gekoppeld'));
+			url.searchParams.delete(linked);
+			history.replace(url.toString().replace(url.origin, ''));
+		}
+	}, []);
 
 	return (
 		<ApolloProvider client={dataService}>
