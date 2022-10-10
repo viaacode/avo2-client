@@ -18,16 +18,19 @@ USER node
 RUN npm ci --include=dev --legacy-peer-deps
 ## Builder image
 FROM node:16-alpine AS build
-ENV NODE_OPTIONS="--max_old_space_size=2048"
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
-ENV NODE_OPTIONS="--max_old_space_size=2048 -r ts-node/register --max_old_space_size=2048"
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 # Build the app
-RUN node --max-old-space-size=2048 $(which npm) run build
+# try alias to keep --max_old_space_size=2048 in subprocesses
+RUN alias npm='node --max_old_space_size=3584 /usr/bin/npm' >> ~/.bash_aliases &&\
+   . ~/.bash_aliases &&\
+   alias &&\
+  npm run build
 ## final image with static serving with nginx
 FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV
