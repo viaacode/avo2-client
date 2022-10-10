@@ -23,6 +23,7 @@ import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
+import Html from './shared/components/Html/Html';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
@@ -166,9 +167,13 @@ const Root: FunctionComponent = () => {
 								cancelLabel={t('app___blijven')}
 								confirmLabel={t('app___verlaten')}
 								title={t('app___wijzigingen-opslaan')}
-								body={t(
-									'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-								)}
+								body={
+									<Html
+										content={t(
+											'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+										)}
+									/>
+								}
 								confirmButtonType="primary"
 							/>
 						</QueryParamProvider>

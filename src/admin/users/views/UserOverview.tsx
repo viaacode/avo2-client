@@ -1,4 +1,4 @@
-import { TagInfo, TagList, TagOption } from '@viaa/avo2-components';
+import { Checkbox, TagInfo, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import FileSaver from 'file-saver';
@@ -25,6 +25,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { eduOrgToClientOrg } from '../../../shared/helpers/edu-org-string-to-client-org';
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
@@ -65,12 +66,7 @@ import { UserBulkAction, UserOverviewTableCol, UserTableState } from '../user.ty
 
 import './UserOverview.scss';
 
-interface UserOverviewProps {}
-
-const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & UserProps> = ({
-	user,
-	history,
-}) => {
+const UserOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user, history }) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
@@ -90,6 +86,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	];
 	const [usersDeleteModalOpen, setUsersDeleteModalOpen] = useState<boolean>(false);
 	const [changeSubjectsModalOpen, setChangeSubjectsModalOpen] = useState<boolean>(false);
+	const [isConfirmBlockUserModalVisible, setIsConfirmBlockUserModalVisible] =
+		useState<boolean>(false);
+	const [isConfirmUnblockUserModalVisible, setIsConfirmUnblockUserModalVisible] =
+		useState<boolean>(false);
+	const [shouldSendActionEmail, setShouldSendActionEmail] = useState<boolean>(false);
 	const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
 	const columns = useMemo(
@@ -368,7 +369,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	const bulkUpdateBlockStatus = async (blockOrUnblock: boolean) => {
 		try {
 			setIsLoading(true);
-			await UserService.updateBlockStatusByProfileIds(selectedProfileIds, blockOrUnblock);
+			await UserService.updateBlockStatusByProfileIds(
+				selectedProfileIds,
+				blockOrUnblock,
+				shouldSendActionEmail
+			);
 			await fetchProfiles();
 			ToastService.success(
 				blockOrUnblock
@@ -465,11 +470,11 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 				return;
 
 			case 'block':
-				await bulkUpdateBlockStatus(true);
+				setIsConfirmBlockUserModalVisible(true);
 				return;
 
 			case 'unblock':
-				await bulkUpdateBlockStatus(false);
+				setIsConfirmUnblockUserModalVisible(true);
 				return;
 
 			case 'delete':
@@ -639,6 +644,67 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 					bulkActions={GET_USER_BULK_ACTIONS(user)}
 					rowKey={(row: Avo.User.Profile) => row.id || get(row, 'user.mail')}
 				/>
+				<ConfirmModal
+					className="p-user-overview__confirm-modal"
+					isOpen={isConfirmBlockUserModalVisible}
+					onClose={() => {
+						setIsConfirmBlockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+					}}
+					confirmCallback={async () => {
+						setIsConfirmBlockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+						await bulkUpdateBlockStatus(true);
+					}}
+					title={t('Bevestig')}
+					confirmLabel={t('Deactiveren')}
+					size={'medium'}
+					body={
+						<>
+							<strong>
+								{t('Weet je zeker dat je deze gebruiker(s) wil deactiveren?')}
+							</strong>
+							<Checkbox
+								label={t('Breng de gebruiker(s) op de hoogte van deze actie.')}
+								checked={shouldSendActionEmail}
+								onChange={(newShouldSendActionEmail) =>
+									setShouldSendActionEmail(newShouldSendActionEmail)
+								}
+							/>
+						</>
+					}
+				/>
+				<ConfirmModal
+					className="p-user-overview__confirm-modal"
+					isOpen={isConfirmUnblockUserModalVisible}
+					onClose={() => {
+						setIsConfirmUnblockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+					}}
+					confirmCallback={async () => {
+						setIsConfirmUnblockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+						await bulkUpdateBlockStatus(false);
+					}}
+					title={t('Bevestig')}
+					confirmLabel={t('Opnieuw activeren')}
+					confirmButtonType={'primary'}
+					size={'medium'}
+					body={
+						<>
+							<strong>
+								{t('Weet je zeker dat je deze gebruiker(s) opnieuw wil activeren?')}
+							</strong>
+							<Checkbox
+								label={t('Breng de gebruiker(s) op de hoogte van deze actie.')}
+								checked={shouldSendActionEmail}
+								onChange={(newShouldSendActionEmail) =>
+									setShouldSendActionEmail(newShouldSendActionEmail)
+								}
+							/>
+						</>
+					}
+				/>
 				<UserDeleteModal
 					selectedProfileIds={selectedProfileIds}
 					isOpen={usersDeleteModalOpen}
@@ -699,4 +765,4 @@ const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & 
 	);
 };
 
-export default compose(withRouter, withUser)(UserOverview) as FunctionComponent<UserOverviewProps>;
+export default compose(withRouter, withUser)(UserOverview) as FunctionComponent;
