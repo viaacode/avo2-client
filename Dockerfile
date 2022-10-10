@@ -27,7 +27,7 @@ ENV NODE_ENV $NODE_ENV
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 # Build the app
-RUN npm run build
+RUN node --max-old-space-size=2048 $(which npm) run build
 ## final image with static serving with nginx
 FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV
