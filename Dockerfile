@@ -27,7 +27,7 @@ ARG CI=true
 ENV NODE_ENV $NODE_ENV
 ENV CI $CI
 ENV TZ=Europe/Brussels
-ENV NODE_OPTIONS="--max_old_space_size=4096"
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 USER node
 RUN CI=false npm run build
