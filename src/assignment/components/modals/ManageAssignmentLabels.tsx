@@ -1,8 +1,3 @@
-import { compact, get, intersection, sortBy, without } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ValueType } from 'react-select';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -19,6 +14,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import { compact, get, intersection, sortBy, without } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../../admin/content-block/components/fields';
 import { CustomError } from '../../../shared/helpers';
@@ -243,9 +242,11 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	return (
 		<Modal
 			className="m-manage-assignment-labels"
-			title={t(
-				'assignment/components/modals/manage-assignment-labels___beheer-vakken-en-projecten'
-			)}
+			title={
+				type === 'LABEL'
+					? t('assignment/components/modals/manage-assignment-labels___beheer-labels')
+					: t('assignment/components/modals/manage-assignment-labels___beheer-klassen')
+			}
 			size="large"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -254,9 +255,15 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			<ModalBody>
 				<Spacer margin="bottom-large">
 					<Button
-						label={t(
-							'assignment/components/modals/manage-assignment-labels___label-toevoegen'
-						)}
+						label={
+							type === 'LABEL'
+								? t(
+										'assignment/components/modals/manage-assignment-labels___voeg-een-label-toe'
+								  )
+								: t(
+										'assignment/components/modals/manage-assignment-labels___voeg-een-klas-toe'
+								  )
+						}
 						icon="plus"
 						onClick={handleAddLabelClick}
 						type="secondary"
@@ -265,23 +272,39 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				<Table
 					columns={[
 						{
-							label: t(
-								'assignment/components/modals/manage-assignment-labels___kleur'
-							),
+							label:
+								type === 'LABEL'
+									? t(
+											'assignment/components/modals/manage-assignment-labels___label-kleur'
+									  )
+									: t(
+											'assignment/components/modals/manage-assignment-labels___klas-kleur'
+									  ),
 							id: 'color',
 							col: '2',
 						},
 						{
-							label: t(
-								'assignment/components/modals/manage-assignment-labels___label'
-							),
+							label:
+								type === 'LABEL'
+									? t(
+											'assignment/components/modals/manage-assignment-labels___label'
+									  )
+									: t(
+											'assignment/components/modals/manage-assignment-labels___klas'
+									  ),
 							id: 'label',
 						},
 						{ label: '', id: 'actions' },
 					]}
-					emptyStateMessage={t(
-						'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
-					)}
+					emptyStateMessage={
+						type === 'LABEL'
+							? t(
+									'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
+							  )
+							: t(
+									'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-klassen-aangemaakt'
+							  )
+					}
 					data={assignmentLabels}
 					renderCell={renderCell}
 					rowKey="id"
