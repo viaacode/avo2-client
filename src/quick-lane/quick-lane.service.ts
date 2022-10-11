@@ -9,10 +9,11 @@ import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
-import { dataService } from '../shared/services';
+import { ApolloCacheManager, dataService } from '../shared/services';
 import {
 	QuickLaneInsertResponse,
 	QuickLaneQueryResponse,
+	QuickLaneRemoveResponse,
 	QuickLaneUpdateResponse,
 	QuickLaneUrlObject,
 	QuickLaneUrlRecord,
@@ -22,6 +23,7 @@ import {
 	GET_QUICK_LANE_BY_CONTENT_AND_OWNER,
 	GET_QUICK_LANE_BY_ID,
 	INSERT_QUICK_LANE,
+	REMOVE_QUICK_LANES,
 	UPDATE_QUICK_LANE,
 } from './quick-lane.gql';
 
@@ -234,6 +236,7 @@ export class QuickLaneService {
 						updated_at: now,
 					},
 				},
+				update: ApolloCacheManager.clearQuickLaneCache,
 			});
 
 			const success = response.data?.update_app_quick_lanes.returning.every(
@@ -258,6 +261,37 @@ export class QuickLaneService {
 				id,
 				object,
 				query: 'INSERT_QUICK_LANE',
+			});
+		}
+	}
+
+	// DELETE
+
+	static async removeQuickLanesById(ids: string[]): Promise<number> {
+		try {
+			const response = await dataService.mutate<QuickLaneRemoveResponse>({
+				mutation: REMOVE_QUICK_LANES,
+				variables: {
+					ids,
+				},
+				update: ApolloCacheManager.clearQuickLaneCache,
+			});
+
+			const removed = response.data?.delete_app_quick_lanes.returning || [];
+			const missing = ids.filter((id) => !removed.find((item) => item.id == id));
+
+			if (missing.length > 0) {
+				console.warn('Could not remove all quick lane urls', {
+					ids,
+					response,
+				});
+			}
+
+			return removed.length;
+		} catch (err) {
+			throw new CustomError('Failed to remove quick lane urls', err, {
+				ids,
+				query: 'REMOVE_QUICK_LANE',
 			});
 		}
 	}

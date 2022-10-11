@@ -123,3 +123,14 @@ export const UPDATE_QUICK_LANE = gql`
 		}
 	}
 `;
+
+export const REMOVE_QUICK_LANES = gql`
+	mutation removeQuickLanes($ids: [uuid!]!) {
+		delete_app_quick_lanes(where: { id: { _in: $ids } }) {
+			affected_rows
+			returning {
+				id
+			}
+		}
+	}
+`;

@@ -98,6 +98,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		const shouldBePublishedFirst =
 			isCollection({ content_label }) &&
 			isPublishRequired &&
+			content &&
 			!(content as CollectionSchema).is_public; // AVO-1880
 
 		setActiveTab(

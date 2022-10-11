@@ -1,3 +1,5 @@
+import { MoreOptionsDropdown } from '@viaa/avo2-components';
+import { MenuItemInfoSchema } from '@viaa/avo2-components/dist/esm/components/Menu/MenuContent/MenuContent';
 import { isEqual } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,12 +10,16 @@ import FilterTable, {
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { LoadingInfo } from '../../shared/components';
+import { QuickLaneService } from '../../quick-lane/quick-lane.service';
+import { DeleteObjectModal, LoadingInfo } from '../../shared/components';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { QUICK_LANE_COLUMNS, QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
+import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks';
+import { ToastService } from '../../shared/services';
 import {
 	QuickLaneFilters,
 	QuickLaneFilterService,
@@ -40,7 +46,10 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
+	const [selected, setSelected] = useState<QuickLaneUrlObject | undefined>(undefined);
 	const [quickLanesCount, setQuickLanesCount] = useState<number>(0);
+	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
 	// Set default sorting
 	const [query, setQuery] = useQueryParams({
@@ -61,7 +70,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			dataType: TableColumnDataType.string,
 			visibleByDefault: true,
 		},
-		// Hide type on mobile
+		// Hide type, timestamps & author on mobile
 		...(isMobileWidth()
 			? []
 			: [
@@ -74,11 +83,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						filterType: 'CheckboxDropdownModal',
 						filterProps: { options: getTypeOptions(t) },
 					},
-			  ]),
-		// Hide timestamps & author on mobile
-		...(isMobileWidth()
-			? []
-			: [
+
 					...(isOrganisational(user)
 						? [
 								{
@@ -93,6 +98,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 								},
 						  ]
 						: []),
+
 					...[
 						{
 							id: QUICK_LANE_COLUMNS.CREATED_AT,
@@ -113,6 +119,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						// },
 					],
 			  ]),
+		{
+			id: QUICK_LANE_COLUMNS.ACTIONS,
+			sortable: false,
+			visibleByDefault: true,
+		},
 	] as FilterableColumn[];
 
 	// Data
@@ -196,8 +207,29 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]);
+	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]); // eslint-disable-line
+
+	const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
+		try {
+			QuickLaneService.removeQuickLanesById([id]).then(async () => {
+				await fetchQuickLanes();
+
+				ToastService.success(
+					t('workspace/views/quick-lane-overview___de-gedeelde-link-is-verwijderd')
+				);
+			});
+		} catch (error) {
+			console.error(error);
+
+			ToastService.danger(
+				t(
+					'workspace/views/quick-lane-overview___er-ging-iets-mis-bij-het-verwijderen-van-de-gedeelde-link'
+				)
+			);
+		}
+
+		setIsConfirmationModalOpen(false);
+	};
 
 	// Lifecycle
 
@@ -215,38 +247,134 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	// Rendering
 
 	const renderCell = (data: QuickLaneUrlObject, id: string) => (
-		<QuickLaneFilterTableCell id={id} data={data} />
+		<QuickLaneFilterTableCell
+			id={id}
+			data={data}
+			actions={(data) => {
+				type actions = 'edit' | 'copy' | 'delete';
+
+				const items = [
+					{
+						icon: 'edit',
+						id: 'edit',
+						label: t('workspace/views/quick-lane-overview___bewerk'),
+					},
+					{
+						icon: 'copy',
+						id: 'copy',
+						label: t('workspace/views/quick-lane-overview___kopieer-link'),
+					},
+					{
+						icon: 'delete',
+						id: 'delete',
+						label: t('workspace/views/quick-lane-overview___verwijder'),
+					},
+				] as (MenuItemInfoSchema & { id: actions })[];
+
+				return (
+					data && (
+						<MoreOptionsDropdown
+							isOpen={data?.id === selected?.id}
+							onOpen={() => setSelected(data)}
+							onClose={() => {
+								const isAModalOpen =
+									isQuickLaneModalOpen || isConfirmationModalOpen;
+
+								!isAModalOpen && setSelected(undefined);
+							}}
+							label={t('workspace/views/quick-lane-overview___meer-acties')}
+							menuItems={items}
+							onOptionClicked={async (action) => {
+								if (selected === undefined) {
+									return;
+								}
+
+								switch (action.toString() as actions) {
+									case 'edit':
+										setSelected(
+											await QuickLaneService.fetchQuickLaneById(selected.id)
+										);
+										setIsQuickLaneModalOpen(true);
+										break;
+
+									case 'copy':
+										copyQuickLaneToClipboard(data.id, t);
+										setSelected(undefined);
+										break;
+
+									case 'delete':
+										setIsConfirmationModalOpen(true);
+										break;
+
+									default:
+										break;
+								}
+							}}
+						/>
+					)
+				);
+			}}
+		/>
 	);
 
 	return (
-		<FilterTable
-			columns={columns}
-			data={quickLanes}
-			dataCount={quickLanesCount}
-			itemsPerPage={ITEMS_PER_PAGE}
-			noContentMatchingFiltersMessage={
-				loadingInfo.state === 'loaded'
-					? t(
-							'workspace/views/quick-lane-overview___er-werden-geen-gedeelde-links-gevonden-die-voldoen-aan-de-opgegeven-criteria'
-					  )
-					: ''
-			}
-			onTableStateChanged={(state) => {
-				// NOTE: prevents recursion loop but hits theoretical performance
-				if (!isEqual(filters, state)) {
-					setFilters(state as QuickLaneOverviewFilterState);
+		<>
+			<FilterTable
+				columns={columns}
+				data={quickLanes}
+				dataCount={quickLanesCount}
+				itemsPerPage={ITEMS_PER_PAGE}
+				noContentMatchingFiltersMessage={
+					loadingInfo.state === 'loaded'
+						? t(
+								'workspace/views/quick-lane-overview___er-werden-geen-gedeelde-links-gevonden-die-voldoen-aan-de-opgegeven-criteria'
+						  )
+						: ''
 				}
-			}}
-			renderCell={renderCell}
-			renderNoResults={() => <h1>NoResults</h1>}
-			searchTextPlaceholder={t(
-				'workspace/views/quick-lane-overview___zoek-op-titel-of-naam-van-de-auteur'
-			)}
-			rowKey="id"
-			variant="styled"
-			isLoading={loadingInfo.state === 'loading'}
-			hideTableColumnsButton // Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
-		/>
+				onTableStateChanged={(state) => {
+					// NOTE: prevents recursion loop but hits theoretical performance
+					if (!isEqual(filters, state)) {
+						setFilters(state as QuickLaneOverviewFilterState);
+					}
+				}}
+				renderCell={renderCell}
+				renderNoResults={() => <h1>NoResults</h1>}
+				searchTextPlaceholder={t(
+					'workspace/views/quick-lane-overview___zoek-op-titel-of-naam-van-de-auteur'
+				)}
+				rowKey="id"
+				variant="styled"
+				isLoading={loadingInfo.state === 'loading'}
+				hideTableColumnsButton // Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
+			/>
+
+			<QuickLaneModal
+				modalTitle={t('workspace/views/quick-lane-overview___gedeelde-link-aanpassen')}
+				isOpen={isQuickLaneModalOpen}
+				content={selected?.content}
+				content_label={selected?.content_label}
+				onClose={() => {
+					setIsQuickLaneModalOpen(false);
+					setSelected(undefined);
+					fetchQuickLanes();
+				}}
+			/>
+
+			<DeleteObjectModal
+				title={t(
+					'workspace/views/quick-lane-overview___ben-je-zeker-dat-je-deze-gedeelde-link-wilt-verwijderen'
+				)}
+				body={t(
+					'workspace/views/quick-lane-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
+				isOpen={isConfirmationModalOpen}
+				onClose={() => {
+					setIsConfirmationModalOpen(false);
+					setSelected(undefined);
+				}}
+				confirmCallback={async () => selected && removeQuickLane(selected.id)}
+			/>
+		</>
 	);
 };
 
