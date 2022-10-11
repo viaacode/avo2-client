@@ -27,9 +27,8 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 # Build the app
 # try alias to keep --max_old_space_size=2048 in subprocesses
-RUN alias npm='node --max_old_space_size=3584 /usr/bin/npm' >> ~/.bash_aliases &&\
-   . ~/.bash_aliases &&\
-   alias &&\
+RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases &&\
+  . ~/.bash_aliases &&\
   npm run build
 ## final image with static serving with nginx
 FROM nginxinc/nginx-unprivileged
