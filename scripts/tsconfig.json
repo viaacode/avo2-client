@@ -4,5 +4,6 @@
 	"compilerOptions": {
 		"module": "CommonJS"
 	},
-	"files": []
+	"files": [],
+        "memoryLimit": 2048
 }
