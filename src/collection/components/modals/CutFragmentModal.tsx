@@ -16,6 +16,7 @@ import { FlowPlayerWrapper } from '../../../shared/components';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import { ToastService } from '../../../shared/services';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
@@ -176,6 +177,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					minTime={0}
 					maxTime={fragmentDuration}
 					onChange={(newStartTime: number, newEndTime: number) => {
+						if (newStartTime !== fragmentStartTime) {
+							setModalVideoSeekTime(newStartTime);
+						} else if (newEndTime !== fragmentEndTime) {
+							setModalVideoSeekTime(newEndTime);
+						}
 						setFragmentStartTime(newStartTime);
 						setFragmentEndTime(newEndTime);
 					}}

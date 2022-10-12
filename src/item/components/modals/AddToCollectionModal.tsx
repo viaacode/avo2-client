@@ -29,6 +29,7 @@ import { canManageEditorial } from '../../../collection/helpers/can-manage-edito
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -306,6 +307,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												newStartTime: number,
 												newEndTime: number
 											) => {
+												if (newStartTime !== fragmentStartTime) {
+													setModalVideoSeekTime(newStartTime);
+												} else if (newEndTime !== fragmentEndTime) {
+													setModalVideoSeekTime(newEndTime);
+												}
 												setFragmentStartTime(newStartTime);
 												setFragmentEndTime(newEndTime);
 											}}
