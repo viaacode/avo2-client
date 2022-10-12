@@ -52,6 +52,7 @@ interface FragmentEditProps {
 	changeCollectionState: (action: CollectionAction) => void;
 	openOptionsId: number | string | null;
 	setOpenOptionsId: (id: number | string | null) => void;
+	isParentACollection: boolean;
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
 	renderWarning?: () => ReactNode | null;
@@ -64,6 +65,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	changeCollectionState,
 	openOptionsId,
 	setOpenOptionsId,
+	isParentACollection,
 	fragment,
 	allowedToAddLinks,
 	renderWarning = () => null,
@@ -77,7 +79,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 		RichEditorState | undefined
 	>(undefined);
 
-	const isCollection = fragment.type === 'COLLECTION';
+	const isThisFragmentACollection = fragment.type === 'COLLECTION';
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -147,7 +149,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			type: 'DELETE_FRAGMENT',
 		});
 
-		const objectType = isCollection ? 'bundle' : 'collection';
+		const objectType = isThisFragmentACollection ? 'bundle' : 'collection';
 		trackEvents(
 			{
 				object: collectionId,
@@ -158,7 +160,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 		);
 
 		ToastService.success(
-			!isCollection
+			!isThisFragmentACollection
 				? t(
 						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
 				  )
@@ -286,7 +288,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
-				{!isCollection && (
+				{!isThisFragmentACollection && (
 					<FormGroup
 						label={t(
 							'collection/components/fragment/fragment-edit___tekstblok-beschrijving'
@@ -324,6 +326,28 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 		);
 	};
 
+	const getDeleteFragmentModalTitle = () => {
+		if (isParentACollection) {
+			// collection
+			if (fragment.type === 'TEXT') {
+				// text
+				return t(
+					'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-deze-tekst-blok-wil-verwijderen-uit-deze-collectie'
+				);
+			} else {
+				// video/audio fragment
+				return t(
+					'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
+				);
+			}
+		} else {
+			// bundle
+			return t(
+				'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
+			);
+		}
+	};
+
 	return (
 		<>
 			<div className="c-panel">
@@ -334,7 +358,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 								<div className="c-button-toolbar">
 									{!isFirst(index) && renderReorderButton(index, 'up')}
 									{!isLast(index) && renderReorderButton(index, 'down')}
-									{itemMetaData && !isCollection && (
+									{itemMetaData && !isThisFragmentACollection && (
 										<Button
 											icon="scissors"
 											label={t(
@@ -369,7 +393,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 					{fragment.type !== CollectionBlockType.TEXT && itemMetaData ? (
 						<Grid>
 							<Column size="3-6">
-								{!isCollection ? (
+								{!isThisFragmentACollection ? (
 									<FlowPlayerWrapper
 										item={itemMetaData}
 										poster={
@@ -399,7 +423,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 				</div>
 			</div>
 
-			{!isCollection && (
+			{!isThisFragmentACollection && (
 				<FragmentAdd
 					index={index}
 					collectionId={collectionId}
@@ -409,15 +433,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			)}
 
 			<DeleteObjectModal
-				title={
-					!isCollection
-						? t(
-								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
-						  )
-						: t(
-								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
-						  )
-				}
+				title={getDeleteFragmentModalTitle()}
 				body={t(
 					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 				)}
@@ -426,7 +442,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 				confirmCallback={() => onDeleteFragment()}
 			/>
 
-			{itemMetaData && !isCollection && (
+			{itemMetaData && !isThisFragmentACollection && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}
