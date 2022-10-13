@@ -109,7 +109,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const navigateToUserRequestForm = () =>
 		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 
-	const onSearchInSearchFilter = async (id: string) => {
+	const onSearchInSearchFilter = async () => {
 		const orderProperty: Avo.Search.OrderProperty =
 			(filterState.orderProperty as Avo.Search.OrderProperty | undefined) ||
 			DEFAULT_SORT_ORDER.orderProperty;
@@ -122,11 +122,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			orderProperty,
 			orderDirection,
 			0,
-			0, // We are only interested in aggs
-			cleanupFilterState(filterState).filters,
-			{},
-			[id as Avo.Search.FilterProp],
-			1000
+			0 // We are only interested in aggs
 		);
 
 		setMultiOptions({
