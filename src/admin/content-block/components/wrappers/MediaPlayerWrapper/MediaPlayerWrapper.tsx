@@ -90,10 +90,7 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 
 	const renderVideoPlayer = () => {
 		return (
-			<div
-				className={classnames('c-video-player t-player-skin--dark', 'u-center-m')}
-				style={{ width }}
-			>
+			<div className={classnames('u-center-m')} style={{ width }}>
 				<FlowPlayerWrapper
 					item={
 						mediaItem
