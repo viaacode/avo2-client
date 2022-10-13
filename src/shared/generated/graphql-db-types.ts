@@ -40949,6 +40949,7 @@ export type InsertContentMutation = { __typename?: 'mutation_root', insert_app_c
 
 export type SoftDeleteContentMutationVariables = Exact<{
   id: Scalars['Int'];
+  path: Scalars['String'];
 }>;
 
 
@@ -41918,6 +41919,14 @@ export type InsertQuickLanesMutationVariables = Exact<{
 
 
 export type InsertQuickLanesMutation = { __typename?: 'mutation_root', insert_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null } | null } }> } | null };
+
+export type RemoveQuickLanesMutationVariables = Exact<{
+  ids: Array<Scalars['uuid']> | Scalars['uuid'];
+  profileId: Scalars['uuid'];
+}>;
+
+
+export type RemoveQuickLanesMutation = { __typename?: 'mutation_root', delete_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any }> } | null };
 
 export type UpdateQuickLaneByIdMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -43202,8 +43211,11 @@ export const useInsertContentMutation = <
       options
     );
 export const SoftDeleteContentDocument = `
-    mutation softDeleteContent($id: Int!) {
-  update_app_content(where: {id: {_eq: $id}}, _set: {is_deleted: true}) {
+    mutation softDeleteContent($id: Int!, $path: String!) {
+  update_app_content(
+    where: {id: {_eq: $id}}
+    _set: {is_deleted: true, path: $path}
+  ) {
     affected_rows
   }
 }
@@ -46924,6 +46936,27 @@ export const useInsertQuickLanesMutation = <
     useMutation<InsertQuickLanesMutation, TError, InsertQuickLanesMutationVariables, TContext>(
       ['insertQuickLanes'],
       (variables?: InsertQuickLanesMutationVariables) => fetchData<InsertQuickLanesMutation, InsertQuickLanesMutationVariables>(InsertQuickLanesDocument, variables)(),
+      options
+    );
+export const RemoveQuickLanesDocument = `
+    mutation RemoveQuickLanes($ids: [uuid!]!, $profileId: uuid!) {
+  delete_app_quick_lanes(
+    where: {id: {_in: $ids}, owner: {usersByuserId: {profile: {id: {_eq: $profileId}}}}}
+  ) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useRemoveQuickLanesMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RemoveQuickLanesMutation, TError, RemoveQuickLanesMutationVariables, TContext>) =>
+    useMutation<RemoveQuickLanesMutation, TError, RemoveQuickLanesMutationVariables, TContext>(
+      ['RemoveQuickLanes'],
+      (variables?: RemoveQuickLanesMutationVariables) => fetchData<RemoveQuickLanesMutation, RemoveQuickLanesMutationVariables>(RemoveQuickLanesDocument, variables)(),
       options
     );
 export const UpdateQuickLaneByIdDocument = `

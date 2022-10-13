@@ -194,3 +194,5 @@ export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: Avo.ContentPage.Type[
 	[ContentWidth.MEDIUM]: ['NIEUWS_ITEM'],
 };
 /* eslint-enable @typescript-eslint/no-unused-vars */
+
+export const DELETED_CONTENT_PAGE_PATH_PREFIX = '/deleted/';

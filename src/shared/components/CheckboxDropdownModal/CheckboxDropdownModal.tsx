@@ -82,7 +82,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 
 	// State
 	const [checkedStates, setCheckedStates] = useState(optionsFromPairs);
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [isOpen, setIsOpen] = useState(false);
 	const [searchKeyword, setSearchKeyword] = useState<string>('');
 
 	// Methods
@@ -108,6 +108,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	// Listeners
 	const applyFilter = async (): Promise<void> => {
 		onChange(getSelectedFilterIds(checkedStates), id);
+		onSearch?.(id);
 		await closeDropdownOrModal();
 	};
 
@@ -152,7 +153,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		</FormGroup>
 	);
 
-	const renderCheckboxControl = () => {
+	const renderDropdownControl = () => {
 		return (
 			<Dropdown
 				label={label}
@@ -258,10 +259,6 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 									value={searchKeyword}
 									onChange={(value) => {
 										setSearchKeyword(value);
-
-										if (onSearch) {
-											onSearch(id);
-										}
 									}}
 								/>
 								{!!options.filter(
@@ -337,12 +334,12 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	if (disabled) {
 		return (
 			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
-				{options.length <= 7 ? renderCheckboxControl() : renderModalControl()}
+				{options.length <= 7 ? renderDropdownControl() : renderModalControl()}
 			</div>
 		);
 	}
 
-	return options.length <= 7 ? renderCheckboxControl() : renderModalControl();
+	return options.length <= 7 ? renderDropdownControl() : renderModalControl();
 };
 
 export const renderDropdownButton = (
@@ -350,7 +347,7 @@ export const renderDropdownButton = (
 	isOpen: boolean,
 	selectedTags: { label: string; id: string | number }[],
 	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void,
-	showSelectedValuesOnCollapsed: boolean = true
+	showSelectedValuesOnCollapsed = true
 ) => {
 	return (
 		<Button autoHeight className="c-checkbox-dropdown-modal__trigger" type="secondary">

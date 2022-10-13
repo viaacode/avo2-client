@@ -5,6 +5,7 @@ export const QUICK_LANE_COLUMNS = {
 	CONTENT_LABEL: 'content_label',
 	AUTHOR: 'author',
 	ORGANISATION: 'organisation',
+	ACTIONS: 'action',
 };
 
 export const QUICK_LANE_DEFAULTS = {

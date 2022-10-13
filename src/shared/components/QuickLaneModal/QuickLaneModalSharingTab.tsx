@@ -14,7 +14,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
-import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
+import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks';
 import { ToastService } from '../../services';
@@ -215,21 +215,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 									label={t(
 										'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 									)}
-									onClick={() => {
-										navigator.clipboard
-											.writeText(
-												`${window.location.origin}${generateQuickLaneHref(
-													quickLane.id
-												)}`
-											)
-											.then(() => {
-												ToastService.success(
-													t(
-														'shared/components/quick-lane-modal/quick-lane-modal-sharing-tab___de-link-is-succesvol-gekopieerd'
-													)
-												);
-											});
-									}}
+									onClick={() => copyQuickLaneToClipboard(quickLane.id, t)}
 								/>
 							</Spacer>
 						</FlexItem>

@@ -247,10 +247,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				ToastService.danger(
 					isCollection
 						? t(
-								'Er was geen collectie geselecteerd, gelieve opnieuw te proberen na het herladen van de pagina.'
+								'collection/components/collection-or-bundle-overview___er-was-geen-collectie-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
 						  )
 						: t(
-								'Er was geen bundel geselecteerd, gelieve opnieuw te proberen na het herladen van de pagina.'
+								'collection/components/collection-or-bundle-overview___er-was-geen-bundel-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
 						  )
 				);
 				return;

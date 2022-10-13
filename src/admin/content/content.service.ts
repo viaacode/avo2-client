@@ -41,6 +41,8 @@ import { ContentBlockConfig } from '../shared/types';
 
 import {
 	CONTENT_RESULT_PATH,
+	CONTENT_TYPES_LOOKUP_PATH,
+	DELETED_CONTENT_PAGE_PATH_PREFIX,
 	ITEMS_PER_PAGE,
 	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
@@ -557,17 +559,19 @@ export class ContentService {
 		}
 	}
 
-	public static async deleteContentPage(id: number) {
+	public static async deleteContentPage(data: ContentPageInfo) {
 		try {
-			const variables: SoftDeleteContentMutationVariables = { id };
-			await dataService.query<SoftDeleteContentMutation>({
-				variables,
-				query: SoftDeleteContentDocument,
+			const response = await dataService.mutate({
+				variables: {
+					id: data.id,
+					path: `${DELETED_CONTENT_PAGE_PATH_PREFIX}${data.id}${data.path}`,
+				},
+				mutation: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete content page from the database', err, {
-				id,
+				id: data.id,
 				query: 'SOFT_DELETE_CONTENT',
 			});
 		}

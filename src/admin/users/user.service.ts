@@ -1,10 +1,12 @@
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { UserSchema } from '@viaa/avo2-types/types/user';
+import { endOfDay, isBefore } from 'date-fns';
 import { DocumentNode } from 'graphql';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
 
+import { CustomError, getEnv } from '../../shared/helpers';
 import {
 	BulkAddSubjectsToProfilesDocument,
 	BulkAddSubjectsToProfilesMutation,
@@ -30,7 +32,6 @@ import {
 	UpdateUserTempAccessByIdDocument,
 	UpdateUserTempAccessByIdMutation,
 } from '../../shared/generated/graphql-db-types';
-import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
@@ -110,8 +111,12 @@ export class UserService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
+			/**
+			 * Trigger email if from day is <= updated at day
+			 * https://meemoo.atlassian.net/browse/AVO-1779
+			 */
 			const hasAccessNow =
-				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(moment());
+				!!tempAccess.from && isBefore(new Date(tempAccess.from), endOfDay(new Date()));
 
 			if (hasAccessNow && tempAccess.until) {
 				const isBlocked = !hasAccessNow;
@@ -119,7 +124,8 @@ export class UserService {
 				await UserService.updateTempAccessBlockStatusByProfileIds(
 					[profileId],
 					isBlocked,
-					moment(tempAccess.until).format('DD-MM-YYYY')
+					moment(tempAccess.until).format('DD-MM-YYYY'),
+					true
 				);
 			}
 		} catch (err) {
@@ -133,7 +139,8 @@ export class UserService {
 	static async updateTempAccessBlockStatusByProfileIds(
 		profileIds: string[],
 		isBlocked: boolean,
-		tempAccessUntil: string
+		tempAccessUntil: string,
+		sendEmail: boolean
 	): Promise<void> {
 		let url: string | undefined;
 
@@ -144,6 +151,7 @@ export class UserService {
 				profileIds,
 				isBlocked,
 				tempAccessUntil,
+				sendEmail,
 			};
 
 			const response = await fetchWithLogout(url, {
@@ -329,7 +337,8 @@ export class UserService {
 
 	static async updateBlockStatusByProfileIds(
 		profileIds: string[],
-		isBlocked: boolean
+		isBlocked: boolean,
+		sendEmail: boolean
 	): Promise<void> {
 		let url: string | undefined;
 		try {
@@ -338,6 +347,7 @@ export class UserService {
 			const body: Avo.User.BulkBlockUsersBody = {
 				profileIds,
 				isBlocked,
+				sendEmail,
 			};
 
 			const response = await fetchWithLogout(url, {
@@ -370,7 +380,8 @@ export class UserService {
 	static async bulkDeleteUsers(
 		profileIds: string[],
 		deleteOption: Avo.User.UserDeleteOption,
-		transferToProfileId?: string
+		transferToProfileId: string | undefined,
+		sendEmail: boolean
 	): Promise<void> {
 		let url: string | undefined;
 		try {
@@ -379,6 +390,7 @@ export class UserService {
 				profileIds,
 				deleteOption,
 				transferToProfileId,
+				sendEmail,
 			};
 			const response = await fetchWithLogout(url, {
 				method: 'DELETE',

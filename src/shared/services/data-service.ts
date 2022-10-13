@@ -100,6 +100,11 @@ export class ApolloCacheManager {
 		ApolloCacheManager.deleteFromCache(cache, 'app_pupil_collection_blocks');
 	}
 
+	public static clearQuickLaneCache(cache: ApolloCache): void {
+		ApolloCacheManager.deleteFromCache(cache, 'app_quick_lanes');
+		ApolloCacheManager.deleteFromCache(cache, 'app_quick_lanes_aggregate');
+	}
+
 	/**
 	 * Clears all nav elements related items from the cache
 	 * eg: content_nav_elements

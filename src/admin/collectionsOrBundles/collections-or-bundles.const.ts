@@ -475,29 +475,28 @@ const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getMarcomLastCommunicationChannelTypeColumn = (
-	channelTypeOptions: CheckboxOption[]
-): FilterableColumn => ({
+const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_type',
 	label: i18n.t(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-type'
 	),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'CheckboxDropdownModal',
-	filterProps: {
-		options: channelTypeOptions,
-	},
-	dataType: TableColumnDataType.string,
 });
 
-const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
+const getMarcomLastCommunicationChannelNameColumn = (
+	channelNameOptions: CheckboxOption[]
+): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_name',
 	label: i18n.t(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-naam'
 	),
 	sortable: true,
 	visibleByDefault: true,
+	filterType: 'CheckboxDropdownModal',
+	filterProps: {
+		options: channelNameOptions,
+	},
 	dataType: TableColumnDataType.string,
 });
 
@@ -622,7 +621,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 export const GET_COLLECTION_MARCOM_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
-	channelTypeOptions: CheckboxOption[],
+	channelNameOptions: CheckboxOption[],
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
@@ -633,8 +632,8 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getMarcomLastUpdatedByColumn(),
 	getCollectionCreatedAtColumn(),
 	getCollectionUpdatedAtColumn(),
-	getMarcomLastCommunicationChannelTypeColumn(channelTypeOptions),
-	getMarcomLastCommunicationChannelNameColumn(),
+	getMarcomLastCommunicationChannelTypeColumn(),
+	getMarcomLastCommunicationChannelNameColumn(channelNameOptions),
 	getMarcomLastCommunicationAtColumn(),
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
