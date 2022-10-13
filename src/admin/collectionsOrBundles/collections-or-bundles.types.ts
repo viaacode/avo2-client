@@ -95,7 +95,7 @@ export interface CollectionOrBundleQualityCheckTableState extends CollectionOrBu
 export interface CollectionOrBundleMarcomTableState extends CollectionOrBundleTableStateBase {
 	marcom_last_communication_medium: string;
 	marcom_last_communication_at: string;
-	marcom_last_communication_channel_type: string[];
+	marcom_last_communication_channel_name: string[];
 }
 
 export type CollectionTableStates =
