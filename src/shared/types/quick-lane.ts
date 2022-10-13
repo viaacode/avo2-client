@@ -45,6 +45,12 @@ export interface QuickLaneUpdateResponse {
 	update_app_quick_lanes: QuickLaneMutateResponse;
 }
 
+export interface QuickLaneRemoveResponse {
+	delete_app_quick_lanes: Omit<QuickLaneMutateResponse, 'returning'> & {
+		returning: Pick<QuickLaneUrlRecord, 'id'>[];
+	};
+}
+
 export interface QuickLaneMutateResponse {
 	affected_rows: number;
 	returning: QuickLaneUrlRecord[];

@@ -1,4 +1,4 @@
-import { Checkbox, TagInfo, TagList, TagOption } from '@viaa/avo2-components';
+ import { Checkbox, TagInfo, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import FileSaver from 'file-saver';
@@ -66,7 +66,9 @@ import { UserBulkAction, UserOverviewTableCol, UserTableState } from '../user.ty
 
 import './UserOverview.scss';
 
-const UserOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user, history }) => {
+type UserOverviewProps = RouteComponentProps & UserProps;
+
+const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
