@@ -1,7 +1,7 @@
 import { MoreOptionsDropdown } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/dist/esm/components/Menu/MenuContent/MenuContent';
 import { isEqual } from 'lodash';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryParams } from 'use-query-params';
 
@@ -50,6 +50,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	const [quickLanesCount, setQuickLanesCount] = useState<number>(0);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+	const [loadSelectedError, setLoadSelectedError] = useState<ReactNode | undefined>(undefined);
 
 	// Set default sorting
 	const [query, setQuery] = useQueryParams({
@@ -209,6 +210,16 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 		}
 	}, [user, setQuickLanes, setLoadingInfo, t, debouncedFilters]); // eslint-disable-line
 
+	const fetchQuickLaneDetail = async (selected: QuickLaneUrlObject) => {
+		const details = await QuickLaneService.fetchQuickLaneById(selected.id);
+
+		if (details.content) {
+			setSelected(details);
+		} else {
+			setLoadSelectedError(t('De collectie is niet gevonden.'));
+		}
+	};
+
 	const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
 		try {
 			QuickLaneService.removeQuickLanesById([id]).then(async () => {
@@ -291,9 +302,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 								switch (action.toString() as actions) {
 									case 'edit':
-										setSelected(
-											await QuickLaneService.fetchQuickLaneById(selected.id)
-										);
+										await fetchQuickLaneDetail(selected);
 										setIsQuickLaneModalOpen(true);
 										break;
 
@@ -358,6 +367,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 					setSelected(undefined);
 					fetchQuickLanes();
 				}}
+				error={loadSelectedError}
 			/>
 
 			<DeleteObjectModal

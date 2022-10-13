@@ -221,9 +221,10 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 			) : (
 				<ModalBody>
 					<Spacer margin={['bottom-small']}>
-						{t(
-							'shared/components/quick-lane-modal/quick-lane-modal___er-ging-iets-mis'
-						)}
+						{props.error ||
+							t(
+								'shared/components/quick-lane-modal/quick-lane-modal___er-ging-iets-mis'
+							)}
 					</Spacer>
 				</ModalBody>
 			)}
