@@ -586,7 +586,7 @@ export class ContentService {
 			}
 		} catch (err) {
 			throw new CustomError('Failed to delete content page from the database', err, {
-				id,
+				id: data.id,
 				query: 'SOFT_DELETE_CONTENT',
 			});
 		}
