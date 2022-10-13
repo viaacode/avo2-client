@@ -249,7 +249,9 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				)}
 
 				<Checkbox
-					label={t('Breng de gebruiker(s) op de hoogte van deze actie.')}
+					label={t(
+						'admin/users/components/user-delete-modal___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
+					)}
 					checked={shouldSendEmail}
 					onChange={setShouldSendEmail}
 				/>

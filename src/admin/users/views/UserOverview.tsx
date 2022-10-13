@@ -1,4 +1,4 @@
- import { Checkbox, TagInfo, TagList, TagOption } from '@viaa/avo2-components';
+import { Checkbox, TagInfo, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import FileSaver from 'file-saver';
@@ -658,16 +658,20 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 						setShouldSendActionEmail(false);
 						await bulkUpdateBlockStatus(true);
 					}}
-					title={t('Bevestig')}
-					confirmLabel={t('Deactiveren')}
+					title={t('admin/users/views/user-overview___bevestig')}
+					confirmLabel={t('admin/users/views/user-overview___deactiveren')}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t('Weet je zeker dat je deze gebruiker(s) wil deactiveren?')}
+								{t(
+									'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruiker-s-wil-deactiveren'
+								)}
 							</strong>
 							<Checkbox
-								label={t('Breng de gebruiker(s) op de hoogte van deze actie.')}
+								label={t(
+									'admin/users/views/user-overview___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
+								)}
 								checked={shouldSendActionEmail}
 								onChange={(newShouldSendActionEmail) =>
 									setShouldSendActionEmail(newShouldSendActionEmail)
@@ -688,17 +692,21 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 						setShouldSendActionEmail(false);
 						await bulkUpdateBlockStatus(false);
 					}}
-					title={t('Bevestig')}
-					confirmLabel={t('Opnieuw activeren')}
+					title={t('admin/users/views/user-overview___bevestig')}
+					confirmLabel={t('admin/users/views/user-overview___opnieuw-activeren')}
 					confirmButtonType={'primary'}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t('Weet je zeker dat je deze gebruiker(s) opnieuw wil activeren?')}
+								{t(
+									'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruiker-s-opnieuw-wil-activeren'
+								)}
 							</strong>
 							<Checkbox
-								label={t('Breng de gebruiker(s) op de hoogte van deze actie.')}
+								label={t(
+									'admin/users/views/user-overview___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
+								)}
 								checked={shouldSendActionEmail}
 								onChange={(newShouldSendActionEmail) =>
 									setShouldSendActionEmail(newShouldSendActionEmail)

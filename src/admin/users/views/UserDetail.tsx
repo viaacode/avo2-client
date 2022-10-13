@@ -623,16 +623,20 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						setShouldSendActionEmail(false);
 						await toggleBlockedStatus();
 					}}
-					title={t('Bevestig')}
-					confirmLabel={t('Deactiveren')}
+					title={t('admin/users/views/user-detail___bevestig')}
+					confirmLabel={t('admin/users/views/user-detail___deactiveren')}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t('Weet je zeker dat je deze gebruiker wil deactiveren?')}
+								{t(
+									'admin/users/views/user-detail___weet-je-zeker-dat-je-deze-gebruiker-wil-deactiveren'
+								)}
 							</strong>
 							<Checkbox
-								label={t('Breng de gebruiker op de hoogte van deze actie.')}
+								label={t(
+									'admin/users/views/user-detail___breng-de-gebruiker-op-de-hoogte-van-deze-actie'
+								)}
 								checked={shouldSendActionEmail}
 								onChange={(newShouldSendActionEmail) =>
 									setShouldSendActionEmail(newShouldSendActionEmail)
@@ -653,17 +657,21 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						setShouldSendActionEmail(false);
 						await toggleBlockedStatus();
 					}}
-					title={t('Bevestig')}
-					confirmLabel={t('Opnieuw activeren')}
+					title={t('admin/users/views/user-detail___bevestig')}
+					confirmLabel={t('admin/users/views/user-detail___opnieuw-activeren')}
 					confirmButtonType={'primary'}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t('Weet je zeker dat je deze gebruiker opnieuw wil activeren?')}
+								{t(
+									'admin/users/views/user-detail___weet-je-zeker-dat-je-deze-gebruiker-opnieuw-wil-activeren'
+								)}
 							</strong>
 							<Checkbox
-								label={t('Breng de gebruiker op de hoogte van deze actie.')}
+								label={t(
+									'admin/users/views/user-detail___breng-de-gebruiker-op-de-hoogte-van-deze-actie'
+								)}
 								checked={shouldSendActionEmail}
 								onChange={(newShouldSendActionEmail) =>
 									setShouldSendActionEmail(newShouldSendActionEmail)
