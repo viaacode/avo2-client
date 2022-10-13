@@ -570,10 +570,13 @@ export class ContentService {
 		}
 	}
 
-	public static async deleteContentPage(id: number) {
+	public static async deleteContentPage(data: ContentPageInfo) {
 		try {
 			const response = await dataService.mutate({
-				variables: { id, path: `${DELETED_CONTENT_PAGE_PATH_PREFIX}${id}` },
+				variables: {
+					id: data.id,
+					path: `${DELETED_CONTENT_PAGE_PATH_PREFIX}${data.id}${data.path}`,
+				},
 				mutation: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
