@@ -16,7 +16,11 @@ export const defaultRenderDetailLink = (
 	type: Avo.Core.ContentType
 ): ReactNode => {
 	return (
-		<Link className="c-button--relative-link" to={generateContentLinkString(type, id)}>
+		<Link
+			className="c-button--relative-link"
+			to={generateContentLinkString(type, id)}
+			onClick={() => scrollTo({ top: 0 })}
+		>
 			{linkText}
 		</Link>
 	);
