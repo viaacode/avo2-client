@@ -223,8 +223,12 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	};
 
 	const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
+		if (!user.profile?.id) {
+			return;
+		}
+
 		try {
-			QuickLaneService.removeQuickLanesById([id]).then(async () => {
+			QuickLaneService.removeQuickLanesById([id], user.profile?.id).then(async () => {
 				await fetchQuickLanes();
 
 				ToastService.success(

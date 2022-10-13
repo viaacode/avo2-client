@@ -1,3 +1,4 @@
+import { Avo } from '@viaa/avo2-types';
 import { AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
@@ -267,12 +268,16 @@ export class QuickLaneService {
 
 	// DELETE
 
-	static async removeQuickLanesById(ids: string[]): Promise<number> {
+	static async removeQuickLanesById(
+		ids: string[],
+		profileId: Avo.User.Profile['id']
+	): Promise<number> {
 		try {
 			const response = await dataService.mutate<QuickLaneRemoveResponse>({
 				mutation: REMOVE_QUICK_LANES,
 				variables: {
 					ids,
+					profileId,
 				},
 				update: ApolloCacheManager.clearQuickLaneCache,
 			});
