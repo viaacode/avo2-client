@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { FetchResult } from 'apollo-link';
 import { compact, get, has, omit, without } from 'lodash-es';
 
 import {
@@ -45,7 +44,7 @@ export class ContentBlockService {
 	 */
 	public static async updateContentBlock(
 		contentBlockConfig: ContentBlockConfig
-	): Promise<FetchResult<any> | null> {
+	): Promise<UpdateContentBlockMutation> {
 		const contentBlock = convertBlockToDatabaseFormat(contentBlockConfig);
 
 		return await dataService.query<UpdateContentBlockMutation>({

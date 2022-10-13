@@ -58,6 +58,9 @@ export const COLLECTION_QUERY_KEYS = ['getCollectionsByOwner']; // TODO, use thi
 
 type ApolloCache = { [key: string]: any };
 
+/**
+ * @deprecated use react-query caching instead
+ */
 export class ApolloCacheManager {
 	public static clearBookmarksViewsPlays(cache: ApolloCache): void {
 		ApolloCacheManager.deleteFromCache(cache, 'app_item_bookmarks');

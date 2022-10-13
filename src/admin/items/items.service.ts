@@ -10,9 +10,15 @@ import {
 	FetchItemUuidByExternalIdQuery,
 	GetDistinctSeriesDocument,
 	GetDistinctSeriesQuery,
+	GetItemByUuidDocument,
+	GetItemByUuidQuery,
+	GetItemByUuidQueryVariables,
 	GetItemDepublishReasonByExternalIdDocument,
 	GetItemsByExternalIdDocument,
 	GetItemsByExternalIdQuery,
+	GetItemsWithFiltersDocument,
+	GetItemsWithFiltersQuery,
+	GetItemsWithFiltersQueryVariables,
 	GetPublicItemsByTitleOrExternalIdDocument,
 	GetPublicItemsByTitleOrExternalIdQuery,
 	GetPublicItemsDocument,
@@ -20,6 +26,9 @@ import {
 	GetUnpublishedItemPidsDocument,
 	GetUnpublishedItemPidsQuery,
 	GetUnpublishedItemPidsQueryVariables,
+	GetUnpublishedItemsWithFiltersDocument,
+	GetUnpublishedItemsWithFiltersQuery,
+	GetUnpublishedItemsWithFiltersQueryVariables,
 	Lookup_Enum_Relation_Types_Enum,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
@@ -59,7 +68,7 @@ export class ItemsService {
 		tableColumnDataType: TableColumnDataType,
 		where: any
 	): Promise<[Avo.Item.Item[], number]> {
-		let variables: any;
+		let variables: GetItemsWithFiltersQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -73,9 +82,9 @@ export class ItemsService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetItemsWithFiltersQuery>({
 				variables,
-				query: GET_ITEMS_WITH_FILTERS,
+				query: GetItemsWithFiltersDocument,
 			});
 
 			const items = get(response, 'data.app_item_meta');
@@ -100,9 +109,9 @@ export class ItemsService {
 		page: number,
 		sortColumn: UnpublishedItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any
+		where: GetUnpublishedItemsWithFiltersQueryVariables['where']
 	): Promise<[UnpublishedItem[], number]> {
-		let variables: any;
+		let variables: GetUnpublishedItemsWithFiltersQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -111,9 +120,9 @@ export class ItemsService {
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetUnpublishedItemsWithFiltersQuery>({
 				variables,
-				query: GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+				query: GetUnpublishedItemsWithFiltersDocument,
 			});
 
 			const items = get(response, 'data.shared_items');
@@ -135,16 +144,15 @@ export class ItemsService {
 	}
 
 	public static async fetchItemByUuid(uuid: string): Promise<Avo.Item.Item> {
-		let variables: any;
+		let variables: GetItemByUuidQueryVariables | null = null;
 		try {
 			variables = {
 				uuid,
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetItemByUuidQuery>({
 				variables,
-				query: GET_ITEM_BY_UUID,
-				errorPolicy: 'all',
+				query: GetItemByUuidDocument,
 			});
 
 			const rawItem = get(response, 'data.app_item_meta[0]');

@@ -5,6 +5,9 @@ import { get, isNil } from 'lodash-es';
 import {
 	DeleteContentPageLabelByIdDocument,
 	DeleteContentPageLabelByIdMutation,
+	GetAllContentPageLabelsDocument,
+	GetAllContentPageLabelsQuery,
+	GetAllContentPageLabelsQueryVariables,
 	GetContentPageLabelByIdDocument,
 	GetContentPageLabelByIdQuery,
 	InsertContentPageLabelDocument,
@@ -25,10 +28,10 @@ export class ContentPageLabelService {
 		page: number,
 		sortColumn: ContentPageLabelOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any,
+		where: GetAllContentPageLabelsQueryVariables['where'],
 		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[ContentPageLabel[], number]> {
-		let variables: any;
+		let variables: GetAllContentPageLabelsQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -36,9 +39,9 @@ export class ContentPageLabelService {
 				limit: itemsPerPage,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetAllContentPageLabelsQuery>({
 				variables,
-				query: GET_CONTENT_PAGE_LABELS,
+				query: GetAllContentPageLabelsDocument,
 			});
 			const contentPageLabel = get(response, 'data.app_content_labels');
 			const contentPageLabelCount = get(
