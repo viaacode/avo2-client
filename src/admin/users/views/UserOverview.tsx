@@ -65,12 +65,9 @@ import { UserBulkAction, UserOverviewTableCol, UserTableState } from '../user.ty
 
 import './UserOverview.scss';
 
-interface UserOverviewProps {}
+type UserOverviewProps = RouteComponentProps & UserProps;
 
-const UserOverview: FunctionComponent<UserOverviewProps & RouteComponentProps & UserProps> = ({
-	user,
-	history,
-}) => {
+const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) => {
 	const [t] = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
