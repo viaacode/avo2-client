@@ -216,7 +216,9 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 		if (details.content) {
 			setSelected(details);
 		} else {
-			setLoadSelectedError(t('De collectie is niet gevonden.'));
+			setLoadSelectedError(
+				t('workspace/views/quick-lane-overview___de-collectie-is-niet-gevonden')
+			);
 		}
 	};
 
